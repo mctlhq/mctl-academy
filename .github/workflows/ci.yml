@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  content:
+    name: Content lint and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Structural validation only: no secrets, no network. This is the job
+      # that runs identically on a fork PR, which is why citation verification
+      # is not part of it — that needs the private snapshot store, and GitHub
+      # does not expose secrets to fork-triggered runs.
+      - name: Content lint
+        run: npm run lint:content
+
+      - name: Content lint tests
+        run: npm run test:content
