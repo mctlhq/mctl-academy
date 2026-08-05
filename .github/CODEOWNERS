@@ -1,0 +1,19 @@
+# Every content and schema change needs a human owner's approval.
+#
+# This is the enforcement point for the clean-room policy: agents open content
+# pull requests, mechanical CI verifies the citations, and a human owner is the
+# last gate before anything publishes. See CONTENT-POLICY.md.
+
+/content/                @mashkovd
+/content/schemas/        @mashkovd
+
+# Policy documents. Changing these changes the rules the project operates under,
+# so they get the same gate as content itself.
+/CONTENT-POLICY.md       @mashkovd
+/SOURCES.md              @mashkovd
+/LEGAL.md                @mashkovd
+/PRIVACY.md              @mashkovd
+
+# CI and deployment wiring — the evidence gate lives here, so a change to it is
+# a change to the gate.
+/.github/workflows/      @mashkovd
