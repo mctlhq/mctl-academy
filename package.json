@@ -1,0 +1,24 @@
+{
+  "name": "mctl-academy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Free, evidence-backed practice for agentic AI certification",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mctlhq/mctl-academy.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint:content": "node scripts/validate-content.mjs",
+    "test:content": "node --test 'tests/**/*.test.mjs'"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "yaml": "^2.6.1"
+  }
+}

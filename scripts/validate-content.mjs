@@ -1,0 +1,235 @@
+#!/usr/bin/env node
+/**
+ * Content lint.
+ *
+ * Two layers. JSON Schema covers shape: field types, the four-option rule, the
+ * 25-word excerpt cap, the status enum. This script covers everything schema
+ * cannot express — cross-file references, the branding objective map, and the
+ * clean-room authorship rule.
+ *
+ * Deliberately has no network dependency and reads no secrets, so it runs
+ * identically on a fork pull request. Verbatim citation verification is a
+ * separate step: it needs the private snapshot store, and therefore cannot run
+ * on a fork at all. See CONTRIBUTING.md.
+ *
+ * Exit code 1 on any error. Warnings do not fail the run.
+ */
+import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { join, basename, resolve } from "node:path";
+// The 2020-12 build specifically: the question schema's single-correct-answer
+// rule uses minContains/maxContains, which draft-07 (ajv's default export)
+// does not implement — it would silently ignore them and pass a four-correct
+// question.
+import Ajv from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
+import { parse as parseYaml } from "yaml";
+
+const ROOT = new URL("..", import.meta.url).pathname;
+// Overridable so the test suite can point the linter at fixture trees and
+// assert it actually rejects them. Schemas always come from the real tree —
+// a test that validated against its own copy of the schema would prove
+// nothing about the schema shipped to contributors.
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
+const SCHEMAS = join(ROOT, "content", "schemas");
+
+const errors = [];
+const warnings = [];
+
+const err = (file, msg) => errors.push(`${file}: ${msg}`);
+const warn = (file, msg) => warnings.push(`${file}: ${msg}`);
+
+/** Hosts content may cite. Mirrors the SOURCES.md allowlist. */
+const ALLOWED_HOSTS = ["docs.nebius.com"];
+
+/**
+ * Item authors must be agents. CONTENT-POLICY.md separates authorship from
+ * approval because the maintainer has seen the real exam; a human name in
+ * `authored.by` is that separation collapsing, which is a policy failure
+ * rather than a typo. Approval is recorded in `reviewed.by`, where a human
+ * name is exactly what belongs.
+ */
+const AGENT_AUTHOR = /^agent:[a-z0-9][a-z0-9-]*$/;
+
+function loadYamlDir(dir) {
+  const path = join(CONTENT, dir);
+  if (!existsSync(path)) return [];
+  return readdirSync(path)
+    .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))
+    .map((f) => {
+      const file = `content/${dir}/${f}`;
+      try {
+        return { file, name: basename(f), data: parseYaml(readFileSync(join(path, f), "utf8")) };
+      } catch (e) {
+        err(file, `unparseable YAML: ${e.message}`);
+        return null;
+      }
+    })
+    .filter(Boolean);
+}
+
+const ajv = new Ajv({ allErrors: true, strict: false });
+addFormats(ajv);
+const validators = {};
+for (const kind of ["source", "question", "lesson"]) {
+  const schema = JSON.parse(readFileSync(join(SCHEMAS, `${kind}.schema.json`), "utf8"));
+  validators[kind] = ajv.compile(schema);
+}
+
+// ---------------------------------------------------------------- branding
+
+const brandingPath = join(CONTENT, "branding.yaml");
+const branding = parseYaml(readFileSync(brandingPath, "utf8"));
+const knownObjectives = new Set();
+let weightSum = 0;
+let mockSum = 0;
+
+for (const d of branding.domains ?? []) {
+  weightSum += d.weight ?? 0;
+  mockSum += d.mock_questions ?? 0;
+  for (const o of d.objectives ?? []) knownObjectives.add(`${d.id}/${o.id ?? o}`);
+}
+
+if (weightSum !== 100) {
+  err("content/branding.yaml", `domain weights sum to ${weightSum}, expected 100`);
+}
+if (mockSum !== branding.mock?.question_count) {
+  err(
+    "content/branding.yaml",
+    `mock_questions sum to ${mockSum} but mock.question_count is ${branding.mock?.question_count}`,
+  );
+}
+if (knownObjectives.size === 0) {
+  warn(
+    "content/branding.yaml",
+    "no objectives defined yet — every objective reference will fail until the map is filled in",
+  );
+}
+
+// ----------------------------------------------------------------- sources
+
+const sources = loadYamlDir("sources");
+const sourceIds = new Set();
+
+for (const { file, data } of sources) {
+  if (!validators.source(data)) {
+    for (const e of validators.source.errors) err(file, `${e.instancePath || "/"} ${e.message}`);
+    continue;
+  }
+  if (sourceIds.has(data.id)) err(file, `duplicate source id ${data.id}`);
+  sourceIds.add(data.id);
+
+  const host = new URL(data.url).host;
+  if (!ALLOWED_HOSTS.includes(host)) {
+    err(file, `host ${host} is not on the SOURCES.md allowlist`);
+  }
+  if (data.snapshot && data.snapshot.key !== data.sha256) {
+    err(file, "snapshot.key must equal sha256 — snapshots are keyed by content hash");
+  }
+  for (const o of data.objectives ?? []) {
+    if (knownObjectives.size && !knownObjectives.has(o)) {
+      err(file, `objective ${o} is not in branding.yaml`);
+    }
+  }
+}
+
+// ------------------------------------------------------ questions, lessons
+
+function checkEvidence(file, data) {
+  for (const ev of data.evidence ?? []) {
+    if (!sourceIds.has(ev.source_id)) {
+      err(file, `cites unknown source ${ev.source_id}`);
+      continue;
+    }
+    const src = sources.find((s) => s.data.id === ev.source_id).data;
+    if (!src.snapshot) {
+      // Not an error: the item simply cannot publish yet. Publication is
+      // gated below on status, so say it once, here, in the language of the
+      // consequence rather than the mechanism.
+      if (data.status === "published") {
+        err(file, `cannot be published: source ${ev.source_id} has no snapshot to verify against`);
+      }
+    }
+    if (src.status === "drifted" && data.status === "published") {
+      err(file, `cannot be published: source ${ev.source_id} has drifted and needs re-verification`);
+    }
+  }
+}
+
+function checkObjective(file, data) {
+  if (!data.objective?.startsWith(`${data.domain}/`)) {
+    err(file, `objective ${data.objective} does not belong to ${data.domain}`);
+  }
+  if (knownObjectives.size && !knownObjectives.has(data.objective)) {
+    err(file, `objective ${data.objective} is not in branding.yaml`);
+  }
+}
+
+function checkLifecycle(file, data) {
+  if (data.status === "published" && !data.reviewed) {
+    err(file, "published without a `reviewed` block — human approval is not optional");
+  }
+  if (data.authored && !AGENT_AUTHOR.test(data.authored.by)) {
+    err(
+      file,
+      `authored.by "${data.authored.by}" is not an agent identifier (agent:<name>). ` +
+        "CONTENT-POLICY.md: items are authored by agents; humans approve in `reviewed`, not `authored`.",
+    );
+  }
+}
+
+const questions = loadYamlDir("questions");
+const questionIds = new Set();
+
+for (const { file, data } of questions) {
+  if (!validators.question(data)) {
+    for (const e of validators.question.errors) err(file, `${e.instancePath || "/"} ${e.message}`);
+    continue;
+  }
+  if (questionIds.has(data.id)) err(file, `duplicate question id ${data.id}`);
+  questionIds.add(data.id);
+
+  checkObjective(file, data);
+  checkEvidence(file, data);
+  checkLifecycle(file, data);
+
+  // Schema pins the option count and the single correct answer, but cannot
+  // compare option contents to each other.
+  const ids = data.options.map((o) => o.id);
+  if (new Set(ids).size !== 4) err(file, `option ids must be a, b, c, d exactly once — got ${ids.join(", ")}`);
+
+  const texts = data.options.map((o) => o.text.trim().toLowerCase());
+  if (new Set(texts).size !== texts.length) {
+    err(file, "two options have the same text — a duplicate option makes the item unanswerable");
+  }
+}
+
+const lessons = loadYamlDir("lessons");
+const lessonIds = new Set();
+
+for (const { file, data } of lessons) {
+  if (!validators.lesson(data)) {
+    for (const e of validators.lesson.errors) err(file, `${e.instancePath || "/"} ${e.message}`);
+    continue;
+  }
+  if (lessonIds.has(data.id)) err(file, `duplicate lesson id ${data.id}`);
+  lessonIds.add(data.id);
+
+  checkObjective(file, data);
+  checkEvidence(file, data);
+  checkLifecycle(file, data);
+}
+
+// ------------------------------------------------------------------ report
+
+for (const w of warnings) console.warn(`warn  ${w}`);
+for (const e of errors) console.error(`error ${e}`);
+
+const counts = `${sources.length} sources, ${questions.length} questions, ${lessons.length} lessons`;
+
+if (errors.length) {
+  console.error(`\nContent lint failed: ${errors.length} error(s) across ${counts}.`);
+  process.exit(1);
+}
+console.log(`Content lint passed: ${counts}${warnings.length ? `, ${warnings.length} warning(s)` : ""}.`);

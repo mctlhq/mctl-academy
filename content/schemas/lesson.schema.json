@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://academy.mctl.ai/schemas/lesson/1.json",
+  "title": "Lesson",
+  "description": "One lesson covering an objective. Same evidence discipline as a question: every substantive claim is traceable to an allowlisted source.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "status",
+    "domain",
+    "objective",
+    "title",
+    "body",
+    "evidence",
+    "authored"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "id": {
+      "type": "string",
+      "pattern": "^l-[a-z0-9][a-z0-9-]{2,62}$"
+    },
+    "status": {
+      "enum": ["draft", "needs_review", "published", "retired"]
+    },
+    "domain": {
+      "enum": ["domain-1", "domain-2", "domain-3", "domain-4"]
+    },
+    "objective": {
+      "type": "string",
+      "pattern": "^domain-[1-4]/[a-z0-9][a-z0-9-]{1,62}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "summary": {
+      "description": "One or two sentences shown in the course outline.",
+      "type": "string",
+      "maxLength": 500
+    },
+    "body": {
+      "description": "Restricted Markdown, sanitized at build time. Executable MDX is not accepted. Raw HTML is stripped.",
+      "type": "string",
+      "minLength": 50
+    },
+    "estimated_minutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "excerpt"],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "pattern": "^src-[a-z0-9][a-z0-9-]{2,62}$"
+          },
+          "excerpt": {
+            "description": "At most 25 whitespace-separated words, verbatim from the source.",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 400,
+            "pattern": "^\\S+(\\s+\\S+){0,24}$"
+          },
+          "locator": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "authored": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "at"],
+      "properties": {
+        "by": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    },
+    "reviewed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "at"],
+      "properties": {
+        "by": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    }
+  }
+}

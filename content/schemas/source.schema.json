@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://academy.mctl.ai/schemas/source/1.json",
+  "title": "Source record",
+  "description": "One retrieved document from an allowlisted source. This record describes the document itself; the short excerpt that supports a particular claim lives on the question that makes the claim, because one document supports many questions with different wording.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "url",
+    "title",
+    "retrieved_at",
+    "sha256",
+    "objectives"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "description": "Stable identifier. Assigned once and never changed — the drift job's issue dedup key is derived from it, and questions reference it.",
+      "type": "string",
+      "pattern": "^src-[a-z0-9][a-z0-9-]{2,62}$"
+    },
+    "url": {
+      "description": "Canonical URL of the retrieved document. Must be on the SOURCES.md allowlist; the lint cross-checks the host.",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "retrieved_at": {
+      "description": "UTC, ISO 8601, with an explicit Z. Local time is never accepted.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "sha256": {
+      "description": "Hash of the retrieved document. Doubles as the key of the private R2 snapshot that CI verifies excerpts against.",
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "objectives": {
+      "description": "Objectives this document covers. Cross-checked against content/branding.yaml by the lint; an objective that does not exist there is an error.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^domain-[1-4]/[a-z0-9][a-z0-9-]{1,62}$"
+      }
+    },
+    "snapshot": {
+      "description": "Where the full document is stored. Absent means no snapshot exists yet, which holds every dependent question in draft — CI cannot verify a citation it cannot read.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bucket", "key"],
+      "properties": {
+        "bucket": { "const": "academy-source-snapshots" },
+        "key": {
+          "description": "Object key. Keyed by hash so a snapshot is immutable by construction.",
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "status": {
+      "description": "current: hash matches the last drift check. drifted: the upstream document changed and dependent content is under review.",
+      "enum": ["current", "drifted"],
+      "default": "current"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  }
+}
