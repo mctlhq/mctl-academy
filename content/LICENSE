@@ -1,0 +1,35 @@
+Copyright (c) 2026 mctl Academy. All rights reserved.
+
+This license applies to everything in the `content/` directory: lessons,
+questions, options, explanations, source records, and the compiled content
+manifest. The application code in the rest of this repository is licensed
+separately under Apache-2.0; see the LICENSE file at the repository root.
+
+The content in this directory is published so that it can be read, reviewed,
+audited, and corrected in the open. It is not published under an open license.
+
+You may:
+
+  - read this content, in the repository or through the application
+  - use it to study
+  - quote short excerpts for the purpose of reporting an error, reviewing the
+    project, or discussing it
+
+You may not, without prior written permission:
+
+  - copy, redistribute, or republish this content in whole or in substantial
+    part
+  - create derivative works from it, including reformatted, translated, or
+    machine-generated variants
+  - incorporate it into another question bank, course, dataset, or training
+    corpus
+  - use it commercially
+
+The reason for this restriction is specific and worth stating plainly: an
+openly licensed question bank aimed at a certification can be forked, stripped
+of its citations and its clean-room provenance, and republished as an exam
+braindump. This project's entire claim to legitimacy is that every item is
+original, evidence-backed, and traceable to public documentation. That claim
+does not survive uncontrolled redistribution.
+
+Requests for permission: open an issue in this repository.

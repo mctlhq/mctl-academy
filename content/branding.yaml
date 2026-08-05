@@ -1,0 +1,75 @@
+# Certification branding and objective map.
+#
+# This file is the ONLY place certification naming appears. Everything else in
+# the codebase — UI strings, slugs, question metadata — refers to domains by
+# their stable `id`, never by vendor name.
+#
+# That is deliberate. If the vendor objects to the positioning, or if the
+# project pivots to a vendor-neutral course, this file is the whole change: the
+# question bank keeps working because no question references a vendor anywhere.
+# See LEGAL.md.
+
+schema_version: 1
+
+course:
+  id: agentic-ai-builder
+  # The single permitted appearance of the certification name, used only in the
+  # course description. Never rendered into a URL, slug, page title, or image.
+  # See LEGAL.md "Naming rules".
+  prepares_for: "Nebius Agentic AI Builder"
+  title: "Agentic AI Builder"
+  description: >-
+    Practice for the Nebius Agentic AI Builder certification. Original
+    questions written from public product documentation, each one citing the
+    source that supports it.
+
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: >-
+    mctl Academy is an independent study tool. It is not affiliated with,
+    endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or
+    predict any certification exam, and it is not a proctored assessment.
+
+# Objective map.
+#
+# Weights are the published domain proportions and sum to 100. Mock composition
+# is derived from them: 30 questions -> 6 / 10 / 6 / 8.
+#
+# TODO(phase-0): domain `title` and `objectives` are placeholders. Fill them in
+# from the published certification objectives before any question is authored —
+# a question cannot be mapped to an objective that does not exist here yet.
+# Not guessed on purpose: an invented objective map would silently misweight the
+# whole bank.
+domains:
+  - id: domain-1
+    title: TBD
+    weight: 20
+    mock_questions: 6
+    objectives: []
+
+  - id: domain-2
+    title: TBD
+    weight: 35
+    mock_questions: 10
+    objectives: []
+
+  - id: domain-3
+    title: TBD
+    weight: 20
+    mock_questions: 6
+    objectives: []
+
+  - id: domain-4
+    title: TBD
+    weight: 25
+    mock_questions: 8
+    objectives: []
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  # The UI states the current bank size and does not promise that a second mock
+  # draws entirely fresh questions. At the Phase 1 minimum of 80 items a
+  # 30-question mock is a large fraction of the bank, and least-recently-seen
+  # ordering cannot hide that.
+  disclose_bank_size: true
