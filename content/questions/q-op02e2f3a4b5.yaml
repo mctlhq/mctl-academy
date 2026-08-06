@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op02e2f3a4b5
-status: draft
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: What exists immediately after you sign up, before you create anything?
@@ -36,3 +36,6 @@ evidence:
 authored:
   by: agent:claude
   at: "2026-08-06T00:45:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-06T06:17:17Z"

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-df02a4b5c6d7
-status: draft
+status: published
 domain: domain-3
 objective: domain-3/dataset-formats
 stem: >-
@@ -39,3 +39,6 @@ evidence:
 authored:
   by: agent:claude
   at: "2026-08-06T00:45:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-06T06:17:17Z"
