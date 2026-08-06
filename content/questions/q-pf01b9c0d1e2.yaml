@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-pf01b9c0d1e2
+status: draft
+domain: domain-1
+objective: domain-1/openai-compatibility
+stem: >-
+  Latency matters more than token cost for your chat feature. How do you request
+  the Fast flavor of a model?
+options:
+  - id: a
+    text: Set a `flavor` parameter to `fast` in the request body
+    correct: false
+    explanation: >-
+      There is no flavor parameter. The suffix on the model name is the whole
+      mechanism.
+  - id: b
+    text: Deploy a dedicated endpoint configured for low latency
+    correct: false
+    explanation: >-
+      A dedicated endpoint is a different product decision. The Fast flavor is
+      available without one.
+  - id: c
+    text: Request a different base URL reserved for latency-sensitive traffic
+    correct: false
+    explanation: The base URL is unchanged. Only the model name differs.
+  - id: d
+    text: Append `-fast` to the model name in the API request
+    correct: true
+    explanation: >-
+      Flavor selection travels with the model identifier, so no separate parameter
+      or endpoint is involved.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: To use the Fast flavor, append `-fast` to the model name in the
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

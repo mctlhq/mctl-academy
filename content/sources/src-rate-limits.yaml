@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-rate-limits
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md
+title: Rate Limits & Scaling
+retrieved_at: 2026-08-06T00:33:28Z
+sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+objectives:
+  - domain-4/rate-limits
+snapshot:
+  bucket: academy-source-snapshots
+  key: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+status: current

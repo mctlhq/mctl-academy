@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-endpoint-lifecycle
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md
+title: Lifecycle & Readiness Status
+retrieved_at: 2026-08-06T00:33:31Z
+sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+objectives:
+  - domain-4/endpoint-lifecycle
+snapshot:
+  bucket: academy-source-snapshots
+  key: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+status: current

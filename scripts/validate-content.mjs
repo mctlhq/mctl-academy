@@ -211,6 +211,34 @@ for (const { file, data } of questions) {
   }
 }
 
+// Answer-position bias across the whole bank.
+//
+// Caught for real: the first 20 authored questions all had the correct answer
+// in position a. The application shuffles options at attempt time, so this was
+// invisible in the product — but the bank is public, a static course preview
+// renders unshuffled, and a corpus with a degenerate pattern is a sign the
+// authoring process is not varying distractors on purpose.
+//
+// Threshold is deliberately loose: with a small bank, real imbalance is
+// expected, and this should fire on a systematic pattern rather than on noise.
+if (questions.length >= 12) {
+  const positions = new Map();
+  for (const { data } of questions) {
+    const correct = data.options?.find((o) => o.correct);
+    if (correct) positions.set(correct.id, (positions.get(correct.id) ?? 0) + 1);
+  }
+  for (const [id, count] of positions) {
+    const share = count / questions.length;
+    if (share > 0.5) {
+      err(
+        "content/questions",
+        `${Math.round(share * 100)}% of correct answers are in position "${id}" ` +
+          `(${count} of ${questions.length}) — vary the placement`,
+      );
+    }
+  }
+}
+
 const lessons = loadYamlDir("lessons");
 const lessonIds = new Set();
 

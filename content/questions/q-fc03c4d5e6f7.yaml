@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-fc03c4d5e6f7
+status: draft
+domain: domain-2
+objective: domain-2/function-calling
+stem: How is each available tool described to the model?
+options:
+  - id: a
+    text: With an OpenAPI document referenced by URL
+    correct: false
+    explanation: >-
+      Tools are declared inline in the request. No external specification is fetched.
+  - id: b
+    text: With a Python type signature introspected from the callable
+    correct: false
+    explanation: >-
+      Client libraries may help you generate the schema, but what the API receives
+      is the schema, not a language-specific signature.
+  - id: c
+    text: With a JSON Schema giving its name, parameters and data types
+    correct: true
+    explanation: >-
+      The schema is what tells the model how the tool may be invoked, which is
+      why parameter types belong in it rather than in the prompt text.
+  - id: d
+    text: With a natural-language description in the system prompt
+    correct: false
+    explanation: >-
+      Prose in the system prompt can add context, but the tool contract itself
+      is structured and machine-readable.
+evidence:
+  - source_id: src-function-calling
+    excerpt: >-
+      Each tool is described using a JSON Schema that defines its name, input
+      parameters, and expected data types.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

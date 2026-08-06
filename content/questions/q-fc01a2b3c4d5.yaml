@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-fc01a2b3c4d5
+status: draft
+domain: domain-2
+objective: domain-2/function-calling
+stem: >-
+  Your application defines a `get_weather` tool and the model returns a tool call
+  for it. Which component runs the actual weather lookup?
+options:
+  - id: a
+    text: Your application, which then passes the result back to the model
+    correct: true
+    explanation: >-
+      The model only emits an invocation instruction. Executing the function and
+      feeding its output back into the next prompt is the application's responsibility.
+  - id: b
+    text: The model, which executes the function and returns its output directly
+    correct: false
+    explanation: >-
+      The model never executes anything. It proposes a call; running it is explicitly
+      left to your backend or client.
+  - id: c
+    text: The inference endpoint, which proxies the call to the named service
+    correct: false
+    explanation: >-
+      No proxying happens. The endpoint returns tool-call instructions in the
+      response and does not reach out to any external service on your behalf.
+  - id: d
+    text: The tool schema registry, once the tool has been registered
+    correct: false
+    explanation: >-
+      Tool schemas describe how a tool should be invoked. They are declarative
+      and there is no registry component that executes anything.
+evidence:
+  - source_id: src-function-calling
+    excerpt: >-
+      You are responsible for parsing these outputs and executing the corresponding
+      functions on your backend or client side.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

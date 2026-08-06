@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-op02e2f3a4b5
+status: draft
+domain: domain-1
+objective: domain-1/organizations-and-projects
+stem: What exists immediately after you sign up, before you create anything?
+options:
+  - id: a
+    text: Nothing until you create an organization yourself
+    correct: false
+    explanation: >-
+      You can create further organizations later, but the first one is not something
+      you have to set up.
+  - id: b
+    text: A shared default organization common to all new users
+    correct: false
+    explanation: >-
+      The organization created at signup is yours, not a tenancy shared with strangers.
+  - id: c
+    text: A project, with an organization created only when you invite someone
+    correct: false
+    explanation: >-
+      The hierarchy runs organization then project, so the organization cannot
+      appear second.
+  - id: d
+    text: A personal organization, created automatically
+    correct: true
+    explanation: >-
+      Signup provisions an organization for you, so there is always a workspace
+      to create projects in.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      When you sign up for Nebius Token Factory, a personal organization is created
+      automatically.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

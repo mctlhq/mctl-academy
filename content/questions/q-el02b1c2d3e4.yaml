@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-el02b1c2d3e4
+status: draft
+domain: domain-4
+objective: domain-4/endpoint-lifecycle
+stem: >-
+  An endpoint reports readiness "Partially ready". What does that tell you?
+options:
+  - id: a
+    text: It is fully provisioned but has not yet received traffic
+    correct: false
+    explanation: >-
+      Fully provisioned is "Ready". Readiness does not report whether traffic
+      has arrived.
+  - id: b
+    text: It is serving traffic, but below expected capacity
+    correct: true
+    explanation: >-
+      Some replicas are still starting, updating or unavailable, so requests succeed
+      while headroom is reduced.
+  - id: c
+    text: It is not serving traffic and requests will fail
+    correct: false
+    explanation: That is the "Not ready" state. Partially ready still serves.
+  - id: d
+    text: Only some model methods are available
+    correct: false
+    explanation: >-
+      Readiness describes capacity across replicas, not a subset of functionality.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: Endpoint can serve traffic, but below expected capacity.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

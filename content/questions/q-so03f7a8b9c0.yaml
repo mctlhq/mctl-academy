@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-so03f7a8b9c0
+status: draft
+domain: domain-2
+objective: domain-2/structured-output
+stem: >-
+  You already pass a JSON schema in `response_format` but output quality is inconsistent.
+  What does the documentation recommend?
+options:
+  - id: a
+    text: Lower the temperature until output stabilises
+    correct: false
+    explanation: >-
+      Sampling parameters are not the documented remedy here, and they do not
+      address whether the model understood the target shape.
+  - id: b
+    text: Split the schema into several smaller requests
+    correct: false
+    explanation: >-
+      Decomposition is a general engineering tactic, not the guidance given for
+      structured output quality.
+  - id: c
+    text: Switch to arbitrary JSON mode and validate afterwards
+    correct: false
+    explanation: >-
+      That discards the constraint you wanted. The advice is to reinforce the
+      schema, not abandon it.
+  - id: d
+    text: Also state the schema and the JSON instruction in the prompt
+    correct: true
+    explanation: >-
+      Repeating the instruction and schema in the system or user prompt is the
+      documented way to improve quality and consistency.
+evidence:
+  - source_id: src-structured-output
+    excerpt: >-
+      It's always better to provide the instruction to follow JSON output and
+      the schema to your model's system or user prompt
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"
