@@ -48,6 +48,20 @@ export function normalize(text) {
     .trim();
 }
 
+/**
+ * Which statuses must have verified citations.
+ *
+ * Drafts may legitimately cite a source not yet snapshotted — they cannot be
+ * selected by learners, so an unverified draft is not a live claim.
+ *
+ * `needs_review` is enforced: those items were published once, so their
+ * citations must keep verifying while they sit out of selection. Single
+ * definition on purpose — this predicate is consulted both for the
+ * store-unconfigured guard and per item, and the two drifting apart is
+ * precisely how the gate once failed open.
+ */
+export const requiresVerification = (status) => status === "published" || status === "needs_review";
+
 function loadYamlDir(contentDir, dir) {
   const path = join(contentDir, dir);
   if (!existsSync(path)) return [];
@@ -80,13 +94,19 @@ export async function verifyEvidence({ contentDir, store }) {
 
   // Nothing to verify is a legitimate state early in the project's life, but
   // it must not look like a passing verification of real content.
-  const publishable = items.filter((i) => i.data?.status === "published");
+  //
+  // This predicate must stay identical to the per-item one below. When they
+  // disagreed, a repo holding only needs_review items passed with an
+  // unconfigured store — fail-open, and silently, which is the worst shape a
+  // gate failure can take.
+  const enforced = items.filter((i) => requiresVerification(i.data?.status));
 
   if (!store) {
-    if (publishable.length) {
+    if (enforced.length) {
       errors.push(
-        `snapshot store is not configured, but ${publishable.length} item(s) claim published status. ` +
-          "Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY. Refusing to pass unverified content.",
+        `snapshot store is not configured, but ${enforced.length} item(s) require verification ` +
+          "(status published or needs_review). Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID and " +
+          "R2_SECRET_ACCESS_KEY. Refusing to pass unverified content.",
       );
     }
     return { errors, checked, skipped: items.length };
@@ -121,10 +141,7 @@ export async function verifyEvidence({ contentDir, store }) {
 
   for (const { file, data } of items) {
     if (!data?.evidence) continue;
-    // Drafts may legitimately cite a source not yet snapshotted; they cannot
-    // be selected by learners, so an unverified draft is not a live claim.
-    const enforce = data.status === "published" || data.status === "needs_review";
-    if (!enforce) {
+    if (!requiresVerification(data.status)) {
       skipped += data.evidence.length;
       continue;
     }

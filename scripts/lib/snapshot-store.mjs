@@ -90,15 +90,19 @@ export class SnapshotStore {
     if (!res.ok) {
       throw new Error(`snapshot GET ${key} failed: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
     }
-    const text = await res.text();
-    const actual = sha256(Buffer.from(text, "utf8"));
+    // Hash the raw bytes R2 returned, not a decoded-then-re-encoded copy of
+    // them. Decoding first would put a charset round-trip inside the integrity
+    // check, so the check would be over what the decoder produced rather than
+    // over what was actually stored.
+    const bytes = Buffer.from(await res.arrayBuffer());
+    const actual = sha256(bytes);
     if (actual !== key) {
       throw new Error(
         `snapshot ${key} is corrupt: stored bytes hash to ${actual}. ` +
           "The store is content-addressed, so this means the object was overwritten or truncated.",
       );
     }
-    return text;
+    return bytes.toString("utf8");
   }
 
   /** Store a snapshot under its own content hash. Returns the key. */

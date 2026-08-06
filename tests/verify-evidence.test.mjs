@@ -11,7 +11,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 
-import { verifyEvidence, normalize } from "../scripts/verify-evidence.mjs";
+import { verifyEvidence, normalize, requiresVerification } from "../scripts/verify-evidence.mjs";
 
 const sha256 = (s) => createHash("sha256").update(Buffer.from(s, "utf8")).digest("hex");
 
@@ -161,6 +161,23 @@ test("fails closed when the store is unconfigured but content is published", asy
 test("passes with no store when nothing is published", async () => {
   const { errors } = await run({ items: [item({ status: "draft" })], store: null });
   assert.deepEqual(errors, []);
+});
+
+// Regression: the store-unconfigured guard once filtered on `published` alone
+// while per-item enforcement used `published || needs_review`. A repo holding
+// only needs_review items therefore passed with no store at all — fail-open,
+// and silently. Both paths now consult requiresVerification().
+test("fails closed when the store is unconfigured and only needs_review items exist", async () => {
+  const { errors } = await run({ items: [item({ status: "needs_review" })], store: null });
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /require verification/);
+});
+
+test("requiresVerification treats published and needs_review alike, drafts not", () => {
+  assert.equal(requiresVerification("published"), true);
+  assert.equal(requiresVerification("needs_review"), true);
+  assert.equal(requiresVerification("draft"), false);
+  assert.equal(requiresVerification("retired"), false);
 });
 
 test("normalize collapses whitespace without folding case or punctuation", () => {

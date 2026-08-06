@@ -45,14 +45,33 @@ function listSources() {
  * prose without the navigation chrome, so a hash changes when the content
  * changes rather than when the site's header does.
  */
+const FETCH_TIMEOUT_MS = 30_000;
+
 async function fetchSource(url) {
   const host = new URL(url).host;
   if (!ALLOWED_HOSTS.includes(host)) {
     throw new Error(`refusing to capture ${host}: not on the SOURCES.md allowlist`);
   }
-  const res = await fetch(url, { headers: { accept: "text/markdown, text/plain, text/html" } });
-  if (!res.ok) throw new Error(`fetch ${url}: HTTP ${res.status}`);
-  return await res.text();
+  // Bounded on purpose. In --check mode this is the drift job's per-source
+  // call, and one hung upstream response would otherwise pin the weekly run
+  // until the Actions job timeout, delaying the drift signal by up to a week.
+  // An abort surfaces as a fetch error, which check() already classifies as
+  // unreachable rather than drift — the correct treatment.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      headers: { accept: "text/markdown, text/plain, text/html" },
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`fetch ${url}: HTTP ${res.status}`);
+    return await res.text();
+  } catch (e) {
+    if (e.name === "AbortError") throw new Error(`fetch ${url}: timed out after ${FETCH_TIMEOUT_MS}ms`);
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function capture({ url, id, objectives, title }) {
