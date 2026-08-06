@@ -1,0 +1,24 @@
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # No deploy dispatch yet: mctl-academy is not onboarded as a service, so
+      # there is nothing for a release to deploy to. The centralized
+      # release-deploy dispatch (see mctl-docs for the pattern) gets added in
+      # the same change that onboards the service, not before — a dispatch
+      # naming a component that does not exist fails loudly on every release.
