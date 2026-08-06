@@ -212,6 +212,21 @@ test("rejects a host that is not on the allowlist", () => {
   assert.match(output, /allowlist/);
 });
 
+test("accepts the Token Factory docs host", () => {
+  const s = source({ url: "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling" });
+  const { ok, output } = lint({ sources: [s] });
+  assert.equal(ok, true, output);
+});
+
+// Live only once branding.yaml has a populated objective map — before that the
+// check short-circuits, so it went untested until the outline landed.
+test("rejects an objective absent from the branding map", () => {
+  const q = question({ objective: "domain-1/not-a-real-objective" });
+  const { ok, output } = lint({ questions: [q] });
+  assert.equal(ok, false);
+  assert.match(output, /not in branding\.yaml/);
+});
+
 test("rejects a snapshot key that does not match the source hash", () => {
   const s = source({ snapshot: { bucket: "academy-source-snapshots", key: "b".repeat(64) } });
   const { ok, output } = lint({ sources: [s] });

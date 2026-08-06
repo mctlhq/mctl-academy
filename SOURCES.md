@@ -8,9 +8,20 @@ unpublished rather than being covered from general knowledge.
 
 | Source | Scope | Retention | Approved |
 |---|---|---|---|
-| `docs.nebius.com` | Public product documentation | Snapshot to private R2 | 2026-08-06 |
+| `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints, team access | Snapshot to private R2 | 2026-08-06 |
+| `docs.nebius.com` | Public AI Cloud documentation. Secondary: only where an objective genuinely touches infrastructure | Snapshot to private R2 | 2026-08-06 |
 
 That is the complete list at MVP. It is deliberately short.
+
+**Token Factory is the primary source, not AI Cloud.** This is worth stating
+because the obvious guess is wrong: `docs.nebius.com` documents the
+infrastructure cloud — Compute, Storage, VPC, Kubernetes, IAM — while the
+certification targets application developers building on Token Factory
+(inference, retrieval, tool calling, fine-tuning). A course sourced from
+`docs.nebius.com` alone would cover the wrong product.
+
+Both sites publish an `llms.txt` index, so machine reading is invited rather
+than merely tolerated.
 
 ## Explicitly not sources
 
