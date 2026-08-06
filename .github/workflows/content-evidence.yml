@@ -1,0 +1,45 @@
+name: Content evidence
+
+# Verbatim citation verification against the private snapshot store.
+#
+# Split from ci.yml because it needs credentials: GitHub does not expose
+# secrets to fork-triggered workflow runs, so this job cannot work on a fork
+# PR at all. That is exactly why content PRs from forks are not accepted —
+# see CONTRIBUTING.md. Structural validation (ci.yml) still runs everywhere.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    name: Verify citations
+    # Same-repo only. On a fork PR the secrets below would be empty and the
+    # verifier would fail closed — correct, but a permanently red check on a
+    # contribution nobody can fix is just noise. Skip it explicitly instead.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Fails closed by design: if the store is unreachable or a snapshot is
+      # missing, published content does not pass. An unverifiable citation is
+      # treated as a wrong one.
+      - name: Verify citations
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: academy-source-snapshots
+        run: npm run verify:evidence
