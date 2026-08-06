@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ft02c6d7e8f9
-status: draft
+status: published
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
 stem: >-
@@ -40,3 +40,6 @@ evidence:
 authored:
   by: agent:claude
   at: "2026-08-06T00:45:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-06T06:17:17Z"

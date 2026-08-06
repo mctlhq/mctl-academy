@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf01b9c0d1e2
-status: draft
+status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: >-
@@ -35,3 +35,6 @@ evidence:
 authored:
   by: agent:claude
   at: "2026-08-06T00:45:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-06T06:17:17Z"

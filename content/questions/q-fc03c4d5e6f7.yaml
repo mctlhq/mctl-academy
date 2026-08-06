@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc03c4d5e6f7
-status: draft
+status: published
 domain: domain-2
 objective: domain-2/function-calling
 stem: How is each available tool described to the model?
@@ -36,3 +36,6 @@ evidence:
 authored:
   by: agent:claude
   at: "2026-08-06T00:45:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-06T06:17:17Z"

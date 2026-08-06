@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el01a0b1c2d3
-status: draft
+status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: >-
@@ -37,3 +37,6 @@ evidence:
 authored:
   by: agent:claude
   at: "2026-08-06T00:45:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-06T06:17:17Z"
