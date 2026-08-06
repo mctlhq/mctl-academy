@@ -40,8 +40,14 @@ const warnings = [];
 const err = (file, msg) => errors.push(`${file}: ${msg}`);
 const warn = (file, msg) => warnings.push(`${file}: ${msg}`);
 
-/** Hosts content may cite. Mirrors the SOURCES.md allowlist. */
-const ALLOWED_HOSTS = ["docs.nebius.com"];
+/**
+ * Hosts content may cite. Mirrors the SOURCES.md allowlist.
+ *
+ * Token Factory first: it documents the product the course is actually about.
+ * docs.nebius.com is the infrastructure cloud and is secondary — see SOURCES.md
+ * for why that distinction matters.
+ */
+const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
 
 /**
  * Item authors must be agents. CONTENT-POLICY.md separates authorship from

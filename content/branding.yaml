@@ -1,4 +1,4 @@
-# Certification branding and objective map.
+# Certification branding and course outline.
 #
 # This file is the ONLY place certification naming appears. Everything else in
 # the codebase — UI strings, slugs, question metadata — refers to domains by
@@ -30,44 +30,113 @@ disclaimer:
     endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or
     predict any certification exam, and it is not a proctored assessment.
 
-# Objective map.
+# ---------------------------------------------------------------------------
+# Course outline
 #
-# Weights are the published domain proportions and sum to 100. Mock composition
-# is derived from them: 30 questions -> 6 / 10 / 6 / 8.
+# READ THIS BEFORE CHANGING THE MAP.
 #
-# TODO(phase-0): domain `title` and `objectives` are placeholders. Fill them in
-# from the published certification objectives before any question is authored —
-# a question cannot be mapped to an objective that does not exist here yet.
-# Not guessed on purpose: an invented objective map would silently misweight the
-# whole bank.
+# These four domains are **mctl Academy's own course outline**, derived from the
+# public Nebius Token Factory documentation. They are NOT the certification's
+# published exam domains, and must never be presented as such.
+#
+# Why not the official ones: the vendor publishes its domain list and weights
+# only in the certification Exam Guide PDF, which LEGAL.md forbids this project
+# from storing, quoting, or citing. The public certification page renders the
+# domains as an image with no machine-readable text. Rather than transcribe a
+# forbidden source or invent an official-looking structure, the outline below is
+# built from the product documentation the exam covers — which is exactly what a
+# clean-room course is supposed to be.
+#
+# The weights (20/35/20/25) are the study-time allocation this course commits
+# to. Mock composition follows from them: 30 questions -> 6 / 10 / 6 / 8.
+#
+# Anyone editing this map: an objective referenced by a question cannot be
+# removed or renamed without orphaning that question — the lint will catch it.
+# Add objectives freely; retire them deliberately.
+# ---------------------------------------------------------------------------
 domains:
   - id: domain-1
-    title: TBD
+    title: "Platform foundations and API access"
     weight: 20
     mock_questions: 6
-    objectives: []
+    objectives:
+      - id: api-authentication
+        title: "API keys, authentication, and request basics"
+      - id: openai-compatibility
+        title: "OpenAI-compatible API surface and client setup"
+      - id: model-catalog
+        title: "Listing models, model flavors, and deprecation notices"
+      - id: playground
+        title: "Using the UI and playground to compare models"
+      - id: organizations-and-projects
+        title: "Organizations, projects, and how resources are scoped"
 
   - id: domain-2
-    title: TBD
+    title: "Inference and agent integration"
     weight: 35
     mock_questions: 10
-    objectives: []
+    objectives:
+      - id: chat-completions
+        title: "Chat completions: parameters, streaming, and responses"
+      - id: embeddings-and-rerank
+        title: "Embeddings and reranking for retrieval"
+      - id: retrieval-pipelines
+        title: "Composing retrieval-augmented pipelines"
+      - id: function-calling
+        title: "Function calling and tool use"
+      - id: structured-output
+        title: "Structured output and JSON-constrained generation"
+      - id: framework-integrations
+        title: "Third-party framework integrations"
+      - id: agent-sandboxes
+        title: "Sandboxes, MCP, and SDK-driven agent execution"
 
   - id: domain-3
-    title: TBD
+    title: "Data and post-training"
     weight: 20
     mock_questions: 6
-    objectives: []
+    objectives:
+      - id: files-api
+        title: "Uploading, retrieving, and deleting files"
+      - id: datasets
+        title: "Creating and managing datasets"
+      - id: dataset-formats
+        title: "Dataset formats required for fine-tuning"
+      - id: supervised-fine-tuning
+        title: "Running supervised fine-tuning"
+      - id: fine-tuning-jobs
+        title: "Fine-tuning job lifecycle, events, and checkpoints"
+      - id: lora-adapters
+        title: "Working with and merging LoRA adapters"
+      - id: data-lab
+        title: "Data Lab: importing and processing training data"
 
   - id: domain-4
-    title: TBD
+    title: "Production operations"
     weight: 25
     mock_questions: 8
-    objectives: []
+    objectives:
+      - id: dedicated-endpoints
+        title: "Deploying and operating dedicated endpoints"
+      - id: endpoint-lifecycle
+        title: "Endpoint lifecycle and readiness status"
+      - id: capacity-and-scaling
+        title: "Capacity, availability, and service guarantees"
+      - id: rate-limits
+        title: "Rate limits and scaling behaviour"
+      - id: observability
+        title: "Inference observability and integrations"
+      - id: billing-and-consumption
+        title: "Billing, consumption, and cost controls"
+      - id: team-access
+        title: "Groups, invitations, and single sign-on"
 
 mock:
   question_count: 30
   time_limit_minutes: 60
+  # Matches the certification's published public format (60 minutes, 20-30
+  # multiple-choice questions), so practice under the real time pressure.
+  #
   # The UI states the current bank size and does not promise that a second mock
   # draws entirely fresh questions. At the Phase 1 minimum of 80 items a
   # 30-question mock is a large fraction of the bank, and least-recently-seen
