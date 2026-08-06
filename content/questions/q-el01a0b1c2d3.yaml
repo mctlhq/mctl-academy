@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-el01a0b1c2d3
+status: draft
+domain: domain-4
+objective: domain-4/endpoint-lifecycle
+stem: >-
+  Your load balancer must decide whether to route traffic to a dedicated endpoint.
+  Which of the two status types should it read?
+options:
+  - id: a
+    text: Readiness, which reports traffic-serving capability
+    correct: true
+    explanation: >-
+      The two statuses exist precisely so deployment progress and serving capability
+      can be read separately, and routing depends on the latter.
+  - id: b
+    text: Lifecycle, which reports deployment state
+    correct: false
+    explanation: >-
+      An endpoint can be mid-deployment and still serving, so lifecycle alone
+      would withhold traffic from a healthy endpoint.
+  - id: c
+    text: Either, since they always agree
+    correct: false
+    explanation: >-
+      They routinely differ — that divergence is the reason both are published.
+  - id: d
+    text: Both, refusing traffic unless each is in its nominal state
+    correct: false
+    explanation: >-
+      Requiring both would drop traffic during a normal update, when the endpoint
+      is serving perfectly well.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: >-
+      Lifecycle is deployment state. Readiness is traffic-serving capability.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-df01f3a4b5c6
+status: draft
+domain: domain-3
+objective: domain-3/dataset-formats
+stem: >-
+  You are preparing chat-style training data. How should a single training example
+  be structured?
+options:
+  - id: a
+    text: One user turn and one assistant turn per example
+    correct: false
+    explanation: >-
+      Splitting a dialogue into pairs would discard the surrounding context the
+      model is meant to learn from.
+  - id: b
+    text: A prompt string and a completion string
+    correct: false
+    explanation: >-
+      That shape belongs to the instruction or text dataset types, not to conversational
+      data.
+  - id: c
+    text: A nested object keyed by turn index
+    correct: false
+    explanation: Ordering comes from the array itself; no index keys are involved.
+  - id: d
+    text: One conversation expressed as a single `messages` array
+    correct: true
+    explanation: >-
+      The unit of training is the whole conversation, which is why turns are grouped
+      rather than split into separate examples.
+evidence:
+  - source_id: src-dataset-formats
+    excerpt: >-
+      Each training example is a single conversation, represented as one `messages`
+      array.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-so02e6f7a8b9
+status: draft
+domain: domain-2
+objective: domain-2/structured-output
+stem: >-
+  You want valid JSON but do not care about the exact field names. Which `response_format`
+  type fits, and what are you giving up?
+options:
+  - id: a
+    text: '`json_object` — but the output may still be prose'
+    correct: false
+    explanation: >-
+      The mode forces JSON output. What it does not constrain is which fields
+      appear.
+  - id: b
+    text: '`text` with a JSON instruction in the prompt'
+    correct: false
+    explanation: >-
+      Prompting alone provides no guarantee of parseable output, which is the
+      reason the dedicated modes exist.
+  - id: c
+    text: '`json_object` — the model chooses the schema itself'
+    correct: true
+    explanation: >-
+      This mode guarantees the output parses as JSON while leaving its shape to
+      the model, so downstream code cannot rely on specific keys.
+  - id: d
+    text: '`json_schema` — the model chooses the schema itself'
+    correct: false
+    explanation: >-
+      Schema-following mode is the opposite case: you supply the schema and the
+      output conforms to it.
+evidence:
+  - source_id: src-structured-output
+    excerpt: >-
+      Forces arbitrary JSON output, the model will decide on the schema by itself
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

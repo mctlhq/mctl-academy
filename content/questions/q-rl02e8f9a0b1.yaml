@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-rl02e8f9a0b1
+status: draft
+domain: domain-4
+objective: domain-4/rate-limits
+stem: >-
+  You want to back off before hitting a limit rather than react to errors. What
+  does the API give you?
+options:
+  - id: a
+    text: A webhook fired as you approach the cap
+    correct: false
+    explanation: No such notification exists. Headroom is reported inline.
+  - id: b
+    text: Nothing — you must count requests client-side
+    correct: false
+    explanation: >-
+      Counting locally cannot see a limit that moves, which is precisely why the
+      values are returned to you.
+  - id: c
+    text: Remaining-request and remaining-token response headers
+    correct: true
+    explanation: >-
+      Because the headers ride on every response, you can steer on live headroom
+      instead of waiting for a rejection.
+  - id: d
+    text: A quota endpoint you poll on a schedule
+    correct: false
+    explanation: >-
+      Polling a separate endpoint would lag your actual consumption; the data
+      arrives with the responses themselves.
+evidence:
+  - source_id: src-rate-limits
+    excerpt: >-
+      track your consumption against your limits using the `x-ratelimit-remaining-requests`
+      and `x-ratelimit-remaining-tokens` response headers.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

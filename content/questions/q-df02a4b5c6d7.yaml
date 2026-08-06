@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-df02a4b5c6d7
+status: draft
+domain: domain-3
+objective: domain-3/dataset-formats
+stem: >-
+  You want a fine-tuned model to be better at calling your tools. What can a training
+  example include to support that?
+options:
+  - id: a
+    text: A separate tool-schema file referenced by name from the dataset
+    correct: false
+    explanation: >-
+      The definitions travel inside the example itself; there is no external reference
+      mechanism.
+  - id: b
+    text: Nothing — tool use cannot be learned through fine-tuning
+    correct: false
+    explanation: >-
+      Tool-augmented conversations are an explicitly supported dataset shape.
+  - id: c
+    text: >-
+      An optional `tools` field declaring the tools available in that conversation
+    correct: true
+    explanation: >-
+      Training on conversations that carry their tool definitions is what teaches
+      the model the calling behaviour you want at inference time.
+  - id: d
+    text: A list of example API responses appended after the final turn
+    correct: false
+    explanation: >-
+      Tool results appear as messages within the conversation, not as a trailing
+      appendix.
+evidence:
+  - source_id: src-dataset-formats
+    excerpt: >-
+      Each training example can optionally include a `tools` field that defines
+      the tools available in that conversation.
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"

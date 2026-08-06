@@ -220,6 +220,29 @@ test("accepts the Token Factory docs host", () => {
 
 // Live only once branding.yaml has a populated objective map — before that the
 // check short-circuits, so it went untested until the outline landed.
+// Regression: the first 20 authored questions all put the correct answer in
+// position a. Runtime shuffling hid it in the product, so only a corpus-level
+// check catches it.
+test("rejects a bank where one answer position dominates", () => {
+  const questions = Array.from({ length: 12 }, (_, i) =>
+    question({ id: `q-aaaaaaaaaa${i.toString(36)}${i.toString(36)}` }),
+  );
+  const { ok, output } = lint({ questions });
+  assert.equal(ok, false);
+  assert.match(output, /correct answers are in position/);
+});
+
+test("accepts a bank with varied answer positions", () => {
+  const questions = Array.from({ length: 12 }, (_, i) => {
+    const q = question({ id: `q-bbbbbbbbbb${i.toString(36)}${i.toString(36)}` });
+    const target = i % 4;
+    q.options = q.options.map((o, j) => ({ ...o, correct: j === target }));
+    return q;
+  });
+  const { ok, output } = lint({ questions });
+  assert.equal(ok, true, output);
+});
+
 test("rejects an objective absent from the branding map", () => {
   const q = question({ objective: "domain-1/not-a-real-objective" });
   const { ok, output } = lint({ questions: [q] });

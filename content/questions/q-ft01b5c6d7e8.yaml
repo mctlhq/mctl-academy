@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ft01b5c6d7e8
+status: draft
+domain: domain-3
+objective: domain-3/supervised-fine-tuning
+stem: >-
+  A completed fine-tuning job produced several checkpoints. What is a checkpoint?
+options:
+  - id: a
+    text: The final merged model, one per completed job
+    correct: false
+    explanation: >-
+      If there were only ever one per job, listing them and choosing between them
+      would be pointless.
+  - id: b
+    text: >-
+      The model after a certain number of training steps, often one per epoch
+    correct: true
+    explanation: >-
+      Checkpoints capture the model at intervals during training, which is why
+      more than one exists and why you may prefer an earlier one.
+  - id: c
+    text: A snapshot of the training dataset as it was processed
+    correct: false
+    explanation: >-
+      Checkpoints hold model state. The dataset is an input and is not re-snapshotted.
+  - id: d
+    text: A log entry marking a stage transition in the job
+    correct: false
+    explanation: >-
+      Stage transitions surface as job events, which are a separate thing to inspect.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      represents the model after a certain number of training steps (often per
+      epoch).
+authored:
+  by: agent:claude
+  at: "2026-08-06T00:45:00Z"
