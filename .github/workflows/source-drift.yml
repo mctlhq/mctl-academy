@@ -1,0 +1,99 @@
+name: Source drift
+
+# Weekly: re-fetch every allowlisted source and compare hashes. When an
+# upstream document changes, open (or update) an agents:intake issue so the
+# platform's dev-loop can pick it up and a human can re-verify the affected
+# questions.
+#
+# Dedup is this workflow's own job and must not be delegated downstream.
+# Temporal dedups DevLoopWorkflow starts by issue number, so it prevents two
+# workflows for one issue — but a weekly job that opened a NEW issue for the
+# same drifted source every week would get a new number each time, and Temporal
+# would happily start a workflow for each. Hence the deterministic title key
+# below.
+
+on:
+  schedule:
+    # Mondays 06:00 UTC — a drifted doc waits at most a week, and the review it
+    # triggers lands on a weekday rather than a Sunday.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check sources for drift
+        id: check
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          set +e
+          npm run --silent snapshot:capture -- --check | tee drift.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          # 0 = clean, 2 = drift found, 1 = the check itself failed. Only 1 is
+          # a build failure: drift is the expected finding this job exists for,
+          # and an unreachable docs site is a real error worth a red run.
+          case "$code" in
+            0) echo "drifted=false" >> "$GITHUB_OUTPUT" ;;
+            2) echo "drifted=true"  >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::source drift check failed"; exit 1 ;;
+          esac
+
+      - name: Open or update intake issues
+        if: steps.check.outputs.drifted == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          grep '^DRIFTED' drift.txt | while read -r _ id old _ new url; do
+            # Deterministic dedup key. Searching on the exact title is what
+            # keeps a source that stays drifted for a month from accumulating
+            # four identical issues.
+            title="drift: ${id}"
+            existing=$(gh issue list --repo "${{ github.repository }}" \
+              --state open --search "\"${title}\" in:title" \
+              --json number,title \
+              --jq "[.[] | select(.title == \"${title}\")] | .[0].number // empty")
+
+            body="Upstream source changed.
+
+          - source: \`${id}\`
+          - url: ${url}
+          - recorded hash: \`${old}\`
+          - current hash: \`${new}\`
+
+          Questions and lessons citing this source must be re-verified against
+          the new text and moved back to \`published\` only if their evidence
+          excerpts still occur verbatim. Re-capture with:
+
+          \`\`\`
+          npm run snapshot:capture -- ${url} --id ${id} --objective <objective>
+          \`\`\`
+
+          See SOURCES.md and CONTENT-POLICY.md."
+
+            if [ -n "$existing" ]; then
+              gh issue comment "$existing" --repo "${{ github.repository }}" --body "$body"
+              echo "updated existing issue #${existing} for ${id}"
+            else
+              gh issue create --repo "${{ github.repository }}" \
+                --title "$title" --body "$body" --label "agents:intake"
+              echo "opened new issue for ${id}"
+            fi
+          done
