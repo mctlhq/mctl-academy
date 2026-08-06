@@ -31,3 +31,14 @@ jobs:
 
       - name: Content lint tests
         run: npm run test:content
+
+      # Building the preview on every PR keeps the Phase 0 artifact honest:
+      # a renderer that only ever runs locally rots without anyone noticing.
+      - name: Build course preview
+        run: npm run build:preview
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: course-preview
+          path: dist/preview/
+          retention-days: 14

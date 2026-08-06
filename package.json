@@ -16,7 +16,8 @@
     "lint:content": "node scripts/validate-content.mjs",
     "verify:evidence": "node scripts/verify-evidence.mjs",
     "snapshot:capture": "node scripts/capture-source.mjs",
-    "test:content": "node --test 'tests/**/*.test.mjs'"
+    "test:content": "node --test 'tests/**/*.test.mjs'",
+    "build:preview": "node scripts/build-preview.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
