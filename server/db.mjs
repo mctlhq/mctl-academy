@@ -49,6 +49,15 @@ export async function initDb() {
     connectionTimeoutMillis: 5000,
   });
 
+  // pg.Pool emits 'error' when an already-idle client's connection drops
+  // (a DB restart, a network blip). With no listener, Node treats that as an
+  // unhandled exception and crashes the whole process — which would silently
+  // defeat the point of /readyz: a database blip should fail readiness and
+  // let the pod recover, not kill an otherwise-healthy pod outright.
+  pool.on("error", (err) => {
+    console.error("[db] Idle client error:", err.message);
+  });
+
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (

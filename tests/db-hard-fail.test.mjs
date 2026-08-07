@@ -35,7 +35,10 @@ describe("production refuses to boot without a working database", () => {
         DATABASE_URL: "postgresql://nobody:nothing@127.0.0.1:1/does-not-exist",
         PORT: "0",
       },
-      timeout: 5000,
+      // Kept comfortably above the app's own 5000ms connectionTimeoutMillis
+      // so a slow-refusing loopback connection can't race the process's own
+      // graceful error-and-exit against spawnSync's SIGTERM.
+      timeout: 8000,
       encoding: "utf8",
     });
 
