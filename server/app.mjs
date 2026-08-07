@@ -1,7 +1,15 @@
 import { Hono } from "hono";
 import { randomUUID } from "node:crypto";
+import { authRouter } from "./routes/auth.mjs";
+import { initDb } from "./db.mjs";
 
 export const app = new Hono();
+
+// Initialize DB schema asynchronously on start
+initDb().catch((err) => console.error("[db] Init error:", err));
+
+// Mount auth router
+app.route("/api/auth", authRouter);
 
 // In-memory fallback store for question reports
 const reports = [];
