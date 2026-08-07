@@ -44,8 +44,12 @@ jobs:
           retention-days: 14
 
   client:
-    name: Practice mode client build and tests
+    name: Client build and tests
     runs-on: ubuntu-latest
+    # Independent of and non-blocking to the content job: this is code CI
+    # (client/), which the CONTRIBUTING.md review-gate table treats
+    # separately from content lint. A broken client build fails this job
+    # without touching content lint results.
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
@@ -53,23 +57,16 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            client/package-lock.json
+          cache-dependency-path: client/package-lock.json
 
-      - name: Install root dependencies
-        run: npm ci
-
-      - working-directory: client
-        run: npm ci
-
-      # npm's prebuild/pretest hooks regenerate client/src/content-bundle.json
-      # from content/ before either step, so the bundle in this build is
-      # never stale relative to the published question bank.
-      - name: Build client
+      - name: Install client dependencies
         working-directory: client
-        run: npm run build
+        run: npm ci
 
       - name: Client tests
         working-directory: client
-        run: npm test
+        run: npm run test
+
+      - name: Client build
+        working-directory: client
+        run: npm run build

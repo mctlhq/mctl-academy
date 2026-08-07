@@ -1,16 +1,15 @@
-/// <reference types="vitest/config" />
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
-// Practice mode is a standalone, server-free static build: no backend, no
-// database, no auth (see requirements.md "Out of scope"). The content bundle
-// it reads is produced ahead of time by scripts/build-content-bundle.mjs,
-// wired in as prebuild/pretest in package.json.
+// Minimal Vite + React + TypeScript scaffold for the mock exam screen
+// (issue #20). See ../CLAUDE.md and the proposal under
+// platform-gitops/agents-state/mctl-academy/proposals/
+// issue-20-feat-ui-implement-mock-exam-screen-30-qu/ for scope.
 export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
-    setupFiles: ["./src/setup-tests.ts"],
-    globals: false,
+    globals: true,
+    setupFiles: ["./src/test-setup.ts"],
   },
 });
