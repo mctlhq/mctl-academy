@@ -25,6 +25,7 @@ RUN bun install --production --frozen-lockfile
 
 COPY server ./server
 COPY content ./content
+COPY migrations ./migrations
 COPY --from=builder /app/client/dist ./client/dist
 
 EXPOSE 8080
