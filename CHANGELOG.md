@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.17](https://github.com/mctlhq/mctl-academy/compare/0.1.16...0.1.17) (2026-08-07)
+
+
+### Features
+
+* **agents:** issue-43-feat-ui-implement-learner-progress-dashb ([fe33f1a](https://github.com/mctlhq/mctl-academy/commit/fe33f1a02d562d1a1d997628cb49e8f5a41dc555))
+
+
+### Bug Fixes
+
+* **ui:** record mock exam submissions in the learner progress store ([05b5412](https://github.com/mctlhq/mctl-academy/commit/05b54126b9a0194616f27828315c29ef6c159ea7))
+
 ## [0.1.16](https://github.com/mctlhq/mctl-academy/compare/0.1.15...0.1.16) (2026-08-07)
 
 
