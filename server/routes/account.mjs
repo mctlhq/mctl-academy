@@ -15,8 +15,8 @@ export const accountRouter = new Hono();
  *
  * Deleting the "user" row directly is safe and sufficient: session and
  * account both have ON DELETE CASCADE to it (better-auth's own schema), and
- * attempts.user_id / question_reports.reporter_user_id cascade or null out
- * per the FKs added in migrations/1754607600000_better-auth-schema.mjs.
+ * attempts.user_id / question_reports.reporter_user_id both cascade too, per
+ * the FKs added in migrations/1754607600000_better-auth-schema.mjs.
  */
 accountRouter.delete("/", requireSameOrigin, async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
