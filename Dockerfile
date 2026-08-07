@@ -5,11 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY client/package*.json ./client/
-RUN cd client && npm ci
-
 COPY . .
-RUN cd client && npm run build
+RUN cd client && npm install --include=optional && npm run build
 
 FROM node:22-alpine AS runner
 
