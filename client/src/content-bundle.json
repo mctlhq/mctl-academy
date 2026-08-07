@@ -1,0 +1,642 @@
+[
+  {
+    "id": "q-df01f3a4b5c6",
+    "domain": "domain-3",
+    "objective": "domain-3/dataset-formats",
+    "stem": "You are preparing chat-style training data. How should a single training example be structured?",
+    "options": [
+      {
+        "id": "a",
+        "text": "One user turn and one assistant turn per example",
+        "correct": false,
+        "explanation": "Splitting a dialogue into pairs would discard the surrounding context the model is meant to learn from."
+      },
+      {
+        "id": "b",
+        "text": "A prompt string and a completion string",
+        "correct": false,
+        "explanation": "That shape belongs to the instruction or text dataset types, not to conversational data."
+      },
+      {
+        "id": "c",
+        "text": "A nested object keyed by turn index",
+        "correct": false,
+        "explanation": "Ordering comes from the array itself; no index keys are involved."
+      },
+      {
+        "id": "d",
+        "text": "One conversation expressed as a single `messages` array",
+        "correct": true,
+        "explanation": "The unit of training is the whole conversation, which is why turns are grouped rather than split into separate examples."
+      }
+    ]
+  },
+  {
+    "id": "q-df02a4b5c6d7",
+    "domain": "domain-3",
+    "objective": "domain-3/dataset-formats",
+    "stem": "You want a fine-tuned model to be better at calling your tools. What can a training example include to support that?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A separate tool-schema file referenced by name from the dataset",
+        "correct": false,
+        "explanation": "The definitions travel inside the example itself; there is no external reference mechanism."
+      },
+      {
+        "id": "b",
+        "text": "Nothing — tool use cannot be learned through fine-tuning",
+        "correct": false,
+        "explanation": "Tool-augmented conversations are an explicitly supported dataset shape."
+      },
+      {
+        "id": "c",
+        "text": "An optional `tools` field declaring the tools available in that conversation",
+        "correct": true,
+        "explanation": "Training on conversations that carry their tool definitions is what teaches the model the calling behaviour you want at inference time."
+      },
+      {
+        "id": "d",
+        "text": "A list of example API responses appended after the final turn",
+        "correct": false,
+        "explanation": "Tool results appear as messages within the conversation, not as a trailing appendix."
+      }
+    ]
+  },
+  {
+    "id": "q-el01a0b1c2d3",
+    "domain": "domain-4",
+    "objective": "domain-4/endpoint-lifecycle",
+    "stem": "Your load balancer must decide whether to route traffic to a dedicated endpoint. Which of the two status types should it read?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Readiness, which reports traffic-serving capability",
+        "correct": true,
+        "explanation": "The two statuses exist precisely so deployment progress and serving capability can be read separately, and routing depends on the latter."
+      },
+      {
+        "id": "b",
+        "text": "Lifecycle, which reports deployment state",
+        "correct": false,
+        "explanation": "An endpoint can be mid-deployment and still serving, so lifecycle alone would withhold traffic from a healthy endpoint."
+      },
+      {
+        "id": "c",
+        "text": "Either, since they always agree",
+        "correct": false,
+        "explanation": "They routinely differ — that divergence is the reason both are published."
+      },
+      {
+        "id": "d",
+        "text": "Both, refusing traffic unless each is in its nominal state",
+        "correct": false,
+        "explanation": "Requiring both would drop traffic during a normal update, when the endpoint is serving perfectly well."
+      }
+    ]
+  },
+  {
+    "id": "q-el02b1c2d3e4",
+    "domain": "domain-4",
+    "objective": "domain-4/endpoint-lifecycle",
+    "stem": "An endpoint reports readiness \"Partially ready\". What does that tell you?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is fully provisioned but has not yet received traffic",
+        "correct": false,
+        "explanation": "Fully provisioned is \"Ready\". Readiness does not report whether traffic has arrived."
+      },
+      {
+        "id": "b",
+        "text": "It is serving traffic, but below expected capacity",
+        "correct": true,
+        "explanation": "Some replicas are still starting, updating or unavailable, so requests succeed while headroom is reduced."
+      },
+      {
+        "id": "c",
+        "text": "It is not serving traffic and requests will fail",
+        "correct": false,
+        "explanation": "That is the \"Not ready\" state. Partially ready still serves."
+      },
+      {
+        "id": "d",
+        "text": "Only some model methods are available",
+        "correct": false,
+        "explanation": "Readiness describes capacity across replicas, not a subset of functionality."
+      }
+    ]
+  },
+  {
+    "id": "q-fc01a2b3c4d5",
+    "domain": "domain-2",
+    "objective": "domain-2/function-calling",
+    "stem": "Your application defines a `get_weather` tool and the model returns a tool call for it. Which component runs the actual weather lookup?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Your application, which then passes the result back to the model",
+        "correct": true,
+        "explanation": "The model only emits an invocation instruction. Executing the function and feeding its output back into the next prompt is the application's responsibility."
+      },
+      {
+        "id": "b",
+        "text": "The model, which executes the function and returns its output directly",
+        "correct": false,
+        "explanation": "The model never executes anything. It proposes a call; running it is explicitly left to your backend or client."
+      },
+      {
+        "id": "c",
+        "text": "The inference endpoint, which proxies the call to the named service",
+        "correct": false,
+        "explanation": "No proxying happens. The endpoint returns tool-call instructions in the response and does not reach out to any external service on your behalf."
+      },
+      {
+        "id": "d",
+        "text": "The tool schema registry, once the tool has been registered",
+        "correct": false,
+        "explanation": "Tool schemas describe how a tool should be invoked. They are declarative and there is no registry component that executes anything."
+      }
+    ]
+  },
+  {
+    "id": "q-fc02b3c4d5e6",
+    "domain": "domain-2",
+    "objective": "domain-2/function-calling",
+    "stem": "You send a request with several tools defined but do not set `tool_choice`. How does the model decide which tool to use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It picks the first tool in the array",
+        "correct": false,
+        "explanation": "Selection is driven by the conversation context, not by the position of a tool in the list."
+      },
+      {
+        "id": "b",
+        "text": "It selects the most appropriate tool from the prompt context",
+        "correct": true,
+        "explanation": "Automatic selection based on context is the default, which is why most use cases never need to set the parameter at all."
+      },
+      {
+        "id": "c",
+        "text": "It calls every defined tool once and merges the results",
+        "correct": false,
+        "explanation": "Nothing fans a request out across all tools. The model proposes calls it judges relevant, and often none at all."
+      },
+      {
+        "id": "d",
+        "text": "It refuses to call any tool until one is named explicitly",
+        "correct": false,
+        "explanation": "Naming a tool explicitly is the override, not the precondition. Without it the model still chooses freely."
+      }
+    ]
+  },
+  {
+    "id": "q-fc03c4d5e6f7",
+    "domain": "domain-2",
+    "objective": "domain-2/function-calling",
+    "stem": "How is each available tool described to the model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "With an OpenAPI document referenced by URL",
+        "correct": false,
+        "explanation": "Tools are declared inline in the request. No external specification is fetched."
+      },
+      {
+        "id": "b",
+        "text": "With a Python type signature introspected from the callable",
+        "correct": false,
+        "explanation": "Client libraries may help you generate the schema, but what the API receives is the schema, not a language-specific signature."
+      },
+      {
+        "id": "c",
+        "text": "With a JSON Schema giving its name, parameters and data types",
+        "correct": true,
+        "explanation": "The schema is what tells the model how the tool may be invoked, which is why parameter types belong in it rather than in the prompt text."
+      },
+      {
+        "id": "d",
+        "text": "With a natural-language description in the system prompt",
+        "correct": false,
+        "explanation": "Prose in the system prompt can add context, but the tool contract itself is structured and machine-readable."
+      }
+    ]
+  },
+  {
+    "id": "q-fc04a8b9c0d1",
+    "domain": "domain-2",
+    "objective": "domain-2/function-calling",
+    "stem": "A workflow must always call `read_file` first, regardless of what the user asked. You set `tool_choice` to that function explicitly. What is the effect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The model prefers it but may pick another tool if context suggests one",
+        "correct": false,
+        "explanation": "That describes automatic selection. An explicit choice is not a hint."
+      },
+      {
+        "id": "b",
+        "text": "The model calls it only if the user request mentions a file",
+        "correct": false,
+        "explanation": "Context ceases to matter once a specific function is named."
+      },
+      {
+        "id": "c",
+        "text": "The request fails if another tool would have scored higher",
+        "correct": false,
+        "explanation": "There is no scoring conflict to fail on; the named function is simply the one that gets called."
+      },
+      {
+        "id": "d",
+        "text": "The model calls it regardless of context, overriding its own selection",
+        "correct": true,
+        "explanation": "An explicit choice replaces the model's judgement entirely, which is what makes it suitable for a deterministic first step."
+      }
+    ]
+  },
+  {
+    "id": "q-ft01b5c6d7e8",
+    "domain": "domain-3",
+    "objective": "domain-3/supervised-fine-tuning",
+    "stem": "A completed fine-tuning job produced several checkpoints. What is a checkpoint?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The final merged model, one per completed job",
+        "correct": false,
+        "explanation": "If there were only ever one per job, listing them and choosing between them would be pointless."
+      },
+      {
+        "id": "b",
+        "text": "The model after a certain number of training steps, often one per epoch",
+        "correct": true,
+        "explanation": "Checkpoints capture the model at intervals during training, which is why more than one exists and why you may prefer an earlier one."
+      },
+      {
+        "id": "c",
+        "text": "A snapshot of the training dataset as it was processed",
+        "correct": false,
+        "explanation": "Checkpoints hold model state. The dataset is an input and is not re-snapshotted."
+      },
+      {
+        "id": "d",
+        "text": "A log entry marking a stage transition in the job",
+        "correct": false,
+        "explanation": "Stage transitions surface as job events, which are a separate thing to inspect."
+      }
+    ]
+  },
+  {
+    "id": "q-ft02c6d7e8f9",
+    "domain": "domain-3",
+    "objective": "domain-3/supervised-fine-tuning",
+    "stem": "A fine-tuning job is running and you want to know whether the dataset was accepted and how training is progressing. What should you inspect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The uploaded file's metadata, which records a validation verdict",
+        "correct": false,
+        "explanation": "File metadata describes the upload. The job's view of processing appears in its events."
+      },
+      {
+        "id": "b",
+        "text": "The dataset query template, which reports parse errors",
+        "correct": false,
+        "explanation": "Query templates concern reading dataset content, not monitoring a training run."
+      },
+      {
+        "id": "c",
+        "text": "Job events, which cover file validation, dataset processing and progress",
+        "correct": true,
+        "explanation": "Events are the running narrative of a job, which is what makes them the right place to look while it is still in flight."
+      },
+      {
+        "id": "d",
+        "text": "The checkpoint list, which grows as validation succeeds",
+        "correct": false,
+        "explanation": "Checkpoints tell you what was produced, not whether the input was accepted or where training has got to."
+      }
+    ]
+  },
+  {
+    "id": "q-op01d1e2f3a4",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "Two teams must not see each other's datasets or endpoints. Which level of the resource model isolates them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A project, since resources live inside it and inherit its access settings",
+        "correct": true,
+        "explanation": "Because resources take their access from the enclosing project, giving each team its own project is what produces the isolation."
+      },
+      {
+        "id": "b",
+        "text": "The organization, since it is the top of the hierarchy",
+        "correct": false,
+        "explanation": "The organization is the shared container above projects, so placing both teams in one does not separate them."
+      },
+      {
+        "id": "c",
+        "text": "The API key, since each key is scoped to a single resource",
+        "correct": false,
+        "explanation": "Keys are issued within a project. They express access, but the project is what bounds it."
+      },
+      {
+        "id": "d",
+        "text": "An organization group, since groups own resources directly",
+        "correct": false,
+        "explanation": "Groups configure identity and access for people. Resources belong to projects, not to groups."
+      }
+    ]
+  },
+  {
+    "id": "q-op02e2f3a4b5",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "What exists immediately after you sign up, before you create anything?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing until you create an organization yourself",
+        "correct": false,
+        "explanation": "You can create further organizations later, but the first one is not something you have to set up."
+      },
+      {
+        "id": "b",
+        "text": "A shared default organization common to all new users",
+        "correct": false,
+        "explanation": "The organization created at signup is yours, not a tenancy shared with strangers."
+      },
+      {
+        "id": "c",
+        "text": "A project, with an organization created only when you invite someone",
+        "correct": false,
+        "explanation": "The hierarchy runs organization then project, so the organization cannot appear second."
+      },
+      {
+        "id": "d",
+        "text": "A personal organization, created automatically",
+        "correct": true,
+        "explanation": "Signup provisions an organization for you, so there is always a workspace to create projects in."
+      }
+    ]
+  },
+  {
+    "id": "q-pf01b9c0d1e2",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "Latency matters more than token cost for your chat feature. How do you request the Fast flavor of a model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set a `flavor` parameter to `fast` in the request body",
+        "correct": false,
+        "explanation": "There is no flavor parameter. The suffix on the model name is the whole mechanism."
+      },
+      {
+        "id": "b",
+        "text": "Deploy a dedicated endpoint configured for low latency",
+        "correct": false,
+        "explanation": "A dedicated endpoint is a different product decision. The Fast flavor is available without one."
+      },
+      {
+        "id": "c",
+        "text": "Request a different base URL reserved for latency-sensitive traffic",
+        "correct": false,
+        "explanation": "The base URL is unchanged. Only the model name differs."
+      },
+      {
+        "id": "d",
+        "text": "Append `-fast` to the model name in the API request",
+        "correct": true,
+        "explanation": "Flavor selection travels with the model identifier, so no separate parameter or endpoint is involved."
+      }
+    ]
+  },
+  {
+    "id": "q-pf02c0d1e2f3",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "A colleague argues you should not use the Fast flavor because it will change what the model answers. Are they right?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes — speculative decoding trades some accuracy for speed",
+        "correct": false,
+        "explanation": "Speculative decoding is a latency optimization that preserves the output; it does not degrade quality."
+      },
+      {
+        "id": "b",
+        "text": "Only for vision models, where the flavors use different weights",
+        "correct": false,
+        "explanation": "Flavors do not swap weights for any modality. The model is the same."
+      },
+      {
+        "id": "c",
+        "text": "No — outputs are identical; only pricing, latency and optimizations differ",
+        "correct": true,
+        "explanation": "Flavors are an infrastructure choice. Since outputs match, the decision is purely about cost and responsiveness."
+      },
+      {
+        "id": "d",
+        "text": "Yes — smaller batch sizes change the sampling distribution",
+        "correct": false,
+        "explanation": "Batch size affects throughput and latency, not the content of the response."
+      }
+    ]
+  },
+  {
+    "id": "q-rl01d7e8f9a0",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "Your traffic has grown steadily for weeks and you have not asked for a quota increase. What happens to your rate limit?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is recalculated monthly from your average consumption",
+        "correct": false,
+        "explanation": "Evaluation happens on a far shorter cycle than a month, which is what lets the limit track a growing workload."
+      },
+      {
+        "id": "b",
+        "text": "It rises on its own as you consistently run close to the current cap",
+        "correct": true,
+        "explanation": "Limits are dynamic, so sustained usage near the ceiling is itself the signal that raises it — no ticket required."
+      },
+      {
+        "id": "c",
+        "text": "It stays fixed until you request an increase",
+        "correct": false,
+        "explanation": "A static cap is exactly what this system replaces. Requests are only needed beyond the hard ceiling."
+      },
+      {
+        "id": "d",
+        "text": "It rises only after you upgrade to the Enterprise tier",
+        "correct": false,
+        "explanation": "Enterprise removes the soft caps, but growth within them happens automatically first."
+      }
+    ]
+  },
+  {
+    "id": "q-rl02e8f9a0b1",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "You want to back off before hitting a limit rather than react to errors. What does the API give you?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A webhook fired as you approach the cap",
+        "correct": false,
+        "explanation": "No such notification exists. Headroom is reported inline."
+      },
+      {
+        "id": "b",
+        "text": "Nothing — you must count requests client-side",
+        "correct": false,
+        "explanation": "Counting locally cannot see a limit that moves, which is precisely why the values are returned to you."
+      },
+      {
+        "id": "c",
+        "text": "Remaining-request and remaining-token response headers",
+        "correct": true,
+        "explanation": "Because the headers ride on every response, you can steer on live headroom instead of waiting for a rejection."
+      },
+      {
+        "id": "d",
+        "text": "A quota endpoint you poll on a schedule",
+        "correct": false,
+        "explanation": "Polling a separate endpoint would lag your actual consumption; the data arrives with the responses themselves."
+      }
+    ]
+  },
+  {
+    "id": "q-rl03f9a0b1c2",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "A request that exceeded your rate limit succeeded anyway, carrying an over-limit response header. Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The limit had already scaled up in the current window",
+        "correct": false,
+        "explanation": "Had the limit risen, the request would not have been over it, and no over-limit header would appear."
+      },
+      {
+        "id": "b",
+        "text": "Header-only mode was enabled, so limits are advisory",
+        "correct": false,
+        "explanation": "There is no advisory mode. Limits are enforced; this is an exception made when capacity allows."
+      },
+      {
+        "id": "c",
+        "text": "The request was queued and retried automatically after the window reset",
+        "correct": false,
+        "explanation": "Nothing is held and replayed. It was processed at the time, just with lower priority."
+      },
+      {
+        "id": "d",
+        "text": "Spare capacity let it run at lower priority without affecting others",
+        "correct": true,
+        "explanation": "Over-limit processing is opportunistic, so it depends on capacity that happens to be free rather than on anything about your request."
+      }
+    ]
+  },
+  {
+    "id": "q-so01d5e6f7a8",
+    "domain": "domain-2",
+    "objective": "domain-2/structured-output",
+    "stem": "You need a model to return data your code can parse without a post-processing step. Which request parameter controls this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`output_schema`",
+        "correct": false,
+        "explanation": "No such parameter exists. A schema is supplied inside `response_format`, not as a sibling of it."
+      },
+      {
+        "id": "b",
+        "text": "`content_type`",
+        "correct": false,
+        "explanation": "Content type belongs to HTTP headers and describes the transport, not the shape of the generated content."
+      },
+      {
+        "id": "c",
+        "text": "`strict_mode`",
+        "correct": false,
+        "explanation": "Strictness is expressed by choosing the schema-following type, not by a separate boolean parameter."
+      },
+      {
+        "id": "d",
+        "text": "`response_format`",
+        "correct": true,
+        "explanation": "This is the parameter that switches a model from prose to JSON, and its type field selects which of the two JSON modes applies."
+      }
+    ]
+  },
+  {
+    "id": "q-so02e6f7a8b9",
+    "domain": "domain-2",
+    "objective": "domain-2/structured-output",
+    "stem": "You want valid JSON but do not care about the exact field names. Which `response_format` type fits, and what are you giving up?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`json_object` — but the output may still be prose",
+        "correct": false,
+        "explanation": "The mode forces JSON output. What it does not constrain is which fields appear."
+      },
+      {
+        "id": "b",
+        "text": "`text` with a JSON instruction in the prompt",
+        "correct": false,
+        "explanation": "Prompting alone provides no guarantee of parseable output, which is the reason the dedicated modes exist."
+      },
+      {
+        "id": "c",
+        "text": "`json_object` — the model chooses the schema itself",
+        "correct": true,
+        "explanation": "This mode guarantees the output parses as JSON while leaving its shape to the model, so downstream code cannot rely on specific keys."
+      },
+      {
+        "id": "d",
+        "text": "`json_schema` — the model chooses the schema itself",
+        "correct": false,
+        "explanation": "Schema-following mode is the opposite case: you supply the schema and the output conforms to it."
+      }
+    ]
+  },
+  {
+    "id": "q-so03f7a8b9c0",
+    "domain": "domain-2",
+    "objective": "domain-2/structured-output",
+    "stem": "You already pass a JSON schema in `response_format` but output quality is inconsistent. What does the documentation recommend?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lower the temperature until output stabilises",
+        "correct": false,
+        "explanation": "Sampling parameters are not the documented remedy here, and they do not address whether the model understood the target shape."
+      },
+      {
+        "id": "b",
+        "text": "Split the schema into several smaller requests",
+        "correct": false,
+        "explanation": "Decomposition is a general engineering tactic, not the guidance given for structured output quality."
+      },
+      {
+        "id": "c",
+        "text": "Switch to arbitrary JSON mode and validate afterwards",
+        "correct": false,
+        "explanation": "That discards the constraint you wanted. The advice is to reinforce the schema, not abandon it."
+      },
+      {
+        "id": "d",
+        "text": "Also state the schema and the JSON instruction in the prompt",
+        "correct": true,
+        "explanation": "Repeating the instruction and schema in the system or user prompt is the documented way to improve quality and consistency."
+      }
+    ]
+  }
+]
