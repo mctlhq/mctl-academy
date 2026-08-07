@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.16](https://github.com/mctlhq/mctl-academy/compare/0.1.15...0.1.16) (2026-08-07)
+
+
+### Features
+
+* **auth:** implement GitHub OAuth authentication and PostgreSQL schema for user progress ([a298f0a](https://github.com/mctlhq/mctl-academy/commit/a298f0a9ddc9a3451a98e25e7642db4e96815e81))
+* **auth:** implement GitHub OAuth authentication and PostgreSQL schema for user progress ([abeeccd](https://github.com/mctlhq/mctl-academy/commit/abeeccd5f88e58e6ad40d5d784b82bbe5b382013))
+
 ## [0.1.15](https://github.com/mctlhq/mctl-academy/compare/0.1.14...0.1.15) (2026-08-07)
 
 
