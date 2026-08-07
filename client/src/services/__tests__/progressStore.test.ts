@@ -6,6 +6,7 @@ import {
   getStoredAttempts,
   recordAttempt,
   resetMemoryFallback,
+  saveRawAttempts,
   setSyncEnabled,
   syncFromServer,
 } from "../progressStore";
@@ -118,16 +119,10 @@ describe("progressStore service", () => {
   it("syncFromServer merges local and server attempts, keeping whichever attemptedAt is newer", async () => {
     const older = "2024-01-01T00:00:00.000Z";
     const newer = "2024-06-01T00:00:00.000Z";
-
-    // Local-newer-than-server case: q-local wins with the local record.
-    recordAttempt("q-local", "domain-1", true);
-    const localAttempts = getStoredAttempts();
-    localAttempts[0].attemptedAt = newer;
-
-    // Server-newer-than-local case: q-server-newer should be overwritten by
-    // the server's record. Seed a stale local entry for it.
-    localAttempts.push({ questionId: "q-server-newer", domain: "domain-2", correct: false, attemptedAt: older });
-    localStorage.setItem("mctl_academy_progress_v1", JSON.stringify(localAttempts));
+    saveRawAttempts([
+      { questionId: "q-local", domain: "domain-1", correct: true, attemptedAt: newer },
+      { questionId: "q-server-newer", domain: "domain-2", correct: false, attemptedAt: older },
+    ]);
 
     const fetchSpy = vi.fn().mockResolvedValue({
       ok: true,
