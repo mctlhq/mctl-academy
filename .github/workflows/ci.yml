@@ -68,6 +68,9 @@ jobs:
         working-directory: client
         run: npm ci
 
+      - name: Server tests
+        run: npm run test:server
+
       - name: Client tests
         working-directory: client
         run: npm run test

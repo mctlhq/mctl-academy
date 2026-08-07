@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { usePracticeSession, type BundleQuestion } from "./usePracticeSession";
 import { renderInlineMarkdown } from "./renderInlineMarkdown";
+import { ReportModal } from "../components/ReportModal";
 import "./PracticeScreen.css";
 
 interface PracticeScreenProps {
@@ -10,6 +12,7 @@ interface PracticeScreenProps {
 export function PracticeScreen({ bundle }: PracticeScreenProps) {
   const { current, index, total, revealed, score, attempted, selectOption, next } =
     usePracticeSession(bundle);
+  const [isReporting, setIsReporting] = useState(false);
 
   if (total === 0) {
     return (
@@ -37,9 +40,20 @@ export function PracticeScreen({ bundle }: PracticeScreenProps) {
 
   return (
     <main className="practice">
-      <p className="progress">
-        Question {index + 1} of {total}
-      </p>
+      <div className="practice-header">
+        <p className="progress">
+          Question {index + 1} of {total}
+        </p>
+        <button
+          type="button"
+          className="btn-report"
+          onClick={() => setIsReporting(true)}
+          title="Report an issue with this question"
+        >
+          Report issue
+        </button>
+      </div>
+
       {/* Restricted inline Markdown only: escaped text plus backtick code
           spans, matching build-preview.mjs's contract for the same field. */}
       <h1
@@ -73,6 +87,14 @@ export function PracticeScreen({ bundle }: PracticeScreenProps) {
       <button type="button" className="next" onClick={next}>
         {index + 1 === total ? "Finish" : "Next question"}
       </button>
+
+      {isReporting && (
+        <ReportModal
+          questionId={current.id}
+          onClose={() => setIsReporting(false)}
+        />
+      )}
     </main>
   );
 }
+

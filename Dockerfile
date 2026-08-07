@@ -20,14 +20,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 
-RUN npm install -g sirv-cli
+COPY package*.json ./
+RUN npm ci --omit=dev
 
+COPY server ./server
 COPY --from=builder /app/client/dist ./client/dist
 
 EXPOSE 8080
 
 USER node
 
-CMD ["sirv", "client/dist", "--port", "8080", "--host", "0.0.0.0", "--single"]
-
-
+CMD ["node", "server/index.mjs"]

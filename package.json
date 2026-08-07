@@ -17,11 +17,15 @@
     "verify:evidence": "node scripts/verify-evidence.mjs",
     "snapshot:capture": "node scripts/capture-source.mjs",
     "test:content": "node --test 'tests/**/*.test.mjs'",
+    "test:server": "node --test 'tests/server.test.mjs'",
+    "start": "node server/index.mjs",
     "build:preview": "node scripts/build-preview.mjs"
   },
   "dependencies": {
+    "@hono/node-server": "^2.1.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "hono": "^4.13.1",
     "yaml": "^2.6.1"
   }
 }
