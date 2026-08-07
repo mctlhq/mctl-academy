@@ -60,6 +60,11 @@ app.get("/readyz", async (c) => {
     const { mode } = await checkDbReady();
     return c.json({ status: "ok", service: "mctl-academy", db: mode });
   } catch (err) {
+    // Logged, not just returned: a readiness flap in production needs a
+    // server-side trail to correlate against, since the 503 response body
+    // alone doesn't say whether it was a timeout, an auth failure, or
+    // something else.
+    console.error("[readyz] Database check failed:", err.message);
     return c.json({ status: "error", service: "mctl-academy", error: "database unreachable" }, 503);
   }
 });
