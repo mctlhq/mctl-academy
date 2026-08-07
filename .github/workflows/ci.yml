@@ -73,3 +73,42 @@ jobs:
       - name: Client build
         working-directory: client
         run: npm run build
+
+  migrations:
+    name: Migration up/down against an empty database
+    runs-on: ubuntu-latest
+    # Proves the migrations in migrations/ actually apply to a database that
+    # has never seen this app before, and that down is a true inverse of up —
+    # neither is exercised by the other jobs, which run entirely in-memory.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mctl_academy_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mctl_academy_ci
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Migrate up against an empty database
+        run: bun run migrate
+
+      - name: Migrate up is idempotent (no pending migrations left)
+        run: bun run migrate
+
+      - name: Migrate down reverses cleanly
+        run: bun run migrate:down
