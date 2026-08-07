@@ -26,8 +26,8 @@ correction to a question, open an issue — that path works and it gets fixed.
 
 ## Clean-room rules
 
-If you contribute anything under `content/`, read
-[`CONTENT-POLICY.md`](CONTENT-POLICY.md) first. It is binding.
+Before you open a content pull request, read
+[`CONTENT-POLICY.md`](CONTENT-POLICY.md). It is binding.
 
 The short version: content is written from allowlisted public documentation
 only. Nothing may originate from anyone's memory of a real exam. Every content
