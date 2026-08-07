@@ -26,8 +26,10 @@ export interface OverallProgress {
 }
 
 const STORAGE_KEY = "mctl_academy_progress_v1";
+const ATTEMPTS_ENDPOINT = "/api/attempts";
 
 let memoryFallback: Record<string, string> = {};
+let syncEnabled = false;
 
 function getItem(key: string): string | null {
   if (typeof localStorage !== "undefined") {
@@ -76,6 +78,28 @@ export function getStoredAttempts(): QuestionAttempt[] {
   }
 }
 
+/**
+ * Enables or disables best-effort server sync for signed-in learners. Off by
+ * default: with sync disabled, recordAttempt and syncFromServer behave
+ * exactly as they did before this module knew about a server, making no
+ * network calls at all.
+ */
+export function setSyncEnabled(enabled: boolean): void {
+  syncEnabled = enabled;
+}
+
+function postAttemptToServer(questionId: string, domain: string, correct: boolean): void {
+  fetch(ATTEMPTS_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
+    body: JSON.stringify({ questionId, domain, correct }),
+  }).catch(() => {
+    // Best-effort only: the local write already succeeded, so a sync
+    // failure (offline, expired session, 5xx) is never surfaced.
+  });
+}
+
 export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
   try {
     const attempts = getStoredAttempts();
@@ -89,6 +113,59 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
     setItem(STORAGE_KEY, JSON.stringify(updated));
   } catch {
     // Ignore storage errors
+  }
+
+  if (syncEnabled) {
+    postAttemptToServer(questionId, domain, correct);
+  }
+}
+
+/**
+ * Pulls the signed-in learner's server-recorded attempts (a single
+ * GET /api/attempts call) and merges them into local storage, keeping
+ * whichever of the local or server record is newer per questionId. Any
+ * local attempt whose questionId the server did not already have is then
+ * backfilled with an individual POST /api/attempts call, so history built
+ * up anonymously survives a first sign-in. A no-op while sync is disabled,
+ * and any network failure leaves local data untouched.
+ */
+export async function syncFromServer(): Promise<void> {
+  if (!syncEnabled) return;
+
+  let serverAttempts: QuestionAttempt[];
+  try {
+    const res = await fetch(ATTEMPTS_ENDPOINT, { credentials: "same-origin" });
+    if (!res.ok) return;
+    const data = await res.json();
+    serverAttempts = Array.isArray(data?.attempts) ? data.attempts : [];
+  } catch {
+    return;
+  }
+
+  const local = getStoredAttempts();
+  const serverIds = new Set(serverAttempts.map((a) => a.questionId));
+
+  const merged = new Map<string, QuestionAttempt>();
+  for (const a of local) {
+    merged.set(a.questionId, a);
+  }
+  for (const a of serverAttempts) {
+    const existing = merged.get(a.questionId);
+    if (!existing || new Date(a.attemptedAt).getTime() > new Date(existing.attemptedAt).getTime()) {
+      merged.set(a.questionId, a);
+    }
+  }
+
+  try {
+    setItem(STORAGE_KEY, JSON.stringify([...merged.values()]));
+  } catch {
+    // Ignore storage errors; fall through so backfill still gets attempted.
+  }
+
+  for (const a of local) {
+    if (!serverIds.has(a.questionId)) {
+      postAttemptToServer(a.questionId, a.domain, a.correct);
+    }
   }
 }
 

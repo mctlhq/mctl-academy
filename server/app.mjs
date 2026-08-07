@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { authRouter } from "./routes/auth.mjs";
+import { attemptsRouter } from "./routes/attempts.mjs";
 import { initDb, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
@@ -11,6 +12,9 @@ initDb().catch((err) => console.error("[db] Init error:", err));
 
 // Mount auth router
 app.route("/api/auth", authRouter);
+
+// Mount attempt sync router (issue #57)
+app.route("/api/attempts", attemptsRouter);
 
 const VALID_REASONS = new Set([
   "typo",
