@@ -31,6 +31,12 @@ built yet, and there is nothing to sign in to.
 | **Review mistakes** | The questions you got wrong in completed mocks |
 | **Mock** | 30 questions, 60 minutes, weighted 6 / 10 / 6 / 8 across the four domains |
 
+Of these, only **Practice** exists today, as a standalone client-side React
+screen with no backend, auth, or persistence yet — see
+[`client/README.md`](client/README.md) for how to run it locally, and
+[`PLAN.md`](PLAN.md#7-application) section 7 for the eventual full
+application.
+
 ## This is a study tool, not an assessment
 
 This repository is public, so **the answer key is public with it.** The

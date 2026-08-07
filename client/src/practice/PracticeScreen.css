@@ -1,0 +1,85 @@
+.practice {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.practice h1 {
+  font-size: 1.4rem;
+  margin: 0.25rem 0 1rem;
+}
+
+.progress {
+  color: var(--mut);
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.options {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.options li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+}
+
+.options li.correct {
+  border-color: var(--ok);
+  background: var(--okbg);
+}
+
+.options li.incorrect {
+  border-color: var(--err);
+  background: var(--errbg);
+}
+
+.options button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.feedback {
+  padding: 0 1rem 0.75rem;
+}
+
+.feedback .verdict {
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.feedback .explanation {
+  color: var(--mut);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.next {
+  font: inherit;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.practice-summary .score {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.practice-summary .meta,
+.practice-empty p {
+  color: var(--mut);
+}
