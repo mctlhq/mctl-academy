@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.20](https://github.com/mctlhq/mctl-academy/compare/0.1.19...0.1.20) (2026-08-07)
+
+
+### Bug Fixes
+
+* **docker:** copy migrations/ into the runtime image ([782248a](https://github.com/mctlhq/mctl-academy/commit/782248a77eab47da16335d1a48e3e03e68eec961))
+* **docker:** copy migrations/ into the runtime image ([405f8e7](https://github.com/mctlhq/mctl-academy/commit/405f8e73ad2bf2c35b8bf0a516630be30eb718ac))
+
 ## [0.1.19](https://github.com/mctlhq/mctl-academy/compare/0.1.18...0.1.19) (2026-08-07)
 
 
