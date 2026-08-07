@@ -4,7 +4,7 @@ status: published
 domain: domain-2
 objective: domain-2/chat-completions
 stem: >-
-  How does setting `temperature` to 0.0 affect the sampling output of a chat completion model?
+  How does setting temperature to 0.0 affect the sampling output of a chat completion model?
 options:
   - id: a
     text: It causes the model to sample tokens purely randomly across the full vocabulary
@@ -25,11 +25,11 @@ options:
     text: It restricts token generation to a maximum of 100 completion tokens
     correct: false
     explanation: >-
-      Output length is controlled by `max_tokens`, not temperature.
+      Output length is controlled by max_tokens, not temperature.
 evidence:
   - source_id: src-inference-overview
     excerpt: >-
-      Setting temperature to 0 enables greedy sampling for deterministic model outputs.
+      To use the Fast flavor, append `-fast` to the model name in the
 authored:
   by: agent:claude
   at: "2026-08-07T14:40:00Z"

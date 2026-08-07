@@ -27,9 +27,10 @@ options:
     explanation: >-
       Network sockets are handled by standard HTTP client transports, not SDK client constructor parameters.
 evidence:
-  - source_id: src-framework-integrations
+  - source_id: src-inference-overview
     excerpt: >-
-      Integrating OpenAI SDKs requires pointing base_url to the endpoint and supplying an api_key.
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
 authored:
   by: agent:claude
   at: "2026-08-07T14:40:00Z"

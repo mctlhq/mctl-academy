@@ -27,9 +27,10 @@ options:
     explanation: >-
       Sandboxes run code; rerankers are neural models for search relevance.
 evidence:
-  - source_id: src-embeddings-rerank
+  - source_id: src-inference-overview
     excerpt: >-
-      Reranking models evaluate joint query-document relevance scores to improve retrieval precision.
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
 authored:
   by: agent:claude
   at: "2026-08-07T14:40:00Z"

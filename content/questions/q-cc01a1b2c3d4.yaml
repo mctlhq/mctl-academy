@@ -29,7 +29,8 @@ options:
 evidence:
   - source_id: src-inference-overview
     excerpt: >-
-      Streaming responses deliver tokens incrementally using Server-Sent Events with JSON data payloads.
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
 authored:
   by: agent:claude
   at: "2026-08-07T14:40:00Z"
