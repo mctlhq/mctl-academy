@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-op04a1b2c3d4
+status: published
+domain: domain-1
+objective: domain-1/organizations-and-projects
+stem: >-
+  What happens when a new user signs up for Nebius Token Factory for the first time?
+options:
+  - id: a
+    text: A personal organization is created automatically for the user
+    correct: true
+    explanation: >-
+      First-time signup automatically provisions a personal organization.
+  - id: b
+    text: The user must submit a support ticket to request organization creation
+    correct: false
+    explanation: >-
+      Organization provisioning is automated during account onboarding.
+  - id: c
+    text: The user is assigned to a shared public sandbox organization
+    correct: false
+    explanation: >-
+      Each user gets an isolated personal organization, not a shared sandbox.
+  - id: d
+    text: Access is restricted until an enterprise agreement is uploaded
+    correct: false
+    explanation: >-
+      Self-service signup creates a personal organization immediately.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      When you sign up for Nebius Token Factory, a personal organization is created automatically.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"

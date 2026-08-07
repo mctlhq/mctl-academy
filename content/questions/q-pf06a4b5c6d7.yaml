@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-pf06a4b5c6d7
+status: published
+domain: domain-1
+objective: domain-1/model-catalog
+stem: >-
+  Where can developers discover available base models and their specific context window limits in Nebius Token Factory?
+options:
+  - id: a
+    text: Through the `/v1/models` API endpoint and the platform model catalog UI
+    correct: true
+    explanation: >-
+      Model capabilities, context windows, and available flavors are listed via `/v1/models` and the catalog.
+  - id: b
+    text: By querying DNS TXT records for endpoint subdomains
+    correct: false
+    explanation: >-
+      DNS records contain domain routing info, not model catalog metadata.
+  - id: c
+    text: By inspecting client-side git repository commit histories
+    correct: false
+    explanation: >-
+      Model catalogs are served dynamically from platform APIs.
+  - id: d
+    text: By contacting customer support via email before each request
+    correct: false
+    explanation: >-
+      Model listings are programmatically discoverable via public API endpoints.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"

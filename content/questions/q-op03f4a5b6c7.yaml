@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-op03f4a5b6c7
+status: published
+domain: domain-1
+objective: domain-1/organizations-and-projects
+stem: >-
+  Which scope level in Nebius Token Factory directly owns API keys, budget limits, and deployed resources?
+options:
+  - id: a
+    text: Projects
+    correct: true
+    explanation: >-
+      API keys, budgets, and endpoints belong to a specific Project within an Organization.
+  - id: b
+    text: Global user profile
+    correct: false
+    explanation: >-
+      User profiles span across organizations but do not own resource quotas directly.
+  - id: c
+    text: Region endpoints
+    correct: false
+    explanation: >-
+      Regions dictate data residency, not project isolation or credential scopes.
+  - id: d
+    text: Model registry
+    correct: false
+    explanation: >-
+      The model registry is a global catalog of available base weights.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      exist inside a project and inherit its access settings.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"

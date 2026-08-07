@@ -70,12 +70,10 @@ describe("selectMockQuestions", () => {
     expect(first.questions.map((q) => q.id).sort()).not.toEqual(second.questions.map((q) => q.id).sort());
   });
 
-  it("T2: exercised against the real current bank, proves the shortfall state actually triggers today", () => {
+  it("T2: exercised against the real current bank, proves the bank now satisfies 6/10/6/8 requirements", () => {
     const result = selectMockQuestions(bundle.questions as Question[], bundle.mock as MockConfig);
-    // content/questions/ currently holds far fewer than the Phase 1 minimum of
-    // 80 items; this assertion is expected to start failing (flip to true)
-    // once the bank grows past what 6/10/6/8 needs per domain -- that is the
-    // point of exercising it against real content rather than a fixture.
-    expect(result.ok).toBe(false);
+    // Now that the question bank has grown past the Phase 1 target of 80 items
+    // (with at least 6/10/6/8 in each domain), mock selection succeeds cleanly.
+    expect(result.ok).toBe(true);
   });
 });

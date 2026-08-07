@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-pf12a1b2c3d4
+status: published
+domain: domain-1
+objective: domain-1/organizations-and-projects
+stem: >-
+  Can a single Nebius Token Factory user account belong to multiple organizations simultaneously?
+options:
+  - id: a
+    text: Yes, a user identity can be invited to multiple organizations and switch between them
+    correct: true
+    explanation: >-
+      User identities can hold memberships across multiple independent organizations.
+  - id: b
+    text: No, signing up locks the account to a single organization permanently
+    correct: false
+    explanation: >-
+      Users can belong to multiple organizations and accept invitations.
+  - id: c
+    text: Only if the user registers separate physical credit cards for each organization
+    correct: false
+    explanation: >-
+      Organization membership is managed via IAM roles, not separate credit card registrations.
+  - id: d
+    text: Only during the first 24 hours after account creation
+    correct: false
+    explanation: >-
+      Multi-organization membership is a permanent platform capability.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      When you sign up for Nebius Token Factory, a personal organization is created automatically.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"

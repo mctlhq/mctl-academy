@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-pf11f0a1b2c3
+status: published
+domain: domain-1
+objective: domain-1/playground
+stem: >-
+  Which inference parameter in the Playground UI controls the randomness of generated model completions?
+options:
+  - id: a
+    text: Temperature
+    correct: true
+    explanation: >-
+      Temperature scales the logits before sampling, controlling response randomness and creativity.
+  - id: b
+    text: TCP Window Size
+    correct: false
+    explanation: >-
+      TCP window size is a network transport layer configuration.
+  - id: c
+    text: CPU Core Affinity
+    correct: false
+    explanation: >-
+      CPU affinity controls process execution on physical cores, not LLM sampling.
+  - id: d
+    text: Display Screen Refresh Rate
+    correct: false
+    explanation: >-
+      Monitor refresh rate is a hardware display property.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"
