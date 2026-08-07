@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { serveStatic } from "@hono/node-server/serve-static";
 import { randomUUID } from "node:crypto";
 
 export const app = new Hono();
@@ -17,7 +16,7 @@ const VALID_REASONS = new Set([
 
 // Healthcheck endpoint
 app.get("/healthz", (c) => {
-  return c.json({ status: "ok", service: "mctl-academy" });
+  return c.json({ status: "ok", service: "mctl-academy", runtime: typeof Bun !== "undefined" ? "bun" : "node" });
 });
 
 // Question Report intake endpoint
@@ -56,5 +55,11 @@ app.get("/api/reports", (c) => {
 });
 
 // Serve static frontend assets from client/dist if available
-app.use("/*", serveStatic({ root: "./client/dist" }));
-app.get("/*", serveStatic({ path: "./client/dist/index.html" }));
+if (typeof Bun !== "undefined") {
+  const { serveStatic } = await import("hono/bun");
+  app.use("/*", serveStatic({ root: "./client/dist" }));
+} else {
+  const { serveStatic } = await import("@hono/node-server/serve-static");
+  app.use("/*", serveStatic({ root: "./client/dist" }));
+  app.get("/*", serveStatic({ path: "./client/dist/index.html" }));
+}
