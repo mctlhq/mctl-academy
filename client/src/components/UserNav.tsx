@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 export interface UserProfile {
   id: string;
   githubId: number;
@@ -7,31 +5,20 @@ export interface UserProfile {
   avatarUrl: string;
 }
 
-export function UserNav() {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+export interface UserNavProps {
+  /** Resolved auth state, owned by App (a single GET /api/auth/me on mount). */
+  user: UserProfile | null;
+  /** True until that GET /api/auth/me call resolves. */
+  loading: boolean;
+}
 
-  useEffect(() => {
-    fetch("/api/auth/me")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.authenticated && data.user) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      })
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
-  }, []);
-
+export function UserNav({ user, loading }: UserNavProps) {
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {
       // Ignore
     }
-    setUser(null);
     window.location.reload();
   };
 

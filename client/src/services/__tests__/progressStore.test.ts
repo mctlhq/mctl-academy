@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   calculateProgressStats,
   clearProgress,
@@ -6,11 +6,19 @@ import {
   getStoredAttempts,
   recordAttempt,
   resetMemoryFallback,
+  setSyncEnabled,
+  syncFromServer,
 } from "../progressStore";
 
 describe("progressStore service", () => {
   beforeEach(() => {
     resetMemoryFallback();
+  });
+
+  afterEach(() => {
+    // Never let sync state leak into an unrelated test.
+    setSyncEnabled(false);
+    vi.unstubAllGlobals();
   });
 
   it("stores and retrieves question attempts", () => {
@@ -76,5 +84,91 @@ describe("progressStore service", () => {
 
     clearProgress();
     expect(getStoredAttempts()).toEqual([]);
+  });
+
+  it("makes no network call when sync is disabled (the default)", () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+
+    recordAttempt("q-1", "domain-1", true);
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("posts to /api/attempts when sync is enabled, without throwing on a failed request", async () => {
+    const fetchSpy = vi.fn().mockRejectedValue(new Error("network down"));
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    expect(() => recordAttempt("q-1", "domain-1", true)).not.toThrow();
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/attempts",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ questionId: "q-1", domain: "domain-1", correct: true }),
+      }),
+    );
+
+    // Give the swallowed rejection a tick to settle; the local write must survive it.
+    await Promise.resolve();
+    expect(getStoredAttempts()).toHaveLength(1);
+  });
+
+  it("syncFromServer merges local and server attempts, keeping whichever attemptedAt is newer", async () => {
+    const older = "2024-01-01T00:00:00.000Z";
+    const newer = "2024-06-01T00:00:00.000Z";
+
+    // Local-newer-than-server case: q-local wins with the local record.
+    recordAttempt("q-local", "domain-1", true);
+    const localAttempts = getStoredAttempts();
+    localAttempts[0].attemptedAt = newer;
+
+    // Server-newer-than-local case: q-server-newer should be overwritten by
+    // the server's record. Seed a stale local entry for it.
+    localAttempts.push({ questionId: "q-server-newer", domain: "domain-2", correct: false, attemptedAt: older });
+    localStorage.setItem("mctl_academy_progress_v1", JSON.stringify(localAttempts));
+
+    const fetchSpy = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        attempts: [
+          { questionId: "q-local", domain: "domain-1", correct: false, attemptedAt: older },
+          { questionId: "q-server-newer", domain: "domain-2", correct: true, attemptedAt: newer },
+          { questionId: "q-server-only", domain: "domain-3", correct: true, attemptedAt: newer },
+        ],
+      }),
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    await syncFromServer();
+
+    const merged = getStoredAttempts();
+    expect(merged.find((a) => a.questionId === "q-local")?.correct).toBe(true);
+    expect(merged.find((a) => a.questionId === "q-server-newer")?.correct).toBe(true);
+    expect(merged.find((a) => a.questionId === "q-server-only")?.correct).toBe(true);
+
+    // Every local questionId was already present in the server's response,
+    // so no backfill POST should fire.
+    const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
+    expect(postCalls).toHaveLength(0);
+  });
+
+  it("syncFromServer backfills local-only attempts the server did not already have", async () => {
+    recordAttempt("q-local-only", "domain-1", true);
+
+    const fetchSpy = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ attempts: [] }),
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    await syncFromServer();
+
+    const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
+    expect(postCalls).toHaveLength(1);
+    expect(postCalls[0][1].body).toBe(JSON.stringify({ questionId: "q-local-only", domain: "domain-1", correct: true }));
   });
 });

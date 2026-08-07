@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PracticeScreen } from "./practice/PracticeScreen";
 import { MockFlow } from "./exam/components/MockFlow";
 import { DashboardScreen } from "./dashboard/DashboardScreen";
-import { UserNav } from "./components/UserNav";
+import { UserNav, type UserProfile } from "./components/UserNav";
 import { StaticBundleDataSource } from "./exam/dataSource";
-import { getMistakeQuestionIds } from "./services/progressStore";
+import { getMistakeQuestionIds, setSyncEnabled, syncFromServer } from "./services/progressStore";
 import rawBundle from "./content-bundle.json";
 import type { BundleQuestion } from "./practice/usePracticeSession";
 
@@ -14,6 +14,42 @@ const fullBundle = rawBundle as unknown as BundleQuestion[];
 export function App() {
   const [mode, setMode] = useState<"practice" | "mistakes" | "exam" | "dashboard">("practice");
   const [navTick, setNavTick] = useState(0);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then(async (data) => {
+        if (cancelled) return;
+
+        if (data.authenticated && data.user) {
+          setUser(data.user);
+          setSyncEnabled(true);
+          await syncFromServer();
+          if (!cancelled) {
+            // Local progress may have just been merged with server history;
+            // recompute anything derived from it (mistake count, dashboard).
+            setNavTick((n) => n + 1);
+          }
+        } else {
+          setUser(null);
+          setSyncEnabled(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setUser(null);
+      })
+      .finally(() => {
+        if (!cancelled) setAuthLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const mistakeIds = useMemo(() => getMistakeQuestionIds(), [navTick, mode]);
 
@@ -104,7 +140,7 @@ export function App() {
           </button>
         </div>
 
-        <UserNav />
+        <UserNav user={user} loading={authLoading} />
       </nav>
 
       {mode === "practice" && <PracticeScreen key={`practice-${navTick}`} />}
