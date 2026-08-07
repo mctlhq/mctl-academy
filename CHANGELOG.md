@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.14](https://github.com/mctlhq/mctl-academy/compare/0.1.13...0.1.14) (2026-08-07)
+
+
+### Features
+
+* **content:** generate 20 published questions for Domain 2 (Agent Architecture & Orchestration) ([eb31a30](https://github.com/mctlhq/mctl-academy/commit/eb31a304630130243b1cd35956b6f55dc83ae9b1))
+* **content:** generate 20 published questions for Domain 2 (Agent Architecture & Orchestration) ([5b6bb30](https://github.com/mctlhq/mctl-academy/commit/5b6bb306fc44c4dcb90a2e41dd2e3252e4d4a852))
+* **content:** generate 20 published questions for Domain 3 (Data & Post-Training) ([e2fcf41](https://github.com/mctlhq/mctl-academy/commit/e2fcf414f0afc58aa258322a24145e423fb6d945))
+* **content:** generate 20 published questions for Domain 3 (Data & Post-Training) ([3843c2d](https://github.com/mctlhq/mctl-academy/commit/3843c2d40baf05c198324d520f16abe428e1f42a))
+* **content:** generate 20 published questions for Domain 4 (Production Operations) ([d45efc8](https://github.com/mctlhq/mctl-academy/commit/d45efc832a732b67cd0e9e4e152b923597f2b25c))
+* **content:** generate 20 published questions for Domain 4 (Production Operations) ([47abaf8](https://github.com/mctlhq/mctl-academy/commit/47abaf84497c53c41839601389ebecd9fbbd6bd5))
+
+
+### Bug Fixes
+
+* **content:** update q-fc05 and q-so04 to exact verbatim R2 snapshots ([d773015](https://github.com/mctlhq/mctl-academy/commit/d773015bcf6fbd975709c92e2a55db5404aa3589))
+* **content:** use verified evidence snapshots for Domain 2 questions ([7ab8fd8](https://github.com/mctlhq/mctl-academy/commit/7ab8fd85ade1168511f4b41dfd54119627a41302))
+
 ## [0.1.13](https://github.com/mctlhq/mctl-academy/compare/0.1.12...0.1.13) (2026-08-07)
 
 
