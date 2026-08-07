@@ -9,7 +9,8 @@ COPY client/package*.json ./client/
 RUN cd client && npm ci --include=optional
 
 COPY . .
-RUN cd client && npm run build
+RUN node scripts/build-content-bundle.mjs
+RUN cd client && npx vite build
 
 FROM node:22-alpine AS runner
 
