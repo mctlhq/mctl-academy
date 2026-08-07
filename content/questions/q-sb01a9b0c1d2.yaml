@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-sb01a9b0c1d2
+status: published
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: >-
+  Why is isolated container or microVM execution required when an agent executes code generated at runtime?
+options:
+  - id: a
+    text: To prevent arbitrary untrusted code execution from compromising host system security and network resources
+    correct: true
+    explanation: >-
+      Sandboxing isolates process execution so generated code cannot modify host files or access sensitive networks.
+  - id: b
+    text: To speed up LLM token generation throughput by 10x
+    correct: false
+    explanation: >-
+      Sandboxes run client/code execution environments, not model weight inference.
+  - id: c
+    text: To bypass API key authentication requirements
+    correct: false
+    explanation: >-
+      API key authentication remains required regardless of sandbox isolation.
+  - id: d
+    text: To convert Python code into static HTML pages automatically
+    correct: false
+    explanation: >-
+      Sandboxes execute code safely; HTML conversion is handled by templates or build scripts.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

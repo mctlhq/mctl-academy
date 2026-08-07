@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-fi02d8e9f0a1
+status: published
+domain: domain-2
+objective: domain-2/framework-integrations
+stem: >-
+  What standard protocol enables AI agents to dynamically discover and invoke tools, resources, and prompts provided by external servers?
+options:
+  - id: a
+    text: OAuth 2.0 PKCE authentication flow
+    correct: false
+    explanation: >-
+      OAuth PKCE is an identity authorization workflow, not an agent tool discovery protocol.
+  - id: b
+    text: gRPC Protocol Buffer schema compiler
+    correct: false
+    explanation: >-
+      gRPC is an RPC framework, whereas MCP specifically standardizes tool/resource discovery for agents.
+  - id: c
+    text: Simple Object Access Protocol (SOAP)
+    correct: false
+    explanation: >-
+      SOAP is an XML web service protocol from enterprise legacy integrations, not modern agent tool protocols.
+  - id: d
+    text: Model Context Protocol (MCP)
+    correct: true
+    explanation: >-
+      Model Context Protocol (MCP) provides an open standard for agents to discover tools, resources, and prompts.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

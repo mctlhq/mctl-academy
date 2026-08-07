@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-er01c3d4e5f6
+status: published
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: >-
+  In a RAG retrieval system, what primary purpose does a cross-encoder reranking model serve after initial vector search retrieval?
+options:
+  - id: a
+    text: To generate synthetic training dataset pairs for fine-tuning
+    correct: false
+    explanation: >-
+      Rerankers evaluate query-document relevance, not dataset synthesis.
+  - id: b
+    text: To compress text chunks into 8-bit quantized embeddings
+    correct: false
+    explanation: >-
+      Quantization reduces vector memory usage, whereas reranking improves ranking precision.
+  - id: c
+    text: To re-score retrieved candidate passages using full joint attention over query and document pairs
+    correct: true
+    explanation: >-
+      Reranking models compute joint attention across query-document pairs to produce more accurate relevance scores.
+  - id: d
+    text: To execute client-side Javascript code inside an isolated sandbox
+    correct: false
+    explanation: >-
+      Sandboxes run code; rerankers are neural models for search relevance.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

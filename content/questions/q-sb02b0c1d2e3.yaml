@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-sb02b0c1d2e3
+status: published
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: >-
+  Which resource control mechanism is typically configured on an agent sandbox to prevent runaway code loops?
+options:
+  - id: a
+    text: Automatic git commit triggers
+    correct: false
+    explanation: >-
+      Git commits record version control history, not execution resource limits.
+  - id: b
+    text: Execution timeouts and CPU/memory quotas
+    correct: true
+    explanation: >-
+      Timeouts terminate infinite loops and resource quotas prevent memory exhaustion.
+  - id: c
+    text: Domain name DNS pre-fetching
+    correct: false
+    explanation: >-
+      DNS pre-fetching speeds up web browser network lookups, not sandbox loop limits.
+  - id: d
+    text: Database table indexing
+    correct: false
+    explanation: >-
+      Database indexes speed up SQL queries, not process execution limits.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"
