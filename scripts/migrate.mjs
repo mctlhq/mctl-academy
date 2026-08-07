@@ -1,6 +1,7 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runner } from "node-pg-migrate";
+import { dbSslConfig } from "../server/db-ssl.mjs";
 
 const direction = process.argv[2] === "down" ? "down" : "up";
 
@@ -16,9 +17,7 @@ if (!databaseUrl) {
  * while the rest wait for the lock and then find nothing left to do, instead
  * of crashing on "another migration is already running".
  */
-// Mirrors server/db.mjs: rejectUnauthorized: false matches the connection
-// pattern already used elsewhere in the org against the same CNPG cluster.
-const ssl = process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false;
+const ssl = dbSslConfig();
 
 try {
   await runner({

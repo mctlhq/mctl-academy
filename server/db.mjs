@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runner } from "node-pg-migrate";
+import { dbSslConfig } from "./db-ssl.mjs";
 
 const { Pool, Client } = pg;
 const migrationsDir = `${dirname(fileURLToPath(import.meta.url))}/../migrations`;
@@ -42,17 +43,10 @@ export async function initDb() {
     return false;
   }
 
-  // rejectUnauthorized: false matches the connection pattern already used by
-  // mctl-loyalty and mctl-pairdesk against the same CNPG cluster; there is no
-  // CA distribution in place yet to verify the server certificate. That gap is
-  // a platform-wide concern, not something to solve differently in this one
-  // service. Both connections below share this exact object so the migration
-  // run and the long-lived query pool can never disagree about SSL — passing
-  // `databaseUrl` straight to node-pg-migrate's runner() gave it no SSL
-  // config at all, which only surfaced when tested against a real, non-SSL
-  // local Postgres: the migration connected, then every later query on `pool`
-  // failed, because `pool` alone was requesting SSL.
-  const sslConfig = isProduction ? { rejectUnauthorized: false } : false;
+  // Shared with scripts/migrate.mjs via db-ssl.mjs — see that file for why:
+  // this pool and the migration connection below disagreeing about SSL is
+  // exactly the bug that module exists to make impossible.
+  const sslConfig = dbSslConfig(isProduction);
 
   pool = new Pool({
     connectionString: dbUrl,
