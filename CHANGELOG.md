@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.13](https://github.com/mctlhq/mctl-academy/compare/0.1.12...0.1.13) (2026-08-07)
+
+
+### Features
+
+* **api:** implement Hono backend server and Question Report intake API ([71c7496](https://github.com/mctlhq/mctl-academy/commit/71c74967102db7d3490ad1ac4fdd30290ff4129e))
+* **api:** implement Hono backend server and Question Report intake API ([6d7313a](https://github.com/mctlhq/mctl-academy/commit/6d7313aafb35e1c5e116e820708eaf6626a2352a))
+
 ## [0.1.12](https://github.com/mctlhq/mctl-academy/compare/0.1.11...0.1.12) (2026-08-07)
 
 
