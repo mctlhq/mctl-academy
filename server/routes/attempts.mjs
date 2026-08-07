@@ -1,11 +1,13 @@
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import { getSessionUser, recordUserAttempt, getUserAttempts } from "../db.mjs";
+import { requireSameOrigin } from "../middleware/csrf.mjs";
+import { sessionCookieName } from "../session-cookie.mjs";
 
 export const attemptsRouter = new Hono();
 
 async function requireUser(c) {
-  const token = getCookie(c, "mctl_session");
+  const token = getCookie(c, sessionCookieName());
   if (!token) return null;
   return getSessionUser(token);
 }
@@ -20,7 +22,7 @@ function serializeAttempt(attempt) {
 }
 
 // POST /api/attempts - Record a practice attempt for the signed-in learner
-attemptsRouter.post("/", async (c) => {
+attemptsRouter.post("/", requireSameOrigin, async (c) => {
   const user = await requireUser(c);
   if (!user) {
     return c.json({ error: "Authentication required" }, 401);
