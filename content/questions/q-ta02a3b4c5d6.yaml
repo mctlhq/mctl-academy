@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ta02a3b4c5d6
+status: published
+domain: domain-4
+objective: domain-4/team-access
+stem: >-
+  What organization structure is initialized when a new user signs up for the platform?
+options:
+  - id: a
+    text: A personal organization is created automatically for the user
+    correct: true
+    explanation: >-
+      Account creation automatically initializes a personal organization for resource scoping.
+  - id: b
+    text: A global enterprise organization with 50 pre-configured team members
+    correct: false
+    explanation: >-
+      Sign-up initializes a personal organization, not an enterprise team.
+  - id: c
+    text: A read-only sandbox account that cannot generate API keys
+    correct: false
+    explanation: >-
+      Personal organizations have full access to generate API keys and manage projects.
+  - id: d
+    text: A temporary 24-hour trial organization that auto-deletes
+    correct: false
+    explanation: >-
+      The created personal organization is a permanent account container.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      When you sign up for Nebius Token Factory, a personal organization is created
+      automatically.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

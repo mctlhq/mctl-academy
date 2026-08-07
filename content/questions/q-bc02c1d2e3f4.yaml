@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-bc02c1d2e3f4
+status: published
+domain: domain-4
+objective: domain-4/billing-and-consumption
+stem: >-
+  What cost control safeguard prevents unexpected usage charges on an organization account?
+options:
+  - id: a
+    text: Disabling SSL certificate validation on requests
+    correct: false
+    explanation: >-
+      Disabling SSL compromises transport security and has no impact on billing thresholds.
+  - id: b
+    text: Setting temperature to 1.0 on all completion calls
+    correct: false
+    explanation: >-
+      Temperature controls output entropy, not monetary spend caps.
+  - id: c
+    text: Configuring spending budget alerts and hard credit caps on the organization account
+    correct: true
+    explanation: >-
+      Budget thresholds and hard spending caps prevent unexpected cost overruns.
+  - id: d
+    text: Changing API request content-type to application/xml
+    correct: false
+    explanation: >-
+      MIME headers specify payload format, not billing caps.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      When you sign up for Nebius Token Factory, a personal organization is created
+      automatically.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

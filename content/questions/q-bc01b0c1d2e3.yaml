@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-bc01b0c1d2e3
+status: published
+domain: domain-4
+objective: domain-4/billing-and-consumption
+stem: >-
+  How is billing calculated for shared pay-as-you-go inference requests versus dedicated endpoints?
+options:
+  - id: a
+    text: Shared pay-as-you-go is billed by raw storage GBs; dedicated is billed per SQL query
+    correct: false
+    explanation: >-
+      Storage GBs belong to database/file storage billing, not LLM token inference billing.
+  - id: b
+    text: Shared pay-as-you-go is billed per processed input/output token; dedicated is billed per provisioned GPU node hour
+    correct: true
+    explanation: >-
+      Shared models bill per 1M processed tokens, while dedicated instances bill fixed hourly rates for allocated node capacity.
+  - id: c
+    text: Shared pay-as-you-go is free; dedicated charges a fixed annual license fee
+    correct: false
+    explanation: >-
+      Shared API usage incurs token consumption costs; dedicated endpoints charge per node hour.
+  - id: d
+    text: Both charge identical flat fees per HTTP request regardless of length or hardware
+    correct: false
+    explanation: >-
+      Shared models bill dynamically on token length; dedicated endpoints bill per hardware instance hour.
+evidence:
+  - source_id: src-rate-limits
+    excerpt: >-
+      Every user is provided with a default rate limit cap. This limit grows automatically
+      when you consistently operate close to your capacity and current limit.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

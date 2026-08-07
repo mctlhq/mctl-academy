@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-de03c5d6e7f8
+status: published
+domain: domain-4
+objective: domain-4/dedicated-endpoints
+stem: >-
+  Why might an enterprise choose to host a fine-tuned LoRA adapter on a dedicated endpoint instead of a shared server pool?
+options:
+  - id: a
+    text: Dedicated endpoints automatically rewrite Python code into Rust binaries
+    correct: false
+    explanation: >-
+      Endpoints execute inference models, not programming language translation.
+  - id: b
+    text: Shared pools do not support any fine-tuning adapters
+    correct: false
+    explanation: >-
+      Shared pools can support popular public models, but dedicated instances allow custom private adapter loading.
+  - id: c
+    text: Dedicated endpoints allow loading custom private adapter weights on dedicated hardware with strict SLA guarantees
+    correct: true
+    explanation: >-
+      Private custom LoRA weights and strict SLAs require dedicated hardware resources.
+  - id: d
+    text: Dedicated endpoints eliminate network latency completely (0 ms ping)
+    correct: false
+    explanation: >-
+      Physical network transport latency always exists regardless of hosting choice.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: >-
+      Lifecycle is deployment state. Readiness is traffic-serving capability.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

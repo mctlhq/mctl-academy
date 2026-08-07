@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-rl05c7d8e9f0
+status: published
+domain: domain-4
+objective: domain-4/rate-limits
+stem: >-
+  What HTTP status code is returned when a client request exceeds rate limits?
+options:
+  - id: a
+    text: "HTTP 200 OK"
+    correct: false
+    explanation: >-
+      200 OK indicates request success, not rate limiting throttling.
+  - id: b
+    text: "HTTP 401 Unauthorized"
+    correct: false
+    explanation: >-
+      401 Unauthorized indicates missing or invalid API keys.
+  - id: c
+    text: "HTTP 429 Too Many Requests"
+    correct: true
+    explanation: >-
+      HTTP 429 Too Many Requests is standard when request rate or token limits are exceeded.
+  - id: d
+    text: "HTTP 502 Bad Gateway"
+    correct: false
+    explanation: >-
+      502 Bad Gateway indicates upstream server network connectivity failures.
+evidence:
+  - source_id: src-rate-limits
+    excerpt: >-
+      track your consumption against your limits using the `x-ratelimit-remaining-requests`
+      and `x-ratelimit-remaining-tokens` response headers.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

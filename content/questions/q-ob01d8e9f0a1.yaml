@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ob01d8e9f0a1
+status: published
+domain: domain-4
+objective: domain-4/observability
+stem: >-
+  What response headers should client applications inspect to monitor remaining request and token quotas in real time?
+options:
+  - id: a
+    text: "x-server-ip and x-dns-host"
+    correct: false
+    explanation: >-
+      Server IP and DNS host headers provide network routing metadata, not quota tracking.
+  - id: b
+    text: "content-type and content-length"
+    correct: false
+    explanation: >-
+      Content-Type and Content-Length describe HTTP payload MIME type and byte size.
+  - id: c
+    text: "set-cookie and cache-control"
+    correct: false
+    explanation: >-
+      Cookies and cache headers manage browser caching and session state.
+  - id: d
+    text: "x-ratelimit-remaining-requests and x-ratelimit-remaining-tokens"
+    correct: true
+    explanation: >-
+      Response headers x-ratelimit-remaining-requests and x-ratelimit-remaining-tokens track real-time quota headroom.
+evidence:
+  - source_id: src-rate-limits
+    excerpt: >-
+      track your consumption against your limits using the `x-ratelimit-remaining-requests`
+      and `x-ratelimit-remaining-tokens` response headers.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"
