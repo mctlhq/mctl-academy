@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { auth } from "./auth.mjs";
+import { auth, assertAuthSecretConfigured } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
 import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
@@ -8,14 +8,17 @@ import { rateLimit } from "./middleware/rate-limit.mjs";
 
 export const app = new Hono();
 
-// Initialize the database. In production — and now unconditionally, since
-// better-auth (server/auth.mjs) has no in-memory fallback — a failure here is
-// fatal by design; see the comment on initDb() in db.mjs. The process exits
-// and lets Kubernetes restart the pod rather than serve from a broken state.
+// Both fatal-on-failure by design, in production: a missing DATABASE_URL or
+// BETTER_AUTH_SECRET must stop the pod from ever serving traffic rather than
+// silently run with a broken data layer or a forgeable session secret. The
+// process exits and lets Kubernetes restart it according to its restart
+// policy. See the comments on initDb() in db.mjs and
+// assertAuthSecretConfigured() in auth.mjs.
 try {
   await initDb();
+  assertAuthSecretConfigured();
 } catch (err) {
-  console.error("[db] Fatal:", err.message);
+  console.error("[boot] Fatal:", err.message);
   process.exit(1);
 }
 

@@ -28,6 +28,27 @@ export const authPool = new Pool({
 });
 
 /**
+ * Called explicitly from app.mjs's initDb() try/catch, not run at module
+ * load — same hoisting reasoning as the comment above. better-auth signs
+ * session cookies with a public, hardcoded dev secret when BETTER_AUTH_SECRET
+ * is unset; in production that would let anyone forge a valid session cookie
+ * for any user id, silently (no error, no log line — sign-in just "works").
+ * BETTER_AUTH_SECRET is one of four values this app's manual deploy checklist
+ * asks an operator to push via secret_env_vars, so treating a missing one as
+ * fatal-at-boot (like DATABASE_URL) is the only way to be sure it's not
+ * quietly skipped.
+ */
+export function assertAuthSecretConfigured() {
+  if (isProduction && !process.env.BETTER_AUTH_SECRET) {
+    throw new Error(
+      "BETTER_AUTH_SECRET is not set in production. Refusing to start: better-auth " +
+        "would otherwise sign session cookies with its own public, hardcoded dev " +
+        "secret, letting anyone forge a valid session for any user."
+    );
+  }
+}
+
+/**
  * githubLogin is stored as a custom field because MCTL_ACADEMY_MODERATORS
  * (see app.mjs) allowlists by GitHub username, and better-auth's built-in
  * user table has no such column — only name/email/image, none of which is

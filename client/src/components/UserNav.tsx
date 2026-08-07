@@ -22,6 +22,21 @@ export function UserNav({ user, loading }: UserNavProps) {
     window.location.reload();
   };
 
+  const handleDeleteAccount = async () => {
+    if (
+      !window.confirm(
+        "Delete your account? This permanently removes your sign-in, your attempts, and your reports. This cannot be undone."
+      )
+    ) {
+      return;
+    }
+    // Not a better-auth client call — this is this app's own endpoint (see
+    // server/routes/account.mjs), since better-auth's own deleteUser()
+    // requires email verification, which OAuth-only accounts don't have.
+    await fetch("/api/account", { method: "DELETE" });
+    window.location.reload();
+  };
+
   if (loading) {
     return <span style={{ fontSize: "0.85rem", color: "#666" }}>Checking session...</span>;
   }
@@ -115,6 +130,21 @@ export function UserNav({ user, loading }: UserNavProps) {
         }}
       >
         Sign out
+      </button>
+      <button
+        onClick={handleDeleteAccount}
+        title="Permanently delete your account and all your data"
+        style={{
+          padding: "0.3rem 0.6rem",
+          fontSize: "0.75rem",
+          background: "transparent",
+          border: "none",
+          color: "#999",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+      >
+        Delete account
       </button>
     </div>
   );
