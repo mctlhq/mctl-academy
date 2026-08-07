@@ -107,6 +107,13 @@
   margin-top: 0.5rem;
 }
 
+.report-char-count {
+  font-size: 0.75rem;
+  color: var(--mut, #888);
+  text-align: right;
+  margin: 0.25rem 0 0;
+}
+
 .btn-report {
   background: transparent;
   border: none;
