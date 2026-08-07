@@ -1,0 +1,7 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "mctl-academy Certification Platform",
+  "description": "Evidence-backed practice platform for agentic AI certification, content validation, JSON schemas, and Hono server",
+  "folders": ["content", "server", "client"],
+  "excludeFolders": ["node_modules", "dist", "coverage"]
+}
