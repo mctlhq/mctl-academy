@@ -26,7 +26,11 @@ jobs:
       pull-requests: write
     env:
       PR_NUMBER: ${{ github.event.pull_request.number }}
-      GH_TOKEN: ${{ github.token }}
+      # GH_TOKEN is intentionally NOT set here: this env block is visible to
+      # the "Run agy review" step, and a malicious PR diff could prompt-inject
+      # the model into leaking a job-scoped token via the posted comment.
+      # GH_TOKEN is set per-step below, only on the two steps that call `gh`.
+      #
       # The self-hosted runner's launchd job has a minimal PATH
       # (/usr/bin:/bin:/usr/sbin:/sbin) that doesn't include Homebrew's
       # /usr/local/bin, where `gh` and `jq` live on this Mac mini.
@@ -88,7 +92,19 @@ jobs:
 
           --- BEGIN DIFF ---
           PROMPT
-            cat .agy-review/pr.diff
+            # `agy -p` only accepts an inline argument (no stdin or
+            # --prompt-file support), and the whole prompt is embedded in
+            # the process's argv. macOS caps combined argv+environ well
+            # under 1MB in practice, so an unbounded diff can crash this
+            # step with "Argument list too long" on a large PR. Cap the
+            # diff itself well below that ceiling rather than fail closed.
+            if [ "$(wc -c < .agy-review/pr.diff)" -gt 150000 ]; then
+              head -c 150000 .agy-review/pr.diff
+              echo
+              echo "[diff truncated at 150000 bytes for command-line size limits]"
+            else
+              cat .agy-review/pr.diff
+            fi
             echo "--- END DIFF ---"
           } > .agy-review/prompt.md
 
@@ -119,6 +135,8 @@ jobs:
       - name: Publish review comment
         if: steps.agy.outcome == 'success'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           {
@@ -134,6 +152,8 @@ jobs:
       - name: Note agy failure
         if: steps.agy.outcome != 'success'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "<!-- agy-review-pilot -->" > .agy-review/comment.md
           echo "## Antigravity (agy) review — pilot, non-blocking" >> .agy-review/comment.md
