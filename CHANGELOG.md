@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.15](https://github.com/mctlhq/mctl-academy/compare/0.1.14...0.1.15) (2026-08-07)
+
+
+### Features
+
+* **server:** migrate Hono backend to Bun runtime in Dockerfile ([6c79e77](https://github.com/mctlhq/mctl-academy/commit/6c79e7718d7d0e6fdb0dede94fc6ea18972fe6da))
+* **server:** migrate Hono backend to Bun runtime in Dockerfile ([60a378d](https://github.com/mctlhq/mctl-academy/commit/60a378d92c5df9cf01081995654173a1598b1c1b))
+
+
+### Bug Fixes
+
+* **server:** add Bun SPA fallback, --frozen-lockfile, and healthz runtime tests ([a425a44](https://github.com/mctlhq/mctl-academy/commit/a425a44d5c9b5e3ffe3166a795e137ebaa331233))
+* **server:** add Bun SPA fallback, --frozen-lockfile, and healthz runtime tests ([126f656](https://github.com/mctlhq/mctl-academy/commit/126f656ec8804d90e347c084009711e592bdc23d))
+
 ## [0.1.14](https://github.com/mctlhq/mctl-academy/compare/0.1.13...0.1.14) (2026-08-07)
 
 
