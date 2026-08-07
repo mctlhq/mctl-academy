@@ -3,12 +3,13 @@ import assert from "node:assert/strict";
 import { app } from "../server/app.mjs";
 
 describe("Hono server & Report API", () => {
-  test("GET /healthz returns 200 and status ok", async () => {
+  test("GET /healthz returns 200, status ok, and runtime identifier", async () => {
     const res = await app.request("/healthz");
     assert.equal(res.status, 200);
     const body = await res.json();
     assert.equal(body.status, "ok");
     assert.equal(body.service, "mctl-academy");
+    assert.ok(body.runtime === "node" || body.runtime === "bun");
   });
 
   test("POST /api/reports accepts valid report", async () => {
