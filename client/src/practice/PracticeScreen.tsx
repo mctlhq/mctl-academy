@@ -5,11 +5,13 @@ import { ReportModal } from "../components/ReportModal";
 import "./PracticeScreen.css";
 
 interface PracticeScreenProps {
-  /** Override the bundle read at build time — used by tests. */
+  /** Override the bundle read at build time — used by tests or custom filtering. */
   bundle?: readonly BundleQuestion[];
+  title?: string;
+  emptyMessage?: string;
 }
 
-export function PracticeScreen({ bundle }: PracticeScreenProps) {
+export function PracticeScreen({ bundle, title = "Practice", emptyMessage }: PracticeScreenProps) {
   const { current, index, total, revealed, score, attempted, selectOption, next } =
     usePracticeSession(bundle);
   const [isReporting, setIsReporting] = useState(false);
@@ -17,10 +19,14 @@ export function PracticeScreen({ bundle }: PracticeScreenProps) {
   if (total === 0) {
     return (
       <main className="practice practice-empty">
-        <h1>Practice</h1>
+        <h1>{title}</h1>
         <p>
-          There are no published questions yet. Check back once the content bank has questions
-          with <code>status: published</code>.
+          {emptyMessage || (
+            <>
+              There are no published questions yet. Check back once the content bank has questions
+              with <code>status: published</code>.
+            </>
+          )}
         </p>
       </main>
     );
