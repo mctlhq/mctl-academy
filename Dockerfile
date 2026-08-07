@@ -9,7 +9,7 @@ COPY client/package*.json ./client/
 RUN cd client && npm ci
 
 COPY . .
-RUN node scripts/build-content-bundle.mjs
+RUN node client/scripts/build-content-bundle.mjs
 RUN cd client && npm run build
 
 FROM node:22-alpine AS runner
