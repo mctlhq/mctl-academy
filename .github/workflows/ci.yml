@@ -42,3 +42,31 @@ jobs:
           name: course-preview
           path: dist/preview/
           retention-days: 14
+
+  client:
+    name: Client build and tests
+    runs-on: ubuntu-latest
+    # Independent of and non-blocking to the content job: this is code CI
+    # (client/), which the CONTRIBUTING.md review-gate table treats
+    # separately from content lint. A broken client build fails this job
+    # without touching content lint results.
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Client tests
+        working-directory: client
+        run: npm run test
+
+      - name: Client build
+        working-directory: client
+        run: npm run build

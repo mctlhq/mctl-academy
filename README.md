@@ -77,6 +77,20 @@ accepted** — citation verification needs credentials that GitHub does not expo
 to fork-triggered workflows, so the check would be unenforceable. See
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+### Local development — client
+
+The Mock exam screen lives in `client/`, a Vite + React + TypeScript app that
+reads a build-time JSON bundle generated from `content/` (no server exists
+yet — see `PLAN.md`).
+
+```bash
+cd client
+npm ci
+npm run dev    # local dev server, regenerates the content bundle first
+npm run build  # type-checks and builds client/dist/
+npm run test   # unit and component tests
+```
+
 ## Licensing
 
 Split, deliberately:
