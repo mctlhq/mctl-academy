@@ -5,12 +5,12 @@
   "type": "module",
   "description": "Mock exam UI for mctl Academy (issue #20). Reads content/ at build time via a generated JSON bundle; no server exists yet.",
   "scripts": {
-    "predev": "node scripts/build-content-bundle.mjs",
+    "predev": "node ../scripts/build-content-bundle.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/build-content-bundle.mjs",
+    "prebuild": "node ../scripts/build-content-bundle.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "pretest": "node scripts/build-content-bundle.mjs",
+    "pretest": "node ../scripts/build-content-bundle.mjs",
     "test": "vitest run"
   },
   "dependencies": {
