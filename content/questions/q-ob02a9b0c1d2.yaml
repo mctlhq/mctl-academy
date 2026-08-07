@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ob02a9b0c1d2
+status: published
+domain: domain-4
+objective: domain-4/observability
+stem: >-
+  Which metric token usage counts are returned in standard Chat Completion response payloads under the usage object?
+options:
+  - id: a
+    text: "prompt_tokens, completion_tokens, and total_tokens"
+    correct: true
+    explanation: >-
+      The usage object reports exact counts for prompt_tokens, completion_tokens, and total_tokens.
+  - id: b
+    text: "gpu_temperature_celsius and fan_speed_rpm"
+    correct: false
+    explanation: >-
+      Hardware temperature and fan metrics belong to infrastructure monitoring, not model API usage payloads.
+  - id: c
+    text: "disk_write_mbps and network_latency_ms"
+    correct: false
+    explanation: >-
+      Disk throughput and network ping latency are transport metrics, not LLM token usage counters.
+  - id: d
+    text: "database_connections_active"
+    correct: false
+    explanation: >-
+      Database connections are SQL pool counters, not inference token usage object properties.
+evidence:
+  - source_id: src-rate-limits
+    excerpt: >-
+      track your consumption against your limits using the `x-ratelimit-remaining-requests`
+      and `x-ratelimit-remaining-tokens` response headers.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

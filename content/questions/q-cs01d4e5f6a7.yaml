@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-cs01d4e5f6a7
+status: published
+domain: domain-4
+objective: domain-4/capacity-and-scaling
+stem: >-
+  What status indicates that a dedicated endpoint is currently operational but serving at reduced capacity during instance scaling or node recovery?
+options:
+  - id: a
+    text: "`Status: Terminated`"
+    correct: false
+    explanation: >-
+      Terminated means the endpoint has been destroyed and cannot process requests.
+  - id: b
+    text: "`Status: Failed`"
+    correct: false
+    explanation: >-
+      Failed indicates a critical unrecoverable deployment error.
+  - id: c
+    text: "`Status: Creating`"
+    correct: false
+    explanation: >-
+      Creating is the initial provisioning phase before any traffic can be served.
+  - id: d
+    text: "`Status: Degraded` (or serving below expected capacity)"
+    correct: true
+    explanation: >-
+      Degraded status indicates the endpoint is online and serving requests, but with reduced instance capacity.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: >-
+      Endpoint can serve traffic, but below expected capacity.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

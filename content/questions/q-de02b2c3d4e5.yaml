@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-de02b2c3d4e5
+status: published
+domain: domain-4
+objective: domain-4/dedicated-endpoints
+stem: >-
+  How are dedicated endpoints targeted when making OpenAI-compatible chat completion requests?
+options:
+  - id: a
+    text: By passing the dedicated endpoint URL or endpoint deployment ID in the request base URL or model identifier
+    correct: true
+    explanation: >-
+      Requests route to dedicated instances by specifying the deployment endpoint host or deployment ID.
+  - id: b
+    text: By changing the TCP port to 21 on the client host machine
+    correct: false
+    explanation: >-
+      Port 21 is FTP; API endpoints use standard HTTPS (port 443).
+  - id: c
+    text: By embedding base64 encoded SSH keys in system prompts
+    correct: false
+    explanation: >-
+      SSH keys manage shell access, not API request model routing.
+  - id: d
+    text: "By specifying purpose: fine-tune in request headers"
+    correct: false
+    explanation: >-
+      The purpose header belongs to Files API uploads, not Chat Completion inference calls.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: >-
+      Lifecycle is deployment state. Readiness is traffic-serving capability.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

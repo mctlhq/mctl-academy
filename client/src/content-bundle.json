@@ -1,5 +1,69 @@
 [
   {
+    "id": "q-bc01b0c1d2e3",
+    "domain": "domain-4",
+    "objective": "domain-4/billing-and-consumption",
+    "stem": "How is billing calculated for shared pay-as-you-go inference requests versus dedicated endpoints?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Shared pay-as-you-go is billed by raw storage GBs; dedicated is billed per SQL query",
+        "correct": false,
+        "explanation": "Storage GBs belong to database/file storage billing, not LLM token inference billing."
+      },
+      {
+        "id": "b",
+        "text": "Shared pay-as-you-go is billed per processed input/output token; dedicated is billed per provisioned GPU node hour",
+        "correct": true,
+        "explanation": "Shared models bill per 1M processed tokens, while dedicated instances bill fixed hourly rates for allocated node capacity."
+      },
+      {
+        "id": "c",
+        "text": "Shared pay-as-you-go is free; dedicated charges a fixed annual license fee",
+        "correct": false,
+        "explanation": "Shared API usage incurs token consumption costs; dedicated endpoints charge per node hour."
+      },
+      {
+        "id": "d",
+        "text": "Both charge identical flat fees per HTTP request regardless of length or hardware",
+        "correct": false,
+        "explanation": "Shared models bill dynamically on token length; dedicated endpoints bill per hardware instance hour."
+      }
+    ]
+  },
+  {
+    "id": "q-bc02c1d2e3f4",
+    "domain": "domain-4",
+    "objective": "domain-4/billing-and-consumption",
+    "stem": "What cost control safeguard prevents unexpected usage charges on an organization account?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Disabling SSL certificate validation on requests",
+        "correct": false,
+        "explanation": "Disabling SSL compromises transport security and has no impact on billing thresholds."
+      },
+      {
+        "id": "b",
+        "text": "Setting temperature to 1.0 on all completion calls",
+        "correct": false,
+        "explanation": "Temperature controls output entropy, not monetary spend caps."
+      },
+      {
+        "id": "c",
+        "text": "Configuring spending budget alerts and hard credit caps on the organization account",
+        "correct": true,
+        "explanation": "Budget thresholds and hard spending caps prevent unexpected cost overruns."
+      },
+      {
+        "id": "d",
+        "text": "Changing API request content-type to application/xml",
+        "correct": false,
+        "explanation": "MIME headers specify payload format, not billing caps."
+      }
+    ]
+  },
+  {
     "id": "q-cc01a1b2c3d4",
     "domain": "domain-2",
     "objective": "domain-2/chat-completions",
@@ -60,6 +124,166 @@
         "text": "It restricts token generation to a maximum of 100 completion tokens",
         "correct": false,
         "explanation": "Output length is controlled by max_tokens, not temperature."
+      }
+    ]
+  },
+  {
+    "id": "q-cs01d4e5f6a7",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "What status indicates that a dedicated endpoint is currently operational but serving at reduced capacity during instance scaling or node recovery?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Status: Terminated`",
+        "correct": false,
+        "explanation": "Terminated means the endpoint has been destroyed and cannot process requests."
+      },
+      {
+        "id": "b",
+        "text": "`Status: Failed`",
+        "correct": false,
+        "explanation": "Failed indicates a critical unrecoverable deployment error."
+      },
+      {
+        "id": "c",
+        "text": "`Status: Creating`",
+        "correct": false,
+        "explanation": "Creating is the initial provisioning phase before any traffic can be served."
+      },
+      {
+        "id": "d",
+        "text": "`Status: Degraded` (or serving below expected capacity)",
+        "correct": true,
+        "explanation": "Degraded status indicates the endpoint is online and serving requests, but with reduced instance capacity."
+      }
+    ]
+  },
+  {
+    "id": "q-cs02a5b6c7d8",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "How does automatic scaling function when dedicated endpoints experience high request concurrency spikes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Additional replica instances are auto-provisioned to handle load according to configured scaling policies",
+        "correct": true,
+        "explanation": "Autoscaling policies dynamically add replica instances as concurrency metrics exceed thresholds."
+      },
+      {
+        "id": "b",
+        "text": "System memory is wiped to free up GPU cache",
+        "correct": false,
+        "explanation": "Wiping memory would drop active request contexts, causing failures rather than scaling compute."
+      },
+      {
+        "id": "c",
+        "text": "Requests are converted to offline fine-tuning datasets automatically",
+        "correct": false,
+        "explanation": "Inference traffic remains real-time inference and is not converted into fine-tuning datasets."
+      },
+      {
+        "id": "d",
+        "text": "All incoming requests are dropped with HTTP 500 server error codes permanently",
+        "correct": false,
+        "explanation": "Autoscaling prevents drop errors by expanding instance capacity under load."
+      }
+    ]
+  },
+  {
+    "id": "q-de01a1b2c3d4",
+    "domain": "domain-4",
+    "objective": "domain-4/dedicated-endpoints",
+    "stem": "What primary architectural advantage does deploying a dedicated endpoint provide over shared pay-as-you-go inference API pools?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Guaranteed reserved GPU compute capacity with predictable response latency and no noisy neighbor interference",
+        "correct": true,
+        "explanation": "Dedicated endpoints allocate isolated GPU instances, ensuring consistent latency and reserved capacity."
+      },
+      {
+        "id": "b",
+        "text": "Automatic generation of synthetic training datasets",
+        "correct": false,
+        "explanation": "Endpoints execute model inference, not dataset synthesis or fine-tuning preprocessing."
+      },
+      {
+        "id": "c",
+        "text": "Free unlimited token consumption without billing charges",
+        "correct": false,
+        "explanation": "Dedicated instances incur hourly node hosting costs regardless of query volume."
+      },
+      {
+        "id": "d",
+        "text": "Automatic client-side Javascript code transpilation",
+        "correct": false,
+        "explanation": "Dedicated endpoints handle neural network model inference, not web browser frontend code compilation."
+      }
+    ]
+  },
+  {
+    "id": "q-de02b2c3d4e5",
+    "domain": "domain-4",
+    "objective": "domain-4/dedicated-endpoints",
+    "stem": "How are dedicated endpoints targeted when making OpenAI-compatible chat completion requests?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By passing the dedicated endpoint URL or endpoint deployment ID in the request base URL or model identifier",
+        "correct": true,
+        "explanation": "Requests route to dedicated instances by specifying the deployment endpoint host or deployment ID."
+      },
+      {
+        "id": "b",
+        "text": "By changing the TCP port to 21 on the client host machine",
+        "correct": false,
+        "explanation": "Port 21 is FTP; API endpoints use standard HTTPS (port 443)."
+      },
+      {
+        "id": "c",
+        "text": "By embedding base64 encoded SSH keys in system prompts",
+        "correct": false,
+        "explanation": "SSH keys manage shell access, not API request model routing."
+      },
+      {
+        "id": "d",
+        "text": "By specifying purpose: fine-tune in request headers",
+        "correct": false,
+        "explanation": "The purpose header belongs to Files API uploads, not Chat Completion inference calls."
+      }
+    ]
+  },
+  {
+    "id": "q-de03c5d6e7f8",
+    "domain": "domain-4",
+    "objective": "domain-4/dedicated-endpoints",
+    "stem": "Why might an enterprise choose to host a fine-tuned LoRA adapter on a dedicated endpoint instead of a shared server pool?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Dedicated endpoints automatically rewrite Python code into Rust binaries",
+        "correct": false,
+        "explanation": "Endpoints execute inference models, not programming language translation."
+      },
+      {
+        "id": "b",
+        "text": "Shared pools do not support any fine-tuning adapters",
+        "correct": false,
+        "explanation": "Shared pools can support popular public models, but dedicated instances allow custom private adapter loading."
+      },
+      {
+        "id": "c",
+        "text": "Dedicated endpoints allow loading custom private adapter weights on dedicated hardware with strict SLA guarantees",
+        "correct": true,
+        "explanation": "Private custom LoRA weights and strict SLAs require dedicated hardware resources."
+      },
+      {
+        "id": "d",
+        "text": "Dedicated endpoints eliminate network latency completely (0 ms ping)",
+        "correct": false,
+        "explanation": "Physical network transport latency always exists regardless of hosting choice."
       }
     ]
   },
@@ -412,6 +636,38 @@
         "text": "Only some model methods are available",
         "correct": false,
         "explanation": "Readiness describes capacity across replicas, not a subset of functionality."
+      }
+    ]
+  },
+  {
+    "id": "q-el03c3d4e5f6",
+    "domain": "domain-4",
+    "objective": "domain-4/endpoint-lifecycle",
+    "stem": "What is the difference between an endpoint's deployment lifecycle state and its readiness status?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lifecycle state measures network ping latency, while readiness status measures SQL database storage",
+        "correct": false,
+        "explanation": "Lifecycle and readiness refer to endpoint container deployment and traffic capability, not SQL databases."
+      },
+      {
+        "id": "b",
+        "text": "Lifecycle state is defined by the client SDK, while readiness status is set by the DNS provider",
+        "correct": false,
+        "explanation": "Both deployment state and readiness are managed by the cloud platform orchestrator."
+      },
+      {
+        "id": "c",
+        "text": "Lifecycle is the overall deployment state, while readiness indicates active traffic-serving capability",
+        "correct": true,
+        "explanation": "Lifecycle reflects deployment provisioning (Creating/Updating/Deleting), whereas readiness reflects active serving status."
+      },
+      {
+        "id": "d",
+        "text": "Lifecycle applies only to fine-tuning jobs, while readiness applies only to Files API uploads",
+        "correct": false,
+        "explanation": "Endpoint lifecycle and readiness apply directly to inference model endpoints."
       }
     ]
   },
@@ -1056,6 +1312,70 @@
     ]
   },
   {
+    "id": "q-ob01d8e9f0a1",
+    "domain": "domain-4",
+    "objective": "domain-4/observability",
+    "stem": "What response headers should client applications inspect to monitor remaining request and token quotas in real time?",
+    "options": [
+      {
+        "id": "a",
+        "text": "x-server-ip and x-dns-host",
+        "correct": false,
+        "explanation": "Server IP and DNS host headers provide network routing metadata, not quota tracking."
+      },
+      {
+        "id": "b",
+        "text": "content-type and content-length",
+        "correct": false,
+        "explanation": "Content-Type and Content-Length describe HTTP payload MIME type and byte size."
+      },
+      {
+        "id": "c",
+        "text": "set-cookie and cache-control",
+        "correct": false,
+        "explanation": "Cookies and cache headers manage browser caching and session state."
+      },
+      {
+        "id": "d",
+        "text": "x-ratelimit-remaining-requests and x-ratelimit-remaining-tokens",
+        "correct": true,
+        "explanation": "Response headers x-ratelimit-remaining-requests and x-ratelimit-remaining-tokens track real-time quota headroom."
+      }
+    ]
+  },
+  {
+    "id": "q-ob02a9b0c1d2",
+    "domain": "domain-4",
+    "objective": "domain-4/observability",
+    "stem": "Which metric token usage counts are returned in standard Chat Completion response payloads under the usage object?",
+    "options": [
+      {
+        "id": "a",
+        "text": "prompt_tokens, completion_tokens, and total_tokens",
+        "correct": true,
+        "explanation": "The usage object reports exact counts for prompt_tokens, completion_tokens, and total_tokens."
+      },
+      {
+        "id": "b",
+        "text": "gpu_temperature_celsius and fan_speed_rpm",
+        "correct": false,
+        "explanation": "Hardware temperature and fan metrics belong to infrastructure monitoring, not model API usage payloads."
+      },
+      {
+        "id": "c",
+        "text": "disk_write_mbps and network_latency_ms",
+        "correct": false,
+        "explanation": "Disk throughput and network ping latency are transport metrics, not LLM token usage counters."
+      },
+      {
+        "id": "d",
+        "text": "database_connections_active",
+        "correct": false,
+        "explanation": "Database connections are SQL pool counters, not inference token usage object properties."
+      }
+    ]
+  },
+  {
     "id": "q-op01d1e2f3a4",
     "domain": "domain-1",
     "objective": "domain-1/organizations-and-projects",
@@ -1276,6 +1596,70 @@
         "text": "Spare capacity let it run at lower priority without affecting others",
         "correct": true,
         "explanation": "Over-limit processing is opportunistic, so it depends on capacity that happens to be free rather than on anything about your request."
+      }
+    ]
+  },
+  {
+    "id": "q-rl04b6c7d8e9",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "How does automatic rate limit growth operate when a user consistently operates near their assigned capacity limits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The user account is suspended until a manual support ticket is filed",
+        "correct": false,
+        "explanation": "Automatic limit growth increases capacity without requiring manual support tickets."
+      },
+      {
+        "id": "b",
+        "text": "The rate limit cap increases automatically as consistent high-volume usage patterns are established",
+        "correct": true,
+        "explanation": "Default rate limits grow automatically when usage consistently operates close to assigned caps."
+      },
+      {
+        "id": "c",
+        "text": "All requests are permanently restricted to 1 token per second",
+        "correct": false,
+        "explanation": "Consistent usage triggers automatic limit growth, not throttling penalties."
+      },
+      {
+        "id": "d",
+        "text": "The model automatically switches to 4-bit quantization mode",
+        "correct": false,
+        "explanation": "Quantization is a model architecture format, not a rate limit quota mechanism."
+      }
+    ]
+  },
+  {
+    "id": "q-rl05c7d8e9f0",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "What HTTP status code is returned when a client request exceeds rate limits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "HTTP 200 OK",
+        "correct": false,
+        "explanation": "200 OK indicates request success, not rate limiting throttling."
+      },
+      {
+        "id": "b",
+        "text": "HTTP 401 Unauthorized",
+        "correct": false,
+        "explanation": "401 Unauthorized indicates missing or invalid API keys."
+      },
+      {
+        "id": "c",
+        "text": "HTTP 429 Too Many Requests",
+        "correct": true,
+        "explanation": "HTTP 429 Too Many Requests is standard when request rate or token limits are exceeded."
+      },
+      {
+        "id": "d",
+        "text": "HTTP 502 Bad Gateway",
+        "correct": false,
+        "explanation": "502 Bad Gateway indicates upstream server network connectivity failures."
       }
     ]
   },
@@ -1564,6 +1948,102 @@
         "text": "It automatically translates output into multiple spoken languages",
         "correct": false,
         "explanation": "Structured output enforces data format schemas, not natural language translation."
+      }
+    ]
+  },
+  {
+    "id": "q-ta01d2e3f4a5",
+    "domain": "domain-4",
+    "objective": "domain-4/team-access",
+    "stem": "How are projects scoped within an organization hierarchy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Projects are global namespaces accessible to all internet users by default",
+        "correct": false,
+        "explanation": "Projects are secure internal containers scoped under an organization."
+      },
+      {
+        "id": "b",
+        "text": "Projects exist outside organizations and cannot contain API keys",
+        "correct": false,
+        "explanation": "Projects belong to an organization and scope resources like API keys and fine-tuning jobs."
+      },
+      {
+        "id": "c",
+        "text": "Projects can only be created by external third-party OAuth providers",
+        "correct": false,
+        "explanation": "Organization admins create and manage projects directly in the platform console or API."
+      },
+      {
+        "id": "d",
+        "text": "Projects exist inside an organization and isolate resources, API keys, and access permissions",
+        "correct": true,
+        "explanation": "Projects group and isolate resources like endpoints, API keys, and jobs within an organization."
+      }
+    ]
+  },
+  {
+    "id": "q-ta02a3b4c5d6",
+    "domain": "domain-4",
+    "objective": "domain-4/team-access",
+    "stem": "What organization structure is initialized when a new user signs up for the platform?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A personal organization is created automatically for the user",
+        "correct": true,
+        "explanation": "Account creation automatically initializes a personal organization for resource scoping."
+      },
+      {
+        "id": "b",
+        "text": "A global enterprise organization with 50 pre-configured team members",
+        "correct": false,
+        "explanation": "Sign-up initializes a personal organization, not an enterprise team."
+      },
+      {
+        "id": "c",
+        "text": "A read-only sandbox account that cannot generate API keys",
+        "correct": false,
+        "explanation": "Personal organizations have full access to generate API keys and manage projects."
+      },
+      {
+        "id": "d",
+        "text": "A temporary 24-hour trial organization that auto-deletes",
+        "correct": false,
+        "explanation": "The created personal organization is a permanent account container."
+      }
+    ]
+  },
+  {
+    "id": "q-ta03b4c5d6e7",
+    "domain": "domain-4",
+    "objective": "domain-4/team-access",
+    "stem": "Which IAM permission role scope allows creating new API keys within a specific project without granting organization-level administrative access?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Organization Owner",
+        "correct": false,
+        "explanation": "Organization Owner has full admin privileges across all org settings, not project-scoped access."
+      },
+      {
+        "id": "b",
+        "text": "Project Developer or Project Admin",
+        "correct": true,
+        "explanation": "Project-level roles allow managing resources and API keys inside that specific project only."
+      },
+      {
+        "id": "c",
+        "text": "Global Billing Auditor",
+        "correct": false,
+        "explanation": "Billing Auditor grants read-only access to invoices and financial usage reports."
+      },
+      {
+        "id": "d",
+        "text": "Anonymous Guest User",
+        "correct": false,
+        "explanation": "Unauthenticated guests cannot access projects or issue API credentials."
       }
     ]
   }
