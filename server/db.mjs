@@ -69,7 +69,11 @@ export async function initDb() {
     console.error("[db] Idle client error:", err.message);
   });
 
-  const migrationClient = new Client({ connectionString: dbUrl, ssl: sslConfig });
+  const migrationClient = new Client({
+    connectionString: dbUrl,
+    ssl: sslConfig,
+    connectionTimeoutMillis: 5000,
+  });
 
   try {
     await migrationClient.connect();
@@ -93,6 +97,10 @@ export async function initDb() {
     console.log("[db] Migrations applied successfully.");
     return true;
   } catch (err) {
+    // pool connects lazily, so nothing has necessarily opened a socket yet —
+    // but ending it explicitly is cheap, and means a future change that
+    // touches pool before the migration completes can't leak a connection.
+    await pool.end().catch(() => {});
     pool = null;
     if (isProduction) {
       throw new Error(`[db] Migration failed in production: ${err.message}`);

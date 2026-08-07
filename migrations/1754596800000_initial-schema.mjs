@@ -11,8 +11,13 @@
 export const shorthands = undefined;
 
 export function up(pgm) {
-  pgm.createExtension("pgcrypto", { ifNotExists: true });
-
+  // No pgcrypto extension: gen_random_uuid() has been a core built-in
+  // function since PostgreSQL 13 (verified against a real PG13 container —
+  // no extension installed, function works). The old boot-time DDL never
+  // created this extension either, and doing it here would need CREATE
+  // privilege the app's role on the shared CNPG cluster may not have —
+  // exactly the kind of migration failure that's now fatal to production
+  // boot.
   pgm.createTable(
     "users",
     {
