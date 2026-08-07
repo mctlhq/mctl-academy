@@ -9,7 +9,6 @@ COPY client/package*.json ./client/
 RUN cd client && npm ci
 
 COPY . .
-RUN node client/scripts/build-content-bundle.mjs
 RUN cd client && npm run build
 
 FROM node:22-alpine AS runner
@@ -28,4 +27,5 @@ EXPOSE 8080
 USER node
 
 CMD ["sirv", "client/dist", "--port", "8080", "--host", "0.0.0.0", "--single"]
+
 
