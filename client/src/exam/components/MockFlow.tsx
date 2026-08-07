@@ -2,9 +2,10 @@ import { useState } from "react";
 import type { ExamDataSource } from "../dataSource";
 import type { Question } from "../types";
 import type { ExamSessionState } from "../session";
-import { answerQuestion, startSession, submitSession } from "../session";
+import { answerQuestion, scoreSession, startSession, submitSession } from "../session";
 import { shuffleOptions } from "../shuffleOptions";
 import { clearSession, loadSession, saveSession } from "../persistence";
+import { recordAttempt } from "../../services/progressStore";
 import { MockStartScreen } from "./MockStartScreen";
 import { MockExamScreen } from "./MockExamScreen";
 import { MockResultsScreen } from "./MockResultsScreen";
@@ -35,6 +36,17 @@ export function MockFlow({ dataSource }: { dataSource: ExamDataSource }) {
     const submitted = submitSession(session, Date.now());
     saveSession(submitted);
     setSession(submitted);
+
+    // Feed submitted mock answers into the same per-question progress store
+    // Practice mode writes to, so the Progress Dashboard and Review Mistakes
+    // mode reflect Mock exam attempts too (requirements.md: "in Practice
+    // mode or in a submitted Mock exam").
+    const { perQuestion } = scoreSession(submitted);
+    for (const scored of perQuestion) {
+      const question = submitted.questions.find((q) => q.id === scored.questionId);
+      if (!question) continue;
+      recordAttempt(scored.questionId, question.domain, scored.isCorrect);
+    }
   }
 
   function handleStartOver() {
