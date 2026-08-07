@@ -24,6 +24,22 @@ describe("Hono server & Report API", () => {
     assert.ok(body.runtime === "node" || body.runtime === "bun");
   });
 
+  test("GET /livez matches /healthz and carries no dependency check", async () => {
+    const res = await app.request("/livez");
+    assert.equal(res.status, 200);
+    const body = await res.json();
+    assert.equal(body.status, "ok");
+    assert.equal(body.service, "mctl-academy");
+  });
+
+  test("GET /readyz reports the memory store as ready outside production", async () => {
+    const res = await app.request("/readyz");
+    assert.equal(res.status, 200);
+    const body = await res.json();
+    assert.equal(body.status, "ok");
+    assert.equal(body.db, "memory");
+  });
+
   test("POST /api/reports accepts valid report", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
