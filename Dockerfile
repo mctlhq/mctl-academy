@@ -3,10 +3,10 @@ FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN bun install
+RUN bun install --frozen-lockfile
 
 COPY client/package*.json ./client/
-RUN cd client && bun install
+RUN cd client && bun install --frozen-lockfile
 
 COPY . .
 RUN bun run scripts/build-content-bundle.mjs
@@ -21,7 +21,7 @@ ENV NODE_ENV=production
 ENV PORT=8080
 
 COPY package*.json ./
-RUN bun install --production
+RUN bun install --production --frozen-lockfile
 
 COPY server ./server
 COPY --from=builder /app/client/dist ./client/dist

@@ -54,10 +54,11 @@ app.get("/api/reports", (c) => {
   return c.json({ reports, count: reports.length });
 });
 
-// Serve static frontend assets from client/dist if available
+// Serve static frontend assets from client/dist with SPA fallback
 if (typeof Bun !== "undefined") {
   const { serveStatic } = await import("hono/bun");
   app.use("/*", serveStatic({ root: "./client/dist" }));
+  app.get("/*", serveStatic({ path: "./client/dist/index.html" }));
 } else {
   const { serveStatic } = await import("@hono/node-server/serve-static");
   app.use("/*", serveStatic({ root: "./client/dist" }));
