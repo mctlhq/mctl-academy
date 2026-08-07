@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.2](https://github.com/mctlhq/mctl-academy/compare/0.1.1...0.1.2) (2026-08-07)
+
+
+### Features
+
+* **agents:** issue-19-feat-ui-implement-practice-mode-screen-w ([c112643](https://github.com/mctlhq/mctl-academy/commit/c112643dff6dc3aa131b141f23ea11327e48ff98))
+* **client:** add practice mode screen with instant feedback ([e701f81](https://github.com/mctlhq/mctl-academy/commit/e701f813281110cb282a9e8c74cca5dd43067101))
+
+
+### Bug Fixes
+
+* add /usr/local/bin to runner job PATH so gh is found ([a7a502b](https://github.com/mctlhq/mctl-academy/commit/a7a502b23e8835de08d9b7fffbf3ab9971049e6c))
+* address agy's P1 findings on its own review workflow ([c5a5903](https://github.com/mctlhq/mctl-academy/commit/c5a5903cb73f9d78e4dd92d24d2b05289a5bc75a))
+* address second round of agy P1 findings (marker forgery, sandbox escape) ([5c80186](https://github.com/mctlhq/mctl-academy/commit/5c80186730dc0a3e39e00e6d11003374f2c132c4))
+* **ci:** install root dependencies in client job for scripts/ imports ([c7fa097](https://github.com/mctlhq/mctl-academy/commit/c7fa097a97018be5b01f978ae7e8b96afec5a586))
+* **client:** add yaml dependency for content bundle build ([754976b](https://github.com/mctlhq/mctl-academy/commit/754976bde8ea07ba3642e15a0be7f3c267645986))
+* **scripts:** use fileURLToPath for cross-platform Windows path resolution ([f3b4805](https://github.com/mctlhq/mctl-academy/commit/f3b480517fe5c0a9397c1c3b6efc10fb3b6d5e25))
+* **tests:** use fileURLToPath in build-content-bundle.test.mjs for Windows compatibility ([ada1829](https://github.com/mctlhq/mctl-academy/commit/ada1829214fa8f48f7079c4d8d5e1e43c3a49105))
+
 ## [0.1.1](https://github.com/mctlhq/mctl-academy/compare/0.1.0...0.1.1) (2026-08-06)
 
 
