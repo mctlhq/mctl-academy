@@ -1,18 +1,17 @@
 import { Hono } from "hono";
-import { getCookie } from "hono/cookie";
-import { authRouter } from "./routes/auth.mjs";
+import { auth } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
-import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports, getSessionUser } from "./db.mjs";
+import { accountRouter } from "./routes/account.mjs";
+import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
-import { sessionCookieName } from "./session-cookie.mjs";
 
 export const app = new Hono();
 
-// Initialize the database. In production a failure here is fatal by design —
-// see the comment on initDb() in db.mjs — so the process exits and lets
-// Kubernetes restart the pod rather than serving from a memory store that
-// silently loses data. Outside production this always resolves.
+// Initialize the database. In production — and now unconditionally, since
+// better-auth (server/auth.mjs) has no in-memory fallback — a failure here is
+// fatal by design; see the comment on initDb() in db.mjs. The process exits
+// and lets Kubernetes restart the pod rather than serve from a broken state.
 try {
   await initDb();
 } catch (err) {
@@ -20,11 +19,18 @@ try {
   process.exit(1);
 }
 
-// Mount auth router
-app.route("/api/auth", authRouter);
+// better-auth owns /api/auth/* wholesale — origin validation, CSRF/Fetch
+// Metadata checks and secure production cookies are its concern, not a
+// parallel hand-rolled middleware. See server/auth.mjs.
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 // Mount attempt sync router (issue #57)
 app.route("/api/attempts", attemptsRouter);
+
+// Self-service account deletion (Art 17 erasure) — not better-auth's own
+// deleteUser, which requires email verification even for OAuth-only users.
+// See server/routes/account.mjs.
+app.route("/api/account", accountRouter);
 
 const VALID_REASONS = new Set([
   "typo",
@@ -135,8 +141,9 @@ app.get("/api/reports", async (c) => {
     .map((login) => login.trim().toLowerCase())
     .filter(Boolean);
 
-  const user = await getSessionUser(getCookie(c, sessionCookieName()));
-  if (!user || !moderators.includes(String(user.githubLogin).toLowerCase())) {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const githubLogin = session?.user?.githubLogin;
+  if (!githubLogin || !moderators.includes(String(githubLogin).toLowerCase())) {
     return c.json({ error: "Not found" }, 404);
   }
 

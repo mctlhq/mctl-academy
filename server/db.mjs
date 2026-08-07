@@ -10,37 +10,36 @@ const migrationsDir = `${dirname(fileURLToPath(import.meta.url))}/../migrations`
 
 let pool = null;
 
-// In-memory fallbacks when DATABASE_URL is not configured
-const memUsers = new Map(); // id -> user
-const memGithubUsers = new Map(); // github_id -> user
-const memSessions = new Map(); // token -> { userId, expiresAt }
+// In-memory fallbacks when DATABASE_URL is not configured. User/session
+// storage has no equivalent here since PR4 — better-auth (server/auth.mjs)
+// owns that data now and requires a real Postgres unconditionally.
 const memAttempts = []; // array of attempt objects
 const memQuestionReports = []; // array of question report objects
 
 /**
- * Initialize the database, or fall back to an in-memory store.
+ * Initialize the database.
  *
- * The in-memory fallback exists for tests and local development only. In
- * production it must never be reached silently: a pod that "logs in"
- * successfully and then loses every session and attempt on its next restart
- * is worse than a pod that fails to start. So in production, both a missing
- * DATABASE_URL and a failed connection throw here, and the caller in app.mjs
- * treats that as fatal — the process exits, and Kubernetes restarts the pod
- * according to its restart policy rather than serving from memory.
+ * DATABASE_URL is required unconditionally, in every environment — since
+ * PR4, server/auth.mjs (better-auth) has no in-memory fallback the way this
+ * module's own memAttempts/memQuestionReports arrays do, so there is no
+ * environment left where the app can usefully run without a real Postgres.
+ * A missing DATABASE_URL or a failed connection both throw here, and the
+ * caller in app.mjs treats that as fatal — the process exits, and Kubernetes
+ * restarts the pod according to its restart policy rather than serving from
+ * a broken state.
  */
 export async function initDb() {
   const dbUrl = process.env.DATABASE_URL;
   const isProduction = process.env.NODE_ENV === "production";
 
   if (!dbUrl) {
-    if (isProduction) {
-      throw new Error(
-        "DATABASE_URL is not set in production. Refusing to start on the in-memory " +
-          "fallback store, which silently loses all sessions and attempts on restart."
-      );
-    }
-    console.log("[db] DATABASE_URL not set — using in-memory store.");
-    return false;
+    throw new Error(
+      "DATABASE_URL is not set" +
+        (isProduction ? " in production" : "") +
+        ". Refusing to start on an in-memory store, which silently loses all " +
+        "sessions and attempts on restart, and which better-auth has no " +
+        "equivalent of at all."
+    );
   }
 
   // Shared with scripts/migrate.mjs via db-ssl.mjs — see that file for why:
@@ -118,101 +117,6 @@ export async function checkDbReady() {
   }
   await pool.query("SELECT 1");
   return { ready: true, mode: "postgres" };
-}
-
-export async function upsertUser({ githubId, githubLogin, avatarUrl }) {
-  if (pool) {
-    const res = await pool.query(
-      `INSERT INTO users (github_id, github_login, avatar_url, updated_at)
-       VALUES ($1, $2, $3, NOW())
-       ON CONFLICT (github_id) DO UPDATE
-       SET github_login = EXCLUDED.github_login,
-           avatar_url = EXCLUDED.avatar_url,
-           updated_at = NOW()
-       RETURNING id, github_id, github_login, avatar_url, created_at;`,
-      [githubId, githubLogin, avatarUrl]
-    );
-    const row = res.rows[0];
-    return {
-      id: row.id,
-      githubId: Number(row.github_id),
-      githubLogin: row.github_login,
-      avatarUrl: row.avatar_url,
-      createdAt: row.created_at,
-    };
-  }
-
-  let user = memGithubUsers.get(githubId);
-  if (!user) {
-    user = {
-      id: randomUUID(),
-      githubId,
-      githubLogin,
-      avatarUrl,
-      createdAt: new Date().toISOString(),
-    };
-    memUsers.set(user.id, user);
-    memGithubUsers.set(githubId, user);
-  } else {
-    user.githubLogin = githubLogin;
-    user.avatarUrl = avatarUrl;
-  }
-  return user;
-}
-
-export async function createSession(userId, expiresInMs = 7 * 24 * 60 * 60 * 1000) {
-  const token = `sess_${randomUUID().replace(/-/g, "")}`;
-  const expiresAt = new Date(Date.now() + expiresInMs);
-
-  if (pool) {
-    await pool.query(
-      `INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, $3);`,
-      [token, userId, expiresAt]
-    );
-  } else {
-    memSessions.set(token, { userId, expiresAt });
-  }
-
-  return { token, expiresAt };
-}
-
-export async function getSessionUser(token) {
-  if (!token) return null;
-
-  if (pool) {
-    const res = await pool.query(
-      `SELECT u.id, u.github_id, u.github_login, u.avatar_url, s.expires_at
-       FROM sessions s
-       JOIN users u ON u.id = s.user_id
-       WHERE s.id = $1 AND s.expires_at > NOW();`,
-      [token]
-    );
-    if (res.rows.length === 0) return null;
-    const row = res.rows[0];
-    return {
-      id: row.id,
-      githubId: Number(row.github_id),
-      githubLogin: row.github_login,
-      avatarUrl: row.avatar_url,
-    };
-  }
-
-  const sess = memSessions.get(token);
-  if (!sess) return null;
-  if (new Date() > new Date(sess.expiresAt)) {
-    memSessions.delete(token);
-    return null;
-  }
-  return memUsers.get(sess.userId) || null;
-}
-
-export async function deleteSession(token) {
-  if (!token) return;
-  if (pool) {
-    await pool.query(`DELETE FROM sessions WHERE id = $1;`, [token]);
-  } else {
-    memSessions.delete(token);
-  }
 }
 
 export async function recordUserAttempt({ userId, questionId, domain, correct }) {
