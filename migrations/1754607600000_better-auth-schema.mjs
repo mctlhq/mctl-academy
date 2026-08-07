@@ -99,11 +99,16 @@ export function up(pgm) {
       onDelete: "CASCADE",
     },
   });
+  // CASCADE, not the original schema's SET NULL — PRIVACY.md promises account
+  // deletion removes "every attempt and answer, and any reports you filed,
+  // by cascade". SET NULL would only anonymize a report (keep the row,
+  // detach the reporter), not delete it, silently breaking that promise the
+  // moment DELETE /api/account (added in this same PR) is used for real.
   pgm.addConstraint("question_reports", "question_reports_reporter_user_id_fkey", {
     foreignKeys: {
       columns: "reporter_user_id",
       references: '"user"(id)',
-      onDelete: "SET NULL",
+      onDelete: "CASCADE",
     },
   });
 }

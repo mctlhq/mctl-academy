@@ -24,6 +24,11 @@ That is the complete list.
   application never sees or stores a credential.
 - **OAuth access and refresh tokens are encrypted at rest** and are never used
   to call the GitHub or Google API again after sign-in completes.
+- **No IP address or User-Agent.** The account system this application runs on
+  (better-auth) captures both by default on every sign-in; this application
+  explicitly discards them before they are written to the database, since it
+  has no feature (no security dashboard, no "sign out other devices") that
+  needs them.
 
 ## A note on email
 

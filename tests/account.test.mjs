@@ -1,6 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { app } from "../server/app.mjs";
+import { authPool } from "../server/auth.mjs";
 import { authedCookie } from "./helpers/auth-test-helper.mjs";
 
 describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
@@ -57,5 +58,33 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
     // for a user who actually has attempts on record, not just a fresh one.
     const after = await app.request("/api/attempts", { headers: { Cookie: cookie } });
     assert.equal(after.status, 401);
+  });
+
+  test("cascades to the deleted user's question reports — the row is gone, not merely anonymized", async () => {
+    const cookie = await authedCookie({ githubLogin: "account-delete-reports-cascade" });
+    const session = await (await app.request("/api/auth/get-session", { headers: { Cookie: cookie } })).json();
+    const userId = session.user.id;
+
+    await authPool.query(
+      `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id) VALUES ($1, $2, $3, $4);`,
+      ["q-account-delete-reports", "typo", "test report", userId]
+    );
+
+    const before = await authPool.query(`SELECT id FROM question_reports WHERE reporter_user_id = $1;`, [userId]);
+    assert.equal(before.rows.length, 1);
+
+    await app.request("/api/account", {
+      method: "DELETE",
+      headers: { Cookie: cookie, Origin: "http://localhost" },
+    });
+
+    // PRIVACY.md promises deletion removes reports "by cascade" — this only
+    // holds if the FK is ON DELETE CASCADE. The row must be gone entirely,
+    // not merely have reporter_user_id set to NULL (SET NULL would anonymize
+    // and retain it, contradicting that promise).
+    const after = await authPool.query(`SELECT id FROM question_reports WHERE question_id = $1;`, [
+      "q-account-delete-reports",
+    ]);
+    assert.equal(after.rows.length, 0);
   });
 });

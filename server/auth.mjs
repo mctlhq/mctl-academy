@@ -73,6 +73,24 @@ export const auth = betterAuth({
     // stored access/refresh tokens are pure liability if the DB ever leaks.
     encryptOAuthTokens: true,
   },
+  // better-auth's session table has ipAddress/userAgent columns, and its
+  // internal-adapter unconditionally populates both on every sign-in (see
+  // node_modules/better-auth/dist/db/internal-adapter.mjs's createSession) —
+  // there is no top-level option to disable capturing them, only this
+  // per-write hook. PRIVACY.md commits to "the minimum needed... and nothing
+  // else"; this app has no use for either field (no security dashboards, no
+  // "sign out other devices" UI), so scrubbing them before they're written
+  // keeps the promise rather than requiring a PRIVACY.md rewrite to match
+  // better-auth's own defaults.
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => ({
+          data: { ...session, ipAddress: null, userAgent: null },
+        }),
+      },
+    },
+  },
   // Only registering a provider when both its id and secret are actually
   // set — rather than defaulting missing values to "" — so an unconfigured
   // environment gets better-auth's own clean "provider not found" error
