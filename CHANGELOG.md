@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.1.18](https://github.com/mctlhq/mctl-academy/compare/0.1.17...0.1.18) (2026-08-07)
+
+
+### Features
+
+* **agents:** issue-22-feat-ui-implement-question-report-form-a ([dea38a2](https://github.com/mctlhq/mctl-academy/commit/dea38a28abdaf93002309e8fa9b25ab1dcf778ca))
+* **agents:** issue-22-feat-ui-implement-question-report-form-a ([a54d3f8](https://github.com/mctlhq/mctl-academy/commit/a54d3f8e2a44c5d74c4eb6aa41a4897e0b0abe54))
+* **agents:** issue-57-feat-api-implement-attempt-sync-api-and ([9129845](https://github.com/mctlhq/mctl-academy/commit/9129845243b1289d282a6482d132ddf32dbcb3f6))
+* **agents:** issue-57-feat-api-implement-attempt-sync-api-and ([303529d](https://github.com/mctlhq/mctl-academy/commit/303529d864a55162d9050335584dc015a6253b83))
+* **content:** add 18 new published questions bringing total bank to 82 ([1ba8078](https://github.com/mctlhq/mctl-academy/commit/1ba8078596c2cbd90895a54160bf4d69a29fe75a))
+* **content:** add 18 published questions to reach Phase 1 target of 82 questions ([09ab8c2](https://github.com/mctlhq/mctl-academy/commit/09ab8c26983caacb0e69038f9354036c704b2ce0))
+
+
+### Bug Fixes
+
+* **client:** handle localStorage safety in node environment for progressStore tests ([bc0ae6e](https://github.com/mctlhq/mctl-academy/commit/bc0ae6e20b3c1e45f5b8058f62433bc4163cdb84))
+* **client:** handle localStorage safety in node environment for progressStore tests ([02ebb63](https://github.com/mctlhq/mctl-academy/commit/02ebb6342107eff0d4bf300d3007cf04bd134878))
+* **deps:** replace package-lock.json with bun.lock ([71d63ae](https://github.com/mctlhq/mctl-academy/commit/71d63aea76c47f494b59de46029a5d5c35950716))
+* **deps:** replace package-lock.json with bun.lock ([86a9cad](https://github.com/mctlhq/mctl-academy/commit/86a9caded82b65df6715b41ed988ed6114da8262))
+
 ## [0.1.17](https://github.com/mctlhq/mctl-academy/compare/0.1.16...0.1.17) (2026-08-07)
 
 
