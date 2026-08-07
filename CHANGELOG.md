@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.12](https://github.com/mctlhq/mctl-academy/compare/0.1.11...0.1.12) (2026-08-07)
+
+
+### Bug Fixes
+
+* **ci:** install root deps for build scripts and add mock-bundle to pre-hooks ([de99cd9](https://github.com/mctlhq/mctl-academy/commit/de99cd9f41a6f306765da9e5bbacca1bd3e4180e))
+* **docker:** add build-mock-bundle.mjs to generate mock exam data at build time ([51430dd](https://github.com/mctlhq/mctl-academy/commit/51430dd5e95542208714f6c318da03a79853ab6b))
+* **docker:** add build-mock-bundle.mjs to generate mock exam data at build time ([fce7dd0](https://github.com/mctlhq/mctl-academy/commit/fce7dd0063c8a6039b994b65e8f51caa1d20053a))
+* **repo:** sync release-please manifest and package version to 0.1.11 ([7030a74](https://github.com/mctlhq/mctl-academy/commit/7030a74d9fc2a6786c0c0e564859c6b1f1dd27de))
+* **repo:** sync release-please manifest and package version to 0.1.11 ([5f91697](https://github.com/mctlhq/mctl-academy/commit/5f91697654bd4659b41bfa27d625ce894e667da6))
+
 ## [0.1.3](https://github.com/mctlhq/mctl-academy/compare/0.1.2...0.1.3) (2026-08-07)
 
 
