@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-de05f6a7b8c9
+status: published
+domain: domain-4
+objective: domain-4/observability
+stem: >-
+  Which metrics are essential to monitor for detecting inference latency bottlenecks on dedicated endpoints?
+options:
+  - id: a
+    text: Time-To-First-Token (TTFT) and Inter-Token Latency (ITL)
+    correct: true
+    explanation: >-
+      TTFT measures initial prompt processing delay, while ITL measures decoding speed per token.
+  - id: b
+    text: Frontend CSS file bundle sizes
+    correct: false
+    explanation: >-
+      Client asset bundle size does not reflect backend GPU inference latency.
+  - id: c
+    text: Repository git commit frequency
+    correct: false
+    explanation: >-
+      Git commit history is irrelevant to runtime endpoint performance metrics.
+  - id: d
+    text: Physical room ambient temperature in developer offices
+    correct: false
+    explanation: >-
+      Developer office environment metrics do not measure cloud GPU performance.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: >-
+      Lifecycle is deployment state. Readiness is traffic-serving capability.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"

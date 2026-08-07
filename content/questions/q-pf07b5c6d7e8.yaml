@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-pf07b5c6d7e8
+status: published
+domain: domain-1
+objective: domain-1/playground
+stem: >-
+  What primary workflow function does the Nebius Token Factory Playground UI serve during initial agent prototyping?
+options:
+  - id: a
+    text: Interactive testing of model prompts, parameters, and tool outputs directly in the browser
+    correct: true
+    explanation: >-
+      The Playground UI enables rapid manual experimentation with prompts, parameters, and responses.
+  - id: b
+    text: Compiling binary Linux kernel modules for custom GPU instances
+    correct: false
+    explanation: >-
+      Playground handles model inference testing, not OS compilation.
+  - id: c
+    text: Provisioning physical rack hardware in remote data centers
+    correct: false
+    explanation: >-
+      Hardware provisioning is managed by infrastructure infrastructure teams, not the prompt playground.
+  - id: d
+    text: Generating automated legal compliance tax forms
+    correct: false
+    explanation: >-
+      The playground is a developer interface for LLM prompt testing.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"

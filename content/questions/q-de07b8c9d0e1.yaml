@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-de07b8c9d0e1
+status: published
+domain: domain-4
+objective: domain-4/team-access
+stem: >-
+  How do organization administrators grant new team members access to specific projects and endpoints?
+options:
+  - id: a
+    text: By sending user invitations via email and assigning granular RBAC roles within the organization
+    correct: true
+    explanation: >-
+      Team management relies on invitations and role-based access control per project.
+  - id: b
+    text: By sharing root admin database passwords in public Slack channels
+    correct: false
+    explanation: >-
+      Root credentials should never be shared publicly; RBAC invitations are used instead.
+  - id: c
+    text: By committing plaintext passwords directly to source control repositories
+    correct: false
+    explanation: >-
+      Plaintext secret committing is a critical security vulnerability.
+  - id: d
+    text: By creating a new separate organization for each individual developer
+    correct: false
+    explanation: >-
+      Teams work within shared organizations and projects via invitations.
+evidence:
+  - source_id: src-org-projects
+    excerpt: >-
+      exist inside a project and inherit its access settings.
+authored:
+  by: agent:claude
+  at: "2026-08-07T19:30:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T19:31:00Z"
