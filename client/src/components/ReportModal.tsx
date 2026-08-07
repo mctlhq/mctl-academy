@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./ReportModal.css";
 
+const MAX_COMMENT_LENGTH = 2000;
+
 interface ReportModalProps {
   questionId: string;
   onClose: () => void;
@@ -75,9 +77,13 @@ export function ReportModal({ questionId, onClose }: ReportModalProps) {
               rows={3}
               placeholder="Describe the issue in detail..."
               value={comment}
+              maxLength={MAX_COMMENT_LENGTH}
               onChange={(e) => setComment(e.target.value)}
               disabled={status === "submitting"}
             />
+            <p className="report-char-count">
+              {comment.length} / {MAX_COMMENT_LENGTH}
+            </p>
 
             {status === "error" && <p className="report-error">{errorMessage}</p>}
 

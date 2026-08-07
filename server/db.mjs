@@ -10,6 +10,7 @@ const memUsers = new Map(); // id -> user
 const memGithubUsers = new Map(); // github_id -> user
 const memSessions = new Map(); // token -> { userId, expiresAt }
 const memAttempts = []; // array of attempt objects
+const memQuestionReports = []; // array of question report objects
 
 export async function initDb() {
   const dbUrl = process.env.DATABASE_URL;
@@ -49,6 +50,18 @@ export async function initDb() {
         correct BOOLEAN NOT NULL,
         attempted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
+
+      CREATE TABLE IF NOT EXISTS question_reports (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        question_id VARCHAR(255) NOT NULL,
+        reason VARCHAR(64) NOT NULL,
+        comment TEXT,
+        reporter_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS question_reports_question_id_idx
+        ON question_reports (question_id);
     `);
 
     console.log("[db] PostgreSQL schema initialized successfully.");
@@ -201,4 +214,57 @@ export async function getUserAttempts(userId) {
     map.set(a.questionId, a);
   }
   return [...map.values()];
+}
+
+export async function insertQuestionReport({ questionId, reason, comment, reporterUserId }) {
+  if (pool) {
+    const res = await pool.query(
+      `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, question_id, reason, comment, reporter_user_id, created_at;`,
+      [questionId, reason, comment || null, reporterUserId || null]
+    );
+    const row = res.rows[0];
+    return {
+      id: row.id,
+      questionId: row.question_id,
+      reason: row.reason,
+      comment: row.comment,
+      reporterUserId: row.reporter_user_id,
+      createdAt: row.created_at,
+    };
+  }
+
+  const report = {
+    id: randomUUID(),
+    questionId,
+    reason,
+    comment: comment || null,
+    reporterUserId: reporterUserId || null,
+    createdAt: new Date().toISOString(),
+  };
+  memQuestionReports.push(report);
+  return report;
+}
+
+export async function listRecentQuestionReports(limit = 50) {
+  if (pool) {
+    const res = await pool.query(
+      `SELECT id, question_id, reason, comment, reporter_user_id, created_at
+       FROM question_reports
+       ORDER BY created_at DESC
+       LIMIT $1;`,
+      [limit]
+    );
+    return res.rows.map((row) => ({
+      id: row.id,
+      questionId: row.question_id,
+      reason: row.reason,
+      comment: row.comment,
+      reporterUserId: row.reporter_user_id,
+      createdAt: row.created_at,
+    }));
+  }
+
+  return memQuestionReports.slice(-limit).reverse();
 }
