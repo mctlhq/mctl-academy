@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { PracticeScreen } from "./practice/PracticeScreen";
 import { MockFlow } from "./exam/components/MockFlow";
 import { DashboardScreen } from "./dashboard/DashboardScreen";
+import { UserNav } from "./components/UserNav";
 import { StaticBundleDataSource } from "./exam/dataSource";
 import { getMistakeQuestionIds } from "./services/progressStore";
 import rawBundle from "./content-bundle.json";
@@ -31,6 +32,8 @@ export function App() {
       <nav
         style={{
           display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           gap: "0.75rem",
           padding: "1rem",
           borderBottom: "1px solid #e0e0e0",
@@ -39,65 +42,69 @@ export function App() {
           flexWrap: "wrap",
         }}
       >
-        <button
-          onClick={() => handleNav("practice")}
-          style={{
-            fontWeight: mode === "practice" ? "bold" : "normal",
-            padding: "0.5rem 1rem",
-            cursor: "pointer",
-            background: mode === "practice" ? "#1976d2" : "#ffffff",
-            color: mode === "practice" ? "#ffffff" : "#333333",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          Practice Bank
-        </button>
+        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+          <button
+            onClick={() => handleNav("practice")}
+            style={{
+              fontWeight: mode === "practice" ? "bold" : "normal",
+              padding: "0.5rem 1rem",
+              cursor: "pointer",
+              background: mode === "practice" ? "#1976d2" : "#ffffff",
+              color: mode === "practice" ? "#ffffff" : "#333333",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Practice Bank
+          </button>
 
-        <button
-          onClick={() => handleNav("mistakes")}
-          style={{
-            fontWeight: mode === "mistakes" ? "bold" : "normal",
-            padding: "0.5rem 1rem",
-            cursor: "pointer",
-            background: mode === "mistakes" ? "#e65100" : "#ffffff",
-            color: mode === "mistakes" ? "#ffffff" : "#333333",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          Review Mistakes ({mistakeIds.length})
-        </button>
+          <button
+            onClick={() => handleNav("mistakes")}
+            style={{
+              fontWeight: mode === "mistakes" ? "bold" : "normal",
+              padding: "0.5rem 1rem",
+              cursor: "pointer",
+              background: mode === "mistakes" ? "#e65100" : "#ffffff",
+              color: mode === "mistakes" ? "#ffffff" : "#333333",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Review Mistakes ({mistakeIds.length})
+          </button>
 
-        <button
-          onClick={() => handleNav("exam")}
-          style={{
-            fontWeight: mode === "exam" ? "bold" : "normal",
-            padding: "0.5rem 1rem",
-            cursor: "pointer",
-            background: mode === "exam" ? "#2e7d32" : "#ffffff",
-            color: mode === "exam" ? "#ffffff" : "#333333",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          Mock Exam (30 Questions)
-        </button>
+          <button
+            onClick={() => handleNav("exam")}
+            style={{
+              fontWeight: mode === "exam" ? "bold" : "normal",
+              padding: "0.5rem 1rem",
+              cursor: "pointer",
+              background: mode === "exam" ? "#2e7d32" : "#ffffff",
+              color: mode === "exam" ? "#ffffff" : "#333333",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Mock Exam (30 Questions)
+          </button>
 
-        <button
-          onClick={() => handleNav("dashboard")}
-          style={{
-            fontWeight: mode === "dashboard" ? "bold" : "normal",
-            padding: "0.5rem 1rem",
-            cursor: "pointer",
-            background: mode === "dashboard" ? "#4527a0" : "#ffffff",
-            color: mode === "dashboard" ? "#ffffff" : "#333333",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          Progress Dashboard
-        </button>
+          <button
+            onClick={() => handleNav("dashboard")}
+            style={{
+              fontWeight: mode === "dashboard" ? "bold" : "normal",
+              padding: "0.5rem 1rem",
+              cursor: "pointer",
+              background: mode === "dashboard" ? "#4527a0" : "#ffffff",
+              color: mode === "dashboard" ? "#ffffff" : "#333333",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            Progress Dashboard
+          </button>
+        </div>
+
+        <UserNav />
       </nav>
 
       {mode === "practice" && <PracticeScreen key={`practice-${navTick}`} />}
