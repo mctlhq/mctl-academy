@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import rawBundle from "../content-bundle.json";
+import { recordAttempt } from "../services/progressStore";
 
 export interface BundleOption {
   id: string;
@@ -96,7 +97,9 @@ export function usePracticeSession(
       }
       if (isFirstSelection) {
         const option = current.options.find((o) => o.id === optionId);
-        firstCorrectByQuestion.current.set(index, Boolean(option?.correct));
+        const isCorrect = Boolean(option?.correct);
+        firstCorrectByQuestion.current.set(index, isCorrect);
+        recordAttempt(current.id, current.domain, isCorrect);
       }
       forceUpdate((n) => n + 1);
     },
