@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.1.3](https://github.com/mctlhq/mctl-academy/compare/0.1.2...0.1.3) (2026-08-07)
+
+
+### Features
+
+* **agents:** issue-20-feat-ui-implement-mock-exam-screen-30-qu ([a945a15](https://github.com/mctlhq/mctl-academy/commit/a945a15ae2ec62d49177177948b19f0aa68a4ba1))
+* **agents:** issue-20-feat-ui-implement-mock-exam-screen-30-qu ([3794c76](https://github.com/mctlhq/mctl-academy/commit/3794c76614e5a9b934d57115230c09ad61477613))
+* **ui:** merge practice mode ([#19](https://github.com/mctlhq/mctl-academy/issues/19)) and mock exam ([#20](https://github.com/mctlhq/mctl-academy/issues/20)) UI into unified app ([c4c0c3c](https://github.com/mctlhq/mctl-academy/commit/c4c0c3c0e4b72bcfdd890d9bda16a1aa3ad6d364))
+
+
+### Bug Fixes
+
+* **ci:** install root deps for build scripts and add mock-bundle to pre-hooks ([de99cd9](https://github.com/mctlhq/mctl-academy/commit/de99cd9f41a6f306765da9e5bbacca1bd3e4180e))
+* **client:** clean up test setup files ([917527b](https://github.com/mctlhq/mctl-academy/commit/917527b48d9308d6beacb4c00aef4b2343f14357))
+* **client:** fix prebuild script path ([2cacf80](https://github.com/mctlhq/mctl-academy/commit/2cacf80d05ac5ea0f455b096f9256d431e8963a6))
+* **client:** unify test-setup files into single file ([7106cc9](https://github.com/mctlhq/mctl-academy/commit/7106cc9914ff957d3da58a705dd2a3d655f01fef))
+* **client:** use correct relative path ../scripts/build-content-bundle.mjs in prebuild ([4b3a4c8](https://github.com/mctlhq/mctl-academy/commit/4b3a4c8bfbf769364c6f0ae5a9823711e7578576))
+* **docker:** add build-mock-bundle.mjs to generate mock exam data at build time ([51430dd](https://github.com/mctlhq/mctl-academy/commit/51430dd5e95542208714f6c318da03a79853ab6b))
+* **docker:** add build-mock-bundle.mjs to generate mock exam data at build time ([fce7dd0](https://github.com/mctlhq/mctl-academy/commit/fce7dd0063c8a6039b994b65e8f51caa1d20053a))
+* **docker:** build and serve React client app ([b96bc22](https://github.com/mctlhq/mctl-academy/commit/b96bc2245497b5999ab31c0e6f09689168154ab4))
+* **docker:** build client React workspace and serve single-page app via sirv ([ce70716](https://github.com/mctlhq/mctl-academy/commit/ce70716ec36a70ff1f1d4afc6cb957cfb6936af3))
+* **docker:** copy client package manifests before npm ci ([b0de50a](https://github.com/mctlhq/mctl-academy/commit/b0de50a633d4d2caec7814c3eb1631898add177c))
+* **docker:** copy client package manifests before npm ci --include=optional ([1075a6e](https://github.com/mctlhq/mctl-academy/commit/1075a6ec8b56f86bc8ff21bea7249f6d299a0af3))
+* **docker:** correct build-content-bundle script path in Dockerfile ([5dded78](https://github.com/mctlhq/mctl-academy/commit/5dded78613e49c38f3d24aba570b27ac440f23e6))
+* **docker:** correct script path in Dockerfile ([e76b87a](https://github.com/mctlhq/mctl-academy/commit/e76b87a93b5ed0adeca1fb9198384682931f775a))
+* **docker:** install optional native build deps and add user-event to client devDeps ([8675183](https://github.com/mctlhq/mctl-academy/commit/8675183cb539603ab7c00a09bd02598622d71f47))
+* **docker:** resolve native binding build error in Docker ([b9353cc](https://github.com/mctlhq/mctl-academy/commit/b9353ccdc4ec77800d24e9d9ec2fe7c240408d5d))
+* **docker:** simplify builder stage to run client npm run build ([29e96f5](https://github.com/mctlhq/mctl-academy/commit/29e96f5be33ea6d3c41bbd6048251fa4df5342fb))
+* **docker:** simplify client build stage ([2b4fe35](https://github.com/mctlhq/mctl-academy/commit/2b4fe3524392c521f61dcf0057fec298165fdfb6))
+* **docker:** use npx vite build directly in Dockerfile ([3c88351](https://github.com/mctlhq/mctl-academy/commit/3c88351d1281f6dd5cd75c245313b188a1d787f5))
+* **docker:** use npx vite build in Dockerfile ([577e34f](https://github.com/mctlhq/mctl-academy/commit/577e34f4b0b4ec560b3cb695460aa674d64b0a39))
+
 ## [0.1.2](https://github.com/mctlhq/mctl-academy/compare/0.1.1...0.1.2) (2026-08-07)
 
 
