@@ -29,7 +29,7 @@ options:
 evidence:
   - source_id: src-structured-output
     excerpt: >-
-      Logit-level JSON schema constraints guarantee valid syntax during generation without formatting errors.
+      Forces arbitrary JSON output, the model will decide on the schema by itself
 authored:
   by: agent:claude
   at: "2026-08-07T14:40:00Z"

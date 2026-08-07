@@ -29,7 +29,8 @@ options:
 evidence:
   - source_id: src-function-calling
     excerpt: >-
-      Client applications execute the requested tool and supply the result back in a tool role message.
+      You are responsible for parsing these outputs and executing the corresponding
+      functions on your backend or client side.
 authored:
   by: agent:claude
   at: "2026-08-07T14:40:00Z"
