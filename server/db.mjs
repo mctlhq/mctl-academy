@@ -1,7 +1,11 @@
 import pg from "pg";
 import { randomUUID } from "node:crypto";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { runner } from "node-pg-migrate";
 
-const { Pool } = pg;
+const { Pool, Client } = pg;
+const migrationsDir = `${dirname(fileURLToPath(import.meta.url))}/../migrations`;
 
 let pool = null;
 
@@ -42,10 +46,17 @@ export async function initDb() {
   // mctl-loyalty and mctl-pairdesk against the same CNPG cluster; there is no
   // CA distribution in place yet to verify the server certificate. That gap is
   // a platform-wide concern, not something to solve differently in this one
-  // service.
+  // service. Both connections below share this exact object so the migration
+  // run and the long-lived query pool can never disagree about SSL — passing
+  // `databaseUrl` straight to node-pg-migrate's runner() gave it no SSL
+  // config at all, which only surfaced when tested against a real, non-SSL
+  // local Postgres: the migration connected, then every later query on `pool`
+  // failed, because `pool` alone was requesting SSL.
+  const sslConfig = isProduction ? { rejectUnauthorized: false } : false;
+
   pool = new Pool({
     connectionString: dbUrl,
-    ssl: isProduction ? { rejectUnauthorized: false } : false,
+    ssl: sslConfig,
     connectionTimeoutMillis: 5000,
   });
 
@@ -58,55 +69,38 @@ export async function initDb() {
     console.error("[db] Idle client error:", err.message);
   });
 
+  const migrationClient = new Client({ connectionString: dbUrl, ssl: sslConfig });
+
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        github_id BIGINT UNIQUE NOT NULL,
-        github_login VARCHAR(255) NOT NULL,
-        avatar_url TEXT,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
+    await migrationClient.connect();
 
-      CREATE TABLE IF NOT EXISTS sessions (
-        id VARCHAR(255) PRIMARY KEY,
-        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        expires_at TIMESTAMPTZ NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
+    // Versioned, transactional migrations replace the old
+    // CREATE TABLE IF NOT EXISTS block. node-pg-migrate takes a Postgres
+    // advisory lock for the duration of the run, so when a rollout starts
+    // several pods at once, only one applies pending migrations while the
+    // rest wait for the lock and then find nothing left to do — "wait"
+    // rather than the library's default "fail" is what makes that safe
+    // instead of a crash-loop on "another migration is already running".
+    await runner({
+      dbClient: migrationClient,
+      dir: migrationsDir,
+      migrationsTable: "pgmigrations",
+      direction: "up",
+      singleTransaction: true,
+      advisoryLockMode: "wait",
+    });
 
-      CREATE TABLE IF NOT EXISTS attempts (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-        question_id VARCHAR(255) NOT NULL,
-        domain VARCHAR(255) NOT NULL,
-        correct BOOLEAN NOT NULL,
-        attempted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
-
-      CREATE TABLE IF NOT EXISTS question_reports (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        question_id VARCHAR(255) NOT NULL,
-        reason VARCHAR(64) NOT NULL,
-        comment TEXT,
-        reporter_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
-
-      CREATE INDEX IF NOT EXISTS question_reports_question_id_idx
-        ON question_reports (question_id);
-    `);
-
-    console.log("[db] PostgreSQL schema initialized successfully.");
+    console.log("[db] Migrations applied successfully.");
     return true;
   } catch (err) {
     pool = null;
     if (isProduction) {
-      throw new Error(`[db] PostgreSQL connection failed in production: ${err.message}`);
+      throw new Error(`[db] Migration failed in production: ${err.message}`);
     }
-    console.error("[db] PostgreSQL connection failed, falling back to memory store:", err.message);
+    console.error("[db] Migration failed, falling back to memory store:", err.message);
     return false;
+  } finally {
+    await migrationClient.end().catch(() => {});
   }
 }
 

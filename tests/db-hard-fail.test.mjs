@@ -43,7 +43,7 @@ describe("production refuses to boot without a working database", () => {
     });
 
     assert.notEqual(result.status, 0, "a connection failure must be fatal, not a silent fallback to memory");
-    assert.match(result.stderr, /PostgreSQL connection failed in production/);
+    assert.match(result.stderr, /Migration failed in production/);
   });
 
   test("outside production, a missing DATABASE_URL still starts on the in-memory store", () => {

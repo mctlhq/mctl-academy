@@ -19,13 +19,16 @@
     "test:content": "node --test 'tests/**/*.test.mjs'",
     "test:server": "node --test 'tests/server.test.mjs'",
     "start": "node server/index.mjs",
-    "build:preview": "node scripts/build-preview.mjs"
+    "build:preview": "node scripts/build-preview.mjs",
+    "migrate": "node scripts/migrate.mjs up",
+    "migrate:down": "node scripts/migrate.mjs down"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "hono": "^4.13.1",
+    "node-pg-migrate": "^9.0.0",
     "pg": "^8.22.0",
     "yaml": "^2.6.1"
   }
