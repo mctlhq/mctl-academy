@@ -1,19 +1,19 @@
-FROM node:22-alpine AS builder
+FROM oven/bun:1-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN bun install
 
 COPY client/package*.json ./client/
-RUN cd client && npm ci --include=optional
+RUN cd client && bun install
 
 COPY . .
-RUN node scripts/build-content-bundle.mjs
-RUN node scripts/build-mock-bundle.mjs
-RUN cd client && npx vite build
+RUN bun run scripts/build-content-bundle.mjs
+RUN bun run scripts/build-mock-bundle.mjs
+RUN cd client && bun run build
 
-FROM node:22-alpine AS runner
+FROM oven/bun:1-alpine AS runner
 
 WORKDIR /app
 
@@ -21,13 +21,13 @@ ENV NODE_ENV=production
 ENV PORT=8080
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN bun install --production
 
 COPY server ./server
 COPY --from=builder /app/client/dist ./client/dist
 
 EXPOSE 8080
 
-USER node
+USER bun
 
-CMD ["node", "server/index.mjs"]
+CMD ["bun", "run", "server/index.mjs"]
