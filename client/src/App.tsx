@@ -25,13 +25,21 @@ export function App() {
 
     if (user) {
       setSyncEnabled(true);
-      syncFromServer().then(() => {
-        if (!cancelled) {
-          // Local progress may have just been merged with server history;
-          // recompute anything derived from it (mistake count, dashboard).
-          setNavTick((n) => n + 1);
-        }
-      });
+      syncFromServer()
+        .then(() => {
+          if (!cancelled) {
+            // Local progress may have just been merged with server history;
+            // recompute anything derived from it (mistake count, dashboard).
+            setNavTick((n) => n + 1);
+          }
+        })
+        .catch((err) => {
+          // A failed sync leaves local progress as the source of truth for
+          // this session — not ideal, but strictly better than an unhandled
+          // rejection, and there is nothing actionable for the learner to do
+          // about a transient network/server failure here.
+          console.error("[sync] Failed to sync progress from server:", err);
+        });
     } else {
       setSyncEnabled(false);
     }

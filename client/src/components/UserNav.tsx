@@ -33,8 +33,22 @@ export function UserNav({ user, loading }: UserNavProps) {
     // Not a better-auth client call — this is this app's own endpoint (see
     // server/routes/account.mjs), since better-auth's own deleteUser()
     // requires email verification, which OAuth-only accounts don't have.
-    await fetch("/api/account", { method: "DELETE" });
-    window.location.reload();
+    //
+    // fetch() does not reject on a non-2xx response, so response.ok must be
+    // checked explicitly — otherwise a failed deletion (a transient 500, the
+    // request never reaching the server) still reloads the page, and the
+    // learner is left believing their GDPR erasure request succeeded when it
+    // did not.
+    try {
+      const res = await fetch("/api/account", { method: "DELETE" });
+      if (!res.ok) {
+        window.alert("Account deletion failed. Please try again, or contact support if this continues.");
+        return;
+      }
+      window.location.reload();
+    } catch {
+      window.alert("Account deletion failed — check your connection and try again.");
+    }
   };
 
   if (loading) {

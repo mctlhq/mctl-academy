@@ -73,17 +73,31 @@ export const auth = betterAuth({
     // stored access/refresh tokens are pure liability if the DB ever leaks.
     encryptOAuthTokens: true,
   },
+  // Only registering a provider when both its id and secret are actually
+  // set — rather than defaulting missing values to "" — so an unconfigured
+  // environment gets better-auth's own clean "provider not found" error
+  // instead of silently attempting an OAuth handshake with empty
+  // credentials, which the old hand-rolled route's explicit 503 avoided and
+  // this should too.
   socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-      mapProfileToUser: (profile) => ({
-        githubLogin: profile.login,
-      }),
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    },
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+      ? {
+          github: {
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            mapProfileToUser: (profile) => ({
+              githubLogin: profile.login,
+            }),
+          },
+        }
+      : {}),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {}),
   },
 });
