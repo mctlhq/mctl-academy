@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-la02d2e3f4a5
+status: published
+domain: domain-3
+objective: domain-3/lora-adapters
+stem: >-
+  What operation combines trained LoRA adapter weights directly back into the base model weights for zero-overhead inference deployment?
+options:
+  - id: a
+    text: Quantized gradient accumulation
+    correct: false
+    explanation: >-
+      Gradient accumulation splits micro-batches during training, not weight merging for deployment.
+  - id: b
+    text: Dataset token deduplication
+    correct: false
+    explanation: >-
+      Token deduplication cleans text datasets prior to training.
+  - id: c
+    text: Zero-shot prompt prefixing
+    correct: false
+    explanation: >-
+      Prompt prefixing appends system text at query time, not model weight matrix addition.
+  - id: d
+    text: Weight merging (computing $W_{final} = W_{base} + \Delta W$)
+    correct: true
+    explanation: >-
+      Merging computes matrix addition ($W_{base} + B \cdot A$), integrating adapter weights into base weights for fast serving.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      represents the model after a certain number of training steps (often per
+      epoch).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

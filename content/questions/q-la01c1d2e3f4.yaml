@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-la01c1d2e3f4
+status: published
+domain: domain-3
+objective: domain-3/lora-adapters
+stem: >-
+  What is the core benefit of Low-Rank Adaptation (LoRA) over full parameter fine-tuning?
+options:
+  - id: a
+    text: It converts text data into 3D polygon meshes for graphics rendering
+    correct: false
+    explanation: >-
+      LoRA is a parameter-efficient fine-tuning method for neural networks, not a 3D graphics renderer.
+  - id: b
+    text: It eliminates the requirement for system prompt instructions
+    correct: false
+    explanation: >-
+      System prompts remain available and functional regardless of fine-tuning strategy.
+  - id: c
+    text: It trains small low-rank adapter matrix parameters while keeping base model weights frozen, drastically reducing memory usage
+    correct: true
+    explanation: >-
+      LoRA freezes base model weights and trains rank-decomposition matrices, dramatically lowering compute/VRAM requirements.
+  - id: d
+    text: It forces all model responses to be formatted as CSV rows
+    correct: false
+    explanation: >-
+      Output format is controlled by response formatting parameters, not adapter weight factorization.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      represents the model after a certain number of training steps (often per
+      epoch).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

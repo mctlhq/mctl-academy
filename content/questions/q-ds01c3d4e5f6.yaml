@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ds01c3d4e5f6
+status: published
+domain: domain-3
+objective: domain-3/datasets
+stem: >-
+  Why is it recommended to split dataset files into training and validation sets before initiating a fine-tuning job?
+options:
+  - id: a
+    text: To decrease the price of token generation per request
+    correct: false
+    explanation: >-
+      Splitting datasets evaluates model generalization; it does not change inference pricing.
+  - id: b
+    text: To allow parallel training across multiple GPU data centers
+    correct: false
+    explanation: >-
+      Multi-GPU distribution is handled by distributed training frameworks, not manual dataset splitting.
+  - id: c
+    text: To measure out-of-sample loss and detect model overfitting during training epochs
+    correct: true
+    explanation: >-
+      Validation sets evaluate generalization on unseen examples to identify overfitting.
+  - id: d
+    text: To automatically generate multi-language translations
+    correct: false
+    explanation: >-
+      Validation sets check training convergence, not language translation.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      Events help you understand the lifecycle (file validation, dataset processing,
+      training progress).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

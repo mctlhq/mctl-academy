@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ds02d4e5f6a7
+status: published
+domain: domain-3
+objective: domain-3/datasets
+stem: >-
+  What structural format is required for dataset lines in a fine-tuning file?
+options:
+  - id: a
+    text: XML document tree nodes with nested tag attributes
+    correct: false
+    explanation: >-
+      Fine-tuning dataset files use JSON Lines (JSONL), not XML.
+  - id: b
+    text: CSV spreadsheet lines separated by tab characters
+    correct: false
+    explanation: >-
+      Fine-tuning requires JSONL objects per line, not CSV tables.
+  - id: c
+    text: Binary Protocol Buffer payloads
+    correct: false
+    explanation: >-
+      Protobuf is a binary wire protocol; fine-tuning datasets use plain text JSONL.
+  - id: d
+    text: JSON Lines (JSONL) where each line is a valid JSON object
+    correct: true
+    explanation: >-
+      Dataset files must contain exactly one JSON object per line (JSONL format).
+evidence:
+  - source_id: src-dataset-formats
+    excerpt: >-
+      Each training example is a single conversation, represented as one `messages`
+      array.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

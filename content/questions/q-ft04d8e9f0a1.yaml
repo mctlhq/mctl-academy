@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-ft04d8e9f0a1
+status: published
+domain: domain-3
+objective: domain-3/supervised-fine-tuning
+stem: >-
+  What happens if the `learning_rate` parameter set during fine-tuning is excessively high?
+options:
+  - id: a
+    text: The training job automatically converts base weights into 4-bit GGUF format
+    correct: false
+    explanation: >-
+      Format quantization is a model export conversion step, not a training dynamics consequence.
+  - id: b
+    text: Dataset JSONL lines are permanently deleted from the Files API storage
+    correct: false
+    explanation: >-
+      Files API uploads are persistent resources and are never altered by training hyperparameters.
+  - id: c
+    text: Training loss drops to zero instantly on step 1 without processing tokens
+    correct: false
+    explanation: >-
+      High learning rates cause loss divergence or instability, not instant zero-loss convergence.
+  - id: d
+    text: Training loss diverges or oscillates erratically, preventing model convergence
+    correct: true
+    explanation: >-
+      An excessively large learning rate causes gradient step divergence, ruining model performance.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      Events help you understand the lifecycle (file validation, dataset processing,
+      training progress).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"
