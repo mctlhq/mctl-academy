@@ -15,27 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
+          bun-version: latest
 
-      - run: npm ci
+      - run: bun install --frozen-lockfile
 
       # Structural validation only: no secrets, no network. This is the job
       # that runs identically on a fork PR, which is why citation verification
       # is not part of it — that needs the private snapshot store, and GitHub
       # does not expose secrets to fork-triggered runs.
       - name: Content lint
-        run: npm run lint:content
+        run: bun run lint:content
 
       - name: Content lint tests
-        run: npm run test:content
+        run: bun run test:content
 
       # Building the preview on every PR keeps the Phase 0 artifact honest:
       # a renderer that only ever runs locally rots without anyone noticing.
       - name: Build course preview
-        run: npm run build:preview
+        run: bun run build:preview
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -53,20 +52,16 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            client/package-lock.json
+          bun-version: latest
 
       - name: Install root dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Install client dependencies
         working-directory: client
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Server tests
         run: npm run test:server
