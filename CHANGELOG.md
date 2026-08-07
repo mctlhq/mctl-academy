@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.1.19](https://github.com/mctlhq/mctl-academy/compare/0.1.18...0.1.19) (2026-08-07)
+
+
+### Features
+
+* **ci:** add context7.json and auto-reindex workflow on main push ([75bacbb](https://github.com/mctlhq/mctl-academy/commit/75bacbb24db0f601e5ed18a63080334a886825d6))
+* **ci:** add context7.json and auto-reindex workflow on main push ([e17ecb6](https://github.com/mctlhq/mctl-academy/commit/e17ecb664f423699fde93f2281e4b7193b5039a2))
+* **db:** replace boot-time DDL with versioned, transactional migrations ([22df2d4](https://github.com/mctlhq/mctl-academy/commit/22df2d496fa26597a906aa3808450c0bef6a21f4))
+* **db:** replace boot-time DDL with versioned, transactional migrations ([5c31755](https://github.com/mctlhq/mctl-academy/commit/5c31755cdc1b040f0b2727c71e6013799f5ea660))
+
+
+### Bug Fixes
+
+* **db:** address review findings on migrations and readiness ([abfbdc7](https://github.com/mctlhq/mctl-academy/commit/abfbdc7141b0a8fbd04e8cd6ee9290bd2b93eadd))
+* **db:** handle idle pool errors and add a live readiness regression test ([8e2ccbd](https://github.com/mctlhq/mctl-academy/commit/8e2ccbd27098bf45ca1ef5a8ae32ca8fe96ff49a))
+* **db:** share SSL config between boot and CLI migration script ([09fc62c](https://github.com/mctlhq/mctl-academy/commit/09fc62c629a73b326d3dafb0f771f745a949dc5e))
+* **readyz:** log the database check failure, not just the 503 ([e746b53](https://github.com/mctlhq/mctl-academy/commit/e746b53e2793241ec61aa7649373e9396829ac17))
+* **reliability:** fail production boot when the database is unavailable ([d65eb00](https://github.com/mctlhq/mctl-academy/commit/d65eb00df3db47fb55c1b87a47eee29953f24989))
+* **reliability:** fail production boot when the database is unavailable ([1096335](https://github.com/mctlhq/mctl-academy/commit/1096335a646775644b2bf896046facb630f7cf9c))
+* **security:** close public report listing and align session cookie name ([b1b7472](https://github.com/mctlhq/mctl-academy/commit/b1b747281c51f988f86ae0245ae954f6e7e3b341))
+
 ## [0.1.18](https://github.com/mctlhq/mctl-academy/compare/0.1.17...0.1.18) (2026-08-07)
 
 
