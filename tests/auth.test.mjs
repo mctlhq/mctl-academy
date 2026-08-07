@@ -19,6 +19,33 @@ describe("GitHub OAuth & Session Auth API", () => {
     assert.ok(body.error.includes("not configured"));
   });
 
+  test("GitHub OAuth start uses PKCE and a configured canonical callback URL", async () => {
+    const previous = {
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      baseUrl: process.env.PUBLIC_BASE_URL,
+    };
+    process.env.GITHUB_CLIENT_ID = "test-client-id";
+    process.env.GITHUB_CLIENT_SECRET = "test-client-secret";
+    process.env.PUBLIC_BASE_URL = "https://academy.example.test";
+
+    try {
+      const res = await app.request("/api/auth/github");
+      assert.equal(res.status, 302);
+      const location = new URL(res.headers.get("location"));
+      assert.equal(location.origin, "https://github.com");
+      assert.equal(location.searchParams.get("redirect_uri"), "https://academy.example.test/api/auth/github/callback");
+      assert.equal(location.searchParams.get("code_challenge_method"), "S256");
+      assert.ok(location.searchParams.get("code_challenge"));
+      assert.ok(res.headers.get("set-cookie").includes("mctl_oauth_verifier"));
+    } finally {
+      for (const [key, value] of Object.entries(previous)) {
+        if (value === undefined) delete process.env[{ clientId: "GITHUB_CLIENT_ID", clientSecret: "GITHUB_CLIENT_SECRET", baseUrl: "PUBLIC_BASE_URL" }[key]];
+        else process.env[{ clientId: "GITHUB_CLIENT_ID", clientSecret: "GITHUB_CLIENT_SECRET", baseUrl: "PUBLIC_BASE_URL" }[key]] = value;
+      }
+    }
+  });
+
   test("DB helper manages user upsert and session lifecycle", async () => {
     const user = await upsertUser({
       githubId: 998877,
@@ -63,5 +90,14 @@ describe("GitHub OAuth & Session Auth API", () => {
 
     const postLogoutUser = await getSessionUser(token);
     assert.equal(postLogoutUser, null);
+  });
+
+  test("POST /api/auth/logout rejects a cross-origin browser request", async () => {
+    const res = await app.request("/api/auth/logout", {
+      method: "POST",
+      headers: { Origin: "https://attacker.example" },
+    });
+
+    assert.equal(res.status, 403);
   });
 });

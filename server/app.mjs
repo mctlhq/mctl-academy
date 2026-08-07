@@ -1,9 +1,11 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 import { authRouter } from "./routes/auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
-import { initDb, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
+import { initDb, insertQuestionReport, listRecentQuestionReports, getSessionUser } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
+import { sessionCookieName } from "./session-cookie.mjs";
 
 export const app = new Hono();
 
@@ -82,8 +84,26 @@ app.post("/api/reports", rateLimit(), async (c) => {
   }
 });
 
-// GET /api/reports for testing & verification
+/**
+ * GET /api/reports - moderator-only.
+ *
+ * Reports carry learner-authored free text and a reporter user id, so this
+ * listing is personal data and must never be world-readable. Access requires a
+ * valid session whose GitHub login is in MCTL_ACADEMY_MODERATORS (a
+ * comma-separated allowlist). With the allowlist unset the route is closed to
+ * everyone, so an unconfigured environment fails shut rather than open.
+ */
 app.get("/api/reports", async (c) => {
+  const moderators = (process.env.MCTL_ACADEMY_MODERATORS || "")
+    .split(",")
+    .map((login) => login.trim().toLowerCase())
+    .filter(Boolean);
+
+  const user = await getSessionUser(getCookie(c, sessionCookieName()));
+  if (!user || !moderators.includes(String(user.githubLogin).toLowerCase())) {
+    return c.json({ error: "Not found" }, 404);
+  }
+
   const reports = await listRecentQuestionReports();
   return c.json({
     reports: reports.map((r) => ({
