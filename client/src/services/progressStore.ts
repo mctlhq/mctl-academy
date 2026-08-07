@@ -32,33 +32,45 @@ let memoryFallback: Record<string, string> = {};
 let syncEnabled = false;
 
 function getItem(key: string): string | null {
-  if (typeof localStorage !== "undefined") {
-    return localStorage.getItem(key);
-  }
+  try {
+    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.getItem === "function") {
+      return localStorage.getItem(key);
+    }
+  } catch {}
   return memoryFallback[key] ?? null;
 }
 
 function setItem(key: string, value: string): void {
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem(key, value);
-  } else {
-    memoryFallback[key] = value;
-  }
+  try {
+    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.setItem === "function") {
+      localStorage.setItem(key, value);
+      return;
+    }
+  } catch {}
+  memoryFallback[key] = value;
+}
+
+export function saveRawAttempts(attempts: QuestionAttempt[]): void {
+  setItem(STORAGE_KEY, JSON.stringify(attempts));
 }
 
 function removeItem(key: string): void {
-  if (typeof localStorage !== "undefined") {
-    localStorage.removeItem(key);
-  } else {
-    delete memoryFallback[key];
-  }
+  try {
+    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.removeItem === "function") {
+      localStorage.removeItem(key);
+      return;
+    }
+  } catch {}
+  delete memoryFallback[key];
 }
 
 export function resetMemoryFallback(): void {
   memoryFallback = {};
-  if (typeof localStorage !== "undefined") {
-    localStorage.clear();
-  }
+  try {
+    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.clear === "function") {
+      localStorage.clear();
+    }
+  } catch {}
 }
 
 const DOMAIN_TITLES: Record<string, string> = {
