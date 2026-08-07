@@ -12,19 +12,53 @@ const memSessions = new Map(); // token -> { userId, expiresAt }
 const memAttempts = []; // array of attempt objects
 const memQuestionReports = []; // array of question report objects
 
+/**
+ * Initialize the database, or fall back to an in-memory store.
+ *
+ * The in-memory fallback exists for tests and local development only. In
+ * production it must never be reached silently: a pod that "logs in"
+ * successfully and then loses every session and attempt on its next restart
+ * is worse than a pod that fails to start. So in production, both a missing
+ * DATABASE_URL and a failed connection throw here, and the caller in app.mjs
+ * treats that as fatal — the process exits, and Kubernetes restarts the pod
+ * according to its restart policy rather than serving from memory.
+ */
 export async function initDb() {
   const dbUrl = process.env.DATABASE_URL;
+  const isProduction = process.env.NODE_ENV === "production";
+
   if (!dbUrl) {
+    if (isProduction) {
+      throw new Error(
+        "DATABASE_URL is not set in production. Refusing to start on the in-memory " +
+          "fallback store, which silently loses all sessions and attempts on restart."
+      );
+    }
     console.log("[db] DATABASE_URL not set — using in-memory store.");
     return false;
   }
 
-  try {
-    pool = new Pool({
-      connectionString: dbUrl,
-      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-    });
+  // rejectUnauthorized: false matches the connection pattern already used by
+  // mctl-loyalty and mctl-pairdesk against the same CNPG cluster; there is no
+  // CA distribution in place yet to verify the server certificate. That gap is
+  // a platform-wide concern, not something to solve differently in this one
+  // service.
+  pool = new Pool({
+    connectionString: dbUrl,
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
+    connectionTimeoutMillis: 5000,
+  });
 
+  // pg.Pool emits 'error' when an already-idle client's connection drops
+  // (a DB restart, a network blip). With no listener, Node treats that as an
+  // unhandled exception and crashes the whole process — which would silently
+  // defeat the point of /readyz: a database blip should fail readiness and
+  // let the pod recover, not kill an otherwise-healthy pod outright.
+  pool.on("error", (err) => {
+    console.error("[db] Idle client error:", err.message);
+  });
+
+  try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -67,10 +101,27 @@ export async function initDb() {
     console.log("[db] PostgreSQL schema initialized successfully.");
     return true;
   } catch (err) {
-    console.error("[db] PostgreSQL connection failed, falling back to memory store:", err.message);
     pool = null;
+    if (isProduction) {
+      throw new Error(`[db] PostgreSQL connection failed in production: ${err.message}`);
+    }
+    console.error("[db] PostgreSQL connection failed, falling back to memory store:", err.message);
     return false;
   }
+}
+
+/**
+ * Used by GET /readyz. In production, pool is guaranteed set (initDb() throws
+ * otherwise), so this exercises a real round trip to the database rather than
+ * trusting that a successful connection at boot is still true minutes later.
+ * Outside production, the in-memory store is always considered ready.
+ */
+export async function checkDbReady() {
+  if (!pool) {
+    return { ready: true, mode: "memory" };
+  }
+  await pool.query("SELECT 1");
+  return { ready: true, mode: "postgres" };
 }
 
 export async function upsertUser({ githubId, githubLogin, avatarUrl }) {

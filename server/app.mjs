@@ -2,15 +2,23 @@ import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import { authRouter } from "./routes/auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
-import { initDb, insertQuestionReport, listRecentQuestionReports, getSessionUser } from "./db.mjs";
+import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports, getSessionUser } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
 import { sessionCookieName } from "./session-cookie.mjs";
 
 export const app = new Hono();
 
-// Initialize DB schema asynchronously on start
-initDb().catch((err) => console.error("[db] Init error:", err));
+// Initialize the database. In production a failure here is fatal by design —
+// see the comment on initDb() in db.mjs — so the process exits and lets
+// Kubernetes restart the pod rather than serving from a memory store that
+// silently loses data. Outside production this always resolves.
+try {
+  await initDb();
+} catch (err) {
+  console.error("[db] Fatal:", err.message);
+  process.exit(1);
+}
 
 // Mount auth router
 app.route("/api/auth", authRouter);
@@ -28,9 +36,37 @@ const VALID_REASONS = new Set([
 
 const MAX_COMMENT_LENGTH = 2000;
 
-// Healthcheck endpoint
-app.get("/healthz", (c) => {
+/**
+ * /healthz and /livez both answer "is the process alive", with no dependency
+ * checks — a Postgres blip must never fail liveness, or Kubernetes will
+ * restart an application pod that has nothing wrong with it. /healthz is kept
+ * as an alias: it is the chart's configured liveness path today.
+ */
+function livenessHandler(c) {
   return c.json({ status: "ok", service: "mctl-academy", runtime: typeof Bun !== "undefined" ? "bun" : "node" });
+}
+app.get("/healthz", livenessHandler);
+app.get("/livez", livenessHandler);
+
+/**
+ * /readyz answers "can this pod serve traffic" — it is the only probe allowed
+ * to depend on the database. In production checkDbReady() always has a real
+ * pool to query (initDb() throws at boot otherwise), so this is a genuine
+ * round trip, not a cached assumption that the connection made at startup is
+ * still good.
+ */
+app.get("/readyz", async (c) => {
+  try {
+    const { mode } = await checkDbReady();
+    return c.json({ status: "ok", service: "mctl-academy", db: mode });
+  } catch (err) {
+    // Logged, not just returned: a readiness flap in production needs a
+    // server-side trail to correlate against, since the 503 response body
+    // alone doesn't say whether it was a timeout, an auth failure, or
+    // something else.
+    console.error("[readyz] Database check failed:", err.message);
+    return c.json({ status: "error", service: "mctl-academy", error: "database unreachable" }, 503);
+  }
 });
 
 // Question Report intake endpoint (issue #22)
