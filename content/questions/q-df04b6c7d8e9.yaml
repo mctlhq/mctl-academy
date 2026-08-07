@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-df04b6c7d8e9
+status: published
+domain: domain-3
+objective: domain-3/dataset-formats
+stem: >-
+  When fine-tuning a model to perform tool calling, how are tool definitions provided within a conversation example?
+options:
+  - id: a
+    text: As a binary blob appended to the end of the JSONL file
+    correct: false
+    explanation: >-
+      Tool definitions must be embedded as JSON objects within the dataset example, not binary attachments.
+  - id: b
+    text: In a top-level `tools` array field containing JSON Schema function specifications
+    correct: true
+    explanation: >-
+      Tool specifications are included in a `tools` array field within the training example object.
+  - id: c
+    text: As comments inside the system prompt string
+    correct: false
+    explanation: >-
+      Tool calling models use structured JSON schema definitions in `tools`, not freeform system comments.
+  - id: d
+    text: Via external HTTP webhooks during training execution
+    correct: false
+    explanation: >-
+      Fine-tuning processes static dataset files and does not make external HTTP webhook calls during training.
+evidence:
+  - source_id: src-dataset-formats
+    excerpt: >-
+      Each training example can optionally include a `tools` field that defines
+      the tools available in that conversation.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

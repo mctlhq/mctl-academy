@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-fa02b2c3d4e5
+status: published
+domain: domain-3
+objective: domain-3/files-api
+stem: >-
+  Which file `purpose` string must be specified when uploading a JSONL file intended for supervised fine-tuning?
+options:
+  - id: a
+    text: "`purpose: \"user_avatar\"`"
+    correct: false
+    explanation: >-
+      User avatar is not a valid file purpose for training datasets.
+  - id: b
+    text: "`purpose: \"fine-tune\"`"
+    correct: true
+    explanation: >-
+      The Files API requires `purpose: "fine-tune"` to validate and register training datasets.
+  - id: c
+    text: "`purpose: \"web_search\"`"
+    correct: false
+    explanation: >-
+      Web search is a retrieval tool capability, not a fine-tuning file purpose.
+  - id: d
+    text: "`purpose: \"cache_backup\"`"
+    correct: false
+    explanation: >-
+      Cache backup is an internal storage term, not a dataset fine-tuning upload purpose.
+evidence:
+  - source_id: src-dataset-formats
+    excerpt: >-
+      Each training example is a single conversation, represented as one `messages`
+      array.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

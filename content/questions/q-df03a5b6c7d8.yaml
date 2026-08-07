@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-df03a5b6c7d8
+status: published
+domain: domain-3
+objective: domain-3/dataset-formats
+stem: >-
+  In a multi-turn conversation training example, which message `role` values are valid in the `messages` array?
+options:
+  - id: a
+    text: "`system`, `user`, `assistant`, and optionally `tool`"
+    correct: true
+    explanation: >-
+      Fine-tuning conversation examples support standard message roles: system, user, assistant, and tool.
+  - id: b
+    text: "`admin`, `moderator`, and `guest`"
+    correct: false
+    explanation: >-
+      RBAC user permissions are application roles, not Chat Completion message roles.
+  - id: c
+    text: "`input` and `output` only"
+    correct: false
+    explanation: >-
+      Instruct dataset format uses prompt/completion, whereas conversational format uses messages array with roles.
+  - id: d
+    text: "`query` and `document`"
+    correct: false
+    explanation: >-
+      Query/document pairs belong to retrieval reranker inputs, not chat dataset message objects.
+evidence:
+  - source_id: src-dataset-formats
+    excerpt: >-
+      Each training example is a single conversation, represented as one `messages`
+      array.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

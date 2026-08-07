@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-fj01a9b0c1d2
+status: published
+domain: domain-3
+objective: domain-3/fine-tuning-jobs
+stem: >-
+  What is a fine-tuning checkpoint artifact?
+options:
+  - id: a
+    text: A snapshot of model weights saved at intermediate epoch or step intervals during training
+    correct: true
+    explanation: >-
+      Checkpoints save intermediate model weight snapshots throughout the fine-tuning run.
+  - id: b
+    text: An API token used to authenticate REST requests
+    correct: false
+    explanation: >-
+      API tokens handle client authentication, not training weight storage.
+  - id: c
+    text: A list of active user accounts registered in an organization project
+    correct: false
+    explanation: >-
+      Organization user rosters belong to IAM management, not fine-tuning job metrics.
+  - id: d
+    text: A static vector database index
+    correct: false
+    explanation: >-
+      Vector databases store document embeddings for RAG, not fine-tuning weight checkpoints.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      represents the model after a certain number of training steps (often per
+      epoch).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

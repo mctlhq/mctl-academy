@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-dl01a3b4c5d6
+status: published
+domain: domain-3
+objective: domain-3/data-lab
+stem: >-
+  What is the primary function of a Data Lab tool in a dataset curation workflow?
+options:
+  - id: a
+    text: Importing, filtering, cleaning, and formatting raw text datasets prior to model fine-tuning
+    correct: true
+    explanation: >-
+      Data Lab tools automate dataset ingestion, filtering out low-quality rows and normalizing target formats.
+  - id: b
+    text: Managing DNS SSL TLS certificates for custom web domains
+    correct: false
+    explanation: >-
+      Certificates handle domain HTTPS encryption, not training data processing.
+  - id: c
+    text: Provisioning Kubernetes worker nodes
+    correct: false
+    explanation: >-
+      Kubernetes cluster node provisioning is cloud infrastructure management, not dataset curation.
+  - id: d
+    text: Executing SQL queries against relational production databases
+    correct: false
+    explanation: >-
+      Production SQL databases serve application state, whereas Data Lab processes training datasets.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      Events help you understand the lifecycle (file validation, dataset processing,
+      training progress).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

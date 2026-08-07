@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-la03d6e7f8a9
+status: published
+domain: domain-3
+objective: domain-3/lora-adapters
+stem: >-
+  What key hyperparameter in LoRA configuration controls the rank of the low-rank update matrices A and B?
+options:
+  - id: a
+    text: "top_p"
+    correct: false
+    explanation: >-
+      Top-p (nucleus sampling) controls cumulative probability sampling during generation.
+  - id: b
+    text: "presence_penalty"
+    correct: false
+    explanation: >-
+      Presence penalty penalizes new tokens based on occurrence in generated output.
+  - id: c
+    text: "context_window"
+    correct: false
+    explanation: >-
+      Context window specifies total input token capacity of the model architecture.
+  - id: d
+    text: "r (rank)"
+    correct: true
+    explanation: >-
+      The parameter r defines the rank dimension of decomposition matrices in LoRA adapters.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      represents the model after a certain number of training steps (often per
+      epoch).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

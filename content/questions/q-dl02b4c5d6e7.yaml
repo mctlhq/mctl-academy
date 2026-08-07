@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-dl02b4c5d6e7
+status: published
+domain: domain-3
+objective: domain-3/data-lab
+stem: >-
+  Why is token length truncation verification critical during dataset preprocessing in Data Lab?
+options:
+  - id: a
+    text: To prevent the model from generating responses in upper case
+    correct: false
+    explanation: >-
+      Capitalization formatting is set by prompt style, not token sequence truncation.
+  - id: b
+    text: To ensure training examples do not exceed the model maximum context length and get silently clipped
+    correct: true
+    explanation: >-
+      Exceeding context length truncates target messages or system prompts, damaging fine-tuning Quality.
+  - id: c
+    text: To force every response to be exactly 256 tokens long
+    correct: false
+    explanation: >-
+      Preprocessing caps maximum length, but does not force fixed token generation lengths.
+  - id: d
+    text: To automatically encrypt training text with RSA 4096-bit keys
+    correct: false
+    explanation: >-
+      Encryption protects data in transit/at rest, but is not token sequence truncation verification.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: >-
+      Events help you understand the lifecycle (file validation, dataset processing,
+      training progress).
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

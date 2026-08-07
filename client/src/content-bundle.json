@@ -35,7 +35,7 @@
     "id": "q-cc02b2c3d4e5",
     "domain": "domain-2",
     "objective": "domain-2/chat-completions",
-    "stem": "How does setting `temperature` to 0.0 affect the sampling output of a chat completion model?",
+    "stem": "How does setting temperature to 0.0 affect the sampling output of a chat completion model?",
     "options": [
       {
         "id": "a",
@@ -59,7 +59,7 @@
         "id": "d",
         "text": "It restricts token generation to a maximum of 100 completion tokens",
         "correct": false,
-        "explanation": "Output length is controlled by `max_tokens`, not temperature."
+        "explanation": "Output length is controlled by max_tokens, not temperature."
       }
     ]
   },
@@ -124,6 +124,230 @@
         "text": "A list of example API responses appended after the final turn",
         "correct": false,
         "explanation": "Tool results appear as messages within the conversation, not as a trailing appendix."
+      }
+    ]
+  },
+  {
+    "id": "q-df03a5b6c7d8",
+    "domain": "domain-3",
+    "objective": "domain-3/dataset-formats",
+    "stem": "In a multi-turn conversation training example, which message `role` values are valid in the `messages` array?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`system`, `user`, `assistant`, and optionally `tool`",
+        "correct": true,
+        "explanation": "Fine-tuning conversation examples support standard message roles: system, user, assistant, and tool."
+      },
+      {
+        "id": "b",
+        "text": "`admin`, `moderator`, and `guest`",
+        "correct": false,
+        "explanation": "RBAC user permissions are application roles, not Chat Completion message roles."
+      },
+      {
+        "id": "c",
+        "text": "`input` and `output` only",
+        "correct": false,
+        "explanation": "Instruct dataset format uses prompt/completion, whereas conversational format uses messages array with roles."
+      },
+      {
+        "id": "d",
+        "text": "`query` and `document`",
+        "correct": false,
+        "explanation": "Query/document pairs belong to retrieval reranker inputs, not chat dataset message objects."
+      }
+    ]
+  },
+  {
+    "id": "q-df04b6c7d8e9",
+    "domain": "domain-3",
+    "objective": "domain-3/dataset-formats",
+    "stem": "When fine-tuning a model to perform tool calling, how are tool definitions provided within a conversation example?",
+    "options": [
+      {
+        "id": "a",
+        "text": "As a binary blob appended to the end of the JSONL file",
+        "correct": false,
+        "explanation": "Tool definitions must be embedded as JSON objects within the dataset example, not binary attachments."
+      },
+      {
+        "id": "b",
+        "text": "In a top-level `tools` array field containing JSON Schema function specifications",
+        "correct": true,
+        "explanation": "Tool specifications are included in a `tools` array field within the training example object."
+      },
+      {
+        "id": "c",
+        "text": "As comments inside the system prompt string",
+        "correct": false,
+        "explanation": "Tool calling models use structured JSON schema definitions in `tools`, not freeform system comments."
+      },
+      {
+        "id": "d",
+        "text": "Via external HTTP webhooks during training execution",
+        "correct": false,
+        "explanation": "Fine-tuning processes static dataset files and does not make external HTTP webhook calls during training."
+      }
+    ]
+  },
+  {
+    "id": "q-dl01a3b4c5d6",
+    "domain": "domain-3",
+    "objective": "domain-3/data-lab",
+    "stem": "What is the primary function of a Data Lab tool in a dataset curation workflow?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Importing, filtering, cleaning, and formatting raw text datasets prior to model fine-tuning",
+        "correct": true,
+        "explanation": "Data Lab tools automate dataset ingestion, filtering out low-quality rows and normalizing target formats."
+      },
+      {
+        "id": "b",
+        "text": "Managing DNS SSL TLS certificates for custom web domains",
+        "correct": false,
+        "explanation": "Certificates handle domain HTTPS encryption, not training data processing."
+      },
+      {
+        "id": "c",
+        "text": "Provisioning Kubernetes worker nodes",
+        "correct": false,
+        "explanation": "Kubernetes cluster node provisioning is cloud infrastructure management, not dataset curation."
+      },
+      {
+        "id": "d",
+        "text": "Executing SQL queries against relational production databases",
+        "correct": false,
+        "explanation": "Production SQL databases serve application state, whereas Data Lab processes training datasets."
+      }
+    ]
+  },
+  {
+    "id": "q-dl02b4c5d6e7",
+    "domain": "domain-3",
+    "objective": "domain-3/data-lab",
+    "stem": "Why is token length truncation verification critical during dataset preprocessing in Data Lab?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To prevent the model from generating responses in upper case",
+        "correct": false,
+        "explanation": "Capitalization formatting is set by prompt style, not token sequence truncation."
+      },
+      {
+        "id": "b",
+        "text": "To ensure training examples do not exceed the model maximum context length and get silently clipped",
+        "correct": true,
+        "explanation": "Exceeding context length truncates target messages or system prompts, damaging fine-tuning Quality."
+      },
+      {
+        "id": "c",
+        "text": "To force every response to be exactly 256 tokens long",
+        "correct": false,
+        "explanation": "Preprocessing caps maximum length, but does not force fixed token generation lengths."
+      },
+      {
+        "id": "d",
+        "text": "To automatically encrypt training text with RSA 4096-bit keys",
+        "correct": false,
+        "explanation": "Encryption protects data in transit/at rest, but is not token sequence truncation verification."
+      }
+    ]
+  },
+  {
+    "id": "q-dl03c5d6e7f8",
+    "domain": "domain-3",
+    "objective": "domain-3/data-lab",
+    "stem": "What dataset quality filter prevents a model from learning repetitive or template-dominated completions during fine-tuning?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Disabling system prompt headers entirely",
+        "correct": false,
+        "explanation": "System prompts define behavior rules; removing them does not solve dataset template repetition."
+      },
+      {
+        "id": "b",
+        "text": "Doubling the learning rate parameter on every epoch",
+        "correct": false,
+        "explanation": "Increasing learning rate does not deduplicate or clean repetitive dataset text."
+      },
+      {
+        "id": "c",
+        "text": "Semantic deduplication and near-duplicate removal across dataset lines",
+        "correct": true,
+        "explanation": "Deduplication removes repetitive prompt/response pairs so the model learns generalizable skills rather than memorizing templates."
+      },
+      {
+        "id": "d",
+        "text": "Converting all floating-point weights into 8-bit integers",
+        "correct": false,
+        "explanation": "8-bit quantization reduces memory, not dataset duplicate text patterns."
+      }
+    ]
+  },
+  {
+    "id": "q-ds01c3d4e5f6",
+    "domain": "domain-3",
+    "objective": "domain-3/datasets",
+    "stem": "Why is it recommended to split dataset files into training and validation sets before initiating a fine-tuning job?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To decrease the price of token generation per request",
+        "correct": false,
+        "explanation": "Splitting datasets evaluates model generalization; it does not change inference pricing."
+      },
+      {
+        "id": "b",
+        "text": "To allow parallel training across multiple GPU data centers",
+        "correct": false,
+        "explanation": "Multi-GPU distribution is handled by distributed training frameworks, not manual dataset splitting."
+      },
+      {
+        "id": "c",
+        "text": "To measure out-of-sample loss and detect model overfitting during training epochs",
+        "correct": true,
+        "explanation": "Validation sets evaluate generalization on unseen examples to identify overfitting."
+      },
+      {
+        "id": "d",
+        "text": "To automatically generate multi-language translations",
+        "correct": false,
+        "explanation": "Validation sets check training convergence, not language translation."
+      }
+    ]
+  },
+  {
+    "id": "q-ds02d4e5f6a7",
+    "domain": "domain-3",
+    "objective": "domain-3/datasets",
+    "stem": "What structural format is required for dataset lines in a fine-tuning file?",
+    "options": [
+      {
+        "id": "a",
+        "text": "XML document tree nodes with nested tag attributes",
+        "correct": false,
+        "explanation": "Fine-tuning dataset files use JSON Lines (JSONL), not XML."
+      },
+      {
+        "id": "b",
+        "text": "CSV spreadsheet lines separated by tab characters",
+        "correct": false,
+        "explanation": "Fine-tuning requires JSONL objects per line, not CSV tables."
+      },
+      {
+        "id": "c",
+        "text": "Binary Protocol Buffer payloads",
+        "correct": false,
+        "explanation": "Protobuf is a binary wire protocol; fine-tuning datasets use plain text JSONL."
+      },
+      {
+        "id": "d",
+        "text": "JSON Lines (JSONL) where each line is a valid JSON object",
+        "correct": true,
+        "explanation": "Dataset files must contain exactly one JSON object per line (JSONL format)."
       }
     ]
   },
@@ -252,6 +476,70 @@
         "text": "Cosine similarity or inner dot product",
         "correct": true,
         "explanation": "Cosine similarity (dot product for normalized vectors) measures angular alignment between text embeddings."
+      }
+    ]
+  },
+  {
+    "id": "q-fa01a1b2c3d4",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "What is the purpose of the Files API when preparing datasets for model fine-tuning?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To upload, store, and manage JSONL dataset files required for fine-tuning jobs",
+        "correct": true,
+        "explanation": "The Files API manages training and validation JSONL files prior to job submission."
+      },
+      {
+        "id": "b",
+        "text": "To stream real-time GPU hardware telemetry logs",
+        "correct": false,
+        "explanation": "GPU telemetry is handled by system monitoring endpoints, not the Files API."
+      },
+      {
+        "id": "c",
+        "text": "To dynamically resize image dimensions during inference",
+        "correct": false,
+        "explanation": "Image resizing is a vision pre-processing task, not a dataset Files API operation."
+      },
+      {
+        "id": "d",
+        "text": "To host static website HTML files",
+        "correct": false,
+        "explanation": "The Files API stores training data, not static web host assets."
+      }
+    ]
+  },
+  {
+    "id": "q-fa02b2c3d4e5",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "Which file `purpose` string must be specified when uploading a JSONL file intended for supervised fine-tuning?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`purpose: \"user_avatar\"`",
+        "correct": false,
+        "explanation": "User avatar is not a valid file purpose for training datasets."
+      },
+      {
+        "id": "b",
+        "text": "`purpose: \"fine-tune\"`",
+        "correct": true,
+        "explanation": "The Files API requires `purpose: \"fine-tune\"` to validate and register training datasets."
+      },
+      {
+        "id": "c",
+        "text": "`purpose: \"web_search\"`",
+        "correct": false,
+        "explanation": "Web search is a retrieval tool capability, not a fine-tuning file purpose."
+      },
+      {
+        "id": "d",
+        "text": "`purpose: \"cache_backup\"`",
+        "correct": false,
+        "explanation": "Cache backup is an internal storage term, not a dataset fine-tuning upload purpose."
       }
     ]
   },
@@ -480,6 +768,70 @@
     ]
   },
   {
+    "id": "q-fj01a9b0c1d2",
+    "domain": "domain-3",
+    "objective": "domain-3/fine-tuning-jobs",
+    "stem": "What is a fine-tuning checkpoint artifact?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A snapshot of model weights saved at intermediate epoch or step intervals during training",
+        "correct": true,
+        "explanation": "Checkpoints save intermediate model weight snapshots throughout the fine-tuning run."
+      },
+      {
+        "id": "b",
+        "text": "An API token used to authenticate REST requests",
+        "correct": false,
+        "explanation": "API tokens handle client authentication, not training weight storage."
+      },
+      {
+        "id": "c",
+        "text": "A list of active user accounts registered in an organization project",
+        "correct": false,
+        "explanation": "Organization user rosters belong to IAM management, not fine-tuning job metrics."
+      },
+      {
+        "id": "d",
+        "text": "A static vector database index",
+        "correct": false,
+        "explanation": "Vector databases store document embeddings for RAG, not fine-tuning weight checkpoints."
+      }
+    ]
+  },
+  {
+    "id": "q-fj02b0c1d2e3",
+    "domain": "domain-3",
+    "objective": "domain-3/fine-tuning-jobs",
+    "stem": "How can a developer monitor training progress, loss values, and validation metrics during an active fine-tuning job execution?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By connecting a browser directly to the GPU hardware motherboard serial console",
+        "correct": false,
+        "explanation": "Direct hardware console access is not exposed in cloud platform APIs."
+      },
+      {
+        "id": "b",
+        "text": "By polling the Fine-Tuning Job Events API or viewing job event logs",
+        "correct": true,
+        "explanation": "Job events stream progress logs, step counts, training loss, and validation metrics."
+      },
+      {
+        "id": "c",
+        "text": "By inspecting DNS CNAME lookup records",
+        "correct": false,
+        "explanation": "DNS records map domain names to IP addresses, not fine-tuning job metrics."
+      },
+      {
+        "id": "d",
+        "text": "By sending HTTP POST requests to external payment gateways",
+        "correct": false,
+        "explanation": "Payment webhooks handle billing transactions, not training loss metric logs."
+      }
+    ]
+  },
+  {
     "id": "q-ft01b5c6d7e8",
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
@@ -540,6 +892,166 @@
         "text": "The checkpoint list, which grows as validation succeeds",
         "correct": false,
         "explanation": "Checkpoints tell you what was produced, not whether the input was accepted or where training has got to."
+      }
+    ]
+  },
+  {
+    "id": "q-ft03c7d8e9f0",
+    "domain": "domain-3",
+    "objective": "domain-3/supervised-fine-tuning",
+    "stem": "What primary parameter determines how many times the model iterates over the entire training dataset during supervised fine-tuning?",
+    "options": [
+      {
+        "id": "a",
+        "text": "batch_size",
+        "correct": false,
+        "explanation": "Batch size specifies how many training examples are processed per gradient update step."
+      },
+      {
+        "id": "b",
+        "text": "learning_rate_multiplier",
+        "correct": false,
+        "explanation": "Learning rate multiplier scales the step size taken during optimizer weight updates."
+      },
+      {
+        "id": "c",
+        "text": "n_epochs",
+        "correct": true,
+        "explanation": "The n_epochs parameter specifies the total number of full passes over the dataset."
+      },
+      {
+        "id": "d",
+        "text": "temperature",
+        "correct": false,
+        "explanation": "Temperature is an inference sampling parameter, not a fine-tuning training hyperparameter."
+      }
+    ]
+  },
+  {
+    "id": "q-ft04d8e9f0a1",
+    "domain": "domain-3",
+    "objective": "domain-3/supervised-fine-tuning",
+    "stem": "What happens if the `learning_rate` parameter set during fine-tuning is excessively high?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The training job automatically converts base weights into 4-bit GGUF format",
+        "correct": false,
+        "explanation": "Format quantization is a model export conversion step, not a training dynamics consequence."
+      },
+      {
+        "id": "b",
+        "text": "Dataset JSONL lines are permanently deleted from the Files API storage",
+        "correct": false,
+        "explanation": "Files API uploads are persistent resources and are never altered by training hyperparameters."
+      },
+      {
+        "id": "c",
+        "text": "Training loss drops to zero instantly on step 1 without processing tokens",
+        "correct": false,
+        "explanation": "High learning rates cause loss divergence or instability, not instant zero-loss convergence."
+      },
+      {
+        "id": "d",
+        "text": "Training loss diverges or oscillates erratically, preventing model convergence",
+        "correct": true,
+        "explanation": "An excessively large learning rate causes gradient step divergence, ruining model performance."
+      }
+    ]
+  },
+  {
+    "id": "q-la01c1d2e3f4",
+    "domain": "domain-3",
+    "objective": "domain-3/lora-adapters",
+    "stem": "What is the core benefit of Low-Rank Adaptation (LoRA) over full parameter fine-tuning?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It converts text data into 3D polygon meshes for graphics rendering",
+        "correct": false,
+        "explanation": "LoRA is a parameter-efficient fine-tuning method for neural networks, not a 3D graphics renderer."
+      },
+      {
+        "id": "b",
+        "text": "It eliminates the requirement for system prompt instructions",
+        "correct": false,
+        "explanation": "System prompts remain available and functional regardless of fine-tuning strategy."
+      },
+      {
+        "id": "c",
+        "text": "It trains small low-rank adapter matrix parameters while keeping base model weights frozen, drastically reducing memory usage",
+        "correct": true,
+        "explanation": "LoRA freezes base model weights and trains rank-decomposition matrices, dramatically lowering compute/VRAM requirements."
+      },
+      {
+        "id": "d",
+        "text": "It forces all model responses to be formatted as CSV rows",
+        "correct": false,
+        "explanation": "Output format is controlled by response formatting parameters, not adapter weight factorization."
+      }
+    ]
+  },
+  {
+    "id": "q-la02d2e3f4a5",
+    "domain": "domain-3",
+    "objective": "domain-3/lora-adapters",
+    "stem": "What operation combines trained LoRA adapter weights directly back into the base model weights for zero-overhead inference deployment?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Quantized gradient accumulation",
+        "correct": false,
+        "explanation": "Gradient accumulation splits micro-batches during training, not weight merging for deployment."
+      },
+      {
+        "id": "b",
+        "text": "Dataset token deduplication",
+        "correct": false,
+        "explanation": "Token deduplication cleans text datasets prior to training."
+      },
+      {
+        "id": "c",
+        "text": "Zero-shot prompt prefixing",
+        "correct": false,
+        "explanation": "Prompt prefixing appends system text at query time, not model weight matrix addition."
+      },
+      {
+        "id": "d",
+        "text": "Weight merging (computing $W_{final} = W_{base} + \\Delta W$)",
+        "correct": true,
+        "explanation": "Merging computes matrix addition ($W_{base} + B \\cdot A$), integrating adapter weights into base weights for fast serving."
+      }
+    ]
+  },
+  {
+    "id": "q-la03d6e7f8a9",
+    "domain": "domain-3",
+    "objective": "domain-3/lora-adapters",
+    "stem": "What key hyperparameter in LoRA configuration controls the rank of the low-rank update matrices A and B?",
+    "options": [
+      {
+        "id": "a",
+        "text": "top_p",
+        "correct": false,
+        "explanation": "Top-p (nucleus sampling) controls cumulative probability sampling during generation."
+      },
+      {
+        "id": "b",
+        "text": "presence_penalty",
+        "correct": false,
+        "explanation": "Presence penalty penalizes new tokens based on occurrence in generated output."
+      },
+      {
+        "id": "c",
+        "text": "context_window",
+        "correct": false,
+        "explanation": "Context window specifies total input token capacity of the model architecture."
+      },
+      {
+        "id": "d",
+        "text": "r (rank)",
+        "correct": true,
+        "explanation": "The parameter r defines the rank dimension of decomposition matrices in LoRA adapters."
       }
     ]
   },
