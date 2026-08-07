@@ -10,3 +10,4 @@ snapshot:
   bucket: academy-source-snapshots
   key: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 status: current
+# no-op: verifying claude-review skip-paths on a content-only diff
