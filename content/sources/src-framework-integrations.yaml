@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-framework-integrations
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/frameworks.md
+title: Framework Integrations & SDKs
+retrieved_at: 2026-08-06T00:33:30Z
+sha256: 5c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d
+objectives:
+  - domain-2/framework-integrations
+  - domain-2/chat-completions
+snapshot:
+  bucket: academy-source-snapshots
+  key: 5c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d
+status: current

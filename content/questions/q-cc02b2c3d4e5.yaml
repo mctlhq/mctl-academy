@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-cc02b2c3d4e5
+status: published
+domain: domain-2
+objective: domain-2/chat-completions
+stem: >-
+  How does setting `temperature` to 0.0 affect the sampling output of a chat completion model?
+options:
+  - id: a
+    text: It causes the model to sample tokens purely randomly across the full vocabulary
+    correct: false
+    explanation: >-
+      High temperature increases randomness; zero temperature removes random sampling.
+  - id: b
+    text: It enables deterministic greedy decoding by always selecting the highest-probability token
+    correct: true
+    explanation: >-
+      Setting temperature to 0 selects top logprob tokens deterministically (greedy decoding).
+  - id: c
+    text: It disables system prompt instructions and safety filtering
+    correct: false
+    explanation: >-
+      Temperature only controls logit scaling during generation, not prompt handling or moderation.
+  - id: d
+    text: It restricts token generation to a maximum of 100 completion tokens
+    correct: false
+    explanation: >-
+      Output length is controlled by `max_tokens`, not temperature.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Setting temperature to 0 enables greedy sampling for deterministic model outputs.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

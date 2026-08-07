@@ -1,5 +1,69 @@
 [
   {
+    "id": "q-cc01a1b2c3d4",
+    "domain": "domain-2",
+    "objective": "domain-2/chat-completions",
+    "stem": "When configuring streaming responses in the Chat Completions API, what format are the event stream data chunks delivered in?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Server-Sent Events (SSE) data streams formatted with data: [JSON]",
+        "correct": true,
+        "explanation": "Streaming chat completions use standard Server-Sent Events (SSE) where each chunk is prefixed with data."
+      },
+      {
+        "id": "b",
+        "text": "Raw binary WebSocket frame packets",
+        "correct": false,
+        "explanation": "The Chat Completions API uses standard HTTP streaming with SSE, not WebSockets."
+      },
+      {
+        "id": "c",
+        "text": "A multipart/form-data MIME payload",
+        "correct": false,
+        "explanation": "Multipart encoding is used for file uploads, not streaming LLM tokens."
+      },
+      {
+        "id": "d",
+        "text": "A single chunked JSON array containing all tokens",
+        "correct": false,
+        "explanation": "JSON arrays cannot be incrementally parsed per token without custom stream parsers; SSE line streams are used."
+      }
+    ]
+  },
+  {
+    "id": "q-cc02b2c3d4e5",
+    "domain": "domain-2",
+    "objective": "domain-2/chat-completions",
+    "stem": "How does setting `temperature` to 0.0 affect the sampling output of a chat completion model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It causes the model to sample tokens purely randomly across the full vocabulary",
+        "correct": false,
+        "explanation": "High temperature increases randomness; zero temperature removes random sampling."
+      },
+      {
+        "id": "b",
+        "text": "It enables deterministic greedy decoding by always selecting the highest-probability token",
+        "correct": true,
+        "explanation": "Setting temperature to 0 selects top logprob tokens deterministically (greedy decoding)."
+      },
+      {
+        "id": "c",
+        "text": "It disables system prompt instructions and safety filtering",
+        "correct": false,
+        "explanation": "Temperature only controls logit scaling during generation, not prompt handling or moderation."
+      },
+      {
+        "id": "d",
+        "text": "It restricts token generation to a maximum of 100 completion tokens",
+        "correct": false,
+        "explanation": "Output length is controlled by `max_tokens`, not temperature."
+      }
+    ]
+  },
+  {
     "id": "q-df01f3a4b5c6",
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
@@ -128,6 +192,70 @@
     ]
   },
   {
+    "id": "q-er01c3d4e5f6",
+    "domain": "domain-2",
+    "objective": "domain-2/embeddings-and-rerank",
+    "stem": "In a RAG retrieval system, what primary purpose does a cross-encoder reranking model serve after initial vector search retrieval?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To generate synthetic training dataset pairs for fine-tuning",
+        "correct": false,
+        "explanation": "Rerankers evaluate query-document relevance, not dataset synthesis."
+      },
+      {
+        "id": "b",
+        "text": "To compress text chunks into 8-bit quantized embeddings",
+        "correct": false,
+        "explanation": "Quantization reduces vector memory usage, whereas reranking improves ranking precision."
+      },
+      {
+        "id": "c",
+        "text": "To re-score retrieved candidate passages using full joint attention over query and document pairs",
+        "correct": true,
+        "explanation": "Reranking models compute joint attention across query-document pairs to produce more accurate relevance scores."
+      },
+      {
+        "id": "d",
+        "text": "To execute client-side Javascript code inside an isolated sandbox",
+        "correct": false,
+        "explanation": "Sandboxes run code; rerankers are neural models for search relevance."
+      }
+    ]
+  },
+  {
+    "id": "q-er02d4e5f6a7",
+    "domain": "domain-2",
+    "objective": "domain-2/embeddings-and-rerank",
+    "stem": "What vector distance metric is standard for computing similarity between normalized embedding vectors?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Manhattan L1 distance metric",
+        "correct": false,
+        "explanation": "L1 distance sums absolute component differences and is not normalized for direction."
+      },
+      {
+        "id": "b",
+        "text": "Levenshtein edit distance metric",
+        "correct": false,
+        "explanation": "Levenshtein distance operates on string characters, not dense floating-point vector spaces."
+      },
+      {
+        "id": "c",
+        "text": "Hamming bitwise distance metric",
+        "correct": false,
+        "explanation": "Hamming distance measures bit differences in binary vectors, not floating-point embeddings."
+      },
+      {
+        "id": "d",
+        "text": "Cosine similarity or inner dot product",
+        "correct": true,
+        "explanation": "Cosine similarity (dot product for normalized vectors) measures angular alignment between text embeddings."
+      }
+    ]
+  },
+  {
     "id": "q-fc01a2b3c4d5",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
@@ -252,6 +380,102 @@
         "text": "The model calls it regardless of context, overriding its own selection",
         "correct": true,
         "explanation": "An explicit choice replaces the model's judgement entirely, which is what makes it suitable for a deterministic first step."
+      }
+    ]
+  },
+  {
+    "id": "q-fc05d2e3f4a5",
+    "domain": "domain-2",
+    "objective": "domain-2/function-calling",
+    "stem": "When a model returns a tool_calls payload in a Chat Completion response, what must the application client do next?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Terminate the conversation session immediately",
+        "correct": false,
+        "explanation": "Tool calls require executing the specified function and returning results to continue."
+      },
+      {
+        "id": "b",
+        "text": "Re-send the exact prompt without modification",
+        "correct": false,
+        "explanation": "Resending without tool execution causes infinite loops."
+      },
+      {
+        "id": "c",
+        "text": "Delete the tool definition from the client registry",
+        "correct": false,
+        "explanation": "Tool definitions remain registered for future turns in the conversation."
+      },
+      {
+        "id": "d",
+        "text": "Execute the requested function locally and return a message with role tool containing the result",
+        "correct": true,
+        "explanation": "The client executes the tool and appends a tool role message with tool_call_id and output string."
+      }
+    ]
+  },
+  {
+    "id": "q-fi01c7d8e9f0",
+    "domain": "domain-2",
+    "objective": "domain-2/framework-integrations",
+    "stem": "When configuring OpenAI-compatible client SDKs to connect to an external inference endpoint, what two parameters must be updated?",
+    "options": [
+      {
+        "id": "a",
+        "text": "model_type and system_prompt",
+        "correct": false,
+        "explanation": "Prompt and model selections belong to request calls, not base client URL routing."
+      },
+      {
+        "id": "b",
+        "text": "storage_bucket and db_url",
+        "correct": false,
+        "explanation": "Storage and database configuration belong to database credentials, not API endpoint setup."
+      },
+      {
+        "id": "c",
+        "text": "base_url and api_key",
+        "correct": true,
+        "explanation": "Overriding base_url points client SDKs to the custom endpoint, and api_key authenticates requests."
+      },
+      {
+        "id": "d",
+        "text": "tcp_port and dns_server",
+        "correct": false,
+        "explanation": "Network sockets are handled by standard HTTP client transports, not SDK client constructor parameters."
+      }
+    ]
+  },
+  {
+    "id": "q-fi02d8e9f0a1",
+    "domain": "domain-2",
+    "objective": "domain-2/framework-integrations",
+    "stem": "What standard protocol enables AI agents to dynamically discover and invoke tools, resources, and prompts provided by external servers?",
+    "options": [
+      {
+        "id": "a",
+        "text": "OAuth 2.0 PKCE authentication flow",
+        "correct": false,
+        "explanation": "OAuth PKCE is an identity authorization workflow, not an agent tool discovery protocol."
+      },
+      {
+        "id": "b",
+        "text": "gRPC Protocol Buffer schema compiler",
+        "correct": false,
+        "explanation": "gRPC is an RPC framework, whereas MCP specifically standardizes tool/resource discovery for agents."
+      },
+      {
+        "id": "c",
+        "text": "Simple Object Access Protocol (SOAP)",
+        "correct": false,
+        "explanation": "SOAP is an XML web service protocol from enterprise legacy integrations, not modern agent tool protocols."
+      },
+      {
+        "id": "d",
+        "text": "Model Context Protocol (MCP)",
+        "correct": true,
+        "explanation": "Model Context Protocol (MCP) provides an open standard for agents to discover tools, resources, and prompts."
       }
     ]
   },
@@ -544,6 +768,166 @@
     ]
   },
   {
+    "id": "q-rp01a5b6c7d8",
+    "domain": "domain-2",
+    "objective": "domain-2/retrieval-pipelines",
+    "stem": "Why is chunk overlap typically applied when splitting documents into passages for a retrieval pipeline?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To prevent splitting semantically important context or entity references across chunk boundaries",
+        "correct": true,
+        "explanation": "Chunk overlap preserves context continuity across boundary cuts so key entities aren't severed."
+      },
+      {
+        "id": "b",
+        "text": "To double the storage efficiency of vector database index nodes",
+        "correct": false,
+        "explanation": "Overlap increases total stored tokens and index size slightly, not efficiency."
+      },
+      {
+        "id": "c",
+        "text": "To ensure all output tokens are generated deterministically",
+        "correct": false,
+        "explanation": "Chunking happens prior to retrieval, whereas generation determinism is set via temperature/seed."
+      },
+      {
+        "id": "d",
+        "text": "To force the embedding model to output 4096-dimensional vectors",
+        "correct": false,
+        "explanation": "Embedding dimension is fixed by the model architecture, unrelated to chunk overlap length."
+      }
+    ]
+  },
+  {
+    "id": "q-rp02b6c7d8e9",
+    "domain": "domain-2",
+    "objective": "domain-2/retrieval-pipelines",
+    "stem": "What is Hybrid Search in a modern retrieval architecture?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Running inference across CPU and GPU hardware simultaneously",
+        "correct": false,
+        "explanation": "Hardware acceleration is compute infrastructure, not search retrieval methodology."
+      },
+      {
+        "id": "b",
+        "text": "Combining dense vector semantic search with sparse keyword search (e.g., BM25)",
+        "correct": true,
+        "explanation": "Hybrid search merges dense semantic embeddings with sparse BM25 keyword matching for optimal recall."
+      },
+      {
+        "id": "c",
+        "text": "Querying two different LLM providers for response verification",
+        "correct": false,
+        "explanation": "Multi-provider LLM querying is model ensemble routing, not hybrid document retrieval."
+      },
+      {
+        "id": "d",
+        "text": "Translating queries into multiple foreign languages before embedding",
+        "correct": false,
+        "explanation": "Multilingual expansion is translation preprocessing, not hybrid dense/sparse search indexing."
+      }
+    ]
+  },
+  {
+    "id": "q-sb01a9b0c1d2",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "Why is isolated container or microVM execution required when an agent executes code generated at runtime?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To prevent arbitrary untrusted code execution from compromising host system security and network resources",
+        "correct": true,
+        "explanation": "Sandboxing isolates process execution so generated code cannot modify host files or access sensitive networks."
+      },
+      {
+        "id": "b",
+        "text": "To speed up LLM token generation throughput by 10x",
+        "correct": false,
+        "explanation": "Sandboxes run client/code execution environments, not model weight inference."
+      },
+      {
+        "id": "c",
+        "text": "To bypass API key authentication requirements",
+        "correct": false,
+        "explanation": "API key authentication remains required regardless of sandbox isolation."
+      },
+      {
+        "id": "d",
+        "text": "To convert Python code into static HTML pages automatically",
+        "correct": false,
+        "explanation": "Sandboxes execute code safely; HTML conversion is handled by templates or build scripts."
+      }
+    ]
+  },
+  {
+    "id": "q-sb02b0c1d2e3",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "Which resource control mechanism is typically configured on an agent sandbox to prevent runaway code loops?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Automatic git commit triggers",
+        "correct": false,
+        "explanation": "Git commits record version control history, not execution resource limits."
+      },
+      {
+        "id": "b",
+        "text": "Execution timeouts and CPU/memory quotas",
+        "correct": true,
+        "explanation": "Timeouts terminate infinite loops and resource quotas prevent memory exhaustion."
+      },
+      {
+        "id": "c",
+        "text": "Domain name DNS pre-fetching",
+        "correct": false,
+        "explanation": "DNS pre-fetching speeds up web browser network lookups, not sandbox loop limits."
+      },
+      {
+        "id": "d",
+        "text": "Database table indexing",
+        "correct": false,
+        "explanation": "Database indexes speed up SQL queries, not process execution limits."
+      }
+    ]
+  },
+  {
+    "id": "q-sb03c1d2e3f4",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "How should environment variables containing secret API keys be passed to an agent sandbox environment?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Hardcoded as plain text inside generated code scripts",
+        "correct": false,
+        "explanation": "Hardcoding credentials exposes keys in code logs and version control artifacts."
+      },
+      {
+        "id": "b",
+        "text": "Written to a public world-readable file in `/tmp/keys.txt`",
+        "correct": false,
+        "explanation": "World-readable temporary files leak secrets to any local process."
+      },
+      {
+        "id": "c",
+        "text": "Injected securely via ephemeral environment secrets without writing to disk",
+        "correct": true,
+        "explanation": "Secrets should be injected in-memory at process initialization without disk persistence."
+      },
+      {
+        "id": "d",
+        "text": "Encoded as base64 strings in public GitHub issues",
+        "correct": false,
+        "explanation": "Base64 encoding is not encryption; public posting leaks secrets instantly."
+      }
+    ]
+  },
+  {
     "id": "q-so01d5e6f7a8",
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
@@ -636,6 +1020,38 @@
         "text": "Also state the schema and the JSON instruction in the prompt",
         "correct": true,
         "explanation": "Repeating the instruction and schema in the system or user prompt is the documented way to improve quality and consistency."
+      }
+    ]
+  },
+  {
+    "id": "q-so04a3b4c5d6",
+    "domain": "domain-2",
+    "objective": "domain-2/structured-output",
+    "stem": "What is the main advantage of enforcing JSON Schema constraints at the logit level during decoding over prompt engineering?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It guarantees 100% syntactically valid JSON output matching the schema without parsing failures",
+        "correct": true,
+        "explanation": "Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax."
+      },
+      {
+        "id": "b",
+        "text": "It eliminates the need for an API authentication key",
+        "correct": false,
+        "explanation": "API authentication is required regardless of output constraint settings."
+      },
+      {
+        "id": "c",
+        "text": "It doubles the context window size of the underlying model",
+        "correct": false,
+        "explanation": "Context window length is fixed by architecture, not decoding constraints."
+      },
+      {
+        "id": "d",
+        "text": "It automatically translates output into multiple spoken languages",
+        "correct": false,
+        "explanation": "Structured output enforces data format schemas, not natural language translation."
       }
     ]
   }

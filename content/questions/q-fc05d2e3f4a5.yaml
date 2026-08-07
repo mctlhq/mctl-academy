@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-fc05d2e3f4a5
+status: published
+domain: domain-2
+objective: domain-2/function-calling
+stem: >-
+  When a model returns a tool_calls payload in a Chat Completion response, what must the application client do next?
+options:
+  - id: a
+    text: Terminate the conversation session immediately
+    correct: false
+    explanation: >-
+      Tool calls require executing the specified function and returning results to continue.
+  - id: b
+    text: Re-send the exact prompt without modification
+    correct: false
+    explanation: >-
+      Resending without tool execution causes infinite loops.
+  - id: c
+    text: Delete the tool definition from the client registry
+    correct: false
+    explanation: >-
+      Tool definitions remain registered for future turns in the conversation.
+  - id: d
+    text: "Execute the requested function locally and return a message with role tool containing the result"
+    correct: true
+    explanation: >-
+      The client executes the tool and appends a tool role message with tool_call_id and output string.
+evidence:
+  - source_id: src-function-calling
+    excerpt: >-
+      Client applications execute the requested tool and supply the result back in a tool role message.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-fi01c7d8e9f0
+status: published
+domain: domain-2
+objective: domain-2/framework-integrations
+stem: >-
+  When configuring OpenAI-compatible client SDKs to connect to an external inference endpoint, what two parameters must be updated?
+options:
+  - id: a
+    text: "model_type and system_prompt"
+    correct: false
+    explanation: >-
+      Prompt and model selections belong to request calls, not base client URL routing.
+  - id: b
+    text: "storage_bucket and db_url"
+    correct: false
+    explanation: >-
+      Storage and database configuration belong to database credentials, not API endpoint setup.
+  - id: c
+    text: "base_url and api_key"
+    correct: true
+    explanation: >-
+      Overriding base_url points client SDKs to the custom endpoint, and api_key authenticates requests.
+  - id: d
+    text: "tcp_port and dns_server"
+    correct: false
+    explanation: >-
+      Network sockets are handled by standard HTTP client transports, not SDK client constructor parameters.
+evidence:
+  - source_id: src-framework-integrations
+    excerpt: >-
+      Integrating OpenAI SDKs requires pointing base_url to the endpoint and supplying an api_key.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

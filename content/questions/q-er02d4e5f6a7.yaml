@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-er02d4e5f6a7
+status: published
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: >-
+  What vector distance metric is standard for computing similarity between normalized embedding vectors?
+options:
+  - id: a
+    text: Manhattan L1 distance metric
+    correct: false
+    explanation: >-
+      L1 distance sums absolute component differences and is not normalized for direction.
+  - id: b
+    text: Levenshtein edit distance metric
+    correct: false
+    explanation: >-
+      Levenshtein distance operates on string characters, not dense floating-point vector spaces.
+  - id: c
+    text: Hamming bitwise distance metric
+    correct: false
+    explanation: >-
+      Hamming distance measures bit differences in binary vectors, not floating-point embeddings.
+  - id: d
+    text: Cosine similarity or inner dot product
+    correct: true
+    explanation: >-
+      Cosine similarity (dot product for normalized vectors) measures angular alignment between text embeddings.
+evidence:
+  - source_id: src-embeddings-rerank
+    excerpt: >-
+      Vector similarity search computes dot product or cosine similarity across normalized embeddings.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

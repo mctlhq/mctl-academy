@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-agent-sandboxes
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/sandboxes.md
+title: Agent Sandboxes and Execution
+retrieved_at: 2026-08-06T00:33:29Z
+sha256: 4b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c
+objectives:
+  - domain-2/agent-sandboxes
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c
+status: current

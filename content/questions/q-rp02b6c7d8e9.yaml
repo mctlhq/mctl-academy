@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-rp02b6c7d8e9
+status: published
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: >-
+  What is Hybrid Search in a modern retrieval architecture?
+options:
+  - id: a
+    text: Running inference across CPU and GPU hardware simultaneously
+    correct: false
+    explanation: >-
+      Hardware acceleration is compute infrastructure, not search retrieval methodology.
+  - id: b
+    text: Combining dense vector semantic search with sparse keyword search (e.g., BM25)
+    correct: true
+    explanation: >-
+      Hybrid search merges dense semantic embeddings with sparse BM25 keyword matching for optimal recall.
+  - id: c
+    text: Querying two different LLM providers for response verification
+    correct: false
+    explanation: >-
+      Multi-provider LLM querying is model ensemble routing, not hybrid document retrieval.
+  - id: d
+    text: Translating queries into multiple foreign languages before embedding
+    correct: false
+    explanation: >-
+      Multilingual expansion is translation preprocessing, not hybrid dense/sparse search indexing.
+evidence:
+  - source_id: src-embeddings-rerank
+    excerpt: >-
+      Hybrid search combines dense vector embeddings with sparse keyword search like BM25 for balanced retrieval.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

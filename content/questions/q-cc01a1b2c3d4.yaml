@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-cc01a1b2c3d4
+status: published
+domain: domain-2
+objective: domain-2/chat-completions
+stem: >-
+  When configuring streaming responses in the Chat Completions API, what format are the event stream data chunks delivered in?
+options:
+  - id: a
+    text: "Server-Sent Events (SSE) data streams formatted with data: [JSON]"
+    correct: true
+    explanation: >-
+      Streaming chat completions use standard Server-Sent Events (SSE) where each chunk is prefixed with data.
+  - id: b
+    text: Raw binary WebSocket frame packets
+    correct: false
+    explanation: >-
+      The Chat Completions API uses standard HTTP streaming with SSE, not WebSockets.
+  - id: c
+    text: A multipart/form-data MIME payload
+    correct: false
+    explanation: >-
+      Multipart encoding is used for file uploads, not streaming LLM tokens.
+  - id: d
+    text: A single chunked JSON array containing all tokens
+    correct: false
+    explanation: >-
+      JSON arrays cannot be incrementally parsed per token without custom stream parsers; SSE line streams are used.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: >-
+      Streaming responses deliver tokens incrementally using Server-Sent Events with JSON data payloads.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"

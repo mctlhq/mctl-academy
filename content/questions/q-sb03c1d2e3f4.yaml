@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-sb03c1d2e3f4
+status: published
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: >-
+  How should environment variables containing secret API keys be passed to an agent sandbox environment?
+options:
+  - id: a
+    text: Hardcoded as plain text inside generated code scripts
+    correct: false
+    explanation: >-
+      Hardcoding credentials exposes keys in code logs and version control artifacts.
+  - id: b
+    text: Written to a public world-readable file in `/tmp/keys.txt`
+    correct: false
+    explanation: >-
+      World-readable temporary files leak secrets to any local process.
+  - id: c
+    text: Injected securely via ephemeral environment secrets without writing to disk
+    correct: true
+    explanation: >-
+      Secrets should be injected in-memory at process initialization without disk persistence.
+  - id: d
+    text: Encoded as base64 strings in public GitHub issues
+    correct: false
+    explanation: >-
+      Base64 encoding is not encryption; public posting leaks secrets instantly.
+evidence:
+  - source_id: src-agent-sandboxes
+    excerpt: >-
+      Secrets must be passed to sandboxes securely in memory without persisting sensitive keys to disk.
+authored:
+  by: agent:claude
+  at: "2026-08-07T14:40:00Z"
+reviewed:
+  by: mashkovd
+  at: "2026-08-07T15:00:00Z"
