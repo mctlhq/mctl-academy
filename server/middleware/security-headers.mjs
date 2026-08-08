@@ -15,7 +15,7 @@ const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  "img-src 'self' data: https://avatars.githubusercontent.com",
   "font-src 'self'",
   "connect-src 'self'",
   "object-src 'none'",
