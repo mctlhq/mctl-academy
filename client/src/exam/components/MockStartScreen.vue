@@ -72,16 +72,19 @@ function handleStart() {
       Weighted {{ loaded.config.domains.map((domain) => domain.mockQuestions).join("/") }} across the four domains.
     </p>
 
-    <p v-if="loaded.config.discloseBankSize" class="mock-start-disclosure">
-      Questions are drawn from the current bank above. A repeat mock exam may include
-      questions you have already seen -- it is not guaranteed to be entirely fresh.
-    </p>
+    <details class="mock-start-details">
+      <summary>How the mock exam works</summary>
+      <p v-if="loaded.config.discloseBankSize" class="mock-start-disclosure">
+        Questions are drawn from the current bank above. A repeat mock exam may include
+        questions you have already seen -- it is not guaranteed to be entirely fresh.
+      </p>
 
-    <p>
-      No feedback is shown while the exam is in progress. Answer, skip, revisit, and change
-      any of the {{ loaded.config.questionCount }} questions freely before you submit; results
-      and explanations appear only after submission or when time runs out.
-    </p>
+      <p>
+        No feedback is shown while the exam is in progress. Answer, skip, revisit, and change
+        any of the {{ loaded.config.questionCount }} questions freely before you submit; results
+        and explanations appear only after submission or when time runs out.
+      </p>
+    </details>
 
     <MButton v-if="loaded.selection.ok" type="button" @click="handleStart">
       Start mock exam
@@ -153,6 +156,27 @@ function handleStart() {
   font-size: 0.72rem;
 }
 
+.mock-start-details {
+  margin: 0 0 1.25rem;
+  color: var(--surface-fg-muted);
+}
+
+.mock-start-details summary {
+  display: none;
+  color: var(--surface-fg);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.mock-start-details:not([open]) > :not(summary) {
+  display: block;
+}
+
+.mock-start-details p:last-child {
+  margin-bottom: 0;
+}
+
 .mock-start-shortfall {
   border: 1px solid var(--surface-line);
   border-left-width: 3px;
@@ -162,8 +186,34 @@ function handleStart() {
 }
 
 @media (max-width: 620px) {
+  .mock-start-details summary {
+    display: list-item;
+  }
+
+  .mock-start-details:not([open]) > :not(summary) {
+    display: none;
+  }
+
   .mock-start-facts {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 1rem;
+  }
+
+  .mock-start-facts > div {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .mock-start-facts dt {
+    font-size: 0.58rem;
+  }
+
+  .mock-start-facts dd {
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .mock-start-weighting {
+    margin-bottom: 0.75rem;
   }
 }
 </style>
