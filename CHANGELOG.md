@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.33](https://github.com/mctlhq/mctl-academy/compare/0.1.32...0.1.33) (2026-08-08)
+
+
+### Bug Fixes
+
+* **ci:** pass CLAUDE_CODE_OAUTH_TOKEN_2 secret to claude-review workflow ([e06bdf7](https://github.com/mctlhq/mctl-academy/commit/e06bdf719800270e8aa8b266490558ebb61a301f))
+* **ci:** pass CLAUDE_CODE_OAUTH_TOKEN_2 secret to claude-review workflow ([118f6b2](https://github.com/mctlhq/mctl-academy/commit/118f6b2c34c9e8686b8fc173d0083adbbd9d3456))
+* handle standalone viewport in landscape ([33d453a](https://github.com/mctlhq/mctl-academy/commit/33d453a0bbcb947093ec8b0c6afdbc335ed93a3b))
+* handle standalone viewport in landscape ([e5c2bb3](https://github.com/mctlhq/mctl-academy/commit/e5c2bb37e464722608bad5eafdf2b8ae80786c68))
+
 ## [0.1.32](https://github.com/mctlhq/mctl-academy/compare/0.1.31...0.1.32) (2026-08-08)
 
 
