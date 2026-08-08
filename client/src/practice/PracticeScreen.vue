@@ -395,4 +395,33 @@ kbd {
     gap: 0.75rem;
   }
 }
+
+@media (max-width: 560px) {
+  .practice-stage > .practice {
+    padding-top: 1rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .practice-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .practice h1 {
+    margin-bottom: 0.75rem;
+    font-size: 1.15rem;
+    line-height: 1.3;
+  }
+
+  .options {
+    margin-bottom: 0.75rem;
+  }
+
+  .options li {
+    margin-bottom: 0.4rem;
+  }
+
+  .options button {
+    padding: 0.65rem 0.75rem;
+  }
+}
 </style>

@@ -199,4 +199,55 @@ function handleClearHistory() {
     gap: 2.5rem;
   }
 }
+
+@media (max-width: 560px) {
+  .progress-grid {
+    gap: 0.75rem;
+  }
+
+  .readiness-heading {
+    gap: 0.75rem;
+  }
+
+  .readiness-heading strong {
+    font-size: 2.5rem;
+  }
+
+  .section-marker {
+    margin: 0.4rem 0 0.75rem;
+  }
+
+  .progress-screen h1 {
+    margin-bottom: 0.75rem;
+  }
+
+  .domain-bars {
+    gap: 0.5rem;
+  }
+
+  .progress-summary dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .progress-summary dl div {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .progress-summary dd {
+    font-size: 0.95rem;
+  }
+
+  .weakest-card {
+    gap: 0.25rem;
+    padding: 0.625rem;
+  }
+
+  .reset-progress {
+    margin-top: 0.5rem;
+  }
+}
 </style>

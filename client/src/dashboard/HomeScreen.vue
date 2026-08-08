@@ -270,6 +270,43 @@ const practiceDescription = computed(() => {
   }
 }
 
+@media (max-width: 400px) {
+  .home-screen {
+    margin-top: -1rem;
+    margin-bottom: -1rem;
+  }
+
+  .next-card {
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .home-grid {
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .section-heading {
+    margin-bottom: 0.5rem;
+  }
+
+  .domain-bars {
+    gap: 0.5rem;
+  }
+
+  .stat-list {
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    column-gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .mistakes-callout {
+    padding: 0.625rem 0.75rem;
+  }
+}
+
 @media (max-width: 340px) {
   .next-card,
   .home-grid {
