@@ -3,37 +3,39 @@ id: q-rl04b6c7d8e9
 status: published
 domain: domain-4
 objective: domain-4/rate-limits
-stem: >-
-  How does automatic rate limit growth operate when a user consistently operates near their assigned capacity limits?
+stem: How does automatic rate limit growth operate when a user consistently
+  operates near their assigned capacity limits?
 options:
   - id: a
     text: The user account is suspended until a manual support ticket is filed
     correct: false
-    explanation: >-
-      Automatic limit growth increases capacity without requiring manual support tickets.
+    explanation: Automatic limit growth increases capacity without requiring manual
+      support tickets.
   - id: b
-    text: The rate limit cap increases automatically as consistent high-volume usage patterns are established
+    text: The rate limit cap increases automatically as consistent high-volume usage
+      patterns are established
     correct: true
-    explanation: >-
-      Default rate limits grow automatically when usage consistently operates close to assigned caps.
+    explanation: Default rate limits grow automatically when usage consistently
+      operates close to assigned caps.
   - id: c
     text: All requests are permanently restricted to 1 token per second
     correct: false
-    explanation: >-
-      Consistent usage triggers automatic limit growth, not throttling penalties.
+    explanation: Consistent usage triggers automatic limit growth, not throttling penalties.
   - id: d
     text: The model automatically switches to 4-bit quantization mode
     correct: false
-    explanation: >-
-      Quantization is a model architecture format, not a rate limit quota mechanism.
+    explanation: Quantization is a model architecture format, not a rate limit quota
+      mechanism.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      Every user is provided with a default rate limit cap. This limit grows automatically
-      when you consistently operate close to your capacity and current limit.
+    excerpt: Every user is provided with a default rate limit cap. This limit grows
+      automatically when you consistently operate close to your capacity and
+      current limit.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

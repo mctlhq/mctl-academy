@@ -3,37 +3,37 @@ id: q-fc05d2e3f4a5
 status: published
 domain: domain-2
 objective: domain-2/function-calling
-stem: >-
-  When a model returns a tool_calls payload in a Chat Completion response, what must the application client do next?
+stem: When a model returns a tool_calls payload in a Chat Completion response,
+  what must the application client do next?
 options:
   - id: a
     text: Terminate the conversation session immediately
     correct: false
-    explanation: >-
-      Tool calls require executing the specified function and returning results to continue.
+    explanation: Tool calls require executing the specified function and returning
+      results to continue.
   - id: b
     text: Re-send the exact prompt without modification
     correct: false
-    explanation: >-
-      Resending without tool execution causes infinite loops.
+    explanation: Resending without tool execution causes infinite loops.
   - id: c
     text: Delete the tool definition from the client registry
     correct: false
-    explanation: >-
-      Tool definitions remain registered for future turns in the conversation.
+    explanation: Tool definitions remain registered for future turns in the conversation.
   - id: d
-    text: "Execute the requested function locally and return a message with role tool containing the result"
+    text: Execute the requested function locally and return a message with role tool
+      containing the result
     correct: true
-    explanation: >-
-      The client executes the tool and appends a tool role message with tool_call_id and output string.
+    explanation: The client executes the tool and appends a tool role message with
+      tool_call_id and output string.
 evidence:
   - source_id: src-function-calling
-    excerpt: >-
-      You are responsible for parsing these outputs and executing the corresponding
-      functions on your backend or client side.
+    excerpt: You are responsible for parsing these outputs and executing the
+      corresponding functions on your backend or client side.
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

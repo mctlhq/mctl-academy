@@ -3,43 +3,38 @@ id: q-ft02c6d7e8f9
 status: published
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
-stem: >-
-  A fine-tuning job is running and you want to know whether the dataset was accepted
-  and how training is progressing. What should you inspect?
+stem: A fine-tuning job is running and you want to know whether the dataset was
+  accepted and how training is progressing. What should you inspect?
 options:
   - id: a
     text: The uploaded file's metadata, which records a validation verdict
     correct: false
-    explanation: >-
-      File metadata describes the upload. The job's view of processing appears
-      in its events.
+    explanation: File metadata describes the upload. The job's view of processing
+      appears in its events.
   - id: b
     text: The dataset query template, which reports parse errors
     correct: false
-    explanation: >-
-      Query templates concern reading dataset content, not monitoring a training
-      run.
+    explanation: Query templates concern reading dataset content, not monitoring a
+      training run.
   - id: c
-    text: >-
-      Job events, which cover file validation, dataset processing and progress
+    text: Job events, which cover file validation, dataset processing and progress
     correct: true
-    explanation: >-
-      Events are the running narrative of a job, which is what makes them the
-      right place to look while it is still in flight.
+    explanation: Events are the running narrative of a job, which is what makes them
+      the right place to look while it is still in flight.
   - id: d
     text: The checkpoint list, which grows as validation succeeds
     correct: false
-    explanation: >-
-      Checkpoints tell you what was produced, not whether the input was accepted
-      or where training has got to.
+    explanation: Checkpoints tell you what was produced, not whether the input was
+      accepted or where training has got to.
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: >-
-      Events help you understand the lifecycle (file validation, dataset processing,
-      training progress).
+    excerpt: Events help you understand the lifecycle (file validation, dataset
+      processing, training progress).
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

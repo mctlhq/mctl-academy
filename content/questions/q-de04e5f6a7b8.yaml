@@ -3,37 +3,38 @@ id: q-de04e5f6a7b8
 status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
-stem: >-
-  How does automatic endpoint scaling behave when incoming request concurrency exceeds provisioned instance capacity?
+stem: How does automatic endpoint scaling behave when incoming request
+  concurrency exceeds provisioned instance capacity?
 options:
   - id: a
-    text: Requests queue up to configured limits before returning HTTP 429 rate limit responses
+    text: Requests queue up to configured limits before returning HTTP 429 rate
+      limit responses
     correct: true
-    explanation: >-
-      Over-capacity concurrency triggers request queuing followed by HTTP 429 rate limit errors.
+    explanation: Over-capacity concurrency triggers request queuing followed by HTTP
+      429 rate limit errors.
   - id: b
-    text: The active model is permanently deleted from disk to prevent hardware overheating
+    text: The active model is permanently deleted from disk to prevent hardware
+      overheating
     correct: false
-    explanation: >-
-      Capacity limits trigger throttling responses, not data deletion.
+    explanation: Capacity limits trigger throttling responses, not data deletion.
   - id: c
     text: All active user sessions are logged out across the organization
     correct: false
-    explanation: >-
-      Throttling impacts specific inference requests, not user auth sessions.
+    explanation: Throttling impacts specific inference requests, not user auth sessions.
   - id: d
     text: HTTP responses silently return corrupted random byte strings
     correct: false
-    explanation: >-
-      Overload conditions return explicit HTTP 429 error codes, not corrupt data.
+    explanation: Overload conditions return explicit HTTP 429 error codes, not corrupt data.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      Every user is provided with a default rate limit cap. This limit grows automatically
-      when you consistently operate close to your capacity and current limit.
+    excerpt: Every user is provided with a default rate limit cap. This limit grows
+      automatically when you consistently operate close to your capacity and
+      current limit.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

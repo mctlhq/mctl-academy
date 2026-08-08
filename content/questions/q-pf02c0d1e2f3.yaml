@@ -3,41 +3,36 @@ id: q-pf02c0d1e2f3
 status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
-stem: >-
-  A colleague argues you should not use the Fast flavor because it will change
-  what the model answers. Are they right?
+stem: A colleague argues you should not use the Fast flavor because it will
+  change what the model answers. Are they right?
 options:
   - id: a
     text: Yes — speculative decoding trades some accuracy for speed
     correct: false
-    explanation: >-
-      Speculative decoding is a latency optimization that preserves the output;
-      it does not degrade quality.
+    explanation: Speculative decoding is a latency optimization that preserves the
+      output; it does not degrade quality.
   - id: b
     text: Only for vision models, where the flavors use different weights
     correct: false
-    explanation: Flavors do not swap weights for any modality. The model is the
-      same.
+    explanation: Flavors do not swap weights for any modality. The model is the same.
   - id: c
-    text: >-
-      No — outputs are identical; only pricing, latency and optimizations differ
+    text: No — outputs are identical; only pricing, latency and optimizations differ
     correct: true
-    explanation: >-
-      Flavors are an infrastructure choice. Since outputs match, the decision
-      is purely about cost and responsiveness.
+    explanation: Flavors are an infrastructure choice. Since outputs match, the
+      decision is purely about cost and responsiveness.
   - id: d
     text: Yes — smaller batch sizes change the sampling distribution
     correct: false
-    explanation: >-
-      Batch size affects throughput and latency, not the content of the response.
+    explanation: Batch size affects throughput and latency, not the content of the response.
 evidence:
   - source_id: src-inference-overview
-    excerpt: >-
-      Both deliver identical model outputs. Differences lie in token pricing,
+    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

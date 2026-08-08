@@ -1,0 +1,90 @@
+schema_version: 1
+id: agentic-ai-builder
+prepares_for: "Nebius Agentic AI Builder"
+title: "Agentic AI Builder"
+description: "Practice for the Nebius Agentic AI Builder certification. Original questions written from public product documentation, each one citing the source that supports it."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+domains:
+  - id: domain-1
+    title: "Platform foundations and API access"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: api-authentication
+        title: "API keys, authentication, and request basics"
+      - id: openai-compatibility
+        title: "OpenAI-compatible API surface and client setup"
+      - id: model-catalog
+        title: "Listing models, model flavors, and deprecation notices"
+      - id: playground
+        title: "Using the UI and playground to compare models"
+      - id: organizations-and-projects
+        title: "Organizations, projects, and how resources are scoped"
+
+  - id: domain-2
+    title: "Inference and agent integration"
+    weight: 35
+    mock_questions: 10
+    objectives:
+      - id: chat-completions
+        title: "Chat completions: parameters, streaming, and responses"
+      - id: embeddings-and-rerank
+        title: "Embeddings and reranking for retrieval"
+      - id: retrieval-pipelines
+        title: "Composing retrieval-augmented pipelines"
+      - id: function-calling
+        title: "Function calling and tool use"
+      - id: structured-output
+        title: "Structured output and JSON-constrained generation"
+      - id: framework-integrations
+        title: "Third-party framework integrations"
+      - id: agent-sandboxes
+        title: "Sandboxes, MCP, and SDK-driven agent execution"
+
+  - id: domain-3
+    title: "Data and post-training"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: files-api
+        title: "Uploading, retrieving, and deleting files"
+      - id: datasets
+        title: "Creating and managing datasets"
+      - id: dataset-formats
+        title: "Dataset formats required for fine-tuning"
+      - id: supervised-fine-tuning
+        title: "Running supervised fine-tuning"
+      - id: fine-tuning-jobs
+        title: "Fine-tuning job lifecycle, events, and checkpoints"
+      - id: lora-adapters
+        title: "Working with and merging LoRA adapters"
+      - id: data-lab
+        title: "Data Lab: importing and processing training data"
+
+  - id: domain-4
+    title: "Production operations"
+    weight: 25
+    mock_questions: 8
+    objectives:
+      - id: dedicated-endpoints
+        title: "Deploying and operating dedicated endpoints"
+      - id: endpoint-lifecycle
+        title: "Endpoint lifecycle and readiness status"
+      - id: capacity-and-scaling
+        title: "Capacity, availability, and service guarantees"
+      - id: rate-limits
+        title: "Rate limits and scaling behaviour"
+      - id: observability
+        title: "Inference observability and integrations"
+      - id: billing-and-consumption
+        title: "Billing, consumption, and cost controls"
+      - id: team-access
+        title: "Groups, invitations, and single sign-on"

@@ -3,37 +3,39 @@ id: q-df04b6c7d8e9
 status: published
 domain: domain-3
 objective: domain-3/dataset-formats
-stem: >-
-  When fine-tuning a model to perform tool calling, how are tool definitions provided within a conversation example?
+stem: When fine-tuning a model to perform tool calling, how are tool definitions
+  provided within a conversation example?
 options:
   - id: a
     text: As a binary blob appended to the end of the JSONL file
     correct: false
-    explanation: >-
-      Tool definitions must be embedded as JSON objects within the dataset example, not binary attachments.
+    explanation: Tool definitions must be embedded as JSON objects within the
+      dataset example, not binary attachments.
   - id: b
-    text: In a top-level `tools` array field containing JSON Schema function specifications
+    text: In a top-level `tools` array field containing JSON Schema function
+      specifications
     correct: true
-    explanation: >-
-      Tool specifications are included in a `tools` array field within the training example object.
+    explanation: Tool specifications are included in a `tools` array field within
+      the training example object.
   - id: c
     text: As comments inside the system prompt string
     correct: false
-    explanation: >-
-      Tool calling models use structured JSON schema definitions in `tools`, not freeform system comments.
+    explanation: Tool calling models use structured JSON schema definitions in
+      `tools`, not freeform system comments.
   - id: d
     text: Via external HTTP webhooks during training execution
     correct: false
-    explanation: >-
-      Fine-tuning processes static dataset files and does not make external HTTP webhook calls during training.
+    explanation: Fine-tuning processes static dataset files and does not make
+      external HTTP webhook calls during training.
 evidence:
   - source_id: src-dataset-formats
-    excerpt: >-
-      Each training example can optionally include a `tools` field that defines
-      the tools available in that conversation.
+    excerpt: Each training example can optionally include a `tools` field that
+      defines the tools available in that conversation.
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

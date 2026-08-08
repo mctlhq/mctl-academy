@@ -37,6 +37,7 @@ const published = questions.filter((q) => q.status === "published");
 
 const bundle = published.map((q) => ({
   id: q.id,
+  course_id: q.course_id || "agentic-ai-builder",
   domain: q.domain,
   objective: q.objective,
   stem: q.stem,

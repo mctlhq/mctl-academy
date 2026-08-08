@@ -1,6 +1,7 @@
 [
   {
     "id": "q-bc01b0c1d2e3",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/billing-and-consumption",
     "stem": "How is billing calculated for shared pay-as-you-go inference requests versus dedicated endpoints?",
@@ -33,6 +34,7 @@
   },
   {
     "id": "q-bc02c1d2e3f4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/billing-and-consumption",
     "stem": "What cost control safeguard prevents unexpected usage charges on an organization account?",
@@ -65,6 +67,7 @@
   },
   {
     "id": "q-cc01a1b2c3d4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/chat-completions",
     "stem": "When configuring streaming responses in the Chat Completions API, what format are the event stream data chunks delivered in?",
@@ -97,6 +100,7 @@
   },
   {
     "id": "q-cc02b2c3d4e5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/chat-completions",
     "stem": "How does setting temperature to 0.0 affect the sampling output of a chat completion model?",
@@ -129,6 +133,7 @@
   },
   {
     "id": "q-cs01d4e5f6a7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/capacity-and-scaling",
     "stem": "What status indicates that a dedicated endpoint is currently operational but serving at reduced capacity during instance scaling or node recovery?",
@@ -161,6 +166,7 @@
   },
   {
     "id": "q-cs02a5b6c7d8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/capacity-and-scaling",
     "stem": "How does automatic scaling function when dedicated endpoints experience high request concurrency spikes?",
@@ -193,6 +199,7 @@
   },
   {
     "id": "q-de01a1b2c3d4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/dedicated-endpoints",
     "stem": "What primary architectural advantage does deploying a dedicated endpoint provide over shared pay-as-you-go inference API pools?",
@@ -225,6 +232,7 @@
   },
   {
     "id": "q-de02b2c3d4e5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/dedicated-endpoints",
     "stem": "How are dedicated endpoints targeted when making OpenAI-compatible chat completion requests?",
@@ -257,6 +265,7 @@
   },
   {
     "id": "q-de03c5d6e7f8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/dedicated-endpoints",
     "stem": "Why might an enterprise choose to host a fine-tuned LoRA adapter on a dedicated endpoint instead of a shared server pool?",
@@ -288,7 +297,140 @@
     ]
   },
   {
+    "id": "q-de04e5f6a7b8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "How does automatic endpoint scaling behave when incoming request concurrency exceeds provisioned instance capacity?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Requests queue up to configured limits before returning HTTP 429 rate limit responses",
+        "correct": true,
+        "explanation": "Over-capacity concurrency triggers request queuing followed by HTTP 429 rate limit errors."
+      },
+      {
+        "id": "b",
+        "text": "The active model is permanently deleted from disk to prevent hardware overheating",
+        "correct": false,
+        "explanation": "Capacity limits trigger throttling responses, not data deletion."
+      },
+      {
+        "id": "c",
+        "text": "All active user sessions are logged out across the organization",
+        "correct": false,
+        "explanation": "Throttling impacts specific inference requests, not user auth sessions."
+      },
+      {
+        "id": "d",
+        "text": "HTTP responses silently return corrupted random byte strings",
+        "correct": false,
+        "explanation": "Overload conditions return explicit HTTP 429 error codes, not corrupt data."
+      }
+    ]
+  },
+  {
+    "id": "q-de06a7b8c9d0",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/billing-and-consumption",
+    "stem": "What is the primary billing model metric used for shared pay-as-you-go inference API pools?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Total prompt and completion tokens processed",
+        "correct": true,
+        "explanation": "Pay-as-you-go inference is billed per thousand/million tokens processed."
+      },
+      {
+        "id": "b",
+        "text": "Fixed flat monthly subscription fee per developer seat",
+        "correct": false,
+        "explanation": "Shared APIs bill based on actual token usage volume rather than seat counts."
+      },
+      {
+        "id": "c",
+        "text": "Number of lines of code compiled in client builds",
+        "correct": false,
+        "explanation": "Code volume is not a billing metric for language model inference APIs."
+      },
+      {
+        "id": "d",
+        "text": "Hard drive disk rotation speed",
+        "correct": false,
+        "explanation": "Disk hardware specs are managed by the cloud platform, not billed per query."
+      }
+    ]
+  },
+  {
+    "id": "q-de08c9d0e1f2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/endpoint-lifecycle",
+    "stem": "What status indicates that a dedicated endpoint has completed node allocation and model weight loading, and is actively ready for inference requests?",
+    "options": [
+      {
+        "id": "a",
+        "text": "READY",
+        "correct": true,
+        "explanation": "The READY state confirms node provisioning, model loading, and traffic capability."
+      },
+      {
+        "id": "b",
+        "text": "CREATING",
+        "correct": false,
+        "explanation": "CREATING signifies ongoing provision of underlying compute nodes."
+      },
+      {
+        "id": "c",
+        "text": "DELETING",
+        "correct": false,
+        "explanation": "DELETING indicates endpoint de-provisioning and resource teardown."
+      },
+      {
+        "id": "d",
+        "text": "PAUSED",
+        "correct": false,
+        "explanation": "PAUSED indicates an inactive endpoint that is not serving live traffic."
+      }
+    ]
+  },
+  {
+    "id": "q-de09d0e1f2a3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "What error code and response payload are returned when a project exceeds its assigned Requests Per Minute (RPM) quota?",
+    "options": [
+      {
+        "id": "a",
+        "text": "HTTP 429 Too Many Requests",
+        "correct": true,
+        "explanation": "Exceeding RPM or TPM rate limits triggers HTTP 429 response status."
+      },
+      {
+        "id": "b",
+        "text": "HTTP 500 Internal Server Error",
+        "correct": false,
+        "explanation": "HTTP 500 indicates unhandled server crashes, not client quota rate limits."
+      },
+      {
+        "id": "c",
+        "text": "HTTP 404 Not Found",
+        "correct": false,
+        "explanation": "HTTP 404 indicates missing endpoint URLs or resources."
+      },
+      {
+        "id": "d",
+        "text": "HTTP 401 Unauthorized",
+        "correct": false,
+        "explanation": "HTTP 401 indicates missing or invalid API keys."
+      }
+    ]
+  },
+  {
     "id": "q-df01f3a4b5c6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
     "stem": "You are preparing chat-style training data. How should a single training example be structured?",
@@ -321,6 +463,7 @@
   },
   {
     "id": "q-df02a4b5c6d7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
     "stem": "You want a fine-tuned model to be better at calling your tools. What can a training example include to support that?",
@@ -353,6 +496,7 @@
   },
   {
     "id": "q-df03a5b6c7d8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
     "stem": "In a multi-turn conversation training example, which message `role` values are valid in the `messages` array?",
@@ -385,6 +529,7 @@
   },
   {
     "id": "q-df04b6c7d8e9",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
     "stem": "When fine-tuning a model to perform tool calling, how are tool definitions provided within a conversation example?",
@@ -417,6 +562,7 @@
   },
   {
     "id": "q-dl01a3b4c5d6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/data-lab",
     "stem": "What is the primary function of a Data Lab tool in a dataset curation workflow?",
@@ -449,6 +595,7 @@
   },
   {
     "id": "q-dl02b4c5d6e7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/data-lab",
     "stem": "Why is token length truncation verification critical during dataset preprocessing in Data Lab?",
@@ -481,6 +628,7 @@
   },
   {
     "id": "q-dl03c5d6e7f8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/data-lab",
     "stem": "What dataset quality filter prevents a model from learning repetitive or template-dominated completions during fine-tuning?",
@@ -513,6 +661,7 @@
   },
   {
     "id": "q-ds01c3d4e5f6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/datasets",
     "stem": "Why is it recommended to split dataset files into training and validation sets before initiating a fine-tuning job?",
@@ -545,6 +694,7 @@
   },
   {
     "id": "q-ds02d4e5f6a7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/datasets",
     "stem": "What structural format is required for dataset lines in a fine-tuning file?",
@@ -577,6 +727,7 @@
   },
   {
     "id": "q-el01a0b1c2d3",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/endpoint-lifecycle",
     "stem": "Your load balancer must decide whether to route traffic to a dedicated endpoint. Which of the two status types should it read?",
@@ -609,6 +760,7 @@
   },
   {
     "id": "q-el02b1c2d3e4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/endpoint-lifecycle",
     "stem": "An endpoint reports readiness \"Partially ready\". What does that tell you?",
@@ -641,6 +793,7 @@
   },
   {
     "id": "q-el03c3d4e5f6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/endpoint-lifecycle",
     "stem": "What is the difference between an endpoint's deployment lifecycle state and its readiness status?",
@@ -673,6 +826,7 @@
   },
   {
     "id": "q-er01c3d4e5f6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/embeddings-and-rerank",
     "stem": "In a RAG retrieval system, what primary purpose does a cross-encoder reranking model serve after initial vector search retrieval?",
@@ -705,6 +859,7 @@
   },
   {
     "id": "q-er02d4e5f6a7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/embeddings-and-rerank",
     "stem": "What vector distance metric is standard for computing similarity between normalized embedding vectors?",
@@ -737,6 +892,7 @@
   },
   {
     "id": "q-fa01a1b2c3d4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/files-api",
     "stem": "What is the purpose of the Files API when preparing datasets for model fine-tuning?",
@@ -769,6 +925,7 @@
   },
   {
     "id": "q-fa02b2c3d4e5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/files-api",
     "stem": "Which file `purpose` string must be specified when uploading a JSONL file intended for supervised fine-tuning?",
@@ -801,6 +958,7 @@
   },
   {
     "id": "q-fc01a2b3c4d5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "Your application defines a `get_weather` tool and the model returns a tool call for it. Which component runs the actual weather lookup?",
@@ -833,6 +991,7 @@
   },
   {
     "id": "q-fc02b3c4d5e6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "You send a request with several tools defined but do not set `tool_choice`. How does the model decide which tool to use?",
@@ -865,6 +1024,7 @@
   },
   {
     "id": "q-fc03c4d5e6f7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "How is each available tool described to the model?",
@@ -897,6 +1057,7 @@
   },
   {
     "id": "q-fc04a8b9c0d1",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "A workflow must always call `read_file` first, regardless of what the user asked. You set `tool_choice` to that function explicitly. What is the effect?",
@@ -929,6 +1090,7 @@
   },
   {
     "id": "q-fc05d2e3f4a5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "When a model returns a tool_calls payload in a Chat Completion response, what must the application client do next?",
@@ -961,6 +1123,7 @@
   },
   {
     "id": "q-fi01c7d8e9f0",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/framework-integrations",
     "stem": "When configuring OpenAI-compatible client SDKs to connect to an external inference endpoint, what two parameters must be updated?",
@@ -993,6 +1156,7 @@
   },
   {
     "id": "q-fi02d8e9f0a1",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/framework-integrations",
     "stem": "What standard protocol enables AI agents to dynamically discover and invoke tools, resources, and prompts provided by external servers?",
@@ -1025,6 +1189,7 @@
   },
   {
     "id": "q-fj01a9b0c1d2",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/fine-tuning-jobs",
     "stem": "What is a fine-tuning checkpoint artifact?",
@@ -1057,6 +1222,7 @@
   },
   {
     "id": "q-fj02b0c1d2e3",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/fine-tuning-jobs",
     "stem": "How can a developer monitor training progress, loss values, and validation metrics during an active fine-tuning job execution?",
@@ -1089,6 +1255,7 @@
   },
   {
     "id": "q-ft01b5c6d7e8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
     "stem": "A completed fine-tuning job produced several checkpoints. What is a checkpoint?",
@@ -1121,6 +1288,7 @@
   },
   {
     "id": "q-ft02c6d7e8f9",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
     "stem": "A fine-tuning job is running and you want to know whether the dataset was accepted and how training is progressing. What should you inspect?",
@@ -1153,6 +1321,7 @@
   },
   {
     "id": "q-ft03c7d8e9f0",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
     "stem": "What primary parameter determines how many times the model iterates over the entire training dataset during supervised fine-tuning?",
@@ -1185,6 +1354,7 @@
   },
   {
     "id": "q-ft04d8e9f0a1",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
     "stem": "What happens if the `learning_rate` parameter set during fine-tuning is excessively high?",
@@ -1217,6 +1387,7 @@
   },
   {
     "id": "q-la01c1d2e3f4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/lora-adapters",
     "stem": "What is the core benefit of Low-Rank Adaptation (LoRA) over full parameter fine-tuning?",
@@ -1249,6 +1420,7 @@
   },
   {
     "id": "q-la02d2e3f4a5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/lora-adapters",
     "stem": "What operation combines trained LoRA adapter weights directly back into the base model weights for zero-overhead inference deployment?",
@@ -1281,6 +1453,7 @@
   },
   {
     "id": "q-la03d6e7f8a9",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/lora-adapters",
     "stem": "What key hyperparameter in LoRA configuration controls the rank of the low-rank update matrices A and B?",
@@ -1313,6 +1486,7 @@
   },
   {
     "id": "q-ob01d8e9f0a1",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/observability",
     "stem": "What response headers should client applications inspect to monitor remaining request and token quotas in real time?",
@@ -1345,6 +1519,7 @@
   },
   {
     "id": "q-ob02a9b0c1d2",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/observability",
     "stem": "Which metric token usage counts are returned in standard Chat Completion response payloads under the usage object?",
@@ -1377,6 +1552,7 @@
   },
   {
     "id": "q-op01d1e2f3a4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-1",
     "objective": "domain-1/organizations-and-projects",
     "stem": "Two teams must not see each other's datasets or endpoints. Which level of the resource model isolates them?",
@@ -1409,6 +1585,7 @@
   },
   {
     "id": "q-op02e2f3a4b5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-1",
     "objective": "domain-1/organizations-and-projects",
     "stem": "What exists immediately after you sign up, before you create anything?",
@@ -1440,7 +1617,74 @@
     ]
   },
   {
+    "id": "q-op03f4a5b6c7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "Which scope level in Nebius Token Factory directly owns API keys, budget limits, and deployed resources?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Projects",
+        "correct": true,
+        "explanation": "API keys, budgets, and endpoints belong to a specific Project within an Organization."
+      },
+      {
+        "id": "b",
+        "text": "Global user profile",
+        "correct": false,
+        "explanation": "User profiles span across organizations but do not own resource quotas directly."
+      },
+      {
+        "id": "c",
+        "text": "Region endpoints",
+        "correct": false,
+        "explanation": "Regions dictate data residency, not project isolation or credential scopes."
+      },
+      {
+        "id": "d",
+        "text": "Model registry",
+        "correct": false,
+        "explanation": "The model registry is a global catalog of available base weights."
+      }
+    ]
+  },
+  {
+    "id": "q-op04a1b2c3d4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "What happens when a new user signs up for Nebius Token Factory for the first time?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A personal organization is created automatically for the user",
+        "correct": true,
+        "explanation": "First-time signup automatically provisions a personal organization."
+      },
+      {
+        "id": "b",
+        "text": "The user must submit a support ticket to request organization creation",
+        "correct": false,
+        "explanation": "Organization provisioning is automated during account onboarding."
+      },
+      {
+        "id": "c",
+        "text": "The user is assigned to a shared public sandbox organization",
+        "correct": false,
+        "explanation": "Each user gets an isolated personal organization, not a shared sandbox."
+      },
+      {
+        "id": "d",
+        "text": "Access is restricted until an enterprise agreement is uploaded",
+        "correct": false,
+        "explanation": "Self-service signup creates a personal organization immediately."
+      }
+    ]
+  },
+  {
     "id": "q-pf01b9c0d1e2",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-1",
     "objective": "domain-1/openai-compatibility",
     "stem": "Latency matters more than token cost for your chat feature. How do you request the Fast flavor of a model?",
@@ -1473,6 +1717,7 @@
   },
   {
     "id": "q-pf02c0d1e2f3",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-1",
     "objective": "domain-1/openai-compatibility",
     "stem": "A colleague argues you should not use the Fast flavor because it will change what the model answers. Are they right?",
@@ -1504,7 +1749,74 @@
     ]
   },
   {
+    "id": "q-pf03d1e2f3a4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "How do Fast model flavors differ from standard model flavors in Nebius Token Factory when invoked via OpenAI-compatible APIs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Differences lie in token pricing, latency, and applied optimization levels while outputs remain identical",
+        "correct": true,
+        "explanation": "Fast flavors optimize latency and pricing while generating identical model outputs."
+      },
+      {
+        "id": "b",
+        "text": "Fast flavors return truncated response text to minimize network payload size",
+        "correct": false,
+        "explanation": "Fast flavors do not truncate output text or alter generation semantics."
+      },
+      {
+        "id": "c",
+        "text": "Fast flavors require specialized custom SDKs and cannot use OpenAI client libraries",
+        "correct": false,
+        "explanation": "Fast flavors use standard OpenAI client endpoints and request formats."
+      },
+      {
+        "id": "d",
+        "text": "Fast flavors only accept binary payload inputs instead of JSON",
+        "correct": false,
+        "explanation": "Standard JSON request bodies apply to both Fast and standard flavors."
+      }
+    ]
+  },
+  {
+    "id": "q-pf04e2f3a4b5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "What is the model naming convention when selecting the Fast flavor of an inference model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Append `-fast` to the model name string in the request payload",
+        "correct": true,
+        "explanation": "Fast flavors are specified by appending `-fast` to the model identifier."
+      },
+      {
+        "id": "b",
+        "text": "Set `flavor: \"fast\"` in the HTTP headers",
+        "correct": false,
+        "explanation": "Flavor selection is specified in the model parameter, not custom HTTP headers."
+      },
+      {
+        "id": "c",
+        "text": "Use port `8443` instead of standard HTTP endpoints",
+        "correct": false,
+        "explanation": "Port routing does not determine model flavor."
+      },
+      {
+        "id": "d",
+        "text": "Prepend `fast/` before the organization namespace",
+        "correct": false,
+        "explanation": "Fast suffix is appended to the model name, not prepended to namespace."
+      }
+    ]
+  },
+  {
     "id": "q-rl01d7e8f9a0",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "Your traffic has grown steadily for weeks and you have not asked for a quota increase. What happens to your rate limit?",
@@ -1537,6 +1849,7 @@
   },
   {
     "id": "q-rl02e8f9a0b1",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "You want to back off before hitting a limit rather than react to errors. What does the API give you?",
@@ -1569,6 +1882,7 @@
   },
   {
     "id": "q-rl03f9a0b1c2",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "A request that exceeded your rate limit succeeded anyway, carrying an over-limit response header. Why?",
@@ -1601,6 +1915,7 @@
   },
   {
     "id": "q-rl04b6c7d8e9",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "How does automatic rate limit growth operate when a user consistently operates near their assigned capacity limits?",
@@ -1633,6 +1948,7 @@
   },
   {
     "id": "q-rl05c7d8e9f0",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "What HTTP status code is returned when a client request exceeds rate limits?",
@@ -1665,6 +1981,7 @@
   },
   {
     "id": "q-rp01a5b6c7d8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/retrieval-pipelines",
     "stem": "Why is chunk overlap typically applied when splitting documents into passages for a retrieval pipeline?",
@@ -1697,6 +2014,7 @@
   },
   {
     "id": "q-rp02b6c7d8e9",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/retrieval-pipelines",
     "stem": "What is Hybrid Search in a modern retrieval architecture?",
@@ -1729,6 +2047,7 @@
   },
   {
     "id": "q-sb01a9b0c1d2",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/agent-sandboxes",
     "stem": "Why is isolated container or microVM execution required when an agent executes code generated at runtime?",
@@ -1761,6 +2080,7 @@
   },
   {
     "id": "q-sb02b0c1d2e3",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/agent-sandboxes",
     "stem": "Which resource control mechanism is typically configured on an agent sandbox to prevent runaway code loops?",
@@ -1793,6 +2113,7 @@
   },
   {
     "id": "q-sb03c1d2e3f4",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/agent-sandboxes",
     "stem": "How should environment variables containing secret API keys be passed to an agent sandbox environment?",
@@ -1825,6 +2146,7 @@
   },
   {
     "id": "q-so01d5e6f7a8",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "You need a model to return data your code can parse without a post-processing step. Which request parameter controls this?",
@@ -1857,6 +2179,7 @@
   },
   {
     "id": "q-so02e6f7a8b9",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "You want valid JSON but do not care about the exact field names. Which `response_format` type fits, and what are you giving up?",
@@ -1889,6 +2212,7 @@
   },
   {
     "id": "q-so03f7a8b9c0",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "You already pass a JSON schema in `response_format` but output quality is inconsistent. What does the documentation recommend?",
@@ -1921,6 +2245,7 @@
   },
   {
     "id": "q-so04a3b4c5d6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "What is the main advantage of enforcing JSON Schema constraints at the logit level during decoding over prompt engineering?",
@@ -1953,6 +2278,7 @@
   },
   {
     "id": "q-ta01d2e3f4a5",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/team-access",
     "stem": "How are projects scoped within an organization hierarchy?",
@@ -1985,6 +2311,7 @@
   },
   {
     "id": "q-ta02a3b4c5d6",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/team-access",
     "stem": "What organization structure is initialized when a new user signs up for the platform?",
@@ -2017,6 +2344,7 @@
   },
   {
     "id": "q-ta03b4c5d6e7",
+    "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/team-access",
     "stem": "Which IAM permission role scope allows creating new API keys within a specific project without granting organization-level administrative access?",

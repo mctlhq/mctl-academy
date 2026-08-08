@@ -3,36 +3,36 @@ id: q-so04a3b4c5d6
 status: published
 domain: domain-2
 objective: domain-2/structured-output
-stem: >-
-  What is the main advantage of enforcing JSON Schema constraints at the logit level during decoding over prompt engineering?
+stem: What is the main advantage of enforcing JSON Schema constraints at the
+  logit level during decoding over prompt engineering?
 options:
   - id: a
-    text: It guarantees 100% syntactically valid JSON output matching the schema without parsing failures
+    text: It guarantees 100% syntactically valid JSON output matching the schema
+      without parsing failures
     correct: true
-    explanation: >-
-      Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax.
+    explanation: Grammar/logit-constrained decoding physically prevents invalid
+      tokens, guaranteeing valid JSON syntax.
   - id: b
     text: It eliminates the need for an API authentication key
     correct: false
-    explanation: >-
-      API authentication is required regardless of output constraint settings.
+    explanation: API authentication is required regardless of output constraint settings.
   - id: c
     text: It doubles the context window size of the underlying model
     correct: false
-    explanation: >-
-      Context window length is fixed by architecture, not decoding constraints.
+    explanation: Context window length is fixed by architecture, not decoding constraints.
   - id: d
     text: It automatically translates output into multiple spoken languages
     correct: false
-    explanation: >-
-      Structured output enforces data format schemas, not natural language translation.
+    explanation: Structured output enforces data format schemas, not natural
+      language translation.
 evidence:
   - source_id: src-structured-output
-    excerpt: >-
-      Forces arbitrary JSON output, the model will decide on the schema by itself
+    excerpt: Forces arbitrary JSON output, the model will decide on the schema by itself
+    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

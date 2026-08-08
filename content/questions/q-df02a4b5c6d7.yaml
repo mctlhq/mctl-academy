@@ -3,42 +3,38 @@ id: q-df02a4b5c6d7
 status: published
 domain: domain-3
 objective: domain-3/dataset-formats
-stem: >-
-  You want a fine-tuned model to be better at calling your tools. What can a training
-  example include to support that?
+stem: You want a fine-tuned model to be better at calling your tools. What can a
+  training example include to support that?
 options:
   - id: a
     text: A separate tool-schema file referenced by name from the dataset
     correct: false
-    explanation: >-
-      The definitions travel inside the example itself; there is no external reference
-      mechanism.
+    explanation: The definitions travel inside the example itself; there is no
+      external reference mechanism.
   - id: b
     text: Nothing — tool use cannot be learned through fine-tuning
     correct: false
-    explanation: >-
-      Tool-augmented conversations are an explicitly supported dataset shape.
+    explanation: Tool-augmented conversations are an explicitly supported dataset shape.
   - id: c
-    text: >-
-      An optional `tools` field declaring the tools available in that conversation
+    text: An optional `tools` field declaring the tools available in that
+      conversation
     correct: true
-    explanation: >-
-      Training on conversations that carry their tool definitions is what teaches
-      the model the calling behaviour you want at inference time.
+    explanation: Training on conversations that carry their tool definitions is what
+      teaches the model the calling behaviour you want at inference time.
   - id: d
     text: A list of example API responses appended after the final turn
     correct: false
-    explanation: >-
-      Tool results appear as messages within the conversation, not as a trailing
-      appendix.
+    explanation: Tool results appear as messages within the conversation, not as a
+      trailing appendix.
 evidence:
   - source_id: src-dataset-formats
-    excerpt: >-
-      Each training example can optionally include a `tools` field that defines
-      the tools available in that conversation.
+    excerpt: Each training example can optionally include a `tools` field that
+      defines the tools available in that conversation.
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

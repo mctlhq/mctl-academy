@@ -3,36 +3,37 @@ id: q-pf10e9f0a1b2
 status: draft
 domain: domain-1
 objective: domain-1/model-catalog
-stem: >-
-  What happens when a base model version reaches its official deprecation date in Nebius Token Factory?
+stem: What happens when a base model version reaches its official deprecation
+  date in Nebius Token Factory?
 options:
   - id: a
-    text: New request invocations are rejected and developers must migrate to an active model version
+    text: New request invocations are rejected and developers must migrate to an
+      active model version
     correct: true
-    explanation: >-
-      Deprecated models are shut down for new inferences after the deprecation date passes.
+    explanation: Deprecated models are shut down for new inferences after the
+      deprecation date passes.
   - id: b
     text: Requests are automatically routed to random third-party web search engines
     correct: false
-    explanation: >-
-      Deprecation stops inference requests rather than redirecting queries externally.
+    explanation: Deprecation stops inference requests rather than redirecting
+      queries externally.
   - id: c
     text: The model automatically doubles its inference speed without cost changes
     correct: false
-    explanation: >-
-      Deprecation marks model end-of-life, not a performance upgrade.
+    explanation: Deprecation marks model end-of-life, not a performance upgrade.
   - id: d
     text: The project API key is permanently revoked
     correct: false
-    explanation: >-
-      Model deprecation does not invalidate project credentials or API keys.
+    explanation: Model deprecation does not invalidate project credentials or API keys.
 evidence:
   - source_id: src-inference-overview
-    excerpt: >-
-      Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.
+    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

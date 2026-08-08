@@ -3,36 +3,35 @@ id: q-pf05f3a4b5c6
 status: draft
 domain: domain-1
 objective: domain-1/api-authentication
-stem: >-
-  How are API requests authenticated when interacting with Nebius Token Factory endpoints using OpenAI client SDKs?
+stem: How are API requests authenticated when interacting with Nebius Token
+  Factory endpoints using OpenAI client SDKs?
 options:
   - id: a
     text: By passing a Project API key in the Authorization header as a Bearer token
     correct: true
-    explanation: >-
-      OpenAI SDK compatibility relies on standard HTTP Bearer token authorization using Project API keys.
+    explanation: OpenAI SDK compatibility relies on standard HTTP Bearer token
+      authorization using Project API keys.
   - id: b
     text: By uploading an mTLS client certificate for every connection
     correct: false
-    explanation: >-
-      mTLS is not required; standard HTTP Bearer tokens are used.
+    explanation: mTLS is not required; standard HTTP Bearer tokens are used.
   - id: c
     text: By sending plain-text user passwords in custom headers
     correct: false
-    explanation: >-
-      Passwords are never used for API authorization.
+    explanation: Passwords are never used for API authorization.
   - id: d
     text: By IP address allowlisting without cryptographic keys
     correct: false
-    explanation: >-
-      Authorization requires valid API keys regardless of source IP.
+    explanation: Authorization requires valid API keys regardless of source IP.
 evidence:
   - source_id: src-inference-overview
-    excerpt: >-
-      Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.
+    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

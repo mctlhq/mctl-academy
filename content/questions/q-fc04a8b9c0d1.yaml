@@ -3,15 +3,13 @@ id: q-fc04a8b9c0d1
 status: published
 domain: domain-2
 objective: domain-2/function-calling
-stem: >-
-  A workflow must always call `read_file` first, regardless of what the user asked.
-  You set `tool_choice` to that function explicitly. What is the effect?
+stem: A workflow must always call `read_file` first, regardless of what the user
+  asked. You set `tool_choice` to that function explicitly. What is the effect?
 options:
   - id: a
     text: The model prefers it but may pick another tool if context suggests one
     correct: false
-    explanation: That describes automatic selection. An explicit choice is not
-      a hint.
+    explanation: That describes automatic selection. An explicit choice is not a hint.
   - id: b
     text: The model calls it only if the user request mentions a file
     correct: false
@@ -19,23 +17,22 @@ options:
   - id: c
     text: The request fails if another tool would have scored higher
     correct: false
-    explanation: >-
-      There is no scoring conflict to fail on; the named function is simply the
-      one that gets called.
+    explanation: There is no scoring conflict to fail on; the named function is
+      simply the one that gets called.
   - id: d
     text: The model calls it regardless of context, overriding its own selection
     correct: true
-    explanation: >-
-      An explicit choice replaces the model's judgement entirely, which is what
-      makes it suitable for a deterministic first step.
+    explanation: An explicit choice replaces the model's judgement entirely, which
+      is what makes it suitable for a deterministic first step.
 evidence:
   - source_id: src-function-calling
-    excerpt: >-
-      This forces the model to call the `read_file` function regardless of context,
-      overriding its own tool selection logic.
+    excerpt: This forces the model to call the `read_file` function regardless of
+      context, overriding its own tool selection logic.
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

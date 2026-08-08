@@ -1,0 +1,60 @@
+schema_version: 1
+id: ai-cloudops-engineer
+prepares_for: "Nebius AI CloudOps Engineer"
+title: "AI CloudOps Engineer"
+description: "Practice for the Nebius AI CloudOps Engineer certification. Scenario questions covering GPU cloud infrastructure, compute node operations, monitoring, IAM, storage, and troubleshooting."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+domains:
+  - id: domain-1
+    title: "Cloud Infrastructure & Environment Deployment"
+    weight: 30
+    mock_questions: 9
+    objectives:
+      - id: environment-deployment
+        title: "Deploying standard GPU environments and managed cluster infrastructure"
+      - id: network-vpc
+        title: "VPC networking, subnets, and security group configuration"
+      - id: storage-volumes
+        title: "Block storage, shared filesystems, and object storage setup"
+
+  - id: domain-2
+    title: "Access Management & Governance"
+    weight: 25
+    mock_questions: 8
+    objectives:
+      - id: iam-roles
+        title: "User access, IAM roles, service accounts, and permissions"
+      - id: organization-hierarchy
+        title: "Managing organizations, projects, and resource boundaries"
+      - id: security-policies
+        title: "Enforcing security policies and single sign-on"
+
+  - id: domain-3
+    title: "Monitoring, Observability & Resource Lifecycle"
+    weight: 25
+    mock_questions: 7
+    objectives:
+      - id: node-monitoring
+        title: "GPU cluster monitoring, metrics collection, and alerting"
+      - id: node-recovery
+        title: "Handling failed GPU nodes, node restarts, and health checks"
+      - id: resource-quotas
+        title: "Quota management, capacity planning, and usage limits"
+
+  - id: domain-4
+    title: "Troubleshooting & Incident Escalation"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: operational-troubleshooting
+        title: "Diagnosing GPU workload failures and network bottlenecks"
+      - id: escalation-workflows
+        title: "Operational troubleshooting, log analysis, and escalation paths"

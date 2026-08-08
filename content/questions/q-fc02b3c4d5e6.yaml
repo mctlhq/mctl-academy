@@ -3,42 +3,38 @@ id: q-fc02b3c4d5e6
 status: published
 domain: domain-2
 objective: domain-2/function-calling
-stem: >-
-  You send a request with several tools defined but do not set `tool_choice`.
-  How does the model decide which tool to use?
+stem: You send a request with several tools defined but do not set
+  `tool_choice`. How does the model decide which tool to use?
 options:
   - id: a
     text: It picks the first tool in the array
     correct: false
-    explanation: >-
-      Selection is driven by the conversation context, not by the position of
-      a tool in the list.
+    explanation: Selection is driven by the conversation context, not by the
+      position of a tool in the list.
   - id: b
     text: It selects the most appropriate tool from the prompt context
     correct: true
-    explanation: >-
-      Automatic selection based on context is the default, which is why most use
-      cases never need to set the parameter at all.
+    explanation: Automatic selection based on context is the default, which is why
+      most use cases never need to set the parameter at all.
   - id: c
     text: It calls every defined tool once and merges the results
     correct: false
-    explanation: >-
-      Nothing fans a request out across all tools. The model proposes calls it
-      judges relevant, and often none at all.
+    explanation: Nothing fans a request out across all tools. The model proposes
+      calls it judges relevant, and often none at all.
   - id: d
     text: It refuses to call any tool until one is named explicitly
     correct: false
-    explanation: >-
-      Naming a tool explicitly is the override, not the precondition. Without
-      it the model still chooses freely.
+    explanation: Naming a tool explicitly is the override, not the precondition.
+      Without it the model still chooses freely.
 evidence:
   - source_id: src-function-calling
-    excerpt: >-
-      The model automatically selects the most appropriate function based on the
-      context of the prompt. This is the default behavior
+    excerpt: The model automatically selects the most appropriate function based on
+      the context of the prompt. This is the default behavior
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

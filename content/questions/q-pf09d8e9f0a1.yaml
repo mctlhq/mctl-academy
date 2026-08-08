@@ -3,36 +3,34 @@ id: q-pf09d8e9f0a1
 status: draft
 domain: domain-1
 objective: domain-1/api-authentication
-stem: >-
-  What authentication scope is required for API keys to create new dedicated endpoints in a project?
+stem: What authentication scope is required for API keys to create new dedicated
+  endpoints in a project?
 options:
   - id: a
     text: Project administrator or endpoint management write permissions
     correct: true
-    explanation: >-
-      Creating infrastructure resources requires write permissions scoped to the target project.
+    explanation: Creating infrastructure resources requires write permissions scoped
+      to the target project.
   - id: b
     text: Read-only guest access across public forum posts
     correct: false
-    explanation: >-
-      Read-only guest access cannot provision infrastructure endpoints.
+    explanation: Read-only guest access cannot provision infrastructure endpoints.
   - id: c
     text: Anonymous unauthenticated bearer token
     correct: false
-    explanation: >-
-      Resource creation strictly requires authenticated API keys.
+    explanation: Resource creation strictly requires authenticated API keys.
   - id: d
     text: Third-party identity provider root certificate private key
     correct: false
-    explanation: >-
-      Endpoint creation uses project-scoped IAM roles and API keys.
+    explanation: Endpoint creation uses project-scoped IAM roles and API keys.
 evidence:
   - source_id: src-org-projects
-    excerpt: >-
-      exist inside a project and inherit its access settings.
+    excerpt: exist inside a project and inherit its access settings.
+    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

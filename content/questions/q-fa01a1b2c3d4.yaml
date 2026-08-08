@@ -3,37 +3,37 @@ id: q-fa01a1b2c3d4
 status: published
 domain: domain-3
 objective: domain-3/files-api
-stem: >-
-  What is the purpose of the Files API when preparing datasets for model fine-tuning?
+stem: What is the purpose of the Files API when preparing datasets for model
+  fine-tuning?
 options:
   - id: a
-    text: To upload, store, and manage JSONL dataset files required for fine-tuning jobs
+    text: To upload, store, and manage JSONL dataset files required for fine-tuning
+      jobs
     correct: true
-    explanation: >-
-      The Files API manages training and validation JSONL files prior to job submission.
+    explanation: The Files API manages training and validation JSONL files prior to
+      job submission.
   - id: b
     text: To stream real-time GPU hardware telemetry logs
     correct: false
-    explanation: >-
-      GPU telemetry is handled by system monitoring endpoints, not the Files API.
+    explanation: GPU telemetry is handled by system monitoring endpoints, not the Files API.
   - id: c
     text: To dynamically resize image dimensions during inference
     correct: false
-    explanation: >-
-      Image resizing is a vision pre-processing task, not a dataset Files API operation.
+    explanation: Image resizing is a vision pre-processing task, not a dataset Files
+      API operation.
   - id: d
     text: To host static website HTML files
     correct: false
-    explanation: >-
-      The Files API stores training data, not static web host assets.
+    explanation: The Files API stores training data, not static web host assets.
 evidence:
   - source_id: src-dataset-formats
-    excerpt: >-
-      Each training example is a single conversation, represented as one `messages`
-      array.
+    excerpt: Each training example is a single conversation, represented as one
+      `messages` array.
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

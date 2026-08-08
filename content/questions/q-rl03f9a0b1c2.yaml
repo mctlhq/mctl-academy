@@ -3,43 +3,39 @@ id: q-rl03f9a0b1c2
 status: published
 domain: domain-4
 objective: domain-4/rate-limits
-stem: >-
-  A request that exceeded your rate limit succeeded anyway, carrying an over-limit
-  response header. Why?
+stem: A request that exceeded your rate limit succeeded anyway, carrying an
+  over-limit response header. Why?
 options:
   - id: a
     text: The limit had already scaled up in the current window
     correct: false
-    explanation: >-
-      Had the limit risen, the request would not have been over it, and no over-limit
-      header would appear.
+    explanation: Had the limit risen, the request would not have been over it, and
+      no over-limit header would appear.
   - id: b
     text: Header-only mode was enabled, so limits are advisory
     correct: false
-    explanation: >-
-      There is no advisory mode. Limits are enforced; this is an exception made
-      when capacity allows.
+    explanation: There is no advisory mode. Limits are enforced; this is an
+      exception made when capacity allows.
   - id: c
-    text: >-
-      The request was queued and retried automatically after the window reset
+    text: The request was queued and retried automatically after the window reset
     correct: false
-    explanation: >-
-      Nothing is held and replayed. It was processed at the time, just with lower
-      priority.
+    explanation: Nothing is held and replayed. It was processed at the time, just
+      with lower priority.
   - id: d
     text: Spare capacity let it run at lower priority without affecting others
     correct: true
-    explanation: >-
-      Over-limit processing is opportunistic, so it depends on capacity that happens
-      to be free rather than on anything about your request.
+    explanation: Over-limit processing is opportunistic, so it depends on capacity
+      that happens to be free rather than on anything about your request.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      This occurs when the system has spare capacity available, and your request
-      can be handled with a lower priority without affecting other users.
+    excerpt: This occurs when the system has spare capacity available, and your
+      request can be handled with a lower priority without affecting other
+      users.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

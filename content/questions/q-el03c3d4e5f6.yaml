@@ -3,36 +3,42 @@ id: q-el03c3d4e5f6
 status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
-stem: >-
-  What is the difference between an endpoint's deployment lifecycle state and its readiness status?
+stem: What is the difference between an endpoint's deployment lifecycle state
+  and its readiness status?
 options:
   - id: a
-    text: Lifecycle state measures network ping latency, while readiness status measures SQL database storage
+    text: Lifecycle state measures network ping latency, while readiness status
+      measures SQL database storage
     correct: false
-    explanation: >-
-      Lifecycle and readiness refer to endpoint container deployment and traffic capability, not SQL databases.
+    explanation: Lifecycle and readiness refer to endpoint container deployment and
+      traffic capability, not SQL databases.
   - id: b
-    text: Lifecycle state is defined by the client SDK, while readiness status is set by the DNS provider
+    text: Lifecycle state is defined by the client SDK, while readiness status is
+      set by the DNS provider
     correct: false
-    explanation: >-
-      Both deployment state and readiness are managed by the cloud platform orchestrator.
+    explanation: Both deployment state and readiness are managed by the cloud
+      platform orchestrator.
   - id: c
-    text: Lifecycle is the overall deployment state, while readiness indicates active traffic-serving capability
+    text: Lifecycle is the overall deployment state, while readiness indicates
+      active traffic-serving capability
     correct: true
-    explanation: >-
-      Lifecycle reflects deployment provisioning (Creating/Updating/Deleting), whereas readiness reflects active serving status.
+    explanation: Lifecycle reflects deployment provisioning
+      (Creating/Updating/Deleting), whereas readiness reflects active serving
+      status.
   - id: d
-    text: Lifecycle applies only to fine-tuning jobs, while readiness applies only to Files API uploads
+    text: Lifecycle applies only to fine-tuning jobs, while readiness applies only
+      to Files API uploads
     correct: false
-    explanation: >-
-      Endpoint lifecycle and readiness apply directly to inference model endpoints.
+    explanation: Endpoint lifecycle and readiness apply directly to inference model
+      endpoints.
 evidence:
   - source_id: src-endpoint-lifecycle
-    excerpt: >-
-      Lifecycle is deployment state. Readiness is traffic-serving capability.
+    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder
