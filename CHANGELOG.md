@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.22](https://github.com/mctlhq/mctl-academy/compare/0.1.21...0.1.22) (2026-08-08)
+
+
+### Bug Fixes
+
+* **build:** drop @better-auth/cli devDependency, unblocking the Docker build ([0936280](https://github.com/mctlhq/mctl-academy/commit/0936280bbc0cfb86f80c4febd0d8d497134aab95))
+* **build:** drop @better-auth/cli devDependency, unblocking the Docker build ([54b5cfe](https://github.com/mctlhq/mctl-academy/commit/54b5cfea0f1ebc2d64c911e4a2c5cab0816870e6))
+
 ## [0.1.21](https://github.com/mctlhq/mctl-academy/compare/0.1.20...0.1.21) (2026-08-08)
 
 
