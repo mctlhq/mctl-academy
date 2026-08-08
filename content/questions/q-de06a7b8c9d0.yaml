@@ -3,37 +3,37 @@ id: q-de06a7b8c9d0
 status: published
 domain: domain-4
 objective: domain-4/billing-and-consumption
-stem: >-
-  What is the primary billing model metric used for shared pay-as-you-go inference API pools?
+stem: What is the primary billing model metric used for shared pay-as-you-go
+  inference API pools?
 options:
   - id: a
     text: Total prompt and completion tokens processed
     correct: true
-    explanation: >-
-      Pay-as-you-go inference is billed per thousand/million tokens processed.
+    explanation: Pay-as-you-go inference is billed per thousand/million tokens processed.
   - id: b
     text: Fixed flat monthly subscription fee per developer seat
     correct: false
-    explanation: >-
-      Shared APIs bill based on actual token usage volume rather than seat counts.
+    explanation: Shared APIs bill based on actual token usage volume rather than
+      seat counts.
   - id: c
     text: Number of lines of code compiled in client builds
     correct: false
-    explanation: >-
-      Code volume is not a billing metric for language model inference APIs.
+    explanation: Code volume is not a billing metric for language model inference APIs.
   - id: d
     text: Hard drive disk rotation speed
     correct: false
-    explanation: >-
-      Disk hardware specs are managed by the cloud platform, not billed per query.
+    explanation: Disk hardware specs are managed by the cloud platform, not billed
+      per query.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      track your consumption against your limits using the `x-ratelimit-remaining-requests`
-      and `x-ratelimit-remaining-tokens` response headers.
+    excerpt: track your consumption against your limits using the
+      `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens`
+      response headers.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

@@ -16,36 +16,20 @@ import { join } from "node:path";
 const ROOT = new URL("..", import.meta.url).pathname;
 const LINT = join(ROOT, "scripts", "validate-content.mjs");
 
-const BRANDING = `
-schema_version: 1
-course:
-  id: test-course
-  title: Test
-domains:
-  - id: domain-1
-    title: One
-    weight: 20
-    mock_questions: 6
-    objectives: [{ id: alpha }]
-  - id: domain-2
-    title: Two
-    weight: 35
-    mock_questions: 10
-    objectives: [{ id: beta }]
-  - id: domain-3
-    title: Three
-    weight: 20
-    mock_questions: 6
-    objectives: [{ id: gamma }]
-  - id: domain-4
-    title: Four
-    weight: 25
-    mock_questions: 8
-    objectives: [{ id: delta }]
-mock:
-  question_count: 30
-  time_limit_minutes: 60
-`;
+const COURSE_DEF = {
+  schema_version: 1,
+  id: "agentic-ai-builder",
+  prepares_for: "Test Course",
+  title: "Test",
+  description: "Test description for course map",
+  mock: { question_count: 30, time_limit_minutes: 60 },
+  domains: [
+    { id: "domain-1", title: "One", weight: 20, mock_questions: 6, objectives: [{ id: "alpha", title: "Alpha" }] },
+    { id: "domain-2", title: "Two", weight: 35, mock_questions: 10, objectives: [{ id: "beta", title: "Beta" }] },
+    { id: "domain-3", title: "Three", weight: 20, mock_questions: 6, objectives: [{ id: "gamma", title: "Gamma" }] },
+    { id: "domain-4", title: "Four", weight: 25, mock_questions: 8, objectives: [{ id: "delta", title: "Delta" }] },
+  ],
+};
 
 const HASH = "a".repeat(64);
 
@@ -71,6 +55,7 @@ const option = (id, correct, text) => ({
 const question = (over = {}) => ({
   schema_version: 1,
   id: "q-abcdef123456",
+  course_id: "agentic-ai-builder",
   status: "published",
   domain: "domain-1",
   objective: "domain-1/alpha",
@@ -81,7 +66,7 @@ const question = (over = {}) => ({
     option("c", false, "Another wrong one"),
     option("d", false, "A third wrong one"),
   ],
-  evidence: [{ source_id: "src-docs-agents", excerpt: "agents run tools on your behalf" }],
+  evidence: [{ source_id: "src-docs-agents", source_sha256: HASH, excerpt: "agents run tools on your behalf" }],
   authored: { by: "agent:writer", at: "2026-08-06T10:00:00Z" },
   reviewed: { by: "mashkovd", at: "2026-08-06T11:00:00Z" },
   ...over,
@@ -91,9 +76,10 @@ const question = (over = {}) => ({
 function lint({ sources = [source()], questions = [question()] }) {
   const dir = mkdtempSync(join(tmpdir(), "academy-lint-"));
   try {
+    mkdirSync(join(dir, "courses"), { recursive: true });
     mkdirSync(join(dir, "sources"), { recursive: true });
     mkdirSync(join(dir, "questions"), { recursive: true });
-    writeFileSync(join(dir, "branding.yaml"), BRANDING);
+    writeFileSync(join(dir, "courses", "agentic-ai-builder.yaml"), JSON.stringify(COURSE_DEF));
     sources.forEach((s, i) => writeFileSync(join(dir, "sources", `s${i}.yaml`), JSON.stringify(s)));
     questions.forEach((q, i) => writeFileSync(join(dir, "questions", `q${i}.yaml`), JSON.stringify(q)));
 
@@ -134,7 +120,7 @@ test("rejects zero correct answers", () => {
 
 test("rejects an excerpt longer than 25 words", () => {
   const q = question({
-    evidence: [{ source_id: "src-docs-agents", excerpt: Array.from({ length: 26 }, (_, i) => `w${i}`).join(" ") }],
+    evidence: [{ source_id: "src-docs-agents", source_sha256: HASH, excerpt: Array.from({ length: 26 }, (_, i) => `w${i}`).join(" ") }],
   });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
@@ -143,7 +129,7 @@ test("rejects an excerpt longer than 25 words", () => {
 
 test("accepts an excerpt of exactly 25 words", () => {
   const q = question({
-    evidence: [{ source_id: "src-docs-agents", excerpt: Array.from({ length: 25 }, (_, i) => `w${i}`).join(" ") }],
+    evidence: [{ source_id: "src-docs-agents", source_sha256: HASH, excerpt: Array.from({ length: 25 }, (_, i) => `w${i}`).join(" ") }],
   });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, true, output);
@@ -173,7 +159,7 @@ test("rejects duplicate option text", () => {
 });
 
 test("rejects a citation to an unknown source", () => {
-  const q = question({ evidence: [{ source_id: "src-does-not-exist", excerpt: "nope" }] });
+  const q = question({ evidence: [{ source_id: "src-does-not-exist", source_sha256: HASH, excerpt: "nope" }] });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
   assert.match(output, /unknown source/);
@@ -247,7 +233,7 @@ test("rejects an objective absent from the branding map", () => {
   const q = question({ objective: "domain-1/not-a-real-objective" });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
-  assert.match(output, /not in branding\.yaml/);
+  assert.match(output, /not defined in course/);
 });
 
 test("rejects a snapshot key that does not match the source hash", () => {

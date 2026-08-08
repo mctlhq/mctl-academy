@@ -3,40 +3,36 @@ id: q-el01a0b1c2d3
 status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
-stem: >-
-  Your load balancer must decide whether to route traffic to a dedicated endpoint.
-  Which of the two status types should it read?
+stem: Your load balancer must decide whether to route traffic to a dedicated
+  endpoint. Which of the two status types should it read?
 options:
   - id: a
     text: Readiness, which reports traffic-serving capability
     correct: true
-    explanation: >-
-      The two statuses exist precisely so deployment progress and serving capability
-      can be read separately, and routing depends on the latter.
+    explanation: The two statuses exist precisely so deployment progress and serving
+      capability can be read separately, and routing depends on the latter.
   - id: b
     text: Lifecycle, which reports deployment state
     correct: false
-    explanation: >-
-      An endpoint can be mid-deployment and still serving, so lifecycle alone
-      would withhold traffic from a healthy endpoint.
+    explanation: An endpoint can be mid-deployment and still serving, so lifecycle
+      alone would withhold traffic from a healthy endpoint.
   - id: c
     text: Either, since they always agree
     correct: false
-    explanation: >-
-      They routinely differ — that divergence is the reason both are published.
+    explanation: They routinely differ — that divergence is the reason both are published.
   - id: d
     text: Both, refusing traffic unless each is in its nominal state
     correct: false
-    explanation: >-
-      Requiring both would drop traffic during a normal update, when the endpoint
-      is serving perfectly well.
+    explanation: Requiring both would drop traffic during a normal update, when the
+      endpoint is serving perfectly well.
 evidence:
   - source_id: src-endpoint-lifecycle
-    excerpt: >-
-      Lifecycle is deployment state. Readiness is traffic-serving capability.
+    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

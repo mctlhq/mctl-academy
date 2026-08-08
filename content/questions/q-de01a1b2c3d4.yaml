@@ -3,36 +3,38 @@ id: q-de01a1b2c3d4
 status: published
 domain: domain-4
 objective: domain-4/dedicated-endpoints
-stem: >-
-  What primary architectural advantage does deploying a dedicated endpoint provide over shared pay-as-you-go inference API pools?
+stem: What primary architectural advantage does deploying a dedicated endpoint
+  provide over shared pay-as-you-go inference API pools?
 options:
   - id: a
-    text: Guaranteed reserved GPU compute capacity with predictable response latency and no noisy neighbor interference
+    text: Guaranteed reserved GPU compute capacity with predictable response latency
+      and no noisy neighbor interference
     correct: true
-    explanation: >-
-      Dedicated endpoints allocate isolated GPU instances, ensuring consistent latency and reserved capacity.
+    explanation: Dedicated endpoints allocate isolated GPU instances, ensuring
+      consistent latency and reserved capacity.
   - id: b
     text: Automatic generation of synthetic training datasets
     correct: false
-    explanation: >-
-      Endpoints execute model inference, not dataset synthesis or fine-tuning preprocessing.
+    explanation: Endpoints execute model inference, not dataset synthesis or
+      fine-tuning preprocessing.
   - id: c
     text: Free unlimited token consumption without billing charges
     correct: false
-    explanation: >-
-      Dedicated instances incur hourly node hosting costs regardless of query volume.
+    explanation: Dedicated instances incur hourly node hosting costs regardless of
+      query volume.
   - id: d
     text: Automatic client-side Javascript code transpilation
     correct: false
-    explanation: >-
-      Dedicated endpoints handle neural network model inference, not web browser frontend code compilation.
+    explanation: Dedicated endpoints handle neural network model inference, not web
+      browser frontend code compilation.
 evidence:
   - source_id: src-endpoint-lifecycle
-    excerpt: >-
-      Lifecycle is deployment state. Readiness is traffic-serving capability.
+    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

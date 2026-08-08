@@ -8,6 +8,7 @@
   "required": [
     "schema_version",
     "id",
+    "course_id",
     "status",
     "domain",
     "objective",
@@ -25,17 +26,23 @@
       "type": "string",
       "pattern": "^q-[a-z0-9]{12}$"
     },
+    "course_id": {
+      "description": "The course this question belongs to.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"
+    },
     "status": {
-      "description": "draft: not selectable. needs_review: was published, a cited source drifted, now withdrawn from new selection. published: selectable. retired: permanently withdrawn. Retiring never alters an attempt already taken.",
-      "enum": ["draft", "needs_review", "published", "retired"]
+      "description": "draft: incomplete work. review_ready: agent-authored, verified evidence, awaiting human review. needs_review: was published, a cited source drifted. published: selectable. retired: permanently withdrawn.",
+      "enum": ["draft", "review_ready", "needs_review", "published", "retired"]
     },
     "domain": {
-      "enum": ["domain-1", "domain-2", "domain-3", "domain-4"]
+      "type": "string",
+      "pattern": "^domain-[1-9][0-9]*$"
     },
     "objective": {
-      "description": "Cross-checked against content/branding.yaml. A question cannot map to an objective that does not exist there.",
+      "description": "Cross-checked against the course definition file under content/courses/",
       "type": "string",
-      "pattern": "^domain-[1-4]/[a-z0-9][a-z0-9-]{1,62}$"
+      "pattern": "^domain-[1-9][0-9]*/[a-z0-9][a-z0-9-]{1,62}$"
     },
     "stem": {
       "description": "The question itself. Restricted Markdown, sanitized at build time; executable MDX is not accepted anywhere in this repository.",
@@ -83,11 +90,16 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["source_id", "excerpt"],
+        "required": ["source_id", "source_sha256", "excerpt"],
         "properties": {
           "source_id": {
             "type": "string",
             "pattern": "^src-[a-z0-9][a-z0-9-]{2,62}$"
+          },
+          "source_sha256": {
+            "description": "Exact immutable SHA-256 hash of the R2 snapshot that supports this claim.",
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
           },
           "excerpt": {
             "description": "At most 25 whitespace-separated words, quoted verbatim from the source. The pattern enforces the word cap. If 25 words cannot support the claim, the question is too broad for a single citation — cite twice or narrow the claim; do not paraphrase to fit.",

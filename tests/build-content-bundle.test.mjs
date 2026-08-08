@@ -66,7 +66,7 @@ test("emits only the fields the client needs, per option", () => {
   const bundle = build([question("q-published0002", "published")]);
   const [q] = bundle;
 
-  assert.deepEqual(Object.keys(q).sort(), ["domain", "id", "objective", "options", "stem"].sort());
+  assert.deepEqual(Object.keys(q).sort(), ["course_id", "domain", "id", "objective", "options", "stem"].sort());
   assert.deepEqual(
     Object.keys(q.options[0]).sort(),
     ["correct", "explanation", "id", "text"].sort(),

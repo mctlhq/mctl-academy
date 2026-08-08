@@ -1,0 +1,54 @@
+schema_version: 1
+id: ai-leader
+prepares_for: "Nebius AI Leader"
+title: "AI Leader"
+description: "Practice for the Nebius AI Leader certification. Foundational business and product track covering AI concepts, business outcomes, API vendor evaluation, cost models, and risk tradeoffs."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+domains:
+  - id: domain-1
+    title: "AI Fundamentals & Capability Assessment"
+    weight: 30
+    mock_questions: 9
+    objectives:
+      - id: ai-concepts
+        title: "Understanding generative AI models, flavors, and capabilities"
+      - id: model-selection
+        title: "Evaluating model families, context windows, and tradeoffs"
+
+  - id: domain-2
+    title: "AI Product Design & Business Value"
+    weight: 30
+    mock_questions: 9
+    objectives:
+      - id: product-outcomes
+        title: "Aligning AI capabilities with business outcomes and user needs"
+      - id: workflow-design
+        title: "Designing AI-assisted workflows and integration patterns"
+
+  - id: domain-3
+    title: "Vendor Evaluation & API Infrastructure"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: vendor-evaluation
+        title: "Evaluating API providers and model hosting services"
+      - id: api-integration-basics
+        title: "Understanding API access models and integration architecture"
+
+  - id: domain-4
+    title: "Cost, Performance & Risk Management"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: cost-economics
+        title: "Token economics, consumption pricing, and cost controls"
+      - id: risk-compliance
+        title: "Managing data privacy, compliance, and operational risks"

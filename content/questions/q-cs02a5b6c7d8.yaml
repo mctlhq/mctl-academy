@@ -3,37 +3,40 @@ id: q-cs02a5b6c7d8
 status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
-stem: >-
-  How does automatic scaling function when dedicated endpoints experience high request concurrency spikes?
+stem: How does automatic scaling function when dedicated endpoints experience
+  high request concurrency spikes?
 options:
   - id: a
-    text: Additional replica instances are auto-provisioned to handle load according to configured scaling policies
+    text: Additional replica instances are auto-provisioned to handle load according
+      to configured scaling policies
     correct: true
-    explanation: >-
-      Autoscaling policies dynamically add replica instances as concurrency metrics exceed thresholds.
+    explanation: Autoscaling policies dynamically add replica instances as
+      concurrency metrics exceed thresholds.
   - id: b
     text: System memory is wiped to free up GPU cache
     correct: false
-    explanation: >-
-      Wiping memory would drop active request contexts, causing failures rather than scaling compute.
+    explanation: Wiping memory would drop active request contexts, causing failures
+      rather than scaling compute.
   - id: c
     text: Requests are converted to offline fine-tuning datasets automatically
     correct: false
-    explanation: >-
-      Inference traffic remains real-time inference and is not converted into fine-tuning datasets.
+    explanation: Inference traffic remains real-time inference and is not converted
+      into fine-tuning datasets.
   - id: d
-    text: All incoming requests are dropped with HTTP 500 server error codes permanently
+    text: All incoming requests are dropped with HTTP 500 server error codes
+      permanently
     correct: false
-    explanation: >-
-      Autoscaling prevents drop errors by expanding instance capacity under load.
+    explanation: Autoscaling prevents drop errors by expanding instance capacity under load.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      This occurs when the system has spare capacity available, and your request
-      can be handled with a lower priority without affecting other users.
+    excerpt: This occurs when the system has spare capacity available, and your
+      request can be handled with a lower priority without affecting other
+      users.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

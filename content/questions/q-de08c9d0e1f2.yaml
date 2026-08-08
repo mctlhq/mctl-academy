@@ -3,36 +3,35 @@ id: q-de08c9d0e1f2
 status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
-stem: >-
-  What status indicates that a dedicated endpoint has completed node allocation and model weight loading, and is actively ready for inference requests?
+stem: What status indicates that a dedicated endpoint has completed node
+  allocation and model weight loading, and is actively ready for inference
+  requests?
 options:
   - id: a
     text: READY
     correct: true
-    explanation: >-
-      The READY state confirms node provisioning, model loading, and traffic capability.
+    explanation: The READY state confirms node provisioning, model loading, and
+      traffic capability.
   - id: b
     text: CREATING
     correct: false
-    explanation: >-
-      CREATING signifies ongoing provision of underlying compute nodes.
+    explanation: CREATING signifies ongoing provision of underlying compute nodes.
   - id: c
     text: DELETING
     correct: false
-    explanation: >-
-      DELETING indicates endpoint de-provisioning and resource teardown.
+    explanation: DELETING indicates endpoint de-provisioning and resource teardown.
   - id: d
     text: PAUSED
     correct: false
-    explanation: >-
-      PAUSED indicates an inactive endpoint that is not serving live traffic.
+    explanation: PAUSED indicates an inactive endpoint that is not serving live traffic.
 evidence:
   - source_id: src-endpoint-lifecycle
-    excerpt: >-
-      Lifecycle is deployment state. Readiness is traffic-serving capability.
+    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

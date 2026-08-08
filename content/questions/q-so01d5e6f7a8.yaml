@@ -3,40 +3,37 @@ id: q-so01d5e6f7a8
 status: published
 domain: domain-2
 objective: domain-2/structured-output
-stem: >-
-  You need a model to return data your code can parse without a post-processing
-  step. Which request parameter controls this?
+stem: You need a model to return data your code can parse without a
+  post-processing step. Which request parameter controls this?
 options:
   - id: a
-    text: '`output_schema`'
+    text: "`output_schema`"
     correct: false
-    explanation: >-
-      No such parameter exists. A schema is supplied inside `response_format`,
-      not as a sibling of it.
+    explanation: No such parameter exists. A schema is supplied inside
+      `response_format`, not as a sibling of it.
   - id: b
-    text: '`content_type`'
+    text: "`content_type`"
     correct: false
-    explanation: >-
-      Content type belongs to HTTP headers and describes the transport, not the
-      shape of the generated content.
+    explanation: Content type belongs to HTTP headers and describes the transport,
+      not the shape of the generated content.
   - id: c
-    text: '`strict_mode`'
+    text: "`strict_mode`"
     correct: false
-    explanation: >-
-      Strictness is expressed by choosing the schema-following type, not by a
-      separate boolean parameter.
+    explanation: Strictness is expressed by choosing the schema-following type, not
+      by a separate boolean parameter.
   - id: d
-    text: '`response_format`'
+    text: "`response_format`"
     correct: true
-    explanation: >-
-      This is the parameter that switches a model from prose to JSON, and its
-      type field selects which of the two JSON modes applies.
+    explanation: This is the parameter that switches a model from prose to JSON, and
+      its type field selects which of the two JSON modes applies.
 evidence:
   - source_id: src-structured-output
     excerpt: Use `response_format`parameter to get JSON output.
+    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

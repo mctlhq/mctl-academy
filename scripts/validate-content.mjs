@@ -78,39 +78,68 @@ function loadYamlDir(dir) {
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 const validators = {};
-for (const kind of ["source", "question", "lesson"]) {
+for (const kind of ["course", "source", "question", "lesson"]) {
   const schema = JSON.parse(readFileSync(join(SCHEMAS, `${kind}.schema.json`), "utf8"));
   validators[kind] = ajv.compile(schema);
 }
 
-// ---------------------------------------------------------------- branding
+// ------------------------------------------------------------------ courses
 
-const brandingPath = join(CONTENT, "branding.yaml");
-const branding = parseYaml(readFileSync(brandingPath, "utf8"));
-const knownObjectives = new Set();
-let weightSum = 0;
-let mockSum = 0;
+const coursesDir = join(CONTENT, "courses");
+const courses = new Map();
+const allKnownObjectives = new Set();
 
-for (const d of branding.domains ?? []) {
-  weightSum += d.weight ?? 0;
-  mockSum += d.mock_questions ?? 0;
-  for (const o of d.objectives ?? []) knownObjectives.add(`${d.id}/${o.id ?? o}`);
+if (existsSync(coursesDir)) {
+  const courseFiles = loadYamlDir("courses");
+  for (const { file, data } of courseFiles) {
+    if (!validators.course(data)) {
+      for (const e of validators.course.errors) err(file, `${e.instancePath || "/"} ${e.message}`);
+      continue;
+    }
+    if (courses.has(data.id)) err(file, `duplicate course id ${data.id}`);
+
+    const objectives = new Set();
+    let weightSum = 0;
+    let mockSum = 0;
+
+    for (const d of data.domains ?? []) {
+      weightSum += d.weight ?? 0;
+      mockSum += d.mock_questions ?? 0;
+      for (const o of d.objectives ?? []) {
+        const objFull = `${d.id}/${o.id ?? o}`;
+        objectives.add(objFull);
+        allKnownObjectives.add(objFull);
+      }
+    }
+
+    if (weightSum !== 100) {
+      err(file, `domain weights sum to ${weightSum}, expected 100`);
+    }
+    if (mockSum !== data.mock?.question_count) {
+      err(file, `mock_questions sum to ${mockSum} but mock.question_count is ${data.mock?.question_count}`);
+    }
+
+    courses.set(data.id, { data, objectives });
+  }
+} else {
+  // Legacy fallback if content/courses does not exist
+  const brandingPath = join(CONTENT, "branding.yaml");
+  if (existsSync(brandingPath)) {
+    const branding = parseYaml(readFileSync(brandingPath, "utf8"));
+    const objectives = new Set();
+    for (const d of branding.domains ?? []) {
+      for (const o of d.objectives ?? []) {
+        const objFull = `${d.id}/${o.id ?? o}`;
+        objectives.add(objFull);
+        allKnownObjectives.add(objFull);
+      }
+    }
+    courses.set("agentic-ai-builder", { data: branding, objectives });
+  }
 }
 
-if (weightSum !== 100) {
-  err("content/branding.yaml", `domain weights sum to ${weightSum}, expected 100`);
-}
-if (mockSum !== branding.mock?.question_count) {
-  err(
-    "content/branding.yaml",
-    `mock_questions sum to ${mockSum} but mock.question_count is ${branding.mock?.question_count}`,
-  );
-}
-if (knownObjectives.size === 0) {
-  warn(
-    "content/branding.yaml",
-    "no objectives defined yet — every objective reference will fail until the map is filled in",
-  );
+if (courses.size === 0) {
+  warn(CONTENT, "no course definitions found — objective references will fail validation");
 }
 
 // ----------------------------------------------------------------- sources
@@ -134,8 +163,16 @@ for (const { file, data } of sources) {
     err(file, "snapshot.key must equal sha256 — snapshots are keyed by content hash");
   }
   for (const o of data.objectives ?? []) {
-    if (knownObjectives.size && !knownObjectives.has(o)) {
-      err(file, `objective ${o} is not in branding.yaml`);
+    if (allKnownObjectives.size && !allKnownObjectives.has(o)) {
+      err(file, `objective ${o} is not defined in any course map`);
+    }
+  }
+  for (const c of data.coverage ?? []) {
+    const course = courses.get(c.course_id);
+    if (!course) {
+      err(file, `coverage references unknown course ${c.course_id}`);
+    } else if (!course.objectives.has(c.objective)) {
+      err(file, `coverage objective ${c.objective} is not in course ${c.course_id}`);
     }
   }
 }
@@ -150,11 +187,8 @@ function checkEvidence(file, data) {
     }
     const src = sources.find((s) => s.data.id === ev.source_id).data;
     if (!src.snapshot) {
-      // Not an error: the item simply cannot publish yet. Publication is
-      // gated below on status, so say it once, here, in the language of the
-      // consequence rather than the mechanism.
-      if (data.status === "published") {
-        err(file, `cannot be published: source ${ev.source_id} has no snapshot to verify against`);
+      if (data.status === "published" || data.status === "review_ready") {
+        err(file, `cannot be ${data.status}: source ${ev.source_id} has no snapshot to verify against`);
       }
     }
     if (src.status === "drifted" && data.status === "published") {
@@ -167,8 +201,11 @@ function checkObjective(file, data) {
   if (!data.objective?.startsWith(`${data.domain}/`)) {
     err(file, `objective ${data.objective} does not belong to ${data.domain}`);
   }
-  if (knownObjectives.size && !knownObjectives.has(data.objective)) {
-    err(file, `objective ${data.objective} is not in branding.yaml`);
+  const course = courses.get(data.course_id);
+  if (!course) {
+    err(file, `references unknown course_id ${data.course_id}`);
+  } else if (!course.objectives.has(data.objective)) {
+    err(file, `objective ${data.objective} is not defined in course ${data.course_id}`);
   }
 }
 

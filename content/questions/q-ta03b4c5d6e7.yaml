@@ -3,36 +3,36 @@ id: q-ta03b4c5d6e7
 status: published
 domain: domain-4
 objective: domain-4/team-access
-stem: >-
-  Which IAM permission role scope allows creating new API keys within a specific project without granting organization-level administrative access?
+stem: Which IAM permission role scope allows creating new API keys within a
+  specific project without granting organization-level administrative access?
 options:
   - id: a
     text: Organization Owner
     correct: false
-    explanation: >-
-      Organization Owner has full admin privileges across all org settings, not project-scoped access.
+    explanation: Organization Owner has full admin privileges across all org
+      settings, not project-scoped access.
   - id: b
     text: Project Developer or Project Admin
     correct: true
-    explanation: >-
-      Project-level roles allow managing resources and API keys inside that specific project only.
+    explanation: Project-level roles allow managing resources and API keys inside
+      that specific project only.
   - id: c
     text: Global Billing Auditor
     correct: false
-    explanation: >-
-      Billing Auditor grants read-only access to invoices and financial usage reports.
+    explanation: Billing Auditor grants read-only access to invoices and financial
+      usage reports.
   - id: d
     text: Anonymous Guest User
     correct: false
-    explanation: >-
-      Unauthenticated guests cannot access projects or issue API credentials.
+    explanation: Unauthenticated guests cannot access projects or issue API credentials.
 evidence:
   - source_id: src-org-projects
-    excerpt: >-
-      exist inside a project and inherit its access settings.
+    excerpt: exist inside a project and inherit its access settings.
+    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

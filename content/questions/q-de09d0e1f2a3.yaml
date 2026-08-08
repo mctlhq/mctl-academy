@@ -3,37 +3,35 @@ id: q-de09d0e1f2a3
 status: published
 domain: domain-4
 objective: domain-4/rate-limits
-stem: >-
-  What error code and response payload are returned when a project exceeds its assigned Requests Per Minute (RPM) quota?
+stem: What error code and response payload are returned when a project exceeds
+  its assigned Requests Per Minute (RPM) quota?
 options:
   - id: a
     text: HTTP 429 Too Many Requests
     correct: true
-    explanation: >-
-      Exceeding RPM or TPM rate limits triggers HTTP 429 response status.
+    explanation: Exceeding RPM or TPM rate limits triggers HTTP 429 response status.
   - id: b
     text: HTTP 500 Internal Server Error
     correct: false
-    explanation: >-
-      HTTP 500 indicates unhandled server crashes, not client quota rate limits.
+    explanation: HTTP 500 indicates unhandled server crashes, not client quota rate limits.
   - id: c
     text: HTTP 404 Not Found
     correct: false
-    explanation: >-
-      HTTP 404 indicates missing endpoint URLs or resources.
+    explanation: HTTP 404 indicates missing endpoint URLs or resources.
   - id: d
     text: HTTP 401 Unauthorized
     correct: false
-    explanation: >-
-      HTTP 401 indicates missing or invalid API keys.
+    explanation: HTTP 401 indicates missing or invalid API keys.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      track your consumption against your limits using the `x-ratelimit-remaining-requests`
-      and `x-ratelimit-remaining-tokens` response headers.
+    excerpt: track your consumption against your limits using the
+      `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens`
+      response headers.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

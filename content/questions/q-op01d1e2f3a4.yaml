@@ -3,41 +3,37 @@ id: q-op01d1e2f3a4
 status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
-stem: >-
-  Two teams must not see each other's datasets or endpoints. Which level of the
-  resource model isolates them?
+stem: Two teams must not see each other's datasets or endpoints. Which level of
+  the resource model isolates them?
 options:
   - id: a
-    text: >-
-      A project, since resources live inside it and inherit its access settings
+    text: A project, since resources live inside it and inherit its access settings
     correct: true
-    explanation: >-
-      Because resources take their access from the enclosing project, giving each
-      team its own project is what produces the isolation.
+    explanation: Because resources take their access from the enclosing project,
+      giving each team its own project is what produces the isolation.
   - id: b
     text: The organization, since it is the top of the hierarchy
     correct: false
-    explanation: >-
-      The organization is the shared container above projects, so placing both
-      teams in one does not separate them.
+    explanation: The organization is the shared container above projects, so placing
+      both teams in one does not separate them.
   - id: c
     text: The API key, since each key is scoped to a single resource
     correct: false
-    explanation: >-
-      Keys are issued within a project. They express access, but the project is
-      what bounds it.
+    explanation: Keys are issued within a project. They express access, but the
+      project is what bounds it.
   - id: d
     text: An organization group, since groups own resources directly
     correct: false
-    explanation: >-
-      Groups configure identity and access for people. Resources belong to projects,
-      not to groups.
+    explanation: Groups configure identity and access for people. Resources belong
+      to projects, not to groups.
 evidence:
   - source_id: src-org-projects
     excerpt: exist inside a project and inherit its access settings.
+    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

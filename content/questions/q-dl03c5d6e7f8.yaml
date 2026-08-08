@@ -3,37 +3,37 @@ id: q-dl03c5d6e7f8
 status: published
 domain: domain-3
 objective: domain-3/data-lab
-stem: >-
-  What dataset quality filter prevents a model from learning repetitive or template-dominated completions during fine-tuning?
+stem: What dataset quality filter prevents a model from learning repetitive or
+  template-dominated completions during fine-tuning?
 options:
   - id: a
     text: Disabling system prompt headers entirely
     correct: false
-    explanation: >-
-      System prompts define behavior rules; removing them does not solve dataset template repetition.
+    explanation: System prompts define behavior rules; removing them does not solve
+      dataset template repetition.
   - id: b
     text: Doubling the learning rate parameter on every epoch
     correct: false
-    explanation: >-
-      Increasing learning rate does not deduplicate or clean repetitive dataset text.
+    explanation: Increasing learning rate does not deduplicate or clean repetitive
+      dataset text.
   - id: c
     text: Semantic deduplication and near-duplicate removal across dataset lines
     correct: true
-    explanation: >-
-      Deduplication removes repetitive prompt/response pairs so the model learns generalizable skills rather than memorizing templates.
+    explanation: Deduplication removes repetitive prompt/response pairs so the model
+      learns generalizable skills rather than memorizing templates.
   - id: d
     text: Converting all floating-point weights into 8-bit integers
     correct: false
-    explanation: >-
-      8-bit quantization reduces memory, not dataset duplicate text patterns.
+    explanation: 8-bit quantization reduces memory, not dataset duplicate text patterns.
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: >-
-      Events help you understand the lifecycle (file validation, dataset processing,
-      training progress).
+    excerpt: Events help you understand the lifecycle (file validation, dataset
+      processing, training progress).
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

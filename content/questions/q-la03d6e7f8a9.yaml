@@ -3,37 +3,38 @@ id: q-la03d6e7f8a9
 status: published
 domain: domain-3
 objective: domain-3/lora-adapters
-stem: >-
-  What key hyperparameter in LoRA configuration controls the rank of the low-rank update matrices A and B?
+stem: What key hyperparameter in LoRA configuration controls the rank of the
+  low-rank update matrices A and B?
 options:
   - id: a
-    text: "top_p"
+    text: top_p
     correct: false
-    explanation: >-
-      Top-p (nucleus sampling) controls cumulative probability sampling during generation.
+    explanation: Top-p (nucleus sampling) controls cumulative probability sampling
+      during generation.
   - id: b
-    text: "presence_penalty"
+    text: presence_penalty
     correct: false
-    explanation: >-
-      Presence penalty penalizes new tokens based on occurrence in generated output.
+    explanation: Presence penalty penalizes new tokens based on occurrence in
+      generated output.
   - id: c
-    text: "context_window"
+    text: context_window
     correct: false
-    explanation: >-
-      Context window specifies total input token capacity of the model architecture.
+    explanation: Context window specifies total input token capacity of the model
+      architecture.
   - id: d
-    text: "r (rank)"
+    text: r (rank)
     correct: true
-    explanation: >-
-      The parameter r defines the rank dimension of decomposition matrices in LoRA adapters.
+    explanation: The parameter r defines the rank dimension of decomposition
+      matrices in LoRA adapters.
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: >-
-      represents the model after a certain number of training steps (often per
-      epoch).
+    excerpt: represents the model after a certain number of training steps (often
+      per epoch).
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

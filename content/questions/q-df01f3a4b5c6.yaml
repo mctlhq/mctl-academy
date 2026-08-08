@@ -3,22 +3,19 @@ id: q-df01f3a4b5c6
 status: published
 domain: domain-3
 objective: domain-3/dataset-formats
-stem: >-
-  You are preparing chat-style training data. How should a single training example
-  be structured?
+stem: You are preparing chat-style training data. How should a single training
+  example be structured?
 options:
   - id: a
     text: One user turn and one assistant turn per example
     correct: false
-    explanation: >-
-      Splitting a dialogue into pairs would discard the surrounding context the
-      model is meant to learn from.
+    explanation: Splitting a dialogue into pairs would discard the surrounding
+      context the model is meant to learn from.
   - id: b
     text: A prompt string and a completion string
     correct: false
-    explanation: >-
-      That shape belongs to the instruction or text dataset types, not to conversational
-      data.
+    explanation: That shape belongs to the instruction or text dataset types, not to
+      conversational data.
   - id: c
     text: A nested object keyed by turn index
     correct: false
@@ -26,17 +23,17 @@ options:
   - id: d
     text: One conversation expressed as a single `messages` array
     correct: true
-    explanation: >-
-      The unit of training is the whole conversation, which is why turns are grouped
-      rather than split into separate examples.
+    explanation: The unit of training is the whole conversation, which is why turns
+      are grouped rather than split into separate examples.
 evidence:
   - source_id: src-dataset-formats
-    excerpt: >-
-      Each training example is a single conversation, represented as one `messages`
-      array.
+    excerpt: Each training example is a single conversation, represented as one
+      `messages` array.
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

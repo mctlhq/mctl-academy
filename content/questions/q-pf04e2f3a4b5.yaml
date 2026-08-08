@@ -3,36 +3,34 @@ id: q-pf04e2f3a4b5
 status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
-stem: >-
-  What is the model naming convention when selecting the Fast flavor of an inference model?
+stem: What is the model naming convention when selecting the Fast flavor of an
+  inference model?
 options:
   - id: a
     text: Append `-fast` to the model name string in the request payload
     correct: true
-    explanation: >-
-      Fast flavors are specified by appending `-fast` to the model identifier.
+    explanation: Fast flavors are specified by appending `-fast` to the model identifier.
   - id: b
     text: 'Set `flavor: "fast"` in the HTTP headers'
     correct: false
-    explanation: >-
-      Flavor selection is specified in the model parameter, not custom HTTP headers.
+    explanation: Flavor selection is specified in the model parameter, not custom
+      HTTP headers.
   - id: c
     text: Use port `8443` instead of standard HTTP endpoints
     correct: false
-    explanation: >-
-      Port routing does not determine model flavor.
+    explanation: Port routing does not determine model flavor.
   - id: d
     text: Prepend `fast/` before the organization namespace
     correct: false
-    explanation: >-
-      Fast suffix is appended to the model name, not prepended to namespace.
+    explanation: Fast suffix is appended to the model name, not prepended to namespace.
 evidence:
   - source_id: src-inference-overview
-    excerpt: >-
-      To use the Fast flavor, append `-fast` to the model name in the
+    excerpt: To use the Fast flavor, append `-fast` to the model name in the
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
-  at: "2026-08-07T19:30:00Z"
+  at: 2026-08-07T19:30:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T19:31:00Z"
+  at: 2026-08-07T19:31:00Z
+course_id: agentic-ai-builder

@@ -3,42 +3,39 @@ id: q-rl01d7e8f9a0
 status: published
 domain: domain-4
 objective: domain-4/rate-limits
-stem: >-
-  Your traffic has grown steadily for weeks and you have not asked for a quota
-  increase. What happens to your rate limit?
+stem: Your traffic has grown steadily for weeks and you have not asked for a
+  quota increase. What happens to your rate limit?
 options:
   - id: a
     text: It is recalculated monthly from your average consumption
     correct: false
-    explanation: >-
-      Evaluation happens on a far shorter cycle than a month, which is what lets
-      the limit track a growing workload.
+    explanation: Evaluation happens on a far shorter cycle than a month, which is
+      what lets the limit track a growing workload.
   - id: b
     text: It rises on its own as you consistently run close to the current cap
     correct: true
-    explanation: >-
-      Limits are dynamic, so sustained usage near the ceiling is itself the signal
-      that raises it — no ticket required.
+    explanation: Limits are dynamic, so sustained usage near the ceiling is itself
+      the signal that raises it — no ticket required.
   - id: c
     text: It stays fixed until you request an increase
     correct: false
-    explanation: >-
-      A static cap is exactly what this system replaces. Requests are only needed
-      beyond the hard ceiling.
+    explanation: A static cap is exactly what this system replaces. Requests are
+      only needed beyond the hard ceiling.
   - id: d
     text: It rises only after you upgrade to the Enterprise tier
     correct: false
-    explanation: >-
-      Enterprise removes the soft caps, but growth within them happens automatically
-      first.
+    explanation: Enterprise removes the soft caps, but growth within them happens
+      automatically first.
 evidence:
   - source_id: src-rate-limits
-    excerpt: >-
-      Every user is provided with a default rate limit cap. This limit grows automatically
-      when you consistently operate close to your capacity and current limit.
+    excerpt: Every user is provided with a default rate limit cap. This limit grows
+      automatically when you consistently operate close to your capacity and
+      current limit.
+    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
 authored:
   by: agent:claude
-  at: "2026-08-06T00:45:00Z"
+  at: 2026-08-06T00:45:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-06T06:17:17Z"
+  at: 2026-08-06T06:17:17Z
+course_id: agentic-ai-builder

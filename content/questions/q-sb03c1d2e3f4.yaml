@@ -3,37 +3,36 @@ id: q-sb03c1d2e3f4
 status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
-stem: >-
-  How should environment variables containing secret API keys be passed to an agent sandbox environment?
+stem: How should environment variables containing secret API keys be passed to
+  an agent sandbox environment?
 options:
   - id: a
     text: Hardcoded as plain text inside generated code scripts
     correct: false
-    explanation: >-
-      Hardcoding credentials exposes keys in code logs and version control artifacts.
+    explanation: Hardcoding credentials exposes keys in code logs and version
+      control artifacts.
   - id: b
     text: Written to a public world-readable file in `/tmp/keys.txt`
     correct: false
-    explanation: >-
-      World-readable temporary files leak secrets to any local process.
+    explanation: World-readable temporary files leak secrets to any local process.
   - id: c
     text: Injected securely via ephemeral environment secrets without writing to disk
     correct: true
-    explanation: >-
-      Secrets should be injected in-memory at process initialization without disk persistence.
+    explanation: Secrets should be injected in-memory at process initialization
+      without disk persistence.
   - id: d
     text: Encoded as base64 strings in public GitHub issues
     correct: false
-    explanation: >-
-      Base64 encoding is not encryption; public posting leaks secrets instantly.
+    explanation: Base64 encoding is not encryption; public posting leaks secrets instantly.
 evidence:
   - source_id: src-inference-overview
-    excerpt: >-
-      Both deliver identical model outputs. Differences lie in token pricing,
+    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder

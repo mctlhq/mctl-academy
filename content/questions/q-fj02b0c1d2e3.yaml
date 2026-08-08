@@ -3,37 +3,37 @@ id: q-fj02b0c1d2e3
 status: published
 domain: domain-3
 objective: domain-3/fine-tuning-jobs
-stem: >-
-  How can a developer monitor training progress, loss values, and validation metrics during an active fine-tuning job execution?
+stem: How can a developer monitor training progress, loss values, and validation
+  metrics during an active fine-tuning job execution?
 options:
   - id: a
-    text: By connecting a browser directly to the GPU hardware motherboard serial console
+    text: By connecting a browser directly to the GPU hardware motherboard serial
+      console
     correct: false
-    explanation: >-
-      Direct hardware console access is not exposed in cloud platform APIs.
+    explanation: Direct hardware console access is not exposed in cloud platform APIs.
   - id: b
     text: By polling the Fine-Tuning Job Events API or viewing job event logs
     correct: true
-    explanation: >-
-      Job events stream progress logs, step counts, training loss, and validation metrics.
+    explanation: Job events stream progress logs, step counts, training loss, and
+      validation metrics.
   - id: c
     text: By inspecting DNS CNAME lookup records
     correct: false
-    explanation: >-
-      DNS records map domain names to IP addresses, not fine-tuning job metrics.
+    explanation: DNS records map domain names to IP addresses, not fine-tuning job metrics.
   - id: d
     text: By sending HTTP POST requests to external payment gateways
     correct: false
-    explanation: >-
-      Payment webhooks handle billing transactions, not training loss metric logs.
+    explanation: Payment webhooks handle billing transactions, not training loss
+      metric logs.
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: >-
-      Events help you understand the lifecycle (file validation, dataset processing,
-      training progress).
+    excerpt: Events help you understand the lifecycle (file validation, dataset
+      processing, training progress).
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
   by: agent:claude
-  at: "2026-08-07T14:40:00Z"
+  at: 2026-08-07T14:40:00Z
 reviewed:
   by: mashkovd
-  at: "2026-08-07T15:00:00Z"
+  at: 2026-08-07T15:00:00Z
+course_id: agentic-ai-builder
