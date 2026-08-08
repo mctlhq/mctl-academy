@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.23](https://github.com/mctlhq/mctl-academy/compare/0.1.22...0.1.23) (2026-08-08)
+
+
+### Features
+
+* add baseline security response headers (PR2b) ([bef7596](https://github.com/mctlhq/mctl-academy/commit/bef7596a6c90781cc0627ff55d45a35a23fe630a))
+* add baseline security response headers (PR2b) ([cb45c90](https://github.com/mctlhq/mctl-academy/commit/cb45c90354c805d1e371008750bbdc0d8bf738ac))
+
+
+### Bug Fixes
+
+* don't flatten HTTPException into a generic 500, dedupe error handler ([0b0321a](https://github.com/mctlhq/mctl-academy/commit/0b0321a1ca9b55b314e1e0c26e28ae24372776db))
+* keep security headers on unhandled-exception 500s ([56658ee](https://github.com/mctlhq/mctl-academy/commit/56658eec8c23f4b7d538cb9f051dd55b22bff92a))
+
 ## [0.1.22](https://github.com/mctlhq/mctl-academy/compare/0.1.21...0.1.22) (2026-08-08)
 
 
