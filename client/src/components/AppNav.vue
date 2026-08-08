@@ -259,6 +259,12 @@ const links = [
   }
 }
 
+@media (min-width: 981px) and (max-width: 1120px) {
+  .streak {
+    display: none;
+  }
+}
+
 @media (max-width: 560px) {
   .app-nav {
     padding-right: calc(1rem + env(safe-area-inset-right));
