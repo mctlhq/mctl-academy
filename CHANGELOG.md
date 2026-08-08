@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.24](https://github.com/mctlhq/mctl-academy/compare/0.1.23...0.1.24) (2026-08-08)
+
+
+### Features
+
+* **client:** migrate to Vue 3 + @mctlhq/ui (Track C, PR6) ([b00bbd8](https://github.com/mctlhq/mctl-academy/commit/b00bbd8277555d51106a5d48286f6f749b47fb20))
+* **client:** migrate to Vue 3 + @mctlhq/ui (Track C, PR6) ([ef2d721](https://github.com/mctlhq/mctl-academy/commit/ef2d7219ca925c3c9aa66997b056da3e732ef1c5))
+
+
+### Bug Fixes
+
+* **ci:** inject GH_PACKAGES_TOKEN so the client job can install @mctlhq/ui ([4b1d303](https://github.com/mctlhq/mctl-academy/commit/4b1d303601e792d455c731450eb69ea38c02d914))
+* **client:** restore cancelled guard around syncFromServer() in App.vue ([2828475](https://github.com/mctlhq/mctl-academy/commit/2828475f478bfd50e6bf816112a1d61c9e6f97f9))
+
 ## [0.1.23](https://github.com/mctlhq/mctl-academy/compare/0.1.22...0.1.23) (2026-08-08)
 
 
