@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.35](https://github.com/mctlhq/mctl-academy/compare/0.1.34...0.1.35) (2026-08-08)
+
+
+### Features
+
+* **content:** introduce multi-course content model and schemas ([30c3383](https://github.com/mctlhq/mctl-academy/commit/30c3383309667bb6b053688ddb699588eb4e30d2))
+* **content:** introduce multi-course content model and schemas ([6727055](https://github.com/mctlhq/mctl-academy/commit/6727055d5ac5d3eeb66857caad6c628ed10f41e6))
+* **verifier:** resolve snapshots by immutable source_sha256 hash ([c343d68](https://github.com/mctlhq/mctl-academy/commit/c343d68c6d8d26085f58a431654cb93c9694cf88))
+* **verifier:** resolve snapshots by immutable source_sha256 hash ([c8ea738](https://github.com/mctlhq/mctl-academy/commit/c8ea738571afb8a1581748ef7cb2bf6accebb37c))
+
+
+### Bug Fixes
+
+* address practice review findings ([3e70cc5](https://github.com/mctlhq/mctl-academy/commit/3e70cc5243ac779a95f14e95e36b68ca01566cdc))
+* close remaining review gaps ([73119e7](https://github.com/mctlhq/mctl-academy/commit/73119e72c35a63c628b82ef8101e92991c24da55))
+* refine practice mobile experience ([ec2da60](https://github.com/mctlhq/mctl-academy/commit/ec2da60740b9f132fb3bb2e247627488291fe085))
+* refine practice mobile experience ([d62383a](https://github.com/mctlhq/mctl-academy/commit/d62383a4dd4783b689582563290bdd6d7ff7e26d))
+
 ## [0.1.34](https://github.com/mctlhq/mctl-academy/compare/0.1.33...0.1.34) (2026-08-08)
 
 
