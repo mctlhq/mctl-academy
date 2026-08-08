@@ -32,8 +32,5 @@
     "node-pg-migrate": "^9.0.0",
     "pg": "^8.22.0",
     "yaml": "^2.6.1"
-  },
-  "devDependencies": {
-    "@better-auth/cli": "^1.4.21"
   }
 }
