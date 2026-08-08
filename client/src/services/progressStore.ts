@@ -4,6 +4,7 @@ export interface QuestionAttempt {
   questionId: string;
   domain: string;
   correct: boolean;
+  courseId?: string;
   attemptedAt: string;
 }
 
