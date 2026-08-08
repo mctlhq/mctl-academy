@@ -1,7 +1,8 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { app } from "../server/app.mjs";
-import { securityHeaders, applySecurityHeaders } from "../server/middleware/security-headers.mjs";
+import { HTTPException } from "hono/http-exception";
+import { app, errorHandler } from "../server/app.mjs";
+import { securityHeaders } from "../server/middleware/security-headers.mjs";
 
 describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
   test("API responses carry the baseline headers", async () => {
@@ -53,21 +54,37 @@ describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
     assert.match(res.headers.get("content-security-policy") || "", /default-src 'self'/);
   });
 
+  // Both tests below register app.mjs's own exported errorHandler on a
+  // throwaway probe, rather than a hand-duplicated copy — if a future edit
+  // drops applySecurityHeaders()/applySecurityHeadersToResponse() from the
+  // real handler, these tests fail too, since it's the exact same function.
   test("an unhandled exception still gets the baseline headers on its 500", async () => {
     const { Hono } = await import("hono");
     const probe = new Hono();
     probe.use("*", securityHeaders);
-    probe.onError((err, c) => {
-      c.status(500);
-      applySecurityHeaders(c);
-      return c.json({ error: "Internal server error" });
-    });
+    probe.onError(errorHandler);
     probe.get("/boom", () => {
       throw new Error("simulated unhandled failure");
     });
 
     const res = await probe.request("/boom");
     assert.equal(res.status, 500);
+    assert.match(res.headers.get("content-security-policy") || "", /default-src 'self'/);
+    assert.equal(res.headers.get("x-content-type-options"), "nosniff");
+  });
+
+  test("an HTTPException keeps its own status/response instead of being flattened to 500, and still gets the baseline headers", async () => {
+    const { Hono } = await import("hono");
+    const probe = new Hono();
+    probe.use("*", securityHeaders);
+    probe.onError(errorHandler);
+    probe.get("/rate-limited", () => {
+      throw new HTTPException(429, { message: "Too many requests" });
+    });
+
+    const res = await probe.request("/rate-limited");
+    assert.equal(res.status, 429);
+    assert.equal(await res.text(), "Too many requests");
     assert.match(res.headers.get("content-security-policy") || "", /default-src 'self'/);
     assert.equal(res.headers.get("x-content-type-options"), "nosniff");
   });

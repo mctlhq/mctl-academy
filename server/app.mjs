@@ -1,11 +1,16 @@
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { auth, assertAuthSecretConfigured } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
 import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
-import { securityHeaders, applySecurityHeaders } from "./middleware/security-headers.mjs";
+import {
+  securityHeaders,
+  applySecurityHeaders,
+  applySecurityHeadersToResponse
+} from "./middleware/security-headers.mjs";
 
 export const app = new Hono();
 
@@ -13,16 +18,38 @@ export const app = new Hono();
 // SPA fallback — a security header baseline is not just an API concern.
 app.use("*", securityHeaders);
 
-// A handler throwing unwinds past securityHeaders' post-next() code (that's
-// how middleware works — a rejected next() skips straight to the nearest
-// catch), so Hono's default 500 would otherwise ship with no security
-// headers at all. This is the only other place a response leaves the app.
-app.onError((err, c) => {
+/**
+ * A handler throwing unwinds past securityHeaders' post-next() code (that's
+ * how middleware works — a rejected next() skips straight to the nearest
+ * catch), so Hono's default 500 would otherwise ship with no security
+ * headers at all. This is the only other place a response leaves the app.
+ *
+ * Exported (rather than inlined into app.onError below) so
+ * tests/security-headers.test.mjs can register this exact function on a
+ * throwaway probe app instead of a hand-duplicated copy — a change here that
+ * drops applySecurityHeaders() breaks that test too, not just this file.
+ *
+ * HTTPException is handled first and returned via its own getResponse():
+ * it's Hono's mechanism for *intentional* HTTP responses raised as
+ * exceptions (auth/validation libraries use it), and none of this app's own
+ * code throws it today — but folding it into the generic 500 branch would
+ * turn a deliberate 401/429/etc. into a wrong, generic 500 the moment
+ * something in the dependency chain starts using it.
+ */
+export function errorHandler(err, c) {
+  if (err instanceof HTTPException) {
+    // getResponse() builds its own Response, never assigned to c.res, so
+    // c.header() has nothing to attach to here — headers go on that
+    // Response object directly. See applySecurityHeadersToResponse's doc
+    // comment for why mutating it is safe.
+    return applySecurityHeadersToResponse(err.getResponse());
+  }
   console.error("[onError] Unhandled:", err.message);
   c.status(500);
   applySecurityHeaders(c);
   return c.json({ error: "Internal server error" });
-});
+}
+app.onError(errorHandler);
 
 // Both fatal-on-failure by design, in production: a missing DATABASE_URL or
 // BETTER_AUTH_SECRET must stop the pod from ever serving traffic rather than
