@@ -29,7 +29,8 @@ options:
 evidence:
   - source_id: src-rate-limits
     excerpt: >-
-      Lifecycle is deployment state. Readiness is traffic-serving capability.
+      Every user is provided with a default rate limit cap. This limit grows automatically
+      when you consistently operate close to your capacity and current limit.
 authored:
   by: agent:claude
   at: "2026-08-07T19:30:00Z"

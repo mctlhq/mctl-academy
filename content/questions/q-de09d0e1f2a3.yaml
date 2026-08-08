@@ -29,7 +29,8 @@ options:
 evidence:
   - source_id: src-rate-limits
     excerpt: >-
-      Lifecycle is deployment state. Readiness is traffic-serving capability.
+      track your consumption against your limits using the `x-ratelimit-remaining-requests`
+      and `x-ratelimit-remaining-tokens` response headers.
 authored:
   by: agent:claude
   at: "2026-08-07T19:30:00Z"
