@@ -1,0 +1,67 @@
+name: e2e
+
+# Real-browser smoke test of the golden path (practice bank + mock exam),
+# on top of client/server's vitest/node:test coverage. Catches what unit
+# tests can't see through jsdom: CSP blocking a real resource load, a
+# component that renders but doesn't actually respond to a click, etc. — see
+# the CSP img-src bug found by manual QA that no automated check caught.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mctl_academy_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mctl_academy_e2e
+      BETTER_AUTH_SECRET: e2e-test-secret-not-used-in-production
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install client dependencies
+        working-directory: client
+        # See ci.yml's client job — same GitHub Packages token for @mctlhq/ui/css.
+        env:
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Migrate the CI database
+        run: bun run migrate
+
+      - name: E2E smoke (Playwright builds the client, boots the server)
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
