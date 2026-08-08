@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
-import { promoteQuestions } from "../scripts/approve-pr-questions.mjs";
+import { promoteQuestions, parseArgs } from "../scripts/approve-pr-questions.mjs";
 
 const HASH = "a".repeat(64);
 
@@ -58,7 +58,7 @@ test("promotes review_ready question to published and stamps maintainer review",
   }
 });
 
-test("rejects promotion if maintainer handle is missing", () => {
+test("rejects promotion if maintainer handle is missing or agent handle", () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
@@ -68,6 +68,42 @@ test("rejects promotion if maintainer handle is missing", () => {
     assert.throws(
       () => promoteQuestions({ contentDir: dir, by: null, idsOrPaths: [filePath] }),
       /Maintainer handle required/,
+    );
+
+    assert.throws(
+      () => promoteQuestions({ contentDir: dir, by: "agent:question-author", idsOrPaths: [filePath] }),
+      /agent handles \(agent:\*\) are rejected/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("rejects promotion if selection modes are conflicting", () => {
+  assert.throws(
+    () => parseArgs(["--all-review-ready", "--course", "agentic-ai-builder"]),
+    /mutually exclusive/,
+  );
+
+  assert.throws(
+    () => parseArgs(["--all-review-ready", "q1"]),
+    /mutually exclusive/,
+  );
+
+  assert.throws(
+    () => parseArgs(["--course", "agentic-ai-builder", "q1"]),
+    /mutually exclusive/,
+  );
+
+  const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
+  try {
+    mkdirSync(join(dir, "questions"), { recursive: true });
+    const filePath = join(dir, "questions", "q-review000001.yaml");
+    writeFileSync(filePath, JSON.stringify(sampleQuestion()));
+
+    assert.throws(
+      () => promoteQuestions({ contentDir: dir, by: "mashkovd", allReviewReady: true, courseId: "agentic-ai-builder" }),
+      /mutually exclusive/,
     );
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -90,17 +126,46 @@ test("rejects promotion if question is authored by a human rather than an agent"
   }
 });
 
-test("rejects promotion if question status is already published or retired", () => {
+test("rejects promotion if question status is draft, published or retired", () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
-    const filePath = join(dir, "questions", "q-review000001.yaml");
-    writeFileSync(filePath, JSON.stringify(sampleQuestion({ status: "published" })));
+    const fileDraft = join(dir, "questions", "q-draft.yaml");
+    const filePub = join(dir, "questions", "q-pub.yaml");
+    writeFileSync(fileDraft, JSON.stringify(sampleQuestion({ status: "draft" })));
+    writeFileSync(filePub, JSON.stringify(sampleQuestion({ status: "published" })));
 
     assert.throws(
-      () => promoteQuestions({ contentDir: dir, by: "mashkovd", idsOrPaths: [filePath] }),
-      /Only items in "review_ready" or "draft" can be promoted/,
+      () => promoteQuestions({ contentDir: dir, by: "mashkovd", idsOrPaths: [fileDraft] }),
+      /Only items in "review_ready" can be promoted/,
     );
+
+    assert.throws(
+      () => promoteQuestions({ contentDir: dir, by: "mashkovd", idsOrPaths: [filePub] }),
+      /Only items in "review_ready" can be promoted/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("atomic batch promotion: fails all writes if one item in batch is invalid", () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
+  try {
+    mkdirSync(join(dir, "questions"), { recursive: true });
+    const fileValid = join(dir, "questions", "q-valid.yaml");
+    const fileInvalid = join(dir, "questions", "q-invalid.yaml");
+    writeFileSync(fileValid, JSON.stringify(sampleQuestion({ id: "q-valid", status: "review_ready" })));
+    writeFileSync(fileInvalid, JSON.stringify(sampleQuestion({ id: "q-invalid", status: "published" })));
+
+    assert.throws(
+      () => promoteQuestions({ contentDir: dir, by: "mashkovd", idsOrPaths: [fileValid, fileInvalid] }),
+      /Only items in "review_ready" can be promoted/,
+    );
+
+    // Verify fileValid was NOT modified on disk (atomic guarantee)
+    const validData = parseYaml(readFileSync(fileValid, "utf8"));
+    assert.equal(validData.status, "review_ready");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

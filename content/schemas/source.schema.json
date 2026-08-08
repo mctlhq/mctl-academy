@@ -96,6 +96,14 @@
     "notes": {
       "type": "string",
       "maxLength": 2000
+    },
+    "versions": {
+      "description": "Historical snapshot hashes registered for this source for provenance verification.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
     }
   }
 }

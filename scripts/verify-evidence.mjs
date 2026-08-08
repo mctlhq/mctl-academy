@@ -139,9 +139,20 @@ export async function verifyEvidence({ contentDir, store }) {
         continue;
       }
 
-      const targetHash = ev.source_sha256 || src.snapshot?.key;
-      if (!targetHash) {
-        errors.push(`${file}: source ${ev.source_id} has no snapshot recorded`);
+      if (!ev.source_sha256) {
+        errors.push(`${file}: citation for ${ev.source_id} missing mandatory source_sha256`);
+        continue;
+      }
+
+      const targetHash = ev.source_sha256;
+      const validHashes = new Set(
+        [src.sha256, src.snapshot?.key, ...(Array.isArray(src.versions) ? src.versions : [])].filter(Boolean),
+      );
+
+      if (!validHashes.has(targetHash)) {
+        errors.push(
+          `${file}: evidence source_sha256 ${targetHash.slice(0, 12)}... does not belong to declared source ${ev.source_id}`,
+        );
         continue;
       }
 
