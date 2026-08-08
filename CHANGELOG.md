@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.30](https://github.com/mctlhq/mctl-academy/compare/0.1.29...0.1.30) (2026-08-08)
+
+
+### Bug Fixes
+
+* fit mobile home within viewport ([a1b0136](https://github.com/mctlhq/mctl-academy/commit/a1b01362cef7c8527b6d3791c8fd54e6ac57d2ad))
+* fit mobile home within viewport ([e4a81d0](https://github.com/mctlhq/mctl-academy/commit/e4a81d04d5de8a72d846c970520ab8ea8c95fb5c))
+
 ## [0.1.29](https://github.com/mctlhq/mctl-academy/compare/0.1.28...0.1.29) (2026-08-08)
 
 
