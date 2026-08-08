@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { MButton } from "@mctlhq/ui";
 import { authClient } from "../authClient";
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  image: string | null;
-  /** Custom field, GitHub-only — see server/auth.mjs's mapProfileToUser. */
-  githubLogin: string | null;
-}
+import type { UserProfile } from "../types/user";
 
 defineProps<{
   /** Resolved auth state, owned by App via authClient.useSession(). */

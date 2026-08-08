@@ -2,10 +2,10 @@ FROM oven/bun:1-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-COPY client/package*.json client/.npmrc ./client/
+COPY client/package.json client/bun.lock client/.npmrc ./client/
 # client/ depends on @mctlhq/ui and @mctlhq/css from GitHub Packages
 # (Track C — see PLAN.md). The secret is only injected for this repo by
 # mctl-gitops's build-image.yaml allow-list; on any other build context the

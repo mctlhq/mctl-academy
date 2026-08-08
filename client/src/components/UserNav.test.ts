@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import UserNav, { type UserProfile } from "./UserNav.vue";
+import UserNav from "./UserNav.vue";
+import type { UserProfile } from "../types/user";
 
 const user: UserProfile = {
   id: "user-1",
