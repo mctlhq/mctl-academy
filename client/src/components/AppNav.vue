@@ -2,6 +2,7 @@
 import { inject, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { calculateStudyStreak, getMistakeQuestionIds } from "../services/progressStore";
+import { useCourseStore } from "../services/courseStore";
 import { currentTheme, setTheme } from "../theme";
 import UserNav from "./UserNav.vue";
 import type { UserProfile } from "../types/user";
@@ -11,6 +12,14 @@ defineProps<{ user: UserProfile | null; loading: boolean }>();
 const router = useRouter();
 const theme = ref(currentTheme());
 const streak = ref(calculateStudyStreak());
+const { courses, currentCourseId, setCourse } = useCourseStore();
+
+function onCourseChange(e: Event) {
+  const target = e.target as HTMLSelectElement;
+  if (target?.value) {
+    setCourse(target.value);
+  }
+}
 function toggleTheme() {
   const next = theme.value === "dark" ? "light" : "dark";
   setTheme(next);
@@ -67,6 +76,18 @@ const links = [
     </div>
 
     <div class="app-nav-actions">
+      <div class="course-select-wrapper">
+        <select
+          class="course-select"
+          aria-label="Select Certification Course"
+          :value="currentCourseId"
+          @change="onCourseChange"
+        >
+          <option v-for="c in courses" :key="c.id" :value="c.id">
+            {{ c.shortName }}
+          </option>
+        </select>
+      </div>
       <span v-if="streak > 0" class="streak">
         <span aria-hidden="true">●</span> Practiced {{ streak }}
         {{ streak === 1 ? "day" : "days" }} in a row
@@ -185,6 +206,30 @@ const links = [
 
 .streak span {
   color: var(--status-ok);
+}
+
+.course-select-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.course-select {
+  height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-md);
+  background: var(--surface-bg);
+  color: var(--surface-fg);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.course-select:hover,
+.course-select:focus {
+  border-color: var(--surface-line-strong);
+  outline: none;
 }
 
 .theme-toggle {

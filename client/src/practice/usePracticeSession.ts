@@ -101,7 +101,7 @@ export function usePracticeSession(
       const option = cur.options.find((o) => o.id === optionId);
       const isCorrect = Boolean(option?.correct);
       firstCorrectByQuestion.set(index.value, isCorrect);
-      recordAttempt(cur.id, cur.domain, isCorrect);
+      recordAttempt(cur.id, cur.domain, isCorrect, (cur as any).course_id);
     }
     updateTick.value += 1;
   }

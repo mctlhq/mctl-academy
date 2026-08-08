@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import { auth, assertAuthSecretConfigured } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
+import { quarantineRouter } from "./routes/quarantine.mjs";
 import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
@@ -77,6 +78,9 @@ app.route("/api/attempts", attemptsRouter);
 // deleteUser, which requires email verification even for OAuth-only users.
 // See server/routes/account.mjs.
 app.route("/api/account", accountRouter);
+
+// Tier 1 Runtime Quarantine Overlay endpoint
+app.route("/api/quarantine", quarantineRouter);
 
 const VALID_REASONS = new Set([
   "typo",

@@ -129,19 +129,19 @@ export function setSyncEnabled(enabled: boolean): void {
   syncEnabled = enabled;
 }
 
-function postAttemptToServer(questionId: string, domain: string, correct: boolean): void {
+function postAttemptToServer(questionId: string, domain: string, correct: boolean, courseId?: string): void {
   fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
-    body: JSON.stringify({ questionId, domain, correct }),
+    body: JSON.stringify({ questionId, domain, correct, courseId }),
   }).catch(() => {
     // Best-effort only: the local write already succeeded, so a sync
     // failure (offline, expired session, 5xx) is never surfaced.
   });
 }
 
-export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
+export function recordAttempt(questionId: string, domain: string, correct: boolean, courseId?: string): void {
   try {
     const attempts = getStoredAttempts();
     const updated = attempts.filter((a) => a.questionId !== questionId);
@@ -149,6 +149,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
       questionId,
       domain,
       correct,
+      courseId,
       attemptedAt: new Date().toISOString(),
     });
     setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -157,7 +158,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
   }
 
   if (syncEnabled) {
-    postAttemptToServer(questionId, domain, correct);
+    postAttemptToServer(questionId, domain, correct, courseId);
   }
 }
 
