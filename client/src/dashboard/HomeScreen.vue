@@ -1,0 +1,207 @@
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { MButton } from "@mctlhq/ui";
+import DomainBar from "../components/DomainBar.vue";
+import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
+
+defineProps<{
+  onStartPractice: () => void;
+  onReviewMistakes: () => void;
+}>();
+
+const stats = ref(calculateProgressStats());
+const streak = calculateStudyStreak();
+const practiceLabel = computed(() => (stats.value.totalAttempted > 0 ? "Continue practice" : "Start practice"));
+const practiceDescription = computed(() => {
+  if (stats.value.totalAttempted === 0) return "Build your baseline with evidence-backed practice questions.";
+  return `${stats.value.totalAttempted} of ${stats.value.totalBankQuestions} questions attempted.`;
+});
+</script>
+
+<template>
+  <section class="home-screen page-shell">
+    <p class="section-marker">Next up</p>
+    <div class="next-card">
+      <div>
+        <h1>{{ practiceLabel }}</h1>
+        <p>{{ practiceDescription }}</p>
+      </div>
+      <MButton type="button" @click="onStartPractice">{{ practiceLabel }} <span aria-hidden="true">→</span></MButton>
+    </div>
+
+    <div class="home-grid">
+      <section aria-labelledby="domain-readiness-title">
+        <h2 id="domain-readiness-title" class="section-heading">Domain readiness</h2>
+        <div class="domain-bars">
+          <DomainBar
+            v-for="domain in stats.domainProgress"
+            :key="domain.domainId"
+            :label="domain.domainTitle"
+            :value="domain.accuracy"
+            :detail="`${domain.attemptedQuestions}/${domain.totalQuestions}`"
+          />
+        </div>
+      </section>
+
+      <aside class="home-summary" aria-label="Learning summary">
+        <dl class="stat-list">
+          <div>
+            <dt>Accuracy</dt>
+            <dd>{{ stats.overallAccuracy }}%</dd>
+          </div>
+          <div>
+            <dt>Attempted</dt>
+            <dd>{{ stats.totalAttempted }}/{{ stats.totalBankQuestions }}</dd>
+          </div>
+          <div>
+            <dt>Streak</dt>
+            <dd>{{ streak }} {{ streak === 1 ? "day" : "days" }}</dd>
+          </div>
+        </dl>
+
+        <button
+          v-if="stats.totalMistakes > 0"
+          type="button"
+          class="mistakes-callout"
+          @click="onReviewMistakes"
+        >
+          <span>{{ stats.totalMistakes }} mistakes ready for review</span>
+          <strong>Review now <span aria-hidden="true">→</span></strong>
+        </button>
+        <div v-else class="mistakes-callout mistakes-callout-clear">
+          <span>No mistakes waiting for review.</span>
+          <strong>Keep going</strong>
+        </div>
+      </aside>
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.section-marker,
+.section-heading,
+.stat-list dt {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-marker {
+  margin: 0 0 0.75rem;
+  color: var(--accent);
+}
+
+.next-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.75rem 2rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-lg);
+  background: var(--surface-elevated);
+}
+
+.next-card h1 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+}
+
+.next-card p {
+  margin: 0;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18.75rem;
+  gap: 3rem;
+  margin-top: 2.25rem;
+}
+
+.section-heading {
+  margin: 0 0 1.25rem;
+  color: var(--surface-fg-subtle);
+}
+
+.domain-bars {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.home-summary {
+  min-width: 0;
+}
+
+.stat-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+  padding: 0 0 1.25rem;
+  border-bottom: 1px solid var(--surface-line);
+}
+
+.stat-list div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.stat-list dt {
+  color: var(--surface-fg-subtle);
+}
+
+.stat-list dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.mistakes-callout {
+  display: grid;
+  width: 100%;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--status-bad);
+  border-radius: var(--mctl-radius-lg);
+  background: color-mix(in srgb, var(--status-bad) 8%, transparent);
+  color: var(--surface-fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mistakes-callout strong {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.mistakes-callout-clear {
+  border-color: var(--status-ok);
+  background: color-mix(in srgb, var(--status-ok) 8%, transparent);
+  cursor: default;
+}
+
+.mistakes-callout-clear strong {
+  color: var(--status-ok);
+}
+
+@media (max-width: 800px) {
+  .next-card {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+</style>

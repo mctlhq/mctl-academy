@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from "vue";
-import { MPageLayout } from "@mctlhq/ui";
 import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
@@ -56,11 +55,11 @@ watch(
 <template>
   <AppNav :user="user" :loading="authLoading" />
 
-  <MPageLayout max-width="md">
+  <main class="app-main">
     <RouterView v-slot="{ Component, route }">
       <component :is="Component" :key="`${route.fullPath}-${syncVersion}`" />
     </RouterView>
-  </MPageLayout>
+  </main>
 
   <AppFooter />
 </template>

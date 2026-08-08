@@ -1,5 +1,45 @@
-/* App-level additions on top of @mctlhq/css/global.css — deliberately tiny,
-   only what the design system's own minimal reset doesn't cover. */
+/* Application shell on top of the shared mctl semantic tokens. */
+
+html {
+  min-width: 320px;
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.app-main {
+  min-height: calc(100vh - 10rem);
+  padding: clamp(2rem, 5vw, 4rem) var(--mctl-layout-page-padding);
+}
+
+.page-shell {
+  width: min(100%, 60rem);
+  margin: 0 auto;
+}
 
 .sr-only {
   position: absolute;
@@ -15,4 +55,22 @@ code {
   padding: 0.1em 0.35em;
   border-radius: var(--mctl-radius-sm, 4px);
   font-size: 0.9em;
+}
+
+@media (max-width: 680px) {
+  .app-main {
+    padding-top: 1.75rem;
+    padding-bottom: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { usePracticeSession, type BundleQuestion } from "./usePracticeSession";
 import { renderInlineMarkdown } from "./renderInlineMarkdown";
@@ -19,86 +19,185 @@ const { current, index, total, revealed, score, attempted, selectOption, next } 
   props.bundle,
 );
 const isReporting = ref(false);
+const CONTEXT_STORAGE_KEY = "academy.practice-context-open";
+const contextOpen = ref(
+  typeof localStorage !== "undefined" && localStorage.getItem(CONTEXT_STORAGE_KEY) === "true",
+);
+const progressPercent = computed(() => (total.value === 0 ? 0 : Math.round(((index.value + 1) / total.value) * 100)));
+
+function toggleContext() {
+  contextOpen.value = !contextOpen.value;
+  localStorage.setItem(CONTEXT_STORAGE_KEY, String(contextOpen.value));
+}
+
+function handleShortcut(event: KeyboardEvent) {
+  const target = event.target as HTMLElement | null;
+  if (target?.matches("input, textarea, select, button, a")) return;
+  if (/^[1-4]$/.test(event.key) && current.value) {
+    const option = current.value.options[Number(event.key) - 1];
+    if (option) selectOption(option.id);
+  }
+  if (event.key.toLowerCase() === "n") next();
+}
+
+onMounted(() => window.addEventListener("keydown", handleShortcut));
+onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 </script>
 
 <template>
-  <main v-if="total === 0" class="practice practice-empty">
+  <section v-if="total === 0" class="practice practice-empty">
     <h1>{{ title }}</h1>
     <p v-if="emptyMessage">{{ emptyMessage }}</p>
     <p v-else>
       There are no published questions yet. Check back once the content bank has questions with
       <code>status: published</code>.
     </p>
-  </main>
+  </section>
 
-  <main v-else-if="!current" class="practice practice-summary">
+  <section v-else-if="!current" class="practice practice-summary">
     <h1>Session complete</h1>
     <p class="score">{{ score }} / {{ attempted }} correct on first try</p>
     <p class="meta">{{ total }} questions attempted this session.</p>
-  </main>
+  </section>
 
-  <main v-else class="practice">
-    <div class="practice-header">
-      <p class="progress">Question {{ index + 1 }} of {{ total }}</p>
-      <MButton
-        type="button"
-        variant="ghost"
-        size="sm"
-        title="Report an issue with this question"
-        @click="isReporting = true"
-      >
-        Report issue
-      </MButton>
+  <section v-else class="practice-shell" :class="{ 'context-open': contextOpen }">
+    <div class="session-progress" aria-hidden="true">
+      <span :style="{ width: `${progressPercent}%` }" />
     </div>
 
-    <!-- Restricted inline Markdown only: escaped text plus backtick code
-         spans, matching build-preview.mjs's contract for the same field. -->
-    <h1 class="stem" v-html="renderInlineMarkdown(current.stem)" />
-    <ul class="options">
-      <li
-        v-for="option in current.options"
-        :key="option.id"
-        :class="revealed.has(option.id) ? (option.correct ? 'correct' : 'incorrect') : ''"
-      >
-        <button type="button" @click="selectOption(option.id)">
-          <span class="option-text" v-html="renderInlineMarkdown(option.text)" />
-        </button>
-        <div v-if="revealed.has(option.id)" class="feedback">
-          <p class="verdict">{{ option.correct ? "Correct" : "Incorrect" }}</p>
-          <p class="explanation" v-html="renderInlineMarkdown(option.explanation)" />
+    <div class="practice-stage">
+      <div class="practice">
+        <div class="practice-header">
+          <p class="progress">Question {{ index + 1 }} of {{ total }} · {{ current.objective }}</p>
+          <button type="button" class="report-button" @click="isReporting = true">Report issue</button>
         </div>
-      </li>
-    </ul>
-    <MButton type="button" class="next" @click="next">
-      {{ index + 1 === total ? "Finish" : "Next question" }}
-    </MButton>
+
+        <!-- Restricted inline Markdown only: escaped text plus backtick code
+             spans, matching build-preview.mjs's contract for the same field. -->
+        <h1 class="stem" v-html="renderInlineMarkdown(current.stem)" />
+        <ul class="options">
+          <li
+            v-for="option in current.options"
+            :key="option.id"
+            :class="revealed.has(option.id) ? (option.correct ? 'correct' : 'incorrect') : ''"
+          >
+            <button type="button" @click="selectOption(option.id)">
+              <span class="option-text" v-html="renderInlineMarkdown(option.text)" />
+            </button>
+            <div v-if="revealed.has(option.id)" class="feedback">
+              <p class="verdict">{{ option.correct ? "Correct" : "Incorrect" }}</p>
+              <p class="explanation" v-html="renderInlineMarkdown(option.explanation)" />
+            </div>
+          </li>
+        </ul>
+        <div class="practice-actions">
+          <MButton type="button" class="next" @click="next">
+            {{ index + 1 === total ? "Finish" : "Next question" }}
+          </MButton>
+        </div>
+      </div>
+
+      <aside class="practice-context" :aria-hidden="!contextOpen">
+        <button
+          type="button"
+          class="context-toggle"
+          :aria-expanded="contextOpen"
+          aria-label="Toggle practice context"
+          @click="toggleContext"
+        >
+          <span aria-hidden="true">{{ contextOpen ? "›" : "i" }}</span>
+        </button>
+        <div v-if="contextOpen" class="context-content">
+          <section>
+            <h2>Session</h2>
+            <div class="context-progress"><span :style="{ width: `${progressPercent}%` }" /></div>
+            <p>{{ index + 1 }} of {{ total }} questions</p>
+          </section>
+          <section>
+            <h2>Objective</h2>
+            <p>{{ current.objective }}</p>
+          </section>
+          <section>
+            <h2>Shortcuts</h2>
+            <p><kbd>1–4</kbd> select<br /><kbd>N</kbd> next</p>
+          </section>
+        </div>
+      </aside>
+    </div>
 
     <ReportModal v-if="isReporting" :question-id="current.id" @close="isReporting = false" />
-  </main>
+  </section>
 </template>
 
 <style scoped>
 .practice {
-  max-width: 40rem;
+  width: min(100%, 43rem);
   margin: 0 auto;
 }
 
+.practice-shell {
+  width: min(100%, 80rem);
+  min-height: 38rem;
+  margin: -4rem auto;
+  position: relative;
+}
+
+.practice-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3rem;
+  min-height: inherit;
+}
+
+.practice-shell.context-open .practice-stage {
+  grid-template-columns: minmax(0, 1fr) 15rem;
+}
+
+.session-progress {
+  height: 3px;
+  background: var(--surface-card);
+}
+
+.session-progress span,
+.context-progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
+}
+
+.practice-stage > .practice {
+  padding: 3rem 2rem 4rem;
+}
+
 .practice h1 {
-  font-size: 1.4rem;
-  margin: 0.25rem 0 1rem;
+  font-size: clamp(1.3rem, 2.4vw, 1.55rem);
+  line-height: 1.5;
+  margin: 0 0 1.5rem;
 }
 
 .practice-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .progress {
   color: var(--surface-fg-muted);
   font-size: 0.85rem;
+  font-family: var(--font-mono);
   margin: 0;
+}
+
+.report-button {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
 }
 
 .options {
@@ -110,7 +209,7 @@ const isReporting = ref(false);
 .options li {
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-md, 8px);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.65rem;
   overflow: hidden;
 }
 
@@ -132,23 +231,105 @@ const isReporting = ref(false);
   border: none;
   color: inherit;
   font: inherit;
-  padding: 0.75rem 1rem;
+  padding: 0.95rem 1.1rem;
   cursor: pointer;
 }
 
 .feedback {
-  padding: 0 1rem 0.75rem;
+  padding: 0 1.1rem 0.95rem;
 }
 
 .feedback .verdict {
-  font-weight: 600;
-  margin: 0 0 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.3rem;
+  text-transform: uppercase;
+}
+
+.correct .verdict {
+  color: var(--status-ok);
+}
+
+.incorrect .verdict {
+  color: var(--status-bad);
 }
 
 .feedback .explanation {
   color: var(--surface-fg-muted);
   font-size: 0.9rem;
   margin: 0;
+}
+
+.practice-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.next::after {
+  content: " →";
+}
+
+.practice-context {
+  min-width: 0;
+  position: relative;
+  border-left: 1px solid var(--surface-line);
+  background: var(--surface-elevated);
+}
+
+.context-toggle {
+  display: grid;
+  width: 100%;
+  height: 3rem;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+
+.context-toggle:hover {
+  color: var(--accent);
+}
+
+.context-content {
+  display: grid;
+  gap: 1.5rem;
+  padding: 0.25rem 1.35rem 1.5rem;
+}
+
+.context-content h2 {
+  margin: 0 0 0.45rem;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.context-content p {
+  overflow-wrap: anywhere;
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.7;
+}
+
+.context-progress {
+  height: 4px;
+  margin-bottom: 0.45rem;
+  overflow: hidden;
+  border-radius: var(--mctl-radius-pill);
+  background: var(--surface-card);
+}
+
+kbd {
+  color: var(--surface-fg);
+  font: inherit;
 }
 
 .practice-summary .score {
@@ -159,5 +340,53 @@ const isReporting = ref(false);
 .practice-summary .meta,
 .practice-empty p {
   color: var(--surface-fg-muted);
+}
+
+@media (max-width: 680px) {
+  .practice-shell {
+    min-height: 32rem;
+    margin: -1.75rem auto -2rem;
+  }
+
+  .practice-stage,
+  .practice-shell.context-open .practice-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .practice-stage > .practice {
+    width: 100%;
+    padding: 2rem 0 4.5rem;
+  }
+
+  .practice-context {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: var(--mctl-z-index-overlay);
+    width: 2.75rem;
+    border: 1px solid var(--surface-line-strong);
+    border-radius: var(--mctl-radius-pill);
+    box-shadow: var(--mctl-shadow-overlay);
+  }
+
+  .context-open .practice-context {
+    width: min(17rem, calc(100vw - 2rem));
+    border-radius: var(--mctl-radius-lg);
+  }
+
+  .context-toggle {
+    height: 2.75rem;
+  }
+
+  .context-content {
+    padding-bottom: 1.25rem;
+  }
+
+  .progress {
+    max-width: 72%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 </style>
