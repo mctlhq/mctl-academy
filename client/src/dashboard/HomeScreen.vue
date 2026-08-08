@@ -204,4 +204,84 @@ const practiceDescription = computed(() => {
     gap: 2rem;
   }
 }
+
+@media (max-width: 560px) {
+  .home-screen {
+    margin-top: -0.75rem;
+    margin-bottom: -0.75rem;
+  }
+
+  .section-marker {
+    margin-bottom: 0.5rem;
+  }
+
+  .next-card {
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+
+  .next-card h1 {
+    margin-bottom: 0.2rem;
+    font-size: 1.15rem;
+  }
+
+  .next-card p {
+    font-size: 0.72rem;
+  }
+
+  .home-grid {
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .section-heading {
+    margin-bottom: 0.75rem;
+  }
+
+  .domain-bars {
+    gap: 0.75rem;
+  }
+
+  .stat-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .stat-list div {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .stat-list dd {
+    font-size: 0.95rem;
+  }
+
+  .mistakes-callout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .mistakes-callout strong {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 340px) {
+  .next-card,
+  .home-grid {
+    gap: 0.75rem;
+  }
+
+  .home-grid {
+    margin-top: 1rem;
+  }
+
+  .domain-bars {
+    gap: 0.6rem;
+  }
+}
 </style>

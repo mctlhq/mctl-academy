@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
@@ -7,6 +8,7 @@ import type { UserProfile } from "./types/user";
 import { setSyncEnabled, syncFromServer } from "./services/progressStore";
 
 const sessionState = authClient.useSession();
+const route = useRoute();
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
 const user = computed<UserProfile | null>(() => (sessionState.value?.data?.user as UserProfile | undefined) ?? null);
 
@@ -55,7 +57,7 @@ watch(
 <template>
   <AppNav :user="user" :loading="authLoading" />
 
-  <main class="app-main">
+  <main class="app-main" :class="{ 'app-main-home': route.name === 'home' }">
     <RouterView v-slot="{ Component, route }">
       <component :is="Component" :key="`${route.fullPath}-${syncVersion}`" />
     </RouterView>
