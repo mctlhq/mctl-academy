@@ -11,5 +11,15 @@ const links = [
 </script>
 
 <template>
-  <MFooter :links="links" copyright="mctl Academy" />
+  <div class="app-footer-safe">
+    <MFooter :links="links" copyright="mctl Academy" />
+  </div>
 </template>
+
+<style scoped>
+.app-footer-safe {
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}
+</style>

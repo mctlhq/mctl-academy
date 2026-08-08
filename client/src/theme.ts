@@ -10,6 +10,16 @@ function systemPreference(): Theme {
 export function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.accent = "cyan";
+  const themeColor = theme === "dark" ? "#0a0b0d" : "#f5f2ea";
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+    meta.content = themeColor;
+  });
+  const iosStatusBar = document.querySelector<HTMLMetaElement>(
+    'meta[name="apple-mobile-web-app-status-bar-style"]',
+  );
+  if (iosStatusBar) {
+    iosStatusBar.content = theme === "dark" ? "black-translucent" : "default";
+  }
 }
 
 /** Reads a persisted choice, falling back to the OS preference on first visit. */

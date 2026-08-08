@@ -33,7 +33,10 @@ input:focus-visible {
 
 .app-main {
   min-height: calc(100vh - 10rem);
-  padding: clamp(2rem, 5vw, 4rem) var(--mctl-layout-page-padding);
+  padding-top: clamp(2rem, 5vw, 4rem);
+  padding-right: calc(var(--mctl-layout-page-padding) + env(safe-area-inset-right));
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+  padding-left: calc(var(--mctl-layout-page-padding) + env(safe-area-inset-left));
 }
 
 .page-shell {
@@ -60,7 +63,7 @@ code {
 @media (max-width: 680px) {
   .app-main {
     padding-top: 1.75rem;
-    padding-bottom: 2rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
   }
 }
 

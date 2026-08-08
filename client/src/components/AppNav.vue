@@ -33,9 +33,9 @@ if (syncVersion) {
 }
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/practice", label: "Practice" },
-  { to: "/mock", label: "Mock exam" },
+  { to: "/", label: "Home", compactLabel: "Home" },
+  { to: "/practice", label: "Practice", compactLabel: "Practice" },
+  { to: "/mock", label: "Mock exam", compactLabel: "Exam" },
 ];
 </script>
 
@@ -44,13 +44,25 @@ const links = [
     <div class="app-nav-primary">
       <RouterLink to="/" class="app-brand" aria-label="mctl Academy home">mctl academy</RouterLink>
       <div class="app-nav-links">
-        <RouterLink v-for="link in links" :key="link.to" :to="link.to" class="app-nav-link">
-          {{ link.label }}
+        <RouterLink
+          v-for="link in links"
+          :key="link.to"
+          :to="link.to"
+          class="app-nav-link"
+          :aria-label="link.label"
+        >
+          <span class="nav-label-full">{{ link.label }}</span>
+          <span class="nav-label-compact" aria-hidden="true">{{ link.compactLabel }}</span>
         </RouterLink>
-        <RouterLink to="/mistakes" class="app-nav-link">
-          Mistakes <span v-if="mistakeCount > 0" class="mistake-badge">{{ mistakeCount }}</span>
+        <RouterLink to="/mistakes" class="app-nav-link" aria-label="Mistakes">
+          <span class="nav-label-full">Mistakes</span>
+          <span class="nav-label-compact" aria-hidden="true">Review</span>
+          <span v-if="mistakeCount > 0" class="mistake-badge">{{ mistakeCount }}</span>
         </RouterLink>
-        <RouterLink to="/dashboard" class="app-nav-link">Progress</RouterLink>
+        <RouterLink to="/dashboard" class="app-nav-link" aria-label="Progress">
+          <span class="nav-label-full">Progress</span>
+          <span class="nav-label-compact" aria-hidden="true">Stats</span>
+        </RouterLink>
       </div>
     </div>
 
@@ -82,7 +94,9 @@ const links = [
   align-items: center;
   min-height: 3.5rem;
   gap: 2rem;
-  padding: 0 var(--mctl-layout-page-padding, 1rem);
+  padding-top: env(safe-area-inset-top);
+  padding-right: calc(var(--mctl-layout-page-padding, 1rem) + env(safe-area-inset-right));
+  padding-left: calc(var(--mctl-layout-page-padding, 1rem) + env(safe-area-inset-left));
   border-bottom: 1px solid var(--surface-line);
   background: var(--surface-elevated);
   position: sticky;
@@ -141,6 +155,10 @@ const links = [
 .app-nav-link.router-link-active {
   border-bottom-color: var(--accent);
   color: var(--accent);
+}
+
+.nav-label-compact {
+  display: none;
 }
 
 .mistake-badge {
@@ -240,8 +258,41 @@ const links = [
 
 @media (max-width: 560px) {
   .app-nav {
-    padding-right: 1rem;
-    padding-left: 1rem;
+    padding-right: calc(1rem + env(safe-area-inset-right));
+    padding-left: calc(1rem + env(safe-area-inset-left));
+  }
+
+  .theme-toggle,
+  .user-nav-signed-in :deep(summary) {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .app-nav-links {
+    justify-content: space-between;
+    gap: 0.55rem;
+    overflow: visible;
+  }
+
+  .app-nav-link {
+    font-size: 0.7rem;
+  }
+
+  .nav-label-full {
+    display: none;
+  }
+
+  .nav-label-compact {
+    display: inline;
+  }
+
+  .mistake-badge {
+    min-width: 1rem;
+    height: 1rem;
+    margin-left: 0.2rem;
+    font-size: 0.58rem;
   }
 }
 </style>

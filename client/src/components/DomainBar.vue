@@ -18,7 +18,9 @@ const tone = computed(() => {
   <div class="domain-bar">
     <div class="domain-bar-labels">
       <span>{{ label }}</span>
-      <span class="domain-bar-value">{{ value }}%<small v-if="detail"> {{ detail }}</small></span>
+      <span class="domain-bar-value">
+        <span>{{ value }}%</span><small v-if="detail">{{ detail }}</small>
+      </span>
     </div>
     <div
       class="domain-bar-track"
@@ -35,8 +37,9 @@ const tone = computed(() => {
 
 <style scoped>
 .domain-bar-labels {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 1rem;
   margin-bottom: 0.4rem;
   color: var(--surface-fg-muted);
@@ -44,7 +47,9 @@ const tone = computed(() => {
 }
 
 .domain-bar-value {
-  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.8rem;
 }
