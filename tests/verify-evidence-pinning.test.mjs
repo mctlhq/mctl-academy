@@ -7,6 +7,7 @@ import { verifyEvidence, requiresVerification } from "../scripts/verify-evidence
 
 const HASH_A = "a".repeat(64);
 const HASH_B = "b".repeat(64);
+const HASH_C = "c".repeat(64);
 
 const mockStore = (map) => ({
   get: async (key) => map[key] ?? null,
@@ -20,7 +21,7 @@ test("requiresVerification includes published, review_ready, and needs_review", 
   assert.equal(requiresVerification("retired"), false);
 });
 
-test("evidence pinned to HASH_A verifies against HASH_A snapshot even when source sha256 is HASH_B", async () => {
+test("evidence pinned to HASH_A verifies against HASH_A snapshot when registered in source versions", async () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-pinning-"));
   try {
     mkdirSync(join(dir, "sources"), { recursive: true });
@@ -33,6 +34,7 @@ test("evidence pinned to HASH_A verifies against HASH_A snapshot even when sourc
       title: "Pinning Test",
       retrieved_at: "2026-08-06T10:00:00Z",
       sha256: HASH_B, // Upstream drifted to HASH_B
+      versions: [HASH_A, HASH_B],
       objectives: ["domain-1/alpha"],
       snapshot: { bucket: "academy-source-snapshots", key: HASH_B },
     };
@@ -78,8 +80,8 @@ test("evidence pinned to HASH_A verifies against HASH_A snapshot even when sourc
   }
 });
 
-test("evidence pinned to HASH_A fails when HASH_A snapshot is missing from R2", async () => {
-  const dir = mkdtempSync(join(tmpdir(), "academy-pinning-fail-"));
+test("fails verification if mandatory source_sha256 is missing", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-pinning-missing-"));
   try {
     mkdirSync(join(dir, "sources"), { recursive: true });
     mkdirSync(join(dir, "questions"), { recursive: true });
@@ -97,12 +99,12 @@ test("evidence pinned to HASH_A fails when HASH_A snapshot is missing from R2", 
 
     const questionRecord = {
       schema_version: 1,
-      id: "q-pinning00002",
+      id: "q-pinning00003",
       course_id: "agentic-ai-builder",
       status: "published",
       domain: "domain-1",
       objective: "domain-1/alpha",
-      stem: "Question pinned to version A",
+      stem: "Question missing source_sha256",
       options: [
         { id: "a", text: "Correct", correct: true, explanation: "Valid explanation" },
         { id: "b", text: "Wrong 1", correct: false, explanation: "Valid explanation" },
@@ -112,8 +114,8 @@ test("evidence pinned to HASH_A fails when HASH_A snapshot is missing from R2", 
       evidence: [
         {
           source_id: "src-pinning-test",
-          source_sha256: HASH_A,
-          excerpt: "original verbatim text from snapshot A",
+          // missing source_sha256
+          excerpt: "some text",
         },
       ],
       authored: { by: "agent:writer", at: "2026-08-06T10:00:00Z" },
@@ -121,16 +123,67 @@ test("evidence pinned to HASH_A fails when HASH_A snapshot is missing from R2", 
     };
 
     writeFileSync(join(dir, "sources", "src-pinning-test.yaml"), JSON.stringify(sourceRecord));
-    writeFileSync(join(dir, "questions", "q-pinning00002.yaml"), JSON.stringify(questionRecord));
+    writeFileSync(join(dir, "questions", "q-pinning00003.yaml"), JSON.stringify(questionRecord));
 
-    // Only HASH_B is in store, HASH_A is missing
-    const store = mockStore({
-      [HASH_B]: "completely new text from snapshot B",
-    });
-
+    const store = mockStore({ [HASH_B]: "some text" });
     const result = await verifyEvidence({ contentDir: dir, store });
     assert.equal(result.errors.length, 1);
-    assert.match(result.errors[0], /snapshot aaaaaaaa.* is not in the store/);
+    assert.match(result.errors[0], /missing mandatory source_sha256/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("fails verification if source_sha256 does not belong to declared source_id provenance", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-pinning-provenance-"));
+  try {
+    mkdirSync(join(dir, "sources"), { recursive: true });
+    mkdirSync(join(dir, "questions"), { recursive: true });
+
+    const sourceRecord = {
+      schema_version: 1,
+      id: "src-pinning-test",
+      url: "https://docs.nebius.com/pinning",
+      title: "Pinning Test",
+      retrieved_at: "2026-08-06T10:00:00Z",
+      sha256: HASH_B,
+      versions: [HASH_B], // Only HASH_B is registered
+      objectives: ["domain-1/alpha"],
+      snapshot: { bucket: "academy-source-snapshots", key: HASH_B },
+    };
+
+    const questionRecord = {
+      schema_version: 1,
+      id: "q-pinning00004",
+      course_id: "agentic-ai-builder",
+      status: "published",
+      domain: "domain-1",
+      objective: "domain-1/alpha",
+      stem: "Question with unmapped hash C",
+      options: [
+        { id: "a", text: "Correct", correct: true, explanation: "Valid explanation" },
+        { id: "b", text: "Wrong 1", correct: false, explanation: "Valid explanation" },
+        { id: "c", text: "Wrong 2", correct: false, explanation: "Valid explanation" },
+        { id: "d", text: "Wrong 3", correct: false, explanation: "Valid explanation" },
+      ],
+      evidence: [
+        {
+          source_id: "src-pinning-test",
+          source_sha256: HASH_C, // HASH_C does not belong to src-pinning-test
+          excerpt: "some text",
+        },
+      ],
+      authored: { by: "agent:writer", at: "2026-08-06T10:00:00Z" },
+      reviewed: { by: "mashkovd", at: "2026-08-06T11:00:00Z" },
+    };
+
+    writeFileSync(join(dir, "sources", "src-pinning-test.yaml"), JSON.stringify(sourceRecord));
+    writeFileSync(join(dir, "questions", "q-pinning00004.yaml"), JSON.stringify(questionRecord));
+
+    const store = mockStore({ [HASH_C]: "some text" });
+    const result = await verifyEvidence({ contentDir: dir, store });
+    assert.equal(result.errors.length, 1);
+    assert.match(result.errors[0], /does not belong to declared source/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

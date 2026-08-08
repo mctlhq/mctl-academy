@@ -3,17 +3,16 @@
  * Complete Revalidation Lifecycle Script.
  *
  * Automates state transitions for questions in `status: needs_review`:
- *   needs_review@AAA -> revalidate against BBB -> repin source_sha256=BBB -> published
- *   needs_review@AAA -> excerpt missing in BBB -> review_ready (or retired)
+ *   needs_review@AAA -> revalidate against BBB -> repin source_sha256=BBB -> review_ready
+ *   needs_review@AAA -> excerpt missing in BBB -> review_ready
  *
  * Usage:
  *   node scripts/revalidate-content.mjs
- *   node scripts/revalidate-content.mjs --retire-unmatched
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
+import { parseDocument } from "yaml";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
@@ -33,7 +32,7 @@ function loadYamlDir(contentDir, dir) {
     .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))
     .map((f) => ({
       file: join(p, f),
-      data: parseYaml(readFileSync(join(p, f), "utf8")),
+      doc: parseDocument(readFileSync(join(p, f), "utf8")),
     }));
 }
 
@@ -41,78 +40,102 @@ function loadYamlDir(contentDir, dir) {
  * @param {object} opts
  * @param {string} [opts.contentDir]
  * @param {{get(key: string): Promise<string|null>}} opts.store
- * @param {boolean} [opts.retireUnmatched]
- * @returns {Promise<{revalidated: string[], unmatched: string[], totalProcessed: number}>}
+ * @returns {Promise<{revalidated: string[], unmatched: string[], errors: string[], totalProcessed: number}>}
  */
-export async function revalidateContent({ contentDir = CONTENT, store, retireUnmatched = false }) {
+export async function revalidateContent({ contentDir = CONTENT, store }) {
   if (!store) {
     throw new Error("R2 snapshot store is required for revalidation.");
   }
 
   const sources = loadYamlDir(contentDir, "sources");
-  const sourcesById = new Map(sources.map((s) => [s.data.id, s.data]));
+  const sourcesById = new Map();
+  for (const s of sources) {
+    const data = s.doc.toJS();
+    if (data?.id) sourcesById.set(data.id, data);
+  }
 
   const questions = loadYamlDir(contentDir, "questions");
-  const needsReview = questions.filter((q) => q.data?.status === "needs_review");
+  const needsReview = questions.filter((q) => q.doc.toJS()?.status === "needs_review");
 
   const revalidated = [];
   const unmatched = [];
+  const errors = [];
   const snapshotCache = new Map();
 
-  async function getSnapshot(hashKey) {
+  async function getSnapshot(hashKey, sourceId) {
     if (snapshotCache.has(hashKey)) return snapshotCache.get(hashKey);
-    const text = await store.get(hashKey);
-    snapshotCache.set(hashKey, text);
-    return text;
+    try {
+      const text = await store.get(hashKey);
+      snapshotCache.set(hashKey, text);
+      return text;
+    } catch (err) {
+      errors.push(`R2 error fetching snapshot ${hashKey} for ${sourceId}: ${err.message}`);
+      snapshotCache.set(hashKey, null);
+      return null;
+    }
   }
 
-  for (const { file, data } of needsReview) {
+  for (const { file, doc } of needsReview) {
+    const data = doc.toJS();
     if (!data.evidence || data.evidence.length === 0) continue;
 
     let allExcerptsMatched = true;
+    const proposedRepins = [];
 
-    for (const ev of data.evidence) {
+    for (let idx = 0; idx < data.evidence.length; idx++) {
+      const ev = data.evidence[idx];
       const src = sourcesById.get(ev.source_id);
       if (!src) {
         allExcerptsMatched = false;
+        errors.push(`Question ${data.id || file} cites unknown source ${ev.source_id}`);
         break;
       }
 
       const latestHash = src.snapshot?.key || src.sha256;
       if (!latestHash) {
         allExcerptsMatched = false;
+        errors.push(`Source ${ev.source_id} has no valid sha256 or snapshot key`);
         break;
       }
 
-      const snapshotText = await getSnapshot(latestHash);
+      const snapshotText = await getSnapshot(latestHash, ev.source_id);
       if (!snapshotText) {
         allExcerptsMatched = false;
         break;
       }
 
       if (normalize(snapshotText).includes(normalize(ev.excerpt))) {
-        // Excerpt survived verbatim in latest snapshot BBB! Repin hash.
-        ev.source_sha256 = latestHash;
+        proposedRepins.push({ idx, hash: latestHash });
       } else {
-        // Excerpt missing or changed in snapshot BBB.
         allExcerptsMatched = false;
       }
     }
 
-    if (allExcerptsMatched) {
-      data.status = "published";
+    if (allExcerptsMatched && proposedRepins.length === data.evidence.length) {
+      // Atomic repinning: update evidence hashes ONLY when ALL evidence items match
+      const evidenceNode = doc.get("evidence");
+      for (const { idx, hash } of proposedRepins) {
+        if (evidenceNode && evidenceNode.get) {
+          const itemNode = evidenceNode.get(idx);
+          if (itemNode && itemNode.set) {
+            itemNode.set("source_sha256", hash);
+          }
+        }
+      }
+      doc.set("status", "review_ready");
       revalidated.push(data.id);
     } else {
-      data.status = retireUnmatched ? "retired" : "review_ready";
+      doc.set("status", "review_ready");
       unmatched.push(data.id);
     }
 
-    writeFileSync(file, stringifyYaml(data));
+    writeFileSync(file, doc.toString(), "utf8");
   }
 
   return {
     revalidated,
     unmatched,
+    errors,
     totalProcessed: needsReview.length,
   };
 }
