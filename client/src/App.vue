@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
@@ -7,6 +8,8 @@ import type { UserProfile } from "./types/user";
 import { setSyncEnabled, syncFromServer } from "./services/progressStore";
 
 const sessionState = authClient.useSession();
+const route = useRoute();
+const focusedPractice = computed(() => route.name === "practice" || route.name === "mistakes");
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
 const user = computed<UserProfile | null>(() => (sessionState.value?.data?.user as UserProfile | undefined) ?? null);
 
@@ -53,13 +56,15 @@ watch(
 </script>
 
 <template>
-  <AppNav :user="user" :loading="authLoading" />
+  <div class="app-shell" :class="{ 'focused-practice': focusedPractice }">
+    <AppNav :user="user" :loading="authLoading" />
 
-  <main class="app-main">
-    <RouterView v-slot="{ Component, route }">
-      <component :is="Component" :key="`${route.fullPath}-${syncVersion}`" />
-    </RouterView>
-  </main>
+    <main class="app-main">
+      <RouterView v-slot="{ Component, route: currentRoute }">
+        <component :is="Component" :key="`${currentRoute.fullPath}-${syncVersion}`" />
+      </RouterView>
+    </main>
 
-  <AppFooter />
+    <AppFooter />
+  </div>
 </template>

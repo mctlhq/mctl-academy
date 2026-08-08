@@ -65,7 +65,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
       <div class="practice">
         <div class="practice-header">
           <p class="progress">Question {{ index + 1 }} of {{ total }} · {{ current.objective }}</p>
-          <button type="button" class="report-button" @click="isReporting = true">Report issue</button>
+          <button type="button" class="report-button" @click="isReporting = true">Report question</button>
         </div>
 
         <!-- Restricted inline Markdown only: escaped text plus backtick code
@@ -132,6 +132,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 }
 
 .practice-shell {
+  display: flex;
   width: min(100%, 80rem);
   min-height: 38rem;
   margin: -4rem auto;
@@ -140,6 +141,8 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 
 .practice-stage {
   display: grid;
+  flex: 1;
+  width: 100%;
   grid-template-columns: minmax(0, 1fr) 3rem;
   min-height: inherit;
 }
@@ -156,6 +159,8 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 }
 
 .practice-stage > .practice {
+  display: flex;
+  flex-direction: column;
   padding: 3rem 2rem 4rem;
 }
 
@@ -257,6 +262,8 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 .practice-actions {
   display: flex;
   justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 1rem;
 }
 
 .next::after {
@@ -336,18 +343,29 @@ kbd {
 
 @media (max-width: 680px) {
   .practice-shell {
-    min-height: 32rem;
+    flex: 1;
+    min-height: 0;
     margin: -1.75rem auto -2rem;
+    overflow: hidden;
   }
 
   .practice-stage,
   .practice-shell.context-open .practice-stage {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .practice-stage > .practice {
+    box-sizing: border-box;
     width: 100%;
-    padding: 2rem 0 4.5rem;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    padding: 2rem 0 3.5rem;
+    overflow: hidden;
   }
 
   .practice-context {
@@ -389,7 +407,7 @@ kbd {
 @media (max-width: 560px) {
   .practice-stage > .practice {
     padding-top: 1rem;
-    padding-bottom: 2.25rem;
+    padding-bottom: 1rem;
   }
 
   .practice-header {
@@ -403,7 +421,11 @@ kbd {
   }
 
   .options {
-    margin-bottom: 0.75rem;
+    flex: 1;
+    min-height: 0;
+    margin-bottom: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .options li {
@@ -412,6 +434,13 @@ kbd {
 
   .options button {
     padding: 0.65rem 0.75rem;
+  }
+
+  .practice-actions {
+    flex: none;
+    margin-right: -0.25rem;
+    margin-left: -0.25rem;
+    padding: 0.75rem 0.25rem max(0.25rem, env(safe-area-inset-bottom));
   }
 }
 

@@ -1,79 +1,39 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { MModal, MButton, MField, MSelect, MTextarea } from "@mctlhq/ui";
+import { buildQuestionIssueUrl, questionIssueReasons } from "./questionIssue";
 
 const MAX_COMMENT_LENGTH = 2000;
 
 const props = defineProps<{ questionId: string }>();
 const emit = defineEmits<{ close: [] }>();
 
-const reasonOptions = [
-  { label: "Typo or formatting error", value: "typo" },
-  { label: "Factual or technical inaccuracy", value: "factual_error" },
-  { label: "Unclear or ambiguous question stem", value: "unclear_stem" },
-  { label: "Incorrect or ambiguous distractor options", value: "bad_distractor" },
-  { label: "Other feedback", value: "other" },
-];
-
 const reason = ref("typo");
 const comment = ref("");
-const status = ref<"idle" | "submitting" | "success" | "error">("idle");
-const errorMessage = ref("");
-
-async function handleSubmit() {
-  status.value = "submitting";
-  errorMessage.value = "";
-
-  try {
-    const res = await fetch("/api/reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        question_id: props.questionId,
-        reason: reason.value,
-        comment: comment.value,
-      }),
-    });
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.error || "Failed to submit report");
-    }
-
-    status.value = "success";
-    setTimeout(() => {
-      emit("close");
-    }, 1500);
-  } catch (err) {
-    status.value = "error";
-    errorMessage.value = err instanceof Error ? err.message : "Network error";
-  }
-}
+const issueUrl = computed(() => buildQuestionIssueUrl(props.questionId, reason.value, comment.value));
 </script>
 
 <template>
   <MModal
     :open="true"
-    title="Report an issue with this question"
-    :dismissible="status !== 'submitting'"
+    title="Create a GitHub issue"
     @update:open="emit('close')"
   >
+    <p class="report-intro">
+      This opens a pre-filled issue in <strong>mctlhq/mctl-academy</strong>. You can review it on
+      GitHub before submitting.
+    </p>
     <p class="report-meta">
       Question ID: <code>{{ questionId }}</code>
     </p>
 
-    <div v-if="status === 'success'" class="report-status success">
-      Thank you! Your feedback has been submitted.
-    </div>
-
-    <form v-else @submit.prevent="handleSubmit">
+    <form @submit.prevent>
       <MField label="Reason" for="report-reason">
         <template #default="{ describedBy, required }">
           <MSelect
             id="report-reason"
             v-model="reason"
-            :options="reasonOptions"
-            :disabled="status === 'submitting'"
+            :options="questionIssueReasons"
             :aria-describedby="describedBy"
             :required="required"
           />
@@ -88,26 +48,18 @@ async function handleSubmit() {
             :rows="3"
             placeholder="Describe the issue in detail..."
             :maxlength="MAX_COMMENT_LENGTH"
-            :disabled="status === 'submitting'"
             :aria-describedby="describedBy"
           />
         </template>
       </MField>
       <p class="report-char-count">{{ comment.length }} / {{ MAX_COMMENT_LENGTH }}</p>
 
-      <p v-if="status === 'error'" class="report-error" role="alert">{{ errorMessage }}</p>
-
       <div class="report-actions">
-        <MButton
-          type="button"
-          variant="ghost"
-          :disabled="status === 'submitting'"
-          @click="emit('close')"
-        >
+        <MButton type="button" variant="ghost" @click="emit('close')">
           Cancel
         </MButton>
-        <MButton type="submit" :disabled="status === 'submitting'">
-          {{ status === "submitting" ? "Submitting..." : "Submit Report" }}
+        <MButton as="a" :href="issueUrl" target="_blank" rel="noopener noreferrer">
+          Continue to GitHub <span aria-hidden="true">↗</span>
         </MButton>
       </div>
     </form>
@@ -115,14 +67,10 @@ async function handleSubmit() {
 </template>
 
 <style scoped>
+.report-intro,
 .report-meta {
   font-size: 0.85rem;
   color: var(--surface-fg-muted);
-}
-
-.report-status.success {
-  padding: 1rem;
-  color: var(--status-ok);
 }
 
 .report-char-count {

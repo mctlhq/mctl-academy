@@ -20,7 +20,7 @@ const practiceDescription = computed(() => {
 
 <template>
   <section class="home-screen page-shell">
-    <p class="section-marker">Next up</p>
+    <p class="section-marker">Recommended next step</p>
     <div class="next-card">
       <div>
         <h1>{{ practiceLabel }}</h1>
