@@ -61,10 +61,6 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
   </section>
 
   <section v-else class="practice-shell" :class="{ 'context-open': contextOpen }">
-    <div class="session-progress" aria-hidden="true">
-      <span :style="{ width: `${progressPercent}%` }" />
-    </div>
-
     <div class="practice-stage">
       <div class="practice">
         <div class="practice-header">
@@ -152,12 +148,6 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
   grid-template-columns: minmax(0, 1fr) 15rem;
 }
 
-.session-progress {
-  height: 3px;
-  background: var(--surface-card);
-}
-
-.session-progress span,
 .context-progress span {
   display: block;
   height: 100%;
