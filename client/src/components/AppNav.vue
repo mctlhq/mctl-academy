@@ -67,7 +67,10 @@ const links = [
     </div>
 
     <div class="app-nav-actions">
-      <span v-if="streak > 0" class="streak"><span aria-hidden="true">●</span> {{ streak }}-day streak</span>
+      <span v-if="streak > 0" class="streak">
+        <span aria-hidden="true">●</span> Practiced {{ streak }}
+        {{ streak === 1 ? "day" : "days" }} in a row
+      </span>
       <button
         type="button"
         class="theme-toggle"
@@ -251,6 +254,12 @@ const links = [
     min-height: 2.75rem;
   }
 
+  .streak {
+    display: none;
+  }
+}
+
+@media (min-width: 981px) and (max-width: 1120px) {
   .streak {
     display: none;
   }
