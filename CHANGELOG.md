@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.34](https://github.com/mctlhq/mctl-academy/compare/0.1.33...0.1.34) (2026-08-08)
+
+
+### Bug Fixes
+
+* remove overlapping practice progress bar ([e4b2ff8](https://github.com/mctlhq/mctl-academy/commit/e4b2ff8f9ed5b0c652445e947254de611220d39e))
+* remove overlapping practice progress bar ([afb8348](https://github.com/mctlhq/mctl-academy/commit/afb8348ad5de64ef973d5078468613cc4835629b))
+
 ## [0.1.33](https://github.com/mctlhq/mctl-academy/compare/0.1.32...0.1.33) (2026-08-08)
 
 
