@@ -70,6 +70,13 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mctl_academy_ci
       BETTER_AUTH_SECRET: ci-test-secret-not-used-in-production
+      # Dummy values so the github socialProvider registers in auth.mjs (it's
+      # a conditional spread on both vars being set) — needed for
+      # tests/security-headers.test.mjs's real-redirect regression test to
+      # exercise the actual /api/auth/callback/github path rather than
+      # 404 PROVIDER_NOT_FOUND. Never used against the real GitHub API.
+      GITHUB_CLIENT_ID: ci-dummy-client-id
+      GITHUB_CLIENT_SECRET: ci-dummy-client-secret
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 

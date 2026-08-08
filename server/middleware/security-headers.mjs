@@ -24,8 +24,14 @@ const CSP = [
   "frame-ancestors 'none'"
 ].join("; ");
 
-export async function securityHeaders(c, next) {
-  await next();
+/**
+ * Applies the baseline headers to whatever response `c` currently holds.
+ * Shared between the middleware's success path and app.mjs's error handler
+ * so a downstream handler throwing (unhandled, not one of the try/catch'd
+ * routes) doesn't skip past the middleware's own `c.header()` calls and
+ * ship a 500 with no security headers at all.
+ */
+export function applySecurityHeaders(c) {
   c.header("Content-Security-Policy", CSP);
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -36,4 +42,9 @@ export async function securityHeaders(c, next) {
   if (process.env.NODE_ENV === "production") {
     c.header("Strict-Transport-Security", "max-age=63072000; includeSubDomains");
   }
+}
+
+export async function securityHeaders(c, next) {
+  await next();
+  applySecurityHeaders(c);
 }
