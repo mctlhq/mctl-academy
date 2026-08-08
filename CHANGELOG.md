@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.29](https://github.com/mctlhq/mctl-academy/compare/0.1.28...0.1.29) (2026-08-08)
+
+
+### Features
+
+* **mobile:** add installable phone experience ([ccc26cd](https://github.com/mctlhq/mctl-academy/commit/ccc26cdf56c0935b9bc419e73e896041a4d20bc3))
+* **mobile:** add installable phone experience ([cc6310b](https://github.com/mctlhq/mctl-academy/commit/cc6310b14ef8f0a6576220b03ead223e1cefb29d))
+
+
+### Bug Fixes
+
+* **pwa:** match iOS status bar to theme ([63ef38a](https://github.com/mctlhq/mctl-academy/commit/63ef38af70592f3ee73d57dcdb7baac2dc86f19a))
+
 ## [0.1.28](https://github.com/mctlhq/mctl-academy/compare/0.1.27...0.1.28) (2026-08-08)
 
 
