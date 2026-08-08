@@ -80,11 +80,17 @@ code {
 
 /* Android standalone PWAs report 100dvh including the system navigation area,
    while 100svh matches the actually visible application viewport. */
-@media (display-mode: standalone) and (max-width: 680px) {
+@media (display-mode: standalone) {
   body {
     min-height: 100svh;
   }
 
+  .app-main {
+    min-height: calc(100svh - 10rem);
+  }
+}
+
+@media (display-mode: standalone) and (max-width: 680px) {
   .app-main {
     min-height: calc(100svh - 10.5rem);
   }
