@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { MStat, MCard, MButton } from "@mctlhq/ui";
+import { computed, ref } from "vue";
+import { MButton } from "@mctlhq/ui";
+import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, clearProgress } from "../services/progressStore";
 
 defineProps<{
@@ -9,6 +10,10 @@ defineProps<{
 }>();
 
 const stats = ref(calculateProgressStats());
+const weakestDomain = computed(() => {
+  const attempted = stats.value.domainProgress.filter((domain) => domain.attemptedQuestions > 0);
+  return attempted.sort((a, b) => a.accuracy - b.accuracy)[0] ?? null;
+});
 
 function handleClearHistory() {
   if (window.confirm("Are you sure you want to clear your learning progress and mistake history?")) {
@@ -16,154 +21,182 @@ function handleClearHistory() {
     stats.value = calculateProgressStats();
   }
 }
-
-function accuracyTone(accuracy: number): string {
-  if (accuracy >= 80) return "var(--status-ok)";
-  if (accuracy >= 60) return "var(--status-warn)";
-  return "var(--status-bad)";
-}
 </script>
 
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-header">
-      <h2>Learner Progress &amp; Mastery Dashboard</h2>
-      <p class="dashboard-subtitle">
-        Track your overall performance and domain-by-domain readiness across the 4 exam domains.
-      </p>
-    </div>
+  <section class="progress-screen page-shell">
+    <div class="progress-grid">
+      <div>
+        <div class="readiness-heading">
+          <strong>{{ stats.overallAccuracy }}%</strong>
+          <span>{{ stats.totalAttempted > 0 ? "Based on attempted questions" : "Start practicing to build your baseline" }}</span>
+        </div>
+        <p class="section-marker">Overall readiness</p>
 
-    <div class="stats-cards-grid">
-      <MStat :value="`${stats.overallAccuracy}%`" label="Overall Accuracy" />
-      <MStat :value="`${stats.totalAttempted} / ${stats.totalBankQuestions}`" label="Questions Attempted" />
-      <MStat :value="String(stats.totalMistakes)" label="Reviewable Mistakes" />
-    </div>
-
-    <div class="dashboard-actions">
-      <MButton v-if="stats.totalMistakes > 0" type="button" @click="onReviewMistakes">
-        Review Mistakes ({{ stats.totalMistakes }})
-      </MButton>
-      <MButton v-else type="button" variant="ghost" @click="onStartPractice">
-        Start Full Practice Bank
-      </MButton>
-      <MButton type="button" variant="ghost" class="btn-outline-danger" @click="handleClearHistory">
-        Reset Progress History
-      </MButton>
-    </div>
-
-    <div class="domain-breakdown-section">
-      <h3>Domain Mastery Breakdown</h3>
-      <div class="domain-cards-list">
-        <MCard v-for="domain in stats.domainProgress" :key="domain.domainId">
-          <template #header>
-            <span class="domain-card-header">
-              {{ domain.domainTitle }}
-              <span class="domain-accuracy-badge">{{ domain.accuracy }}% Accuracy</span>
-            </span>
-          </template>
-
-          <div class="progress-bar-track">
-            <div
-              class="progress-bar-fill"
-              :style="{ width: `${domain.accuracy}%`, backgroundColor: accuracyTone(domain.accuracy) }"
-            />
-          </div>
-
-          <div class="domain-card-meta">
-            <span>Attempted: {{ domain.attemptedQuestions }} / {{ domain.totalQuestions }} questions</span>
-            <span>Correct: {{ domain.correctQuestions }}</span>
-          </div>
-        </MCard>
+        <h1>Domain readiness</h1>
+        <div class="domain-bars">
+          <DomainBar
+            v-for="domain in stats.domainProgress"
+            :key="domain.domainId"
+            :label="domain.domainTitle"
+            :value="domain.accuracy"
+            :detail="`${domain.attemptedQuestions}/${domain.totalQuestions}`"
+          />
+        </div>
       </div>
+
+      <aside class="progress-summary" aria-label="Progress details">
+        <dl>
+          <div>
+            <dt>Attempted</dt>
+            <dd>{{ stats.totalAttempted }}/{{ stats.totalBankQuestions }}</dd>
+          </div>
+          <div>
+            <dt>Correct</dt>
+            <dd>{{ stats.totalCorrect }}</dd>
+          </div>
+          <div>
+            <dt>Open mistakes</dt>
+            <dd>{{ stats.totalMistakes }}</dd>
+          </div>
+        </dl>
+
+        <div v-if="weakestDomain" class="weakest-card">
+          <span>Weakest domain</span>
+          <strong>{{ weakestDomain.domainTitle }}</strong>
+          <button v-if="stats.totalMistakes > 0" type="button" @click="onReviewMistakes">
+            Review {{ stats.totalMistakes }} mistakes <span aria-hidden="true">→</span>
+          </button>
+          <button v-else type="button" @click="onStartPractice">Continue practice <span aria-hidden="true">→</span></button>
+        </div>
+
+        <MButton type="button" variant="ghost" size="sm" class="reset-progress" @click="handleClearHistory">
+          Reset progress history
+        </MButton>
+      </aside>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-.dashboard-container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.dashboard-header {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--surface-line);
-  padding-bottom: 1rem;
-}
-
-.dashboard-header h2 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.75rem;
-}
-
-.dashboard-subtitle {
-  margin: 0;
-  color: var(--surface-fg-muted);
-  font-size: 0.95rem;
-}
-
-.stats-cards-grid {
+.progress-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: minmax(0, 1fr) 18.75rem;
+  gap: 3rem;
 }
 
-.dashboard-actions {
+.readiness-heading {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1.25rem;
 }
 
-.btn-outline-danger {
-  border-color: var(--status-bad) !important;
-  color: var(--status-bad) !important;
+.readiness-heading strong {
+  font-family: var(--font-mono);
+  font-size: clamp(3rem, 7vw, 4rem);
+  font-weight: 300;
+  line-height: 1;
 }
 
-.domain-breakdown-section h3 {
-  margin-top: 0;
-  margin-bottom: 1.25rem;
+.readiness-heading span {
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
 }
 
-.domain-cards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.domain-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.domain-accuracy-badge {
-  font-size: 0.85rem;
+.section-marker,
+.progress-summary dt,
+.weakest-card > span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   font-weight: 600;
-  background: var(--surface-elevated);
-  padding: 0.25rem 0.6rem;
-  border-radius: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.progress-bar-track {
-  height: 8px;
-  background: var(--surface-line);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 0.75rem;
+.section-marker {
+  margin: 0.6rem 0 2rem;
+  color: var(--surface-fg-subtle);
 }
 
-.progress-bar-fill {
-  height: 100%;
-  transition: width 0.3s ease;
+.progress-screen h1 {
+  margin: 0 0 1.35rem;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.domain-card-meta {
+.domain-bars {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.progress-summary dl {
+  display: grid;
+  gap: 1rem;
+  margin: 0 0 1.4rem;
+  padding: 0 0 1.4rem;
+  border-bottom: 1px solid var(--surface-line);
+}
+
+.progress-summary dl div {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--surface-fg-muted);
+  gap: 1rem;
+}
+
+.progress-summary dt {
+  color: var(--surface-fg-subtle);
+}
+
+.progress-summary dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.weakest-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-lg);
+  background: var(--surface-elevated);
+}
+
+.weakest-card > span {
+  color: var(--surface-fg-subtle);
+}
+
+.weakest-card strong {
+  font-size: 0.9rem;
+}
+
+.weakest-card button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reset-progress {
+  margin-top: 1.25rem;
+  color: var(--surface-fg-subtle) !important;
+}
+
+@media (max-width: 800px) {
+  .progress-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
 }
 </style>

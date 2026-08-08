@@ -91,6 +91,35 @@ export function getStoredAttempts(): QuestionAttempt[] {
 }
 
 /**
+ * Counts consecutive calendar days with at least one recorded attempt,
+ * ending today (or yesterday so a learner does not lose the streak before
+ * their first session of the day). Attempts are already stored in ISO UTC;
+ * reducing them to YYYY-MM-DD keeps the result stable across reloads.
+ */
+export function calculateStudyStreak(
+  attempts: QuestionAttempt[] = getStoredAttempts(),
+  now: Date = new Date(),
+): number {
+  if (attempts.length === 0) return 0;
+
+  const activeDays = new Set(attempts.map((attempt) => attempt.attemptedAt.slice(0, 10)));
+  const cursor = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const today = cursor.toISOString().slice(0, 10);
+
+  if (!activeDays.has(today)) {
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+    if (!activeDays.has(cursor.toISOString().slice(0, 10))) return 0;
+  }
+
+  let streak = 0;
+  while (activeDays.has(cursor.toISOString().slice(0, 10))) {
+    streak += 1;
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+  }
+  return streak;
+}
+
+/**
  * Enables or disables best-effort server sync for signed-in learners. Off by
  * default: with sync disabled, recordAttempt and syncFromServer behave
  * exactly as they did before this module knew about a server, making no

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   calculateProgressStats,
+  calculateStudyStreak,
   clearProgress,
   getMistakeQuestionIds,
   getStoredAttempts,
@@ -77,6 +78,24 @@ describe("progressStore service", () => {
     expect(domain2?.attemptedQuestions).toBe(1);
     expect(domain2?.correctQuestions).toBe(1);
     expect(domain2?.accuracy).toBe(100);
+  });
+
+  it("calculates a consecutive study streak ending today or yesterday", () => {
+    const now = new Date("2026-08-08T12:00:00.000Z");
+    const attempts = [
+      { questionId: "q-1", domain: "domain-1", correct: true, attemptedAt: "2026-08-08T09:00:00.000Z" },
+      { questionId: "q-2", domain: "domain-1", correct: true, attemptedAt: "2026-08-07T18:00:00.000Z" },
+      { questionId: "q-3", domain: "domain-2", correct: false, attemptedAt: "2026-08-06T08:00:00.000Z" },
+      { questionId: "q-4", domain: "domain-2", correct: true, attemptedAt: "2026-08-04T08:00:00.000Z" },
+    ];
+
+    expect(calculateStudyStreak(attempts, now)).toBe(3);
+    expect(
+      calculateStudyStreak(
+        attempts.filter((attempt) => !attempt.attemptedAt.startsWith("2026-08-08")),
+        now,
+      ),
+    ).toBe(2);
   });
 
   it("clears progress history", () => {
