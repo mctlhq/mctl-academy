@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import type { ExamDataSource } from "../dataSource";
 import type { Question } from "../types";
 import type { ExamSessionState } from "../session";
@@ -15,11 +15,17 @@ defineProps<{ dataSource: ExamDataSource }>();
 
 const session = ref<ExamSessionState | null>(loadSession());
 
+async function scrollToTop() {
+  await nextTick();
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
 function handleStart(questions: Question[], timeLimitMinutes: number) {
   const shuffled = questions.map((q) => shuffleOptions(q));
   const started = startSession(shuffled, timeLimitMinutes, Date.now());
   saveSession(started);
   session.value = started;
+  void scrollToTop();
 }
 
 function handleAnswer(questionId: string, optionId: string) {
@@ -34,6 +40,7 @@ function handleSubmit() {
   const submitted = submitSession(session.value, Date.now());
   saveSession(submitted);
   session.value = submitted;
+  void scrollToTop();
 
   // Feed submitted mock answers into the same per-question progress store
   // Practice mode writes to, so the Progress Dashboard and Review Mistakes
@@ -50,6 +57,7 @@ function handleSubmit() {
 function handleStartOver() {
   clearSession();
   session.value = null;
+  void scrollToTop();
 }
 </script>
 

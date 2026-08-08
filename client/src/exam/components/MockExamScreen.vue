@@ -151,6 +151,7 @@ function goSubmit() {
 }
 
 .mock-exam-nav-item {
+  min-height: 2.25rem;
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-sm, 4px);
   background: var(--surface-card);
@@ -174,6 +175,7 @@ function goSubmit() {
   gap: 0.6rem;
   align-items: baseline;
   padding: 0.5rem 0.25rem;
+  min-height: 2.75rem;
   border-radius: var(--mctl-radius-md, 6px);
 }
 
@@ -183,10 +185,45 @@ function goSubmit() {
   margin-top: 1rem;
 }
 
+.mock-exam-footer button,
+.mock-exam-confirm button {
+  min-height: 2.75rem;
+}
+
 .mock-exam-confirm {
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-md, 6px);
   padding: 0.75rem 1rem;
   margin-top: 1rem;
+}
+
+@media (max-width: 620px) {
+  .mock-exam-nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .mock-exam-nav-item {
+    min-height: 2.75rem;
+  }
+
+  .mock-exam-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mock-exam-footer button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .mock-exam-confirm {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .mock-exam-confirm p {
+    grid-column: 1 / -1;
+  }
 }
 </style>

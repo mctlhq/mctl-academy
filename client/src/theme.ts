@@ -10,6 +10,10 @@ function systemPreference(): Theme {
 export function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.accent = "cyan";
+  const themeColor = theme === "dark" ? "#0a0b0d" : "#f5f2ea";
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+    meta.content = themeColor;
+  });
 }
 
 /** Reads a persisted choice, falling back to the OS preference on first visit. */

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
 import MockFlow from "../MockFlow.vue";
 import type { ExamDataSource } from "../../dataSource";
@@ -43,8 +43,13 @@ function makeDataSource(): ExamDataSource {
 
 describe("MockFlow", () => {
   beforeEach(() => {
+    vi.spyOn(window, "scrollTo").mockImplementation(() => {});
     sessionStorage.clear();
     clearProgress();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("records a progress attempt for every question on submit", async () => {

@@ -190,13 +190,15 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 }
 
 .report-button {
-  padding: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.25rem;
   border: 0;
   border-bottom: 1px solid currentColor;
   background: transparent;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -360,8 +362,8 @@ kbd {
 
   .practice-context {
     position: fixed;
-    right: 1rem;
-    bottom: 1rem;
+    right: calc(1rem + env(safe-area-inset-right));
+    bottom: calc(1rem + env(safe-area-inset-bottom));
     z-index: var(--mctl-z-index-overlay);
     width: 2.75rem;
     border: 1px solid var(--surface-line-strong);
@@ -387,6 +389,10 @@ kbd {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .practice-header {
+    gap: 0.75rem;
   }
 }
 </style>

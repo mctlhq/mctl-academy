@@ -63,4 +63,19 @@ const score = computed(() => scoreSession(props.session));
   color: var(--surface-fg-muted);
   font-size: 0.9rem;
 }
+
+@media (max-width: 620px) {
+  .mock-results-list {
+    padding-left: 1.25rem;
+  }
+
+  .mock-results-options {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .mock-results-option {
+    overflow-wrap: anywhere;
+  }
+}
 </style>
