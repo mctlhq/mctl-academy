@@ -18,7 +18,7 @@ async function handleLogout() {
 async function handleDeleteAccount() {
   if (
     !window.confirm(
-      "Delete your account? This permanently removes your sign-in, your attempts, and your reports. This cannot be undone.",
+      "Delete your Academy account? This permanently removes your Academy sign-in, attempts, and stored reports. GitHub issues are managed by your GitHub account and are not deleted here. This cannot be undone.",
     )
   ) {
     return;

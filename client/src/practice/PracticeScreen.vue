@@ -71,7 +71,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
         <!-- Restricted inline Markdown only: escaped text plus backtick code
              spans, matching build-preview.mjs's contract for the same field. -->
         <h1 class="stem" v-html="renderInlineMarkdown(current.stem)" />
-        <ul class="options">
+        <ul :key="current.id" class="options">
           <li
             v-for="option in current.options"
             :key="option.id"
@@ -343,29 +343,17 @@ kbd {
 
 @media (max-width: 680px) {
   .practice-shell {
-    flex: 1;
-    min-height: 0;
     margin: -1.75rem auto -2rem;
-    overflow: hidden;
   }
 
   .practice-stage,
   .practice-shell.context-open .practice-stage {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr);
-    height: auto;
-    min-height: 0;
-    overflow: hidden;
   }
 
   .practice-stage > .practice {
-    box-sizing: border-box;
     width: 100%;
-    height: 100%;
-    max-height: 100%;
-    min-height: 0;
     padding: 2rem 0 3.5rem;
-    overflow: hidden;
   }
 
   .practice-context {
@@ -402,12 +390,32 @@ kbd {
   .practice-header {
     gap: 0.75rem;
   }
+
 }
 
 @media (max-width: 560px) {
+  .practice-shell {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .practice-stage,
+  .practice-shell.context-open .practice-stage {
+    grid-template-rows: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .practice-stage > .practice {
+    box-sizing: border-box;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
     padding-top: 1rem;
     padding-bottom: 1rem;
+    overflow: hidden;
   }
 
   .practice-header {

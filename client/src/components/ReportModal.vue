@@ -21,7 +21,8 @@ const issueUrl = computed(() => buildQuestionIssueUrl(props.questionId, reason.v
   >
     <p class="report-intro">
       This opens a pre-filled issue in <strong>mctlhq/mctl-academy</strong>. You can review it on
-      GitHub before submitting.
+      GitHub before submitting. The issue is managed by your GitHub account, not your Academy
+      account.
     </p>
     <p class="report-meta">
       Question ID: <code>{{ questionId }}</code>

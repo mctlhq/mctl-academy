@@ -80,6 +80,16 @@ code {
 }
 
 @media (max-width: 680px) {
+  .app-main {
+    box-sizing: border-box;
+    min-height: calc(100vh - 10.5rem);
+    min-height: calc(100dvh - 10.5rem);
+    padding-top: 1.75rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 560px) {
   .app-shell.focused-practice {
     height: 100dvh;
     min-height: 0;
@@ -91,16 +101,6 @@ code {
     overflow: hidden;
   }
 
-  .app-main {
-    box-sizing: border-box;
-    min-height: calc(100vh - 10.5rem);
-    min-height: calc(100dvh - 10.5rem);
-    padding-top: 1.75rem;
-    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
-  }
-}
-
-@media (max-width: 560px) {
   .app-main {
     padding-top: 1rem;
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
@@ -114,12 +114,17 @@ code {
     min-height: 100svh;
   }
 
+  #app,
+  .app-shell {
+    min-height: 100svh;
+  }
+
   .app-main {
     min-height: calc(100svh - 10rem);
   }
 }
 
-@media (display-mode: standalone) and (max-width: 680px) {
+@media (display-mode: standalone) and (max-width: 560px) {
   .app-shell.focused-practice {
     height: 100svh;
   }

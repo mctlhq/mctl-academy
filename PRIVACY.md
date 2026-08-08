@@ -50,8 +50,13 @@ account deletion.
 ## Deleting your account
 
 Account deletion is available in the application and takes effect immediately.
-It removes your user record, every attempt and answer, and any reports you
-filed, by cascade. Nothing is retained in a shadow copy.
+It removes your user record, every attempt and answer, and any reports stored in
+the Academy database, by cascade. Nothing from that application data is retained
+in a shadow copy.
+
+Question feedback that you choose to publish as a GitHub issue is managed by
+your GitHub account, not by your Academy account. Deleting your Academy account
+does not delete those GitHub issues; you can edit or delete them through GitHub.
 
 Deleting your account does not delete the published questions themselves — those
 are project content, not personal data.

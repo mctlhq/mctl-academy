@@ -73,6 +73,15 @@ describe("PracticeScreen", () => {
     expect(wrapper.text()).toMatch(/1 \/ 2 correct/i);
   });
 
+  it("recreates the options list when advancing so its scroll position resets", async () => {
+    const wrapper = mount(PracticeScreen, { props: { bundle: [question("q-1"), question("q-2")] } });
+    const firstOptionsList = wrapper.find(".options").element;
+
+    await actionButton(wrapper, "Next question").trigger("click");
+
+    expect(wrapper.find(".options").element).not.toBe(firstOptionsList);
+  });
+
   it("renders an empty state instead of crashing when the bundle has zero published questions", () => {
     const wrapper = mount(PracticeScreen, { props: { bundle: [] } });
     expect(wrapper.find("h1").text()).toMatch(/practice/i);
