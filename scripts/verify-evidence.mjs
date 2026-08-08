@@ -60,7 +60,8 @@ export function normalize(text) {
  * store-unconfigured guard and per item, and the two drifting apart is
  * precisely how the gate once failed open.
  */
-export const requiresVerification = (status) => status === "published" || status === "needs_review";
+export const requiresVerification = (status) =>
+  status === "published" || status === "review_ready" || status === "needs_review";
 
 function loadYamlDir(contentDir, dir) {
   const path = join(contentDir, dir);
@@ -92,50 +93,35 @@ export async function verifyEvidence({ contentDir, store }) {
     ...loadYamlDir(contentDir, "lessons"),
   ];
 
-  // Nothing to verify is a legitimate state early in the project's life, but
-  // it must not look like a passing verification of real content.
-  //
-  // This predicate must stay identical to the per-item one below. When they
-  // disagreed, a repo holding only needs_review items passed with an
-  // unconfigured store — fail-open, and silently, which is the worst shape a
-  // gate failure can take.
   const enforced = items.filter((i) => requiresVerification(i.data?.status));
 
   if (!store) {
     if (enforced.length) {
       errors.push(
         `snapshot store is not configured, but ${enforced.length} item(s) require verification ` +
-          "(status published or needs_review). Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID and " +
+          "(status published, review_ready, or needs_review). Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID and " +
           "R2_SECRET_ACCESS_KEY. Refusing to pass unverified content.",
       );
     }
     return { errors, checked, skipped: items.length };
   }
 
-  // One fetch per source, not per excerpt: a source page backs many questions
-  // and the snapshot is immutable, so re-fetching would only cost time.
-  const snapshots = new Map();
-  async function snapshotFor(sourceId) {
-    if (snapshots.has(sourceId)) return snapshots.get(sourceId);
-    const src = byId.get(sourceId);
+  // One fetch per unique snapshot hash, cached in memory
+  const snapshotCache = new Map();
+  async function fetchSnapshotByHash(hashKey, sourceId) {
+    if (snapshotCache.has(hashKey)) return snapshotCache.get(hashKey);
     let value = { text: null, reason: null };
-    if (!src) {
-      value.reason = `cites unknown source ${sourceId}`;
-    } else if (!src.snapshot) {
-      value.reason = `source ${sourceId} has no snapshot recorded`;
-    } else {
-      try {
-        const text = await store.get(src.snapshot.key);
-        if (text === null) {
-          value.reason = `snapshot ${src.snapshot.key} for ${sourceId} is not in the store`;
-        } else {
-          value.text = text;
-        }
-      } catch (e) {
-        value.reason = `snapshot ${src.snapshot.key} for ${sourceId}: ${e.message}`;
+    try {
+      const text = await store.get(hashKey);
+      if (text === null) {
+        value.reason = `snapshot ${hashKey} for ${sourceId} is not in the store`;
+      } else {
+        value.text = text;
       }
+    } catch (e) {
+      value.reason = `snapshot ${hashKey} for ${sourceId}: ${e.message}`;
     }
-    snapshots.set(sourceId, value);
+    snapshotCache.set(hashKey, value);
     return value;
   }
 
@@ -147,15 +133,28 @@ export async function verifyEvidence({ contentDir, store }) {
     }
 
     for (const ev of data.evidence) {
-      const { text, reason } = await snapshotFor(ev.source_id);
+      const src = byId.get(ev.source_id);
+      if (!src) {
+        errors.push(`${file}: cites unknown source ${ev.source_id}`);
+        continue;
+      }
+
+      const targetHash = ev.source_sha256 || src.snapshot?.key;
+      if (!targetHash) {
+        errors.push(`${file}: source ${ev.source_id} has no snapshot recorded`);
+        continue;
+      }
+
+      const { text, reason } = await fetchSnapshotByHash(targetHash, ev.source_id);
       if (!text) {
         errors.push(`${file}: ${reason}`);
         continue;
       }
+
       checked += 1;
       if (!normalize(text).includes(normalize(ev.excerpt))) {
         errors.push(
-          `${file}: excerpt not found verbatim in ${ev.source_id}: "${ev.excerpt.slice(0, 80)}"` +
+          `${file}: excerpt not found verbatim in ${ev.source_id} (hash ${targetHash.slice(0, 12)}...): "${ev.excerpt.slice(0, 80)}"` +
             (ev.excerpt.length > 80 ? "..." : ""),
         );
       }
