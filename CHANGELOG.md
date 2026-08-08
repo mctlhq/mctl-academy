@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.26](https://github.com/mctlhq/mctl-academy/compare/0.1.25...0.1.26) (2026-08-08)
+
+
+### Bug Fixes
+
+* **client:** allow GitHub avatars in CSP, hide Google sign-in ([61e2f54](https://github.com/mctlhq/mctl-academy/commit/61e2f54a2a830e7e30abb7a0d940483c4a8d49d7))
+* **client:** allow GitHub avatars in CSP, hide Google sign-in ([ea1480b](https://github.com/mctlhq/mctl-academy/commit/ea1480b560c8dfcacf39237d3a1e410e8b4a48af))
+* **client:** allow googleusercontent.com avatars in CSP ([646fac3](https://github.com/mctlhq/mctl-academy/commit/646fac325673ae0ee48eb2225e19b3415b6dde83))
+
 ## [0.1.25](https://github.com/mctlhq/mctl-academy/compare/0.1.24...0.1.25) (2026-08-08)
 
 
