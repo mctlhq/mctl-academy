@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { computed, ref, type ComputedRef, type Ref } from "vue";
 import rawBundle from "../content-bundle.json";
 import { recordAttempt } from "../services/progressStore";
 
@@ -42,17 +42,17 @@ export interface UsePracticeSessionOptions {
 
 export interface PracticeSession {
   /** The current question, or undefined once index has reached total (summary). */
-  current: BundleQuestion | undefined;
+  current: ComputedRef<BundleQuestion | undefined>;
   /** Zero-based index of the current question within this session's shuffled order. */
-  index: number;
+  index: Ref<number>;
   /** Total questions in this session (the full published bank, shuffled once). */
-  total: number;
+  total: ComputedRef<number>;
   /** Option ids revealed so far for the *current* question. */
-  revealed: ReadonlySet<string>;
+  revealed: ComputedRef<ReadonlySet<string>>;
   /** Count of questions whose first-selected option was correct. */
-  score: number;
+  score: ComputedRef<number>;
   /** Count of questions attempted (at least one option selected) so far. */
-  attempted: number;
+  attempted: ComputedRef<number>;
   /** Reveal one option's correctness/explanation for the current question. */
   selectOption: (optionId: string) => void;
   /** Advance to the next question, or past the last one into the summary. */
@@ -65,61 +65,59 @@ export function usePracticeSession(
   bundle: readonly BundleQuestion[] = defaultBundle,
   { random = Math.random }: UsePracticeSessionOptions = {},
 ): PracticeSession {
-  // Shuffled exactly once per mount: a lazy useState initializer, not
-  // useMemo, so React StrictMode's dev-mode double-render of a *committed*
-  // state initializer still only re-runs shuffling if the component
-  // actually remounts, matching "once per session".
-  const [session] = useState<BundleQuestion[]>(() => buildSession(bundle, random));
-  const [index, setIndex] = useState(0);
-  const revealedByQuestion = useRef<Map<number, Set<string>>>(new Map());
-  const firstCorrectByQuestion = useRef<Map<number, boolean>>(new Map());
-  // Bumped on every mutation of the refs above so components re-render.
-  const [updateTick, forceUpdate] = useState(0);
+  // Shuffled exactly once per call: session is a plain ref seeded at
+  // creation time, matching "once per session" — there is no React-style
+  // remount to guard against here, a composable instance lives exactly as
+  // long as its caller keeps it.
+  const session = ref<BundleQuestion[]>(buildSession(bundle, random)) as Ref<BundleQuestion[]>;
+  const index = ref(0);
+  const revealedByQuestion = new Map<number, Set<string>>();
+  const firstCorrectByQuestion = new Map<number, boolean>();
+  // Bumped on every mutation of the plain (non-reactive) maps above so
+  // dependent computeds re-evaluate.
+  const updateTick = ref(0);
 
-  const total = session.length;
-  const current = index < total ? session[index] : undefined;
-
-  const revealed = useMemo(
-    () => revealedByQuestion.current.get(index) ?? new Set<string>(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [index, updateTick],
+  const total = computed(() => session.value.length);
+  const current = computed<BundleQuestion | undefined>(() =>
+    index.value < total.value ? session.value[index.value] : undefined,
   );
 
-  const selectOption = useCallback(
-    (optionId: string) => {
-      if (!current) return;
-      const set = revealedByQuestion.current.get(index) ?? new Set<string>();
-      const isFirstSelection = set.size === 0;
-      if (!set.has(optionId)) {
-        const next = new Set(set);
-        next.add(optionId);
-        revealedByQuestion.current.set(index, next);
-      }
-      if (isFirstSelection) {
-        const option = current.options.find((o) => o.id === optionId);
-        const isCorrect = Boolean(option?.correct);
-        firstCorrectByQuestion.current.set(index, isCorrect);
-        recordAttempt(current.id, current.domain, isCorrect);
-      }
-      forceUpdate((n) => n + 1);
-    },
-    [current, index],
-  );
+  const revealed = computed<ReadonlySet<string>>(() => {
+    void updateTick.value;
+    return revealedByQuestion.get(index.value) ?? new Set<string>();
+  });
 
-  const next = useCallback(() => {
-    setIndex((i) => Math.min(i + 1, total));
-  }, [total]);
+  function selectOption(optionId: string) {
+    const cur = current.value;
+    if (!cur) return;
+    const set = revealedByQuestion.get(index.value) ?? new Set<string>();
+    const isFirstSelection = set.size === 0;
+    if (!set.has(optionId)) {
+      const next = new Set(set);
+      next.add(optionId);
+      revealedByQuestion.set(index.value, next);
+    }
+    if (isFirstSelection) {
+      const option = cur.options.find((o) => o.id === optionId);
+      const isCorrect = Boolean(option?.correct);
+      firstCorrectByQuestion.set(index.value, isCorrect);
+      recordAttempt(cur.id, cur.domain, isCorrect);
+    }
+    updateTick.value += 1;
+  }
 
-  const score = useMemo(
-    () => [...firstCorrectByQuestion.current.values()].filter(Boolean).length,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateTick, index],
-  );
-  const attempted = useMemo(
-    () => firstCorrectByQuestion.current.size,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateTick, index],
-  );
+  function next() {
+    index.value = Math.min(index.value + 1, total.value);
+  }
+
+  const score = computed(() => {
+    void updateTick.value;
+    return [...firstCorrectByQuestion.values()].filter(Boolean).length;
+  });
+  const attempted = computed(() => {
+    void updateTick.value;
+    return firstCorrectByQuestion.size;
+  });
 
   return { current, index, total, revealed, score, attempted, selectOption, next };
 }

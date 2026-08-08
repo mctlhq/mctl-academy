@@ -1,0 +1,18 @@
+/* App-level additions on top of @mctlhq/css/global.css — deliberately tiny,
+   only what the design system's own minimal reset doesn't cover. */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+code {
+  background: var(--surface-card);
+  padding: 0.1em 0.35em;
+  border-radius: var(--mctl-radius-sm, 4px);
+  font-size: 0.9em;
+}
