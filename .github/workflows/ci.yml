@@ -49,6 +49,27 @@ jobs:
     # (client/), which the CONTRIBUTING.md review-gate table treats
     # separately from content lint. A broken client build fails this job
     # without touching content lint results.
+    #
+    # A real Postgres is required here (not just in the migrations job) since
+    # PR4: server/auth.mjs (better-auth) has no in-memory fallback, unlike the
+    # legacy hand-rolled auth it replaced, so the server test suite it's
+    # exercised by can no longer run against nothing.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mctl_academy_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mctl_academy_ci
+      BETTER_AUTH_SECRET: ci-test-secret-not-used-in-production
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
@@ -62,6 +83,9 @@ jobs:
       - name: Install client dependencies
         working-directory: client
         run: bun install --frozen-lockfile
+
+      - name: Migrate the CI database
+        run: bun run migrate
 
       - name: Server tests
         run: npm run test:server

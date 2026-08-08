@@ -3,6 +3,7 @@ import { PracticeScreen } from "./practice/PracticeScreen";
 import { MockFlow } from "./exam/components/MockFlow";
 import { DashboardScreen } from "./dashboard/DashboardScreen";
 import { UserNav, type UserProfile } from "./components/UserNav";
+import { authClient } from "./authClient";
 import { StaticBundleDataSource } from "./exam/dataSource";
 import { getMistakeQuestionIds, setSyncEnabled, syncFromServer } from "./services/progressStore";
 import rawBundle from "./content-bundle.json";
@@ -14,42 +15,40 @@ const fullBundle = rawBundle as unknown as BundleQuestion[];
 export function App() {
   const [mode, setMode] = useState<"practice" | "mistakes" | "exam" | "dashboard">("practice");
   const [navTick, setNavTick] = useState(0);
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const { data: session, isPending: authLoading } = authClient.useSession();
+  const user = (session?.user as UserProfile | undefined) ?? null;
 
   useEffect(() => {
+    if (authLoading) return;
+
     let cancelled = false;
 
-    fetch("/api/auth/me")
-      .then((res) => res.json())
-      .then(async (data) => {
-        if (cancelled) return;
-
-        if (data.authenticated && data.user) {
-          setUser(data.user);
-          setSyncEnabled(true);
-          await syncFromServer();
+    if (user) {
+      setSyncEnabled(true);
+      syncFromServer()
+        .then(() => {
           if (!cancelled) {
             // Local progress may have just been merged with server history;
             // recompute anything derived from it (mistake count, dashboard).
             setNavTick((n) => n + 1);
           }
-        } else {
-          setUser(null);
-          setSyncEnabled(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setUser(null);
-      })
-      .finally(() => {
-        if (!cancelled) setAuthLoading(false);
-      });
+        })
+        .catch((err) => {
+          // A failed sync leaves local progress as the source of truth for
+          // this session — not ideal, but strictly better than an unhandled
+          // rejection, and there is nothing actionable for the learner to do
+          // about a transient network/server failure here.
+          console.error("[sync] Failed to sync progress from server:", err);
+        });
+    } else {
+      setSyncEnabled(false);
+    }
 
     return () => {
       cancelled = true;
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user?.id]);
 
   const mistakeIds = useMemo(() => getMistakeQuestionIds(), [navTick, mode]);
 

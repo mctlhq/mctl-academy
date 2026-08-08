@@ -1,15 +1,13 @@
 import { Hono } from "hono";
-import { getCookie } from "hono/cookie";
-import { getSessionUser, recordUserAttempt, getUserAttempts } from "../db.mjs";
+import { auth } from "../auth.mjs";
+import { recordUserAttempt, getUserAttempts } from "../db.mjs";
 import { requireSameOrigin } from "../middleware/csrf.mjs";
-import { sessionCookieName } from "../session-cookie.mjs";
 
 export const attemptsRouter = new Hono();
 
 async function requireUser(c) {
-  const token = getCookie(c, sessionCookieName());
-  if (!token) return null;
-  return getSessionUser(token);
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  return session?.user ?? null;
 }
 
 function serializeAttempt(attempt) {

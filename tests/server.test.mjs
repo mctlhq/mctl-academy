@@ -1,17 +1,10 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { app } from "../server/app.mjs";
-import { upsertUser, createSession } from "../server/db.mjs";
-import { sessionCookieName } from "../server/session-cookie.mjs";
+import { authedCookie as createAuthedCookie } from "./helpers/auth-test-helper.mjs";
 
-async function signedInCookie(githubId, githubLogin) {
-  const user = await upsertUser({
-    githubId,
-    githubLogin,
-    avatarUrl: `https://github.com/${githubLogin}.png`,
-  });
-  const { token } = await createSession(user.id);
-  return `${sessionCookieName()}=${token}`;
+async function signedInCookie(_githubId, githubLogin) {
+  return createAuthedCookie({ githubLogin });
 }
 
 describe("Hono server & Report API", () => {
@@ -32,12 +25,12 @@ describe("Hono server & Report API", () => {
     assert.equal(body.service, "mctl-academy");
   });
 
-  test("GET /readyz reports the memory store as ready outside production", async () => {
+  test("GET /readyz reports postgres as ready — DATABASE_URL is required unconditionally since PR4", async () => {
     const res = await app.request("/readyz");
     assert.equal(res.status, 200);
     const body = await res.json();
     assert.equal(body.status, "ok");
-    assert.equal(body.db, "memory");
+    assert.equal(body.db, "postgres");
   });
 
   test("POST /api/reports accepts valid report", async () => {
@@ -181,7 +174,7 @@ describe("GET /api/reports is moderator-only", () => {
 
   test("an unset allowlist fails shut, even for a signed-in user", async () => {
     await withModerators(undefined, async () => {
-      const cookie = await signedInCookie(4242003, "moderator-one");
+      const cookie = await signedInCookie(4242003, "moderator-one-unset-allowlist");
       const res = await app.request("/api/reports", { headers: { Cookie: cookie } });
       assert.equal(res.status, 404);
     });

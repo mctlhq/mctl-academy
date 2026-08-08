@@ -1,16 +1,10 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { app } from "../server/app.mjs";
-import { upsertUser, createSession } from "../server/db.mjs";
+import { authedCookie as createAuthedCookie } from "./helpers/auth-test-helper.mjs";
 
-async function authedCookie(githubId, githubLogin) {
-  const user = await upsertUser({
-    githubId,
-    githubLogin,
-    avatarUrl: `https://github.com/${githubLogin}.png`,
-  });
-  const { token } = await createSession(user.id);
-  return `mctl_session=${token}`;
+async function authedCookie(_githubId, githubLogin) {
+  return createAuthedCookie({ githubLogin });
 }
 
 describe("Attempt sync API", () => {
