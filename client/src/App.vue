@@ -19,14 +19,24 @@ provide("syncVersion", syncVersion);
 
 watch(
   () => [authLoading.value, user.value?.id],
-  () => {
+  (_value, _oldValue, onCleanup) => {
     if (authLoading.value) return;
 
     if (user.value) {
+      let cancelled = false;
+      onCleanup(() => {
+        cancelled = true;
+      });
+
       setSyncEnabled(true);
       syncFromServer()
         .then(() => {
-          syncVersion.value += 1;
+          // Auth state may have changed again before this settled (e.g. the
+          // learner signed out mid-sync) — a stale callback must not bump
+          // syncVersion against a state it no longer corresponds to.
+          if (!cancelled) {
+            syncVersion.value += 1;
+          }
         })
         .catch((err) => {
           // A failed sync leaves local progress as the source of truth for
