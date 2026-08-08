@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.27](https://github.com/mctlhq/mctl-academy/compare/0.1.26...0.1.27) (2026-08-08)
+
+
+### Features
+
+* add academy favicon ([122eba0](https://github.com/mctlhq/mctl-academy/commit/122eba0f386412d395654ce7d627fca944400498))
+* redesign academy learning experience ([d241712](https://github.com/mctlhq/mctl-academy/commit/d2417128e99f9a78b523387bf4df29151dd5d09f))
+* redesign academy learning experience ([3c448be](https://github.com/mctlhq/mctl-academy/commit/3c448be7d889cb1e7fa22dad06ad62b4fdb1a7d4))
+* redesign academy learning experience ([#92](https://github.com/mctlhq/mctl-academy/issues/92)) ([d241712](https://github.com/mctlhq/mctl-academy/commit/d2417128e99f9a78b523387bf4df29151dd5d09f))
+
+
+### Bug Fixes
+
+* **content:** quarantine unverified PR [#64](https://github.com/mctlhq/mctl-academy/issues/64) questions to draft state (fixes [#83](https://github.com/mctlhq/mctl-academy/issues/83)) ([c32e414](https://github.com/mctlhq/mctl-academy/commit/c32e41450cf243660147d5e8ef7e5902649c6e50))
+* **content:** use valid src-rate-limits excerpts for published questions ([bfad872](https://github.com/mctlhq/mctl-academy/commit/bfad8721ec24b3ce6de66199afd2df49743ee625))
+* refresh learning streak in navigation ([8114301](https://github.com/mctlhq/mctl-academy/commit/8114301efd2b0a6ee0e10b12469b17092653fca6))
+
 ## [0.1.26](https://github.com/mctlhq/mctl-academy/compare/0.1.25...0.1.26) (2026-08-08)
 
 
