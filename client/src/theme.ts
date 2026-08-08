@@ -14,6 +14,12 @@ export function applyTheme(theme: Theme): void {
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
     meta.content = themeColor;
   });
+  const iosStatusBar = document.querySelector<HTMLMetaElement>(
+    'meta[name="apple-mobile-web-app-status-bar-style"]',
+  );
+  if (iosStatusBar) {
+    iosStatusBar.content = theme === "dark" ? "black-translucent" : "default";
+  }
 }
 
 /** Reads a persisted choice, falling back to the OS preference on first visit. */
