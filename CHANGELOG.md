@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.28](https://github.com/mctlhq/mctl-academy/compare/0.1.27...0.1.28) (2026-08-08)
+
+
+### Bug Fixes
+
+* make academy image build reproducible ([76c4624](https://github.com/mctlhq/mctl-academy/commit/76c4624ec8fe87aaa098b5b854c086b9ecb215ac))
+* make academy image build reproducible ([1a518c3](https://github.com/mctlhq/mctl-academy/commit/1a518c3c55b503e786b8f2bfb807dcffd33fdb16))
+* make academy image build reproducible ([#93](https://github.com/mctlhq/mctl-academy/issues/93)) ([76c4624](https://github.com/mctlhq/mctl-academy/commit/76c4624ec8fe87aaa098b5b854c086b9ecb215ac))
+
 ## [0.1.27](https://github.com/mctlhq/mctl-academy/compare/0.1.26...0.1.27) (2026-08-08)
 
 
