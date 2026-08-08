@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.25](https://github.com/mctlhq/mctl-academy/compare/0.1.24...0.1.25) (2026-08-08)
+
+
+### Bug Fixes
+
+* **client:** add *.vue module shim for vue-tsc on Alpine/musl ([9a47bdc](https://github.com/mctlhq/mctl-academy/commit/9a47bdc3b7e8b391e1a6b0c7ed683041c2b5ba84))
+* **client:** add *.vue module shim for vue-tsc on Alpine/musl ([ddde777](https://github.com/mctlhq/mctl-academy/commit/ddde7775a28b74a1349013d0bf32e8177586c3e3))
+
 ## [0.1.24](https://github.com/mctlhq/mctl-academy/compare/0.1.23...0.1.24) (2026-08-08)
 
 
