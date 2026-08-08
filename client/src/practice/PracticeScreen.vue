@@ -424,4 +424,10 @@ kbd {
     padding: 0.65rem 0.75rem;
   }
 }
+
+@media (max-width: 400px) {
+  .practice-stage > .practice {
+    padding-bottom: 1.25rem;
+  }
+}
 </style>
