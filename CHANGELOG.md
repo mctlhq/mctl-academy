@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.21](https://github.com/mctlhq/mctl-academy/compare/0.1.20...0.1.21) (2026-08-08)
+
+
+### Features
+
+* **auth:** replace hand-rolled OAuth with better-auth (GitHub + Google) ([34dbc0b](https://github.com/mctlhq/mctl-academy/commit/34dbc0ba5f01ff97c698c30dd8a8eb53f7bfa93f))
+* **auth:** replace hand-rolled OAuth with better-auth (GitHub + Google) ([88d9e15](https://github.com/mctlhq/mctl-academy/commit/88d9e15a2f85d9a4fafc934a8eae8970ede7a767))
+
+
+### Bug Fixes
+
+* **auth:** address review — secret fail-fast, safe down migration, delete-account UI ([a94cdf6](https://github.com/mctlhq/mctl-academy/commit/a94cdf6f9aa1eff63fa2cf86fc6e569912b72fdf))
+* **auth:** handle fetch failures and skip unconfigured OAuth providers ([a61c03e](https://github.com/mctlhq/mctl-academy/commit/a61c03eeb20d649755125294b9d0c0549df726ef))
+* **auth:** scrub session IP/UA, cascade-delete question reports ([688022d](https://github.com/mctlhq/mctl-academy/commit/688022d3451ce8695a0a6ff6e489e161e84f32e2))
+
 ## [0.1.20](https://github.com/mctlhq/mctl-academy/compare/0.1.19...0.1.20) (2026-08-07)
 
 
