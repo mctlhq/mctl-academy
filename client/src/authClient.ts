@@ -1,4 +1,4 @@
-import { createAuthClient } from "better-auth/react";
+import { createAuthClient } from "better-auth/vue";
 
 /**
  * baseURL is intentionally omitted: the client is served from the same

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import { MockStartScreen } from "../MockStartScreen";
+import { flushPromises, mount } from "@vue/test-utils";
+import MockStartScreen from "../MockStartScreen.vue";
 import type { ExamDataSource } from "../../dataSource";
 import type { MockConfig, Question } from "../../types";
 
@@ -33,17 +33,18 @@ function makeDataSource(questions: Question[], bankSize: number): ExamDataSource
 describe("MockStartScreen", () => {
   it("T8: displays the live bank size and does not claim a repeat mock is guaranteed fresh", async () => {
     const dataSource = makeDataSource([], 20);
-    render(<MockStartScreen dataSource={dataSource} onStart={() => {}} />);
-    await waitFor(() => screen.getByTestId("bank-size"));
-    expect(screen.getByTestId("bank-size")).toHaveTextContent("20 questions");
-    expect(screen.getByText(/may include questions you have already seen/i)).toBeInTheDocument();
-    expect(screen.getByText(/not guaranteed to be entirely fresh/i)).toBeInTheDocument();
+    const wrapper = mount(MockStartScreen, { props: { dataSource } });
+    await flushPromises();
+    expect(wrapper.find('[data-testid="bank-size"]').text()).toContain("20 questions");
+    expect(wrapper.text()).toMatch(/may include questions you have already seen/i);
+    expect(wrapper.text()).toMatch(/not guaranteed to be entirely fresh/i);
   });
 
   it("renders a not-enough-content state when a domain cannot supply its quota", async () => {
     const dataSource = makeDataSource([], 0);
-    render(<MockStartScreen dataSource={dataSource} onStart={() => {}} />);
-    await waitFor(() => screen.getByTestId("not-enough-content"));
-    expect(screen.queryByText("Start mock exam")).not.toBeInTheDocument();
+    const wrapper = mount(MockStartScreen, { props: { dataSource } });
+    await flushPromises();
+    expect(wrapper.find('[data-testid="not-enough-content"]').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain("Start mock exam");
   });
 });

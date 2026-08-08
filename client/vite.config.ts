@@ -1,12 +1,10 @@
 import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
+import vue from "@vitejs/plugin-vue";
 
-// Minimal Vite + React + TypeScript scaffold for the mock exam screen
-// (issue #20). See ../CLAUDE.md and the proposal under
-// platform-gitops/agents-state/mctl-academy/proposals/
-// issue-20-feat-ui-implement-mock-exam-screen-30-qu/ for scope.
+// Vue 3 + Vite scaffold (PLAN.md Track C / PR6). See ../CLAUDE.md and
+// ../PLAN.md for scope.
 export default defineConfig({
-  plugins: [react()],
+  plugins: [vue()],
   test: {
     environment: "jsdom",
     globals: true,

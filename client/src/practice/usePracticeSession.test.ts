@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { renderHook, act } from "@testing-library/react";
 import { usePracticeSession, shuffle, type BundleQuestion } from "./usePracticeSession";
 
 function question(id: string, overrides: Partial<BundleQuestion> = {}): BundleQuestion {
@@ -49,19 +48,17 @@ describe("usePracticeSession", () => {
     const bundleSnapshot = JSON.parse(JSON.stringify(bundle));
     const random = fixedRandom([0.9, 0.1, 0.7, 0.3, 0.6, 0.2, 0.8, 0.4, 0.5, 0.15, 0.65, 0.35]);
 
-    const { result } = renderHook(() => usePracticeSession(bundle, { random }));
+    const result = usePracticeSession(bundle, { random });
 
-    expect(result.current.total).toBe(8);
+    expect(result.total.value).toBe(8);
     const seenIds = new Set<string>();
     const visitedOrder: string[] = [];
-    let cursor = result.current;
-    for (let i = 0; i < cursor.total; i++) {
-      seenIds.add(cursor.current!.id);
-      visitedOrder.push(cursor.current!.id);
+    for (let i = 0; i < result.total.value; i++) {
+      seenIds.add(result.current.value!.id);
+      visitedOrder.push(result.current.value!.id);
       // Each question's four options remain the same set, id-for-id.
-      expect([...cursor.current!.options.map((o) => o.id)].sort()).toEqual(["a", "b", "c", "d"]);
-      act(() => cursor.next());
-      cursor = result.current;
+      expect([...result.current.value!.options.map((o) => o.id)].sort()).toEqual(["a", "b", "c", "d"]);
+      result.next();
     }
     expect(seenIds.size).toBe(8);
     expect(bundle).toEqual(bundleSnapshot);
@@ -73,48 +70,48 @@ describe("usePracticeSession", () => {
 
   it("selectOption reveals only the selected option id for the current question", () => {
     const bundle = [question("q-1"), question("q-2")];
-    const { result } = renderHook(() => usePracticeSession(bundle, { random: fixedRandom([0.1, 0.2, 0.3, 0.4]) }));
+    const result = usePracticeSession(bundle, { random: fixedRandom([0.1, 0.2, 0.3, 0.4]) });
 
-    act(() => result.current.selectOption("b"));
-    expect(result.current.revealed.has("b")).toBe(true);
-    expect(result.current.revealed.has("a")).toBe(false);
-    expect(result.current.revealed.has("c")).toBe(false);
-    expect(result.current.revealed.has("d")).toBe(false);
+    result.selectOption("b");
+    expect(result.revealed.value.has("b")).toBe(true);
+    expect(result.revealed.value.has("a")).toBe(false);
+    expect(result.revealed.value.has("c")).toBe(false);
+    expect(result.revealed.value.has("d")).toBe(false);
 
-    act(() => result.current.selectOption("a"));
-    expect(result.current.revealed.has("a")).toBe(true);
-    expect(result.current.revealed.has("b")).toBe(true);
-    expect(result.current.revealed.size).toBe(2);
+    result.selectOption("a");
+    expect(result.revealed.value.has("a")).toBe(true);
+    expect(result.revealed.value.has("b")).toBe(true);
+    expect(result.revealed.value.size).toBe(2);
   });
 
   it("resets the revealed set when moving to the next question", () => {
     const bundle = [question("q-1"), question("q-2")];
-    const { result } = renderHook(() => usePracticeSession(bundle, { random: fixedRandom([0.1, 0.2, 0.3, 0.4]) }));
+    const result = usePracticeSession(bundle, { random: fixedRandom([0.1, 0.2, 0.3, 0.4]) });
 
-    act(() => result.current.selectOption("b"));
-    expect(result.current.revealed.size).toBe(1);
+    result.selectOption("b");
+    expect(result.revealed.value.size).toBe(1);
 
-    act(() => result.current.next());
-    expect(result.current.revealed.size).toBe(0);
+    result.next();
+    expect(result.revealed.value.size).toBe(0);
   });
 
   it("counts score from the first selection only, per question", () => {
     const bundle = [question("q-1"), question("q-2")];
-    const { result } = renderHook(() => usePracticeSession(bundle, { random: fixedRandom([0.1, 0.2, 0.3, 0.4]) }));
+    const result = usePracticeSession(bundle, { random: fixedRandom([0.1, 0.2, 0.3, 0.4]) });
 
     // First question: first click is wrong ("a"), later exploring the
     // correct one ("b") must not retroactively count as correct.
-    act(() => result.current.selectOption("a"));
-    act(() => result.current.selectOption("b"));
-    act(() => result.current.next());
+    result.selectOption("a");
+    result.selectOption("b");
+    result.next();
 
     // Second question: first click is correct.
-    act(() => result.current.selectOption("b"));
-    act(() => result.current.next());
+    result.selectOption("b");
+    result.next();
 
-    expect(result.current.current).toBeUndefined();
-    expect(result.current.total).toBe(2);
-    expect(result.current.attempted).toBe(2);
-    expect(result.current.score).toBe(1);
+    expect(result.current.value).toBeUndefined();
+    expect(result.total.value).toBe(2);
+    expect(result.attempted.value).toBe(2);
+    expect(result.score.value).toBe(1);
   });
 });

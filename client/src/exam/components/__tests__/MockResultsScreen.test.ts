@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { MockResultsScreen } from "../MockResultsScreen";
+import { mount } from "@vue/test-utils";
+import MockResultsScreen from "../MockResultsScreen.vue";
 import { answerQuestion, startSession, submitSession } from "../../session";
 import type { Question } from "../../types";
 
@@ -26,11 +26,11 @@ function makeSubmittedSession() {
 
 describe("MockResultsScreen", () => {
   it("T7: renders the overall score, the correct option, and every option's explanation", () => {
-    render(<MockResultsScreen session={makeSubmittedSession()} />);
-    expect(screen.getByTestId("score")).toHaveTextContent("0 / 1 correct");
-    expect(screen.getByText("Why right")).toBeInTheDocument();
-    expect(screen.getByText("Why wrong")).toBeInTheDocument();
-    expect(screen.getByText("Why also wrong")).toBeInTheDocument();
-    expect(screen.getByText("Why still wrong")).toBeInTheDocument();
+    const wrapper = mount(MockResultsScreen, { props: { session: makeSubmittedSession() } });
+    expect(wrapper.find('[data-testid="score"]').text()).toContain("0 / 1 correct");
+    expect(wrapper.text()).toContain("Why right");
+    expect(wrapper.text()).toContain("Why wrong");
+    expect(wrapper.text()).toContain("Why also wrong");
+    expect(wrapper.text()).toContain("Why still wrong");
   });
 });
