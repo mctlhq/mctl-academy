@@ -3,7 +3,7 @@ import { computed, provide, ref, watch } from "vue";
 import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
-import type { UserProfile } from "./components/UserNav.vue";
+import type { UserProfile } from "./types/user";
 import { setSyncEnabled, syncFromServer } from "./services/progressStore";
 
 const sessionState = authClient.useSession();

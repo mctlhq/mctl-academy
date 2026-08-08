@@ -3,7 +3,8 @@ import { inject, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { calculateStudyStreak, getMistakeQuestionIds } from "../services/progressStore";
 import { currentTheme, setTheme } from "../theme";
-import UserNav, { type UserProfile } from "./UserNav.vue";
+import UserNav from "./UserNav.vue";
+import type { UserProfile } from "../types/user";
 
 defineProps<{ user: UserProfile | null; loading: boolean }>();
 
