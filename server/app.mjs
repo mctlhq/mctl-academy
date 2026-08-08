@@ -5,8 +5,13 @@ import { accountRouter } from "./routes/account.mjs";
 import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
+import { securityHeaders } from "./middleware/security-headers.mjs";
 
 export const app = new Hono();
+
+// Applied first so it wraps every response below, including the static
+// SPA fallback — a security header baseline is not just an API concern.
+app.use("*", securityHeaders);
 
 // Both fatal-on-failure by design, in production: a missing DATABASE_URL or
 // BETTER_AUTH_SECRET must stop the pod from ever serving traffic rather than
