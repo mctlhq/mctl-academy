@@ -6,45 +6,51 @@ unpublished rather than being covered from general knowledge.
 
 ## Allowlist
 
-| Source | Scope | Retention | Approved |
+| Source Host | Scope | Retention | Approved Date |
 |---|---|---|---|
-| `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints, team access | Snapshot to private R2 | 2026-08-06 |
-| `docs.nebius.com` | Public AI Cloud documentation. Secondary: only where an objective genuinely touches infrastructure | Snapshot to private R2 | 2026-08-06 |
+| `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints | Snapshot to private R2 | 2026-08-06 |
+| `docs.nebius.com` | Public AI Cloud documentation — GPU compute, K8s, Storage, IAM, monitoring, node lifecycle | Snapshot to private R2 | 2026-08-06 |
 
-That is the complete list at MVP. It is deliberately short.
+### Candidates under review
+- `docs.tavily.com`: Recommended learning on public certification pages for web search tool integration. Currently **pending retention review** before any content cites it.
 
-**Token Factory is the primary source, not AI Cloud.** This is worth stating
-because the obvious guess is wrong: `docs.nebius.com` documents the
-infrastructure cloud — Compute, Storage, VPC, Kubernetes, IAM — while the
-certification targets application developers building on Token Factory
-(inference, retrieval, tool calling, fine-tuning). A course sourced from
-`docs.nebius.com` alone would cover the wrong product.
+## Course-specific source priority matrix
 
-Both sites publish an `llms.txt` index, so machine reading is invited rather
-than merely tolerated.
+Source priorities are scoped per course, reflecting the public exam bounds:
+
+| Course | Primary Source | Secondary Source | Excluded by default |
+|---|---|---|---|
+| **Agentic AI Builder** (`agentic-ai-builder`) | `docs.tokenfactory.nebius.com` | `docs.tavily.com` (pending review) | `docs.nebius.com` infrastructure details |
+| **AI CloudOps Engineer** (`ai-cloudops-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Non-cloud developer SDKs |
+| **AI Leader** (`ai-leader`) | `docs.tokenfactory.nebius.com` | `docs.nebius.com` (high-level only) | AI Cloud deployment details |
+
+## Discovery & Change Sync (`Nebius Docs Sync`)
+
+Discovery of canonical documentation is driven directly by official Nebius endpoints, not by third-party indices or GitHub release tags:
+
+1. **`https://docs.tokenfactory.nebius.com/llms.txt`**: Canonical index for Token Factory documentation.
+2. **`https://docs.nebius.com/llms.txt`**: Canonical index for AI Cloud documentation.
+3. **`https://docs.nebius.com/changelog`**: High-signal secondary trigger for major feature additions, deprecations, and breaking changes.
+
+Each page discovered in `llms.txt` is fetched in its raw Markdown representation (`.md`). Context7 and external GitHub repositories (e.g. `nebius/api`, `nebius/token-factory-cookbook`) may be used as secondary research tools by agents, but **never** as canonical evidence sources or authoritative change triggers.
 
 ## Explicitly not sources
 
 | Excluded | Reason |
 |---|---|
-| Certification exam guide PDF | Exam material; see `LEGAL.md` |
+| Certification exam guide PDF | Exam material; strictly prohibited by `LEGAL.md` |
 | Any exam simulator, braindump, or question bank | Provenance cannot be established |
 | Recollection of a real sitting | Prohibited by `CONTENT-POLICY.md` |
 | Community forum posts, blogs, videos | Not authoritative; no retention terms |
+| Context7 index | Secondary search layer only; not canonical evidence |
 
 ## Adding a source
 
 A new source requires all of the following before any content cites it:
 
-1. **Explicit allowlisting** — a pull request adding a row to the table above.
-2. **Retention-terms review** — confirmation that storing a snapshot is
-   compatible with the source's own terms. Recorded in the PR description.
-3. **A stated scope** — which parts of the source are in bounds. "The whole
-   site" is an acceptable scope only if the retention review covers it.
-
-Sources are added one at a time, with reasoning. A source that cannot clear the
-retention review can still be *read* by a human for orientation, but nothing may
-cite it and nothing may be snapshotted from it.
+1. **Explicit allowlisting** — a pull request adding a row to the allowlist table.
+2. **Retention-terms review** — confirmation that storing a snapshot in R2 is compatible with the source's terms. Recorded in the PR description.
+3. **A stated scope** — which parts of the source are in bounds.
 
 ## Evidence records
 
@@ -57,25 +63,19 @@ Each source record committed under `content/` holds:
 - objective mappings
 - an evidence excerpt of **at most 25 words**
 
-The excerpt limit keeps this repository from becoming a mirror of somebody
-else's documentation while still pinning each claim to specific wording.
+Question evidence items pin the exact immutable `source_sha256` snapshot hash supporting the claim.
 
 ## Snapshots
 
-Full retrieved documents are stored privately in the Cloudflare R2 bucket
-`academy-source-snapshots`, keyed by SHA-256, with credentials provisioned from
-Vault. Snapshots are never committed to this repository and never served to
-learners.
+Full retrieved documents are stored privately in Cloudflare R2 (`academy-source-snapshots`), keyed by SHA-256 hash. Snapshots are never committed to this repository and never served to learners.
 
-Their only purpose is to make citation verification mechanical: CI fetches the
-snapshot by hash and asserts that each evidence excerpt occurs verbatim within
-it. Without the snapshot, the citation check would be decorative.
+CI fetches the snapshot by hash and asserts that each evidence excerpt occurs verbatim within it. **Certification PDFs are never snapshotted.**
 
-**Certification PDFs are never snapshotted**, regardless of who supplies them.
+## Drift & Fail-Closed Quarantine
 
-## Drift
+When `Nebius Docs Sync` detects a hash mismatch for an approved source:
+1. `source.yaml` status is automatically updated to `drifted`.
+2. Dependent published questions transition `published -> needs_review`.
+3. Quarantined questions are immediately excluded from new Practice and Mock selection.
+4. Existing completed attempts remain untouched.
 
-A weekly job re-fetches every allowlisted source and compares hashes. When a
-source changes, dependent content is marked `needs_review` and removed from new
-Practice and Mock selection until a human re-verifies it. Attempts already taken
-are never altered.

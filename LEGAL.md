@@ -9,19 +9,22 @@ not been reviewed by a lawyer.
 **mctl Academy is not affiliated with, endorsed by, or sponsored by Nebius, or
 by any other certification vendor.**
 
-This disclaimer appears in the application footer, in `README.md`, and on the
-course description page. It is not buried in a settings screen.
+This disclaimer appears in the application footer, in `README.md`, and on all
+course description pages. It is not buried in a settings screen.
 
 ## Naming rules
 
 The product is **mctl Academy**, at `academy.mctl.ai`. The name, the domain, all
 URL slugs, and the user interface are vendor-neutral.
 
-The certification name "Nebius Agentic AI Builder" appears in exactly one place:
-the course description, as a statement of what the course prepares for. It is
-nominative use — naming a thing in order to refer to it.
+Official Nebius certification names — specifically:
+- "Nebius AI Leader"
+- "Nebius AI CloudOps Engineer"
+- "Nebius Agentic AI Builder"
 
-It must never appear in:
+appear strictly in course descriptions as nominative statements of what each course prepares for — naming a thing in order to refer to it.
+
+Certification names must never appear in:
 
 - a URL or slug
 - a page title or meta title
@@ -41,7 +44,7 @@ semi-official preparation channel.
 ## Source material
 
 Content is derived exclusively from the sources allowlisted in `SOURCES.md`,
-which at MVP means public product documentation.
+which means public product documentation.
 
 **The certification exam guide PDF is never stored, quoted, cited, embedded,
 given to an agent, or used in review.** It is not a source. It is not a topic
@@ -61,9 +64,9 @@ public documentation is original work rather than a derivative of exam
 materials.
 
 If the vendor objects, the fallback is a one-file change: all certification
-naming, the disclaimer, and the objective map live in `content/branding.yaml`,
-so the course can be re-pointed at a vendor-neutral framing without rewriting a
-single question.
+naming, the disclaimer, and objective maps live in course metadata files under
+`content/courses/`, so courses can be re-pointed at vendor-neutral framings without
+rewriting a single question.
 
 That fallback being cheap is a deliberate design constraint, not a coincidence.
 
@@ -73,3 +76,4 @@ That fallback being cheap is a deliberate design constraint, not a coincidence.
 - It does not claim any pass rate or outcome.
 - It does not claim to be a secure or proctored assessment. The repository is
   public and the answer key is public with it; see `README.md`.
+

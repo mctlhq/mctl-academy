@@ -4,9 +4,9 @@ Free, English-first practice for agentic AI certification. Every question is
 original, and every question cites the public documentation it was written from.
 
 > **mctl Academy is not affiliated with, endorsed by, or sponsored by Nebius, or
-> by any other certification vendor.** The first course prepares for the Nebius
-> Agentic AI Builder certification. It does not reproduce, mirror, or predict
-> that exam. See [`LEGAL.md`](LEGAL.md).
+> by any other certification vendor.** Courses prepare for live Nebius certifications:
+> **AI Leader**, **AI CloudOps Engineer**, and **Agentic AI Builder**.
+> They do not reproduce, mirror, or predict those exams. See [`LEGAL.md`](LEGAL.md).
 
 ## Why this exists
 
