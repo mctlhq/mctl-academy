@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.31](https://github.com/mctlhq/mctl-academy/compare/0.1.30...0.1.31) (2026-08-08)
+
+
+### Bug Fixes
+
+* **ci:** bump claude-review reusable workflow pin ([ad0e262](https://github.com/mctlhq/mctl-academy/commit/ad0e2620dc320779b2c3d7698ceab06521eae593))
+* **ci:** bump claude-review reusable workflow pin ([e5163a0](https://github.com/mctlhq/mctl-academy/commit/e5163a06e9f8a801a1a83e7142ee43147149e48f))
+* **ci:** pass GEMINI_API_KEY secret to agy-review workflow ([1bf2d04](https://github.com/mctlhq/mctl-academy/commit/1bf2d04d70330da62bca8077566aaba2ecfed1d7))
+* **ci:** pass GEMINI_API_KEY secret to agy-review workflow ([c81e763](https://github.com/mctlhq/mctl-academy/commit/c81e7636dc0622d42429a721eb10602526242e87))
+* compact mobile layouts for smaller phones ([8d67d1b](https://github.com/mctlhq/mctl-academy/commit/8d67d1b9bd84554db4b03cbb2e7c1b08e5f64e54))
+* compact mobile layouts for smaller phones ([d176a37](https://github.com/mctlhq/mctl-academy/commit/d176a37c0ffdedd184534d0787b0e789ea953099))
+
 ## [0.1.30](https://github.com/mctlhq/mctl-academy/compare/0.1.29...0.1.30) (2026-08-08)
 
 
