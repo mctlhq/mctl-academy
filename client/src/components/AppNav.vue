@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch, type Ref } from "vue";
+import { inject, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { calculateStudyStreak, getMistakeQuestionIds } from "../services/progressStore";
 import { currentTheme, setTheme } from "../theme";
@@ -9,7 +9,7 @@ defineProps<{ user: UserProfile | null; loading: boolean }>();
 
 const router = useRouter();
 const theme = ref(currentTheme());
-const streak = computed(() => calculateStudyStreak());
+const streak = ref(calculateStudyStreak());
 function toggleTheme() {
   const next = theme.value === "dark" ? "light" : "dark";
   setTheme(next);
@@ -21,14 +21,14 @@ function toggleTheme() {
 // navigation, and every time App.vue bumps syncVersion after a
 // syncFromServer() completes.
 const mistakeCount = ref(getMistakeQuestionIds().length);
-router.afterEach(() => {
+function refreshLearningSummary() {
   mistakeCount.value = getMistakeQuestionIds().length;
-});
+  streak.value = calculateStudyStreak();
+}
+router.afterEach(refreshLearningSummary);
 const syncVersion = inject<Ref<number>>("syncVersion");
 if (syncVersion) {
-  watch(syncVersion, () => {
-    mistakeCount.value = getMistakeQuestionIds().length;
-  });
+  watch(syncVersion, refreshLearningSummary);
 }
 
 const links = [
