@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.32](https://github.com/mctlhq/mctl-academy/compare/0.1.31...0.1.32) (2026-08-08)
+
+
+### Bug Fixes
+
+* use visible viewport height in Android PWA ([8a75e43](https://github.com/mctlhq/mctl-academy/commit/8a75e4346b6c2317edc23f1cd20087c459ff574b))
+* use visible viewport height in Android PWA ([6bf3e03](https://github.com/mctlhq/mctl-academy/commit/6bf3e03079f18f1882bf1a077b80646d6243f5b4))
+
 ## [0.1.31](https://github.com/mctlhq/mctl-academy/compare/0.1.30...0.1.31) (2026-08-08)
 
 
