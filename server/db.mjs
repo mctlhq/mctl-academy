@@ -119,15 +119,24 @@ export async function checkDbReady() {
   return { ready: true, mode: "postgres" };
 }
 
-export async function recordUserAttempt({ userId, questionId, domain, correct }) {
+export async function recordUserAttempt({ userId, questionId, domain, correct, courseId = "agentic-ai-builder" }) {
+  const targetCourseId = courseId || "agentic-ai-builder";
   if (pool) {
     const res = await pool.query(
-      `INSERT INTO attempts (user_id, question_id, domain, correct)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, question_id, domain, correct, attempted_at;`,
-      [userId || null, questionId, domain, correct]
+      `INSERT INTO attempts (user_id, question_id, domain, correct, course_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, question_id, domain, correct, course_id, attempted_at;`,
+      [userId || null, questionId, domain, correct, targetCourseId]
     );
-    return res.rows[0];
+    const row = res.rows[0];
+    return {
+      id: row.id,
+      questionId: row.question_id,
+      domain: row.domain,
+      correct: row.correct,
+      courseId: row.course_id,
+      attemptedAt: row.attempted_at,
+    };
   }
 
   const attempt = {
@@ -136,30 +145,35 @@ export async function recordUserAttempt({ userId, questionId, domain, correct })
     questionId,
     domain,
     correct,
+    courseId: targetCourseId,
     attemptedAt: new Date().toISOString(),
   };
   memAttempts.push(attempt);
   return attempt;
 }
 
-export async function getUserAttempts(userId) {
+export async function getUserAttempts(userId, courseId = "agentic-ai-builder") {
+  const targetCourseId = courseId || "agentic-ai-builder";
   if (pool) {
     const res = await pool.query(
-      `SELECT DISTINCT ON (question_id) question_id, domain, correct, attempted_at
+      `SELECT DISTINCT ON (question_id) question_id, domain, correct, course_id, attempted_at
        FROM attempts
-       WHERE user_id = $1
+       WHERE user_id = $1 AND course_id = $2
        ORDER BY question_id, attempted_at DESC;`,
-      [userId]
+      [userId, targetCourseId]
     );
     return res.rows.map((r) => ({
       questionId: r.question_id,
       domain: r.domain,
       correct: r.correct,
+      courseId: r.course_id,
       attemptedAt: r.attempted_at,
     }));
   }
 
-  const userAttempts = memAttempts.filter((a) => a.userId === userId);
+  const userAttempts = memAttempts.filter(
+    (a) => a.userId === userId && (a.courseId || "agentic-ai-builder") === targetCourseId
+  );
   const map = new Map();
   for (const a of userAttempts) {
     map.set(a.questionId, a);
@@ -167,13 +181,14 @@ export async function getUserAttempts(userId) {
   return [...map.values()];
 }
 
-export async function insertQuestionReport({ questionId, reason, comment, reporterUserId }) {
+export async function insertQuestionReport({ questionId, reason, comment, reporterUserId, courseId = "agentic-ai-builder" }) {
+  const targetCourseId = courseId || "agentic-ai-builder";
   if (pool) {
     const res = await pool.query(
-      `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, question_id, reason, comment, reporter_user_id, created_at;`,
-      [questionId, reason, comment || null, reporterUserId || null]
+      `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id, course_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, question_id, reason, comment, reporter_user_id, course_id, created_at;`,
+      [questionId, reason, comment || null, reporterUserId || null, targetCourseId]
     );
     const row = res.rows[0];
     return {
@@ -182,6 +197,7 @@ export async function insertQuestionReport({ questionId, reason, comment, report
       reason: row.reason,
       comment: row.comment,
       reporterUserId: row.reporter_user_id,
+      courseId: row.course_id,
       createdAt: row.created_at,
     };
   }
@@ -192,20 +208,22 @@ export async function insertQuestionReport({ questionId, reason, comment, report
     reason,
     comment: comment || null,
     reporterUserId: reporterUserId || null,
+    courseId: targetCourseId,
     createdAt: new Date().toISOString(),
   };
   memQuestionReports.push(report);
   return report;
 }
 
-export async function listRecentQuestionReports(limit = 50) {
+export async function listRecentQuestionReports(limit = 50, courseId = null) {
   if (pool) {
     const res = await pool.query(
-      `SELECT id, question_id, reason, comment, reporter_user_id, created_at
+      `SELECT id, question_id, reason, comment, reporter_user_id, course_id, created_at
        FROM question_reports
+       WHERE ($2::text IS NULL OR course_id = $2)
        ORDER BY created_at DESC
        LIMIT $1;`,
-      [limit]
+      [limit, courseId || null]
     );
     return res.rows.map((row) => ({
       id: row.id,
@@ -213,9 +231,14 @@ export async function listRecentQuestionReports(limit = 50) {
       reason: row.reason,
       comment: row.comment,
       reporterUserId: row.reporter_user_id,
+      courseId: row.course_id,
       createdAt: row.created_at,
     }));
   }
 
-  return memQuestionReports.slice(-limit).reverse();
+  let reports = memQuestionReports;
+  if (courseId) {
+    reports = reports.filter((r) => (r.courseId || "agentic-ai-builder") === courseId);
+  }
+  return reports.slice(-limit).reverse();
 }
