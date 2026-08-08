@@ -355,29 +355,19 @@ reaches Healthy; `mctl_get_service_logs` shows a clean boot; `mctl_get_workflow_
 for each deploy workflow; `mctl_get_service_config` confirms every expected key is
 present after each `update-config` — specifically that no colon-bearing value vanished.
 
-## 10. Phases and gates
+## 10. Multi-Certification Suite & Documentation-Delta Pipeline
 
-**Phase 0 — foundation.** Plan, policies, legal and clean-room declarations, schemas,
-R2 evidence validation wired and proven failing-closed, static course preview, 20
-reviewed questions (minimum 3 per domain — 20 items cannot represent 20/35/20/25
-meaningfully, and Phase 0 exists to prove the pipeline, not coverage).
+The platform is designed to support the three live Nebius certifications:
+1. **AI Leader** (`ai-leader`)
+2. **AI CloudOps Engineer** (`ai-cloudops-engineer`)
+3. **Agentic AI Builder** (`agentic-ai-builder`)
 
-**Phase 0 also includes one end-to-end agent smoke test**, run before any real content
-depends on it: open a throwaway `agents:intake` issue on `mctl-academy` → confirm a
-`DevLoopWorkflow` appears in the Temporal UI → investigate CWFT produces a proposal under
-`agents-state/mctl-academy/` → send the `approve` signal → merge the `.status.yaml` flip
-PR → implement CWFT opens a PR. Both approval steps are exercised deliberately, in the
-wrong order at least once, to confirm the failure modes are recognisable.
+### Automated Question Authoring & Change Sync (`Nebius Docs Sync`)
+- **Discovery**: Driven by canonical `llms.txt` indices (`docs.tokenfactory.nebius.com/llms.txt` and `docs.nebius.com/llms.txt`) and high-signal `docs.nebius.com/changelog`.
+- **Fail-Closed Drift Quarantine**: Hash mismatches automatically transition `source.yaml` to `drifted` and questions to `needs_review`, immediately excluding them from learner selection.
+- **Evidence Snapshot Pinning**: Question evidence records pin the exact `source_sha256` snapshot hash supporting the claim.
+- **Lifecycle & Promotion**: Agent-created questions enter status `review_ready`, pass Evidence CI, and require maintainer Clean-Room promotion before transitioning to `published`.
 
-**Phase 1 exit.** ≥80 reviewed published questions across all four domains; working mock;
-3 complete end-to-end mock runs with zero functional defects; a 20-question random audit
-with zero P1 factual errors; question-report rate below 5% of answered items over the
-audit window.
-
-**Build order within Phase 1** is set by the maintainer's self-assessed weakest
-objectives, expressed strictly in the language of the public documentation.
-
-**Expansion gate.** A second certification (AI Leader, AI CloudOps) is considered only
 after the maintainer passes the exam, or after 30 days of stable operation with a
 question-report rate below 3% and median content-PR approval under 7 days — whichever
 comes first. Not part of this plan.
