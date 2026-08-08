@@ -56,7 +56,9 @@ in a shadow copy.
 
 Question feedback that you choose to publish as a GitHub issue is managed by
 your GitHub account, not by your Academy account. Deleting your Academy account
-does not delete those GitHub issues; you can edit or delete them through GitHub.
+does not delete those GitHub issues. You can edit or close them through GitHub;
+to request permanent deletion, contact the repository maintainers using the
+address in `SECURITY.md`.
 
 Deleting your account does not delete the published questions themselves — those
 are project content, not personal data.
