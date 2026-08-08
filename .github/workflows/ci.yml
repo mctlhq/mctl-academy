@@ -89,6 +89,10 @@ jobs:
 
       - name: Install client dependencies
         working-directory: client
+        # client/.npmrc pulls @mctlhq/ui and @mctlhq/css from GitHub
+        # Packages (Track C — see PLAN.md). Mirrors mctl-docs' own CI.
+        env:
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: bun install --frozen-lockfile
 
       - name: Migrate the CI database
