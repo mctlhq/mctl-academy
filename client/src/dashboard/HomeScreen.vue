@@ -107,20 +107,33 @@ const practiceDescription = computed(() => {
   text-transform: uppercase;
 }
 
+/* --accent is theme-selectable (cyan/lime/vermilion/lilac — see
+   @mctlhq/css theme.css) and can be a loud color; spending it on a small
+   uppercase caption reads as decoration, not signal, and every other
+   ".section-marker" in the app (DashboardScreen.vue's "Overall readiness")
+   uses --surface-fg-subtle instead. Matching that keeps this eyebrow
+   consistent with its own name elsewhere in the app. */
 .section-marker {
   margin: 0 0 0.75rem;
-  color: var(--accent);
+  color: var(--surface-fg-subtle);
 }
 
+/* Accent now frames the card itself instead of the caption above it —
+   the same "semantic-color-tinted border + background" pattern already
+   used one screen-section down by .mistakes-callout / .mistakes-callout-
+   clear (status-bad/status-ok at the same 8% mix), just with --accent
+   standing in for a status color since this card's role is "recommended
+   action" rather than a pass/fail state. That gives the primary CTA the
+   framing it needs without introducing a new visual language. */
 .next-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
   padding: 1.75rem 2rem;
-  border: 1px solid var(--surface-line);
+  border: 1px solid var(--accent);
   border-radius: var(--mctl-radius-lg);
-  background: var(--surface-elevated);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .next-card h1 {
