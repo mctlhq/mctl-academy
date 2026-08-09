@@ -38,7 +38,6 @@ describe("Attempt sync API", () => {
     assert.equal(postBody.attempt.questionId, "q-attempts-2");
     assert.equal(postBody.attempt.domain, "domain-2");
     assert.equal(postBody.attempt.correct, true);
-    assert.equal(postBody.attempt.courseId, "agentic-ai-builder");
     assert.ok(postBody.attempt.attemptedAt);
 
     const getRes = await app.request("/api/attempts", {
@@ -49,57 +48,54 @@ describe("Attempt sync API", () => {
     const found = getBody.attempts.find((a) => a.questionId === "q-attempts-2");
     assert.ok(found);
     assert.equal(found.correct, true);
-    assert.equal(found.courseId, "agentic-ai-builder");
   });
 
-  test("POST /api/attempts supports multi-course isolation by courseId", async () => {
+  test("an attempt is stored and returned with no course association", async () => {
+    // Course membership is content metadata (questionId -> question.course_id),
+    // not learner telemetry. Nothing about a learner's chosen course may be
+    // transmitted to or persisted by the server, so both the write path and the
+    // read path must be free of it — the client scopes progress per course by
+    // intersecting these attempts with the active course's question ids.
     const cookie = await authedCookie(50005, "attempts-user-5");
 
-    // Record attempt for course 1: agentic-ai-builder
-    const postRes1 = await app.request("/api/attempts", {
+    const postRes = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-mc-1", domain: "domain-1", correct: true, courseId: "agentic-ai-builder" }),
+      body: JSON.stringify({ questionId: "q-privacy-1", domain: "domain-1", correct: true }),
     });
-    assert.equal(postRes1.status, 201);
+    assert.equal(postRes.status, 201);
 
-    // Record attempt for course 2: ai-leader
-    const postRes2 = await app.request("/api/attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-mc-2", domain: "domain-1", correct: false, courseId: "ai-leader" }),
-    });
-    assert.equal(postRes2.status, 201);
+    const postBody = await postRes.json();
+    assert.deepEqual(
+      Object.keys(postBody.attempt).sort(),
+      ["attemptedAt", "correct", "domain", "questionId"],
+    );
 
-    // GET attempts for default course: agentic-ai-builder
-    const getRes1 = await app.request("/api/attempts?course_id=agentic-ai-builder", {
-      headers: { Cookie: cookie },
-    });
-    assert.equal(getRes1.status, 200);
-    const getBody1 = await getRes1.json();
-    assert.ok(getBody1.attempts.some((a) => a.questionId === "q-mc-1"));
-    assert.equal(getBody1.attempts.some((a) => a.questionId === "q-mc-2"), false);
-
-    // GET attempts for course 2: ai-leader
-    const getRes2 = await app.request("/api/attempts?course_id=ai-leader", {
-      headers: { Cookie: cookie },
-    });
-    assert.equal(getRes2.status, 200);
-    const getBody2 = await getRes2.json();
-    assert.ok(getBody2.attempts.some((a) => a.questionId === "q-mc-2"));
-    assert.equal(getBody2.attempts.some((a) => a.questionId === "q-mc-1"), false);
+    const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
+    const getBody = await getRes.json();
+    const found = getBody.attempts.find((a) => a.questionId === "q-privacy-1");
+    assert.ok(found);
+    assert.deepEqual(Object.keys(found).sort(), ["attemptedAt", "correct", "domain", "questionId"]);
   });
 
-  test("POST /api/attempts rejects an invalid courseId format with 400", async () => {
+  test("a courseId sent by a stale client is ignored, never stored or echoed back", async () => {
     const cookie = await authedCookie(50006, "attempts-user-6");
 
     const res = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-mc-3", domain: "domain-1", correct: true, courseId: "INVALID_COURSE!$" }),
+      body: JSON.stringify({
+        questionId: "q-privacy-2",
+        domain: "domain-1",
+        correct: true,
+        courseId: "ai-leader",
+      }),
     });
 
-    assert.equal(res.status, 400);
+    assert.equal(res.status, 201);
+    const body = await res.json();
+    assert.equal(body.attempt.courseId, undefined);
+    assert.ok(!JSON.stringify(body).includes("ai-leader"));
   });
 
   test("POST /api/attempts rejects a missing questionId with 400 and does not persist it", async () => {

@@ -11,9 +11,12 @@ import MockStartScreen from "./MockStartScreen.vue";
 import MockExamScreen from "./MockExamScreen.vue";
 import MockResultsScreen from "./MockResultsScreen.vue";
 
-defineProps<{ dataSource: ExamDataSource }>();
+const props = defineProps<{ dataSource: ExamDataSource; courseId: string }>();
 
-const session = ref<ExamSessionState | null>(loadSession());
+// Scoped to the course this flow was mounted for. MockView keys the routed
+// view on the course id, so switching course mounts a fresh flow that reads
+// and writes only its own course's stored session.
+const session = ref<ExamSessionState | null>(loadSession(props.courseId));
 
 async function scrollToTop() {
   await nextTick();
@@ -23,7 +26,7 @@ async function scrollToTop() {
 function handleStart(questions: Question[], timeLimitMinutes: number) {
   const shuffled = questions.map((q) => shuffleOptions(q));
   const started = startSession(shuffled, timeLimitMinutes, Date.now());
-  saveSession(started);
+  saveSession(props.courseId, started);
   session.value = started;
   void scrollToTop();
 }
@@ -31,14 +34,14 @@ function handleStart(questions: Question[], timeLimitMinutes: number) {
 function handleAnswer(questionId: string, optionId: string) {
   if (!session.value) return;
   const updated = answerQuestion(session.value, questionId, optionId);
-  saveSession(updated);
+  saveSession(props.courseId, updated);
   session.value = updated;
 }
 
 function handleSubmit() {
   if (!session.value) return;
   const submitted = submitSession(session.value, Date.now());
-  saveSession(submitted);
+  saveSession(props.courseId, submitted);
   session.value = submitted;
   void scrollToTop();
 
@@ -55,7 +58,7 @@ function handleSubmit() {
 }
 
 function handleStartOver() {
-  clearSession();
+  clearSession(props.courseId);
   session.value = null;
   void scrollToTop();
 }

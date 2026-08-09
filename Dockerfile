@@ -16,7 +16,6 @@ RUN --mount=type=secret,id=github_token \
 
 COPY . .
 RUN bun run scripts/build-content-bundle.mjs
-RUN bun run scripts/build-mock-bundle.mjs
 RUN cd client && bun run build
 
 FROM oven/bun:1-alpine AS runner

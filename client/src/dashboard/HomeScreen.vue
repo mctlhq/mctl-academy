@@ -1,16 +1,35 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
+import { questionsForCourse } from "../services/contentBundle";
+import { domainTitlesFor } from "../services/courseCatalog";
+import { useCourseStore } from "../services/courseStore";
 
 defineProps<{
   onStartPractice: () => void;
   onReviewMistakes: () => void;
 }>();
 
-const stats = ref(calculateProgressStats());
-const streak = calculateStudyStreak();
+// Same course scope as the dashboard — see DashboardScreen.vue. syncVersion
+// is injected (not part of App.vue's remount key) so a background sync
+// completing while the learner is elsewhere in the app refreshes this
+// screen's numbers without destroying anyone's in-progress session.
+const { currentCourseId } = useCourseStore();
+const syncVersion = inject<Ref<number>>("syncVersion");
+const stats = computed(() => {
+  void syncVersion?.value;
+  return calculateProgressStats(
+    questionsForCourse(currentCourseId.value),
+    undefined,
+    domainTitlesFor(currentCourseId.value),
+  );
+});
+const streak = computed(() => {
+  void syncVersion?.value;
+  return calculateStudyStreak();
+});
 const practiceLabel = computed(() => (stats.value.totalAttempted > 0 ? "Continue practice" : "Start practice"));
 const practiceDescription = computed(() => {
   if (stats.value.totalAttempted === 0) return "Build your baseline with evidence-backed practice questions.";

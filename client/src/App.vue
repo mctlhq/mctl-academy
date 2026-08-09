@@ -5,6 +5,7 @@ import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
 import type { UserProfile } from "./types/user";
+import { useCourseStore } from "./services/courseStore";
 import { setSyncEnabled, syncFromServer } from "./services/progressStore";
 
 const sessionState = authClient.useSession();
@@ -13,11 +14,20 @@ const focusedPractice = computed(() => route.name === "practice" || route.name =
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
 const user = computed<UserProfile | null>(() => (sessionState.value?.data?.user as UserProfile | undefined) ?? null);
 
-// Bumped after a successful syncFromServer() so AppNav's mistake-count badge
-// (and any currently-mounted routed view keyed on it) picks up progress that
-// may have just been merged in from the server.
+// Bumped after a successful syncFromServer() so views that inject it (see
+// AppNav.vue, DashboardScreen.vue, HomeScreen.vue, MistakesView.vue) can
+// reactively refresh their progress/mistake data. Deliberately NOT part of
+// the RouterView remount key below: an in-progress Practice/Mock session
+// lives only in memory, and a background sync completing mid-session must
+// never force-unmount it and silently discard the learner's answers so far.
 const syncVersion = ref(0);
 provide("syncVersion", syncVersion);
+
+// The course-switch remount boundary. Every learning surface is scoped to the
+// selected course, and a half-answered practice or mock session belongs to the
+// course it started in — so switching course discards the routed view outright
+// rather than re-filtering a running session in place.
+const { currentCourseId } = useCourseStore();
 
 watch(
   () => [authLoading.value, user.value?.id],
@@ -61,7 +71,10 @@ watch(
 
     <main class="app-main">
       <RouterView v-slot="{ Component, route: currentRoute }">
-        <component :is="Component" :key="`${currentRoute.fullPath}-${syncVersion}`" />
+        <component
+          :is="Component"
+          :key="`${currentRoute.fullPath}-${currentCourseId}`"
+        />
       </RouterView>
     </main>
 

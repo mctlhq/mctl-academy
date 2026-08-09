@@ -3,7 +3,7 @@ import type { Question } from "./types";
 /**
  * Returns a copy of `question` with its options reordered for display.
  * content/schemas/question.schema.json's `options` array order is authoring
- * order, not display order -- branding.yaml documents shuffled options as
+ * order, not display order -- the course files document shuffled options as
  * part of mock selection. Each option's id/text/correct/explanation travel
  * together; only the array order changes (Fisher-Yates).
  */

@@ -61,7 +61,7 @@ what was corrected and why, so the deltas are reviewable rather than buried.
   footer disclaimer: *not affiliated with, endorsed by, or sponsored by Nebius*.
   Never in a URL, slug, page title, logo, or question text. No Nebius branding assets.
 - All certification naming, the disclaimer text, and the objective map live in a single
-  `content/branding.yaml`, so switching to a vendor-neutral course is a one-file change
+  `content/courses/<id>.yaml`, so switching a course to vendor-neutral naming is a one-file change
   rather than an 80-item rewrite.
 - No SEO targeting of certification keywords at MVP.
 - A permission/positioning request is sent to Nebius Academy in parallel and tracked in

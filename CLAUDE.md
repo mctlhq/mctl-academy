@@ -12,21 +12,33 @@ Phase 0 is content pipeline and policy.
   allowlisted documentation, humans only approve. `authored.by` must be
   `agent:<name>`; the lint enforces it.
 - `SOURCES.md` — the source allowlist and the snapshot/evidence rules.
-- `LEGAL.md` — naming rules. Certification naming appears in exactly one place,
-  `content/branding.yaml`, and never in a slug, title, or question.
+- `LEGAL.md` — naming rules. Certification naming lives only in each course's
+  canonical `content/courses/<id>.yaml` (`prepares_for`, `description`,
+  `disclaimer`) and never reaches a slug, title, nav label, or question.
 
 ## Layout
 
 - `content/schemas/` — versioned JSON Schemas (2020-12). Question, lesson, source.
-- `content/branding.yaml` — the only file naming the certification; domain
-  weights and the objective map.
-- `content/{questions,lessons,sources}/` — YAML content.
+- `content/courses/*.yaml` — **the** source of truth for course metadata: stable
+  course id, vendor-neutral title, domain weights, the objective map, and mock
+  composition. One file per course; there is no second catalog anywhere, and
+  application code refers to courses by id plus the generated UI metadata below.
+- `content/{questions,lessons,sources}/` — YAML content. Each question names its
+  course with `course_id`.
 - `scripts/validate-content.mjs` — the content lint.
+- `scripts/lib/content-model.mjs` — the shared bundle-eligibility rule, used by
+  both the lint and the bundle builder.
+- `scripts/build-content-bundle.mjs` — generates `client/src/content-bundle.json`
+  (eligible published questions) and `client/src/course-catalog.json` (the
+  vendor-neutral client course catalog, with each course's published question
+  count). Both are regenerated on every dev/build/test run.
 - `tests/content-lint.test.mjs` — proves the lint rejects, rule by rule.
+- `tests/build-content-bundle.test.mjs` — proves unsafe content cannot reach the
+  client bundle.
 
 ## The gate
 
-Two layers, and the split matters:
+Three layers, and the split matters:
 
 1. **JSON Schema** — shape. Four options, status enum, 25-word excerpt cap,
    exactly one correct answer via `minContains`/`maxContains`. This needs ajv's
@@ -34,9 +46,15 @@ Two layers, and the split matters:
    ignores those keywords silently.
 2. **The lint** — cross-file references, the objective map, duplicate option
    text, the agent-authorship rule, and publication preconditions (`reviewed`
-   present, source snapshotted, source not drifted).
+   present, source snapshotted, source neither drifted nor deprecated).
+3. **The bundle builder** — the same eligibility rule applied again at the point
+   the client artefact is written, so `client/src/content-bundle.json` is safe
+   by construction. **No runtime check exists, or should be added.** Nothing in
+   the client or the server re-evaluates evidence state, and learner safety
+   never depends on a browser network request. Withdrawing an item means marking
+   its source in `content/` and redeploying.
 
-Verbatim citation verification against the private R2 snapshot is a third,
+Verbatim citation verification against the private R2 snapshot is a further,
 separate step. It needs secrets, so it cannot run on a fork PR — which is why
 content PRs from forks are not accepted.
 
@@ -48,7 +66,7 @@ model's questions is a second layer at best.
 ```bash
 npm ci
 npm run lint:content     # structural validation, no secrets, no network
-npm run test:content     # 15 tests, each violating one rule
+npm run test:content     # lint + bundle-safety tests, each violating one rule
 ```
 
 ## Conventions

@@ -1,21 +1,8 @@
 import { computed, ref, type ComputedRef, type Ref } from "vue";
-import rawBundle from "../content-bundle.json";
 import { recordAttempt } from "../services/progressStore";
+import type { BundleQuestion } from "../services/contentBundle";
 
-export interface BundleOption {
-  id: string;
-  text: string;
-  correct: boolean;
-  explanation: string;
-}
-
-export interface BundleQuestion {
-  id: string;
-  domain: string;
-  objective: string;
-  stem: string;
-  options: BundleOption[];
-}
+export type { BundleOption, BundleQuestion } from "../services/contentBundle";
 
 /**
  * Fisher-Yates, in place on a shallow copy — never mutates the array it is
@@ -31,10 +18,6 @@ export function shuffle<T>(items: readonly T[], random: () => number = Math.rand
   return copy;
 }
 
-function buildSession(bundle: readonly BundleQuestion[], random: () => number): BundleQuestion[] {
-  return shuffle(bundle, random).map((q) => ({ ...q, options: shuffle(q.options, random) }));
-}
-
 export interface UsePracticeSessionOptions {
   /** Injectable random source, for deterministic tests. Defaults to Math.random. */
   random?: () => number;
@@ -45,7 +28,7 @@ export interface PracticeSession {
   current: ComputedRef<BundleQuestion | undefined>;
   /** Zero-based index of the current question within this session's shuffled order. */
   index: Ref<number>;
-  /** Total questions in this session (the full published bank, shuffled once). */
+  /** Total questions in this session. */
   total: ComputedRef<number>;
   /** Option ids revealed so far for the *current* question. */
   revealed: ComputedRef<ReadonlySet<string>>;
@@ -59,22 +42,31 @@ export interface PracticeSession {
   next: () => void;
 }
 
-const defaultBundle = rawBundle as unknown as BundleQuestion[];
-
+/**
+ * A synchronous session engine, and deliberately nothing more: it receives a
+ * question list, shuffles it once, and tracks answers against that frozen
+ * order.
+ *
+ * It knows nothing about which course is selected. Course scoping happens
+ * before a session exists — the caller passes an already-course-scoped bundle
+ * — so a session can never switch course, re-filter, or rebuild because some
+ * global state changed underneath it. Changing course discards the session by
+ * remounting the screen (see PracticeView/MistakesView's :key), which is the
+ * only correct way to end a shuffled, half-answered session.
+ */
 export function usePracticeSession(
-  bundle: readonly BundleQuestion[] = defaultBundle,
+  bundle: readonly BundleQuestion[],
   { random = Math.random }: UsePracticeSessionOptions = {},
 ): PracticeSession {
-  // Shuffled exactly once per call: session is a plain ref seeded at
-  // creation time, matching "once per session" — there is no React-style
-  // remount to guard against here, a composable instance lives exactly as
-  // long as its caller keeps it.
-  const session = ref<BundleQuestion[]>(buildSession(bundle, random)) as Ref<BundleQuestion[]>;
+  // Built once. Not a computed: a session whose question order can change
+  // mid-flight corrupts every index-keyed answer already recorded.
+  const session = ref<BundleQuestion[]>(
+    shuffle(bundle, random).map((q) => ({ ...q, options: shuffle(q.options, random) })),
+  ) as Ref<BundleQuestion[]>;
+
   const index = ref(0);
   const revealedByQuestion = new Map<number, Set<string>>();
   const firstCorrectByQuestion = new Map<number, boolean>();
-  // Bumped on every mutation of the plain (non-reactive) maps above so
-  // dependent computeds re-evaluate.
   const updateTick = ref(0);
 
   const total = computed(() => session.value.length);
@@ -93,9 +85,9 @@ export function usePracticeSession(
     const set = revealedByQuestion.get(index.value) ?? new Set<string>();
     const isFirstSelection = set.size === 0;
     if (!set.has(optionId)) {
-      const next = new Set(set);
-      next.add(optionId);
-      revealedByQuestion.set(index.value, next);
+      const nextSet = new Set(set);
+      nextSet.add(optionId);
+      revealedByQuestion.set(index.value, nextSet);
     }
     if (isFirstSelection) {
       const option = cur.options.find((o) => o.id === optionId);

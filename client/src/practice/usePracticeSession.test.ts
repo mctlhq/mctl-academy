@@ -4,6 +4,7 @@ import { usePracticeSession, shuffle, type BundleQuestion } from "./usePracticeS
 function question(id: string, overrides: Partial<BundleQuestion> = {}): BundleQuestion {
   return {
     id,
+    course_id: "agentic-ai-builder",
     domain: "domain-1",
     objective: "domain-1/api-authentication",
     stem: `Stem for ${id}`,

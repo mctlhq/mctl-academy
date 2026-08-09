@@ -1,10 +1,38 @@
-import rawBundle from "../content-bundle.json";
+import { getItem, removeItem, resetStorage, setItem } from "./storage";
 
 export interface QuestionAttempt {
   questionId: string;
   domain: string;
   correct: boolean;
   attemptedAt: string;
+  /**
+   * Set once this exact row has been confirmed synced to the server —
+   * either this device POSTed it successfully, or a sync already found the
+   * server's own record at least as recent. Deliberately NOT re-derived from
+   * a timestamp comparison on every syncFromServer call: this device's clock
+   * may be skewed relative to the server's, and a skewed clock that never
+   * "catches up" would otherwise make the same row look stale forever,
+   * reposting it indefinitely. Once true, a row is settled for good.
+   */
+  synced?: boolean;
+}
+
+/**
+ * Reduces a raw attempt log (possibly several attempts per question, in any
+ * order) down to one row per question — the most recent by `attemptedAt`.
+ * The log itself stays append-only (see recordAttempt); this is purely a
+ * read-time view for progress/mistake computation, mirroring what the server
+ * already does with `DISTINCT ON (question_id) ... ORDER BY attempted_at DESC`.
+ */
+function latestPerQuestion(attempts: QuestionAttempt[]): QuestionAttempt[] {
+  const latest = new Map<string, QuestionAttempt>();
+  for (const a of attempts) {
+    const existing = latest.get(a.questionId);
+    if (!existing || new Date(a.attemptedAt).getTime() >= new Date(existing.attemptedAt).getTime()) {
+      latest.set(a.questionId, a);
+    }
+  }
+  return [...latest.values()];
 }
 
 export interface DomainProgress {
@@ -28,57 +56,16 @@ export interface OverallProgress {
 const STORAGE_KEY = "mctl_academy_progress_v1";
 const ATTEMPTS_ENDPOINT = "/api/attempts";
 
-let memoryFallback: Record<string, string> = {};
 let syncEnabled = false;
-
-function getItem(key: string): string | null {
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.getItem === "function") {
-      return localStorage.getItem(key);
-    }
-  } catch {}
-  return memoryFallback[key] ?? null;
-}
-
-function setItem(key: string, value: string): void {
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.setItem === "function") {
-      localStorage.setItem(key, value);
-      return;
-    }
-  } catch {}
-  memoryFallback[key] = value;
-}
 
 export function saveRawAttempts(attempts: QuestionAttempt[]): void {
   setItem(STORAGE_KEY, JSON.stringify(attempts));
 }
 
-function removeItem(key: string): void {
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.removeItem === "function") {
-      localStorage.removeItem(key);
-      return;
-    }
-  } catch {}
-  delete memoryFallback[key];
-}
-
+/** Clears stored progress and any memory fallback. Tests own this. */
 export function resetMemoryFallback(): void {
-  memoryFallback = {};
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.clear === "function") {
-      localStorage.clear();
-    }
-  } catch {}
+  resetStorage();
 }
-
-const DOMAIN_TITLES: Record<string, string> = {
-  "domain-1": "Domain 1: Inference API & Compatibility",
-  "domain-2": "Domain 2: Agent Architecture & Orchestration",
-  "domain-3": "Domain 3: Data & Post-Training",
-  "domain-4": "Domain 4: Production Operations",
-};
 
 export function getStoredAttempts(): QuestionAttempt[] {
   try {
@@ -129,46 +116,89 @@ export function setSyncEnabled(enabled: boolean): void {
   syncEnabled = enabled;
 }
 
-function postAttemptToServer(questionId: string, domain: string, correct: boolean): void {
-  fetch(ATTEMPTS_ENDPOINT, {
+/**
+ * The complete set of fields a learner attempt ever transmits. Course
+ * membership is deliberately absent: it is canonical content metadata
+ * (questionId -> question.course_id), so sending it would duplicate content as
+ * personal learner data and create a reconciliation problem the server does
+ * not need to have.
+ */
+function postAttemptToServer(questionId: string, domain: string, correct: boolean): Promise<boolean> {
+  return fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
     body: JSON.stringify({ questionId, domain, correct }),
-  }).catch(() => {
-    // Best-effort only: the local write already succeeded, so a sync
-    // failure (offline, expired session, 5xx) is never surfaced.
-  });
+  })
+    .then((res) => res.ok)
+    .catch(() => {
+      // Best-effort only: the local write already succeeded, so a sync
+      // failure (offline, expired session, 5xx) is never surfaced.
+      return false;
+    });
 }
 
-export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
+/** Flips one stored row to synced once the server has confirmed it, so it is never reconsidered. */
+function markAttemptSynced(questionId: string, attemptedAt: string): void {
   try {
     const attempts = getStoredAttempts();
-    const updated = attempts.filter((a) => a.questionId !== questionId);
-    updated.push({
-      questionId,
-      domain,
-      correct,
-      attemptedAt: new Date().toISOString(),
-    });
-    setItem(STORAGE_KEY, JSON.stringify(updated));
+    const row = attempts.find((a) => a.questionId === questionId && a.attemptedAt === attemptedAt);
+    if (row && !row.synced) {
+      row.synced = true;
+      setItem(STORAGE_KEY, JSON.stringify(attempts));
+    }
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+/**
+ * Appends a new attempt to the local log. The log is append-only — a retry
+ * of a question already attempted (e.g. once in Practice, later in a Mock
+ * exam) adds a new row rather than overwriting the earlier one, matching the
+ * server's own immutable `attempts` table. Callers that need "the learner's
+ * current state per question" (progress stats, mistakes) derive it via
+ * latestPerQuestion rather than relying on storage holding one row per
+ * question.
+ */
+export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
+  const attemptedAt = new Date().toISOString();
+  try {
+    const attempts = getStoredAttempts();
+    attempts.push({ questionId, domain, correct, attemptedAt });
+    setItem(STORAGE_KEY, JSON.stringify(attempts));
   } catch {
     // Ignore storage errors
   }
 
   if (syncEnabled) {
-    postAttemptToServer(questionId, domain, correct);
+    postAttemptToServer(questionId, domain, correct).then((ok) => {
+      if (ok) markAttemptSynced(questionId, attemptedAt);
+    });
   }
 }
 
 /**
  * Pulls the signed-in learner's server-recorded attempts (a single
- * GET /api/attempts call) and merges them into local storage, keeping
- * whichever of the local or server record is newer per questionId. Any
- * local attempt whose questionId the server did not already have is then
- * backfilled with an individual POST /api/attempts call, so history built
- * up anonymously survives a first sign-in. A no-op while sync is disabled,
- * and any network failure leaves local data untouched.
+ * GET /api/attempts call, latest per question) and reconciles them with the
+ * local log. The server's own `attempts` table is append-only and
+ * server-timestamped; this function does not delete or overwrite anything on
+ * either side — it only adds rows neither side already has:
+ *
+ * - A server record is appended locally only if it is strictly newer than
+ *   this device's own latest local attempt for that question (i.e. it came
+ *   from a different device/session this log has never seen).
+ * - A local attempt not yet marked `synced` is backfilled to the server
+ *   (individual POST /api/attempts calls) unless the server's latest record
+ *   for that question is already at least as recent — not merely "the
+ *   server has some record" — so an update made offline after an earlier
+ *   sync is never stranded on this device. Once a row is confirmed synced
+ *   (by either path), it is flagged and never re-evaluated by timestamp
+ *   again, so a skewed local clock cannot make the same row look stale
+ *   forever and get reposted on every sync.
+ *
+ * A no-op while sync is disabled, and any network failure leaves local data
+ * untouched.
  */
 export async function syncFromServer(): Promise<void> {
   if (!syncEnabled) return;
@@ -184,34 +214,42 @@ export async function syncFromServer(): Promise<void> {
   }
 
   const local = getStoredAttempts();
-  const serverIds = new Set(serverAttempts.map((a) => a.questionId));
+  const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
 
-  const merged = new Map<string, QuestionAttempt>();
-  for (const a of local) {
-    merged.set(a.questionId, a);
-  }
-  for (const a of serverAttempts) {
-    const existing = merged.get(a.questionId);
-    if (!existing || new Date(a.attemptedAt).getTime() > new Date(existing.attemptedAt).getTime()) {
-      merged.set(a.questionId, a);
+  const newFromServer = serverAttempts.filter((a) => {
+    const existing = localLatestByQuestion.get(a.questionId);
+    return !existing || new Date(a.attemptedAt).getTime() > new Date(existing.attemptedAt).getTime();
+  });
+
+  if (newFromServer.length > 0) {
+    try {
+      const withServerRows = [...local, ...newFromServer.map((a) => ({ ...a, synced: true }))];
+      setItem(STORAGE_KEY, JSON.stringify(withServerRows));
+    } catch {
+      // Ignore storage errors; fall through so backfill still gets attempted.
     }
   }
 
-  try {
-    setItem(STORAGE_KEY, JSON.stringify([...merged.values()]));
-  } catch {
-    // Ignore storage errors; fall through so backfill still gets attempted.
-  }
+  const serverLatestByQuestion = new Map(serverAttempts.map((a) => [a.questionId, a]));
+  for (const a of localLatestByQuestion.values()) {
+    if (a.synced) continue;
 
-  for (const a of local) {
-    if (!serverIds.has(a.questionId)) {
-      postAttemptToServer(a.questionId, a.domain, a.correct);
+    const serverRecord = serverLatestByQuestion.get(a.questionId);
+    const serverIsUpToDate =
+      serverRecord && new Date(serverRecord.attemptedAt).getTime() >= new Date(a.attemptedAt).getTime();
+    if (serverIsUpToDate) {
+      markAttemptSynced(a.questionId, a.attemptedAt);
+      continue;
     }
+
+    postAttemptToServer(a.questionId, a.domain, a.correct).then((ok) => {
+      if (ok) markAttemptSynced(a.questionId, a.attemptedAt);
+    });
   }
 }
 
 export function getMistakeQuestionIds(): string[] {
-  const attempts = getStoredAttempts();
+  const attempts = latestPerQuestion(getStoredAttempts());
   return attempts.filter((a) => !a.correct).map((a) => a.questionId);
 }
 
@@ -223,12 +261,25 @@ export function clearProgress(): void {
   }
 }
 
+/**
+ * Statistics for one course.
+ *
+ * `bundle` is the scope, and the only scope: callers pass the active course's
+ * questions, and every number below is derived by intersecting stored attempts
+ * with those question ids. Attempts from another course simply do not match
+ * any id, so a course's progress is isolated without the attempt records
+ * knowing anything about courses.
+ *
+ * `domainTitles` comes from the generated course catalog rather than a
+ * hardcoded map, so a course whose domains differ still reads correctly.
+ */
 export function calculateProgressStats(
-  bundle: Array<{ id: string; domain: string }> = rawBundle as Array<{ id: string; domain: string }>,
+  bundle: Array<{ id: string; domain: string }>,
   attempts: QuestionAttempt[] = getStoredAttempts(),
+  domainTitles: Record<string, string> = {},
 ): OverallProgress {
   const attemptsMap = new Map<string, QuestionAttempt>();
-  for (const a of attempts) {
+  for (const a of latestPerQuestion(attempts)) {
     attemptsMap.set(a.questionId, a);
   }
 
@@ -264,7 +315,7 @@ export function calculateProgressStats(
 
     domainProgress.push({
       domainId,
-      domainTitle: DOMAIN_TITLES[domainId] || domainId,
+      domainTitle: domainTitles[domainId] || domainId,
       totalQuestions: stats.total,
       attemptedQuestions: stats.attempted,
       correctQuestions: stats.correct,
@@ -272,8 +323,11 @@ export function calculateProgressStats(
     });
   }
 
-  for (const a of attemptsMap.values()) {
-    if (!a.correct) {
+  // Mistakes are counted inside the scope too — an open mistake in another
+  // course is not this course's business.
+  for (const q of bundle) {
+    const attempt = attemptsMap.get(q.id);
+    if (attempt && !attempt.correct) {
       totalMistakes += 1;
     }
   }

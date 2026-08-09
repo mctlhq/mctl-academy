@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
-import { usePracticeSession, type BundleQuestion } from "./usePracticeSession";
+import { usePracticeSession } from "./usePracticeSession";
+import type { BundleQuestion } from "../services/contentBundle";
 import { renderInlineMarkdown } from "./renderInlineMarkdown";
 import ReportModal from "../components/ReportModal.vue";
 
+/**
+ * Renders one practice session over the questions it is handed. The bundle is
+ * always already scoped to the selected course by the routed view, which also
+ * keys this component on the course id — so switching course remounts a fresh
+ * session rather than mutating a running one.
+ */
 const props = withDefaults(
   defineProps<{
-    /** Override the bundle read at build time — used by tests or custom filtering. */
-    bundle?: readonly BundleQuestion[];
+    bundle: readonly BundleQuestion[];
     title?: string;
     emptyMessage?: string;
   }>(),
@@ -18,6 +24,7 @@ const props = withDefaults(
 const { current, index, total, revealed, score, attempted, selectOption, next } = usePracticeSession(
   props.bundle,
 );
+
 const isReporting = ref(false);
 const CONTEXT_STORAGE_KEY = "academy.practice-context-open";
 const contextOpen = ref(
@@ -68,8 +75,6 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
           <button type="button" class="report-button" @click="isReporting = true">Report question</button>
         </div>
 
-        <!-- Restricted inline Markdown only: escaped text plus backtick code
-             spans, matching build-preview.mjs's contract for the same field. -->
         <h1 class="stem" v-html="renderInlineMarkdown(current.stem)" />
         <ul :key="current.id" class="options">
           <li
@@ -390,7 +395,6 @@ kbd {
   .practice-header {
     gap: 0.75rem;
   }
-
 }
 
 @media (max-width: 560px) {

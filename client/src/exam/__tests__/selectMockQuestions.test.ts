@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { selectMockQuestions } from "../selectMockQuestions";
 import type { MockConfig, Question } from "../types";
-import bundle from "../../data/mock-bundle.generated.json";
+import { courseCatalog } from "../../services/courseCatalog";
+import { questionsForCourse } from "../../services/contentBundle";
 
 function makeQuestion(id: string, domain: string): Question {
   return {
@@ -70,10 +71,28 @@ describe("selectMockQuestions", () => {
     expect(first.questions.map((q) => q.id).sort()).not.toEqual(second.questions.map((q) => q.id).sort());
   });
 
-  it("T2: exercised against the real current bank, proves the bank now satisfies 6/10/6/8 requirements", () => {
-    const result = selectMockQuestions(bundle.questions as Question[], bundle.mock as MockConfig);
-    // Now that the question bank has grown past the Phase 1 target of 80 items
-    // (with at least 6/10/6/8 in each domain), mock selection succeeds cleanly.
+  it("T2: every available course's real bank satisfies its own mock composition", () => {
+    // Each course carries its own mock configuration in
+    // content/courses/<id>.yaml, and a mock draws only from that course's
+    // questions — so this has to hold per course, not once globally.
+    const available = courseCatalog.filter((c) => c.available);
+    expect(available.length).toBeGreaterThan(0);
+
+    for (const course of available) {
+      const result = selectMockQuestions(questionsForCourse(course.id) as Question[], course.mock as MockConfig);
+      expect(result.ok, `course ${course.id} cannot fill its mock`).toBe(true);
+    }
+  });
+
+  it("a course's mock never draws a question from another course", () => {
+    const course = courseCatalog.find((c) => c.available)!;
+    const result = selectMockQuestions(questionsForCourse(course.id) as Question[], course.mock as MockConfig);
     expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    const inCourse = new Set(questionsForCourse(course.id).map((q) => q.id));
+    for (const q of result.questions) {
+      expect(inCourse.has(q.id)).toBe(true);
+    }
   });
 });

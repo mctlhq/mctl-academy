@@ -5,7 +5,7 @@
 ## Key Rules & Content Policy
 
 - `CONTENT-POLICY.md`: Authorship and approval are mechanically separated. Questions must be written by AI agents from allowlisted documentation (`authored.by: agent:<name>`) and approved by human reviewers.
-- `LEGAL.md`: Certification naming rules. Naming is strictly isolated to `content/branding.yaml` and never appears in slugs, titles, or questions.
+- `LEGAL.md`: Certification naming rules. Naming is strictly isolated to each course's canonical `content/courses/<id>.yaml` and never appears in slugs, titles, nav labels, or questions.
 
 ## Structure
 

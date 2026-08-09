@@ -7,9 +7,6 @@ dist/
 .DS_Store
 coverage/
 
-# Build-time content bundle for the client (client/scripts/build-content-bundle.mjs).
-# Regenerated from content/ on every dev/build/test run; never a source of truth.
-client/src/data/*.generated.json
 
 # Playwright (e2e.yml) output — reports/traces from local or CI runs.
 playwright-report/

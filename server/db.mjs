@@ -119,14 +119,13 @@ export async function checkDbReady() {
   return { ready: true, mode: "postgres" };
 }
 
-export async function recordUserAttempt({ userId, questionId, domain, correct, courseId = "agentic-ai-builder" }) {
-  const targetCourseId = courseId || "agentic-ai-builder";
+export async function recordUserAttempt({ userId, questionId, domain, correct }) {
   if (pool) {
     const res = await pool.query(
-      `INSERT INTO attempts (user_id, question_id, domain, correct, course_id)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, question_id, domain, correct, course_id, attempted_at;`,
-      [userId || null, questionId, domain, correct, targetCourseId]
+      `INSERT INTO attempts (user_id, question_id, domain, correct)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, question_id, domain, correct, attempted_at;`,
+      [userId || null, questionId, domain, correct]
     );
     const row = res.rows[0];
     return {
@@ -134,7 +133,6 @@ export async function recordUserAttempt({ userId, questionId, domain, correct, c
       questionId: row.question_id,
       domain: row.domain,
       correct: row.correct,
-      courseId: row.course_id,
       attemptedAt: row.attempted_at,
     };
   }
@@ -145,35 +143,39 @@ export async function recordUserAttempt({ userId, questionId, domain, correct, c
     questionId,
     domain,
     correct,
-    courseId: targetCourseId,
     attemptedAt: new Date().toISOString(),
   };
   memAttempts.push(attempt);
   return attempt;
 }
 
-export async function getUserAttempts(userId, courseId = "agentic-ai-builder") {
-  const targetCourseId = courseId || "agentic-ai-builder";
+/**
+ * Every attempt this learner has, latest per question.
+ *
+ * Not scoped by course, because an attempt has no course: which course a
+ * question belongs to is content metadata the client already has, so it scopes
+ * progress by intersecting these attempts with the active course's question
+ * ids. Keeping the server out of that avoids storing content facts as personal
+ * data and re-deriving them on every content change.
+ */
+export async function getUserAttempts(userId) {
   if (pool) {
     const res = await pool.query(
-      `SELECT DISTINCT ON (question_id) question_id, domain, correct, course_id, attempted_at
+      `SELECT DISTINCT ON (question_id) question_id, domain, correct, attempted_at
        FROM attempts
-       WHERE user_id = $1 AND course_id = $2
+       WHERE user_id = $1
        ORDER BY question_id, attempted_at DESC;`,
-      [userId, targetCourseId]
+      [userId]
     );
     return res.rows.map((r) => ({
       questionId: r.question_id,
       domain: r.domain,
       correct: r.correct,
-      courseId: r.course_id,
       attemptedAt: r.attempted_at,
     }));
   }
 
-  const userAttempts = memAttempts.filter(
-    (a) => a.userId === userId && (a.courseId || "agentic-ai-builder") === targetCourseId
-  );
+  const userAttempts = memAttempts.filter((a) => a.userId === userId);
   const map = new Map();
   for (const a of userAttempts) {
     map.set(a.questionId, a);
@@ -181,14 +183,13 @@ export async function getUserAttempts(userId, courseId = "agentic-ai-builder") {
   return [...map.values()];
 }
 
-export async function insertQuestionReport({ questionId, reason, comment, reporterUserId, courseId = "agentic-ai-builder" }) {
-  const targetCourseId = courseId || "agentic-ai-builder";
+export async function insertQuestionReport({ questionId, reason, comment, reporterUserId }) {
   if (pool) {
     const res = await pool.query(
-      `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id, course_id)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, question_id, reason, comment, reporter_user_id, course_id, created_at;`,
-      [questionId, reason, comment || null, reporterUserId || null, targetCourseId]
+      `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, question_id, reason, comment, reporter_user_id, created_at;`,
+      [questionId, reason, comment || null, reporterUserId || null]
     );
     const row = res.rows[0];
     return {
@@ -197,7 +198,6 @@ export async function insertQuestionReport({ questionId, reason, comment, report
       reason: row.reason,
       comment: row.comment,
       reporterUserId: row.reporter_user_id,
-      courseId: row.course_id,
       createdAt: row.created_at,
     };
   }
@@ -208,22 +208,20 @@ export async function insertQuestionReport({ questionId, reason, comment, report
     reason,
     comment: comment || null,
     reporterUserId: reporterUserId || null,
-    courseId: targetCourseId,
     createdAt: new Date().toISOString(),
   };
   memQuestionReports.push(report);
   return report;
 }
 
-export async function listRecentQuestionReports(limit = 50, courseId = null) {
+export async function listRecentQuestionReports(limit = 50) {
   if (pool) {
     const res = await pool.query(
-      `SELECT id, question_id, reason, comment, reporter_user_id, course_id, created_at
+      `SELECT id, question_id, reason, comment, reporter_user_id, created_at
        FROM question_reports
-       WHERE ($2::text IS NULL OR course_id = $2)
        ORDER BY created_at DESC
        LIMIT $1;`,
-      [limit, courseId || null]
+      [limit]
     );
     return res.rows.map((row) => ({
       id: row.id,
@@ -231,14 +229,10 @@ export async function listRecentQuestionReports(limit = 50, courseId = null) {
       reason: row.reason,
       comment: row.comment,
       reporterUserId: row.reporter_user_id,
-      courseId: row.course_id,
       createdAt: row.created_at,
     }));
   }
 
-  let reports = memQuestionReports;
-  if (courseId) {
-    reports = reports.filter((r) => (r.courseId || "agentic-ai-builder") === courseId);
-  }
-  return reports.slice(-limit).reverse();
+  return memQuestionReports.slice(-limit).reverse();
+
 }
