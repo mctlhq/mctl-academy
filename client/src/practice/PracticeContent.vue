@@ -201,7 +201,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
                 aria-label="Downvote this question"
                 @click="onVoteClick(-1)"
               >
-                −
+                <span class="vote-icon" aria-hidden="true">▼</span>
               </button>
               <span class="vote-score" :class="{ 'vote-score-error': voteErrored }">
                 {{ voteScore === null ? "\u00b7\u00b7" : voteScore }}
@@ -214,7 +214,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
                 aria-label="Upvote this question"
                 @click="onVoteClick(1)"
               >
-                +
+                <span class="vote-icon" aria-hidden="true">▲</span>
               </button>
             </div>
             <button type="button" class="report-button" @click="isReporting = true">Report question</button>
@@ -359,26 +359,45 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 .vote-widget {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.15rem;
+  padding: 0.2rem 0.35rem;
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-pill);
 }
 
+/* .vote-button is the 44px touch target (WCAG 2.5.5 / the app's own
+   convention — see e2e/mobile-layout.spec.ts), but a circle that size
+   filling this compact a pill has nowhere to go: at .vote-widget's old
+   0.15rem padding, an active vote's full-button background tint collided
+   with the pill's own border (the exact "circle overlapping the outline"
+   look reported against this widget). Keeping .vote-button itself
+   transparent and unsized visually, with .vote-icon as a smaller circle
+   centered inside it, decouples the tap target from what's actually drawn —
+   the hit area stays 44px without forcing a 44px-wide painted shape into an
+   inline caption-height row. */
 .vote-button {
   display: inline-grid;
   min-width: 2.75rem;
   min-height: 2.75rem;
   place-items: center;
   border: 0;
-  border-radius: var(--mctl-radius-pill);
   background: transparent;
   color: var(--surface-fg-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1;
   cursor: pointer;
+}
+
+.vote-icon {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border-radius: var(--mctl-radius-pill);
+  font-size: 0.6rem;
+  line-height: 1;
+  transition: background-color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
+}
+
+.vote-button:hover .vote-icon {
+  background: var(--surface-card);
 }
 
 .vote-button:hover {
@@ -387,16 +406,23 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 
 .vote-button.vote-up.active {
   color: var(--status-ok);
-  background: color-mix(in srgb, var(--status-ok) 14%, transparent);
+}
+
+.vote-button.vote-up.active .vote-icon {
+  background: color-mix(in srgb, var(--status-ok) 16%, transparent);
 }
 
 .vote-button.vote-down.active {
   color: var(--status-bad);
-  background: color-mix(in srgb, var(--status-bad) 14%, transparent);
+}
+
+.vote-button.vote-down.active .vote-icon {
+  background: color-mix(in srgb, var(--status-bad) 16%, transparent);
 }
 
 .vote-score {
-  min-width: 1.5rem;
+  min-width: 1.35rem;
+  padding: 0 0.15rem;
   overflow-wrap: break-word;
   text-align: center;
   color: var(--surface-fg-muted);
