@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co18b2c3d4e5
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: "When NCCL all-reduce operations hang indefinitely across a distributed GPU cluster, which diagnostic tool isolates the communication freeze?"

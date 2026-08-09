@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld12b2c3d4e5
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/model-selection
 stem: "When evaluating open-weights versus proprietary closed-API models, what primary architectural governance benefit do open-weights provide?"

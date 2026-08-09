@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld17a1b2c3d4
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/cost-economics
 stem: "How does semantic prompt caching reduce API expenditure in high-frequency customer support applications?"

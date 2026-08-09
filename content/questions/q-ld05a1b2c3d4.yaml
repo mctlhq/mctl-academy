@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld05a1b2c3d4
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/model-selection
 stem: "When selecting a model family for complex reasoning tasks versus simple data extraction, what key trade-off should engineering leaders evaluate?"

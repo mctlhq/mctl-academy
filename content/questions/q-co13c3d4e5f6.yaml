@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co13c3d4e5f6
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: "When configuring persistent block storage for checkpointing large LLMs, which IOPS configuration avoids training stalls?"

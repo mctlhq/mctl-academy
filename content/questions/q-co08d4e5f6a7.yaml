@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co08d4e5f6a7
-status: published
+status: draft
 domain: domain-2
 objective: domain-2/security-policies
 stem: "Which governance measure protects cloud API endpoints from unauthorized automated access?"

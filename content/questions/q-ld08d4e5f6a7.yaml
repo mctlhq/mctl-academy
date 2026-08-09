@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld08d4e5f6a7
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/risk-compliance
 stem: "Which risk management practice prevents sensitive enterprise data from being exposed during model inference?"

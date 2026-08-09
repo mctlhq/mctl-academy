@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co14d4e5f6a7
-status: published
+status: draft
 domain: domain-2
 objective: domain-2/iam-roles
 stem: "What credential isolation practice prevents compromised training pods from modifying cloud production infrastructure?"

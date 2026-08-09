@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co09e5f6a7b8
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/node-recovery
 stem: "When an automated health check detects a silent GPU memory hardware fault on a node, what is the recovery procedure?"

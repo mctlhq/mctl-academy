@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld10f6a7b8c9
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/cost-economics
 stem: "Which pricing model strategy optimizes operational costs for continuous 24/7 high-volume inference workloads?"

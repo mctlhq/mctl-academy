@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co20d4e5f6a7
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: "How do resource quota limits prevent individual user projects from starving GPU cluster capacity?"

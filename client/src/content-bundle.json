@@ -132,666 +132,6 @@
     ]
   },
   {
-    "id": "q-co01a1b2c3d4",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/environment-deployment",
-    "stem": "When provisioning a high-performance GPU cluster environment, which networking configuration ensures low-latency inter-node communication?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Pipelining all inter-node compute traffic through public HTTP gateways",
-        "correct": false,
-        "explanation": "Public HTTP gateways introduce latency overhead and public internet exposure."
-      },
-      {
-        "id": "b",
-        "text": "Configuring dedicated private VPC subnets with high-bandwidth interconnects",
-        "correct": true,
-        "explanation": "Dedicated private VPC subnets with high-speed interconnects optimize GPU cluster throughput."
-      },
-      {
-        "id": "c",
-        "text": "Disabling security groups and network interfaces across compute nodes",
-        "correct": false,
-        "explanation": "Disabling interfaces renders nodes unreachable."
-      },
-      {
-        "id": "d",
-        "text": "Enforcing single-threaded HTTP polling on storage endpoints",
-        "correct": false,
-        "explanation": "Polling causes high CPU idle time and severe bottlenecking."
-      }
-    ]
-  },
-  {
-    "id": "q-co02b2c3d4e5",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/iam-roles",
-    "stem": "Which principle should govern service account access permissions across GPU training jobs?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Granting full global administrative privileges to every service account",
-        "correct": false,
-        "explanation": "Excessive permissions break the least-privilege principle."
-      },
-      {
-        "id": "b",
-        "text": "Assigning least-privilege IAM roles scoped specifically to required storage and compute resources",
-        "correct": true,
-        "explanation": "Least-privilege IAM roles restrict access to minimum required operations."
-      },
-      {
-        "id": "c",
-        "text": "Embedding root password credentials directly inside job scripts",
-        "correct": false,
-        "explanation": "Hardcoding credentials violates security governance standards."
-      },
-      {
-        "id": "d",
-        "text": "Disabling authentication checks on administrative API endpoints",
-        "correct": false,
-        "explanation": "Disabling authentication exposes infrastructure to unauthorized control."
-      }
-    ]
-  },
-  {
-    "id": "q-co03c3d4e5f6",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-monitoring",
-    "stem": "What action should automated observability metrics trigger when a GPU compute node experiences unrecoverable hardware degradation?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Ignore the telemetry alert and continue routing new jobs to the node",
-        "correct": false,
-        "explanation": "Routing jobs to degraded nodes leads to failed workloads."
-      },
-      {
-        "id": "b",
-        "text": "Mark the node unhealthy, cordon it from scheduling, and alert cluster operators",
-        "correct": true,
-        "explanation": "Cordoning degraded nodes prevents job failures while operators initiate recovery."
-      },
-      {
-        "id": "c",
-        "text": "Delete all stored checkpoint data from shared storage",
-        "correct": false,
-        "explanation": "Deleting checkpoints causes loss of progress."
-      },
-      {
-        "id": "d",
-        "text": "Increase the resource quota limits on the degraded instance",
-        "correct": false,
-        "explanation": "Increasing quotas on failing hardware does not resolve physical errors."
-      }
-    ]
-  },
-  {
-    "id": "q-co04d4e5f6a7",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-4",
-    "objective": "domain-4/operational-troubleshooting",
-    "stem": "When diagnosing intermittent silent job failures across a multi-node GPU cluster, which initial step establishes root-cause visibility?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Restarting all physical compute nodes simultaneously without collecting logs",
-        "correct": false,
-        "explanation": "Immediate rebooting destroys diagnostic state and logs."
-      },
-      {
-        "id": "b",
-        "text": "Aggregating kernel event logs, NCCL communication traces, and GPU health telemetry",
-        "correct": true,
-        "explanation": "Aggregating hardware telemetry and NCCL traces isolates failure conditions."
-      },
-      {
-        "id": "c",
-        "text": "Doubling the batch size across all running training jobs",
-        "correct": false,
-        "explanation": "Increasing load exacerbates memory and hardware instability."
-      },
-      {
-        "id": "d",
-        "text": "Re-installing OS images across all master control plane nodes",
-        "correct": false,
-        "explanation": "Control plane reinstall does not address node-level interconnect failures."
-      }
-    ]
-  },
-  {
-    "id": "q-co05a1b2c3d4",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/network-vpc",
-    "stem": "When isolating high-bandwidth GPU cluster traffic, which VPC networking setup prevents public internet exposure?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Deploying nodes in private subnets with internal security group rules",
-        "correct": true,
-        "explanation": "Private subnets paired with restricted internal security groups isolate cluster traffic from public routing."
-      },
-      {
-        "id": "b",
-        "text": "Attaching public IPv4 addresses to every GPU compute interface",
-        "correct": false,
-        "explanation": "Public IP addresses expose interfaces directly to external internet threats."
-      },
-      {
-        "id": "c",
-        "text": "Removing subnet routing tables completely",
-        "correct": false,
-        "explanation": "Removing routing tables breaks all inter-node communication."
-      },
-      {
-        "id": "d",
-        "text": "Routing all internal traffic through external third-party proxies",
-        "correct": false,
-        "explanation": "External proxies add latency and introduce external security risks."
-      }
-    ]
-  },
-  {
-    "id": "q-co06b2c3d4e5",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/storage-volumes",
-    "stem": "Which storage architecture provides high-throughput shared access across distributed GPU training workers?",
-    "options": [
-      {
-        "id": "a",
-        "text": "High-performance POSIX shared filesystems or fast Object Storage endpoints",
-        "correct": true,
-        "explanation": "POSIX shared filesystems and object storage support concurrent high-speed data loading for multi-node jobs."
-      },
-      {
-        "id": "b",
-        "text": "Single-node un-attached local RAM disks",
-        "correct": false,
-        "explanation": "RAM disks are non-persistent and unaccessible across remote worker nodes."
-      },
-      {
-        "id": "c",
-        "text": "Magnetic tape backup archives",
-        "correct": false,
-        "explanation": "Tape archives are ultra-slow offline storage unsuitable for active training workloads."
-      },
-      {
-        "id": "d",
-        "text": "Synchronous REST API polling over public HTTP endpoints",
-        "correct": false,
-        "explanation": "REST API polling introduces extreme latency and network bottlenecks."
-      }
-    ]
-  },
-  {
-    "id": "q-co07c3d4e5f6",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/organization-hierarchy",
-    "stem": "How should enterprise resource boundaries be structured to manage billing and isolation across multiple AI teams?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Grouping teams under distinct Projects within an Organization hierarchy",
-        "correct": true,
-        "explanation": "Organizing teams into dedicated Projects within an Organization enforces clean resource isolation and quota tracking."
-      },
-      {
-        "id": "b",
-        "text": "Sharing a single admin credential file across all corporate departments",
-        "correct": false,
-        "explanation": "Shared admin credentials destroy auditability and resource boundaries."
-      },
-      {
-        "id": "c",
-        "text": "Disabling project quota tracking and organization policies",
-        "correct": false,
-        "explanation": "Disabling quotas leads to unmonitored infrastructure spending."
-      },
-      {
-        "id": "d",
-        "text": "Creating separate cloud accounts for every individual GPU job execution",
-        "correct": false,
-        "explanation": "Creating accounts per job causes unmanageable administrative overhead."
-      }
-    ]
-  },
-  {
-    "id": "q-co08d4e5f6a7",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/security-policies",
-    "stem": "Which governance measure protects cloud API endpoints from unauthorized automated access?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Enforcing API key rotation policies and IAM role-based access control",
-        "correct": true,
-        "explanation": "Rotating API keys and RBAC policies prevent credential exposure and unauthorized access."
-      },
-      {
-        "id": "b",
-        "text": "Publishing service account tokens to public source control repositories",
-        "correct": false,
-        "explanation": "Publishing tokens publicly exposes endpoints to immediate exploitation."
-      },
-      {
-        "id": "c",
-        "text": "Disabling security log auditing across all production services",
-        "correct": false,
-        "explanation": "Disabling auditing prevents detection of security breaches."
-      },
-      {
-        "id": "d",
-        "text": "Bypassing TLS encryption for internal API communication",
-        "correct": false,
-        "explanation": "Bypassing TLS exposes sensitive tokens to network sniffing."
-      }
-    ]
-  },
-  {
-    "id": "q-co09e5f6a7b8",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-recovery",
-    "stem": "When an automated health check detects a silent GPU memory hardware fault on a node, what is the recovery procedure?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Cordoning the node, draining existing workloads, and triggering automated instance replacement",
-        "correct": true,
-        "explanation": "Cordoning and draining prevents scheduling new jobs on broken GPUs while automated replacement restores capacity."
-      },
-      {
-        "id": "b",
-        "text": "Increasing thermal thresholds to bypass hardware alarms",
-        "correct": false,
-        "explanation": "Bypassing hardware alarms causes permanent physical GPU failure."
-      },
-      {
-        "id": "c",
-        "text": "Deleting all node monitoring metrics from the observability database",
-        "correct": false,
-        "explanation": "Deleting metrics hides physical failure evidence without repairing hardware."
-      },
-      {
-        "id": "d",
-        "text": "Re-assigning the degraded GPU node to high-priority production jobs",
-        "correct": false,
-        "explanation": "Assigning degraded nodes to production jobs causes severe customer outage."
-      }
-    ]
-  },
-  {
-    "id": "q-co10f6a7b8c9",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-4",
-    "objective": "domain-4/escalation-workflows",
-    "stem": "Which diagnostic documentation practice ensures rapid incident escalation during critical cluster outages?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Attaching structured system logs, timeline of metrics, and reproduction steps to incident tickets",
-        "correct": true,
-        "explanation": "Including structured logs, metric timelines, and reproduction details allows engineering teams to diagnose root causes immediately."
-      },
-      {
-        "id": "b",
-        "text": "Submitting blank support tickets titled urgent without system context",
-        "correct": false,
-        "explanation": "Context-free tickets delay investigation while support requests missing details."
-      },
-      {
-        "id": "c",
-        "text": "Deleting log files from worker nodes prior to escalation",
-        "correct": false,
-        "explanation": "Erasing log files destroys diagnostic evidence."
-      },
-      {
-        "id": "d",
-        "text": "Waiting 30 days before recording operational incident timelines",
-        "correct": false,
-        "explanation": "Delayed reporting severely slows incident resolution and SLA compliance."
-      }
-    ]
-  },
-  {
-    "id": "q-co11a1b2c3d4",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/environment-deployment",
-    "stem": "When deploying a multi-node GPU cluster for LLM pre-training, what is the primary function of high-speed InfiniBand/RoCE interconnects?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Accelerating gradient synchronization and tensor parallel communication between worker GPUs",
-        "correct": true,
-        "explanation": "High-speed interconnects (InfiniBand/RoCE) minimize latency during multi-GPU gradient all-reduce and tensor parallel operations."
-      },
-      {
-        "id": "b",
-        "text": "Serving public HTTP web traffic directly to end-user browsers",
-        "correct": false,
-        "explanation": "Interconnects handle internal node-to-node compute communications, not public HTTP traffic."
-      },
-      {
-        "id": "c",
-        "text": "Compressing local disk backup archives",
-        "correct": false,
-        "explanation": "Interconnects provide network bandwidth; disk compression is handled by storage software."
-      },
-      {
-        "id": "d",
-        "text": "Bypassing GPU memory allocation limits during model loading",
-        "correct": false,
-        "explanation": "Interconnects move data over the network; physical VRAM limits remain fixed."
-      }
-    ]
-  },
-  {
-    "id": "q-co12b2c3d4e5",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/network-vpc",
-    "stem": "Which VPC firewall policy prevents unauthorized lateral movement between isolated compute subnets?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Restricting ingress and egress security group rules to explicit port ranges and internal subnet CIDRs",
-        "correct": true,
-        "explanation": "Restricting security group rules to explicit CIDRs and ports prevents unauthorized inter-subnet access."
-      },
-      {
-        "id": "b",
-        "text": "Opening all TCP and UDP ports across all subnets to 0.0.0.0/0",
-        "correct": false,
-        "explanation": "Opening all ports globally exposes subnets to external cyber attacks."
-      },
-      {
-        "id": "c",
-        "text": "Disabling stateful packet inspection on internal routers",
-        "correct": false,
-        "explanation": "Disabling stateful inspection compromises firewall traffic tracking."
-      },
-      {
-        "id": "d",
-        "text": "Routing internal traffic over un-encrypted public wireless protocols",
-        "correct": false,
-        "explanation": "Public wireless routing introduces extreme security risks and high packet loss."
-      }
-    ]
-  },
-  {
-    "id": "q-co13c3d4e5f6",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/storage-volumes",
-    "stem": "When configuring persistent block storage for checkpointing large LLMs, which IOPS configuration avoids training stalls?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Provisioning high-throughput NVMe block storage volumes with dedicated write IOPS guarantees",
-        "correct": true,
-        "explanation": "High write IOPS NVMe volumes prevent IO bottlenecks when writing multi-gigabyte model weights."
-      },
-      {
-        "id": "b",
-        "text": "Using low-speed archival magnetic storage over USB 2.0 adapters",
-        "correct": false,
-        "explanation": "USB 2.0 magnetic storage causes extreme IO write latency."
-      },
-      {
-        "id": "c",
-        "text": "Disabling disk persistence during training runs",
-        "correct": false,
-        "explanation": "Disabling persistence results in total loss of progress on hardware crashes."
-      },
-      {
-        "id": "d",
-        "text": "Storing checkpoints in temporary volatile CPU cache lines",
-        "correct": false,
-        "explanation": "CPU cache lines cannot hold multi-gigabyte model checkpoints."
-      }
-    ]
-  },
-  {
-    "id": "q-co14d4e5f6a7",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/iam-roles",
-    "stem": "What credential isolation practice prevents compromised training pods from modifying cloud production infrastructure?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Binding short-lived scoped IAM service account tokens directly to workload pods via RBAC",
-        "correct": true,
-        "explanation": "Scoped pod-level RBAC tokens ensure training pods hold no permissions over admin infrastructure."
-      },
-      {
-        "id": "b",
-        "text": "Sharing organization admin credentials across all worker containers",
-        "correct": false,
-        "explanation": "Shared admin credentials allow compromised pods to modify entire cloud account infrastructure."
-      },
-      {
-        "id": "c",
-        "text": "Disabling pod authentication entirely",
-        "correct": false,
-        "explanation": "Disabling authentication allows un-authenticated access to cluster APIs."
-      },
-      {
-        "id": "d",
-        "text": "Embedding root SSH private keys inside container base images",
-        "correct": false,
-        "explanation": "Hardcoding SSH keys in images exposes administrative access to any container user."
-      }
-    ]
-  },
-  {
-    "id": "q-co15e5f6a7b8",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/organization-hierarchy",
-    "stem": "Which organizational policy configuration prevents accidental resource over-provisioning across child project accounts?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Setting explicit project-level resource quotas and budget alerts at the Organization level",
-        "correct": true,
-        "explanation": "Resource quotas and budget alerts cap resource allocation per project preventing unexpected cloud spend."
-      },
-      {
-        "id": "b",
-        "text": "Removing project quota caps completely",
-        "correct": false,
-        "explanation": "Removing caps allows un-monitored cost accumulation."
-      },
-      {
-        "id": "c",
-        "text": "Disabling project billing dashboards",
-        "correct": false,
-        "explanation": "Disabling dashboards hides cost tracking metrics from operators."
-      },
-      {
-        "id": "d",
-        "text": "Granting all project members global billing admin roles",
-        "correct": false,
-        "explanation": "Granting billing admin roles allows users to remove quota restrictions."
-      }
-    ]
-  },
-  {
-    "id": "q-co16f6a7b8c9",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-monitoring",
-    "stem": "Which metric is most critical for detecting GPU thermal throttling during heavy matrix multiplication workloads?",
-    "options": [
-      {
-        "id": "a",
-        "text": "GPU temperature, clock frequency degradation, and power draw metrics",
-        "correct": true,
-        "explanation": "Monitoring temperature alongside GPU core clock speed reveals thermal throttling events."
-      },
-      {
-        "id": "b",
-        "text": "Host network interface packet collision counters",
-        "correct": false,
-        "explanation": "Network collisions indicate network issues, not GPU thermal state."
-      },
-      {
-        "id": "c",
-        "text": "CPU swap memory usage on control plane nodes",
-        "correct": false,
-        "explanation": "Control plane swap usage does not measure GPU physical hardware temperature."
-      },
-      {
-        "id": "d",
-        "text": "HTML HTTP response latency on public marketing endpoints",
-        "correct": false,
-        "explanation": "Marketing site response time is unrelated to cluster GPU hardware thermals."
-      }
-    ]
-  },
-  {
-    "id": "q-co17a1b2c3d4",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-recovery",
-    "stem": "When an automatic node health recovery script cordons a degraded instance, what happens to running stateful pod workloads?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Workloads are safely drained and rescheduled onto healthy available nodes using recent storage checkpoints",
-        "correct": true,
-        "explanation": "Draining worker pods allows stateful jobs to resume execution from storage checkpoints on healthy nodes."
-      },
-      {
-        "id": "b",
-        "text": "Workloads remain stuck on the broken node until manual hard reboot",
-        "correct": false,
-        "explanation": "Cordoning and draining actively migrates workloads off degraded hardware."
-      },
-      {
-        "id": "c",
-        "text": "All shared storage volumes attached to the cluster are un-mounted globally",
-        "correct": false,
-        "explanation": "Unmounting storage globally breaks healthy running cluster jobs."
-      },
-      {
-        "id": "d",
-        "text": "Pod containers are permanently deleted without saving checkpoint progress",
-        "correct": false,
-        "explanation": "Proper recovery mechanics preserve checkpoint state before terminating pods."
-      }
-    ]
-  },
-  {
-    "id": "q-co18b2c3d4e5",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-4",
-    "objective": "domain-4/operational-troubleshooting",
-    "stem": "When NCCL all-reduce operations hang indefinitely across a distributed GPU cluster, which diagnostic tool isolates the communication freeze?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Enabling NCCL_DEBUG=INFO environment logging to capture inter-GPU collective communication state",
-        "correct": true,
-        "explanation": "Setting NCCL_DEBUG=INFO outputs detailed ring/tree communications, pinpointing which node/GPU dropped communication."
-      },
-      {
-        "id": "b",
-        "text": "Disabling all network interfaces across master control nodes",
-        "correct": false,
-        "explanation": "Disabling interfaces renders the cluster inaccessible."
-      },
-      {
-        "id": "c",
-        "text": "Increasing HTTP client timeout parameters in front-end microservices",
-        "correct": false,
-        "explanation": "Front-end HTTP timeouts do not diagnose inter-GPU NCCL kernel freezes."
-      },
-      {
-        "id": "d",
-        "text": "Deleting database schemas in production control planes",
-        "correct": false,
-        "explanation": "Deleting schemas destroys administrative metadata without resolving GPU network hangs."
-      }
-    ]
-  },
-  {
-    "id": "q-co19c3d4e5f6",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-4",
-    "objective": "domain-4/escalation-workflows",
-    "stem": "Which practice speeds up resolution when escalating an infrastructure bug to cloud vendor support?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Providing minimal reproducible code snippets, node IDs, timestamped kernel logs, and system environment details",
-        "correct": true,
-        "explanation": "Including reproducible code, exact node IDs, and kernel logs gives support engineers actionable diagnostics immediately."
-      },
-      {
-        "id": "b",
-        "text": "Escalating verbal complaints without sharing system log files",
-        "correct": false,
-        "explanation": "Verbal reports without logs delay root cause analysis."
-      },
-      {
-        "id": "c",
-        "text": "Re-booting master nodes repeatedly while support is investigating",
-        "correct": false,
-        "explanation": "Rebooting while support investigates destroys active diagnostic state."
-      },
-      {
-        "id": "d",
-        "text": "Modifying production permissions during active incident triage",
-        "correct": false,
-        "explanation": "Changing permissions mid-triage introduces secondary variables and confounds analysis."
-      }
-    ]
-  },
-  {
-    "id": "q-co20d4e5f6a7",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/resource-quotas",
-    "stem": "How do resource quota limits prevent individual user projects from starving GPU cluster capacity?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Enforcing per-project ceilings on total allocated GPU instances and concurrent API requests",
-        "correct": true,
-        "explanation": "Per-project quota ceilings restrict resource consumption, preserving capacity for other project teams."
-      },
-      {
-        "id": "b",
-        "text": "Disabling project quota tracking and allowing unrestricted allocation",
-        "correct": false,
-        "explanation": "Disabling tracking allows one project to consume all cluster resources."
-      },
-      {
-        "id": "c",
-        "text": "Terminating random worker pods across unrelated cloud accounts",
-        "correct": false,
-        "explanation": "Terminating random pods damages unrelated production workloads."
-      },
-      {
-        "id": "d",
-        "text": "Requiring manual root password approval for every HTTP request",
-        "correct": false,
-        "explanation": "Manual root password approval is an unworkable security anti-pattern."
-      }
-    ]
-  },
-  {
     "id": "q-cs01d4e5f6a7",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -866,27 +206,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Guaranteed reserved GPU compute capacity with predictable response latency and no noisy neighbor interference",
-        "correct": true,
-        "explanation": "Dedicated endpoints allocate isolated GPU instances, ensuring consistent latency and reserved capacity."
-      },
-      {
-        "id": "b",
-        "text": "Automatic generation of synthetic training datasets",
-        "correct": false,
-        "explanation": "Endpoints execute model inference, not dataset synthesis or fine-tuning preprocessing."
-      },
-      {
-        "id": "c",
         "text": "Free unlimited token consumption without billing charges",
         "correct": false,
         "explanation": "Dedicated instances incur hourly node hosting costs regardless of query volume."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Automatic client-side Javascript code transpilation",
         "correct": false,
         "explanation": "Dedicated endpoints handle neural network model inference, not web browser frontend code compilation."
+      },
+      {
+        "id": "c",
+        "text": "Guaranteed reserved GPU compute capacity with predictable response latency and no noisy neighbor interference",
+        "correct": true,
+        "explanation": "Dedicated endpoints allocate isolated GPU instances, ensuring consistent latency and reserved capacity."
+      },
+      {
+        "id": "d",
+        "text": "Automatic generation of synthetic training datasets",
+        "correct": false,
+        "explanation": "Endpoints execute model inference, not dataset synthesis or fine-tuning preprocessing."
       }
     ]
   },
@@ -899,27 +239,27 @@
     "options": [
       {
         "id": "a",
-        "text": "By passing the dedicated endpoint URL or endpoint deployment ID in the request base URL or model identifier",
-        "correct": true,
-        "explanation": "Requests route to dedicated instances by specifying the deployment endpoint host or deployment ID."
-      },
-      {
-        "id": "b",
-        "text": "By changing the TCP port to 21 on the client host machine",
-        "correct": false,
-        "explanation": "Port 21 is FTP; API endpoints use standard HTTPS (port 443)."
-      },
-      {
-        "id": "c",
         "text": "By embedding base64 encoded SSH keys in system prompts",
         "correct": false,
         "explanation": "SSH keys manage shell access, not API request model routing."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "By specifying purpose: fine-tune in request headers",
         "correct": false,
         "explanation": "The purpose header belongs to Files API uploads, not Chat Completion inference calls."
+      },
+      {
+        "id": "c",
+        "text": "By passing the dedicated endpoint URL or endpoint deployment ID in the request base URL or model identifier",
+        "correct": true,
+        "explanation": "Requests route to dedicated instances by specifying the deployment endpoint host or deployment ID."
+      },
+      {
+        "id": "d",
+        "text": "By changing the TCP port to 21 on the client host machine",
+        "correct": false,
+        "explanation": "Port 21 is FTP; API endpoints use standard HTTPS (port 443)."
       }
     ]
   },
@@ -965,27 +305,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Requests queue up to configured limits before returning HTTP 429 rate limit responses",
-        "correct": true,
-        "explanation": "Over-capacity concurrency triggers request queuing followed by HTTP 429 rate limit errors."
-      },
-      {
-        "id": "b",
-        "text": "The active model is permanently deleted from disk to prevent hardware overheating",
-        "correct": false,
-        "explanation": "Capacity limits trigger throttling responses, not data deletion."
-      },
-      {
-        "id": "c",
         "text": "All active user sessions are logged out across the organization",
         "correct": false,
         "explanation": "Throttling impacts specific inference requests, not user auth sessions."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "HTTP responses silently return corrupted random byte strings",
         "correct": false,
         "explanation": "Overload conditions return explicit HTTP 429 error codes, not corrupt data."
+      },
+      {
+        "id": "c",
+        "text": "Requests queue up to configured limits before returning HTTP 429 rate limit responses",
+        "correct": true,
+        "explanation": "Over-capacity concurrency triggers request queuing followed by HTTP 429 rate limit errors."
+      },
+      {
+        "id": "d",
+        "text": "The active model is permanently deleted from disk to prevent hardware overheating",
+        "correct": false,
+        "explanation": "Capacity limits trigger throttling responses, not data deletion."
       }
     ]
   },
@@ -998,27 +338,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Total prompt and completion tokens processed",
-        "correct": true,
-        "explanation": "Pay-as-you-go inference is billed per thousand/million tokens processed."
-      },
-      {
-        "id": "b",
-        "text": "Fixed flat monthly subscription fee per developer seat",
-        "correct": false,
-        "explanation": "Shared APIs bill based on actual token usage volume rather than seat counts."
-      },
-      {
-        "id": "c",
         "text": "Number of lines of code compiled in client builds",
         "correct": false,
         "explanation": "Code volume is not a billing metric for language model inference APIs."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Hard drive disk rotation speed",
         "correct": false,
         "explanation": "Disk hardware specs are managed by the cloud platform, not billed per query."
+      },
+      {
+        "id": "c",
+        "text": "Total prompt and completion tokens processed",
+        "correct": true,
+        "explanation": "Pay-as-you-go inference is billed per thousand/million tokens processed."
+      },
+      {
+        "id": "d",
+        "text": "Fixed flat monthly subscription fee per developer seat",
+        "correct": false,
+        "explanation": "Shared APIs bill based on actual token usage volume rather than seat counts."
       }
     ]
   },
@@ -1031,27 +371,27 @@
     "options": [
       {
         "id": "a",
-        "text": "READY",
-        "correct": true,
-        "explanation": "The READY state confirms node provisioning, model loading, and traffic capability."
-      },
-      {
-        "id": "b",
         "text": "CREATING",
         "correct": false,
         "explanation": "CREATING signifies ongoing provision of underlying compute nodes."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "DELETING",
         "correct": false,
         "explanation": "DELETING indicates endpoint de-provisioning and resource teardown."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "PAUSED",
         "correct": false,
         "explanation": "PAUSED indicates an inactive endpoint that is not serving live traffic."
+      },
+      {
+        "id": "d",
+        "text": "READY",
+        "correct": true,
+        "explanation": "The READY state confirms node provisioning, model loading, and traffic capability."
       }
     ]
   },
@@ -1064,27 +404,27 @@
     "options": [
       {
         "id": "a",
+        "text": "HTTP 401 Unauthorized",
+        "correct": false,
+        "explanation": "HTTP 401 indicates missing or invalid API keys."
+      },
+      {
+        "id": "b",
         "text": "HTTP 429 Too Many Requests",
         "correct": true,
         "explanation": "Exceeding RPM or TPM rate limits triggers HTTP 429 response status."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "HTTP 500 Internal Server Error",
         "correct": false,
         "explanation": "HTTP 500 indicates unhandled server crashes, not client quota rate limits."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "HTTP 404 Not Found",
         "correct": false,
         "explanation": "HTTP 404 indicates missing endpoint URLs or resources."
-      },
-      {
-        "id": "d",
-        "text": "HTTP 401 Unauthorized",
-        "correct": false,
-        "explanation": "HTTP 401 indicates missing or invalid API keys."
       }
     ]
   },
@@ -1559,27 +899,27 @@
     "options": [
       {
         "id": "a",
+        "text": "To host static website HTML files",
+        "correct": false,
+        "explanation": "The Files API stores training data, not static web host assets."
+      },
+      {
+        "id": "b",
         "text": "To upload, store, and manage JSONL dataset files required for fine-tuning jobs",
         "correct": true,
         "explanation": "The Files API manages training and validation JSONL files prior to job submission."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "To stream real-time GPU hardware telemetry logs",
         "correct": false,
         "explanation": "GPU telemetry is handled by system monitoring endpoints, not the Files API."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "To dynamically resize image dimensions during inference",
         "correct": false,
         "explanation": "Image resizing is a vision pre-processing task, not a dataset Files API operation."
-      },
-      {
-        "id": "d",
-        "text": "To host static website HTML files",
-        "correct": false,
-        "explanation": "The Files API stores training data, not static web host assets."
       }
     ]
   },
@@ -1625,27 +965,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Your application, which then passes the result back to the model",
-        "correct": true,
-        "explanation": "The model only emits an invocation instruction. Executing the function and feeding its output back into the next prompt is the application's responsibility."
-      },
-      {
-        "id": "b",
-        "text": "The model, which executes the function and returns its output directly",
-        "correct": false,
-        "explanation": "The model never executes anything. It proposes a call; running it is explicitly left to your backend or client."
-      },
-      {
-        "id": "c",
         "text": "The inference endpoint, which proxies the call to the named service",
         "correct": false,
         "explanation": "No proxying happens. The endpoint returns tool-call instructions in the response and does not reach out to any external service on your behalf."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "The tool schema registry, once the tool has been registered",
         "correct": false,
         "explanation": "Tool schemas describe how a tool should be invoked. They are declarative and there is no registry component that executes anything."
+      },
+      {
+        "id": "c",
+        "text": "Your application, which then passes the result back to the model",
+        "correct": true,
+        "explanation": "The model only emits an invocation instruction. Executing the function and feeding its output back into the next prompt is the application's responsibility."
+      },
+      {
+        "id": "d",
+        "text": "The model, which executes the function and returns its output directly",
+        "correct": false,
+        "explanation": "The model never executes anything. It proposes a call; running it is explicitly left to your backend or client."
       }
     ]
   },
@@ -1856,27 +1196,27 @@
     "options": [
       {
         "id": "a",
+        "text": "A static vector database index",
+        "correct": false,
+        "explanation": "Vector databases store document embeddings for RAG, not fine-tuning weight checkpoints."
+      },
+      {
+        "id": "b",
         "text": "A snapshot of model weights saved at intermediate epoch or step intervals during training",
         "correct": true,
         "explanation": "Checkpoints save intermediate model weight snapshots throughout the fine-tuning run."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "An API token used to authenticate REST requests",
         "correct": false,
         "explanation": "API tokens handle client authentication, not training weight storage."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "A list of active user accounts registered in an organization project",
         "correct": false,
         "explanation": "Organization user rosters belong to IAM management, not fine-tuning job metrics."
-      },
-      {
-        "id": "d",
-        "text": "A static vector database index",
-        "correct": false,
-        "explanation": "Vector databases store document embeddings for RAG, not fine-tuning weight checkpoints."
       }
     ]
   },
@@ -2145,666 +1485,6 @@
     ]
   },
   {
-    "id": "q-ld01a1b2c3d4",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/ai-concepts",
-    "stem": "When selecting a model family for low-latency interactive applications, which model property provides the most significant operational efficiency?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Enforcing maximum parameter size regardless of inference latency requirements",
-        "correct": false,
-        "explanation": "Overly large models increase compute cost and inference response time."
-      },
-      {
-        "id": "b",
-        "text": "Balancing model capability against parameter size and token throughput rates",
-        "correct": true,
-        "explanation": "Optimizing parameter scale to task requirements achieves efficient token throughput."
-      },
-      {
-        "id": "c",
-        "text": "Disabling context window size restrictions",
-        "correct": false,
-        "explanation": "Disabling limits leads to out-of-memory errors on context overflow."
-      },
-      {
-        "id": "d",
-        "text": "Executing model inference exclusively via un-indexed local batch scripts",
-        "correct": false,
-        "explanation": "Local batch scripts cannot support real-time interactive user requests."
-      }
-    ]
-  },
-  {
-    "id": "q-ld02b2c3d4e5",
-    "course_id": "ai-leader",
-    "domain": "domain-2",
-    "objective": "domain-2/product-outcomes",
-    "stem": "Which strategic approach aligns generative AI capabilities with measurable business outcomes during product discovery?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Deploying un-evaluated prototype models directly to all external production users",
-        "correct": false,
-        "explanation": "Unvalidated deployments carry severe operational and accuracy risks."
-      },
-      {
-        "id": "b",
-        "text": "Defining specific workflow KPIs, user intent boundaries, and fallback human workflows",
-        "correct": true,
-        "explanation": "Setting clear KPIs and fallback mechanics ensures AI features deliver measurable ROI safely."
-      },
-      {
-        "id": "c",
-        "text": "Replacing all existing database systems with raw prompt text files",
-        "correct": false,
-        "explanation": "Replacing relational/NoSQL databases with prompt text destroys data integrity."
-      },
-      {
-        "id": "d",
-        "text": "Restricting API access to manual command-line execution by system administrators",
-        "correct": false,
-        "explanation": "Manual CLI invocation prevents automated user workflow integration."
-      }
-    ]
-  },
-  {
-    "id": "q-ld03c3d4e5f6",
-    "course_id": "ai-leader",
-    "domain": "domain-3",
-    "objective": "domain-3/vendor-evaluation",
-    "stem": "When evaluating third-party API providers for enterprise AI integration, which operational factor is most critical for compliance?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Requiring proprietary API extensions that prevent industry standard compatibility",
-        "correct": false,
-        "explanation": "Locking into non-standard interfaces increases migration risk."
-      },
-      {
-        "id": "b",
-        "text": "Verifying data privacy policies, SLA guarantees, and enterprise security certifications",
-        "correct": true,
-        "explanation": "Enterprise SLAs and privacy guarantees ensure compliance with regulatory standards."
-      },
-      {
-        "id": "c",
-        "text": "Disabling rate limit controls across public endpoints",
-        "correct": false,
-        "explanation": "Disabling rate limits leads to un-controlled resource usage and outage risk."
-      },
-      {
-        "id": "d",
-        "text": "Selecting providers based solely on marketing announcements without API SLA validation",
-        "correct": false,
-        "explanation": "Relying on claims without SLA verification exposes production applications to downtime."
-      }
-    ]
-  },
-  {
-    "id": "q-ld04d4e5f6a7",
-    "course_id": "ai-leader",
-    "domain": "domain-4",
-    "objective": "domain-4/cost-economics",
-    "stem": "How can engineering leadership control monthly API consumption costs while supporting growing production usage?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Disabling token usage monitoring and budget alert mechanisms",
-        "correct": false,
-        "explanation": "Disabling cost monitoring prevents detection of spending spikes."
-      },
-      {
-        "id": "b",
-        "text": "Implementing prompt caching, token budgets, and automated usage monitoring alerts",
-        "correct": true,
-        "explanation": "Prompt caching and token budgets optimize model efficiency and cap unexpected costs."
-      },
-      {
-        "id": "c",
-        "text": "Hardcoding maximum output token length to 1 for all API requests",
-        "correct": false,
-        "explanation": "Restricting output to 1 token breaks application functionality."
-      },
-      {
-        "id": "d",
-        "text": "Purchasing dedicated hardware nodes for low-volume background tasks",
-        "correct": false,
-        "explanation": "Over-provisioning dedicated hardware for small workloads wastes operational capital."
-      }
-    ]
-  },
-  {
-    "id": "q-ld05a1b2c3d4",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/model-selection",
-    "stem": "When selecting a model family for complex reasoning tasks versus simple data extraction, what key trade-off should engineering leaders evaluate?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Choosing smaller specialized models for routine extraction and larger reasoning models for complex decision tasks",
-        "correct": true,
-        "explanation": "Right-sizing model selection balances cost, latency, and reasoning accuracy for distinct workload tiers."
-      },
-      {
-        "id": "b",
-        "text": "Using maximum parameter models exclusively for all data transformation tasks",
-        "correct": false,
-        "explanation": "Using massive models for simple tasks causes unnecessary inference costs."
-      },
-      {
-        "id": "c",
-        "text": "Disabling prompt validation rules for reasoning workloads",
-        "correct": false,
-        "explanation": "Disabling validation leads to malformed prompts and unreliable model outputs."
-      },
-      {
-        "id": "d",
-        "text": "Hardcoding fixed random seeds across all production endpoints",
-        "correct": false,
-        "explanation": "Fixed random seeds do not alter model capability trade-offs."
-      }
-    ]
-  },
-  {
-    "id": "q-ld06b2c3d4e5",
-    "course_id": "ai-leader",
-    "domain": "domain-2",
-    "objective": "domain-2/workflow-design",
-    "stem": "Which architectural pattern ensures seamless recovery when an AI model endpoint encounters transient downtime?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Designing automated fallback handlers with circuit breakers and human-in-the-loop escalation",
-        "correct": true,
-        "explanation": "Circuit breakers and fallback handlers prevent application crashes during model downtime."
-      },
-      {
-        "id": "b",
-        "text": "Crashing the host web application immediately on first API timeout",
-        "correct": false,
-        "explanation": "Crashing the host app creates poor user experience and service outages."
-      },
-      {
-        "id": "c",
-        "text": "Retrying failing requests infinite times in tight un-throttled loops",
-        "correct": false,
-        "explanation": "Infinite retry loops exacerbate API rate limits and cause system lockup."
-      },
-      {
-        "id": "d",
-        "text": "Deleting input user messages whenever an endpoint returns 5xx errors",
-        "correct": false,
-        "explanation": "Deleting user input loses data without resolving endpoint failure."
-      }
-    ]
-  },
-  {
-    "id": "q-ld07c3d4e5f6",
-    "course_id": "ai-leader",
-    "domain": "domain-3",
-    "objective": "domain-3/api-integration-basics",
-    "stem": "Why is OpenAPI/REST compatibility beneficial when adopting third-party AI model providers?",
-    "options": [
-      {
-        "id": "a",
-        "text": "It enables standardized client SDK integration and simplifies provider migration",
-        "correct": true,
-        "explanation": "Standard OpenAPI compatibility allows existing OpenAI/HTTP clients to integrate without custom rewrites."
-      },
-      {
-        "id": "b",
-        "text": "It guarantees zero network latency across all global regions",
-        "correct": false,
-        "explanation": "API standards define interface specs, not physical network speed."
-      },
-      {
-        "id": "c",
-        "text": "It eliminates the need for API key authentication",
-        "correct": false,
-        "explanation": "OpenAPI standards support standard Bearer token authentication."
-      },
-      {
-        "id": "d",
-        "text": "It automatically fine-tunes base models on incoming request payloads",
-        "correct": false,
-        "explanation": "Standard API inference does not trigger automatic fine-tuning."
-      }
-    ]
-  },
-  {
-    "id": "q-ld08d4e5f6a7",
-    "course_id": "ai-leader",
-    "domain": "domain-4",
-    "objective": "domain-4/risk-compliance",
-    "stem": "Which risk management practice prevents sensitive enterprise data from being exposed during model inference?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Enforcing zero-retention data policies, private tenant hosting, and payload redaction",
-        "correct": true,
-        "explanation": "Zero-retention policies and private tenant hosting protect proprietary data from model training reuse."
-      },
-      {
-        "id": "b",
-        "text": "Storing all user prompts in un-encrypted public web caches",
-        "correct": false,
-        "explanation": "Public unencrypted caching exposes sensitive enterprise data."
-      },
-      {
-        "id": "c",
-        "text": "Disabling security log monitoring across corporate network firewalls",
-        "correct": false,
-        "explanation": "Disabling security logs prevents data leak detection."
-      },
-      {
-        "id": "d",
-        "text": "Sharing API keys across external contractor mailing lists",
-        "correct": false,
-        "explanation": "Sharing credentials compromises API access controls."
-      }
-    ]
-  },
-  {
-    "id": "q-ld09e5f6a7b8",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/ai-concepts",
-    "stem": "What is the operational purpose of context window size in generative AI models?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Determining the maximum combined number of input and output tokens a model can process in a single request",
-        "correct": true,
-        "explanation": "Context window size defines the maximum token capacity for input prompts and generated completions per request."
-      },
-      {
-        "id": "b",
-        "text": "Measuring physical GPU network bandwidth between compute nodes",
-        "correct": false,
-        "explanation": "Context window is a token processing limit, not network hardware bandwidth."
-      },
-      {
-        "id": "c",
-        "text": "Setting the maximum number of simultaneous user logins allowed per hour",
-        "correct": false,
-        "explanation": "User login capacity is governed by rate limits and auth services, not context window."
-      },
-      {
-        "id": "d",
-        "text": "Restricting total persistent storage volume size on local SSD drives",
-        "correct": false,
-        "explanation": "Storage volume size is a block storage property, unrelated to model context windows."
-      }
-    ]
-  },
-  {
-    "id": "q-ld10f6a7b8c9",
-    "course_id": "ai-leader",
-    "domain": "domain-4",
-    "objective": "domain-4/cost-economics",
-    "stem": "Which pricing model strategy optimizes operational costs for continuous 24/7 high-volume inference workloads?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Utilizing dedicated endpoint capacity or reserved infrastructure instead of pure pay-as-you-go per token pricing",
-        "correct": true,
-        "explanation": "Dedicated endpoint capacity provides predictable flat-rate billing for continuous high-throughput production workloads."
-      },
-      {
-        "id": "b",
-        "text": "Executing all inference via short-lived un-cached serverless functions without batching",
-        "correct": false,
-        "explanation": "Un-batched serverless functions on high-volume 24/7 workloads incur massive per-request costs."
-      },
-      {
-        "id": "c",
-        "text": "Disabling response caching across all client applications",
-        "correct": false,
-        "explanation": "Disabling caching forces redundant API calls and increases token expenditure."
-      },
-      {
-        "id": "d",
-        "text": "Multiplying input prompt lengths with redundant filler text",
-        "correct": false,
-        "explanation": "Adding filler text increases token consumption and billing unnecessarily."
-      }
-    ]
-  },
-  {
-    "id": "q-ld11a1b2c3d4",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/ai-concepts",
-    "stem": "Which foundational concept differentiates autoregressive LLM text generation from traditional rule-based software systems?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Probabilistic token prediction based on learned training distribution context",
-        "correct": true,
-        "explanation": "Autoregressive LLMs predict subsequent tokens probabilistically based on context distributions, unlike deterministic hardcoded rule engines."
-      },
-      {
-        "id": "b",
-        "text": "Hardcoded SQL query execution trees",
-        "correct": false,
-        "explanation": "SQL execution trees are relational database mechanics, not LLM token generation."
-      },
-      {
-        "id": "c",
-        "text": "Synchronous hardware BIOS registers",
-        "correct": false,
-        "explanation": "BIOS registers control low-level firmware boot steps."
-      },
-      {
-        "id": "d",
-        "text": "Static DNS hostname lookup tables",
-        "correct": false,
-        "explanation": "DNS tables map IP addresses, unrelated to generative language models."
-      }
-    ]
-  },
-  {
-    "id": "q-ld12b2c3d4e5",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/model-selection",
-    "stem": "When evaluating open-weights versus proprietary closed-API models, what primary architectural governance benefit do open-weights provide?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Full control over deployment infrastructure, fine-tuning weights, and data privacy",
-        "correct": true,
-        "explanation": "Open-weights models allow self-hosting on private cloud infrastructure, enabling custom fine-tuning and complete data retention control."
-      },
-      {
-        "id": "b",
-        "text": "Eliminating all cloud GPU hardware operational costs",
-        "correct": false,
-        "explanation": "Self-hosting open models still requires underlying compute and GPU infrastructure."
-      },
-      {
-        "id": "c",
-        "text": "Guaranteeing 100% factual accuracy without hallucinations",
-        "correct": false,
-        "explanation": "Model weight accessibility does not eliminate hallucination tendencies."
-      },
-      {
-        "id": "d",
-        "text": "Bypassing context window token limits entirely",
-        "correct": false,
-        "explanation": "Open-weights models remain subject to defined context architecture constraints."
-      }
-    ]
-  },
-  {
-    "id": "q-ld13c3d4e5f6",
-    "course_id": "ai-leader",
-    "domain": "domain-2",
-    "objective": "domain-2/product-outcomes",
-    "stem": "Which user feedback mechanism allows product teams to continuously evaluate and improve AI model response quality?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Capturing explicit user ratings (thumbs up/down) alongside detailed correction metadata",
-        "correct": true,
-        "explanation": "User rating signals and correction data feed evaluation pipelines and post-training datasets."
-      },
-      {
-        "id": "b",
-        "text": "Disabling user feedback options across client web interfaces",
-        "correct": false,
-        "explanation": "Disabling feedback deprives product teams of real-world accuracy metrics."
-      },
-      {
-        "id": "c",
-        "text": "Automatically banning users who submit negative rating scores",
-        "correct": false,
-        "explanation": "Banning users destroys user trust and product adoption."
-      },
-      {
-        "id": "d",
-        "text": "Replacing user interfaces with raw log file view ports",
-        "correct": false,
-        "explanation": "Exposing raw log viewports ruins consumer UX."
-      }
-    ]
-  },
-  {
-    "id": "q-ld14d4e5f6a7",
-    "course_id": "ai-leader",
-    "domain": "domain-2",
-    "objective": "domain-2/workflow-design",
-    "stem": "When designing multi-step agentic workflows, why are deterministic schema validation checks critical between steps?",
-    "options": [
-      {
-        "id": "a",
-        "text": "They catch malformed structured outputs early before passing invalid arguments to downstream tools",
-        "correct": true,
-        "explanation": "Schema validation (e.g. JSON schema / Pydantic) ensures tool inputs are strictly valid, preventing cascading agent failures."
-      },
-      {
-        "id": "b",
-        "text": "They bypass API key authentication headers",
-        "correct": false,
-        "explanation": "Schema validation validates data structure, not API credentials."
-      },
-      {
-        "id": "c",
-        "text": "They convert unstructured text into physical binary executable code",
-        "correct": false,
-        "explanation": "Schema validation validates fields; it does not convert text into raw binary machine code."
-      },
-      {
-        "id": "d",
-        "text": "They disable model context limits",
-        "correct": false,
-        "explanation": "Schema validation has no impact on model context window limits."
-      }
-    ]
-  },
-  {
-    "id": "q-ld15e5f6a7b8",
-    "course_id": "ai-leader",
-    "domain": "domain-3",
-    "objective": "domain-3/vendor-evaluation",
-    "stem": "Which SLA guarantee is most important when selecting a cloud model provider for mission-critical real-time applications?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Uptime availability percentage, P99 latency thresholds, and rate limit concurrency guarantees",
-        "correct": true,
-        "explanation": "High uptime SLAs, bounded P99 latencies, and guaranteed concurrency ensure real-time application stability."
-      },
-      {
-        "id": "b",
-        "text": "Unannounced API breaking changes without version deprecation notice",
-        "correct": false,
-        "explanation": "Unannounced breaking changes destroy production client integrations."
-      },
-      {
-        "id": "c",
-        "text": "Disabling security encryption on database connections",
-        "correct": false,
-        "explanation": "Disabling encryption introduces severe compliance vulnerabilities."
-      },
-      {
-        "id": "d",
-        "text": "Unlimited free API usage without billing account registration",
-        "correct": false,
-        "explanation": "Free un-registered tiers lack production SLA guarantees and support."
-      }
-    ]
-  },
-  {
-    "id": "q-ld16f6a7b8c9",
-    "course_id": "ai-leader",
-    "domain": "domain-3",
-    "objective": "domain-3/api-integration-basics",
-    "stem": "What is the primary benefit of streaming model completions via Server-Sent Events (SSE) in user interfaces?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Reducing perceived user latency (Time-To-First-Token) by displaying tokens as they are generated",
-        "correct": true,
-        "explanation": "Streaming via SSE renders tokens incrementally, improving perceived latency compared to waiting for complete responses."
-      },
-      {
-        "id": "b",
-        "text": "Increasing total API token consumption fees",
-        "correct": false,
-        "explanation": "Streaming does not increase token count or API fees."
-      },
-      {
-        "id": "c",
-        "text": "Disabling browser security sandboxing rules",
-        "correct": false,
-        "explanation": "SSE streaming obeys standard HTTP/browser security protocols."
-      },
-      {
-        "id": "d",
-        "text": "Converting model outputs into static PDF downloads automatically",
-        "correct": false,
-        "explanation": "SSE streams text/event streams; it does not convert outputs to PDF files."
-      }
-    ]
-  },
-  {
-    "id": "q-ld17a1b2c3d4",
-    "course_id": "ai-leader",
-    "domain": "domain-4",
-    "objective": "domain-4/cost-economics",
-    "stem": "How does semantic prompt caching reduce API expenditure in high-frequency customer support applications?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Re-using pre-computed responses for recurring identical queries, bypassing redundant LLM inference calls",
-        "correct": true,
-        "explanation": "Semantic caching intercepts repeated questions and serves cached completions without making new model inference calls."
-      },
-      {
-        "id": "b",
-        "text": "Increasing prompt token length for all incoming user questions",
-        "correct": false,
-        "explanation": "Increasing prompt length increases token costs."
-      },
-      {
-        "id": "c",
-        "text": "Disabling rate limit controls on external user gateways",
-        "correct": false,
-        "explanation": "Disabling rate limits leads to un-controlled API expenditure spikes."
-      },
-      {
-        "id": "d",
-        "text": "Deleting historical user interaction logs every 60 seconds",
-        "correct": false,
-        "explanation": "Deleting logs loses operational metrics without reducing inference costs."
-      }
-    ]
-  },
-  {
-    "id": "q-ld18b2c3d4e5",
-    "course_id": "ai-leader",
-    "domain": "domain-4",
-    "objective": "domain-4/risk-compliance",
-    "stem": "Which corporate AI usage policy mitigates intellectual property risks when using public cloud AI services?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Requiring contractual guarantees that user inputs and model outputs are not retained for vendor model re-training",
-        "correct": true,
-        "explanation": "Explicit non-training SLAs ensure proprietary business IP and user data are not absorbed into public foundation models."
-      },
-      {
-        "id": "b",
-        "text": "Allowing employees to paste proprietary source code into un-vetted public chatbots",
-        "correct": false,
-        "explanation": "Pasting source code into unvetted chatbots risks data leaks and IP exposure."
-      },
-      {
-        "id": "c",
-        "text": "Disabling data encryption keys on internal storage buckets",
-        "correct": false,
-        "explanation": "Disabling encryption exposes stored data to unauthorized access."
-      },
-      {
-        "id": "d",
-        "text": "Granting anonymous external users full access to internal codebase repositories",
-        "correct": false,
-        "explanation": "Granting anonymous access compromises intellectual property completely."
-      }
-    ]
-  },
-  {
-    "id": "q-ld19c3d4e5f6",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/model-selection",
-    "stem": "When selecting between vision-language multimodal models and text-only models, what capability dictates model family selection?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The requirement to ingest and reason over visual input formats like diagrams, UI mockups, and documents",
-        "correct": true,
-        "explanation": "Multimodal vision-language models process combined visual and textual context, whereas text-only models cannot parse images."
-      },
-      {
-        "id": "b",
-        "text": "The requirement to run SQL queries against relational databases",
-        "correct": false,
-        "explanation": "SQL execution is handled by database tools and text generation, not vision capabilities."
-      },
-      {
-        "id": "c",
-        "text": "The requirement to format block storage drives",
-        "correct": false,
-        "explanation": "Formatting drives is an OS operation, unrelated to vision multimodal capabilities."
-      },
-      {
-        "id": "d",
-        "text": "The requirement to disable rate limit controls",
-        "correct": false,
-        "explanation": "Rate limit controls are API infrastructure rules, unrelated to model modality."
-      }
-    ]
-  },
-  {
-    "id": "q-ld20d4e5f6a7",
-    "course_id": "ai-leader",
-    "domain": "domain-4",
-    "objective": "domain-4/cost-economics",
-    "stem": "Which architectural strategy prevents runaway API token bills caused by unexpected infinite loops in agentic applications?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Enforcing hard upper bounds on maximum iteration depth, total token budgets, and execution timeout limits",
-        "correct": true,
-        "explanation": "Setting max iteration counts and token budgets prevents recursive agent loops from consuming infinite API tokens."
-      },
-      {
-        "id": "b",
-        "text": "Removing execution timeout limits on background worker tasks",
-        "correct": false,
-        "explanation": "Removing timeouts allows runaway loops to execute indefinitely."
-      },
-      {
-        "id": "c",
-        "text": "Disabling token usage alert notifications in administrative dashboards",
-        "correct": false,
-        "explanation": "Disabling alerts prevents operators from detecting spending anomalies."
-      },
-      {
-        "id": "d",
-        "text": "Setting temperature parameters to 2.0 on all API calls",
-        "correct": false,
-        "explanation": "High temperature increases randomness, but does not prevent infinite loop execution."
-      }
-    ]
-  },
-  {
     "id": "q-ob01d8e9f0a1",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -2846,27 +1526,27 @@
     "options": [
       {
         "id": "a",
+        "text": "database_connections_active",
+        "correct": false,
+        "explanation": "Database connections are SQL pool counters, not inference token usage object properties."
+      },
+      {
+        "id": "b",
         "text": "prompt_tokens, completion_tokens, and total_tokens",
         "correct": true,
         "explanation": "The usage object reports exact counts for prompt_tokens, completion_tokens, and total_tokens."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "gpu_temperature_celsius and fan_speed_rpm",
         "correct": false,
         "explanation": "Hardware temperature and fan metrics belong to infrastructure monitoring, not model API usage payloads."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "disk_write_mbps and network_latency_ms",
         "correct": false,
         "explanation": "Disk throughput and network ping latency are transport metrics, not LLM token usage counters."
-      },
-      {
-        "id": "d",
-        "text": "database_connections_active",
-        "correct": false,
-        "explanation": "Database connections are SQL pool counters, not inference token usage object properties."
       }
     ]
   },
@@ -2879,27 +1559,27 @@
     "options": [
       {
         "id": "a",
-        "text": "A project, since resources live inside it and inherit its access settings",
-        "correct": true,
-        "explanation": "Because resources take their access from the enclosing project, giving each team its own project is what produces the isolation."
-      },
-      {
-        "id": "b",
-        "text": "The organization, since it is the top of the hierarchy",
-        "correct": false,
-        "explanation": "The organization is the shared container above projects, so placing both teams in one does not separate them."
-      },
-      {
-        "id": "c",
         "text": "The API key, since each key is scoped to a single resource",
         "correct": false,
         "explanation": "Keys are issued within a project. They express access, but the project is what bounds it."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "An organization group, since groups own resources directly",
         "correct": false,
         "explanation": "Groups configure identity and access for people. Resources belong to projects, not to groups."
+      },
+      {
+        "id": "c",
+        "text": "A project, since resources live inside it and inherit its access settings",
+        "correct": true,
+        "explanation": "Because resources take their access from the enclosing project, giving each team its own project is what produces the isolation."
+      },
+      {
+        "id": "d",
+        "text": "The organization, since it is the top of the hierarchy",
+        "correct": false,
+        "explanation": "The organization is the shared container above projects, so placing both teams in one does not separate them."
       }
     ]
   },
@@ -2978,27 +1658,27 @@
     "options": [
       {
         "id": "a",
-        "text": "A personal organization is created automatically for the user",
-        "correct": true,
-        "explanation": "First-time signup automatically provisions a personal organization."
-      },
-      {
-        "id": "b",
         "text": "The user must submit a support ticket to request organization creation",
         "correct": false,
         "explanation": "Organization provisioning is automated during account onboarding."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "The user is assigned to a shared public sandbox organization",
         "correct": false,
         "explanation": "Each user gets an isolated personal organization, not a shared sandbox."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "Access is restricted until an enterprise agreement is uploaded",
         "correct": false,
         "explanation": "Self-service signup creates a personal organization immediately."
+      },
+      {
+        "id": "d",
+        "text": "A personal organization is created automatically for the user",
+        "correct": true,
+        "explanation": "First-time signup automatically provisions a personal organization."
       }
     ]
   },
@@ -3077,27 +1757,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Differences lie in token pricing, latency, and applied optimization levels while outputs remain identical",
-        "correct": true,
-        "explanation": "Fast flavors optimize latency and pricing while generating identical model outputs."
-      },
-      {
-        "id": "b",
         "text": "Fast flavors return truncated response text to minimize network payload size",
         "correct": false,
         "explanation": "Fast flavors do not truncate output text or alter generation semantics."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "Fast flavors require specialized custom SDKs and cannot use OpenAI client libraries",
         "correct": false,
         "explanation": "Fast flavors use standard OpenAI client endpoints and request formats."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "Fast flavors only accept binary payload inputs instead of JSON",
         "correct": false,
         "explanation": "Standard JSON request bodies apply to both Fast and standard flavors."
+      },
+      {
+        "id": "d",
+        "text": "Differences lie in token pricing, latency, and applied optimization levels while outputs remain identical",
+        "correct": true,
+        "explanation": "Fast flavors optimize latency and pricing while generating identical model outputs."
       }
     ]
   },
@@ -3110,27 +1790,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Append `-fast` to the model name string in the request payload",
-        "correct": true,
-        "explanation": "Fast flavors are specified by appending `-fast` to the model identifier."
-      },
-      {
-        "id": "b",
-        "text": "Set `flavor: \"fast\"` in the HTTP headers",
-        "correct": false,
-        "explanation": "Flavor selection is specified in the model parameter, not custom HTTP headers."
-      },
-      {
-        "id": "c",
         "text": "Use port `8443` instead of standard HTTP endpoints",
         "correct": false,
         "explanation": "Port routing does not determine model flavor."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Prepend `fast/` before the organization namespace",
         "correct": false,
         "explanation": "Fast suffix is appended to the model name, not prepended to namespace."
+      },
+      {
+        "id": "c",
+        "text": "Append `-fast` to the model name string in the request payload",
+        "correct": true,
+        "explanation": "Fast flavors are specified by appending `-fast` to the model identifier."
+      },
+      {
+        "id": "d",
+        "text": "Set `flavor: \"fast\"` in the HTTP headers",
+        "correct": false,
+        "explanation": "Flavor selection is specified in the model parameter, not custom HTTP headers."
       }
     ]
   },
@@ -3242,27 +1922,27 @@
     "options": [
       {
         "id": "a",
+        "text": "`https://docs.nebius.com/static/js`",
+        "correct": false,
+        "explanation": "Documentation static assets are not API inference endpoints."
+      },
+      {
+        "id": "b",
         "text": "`https://api.tokenfactory.nebius.com/v1`",
         "correct": true,
         "explanation": "The standard base URL path follows `https://api.tokenfactory.nebius.com/v1` for OpenAI client integration."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "`ftp://legacy.nebius.internal/storage`",
         "correct": false,
         "explanation": "FTP protocols are not used for RESTful LLM inference APIs."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "`ws://localhost:3000/raw-socket`",
         "correct": false,
         "explanation": "Local raw WebSockets are not the canonical public API base URL."
-      },
-      {
-        "id": "d",
-        "text": "`https://docs.nebius.com/static/js`",
-        "correct": false,
-        "explanation": "Documentation static assets are not API inference endpoints."
       }
     ]
   },
@@ -3275,27 +1955,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Project administrator or endpoint management write permissions",
-        "correct": true,
-        "explanation": "Creating infrastructure resources requires write permissions scoped to the target project."
-      },
-      {
-        "id": "b",
         "text": "Read-only guest access across public forum posts",
         "correct": false,
         "explanation": "Read-only guest access cannot provision infrastructure endpoints."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "Anonymous unauthenticated bearer token",
         "correct": false,
         "explanation": "Resource creation strictly requires authenticated API keys."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "Third-party identity provider root certificate private key",
         "correct": false,
         "explanation": "Endpoint creation uses project-scoped IAM roles and API keys."
+      },
+      {
+        "id": "d",
+        "text": "Project administrator or endpoint management write permissions",
+        "correct": true,
+        "explanation": "Creating infrastructure resources requires write permissions scoped to the target project."
       }
     ]
   },
@@ -3341,27 +2021,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Temperature",
-        "correct": true,
-        "explanation": "Temperature scales the logits before sampling, controlling response randomness and creativity."
-      },
-      {
-        "id": "b",
-        "text": "TCP Window Size",
-        "correct": false,
-        "explanation": "TCP window size is a network transport layer configuration."
-      },
-      {
-        "id": "c",
         "text": "CPU Core Affinity",
         "correct": false,
         "explanation": "CPU affinity controls process execution on physical cores, not LLM sampling."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Display Screen Refresh Rate",
         "correct": false,
         "explanation": "Monitor refresh rate is a hardware display property."
+      },
+      {
+        "id": "c",
+        "text": "Temperature",
+        "correct": true,
+        "explanation": "Temperature scales the logits before sampling, controlling response randomness and creativity."
+      },
+      {
+        "id": "d",
+        "text": "TCP Window Size",
+        "correct": false,
+        "explanation": "TCP window size is a network transport layer configuration."
       }
     ]
   },
@@ -3572,27 +2252,27 @@
     "options": [
       {
         "id": "a",
+        "text": "To force the embedding model to output 4096-dimensional vectors",
+        "correct": false,
+        "explanation": "Embedding dimension is fixed by the model architecture, unrelated to chunk overlap length."
+      },
+      {
+        "id": "b",
         "text": "To prevent splitting semantically important context or entity references across chunk boundaries",
         "correct": true,
         "explanation": "Chunk overlap preserves context continuity across boundary cuts so key entities aren't severed."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "To double the storage efficiency of vector database index nodes",
         "correct": false,
         "explanation": "Overlap increases total stored tokens and index size slightly, not efficiency."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "To ensure all output tokens are generated deterministically",
         "correct": false,
         "explanation": "Chunking happens prior to retrieval, whereas generation determinism is set via temperature/seed."
-      },
-      {
-        "id": "d",
-        "text": "To force the embedding model to output 4096-dimensional vectors",
-        "correct": false,
-        "explanation": "Embedding dimension is fixed by the model architecture, unrelated to chunk overlap length."
       }
     ]
   },
@@ -3836,27 +2516,27 @@
     "options": [
       {
         "id": "a",
-        "text": "It guarantees 100% syntactically valid JSON output matching the schema without parsing failures",
-        "correct": true,
-        "explanation": "Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax."
-      },
-      {
-        "id": "b",
         "text": "It eliminates the need for an API authentication key",
         "correct": false,
         "explanation": "API authentication is required regardless of output constraint settings."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "It doubles the context window size of the underlying model",
         "correct": false,
         "explanation": "Context window length is fixed by architecture, not decoding constraints."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "It automatically translates output into multiple spoken languages",
         "correct": false,
         "explanation": "Structured output enforces data format schemas, not natural language translation."
+      },
+      {
+        "id": "d",
+        "text": "It guarantees 100% syntactically valid JSON output matching the schema without parsing failures",
+        "correct": true,
+        "explanation": "Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax."
       }
     ]
   },

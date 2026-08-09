@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co15e5f6a7b8
-status: published
+status: draft
 domain: domain-2
 objective: domain-2/organization-hierarchy
 stem: "Which organizational policy configuration prevents accidental resource over-provisioning across child project accounts?"

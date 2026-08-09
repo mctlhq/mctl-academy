@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld18b2c3d4e5
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/risk-compliance
 stem: "Which corporate AI usage policy mitigates intellectual property risks when using public cloud AI services?"

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co04d4e5f6a7
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: "When diagnosing intermittent silent job failures across a multi-node GPU

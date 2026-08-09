@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld15e5f6a7b8
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/vendor-evaluation
 stem: "Which SLA guarantee is most important when selecting a cloud model provider for mission-critical real-time applications?"

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co11a1b2c3d4
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: "When deploying a multi-node GPU cluster for LLM pre-training, what is the primary function of high-speed InfiniBand/RoCE interconnects?"

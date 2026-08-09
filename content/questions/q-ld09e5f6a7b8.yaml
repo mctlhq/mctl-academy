@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld09e5f6a7b8
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: "What is the operational purpose of context window size in generative AI models?"

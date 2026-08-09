@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co10f6a7b8c9
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/escalation-workflows
 stem: "Which diagnostic documentation practice ensures rapid incident escalation during critical cluster outages?"

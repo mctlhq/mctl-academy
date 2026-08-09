@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld16f6a7b8c9
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/api-integration-basics
 stem: "What is the primary benefit of streaming model completions via Server-Sent Events (SSE) in user interfaces?"
