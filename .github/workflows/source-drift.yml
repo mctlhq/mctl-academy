@@ -3,7 +3,8 @@ name: Source drift
 # Weekly: re-fetch every allowlisted source and compare hashes. When an
 # upstream document changes, automatically mark the source as `drifted`
 # (fail-closed quarantine), rebuild the client content bundle to immediately
-# exclude unverified questions, and open/update an agents:intake issue.
+# exclude unverified questions, commit the quarantine state to main, and
+# open/update an agents:intake issue.
 
 on:
   schedule:
@@ -54,6 +55,17 @@ jobs:
         run: |
           node scripts/build-content-bundle.mjs
 
+      - name: Commit and push quarantine updates to main
+        if: steps.check.outputs.drifted == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/sources/ client/src/content-bundle.json client/src/course-catalog.json
+          git commit -m "chore(quarantine): auto-quarantine drifted sources and rebuild bundle"
+          git push origin main
+
       - name: Open or update intake issues
         if: steps.check.outputs.drifted == 'true'
         env:
@@ -69,7 +81,7 @@ jobs:
               --json number,title \
               --jq "[.[] | select(.title == \"${title}\")] | .[0].number // empty")
 
-            body="Upstream source changed. Automatically marked \`status: drifted\` (fail-closed quarantine enforced).
+            body="Upstream source changed. Automatically marked \`status: drifted\` (fail-closed quarantine committed to main).
 
           - source: \`${id}\`
           - url: ${url}

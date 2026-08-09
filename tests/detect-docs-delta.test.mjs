@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { detectDocsDelta, classifyDelta, analyzeAllSources } from "../scripts/detect-docs-delta.mjs";
@@ -30,6 +30,11 @@ test("detectDocsDelta classifies behavior_changed when defaults or limits change
   assert.equal(delta.classification, "behavior_changed");
 });
 
+test("detectDocsDelta classifies removed lines with zero additions as behavior_changed", () => {
+  const classification = classifyDelta([], ["Removed documentation line"]);
+  assert.equal(classification, "behavior_changed");
+});
+
 test("classifyDelta classifies formatting_only for identical text", () => {
   const classification = classifyDelta([], []);
   assert.equal(classification, "formatting_only");
@@ -43,13 +48,9 @@ test("analyzeAllSources scans sources directory and handles malformed YAML fail-
     const reports = analyzeAllSources();
     assert.ok(Array.isArray(reports));
 
-    // Test malformed YAML
-    const fs = import("node:fs");
-    fs.then(({ mkdirSync }) => {
-      mkdirSync(sourcesDir, { recursive: true });
-      writeFileSync(join(sourcesDir, "bad.yaml"), "invalid: : yaml:");
-      assert.throws(() => analyzeAllSources(tempDir), /Failed to parse source file/);
-    });
+    mkdirSync(sourcesDir, { recursive: true });
+    writeFileSync(join(sourcesDir, "bad.yaml"), "invalid: : yaml:");
+    assert.throws(() => analyzeAllSources(tempDir), /Failed to parse source file/);
   } finally {
     rmSync(tempDir, { recursive: true, force: true });
   }

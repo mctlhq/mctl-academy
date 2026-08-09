@@ -60,6 +60,10 @@ export function classifyDelta(addedLines = [], removedLines = []) {
     return "capability_added";
   }
 
+  if (removedLines.length > 0 && addedLines.length === 0) {
+    return "behavior_changed";
+  }
+
   return "formatting_only";
 }
 
