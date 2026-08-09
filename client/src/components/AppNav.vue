@@ -57,9 +57,11 @@ if (syncVersion) {
 }
 
 const links = [
-  { to: "/", label: "Home", compactLabel: "Home" },
-  { to: "/practice", label: "Practice", compactLabel: "Practice" },
-  { to: "/mock", label: "Mock exam", compactLabel: "Exam" },
+  { to: "/", label: "Home" },
+  { to: "/practice", label: "Practice" },
+  { to: "/mock", label: "Mock exam" },
+  { to: "/mistakes", label: "Mistakes", isMistakes: true },
+  { to: "/dashboard", label: "Progress" },
 ];
 </script>
 
@@ -75,17 +77,8 @@ const links = [
           class="app-nav-link"
           :aria-label="link.label"
         >
-          <span class="nav-label-full">{{ link.label }}</span>
-          <span class="nav-label-compact" aria-hidden="true">{{ link.compactLabel }}</span>
-        </RouterLink>
-        <RouterLink to="/mistakes" class="app-nav-link" aria-label="Mistakes">
-          <span class="nav-label-full">Mistakes</span>
-          <span class="nav-label-compact" aria-hidden="true">Review</span>
-          <span v-if="mistakeCount > 0" class="mistake-badge">{{ mistakeCount }}</span>
-        </RouterLink>
-        <RouterLink to="/dashboard" class="app-nav-link" aria-label="Progress">
-          <span class="nav-label-full">Progress</span>
-          <span class="nav-label-compact" aria-hidden="true">Stats</span>
+          <span>{{ link.label }}</span>
+          <span v-if="link.isMistakes && mistakeCount > 0" class="mistake-badge">{{ mistakeCount }}</span>
         </RouterLink>
       </div>
     </div>
@@ -197,10 +190,6 @@ const links = [
 .app-nav-link.router-link-active {
   border-bottom-color: var(--accent);
   color: var(--accent);
-}
-
-.nav-label-compact {
-  display: none;
 }
 
 .mistake-badge {
@@ -342,55 +331,25 @@ const links = [
     padding-left: calc(1rem + env(safe-area-inset-left));
   }
 
-  /* Compact: the dropdown shows the current course title on its own. */
   .course-select-label {
     display: none;
   }
 
   .course-select {
-    max-width: 7rem;
-    padding: 0 0.3rem;
-    font-size: 0.65rem;
+    max-width: 8rem;
+    padding: 0 0.4rem;
+    font-size: 0.68rem;
     text-overflow: ellipsis;
   }
 
   .theme-toggle,
   .user-nav-signed-in :deep(summary) {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-  }
-}
-
-@media (max-width: 400px) {
-  .course-select {
-    max-width: 5.2rem;
-    padding: 0 0.2rem;
-    font-size: 0.6rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
   }
 
   .app-nav-links {
-    justify-content: space-between;
-    gap: 0.55rem;
-    overflow: visible;
-  }
-
-  .app-nav-link {
-    font-size: 0.7rem;
-  }
-
-  .nav-label-full {
-    display: none;
-  }
-
-  .nav-label-compact {
-    display: inline;
-  }
-
-  .mistake-badge {
-    min-width: 1rem;
-    height: 1rem;
-    margin-left: 0.2rem;
-    font-size: 0.58rem;
+    gap: 0.85rem;
   }
 }
 </style>
