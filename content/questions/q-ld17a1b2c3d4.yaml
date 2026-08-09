@@ -1,26 +1,26 @@
 schema_version: 1
 id: q-ld17a1b2c3d4
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/cost-economics
 stem: "How does semantic prompt caching reduce API expenditure in high-frequency customer support applications?"
 options:
   - id: a
-    text: "Re-using pre-computed responses for recurring identical queries, bypassing redundant LLM inference calls"
-    correct: true
-    explanation: "Semantic caching intercepts repeated questions and serves cached completions without making new model inference calls."
-  - id: b
-    text: "Increasing prompt token length for all incoming user questions"
-    correct: false
-    explanation: "Increasing prompt length increases token costs."
-  - id: c
     text: "Disabling rate limit controls on external user gateways"
     correct: false
     explanation: "Disabling rate limits leads to un-controlled API expenditure spikes."
-  - id: d
+  - id: b
     text: "Deleting historical user interaction logs every 60 seconds"
     correct: false
     explanation: "Deleting logs loses operational metrics without reducing inference costs."
+  - id: c
+    text: "Re-using pre-computed responses for recurring identical queries, bypassing redundant LLM inference calls"
+    correct: true
+    explanation: "Semantic caching intercepts repeated questions and serves cached completions without making new model inference calls."
+  - id: d
+    text: "Increasing prompt token length for all incoming user questions"
+    correct: false
+    explanation: "Increasing prompt length increases token costs."
 evidence:
   - source_id: src-leader-cost-risk
     excerpt: "Token Economics, Cost Control, and Data Risk Management"

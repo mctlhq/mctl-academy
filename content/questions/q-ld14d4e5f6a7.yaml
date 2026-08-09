@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld14d4e5f6a7
-status: published
+status: draft
 domain: domain-2
 objective: domain-2/workflow-design
 stem: "When designing multi-step agentic workflows, why are deterministic schema validation checks critical between steps?"

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co05a1b2c3d4
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/network-vpc
 stem: "When isolating high-bandwidth GPU cluster traffic, which VPC networking setup prevents public internet exposure?"

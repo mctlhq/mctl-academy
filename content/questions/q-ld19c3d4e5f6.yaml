@@ -1,26 +1,26 @@
 schema_version: 1
 id: q-ld19c3d4e5f6
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/model-selection
 stem: "When selecting between vision-language multimodal models and text-only models, what capability dictates model family selection?"
 options:
   - id: a
-    text: "The requirement to ingest and reason over visual input formats like diagrams, UI mockups, and documents"
-    correct: true
-    explanation: "Multimodal vision-language models process combined visual and textual context, whereas text-only models cannot parse images."
-  - id: b
-    text: "The requirement to run SQL queries against relational databases"
-    correct: false
-    explanation: "SQL execution is handled by database tools and text generation, not vision capabilities."
-  - id: c
-    text: "The requirement to format block storage drives"
-    correct: false
-    explanation: "Formatting drives is an OS operation, unrelated to vision multimodal capabilities."
-  - id: d
     text: "The requirement to disable rate limit controls"
     correct: false
     explanation: "Rate limit controls are API infrastructure rules, unrelated to model modality."
+  - id: b
+    text: "The requirement to ingest and reason over visual input formats like diagrams, UI mockups, and documents"
+    correct: true
+    explanation: "Multimodal vision-language models process combined visual and textual context, whereas text-only models cannot parse images."
+  - id: c
+    text: "The requirement to run SQL queries against relational databases"
+    correct: false
+    explanation: "SQL execution is handled by database tools and text generation, not vision capabilities."
+  - id: d
+    text: "The requirement to format block storage drives"
+    correct: false
+    explanation: "Formatting drives is an OS operation, unrelated to vision multimodal capabilities."
 evidence:
   - source_id: src-leader-concepts
     excerpt: "AI Concepts and Model Selection Evaluation"

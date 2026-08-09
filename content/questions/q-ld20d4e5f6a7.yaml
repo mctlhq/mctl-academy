@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld20d4e5f6a7
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/cost-economics
 stem: "Which architectural strategy prevents runaway API token bills caused by unexpected infinite loops in agentic applications?"

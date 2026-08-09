@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co06b2c3d4e5
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: "Which storage architecture provides high-throughput shared access across distributed GPU training workers?"

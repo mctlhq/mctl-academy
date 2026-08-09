@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co12b2c3d4e5
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/network-vpc
 stem: "Which VPC firewall policy prevents unauthorized lateral movement between isolated compute subnets?"

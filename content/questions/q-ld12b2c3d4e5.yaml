@@ -1,26 +1,26 @@
 schema_version: 1
 id: q-ld12b2c3d4e5
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/model-selection
 stem: "When evaluating open-weights versus proprietary closed-API models, what primary architectural governance benefit do open-weights provide?"
 options:
   - id: a
-    text: "Full control over deployment infrastructure, fine-tuning weights, and data privacy"
-    correct: true
-    explanation: "Open-weights models allow self-hosting on private cloud infrastructure, enabling custom fine-tuning and complete data retention control."
-  - id: b
     text: "Eliminating all cloud GPU hardware operational costs"
     correct: false
     explanation: "Self-hosting open models still requires underlying compute and GPU infrastructure."
-  - id: c
+  - id: b
     text: "Guaranteeing 100% factual accuracy without hallucinations"
     correct: false
     explanation: "Model weight accessibility does not eliminate hallucination tendencies."
-  - id: d
+  - id: c
     text: "Bypassing context window token limits entirely"
     correct: false
     explanation: "Open-weights models remain subject to defined context architecture constraints."
+  - id: d
+    text: "Full control over deployment infrastructure, fine-tuning weights, and data privacy"
+    correct: true
+    explanation: "Open-weights models allow self-hosting on private cloud infrastructure, enabling custom fine-tuning and complete data retention control."
 evidence:
   - source_id: src-leader-concepts
     excerpt: "AI Concepts and Model Selection Evaluation"

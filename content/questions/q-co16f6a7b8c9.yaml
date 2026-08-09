@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co16f6a7b8c9
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: "Which metric is most critical for detecting GPU thermal throttling during heavy matrix multiplication workloads?"

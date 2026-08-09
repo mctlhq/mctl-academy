@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co17a1b2c3d4
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/node-recovery
 stem: "When an automatic node health recovery script cordons a degraded instance, what happens to running stateful pod workloads?"

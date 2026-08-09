@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co01a1b2c3d4
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: "When provisioning a high-performance GPU cluster environment, which

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld11a1b2c3d4
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: "Which foundational concept differentiates autoregressive LLM text generation from traditional rule-based software systems?"

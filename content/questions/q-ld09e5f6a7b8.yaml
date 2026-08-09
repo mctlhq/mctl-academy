@@ -1,26 +1,26 @@
 schema_version: 1
 id: q-ld09e5f6a7b8
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: "What is the operational purpose of context window size in generative AI models?"
 options:
   - id: a
-    text: "Determining the maximum combined number of input and output tokens a model can process in a single request"
-    correct: true
-    explanation: "Context window size defines the maximum token capacity for input prompts and generated completions per request."
-  - id: b
     text: "Measuring physical GPU network bandwidth between compute nodes"
     correct: false
     explanation: "Context window is a token processing limit, not network hardware bandwidth."
-  - id: c
+  - id: b
     text: "Setting the maximum number of simultaneous user logins allowed per hour"
     correct: false
     explanation: "User login capacity is governed by rate limits and auth services, not context window."
-  - id: d
+  - id: c
     text: "Restricting total persistent storage volume size on local SSD drives"
     correct: false
     explanation: "Storage volume size is a block storage property, unrelated to model context windows."
+  - id: d
+    text: "Determining the maximum combined number of input and output tokens a model can process in a single request"
+    correct: true
+    explanation: "Context window size defines the maximum token capacity for input prompts and generated completions per request."
 evidence:
   - source_id: src-leader-concepts
     excerpt: "AI Concepts and Model Selection Evaluation"

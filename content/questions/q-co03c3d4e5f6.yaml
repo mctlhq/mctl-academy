@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co03c3d4e5f6
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: "What action should automated observability metrics trigger when a GPU
