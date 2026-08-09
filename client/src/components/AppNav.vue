@@ -316,6 +316,13 @@ const links = [
     padding-left: calc(1rem + env(safe-area-inset-left));
   }
 
+  .course-select {
+    max-width: 7rem;
+    padding: 0 0.3rem;
+    font-size: 0.65rem;
+    text-overflow: ellipsis;
+  }
+
   .theme-toggle,
   .user-nav-signed-in :deep(summary) {
     min-width: 2.75rem;
@@ -324,6 +331,12 @@ const links = [
 }
 
 @media (max-width: 400px) {
+  .course-select {
+    max-width: 5.2rem;
+    padding: 0 0.2rem;
+    font-size: 0.6rem;
+  }
+
   .app-nav-links {
     justify-content: space-between;
     gap: 0.55rem;
