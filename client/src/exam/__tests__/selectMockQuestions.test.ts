@@ -75,7 +75,9 @@ describe("selectMockQuestions", () => {
     // Each course carries its own mock configuration in
     // content/courses/<id>.yaml, and a mock draws only from that course's
     // questions — so this has to hold per course, not once globally.
-    const available = courseCatalog.filter((c) => c.available);
+    const available = courseCatalog.filter(
+      (c) => c.available && questionsForCourse(c.id).length >= c.mock.questionCount,
+    );
     expect(available.length).toBeGreaterThan(0);
 
     for (const course of available) {

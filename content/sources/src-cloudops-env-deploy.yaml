@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-cloudops-env-deploy
+url: https://docs.nebius.com/compute/environment-deployment.md
+title: GPU Environment and Managed Cluster Deployment
+retrieved_at: 2026-08-09T11:00:00Z
+sha256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+objectives:
+  - domain-1/environment-deployment
+  - domain-1/network-vpc
+  - domain-1/storage-volumes
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+status: current

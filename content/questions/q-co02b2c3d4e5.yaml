@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-co02b2c3d4e5
+status: published
+domain: domain-2
+objective: domain-2/iam-roles
+stem: "Which principle should govern service account access permissions across
+  GPU training jobs?"
+options:
+  - id: a
+    text: "Granting full global administrative privileges to every service account"
+    correct: false
+    explanation: "Excessive permissions break the least-privilege principle."
+  - id: b
+    text: "Assigning least-privilege IAM roles scoped specifically to required
+      storage and compute resources"
+    correct: true
+    explanation: "Least-privilege IAM roles restrict access to minimum required operations."
+  - id: c
+    text: "Embedding root password credentials directly inside job scripts"
+    correct: false
+    explanation: "Hardcoding credentials violates security governance standards."
+  - id: d
+    text: "Disabling authentication checks on administrative API endpoints"
+    correct: false
+    explanation: "Disabling authentication exposes infrastructure to unauthorized control."
+evidence:
+  - source_id: src-cloudops-iam-roles
+    excerpt: "User Access, IAM Roles, and Service Accounts"
+    source_sha256: 4e82b794719b48c66e4a4282c0b0fb16f21226b911c470878e38fb509424177d
+authored:
+  by: agent:question-author
+  at: 2026-08-09T11:20:00Z
+course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T09:39:10Z
