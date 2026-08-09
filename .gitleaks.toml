@@ -13,6 +13,17 @@ useDefault = true
 # `sha256:` field exactly, and there is no other secret-shaped value in the
 # repo (`gitleaks detect --log-opts="--all"` over full history, 19/19
 # findings were this one pattern).
-[allowlist]
+#
+# `condition = "AND"` + `regexTarget = "line"` + `targetRules` is
+# deliberate: a bare top-level `[allowlist]` with both `regexes` and `paths`
+# set is OR'd by gitleaks, so a path match alone would silently allowlist
+# *any* secret in content/sources/*.yaml, not just this one known-safe
+# field shape. This form requires both the rule and the exact line shape to
+# match, scoped only to generic-api-key, so an actual credential pasted
+# into one of these files still gets flagged.
+[[allowlists]]
+condition = "AND"
+regexTarget = "line"
+targetRules = ["generic-api-key"]
 regexes = ['''(?i)^\s*(sha256|key):\s*[0-9a-f]{32,64}\s*$''']
 paths = ['''content/sources/.*\.yaml''']

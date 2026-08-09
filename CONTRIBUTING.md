@@ -65,12 +65,12 @@ by PostgreSQL, and a Vite + Vue + TypeScript client (`client/`) driven by a
 build-time JSON bundle generated from `content/`.
 
 ```bash
-npm ci
+bun install
 npm run migrate
 npm start
 
 cd client
-npm ci
+bun install
 npm run dev
 ```
 

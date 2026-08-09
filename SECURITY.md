@@ -20,11 +20,13 @@ details in it.
 In scope: the application at `academy.mctl.ai` (`server/`, `client/`) and
 this repository's CI/CD configuration.
 
-Out of scope: the content pipeline's evidence gate being bypassable by
-someone with write access to this repository — that threat model is covered
-by `CONTENT-POLICY.md` and `CODEOWNERS`, not by this document. Third-party
-services this project depends on (GitHub, the mctl platform) have their own
-reporting channels.
+Out of scope: an authorized maintainer or CODEOWNER deliberately publishing
+content without going through the evidence gate — that's a policy question
+covered by `CONTENT-POLICY.md`, not a vulnerability. In scope: anyone
+*without* that authorization finding a way to bypass the evidence gate, the
+CI checks, or `CODEOWNERS` review — that's a real finding, report it here.
+Third-party services this project depends on (GitHub, the mctl platform)
+have their own reporting channels.
 
 ## What to expect
 

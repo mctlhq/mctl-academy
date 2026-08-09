@@ -39,9 +39,9 @@ see [Contributing](#contributing) if you want to help.
 
 | Mode | What it does |
 |---|---|
-| **Practice** | Questions with immediate per-option feedback, votable, signed-in only |
+| **Practice** | Questions with immediate per-option feedback; signed in additionally unlocks per-question voting and persisted progress |
 | **Mock** | 30 questions, 60 minutes, weighted 6 / 10 / 6 / 8 across the four domains |
-| **Review mistakes** | The questions you got wrong in completed mocks |
+| **Review mistakes** | Every question you've gotten wrong, from Practice or a Mock exam |
 | **Learn** | Lessons per objective, built from cited documentation — not yet built |
 
 See [`client/README.md`](client/README.md) for local client development, and
@@ -101,11 +101,13 @@ PostgreSQL (better-auth for sessions, attempts/votes/reports persistence).
 See [`client/README.md`](client/README.md) for client-only setup.
 
 ```bash
-npm ci                # or: bun install
-npm run migrate       # apply DB migrations (needs a local Postgres — see .github/workflows/ci.yml)
-npm start             # runs server/index.mjs
-npm run test:server   # server tests
-cd client && npm ci && npm run dev    # client dev server
+bun install            # canonical — bun.lock is the lockfile CI installs from.
+                        # `npm install` also works (no package-lock.json is
+                        # committed, so use install, not ci).
+npm run migrate         # apply DB migrations (needs a local Postgres — see .github/workflows/ci.yml)
+npm start                # runs server/index.mjs
+npm run test:server      # server tests
+cd client && bun install && npm run dev   # client dev server
 ```
 
 ## Licensing
@@ -121,5 +123,6 @@ cannot be forked and republished as a braindump.
 
 ## Privacy
 
-GitHub numeric id and login. No email, no analytics, no third-party scripts.
-Account deletion cascades to everything. [`PRIVACY.md`](PRIVACY.md).
+No analytics, no third-party scripts, no advertising identifiers, no data
+sold or shared. Account deletion cascades to everything. See
+[`PRIVACY.md`](PRIVACY.md) for the complete list of what's stored.

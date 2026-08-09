@@ -1,20 +1,24 @@
 # Client
 
 The Vite + Vue + TypeScript frontend served by `../server/` (a Hono API on
-PostgreSQL). Covers Practice (with per-question +1/-1 voting and reporting,
-signed-in learners only), Mock exam, Review Mistakes, and a progress
-dashboard, all behind GitHub/Google OAuth via better-auth. See
+PostgreSQL). Covers Practice, Mock exam, Review Mistakes, and a progress
+dashboard, with sign-in via GitHub OAuth (Google is configured server-side
+in `server/auth.mjs` but its UI is intentionally hidden until that launch
+flow is ready — see `UserNav.vue`). See
 [`../PLAN.md`](../PLAN.md#7-application) section 7 for the full application
 design and [`../README.md`](../README.md) for the project overview.
 
-Signed out, the app still shuffles and serves questions client-side from the
-static content bundle described below — sign-in only gates the
-persistence-backed features (voting, attempts, mistakes, dashboard).
+Signed out, the app still shuffles and serves Practice questions
+client-side from the static content bundle described below. Signing in
+additionally unlocks per-question +1/-1 voting, question reporting,
+persisted attempts, Review Mistakes, and the progress dashboard.
 
 ## Running it locally
 
 ```bash
-npm ci
+bun install     # canonical — client/bun.lock is what CI installs from.
+                # `npm install` also works (no package-lock.json is
+                # committed, so use install, not ci).
 npm run dev     # regenerates the content bundle, then starts the Vite dev server
 ```
 
