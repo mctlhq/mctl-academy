@@ -76,8 +76,8 @@
   {
     "id": "ai-leader",
     "title": "AI Leader",
-    "publishedQuestionCount": 0,
-    "available": false,
+    "publishedQuestionCount": 4,
+    "available": true,
     "mock": {
       "questionCount": 30,
       "timeLimitMinutes": 60,
