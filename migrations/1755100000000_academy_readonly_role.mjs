@@ -21,6 +21,21 @@
  * transaction, so a failed run leaves no partial state and re-running this
  * app's migration after the role exists succeeds normally.
  *
+ * GRANT CONNECT ON DATABASE / GRANT USAGE ON SCHEMA below need database
+ * and schema privileges, a different class from the table ownership that
+ * covers the GRANTs further down — worth calling out separately because it
+ * is exactly the kind of thing CI can't catch: both CI jobs that run this
+ * migration connect as the Postgres superuser, not as labs-mctl-academy,
+ * so a privilege gap here would pass CI and only surface in production.
+ * Verified by hand instead: platform-gitops's Database CR
+ * (infra-components/data/cnpg/shared/databases.yaml) sets
+ * `owner: "labs-mctl-academy"`, and on Postgres 15+ (this cluster runs 17)
+ * a database's `public` schema is owned by the pg_database_owner
+ * pseudo-role, which the database's actual owner is always implicitly a
+ * member of — confirmed against a real Postgres 17 instance with the same
+ * shape (a non-superuser role owning its own database) that both GRANTs
+ * succeed for that role, not just for a table it owns.
+ *
  * Grants are COLUMN-level, not table-level, on "user"/"session" — "session"
  * holds the live authentication bearer token (session.token — the literal
  * credential behind the mctl_session cookie) and "user" holds
