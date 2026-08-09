@@ -7,21 +7,21 @@ stem: What error code and response payload are returned when a project exceeds
   its assigned Requests Per Minute (RPM) quota?
 options:
   - id: a
-    text: HTTP 429 Too Many Requests
-    correct: true
-    explanation: Exceeding RPM or TPM rate limits triggers HTTP 429 response status.
-  - id: b
-    text: HTTP 500 Internal Server Error
-    correct: false
-    explanation: HTTP 500 indicates unhandled server crashes, not client quota rate limits.
-  - id: c
-    text: HTTP 404 Not Found
-    correct: false
-    explanation: HTTP 404 indicates missing endpoint URLs or resources.
-  - id: d
     text: HTTP 401 Unauthorized
     correct: false
     explanation: HTTP 401 indicates missing or invalid API keys.
+  - id: b
+    text: HTTP 429 Too Many Requests
+    correct: true
+    explanation: Exceeding RPM or TPM rate limits triggers HTTP 429 response status.
+  - id: c
+    text: HTTP 500 Internal Server Error
+    correct: false
+    explanation: HTTP 500 indicates unhandled server crashes, not client quota rate limits.
+  - id: d
+    text: HTTP 404 Not Found
+    correct: false
+    explanation: HTTP 404 indicates missing endpoint URLs or resources.
 evidence:
   - source_id: src-rate-limits
     excerpt: track your consumption against your limits using the

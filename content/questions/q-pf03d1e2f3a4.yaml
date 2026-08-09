@@ -7,25 +7,25 @@ stem: How do Fast model flavors differ from standard model flavors in Nebius
   Token Factory when invoked via OpenAI-compatible APIs?
 options:
   - id: a
+    text: Fast flavors return truncated response text to minimize network payload
+      size
+    correct: false
+    explanation: Fast flavors do not truncate output text or alter generation semantics.
+  - id: b
+    text: Fast flavors require specialized custom SDKs and cannot use OpenAI client
+      libraries
+    correct: false
+    explanation: Fast flavors use standard OpenAI client endpoints and request formats.
+  - id: c
+    text: Fast flavors only accept binary payload inputs instead of JSON
+    correct: false
+    explanation: Standard JSON request bodies apply to both Fast and standard flavors.
+  - id: d
     text: Differences lie in token pricing, latency, and applied optimization levels
       while outputs remain identical
     correct: true
     explanation: Fast flavors optimize latency and pricing while generating
       identical model outputs.
-  - id: b
-    text: Fast flavors return truncated response text to minimize network payload
-      size
-    correct: false
-    explanation: Fast flavors do not truncate output text or alter generation semantics.
-  - id: c
-    text: Fast flavors require specialized custom SDKs and cannot use OpenAI client
-      libraries
-    correct: false
-    explanation: Fast flavors use standard OpenAI client endpoints and request formats.
-  - id: d
-    text: Fast flavors only accept binary payload inputs instead of JSON
-    correct: false
-    explanation: Standard JSON request bodies apply to both Fast and standard flavors.
 evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,

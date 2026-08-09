@@ -7,23 +7,23 @@ stem: What is the primary billing model metric used for shared pay-as-you-go
   inference API pools?
 options:
   - id: a
-    text: Total prompt and completion tokens processed
-    correct: true
-    explanation: Pay-as-you-go inference is billed per thousand/million tokens processed.
-  - id: b
-    text: Fixed flat monthly subscription fee per developer seat
-    correct: false
-    explanation: Shared APIs bill based on actual token usage volume rather than
-      seat counts.
-  - id: c
     text: Number of lines of code compiled in client builds
     correct: false
     explanation: Code volume is not a billing metric for language model inference APIs.
-  - id: d
+  - id: b
     text: Hard drive disk rotation speed
     correct: false
     explanation: Disk hardware specs are managed by the cloud platform, not billed
       per query.
+  - id: c
+    text: Total prompt and completion tokens processed
+    correct: true
+    explanation: Pay-as-you-go inference is billed per thousand/million tokens processed.
+  - id: d
+    text: Fixed flat monthly subscription fee per developer seat
+    correct: false
+    explanation: Shared APIs bill based on actual token usage volume rather than
+      seat counts.
 evidence:
   - source_id: src-rate-limits
     excerpt: track your consumption against your limits using the

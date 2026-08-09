@@ -6,21 +6,21 @@ objective: domain-2/product-outcomes
 stem: "Which user feedback mechanism allows product teams to continuously evaluate and improve AI model response quality?"
 options:
   - id: a
-    text: "Capturing explicit user ratings (thumbs up/down) alongside detailed correction metadata"
-    correct: true
-    explanation: "User rating signals and correction data feed evaluation pipelines and post-training datasets."
-  - id: b
     text: "Disabling user feedback options across client web interfaces"
     correct: false
     explanation: "Disabling feedback deprives product teams of real-world accuracy metrics."
-  - id: c
+  - id: b
     text: "Automatically banning users who submit negative rating scores"
     correct: false
     explanation: "Banning users destroys user trust and product adoption."
-  - id: d
+  - id: c
     text: "Replacing user interfaces with raw log file view ports"
     correct: false
     explanation: "Exposing raw log viewports ruins consumer UX."
+  - id: d
+    text: "Capturing explicit user ratings (thumbs up/down) alongside detailed correction metadata"
+    correct: true
+    explanation: "User rating signals and correction data feed evaluation pipelines and post-training datasets."
 evidence:
   - source_id: src-leader-product-design
     excerpt: "AI Product Design and Workflow Integration"

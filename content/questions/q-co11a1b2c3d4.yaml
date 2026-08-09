@@ -6,21 +6,21 @@ objective: domain-1/environment-deployment
 stem: "When deploying a multi-node GPU cluster for LLM pre-training, what is the primary function of high-speed InfiniBand/RoCE interconnects?"
 options:
   - id: a
-    text: "Accelerating gradient synchronization and tensor parallel communication between worker GPUs"
-    correct: true
-    explanation: "High-speed interconnects (InfiniBand/RoCE) minimize latency during multi-GPU gradient all-reduce and tensor parallel operations."
-  - id: b
-    text: "Serving public HTTP web traffic directly to end-user browsers"
-    correct: false
-    explanation: "Interconnects handle internal node-to-node compute communications, not public HTTP traffic."
-  - id: c
-    text: "Compressing local disk backup archives"
-    correct: false
-    explanation: "Interconnects provide network bandwidth; disk compression is handled by storage software."
-  - id: d
     text: "Bypassing GPU memory allocation limits during model loading"
     correct: false
     explanation: "Interconnects move data over the network; physical VRAM limits remain fixed."
+  - id: b
+    text: "Accelerating gradient synchronization and tensor parallel communication between worker GPUs"
+    correct: true
+    explanation: "High-speed interconnects (InfiniBand/RoCE) minimize latency during multi-GPU gradient all-reduce and tensor parallel operations."
+  - id: c
+    text: "Serving public HTTP web traffic directly to end-user browsers"
+    correct: false
+    explanation: "Interconnects handle internal node-to-node compute communications, not public HTTP traffic."
+  - id: d
+    text: "Compressing local disk backup archives"
+    correct: false
+    explanation: "Interconnects provide network bandwidth; disk compression is handled by storage software."
 evidence:
   - source_id: src-cloudops-env-deploy
     excerpt: "GPU Environment and Managed Cluster Deployment"

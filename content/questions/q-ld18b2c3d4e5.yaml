@@ -6,21 +6,21 @@ objective: domain-4/risk-compliance
 stem: "Which corporate AI usage policy mitigates intellectual property risks when using public cloud AI services?"
 options:
   - id: a
-    text: "Requiring contractual guarantees that user inputs and model outputs are not retained for vendor model re-training"
-    correct: true
-    explanation: "Explicit non-training SLAs ensure proprietary business IP and user data are not absorbed into public foundation models."
-  - id: b
-    text: "Allowing employees to paste proprietary source code into un-vetted public chatbots"
-    correct: false
-    explanation: "Pasting source code into unvetted chatbots risks data leaks and IP exposure."
-  - id: c
     text: "Disabling data encryption keys on internal storage buckets"
     correct: false
     explanation: "Disabling encryption exposes stored data to unauthorized access."
-  - id: d
+  - id: b
     text: "Granting anonymous external users full access to internal codebase repositories"
     correct: false
     explanation: "Granting anonymous access compromises intellectual property completely."
+  - id: c
+    text: "Requiring contractual guarantees that user inputs and model outputs are not retained for vendor model re-training"
+    correct: true
+    explanation: "Explicit non-training SLAs ensure proprietary business IP and user data are not absorbed into public foundation models."
+  - id: d
+    text: "Allowing employees to paste proprietary source code into un-vetted public chatbots"
+    correct: false
+    explanation: "Pasting source code into unvetted chatbots risks data leaks and IP exposure."
 evidence:
   - source_id: src-leader-cost-risk
     excerpt: "Token Economics, Cost Control, and Data Risk Management"

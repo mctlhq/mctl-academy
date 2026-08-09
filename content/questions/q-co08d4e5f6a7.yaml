@@ -6,21 +6,21 @@ objective: domain-2/security-policies
 stem: "Which governance measure protects cloud API endpoints from unauthorized automated access?"
 options:
   - id: a
-    text: "Enforcing API key rotation policies and IAM role-based access control"
-    correct: true
-    explanation: "Rotating API keys and RBAC policies prevent credential exposure and unauthorized access."
-  - id: b
     text: "Publishing service account tokens to public source control repositories"
     correct: false
     explanation: "Publishing tokens publicly exposes endpoints to immediate exploitation."
-  - id: c
+  - id: b
     text: "Disabling security log auditing across all production services"
     correct: false
     explanation: "Disabling auditing prevents detection of security breaches."
-  - id: d
+  - id: c
     text: "Bypassing TLS encryption for internal API communication"
     correct: false
     explanation: "Bypassing TLS exposes sensitive tokens to network sniffing."
+  - id: d
+    text: "Enforcing API key rotation policies and IAM role-based access control"
+    correct: true
+    explanation: "Rotating API keys and RBAC policies prevent credential exposure and unauthorized access."
 evidence:
   - source_id: src-cloudops-iam-roles
     excerpt: "User Access, IAM Roles, and Service Accounts"

@@ -8,22 +8,22 @@ stem: What status indicates that a dedicated endpoint has completed node
   requests?
 options:
   - id: a
+    text: CREATING
+    correct: false
+    explanation: CREATING signifies ongoing provision of underlying compute nodes.
+  - id: b
+    text: DELETING
+    correct: false
+    explanation: DELETING indicates endpoint de-provisioning and resource teardown.
+  - id: c
+    text: PAUSED
+    correct: false
+    explanation: PAUSED indicates an inactive endpoint that is not serving live traffic.
+  - id: d
     text: READY
     correct: true
     explanation: The READY state confirms node provisioning, model loading, and
       traffic capability.
-  - id: b
-    text: CREATING
-    correct: false
-    explanation: CREATING signifies ongoing provision of underlying compute nodes.
-  - id: c
-    text: DELETING
-    correct: false
-    explanation: DELETING indicates endpoint de-provisioning and resource teardown.
-  - id: d
-    text: PAUSED
-    correct: false
-    explanation: PAUSED indicates an inactive endpoint that is not serving live traffic.
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.

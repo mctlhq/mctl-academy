@@ -6,21 +6,21 @@ objective: domain-1/storage-volumes
 stem: "When configuring persistent block storage for checkpointing large LLMs, which IOPS configuration avoids training stalls?"
 options:
   - id: a
-    text: "Provisioning high-throughput NVMe block storage volumes with dedicated write IOPS guarantees"
-    correct: true
-    explanation: "High write IOPS NVMe volumes prevent IO bottlenecks when writing multi-gigabyte model weights."
-  - id: b
-    text: "Using low-speed archival magnetic storage over USB 2.0 adapters"
-    correct: false
-    explanation: "USB 2.0 magnetic storage causes extreme IO write latency."
-  - id: c
     text: "Disabling disk persistence during training runs"
     correct: false
     explanation: "Disabling persistence results in total loss of progress on hardware crashes."
-  - id: d
+  - id: b
     text: "Storing checkpoints in temporary volatile CPU cache lines"
     correct: false
     explanation: "CPU cache lines cannot hold multi-gigabyte model checkpoints."
+  - id: c
+    text: "Provisioning high-throughput NVMe block storage volumes with dedicated write IOPS guarantees"
+    correct: true
+    explanation: "High write IOPS NVMe volumes prevent IO bottlenecks when writing multi-gigabyte model weights."
+  - id: d
+    text: "Using low-speed archival magnetic storage over USB 2.0 adapters"
+    correct: false
+    explanation: "USB 2.0 magnetic storage causes extreme IO write latency."
 evidence:
   - source_id: src-cloudops-env-deploy
     excerpt: "GPU Environment and Managed Cluster Deployment"
