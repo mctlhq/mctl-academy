@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld03c3d4e5f6
-status: published
+status: draft
 domain: domain-3
 objective: domain-3/vendor-evaluation
 stem: "When evaluating third-party API providers for enterprise AI integration,
@@ -36,6 +36,3 @@ authored:
   by: agent:question-author
   at: 2026-08-09T11:40:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-09T09:45:33Z

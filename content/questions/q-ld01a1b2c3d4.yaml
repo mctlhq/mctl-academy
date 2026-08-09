@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld01a1b2c3d4
-status: published
+status: draft
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: "When selecting a model family for low-latency interactive applications,
@@ -33,6 +33,3 @@ authored:
   by: agent:question-author
   at: 2026-08-09T11:40:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-09T09:45:33Z

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld04d4e5f6a7
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/cost-economics
 stem: "How can engineering leadership control monthly API consumption costs
@@ -33,6 +33,3 @@ authored:
   by: agent:question-author
   at: 2026-08-09T11:40:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-09T09:45:33Z
