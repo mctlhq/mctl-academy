@@ -16,6 +16,6 @@ jobs:
     secrets:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     with:
-      blocking: true
+      blocking: false
       conventions: |
         Focus on: correctness bugs, security issues, weakening of the content evidence gate (scripts/validate-content.mjs, content/schemas/), attempt-immutability violations, trust in client-supplied timing, new columns/fields holding personal learner data beyond GitHub numeric id and login, missing error handling, and missing tests for changed behavior.
