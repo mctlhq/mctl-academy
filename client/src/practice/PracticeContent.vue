@@ -356,24 +356,20 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   cursor: pointer;
 }
 
+/* Un-boxed by design: it's a two-way toggle over one running count, not a
+   distinct control that needs its own frame — every other in-line action at
+   this scale (.report-button) is bare text/glyph with no border or fill, so
+   a bordered pill here was the odd one out. .vote-button keeps its 44px
+   touch target (WCAG 2.5.5) but paints nothing of its own; .vote-icon is
+   the small glyph that actually carries color, and "active" is communicated
+   the same way .report-button and nav links already do it in this app —
+   with color and weight, not a filled shape. */
 .vote-widget {
   display: inline-flex;
   align-items: center;
-  padding: 0.2rem 0.35rem;
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-pill);
+  gap: 0.1rem;
 }
 
-/* .vote-button is the 44px touch target (WCAG 2.5.5 / the app's own
-   convention — see e2e/mobile-layout.spec.ts), but a circle that size
-   filling this compact a pill has nowhere to go: at .vote-widget's old
-   0.15rem padding, an active vote's full-button background tint collided
-   with the pill's own border (the exact "circle overlapping the outline"
-   look reported against this widget). Keeping .vote-button itself
-   transparent and unsized visually, with .vote-icon as a smaller circle
-   centered inside it, decouples the tap target from what's actually drawn —
-   the hit area stays 44px without forcing a 44px-wide painted shape into an
-   inline caption-height row. */
 .vote-button {
   display: inline-grid;
   min-width: 2.75rem;
@@ -381,53 +377,37 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   place-items: center;
   border: 0;
   background: transparent;
-  color: var(--surface-fg-subtle);
   cursor: pointer;
 }
 
 .vote-icon {
   display: grid;
-  width: 1.65rem;
-  height: 1.65rem;
   place-items: center;
-  border-radius: var(--mctl-radius-pill);
+  color: var(--surface-fg-subtle);
   font-size: 0.6rem;
   line-height: 1;
-  transition: background-color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
+  transition: color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
 }
 
 .vote-button:hover .vote-icon {
-  background: var(--surface-card);
-}
-
-.vote-button:hover {
   color: var(--surface-fg);
 }
 
-.vote-button.vote-up.active {
+.vote-button.vote-up.active .vote-icon {
   color: var(--status-ok);
 }
 
-.vote-button.vote-up.active .vote-icon {
-  background: color-mix(in srgb, var(--status-ok) 16%, transparent);
-}
-
-.vote-button.vote-down.active {
+.vote-button.vote-down.active .vote-icon {
   color: var(--status-bad);
 }
 
-.vote-button.vote-down.active .vote-icon {
-  background: color-mix(in srgb, var(--status-bad) 16%, transparent);
-}
-
 .vote-score {
-  min-width: 1.35rem;
-  padding: 0 0.15rem;
+  min-width: 1.1rem;
   overflow-wrap: break-word;
   text-align: center;
-  color: var(--surface-fg-muted);
+  color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-variant-numeric: tabular-nums;
 }
 
