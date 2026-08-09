@@ -55,7 +55,7 @@ jobs:
         run: |
           node scripts/build-content-bundle.mjs
 
-      - name: Commit and push quarantine updates to main
+      - name: Commit and push quarantine updates
         if: steps.check.outputs.drifted == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +67,28 @@ jobs:
             echo "No new quarantine changes to commit."
           else
             git commit -m "chore(quarantine): auto-quarantine drifted sources and rebuild bundle"
-            git push origin main || echo "::warning::git push to main failed (e.g. branch protection). Continuing to issue creation."
+            pushed=false
+            for i in 1 2 3; do
+              if git push origin main; then
+                pushed=true
+                echo "Quarantine state successfully pushed directly to main."
+                break
+              fi
+              echo "Direct push to main failed (attempt $i). Retrying with rebase..."
+              git pull --rebase origin main || true
+            done
+
+            if [ "$pushed" = "false" ]; then
+              echo "Direct push to main unavailable (e.g. branch protection). Creating quarantine PR..."
+              q_branch="chore/quarantine-drift-$(date +%s)"
+              git checkout -b "$q_branch"
+              git push origin "$q_branch"
+              gh pr create --repo "${{ github.repository }}" \
+                --title "chore(quarantine): auto-quarantine drifted sources" \
+                --body "Upstream documentation drift detected. Quarantine state committed on branch \`${q_branch}\`. Merge to deploy fail-closed bundle." \
+                --label "agents:intake" \
+                --label "agents:quarantine"
+            fi
           fi
 
       - name: Open or update intake issues
