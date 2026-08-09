@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-co17a1b2c3d4
+status: published
+domain: domain-3
+objective: domain-3/node-recovery
+stem: "When an automatic node health recovery script cordons a degraded instance, what happens to running stateful pod workloads?"
+options:
+  - id: a
+    text: "Workloads are safely drained and rescheduled onto healthy available nodes using recent storage checkpoints"
+    correct: true
+    explanation: "Draining worker pods allows stateful jobs to resume execution from storage checkpoints on healthy nodes."
+  - id: b
+    text: "Workloads remain stuck on the broken node until manual hard reboot"
+    correct: false
+    explanation: "Cordoning and draining actively migrates workloads off degraded hardware."
+  - id: c
+    text: "All shared storage volumes attached to the cluster are un-mounted globally"
+    correct: false
+    explanation: "Unmounting storage globally breaks healthy running cluster jobs."
+  - id: d
+    text: "Pod containers are permanently deleted without saving checkpoint progress"
+    correct: false
+    explanation: "Proper recovery mechanics preserve checkpoint state before terminating pods."
+evidence:
+  - source_id: src-cloudops-node-monitoring
+    excerpt: "GPU Cluster Monitoring and Node Health Recovery"
+    source_sha256: 8a709a32c253818e69888d227b2a64c483a903c7349bc3d3ecbc8789d97096d2
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:33:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:33:30Z
+course_id: ai-cloudops-engineer

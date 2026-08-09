@@ -39,7 +39,7 @@
   {
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
-    "publishedQuestionCount": 10,
+    "publishedQuestionCount": 20,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -76,7 +76,7 @@
   {
     "id": "ai-leader",
     "title": "AI Leader",
-    "publishedQuestionCount": 10,
+    "publishedQuestionCount": 20,
     "available": true,
     "mock": {
       "questionCount": 30,

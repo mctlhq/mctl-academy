@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld16f6a7b8c9
+status: published
+domain: domain-3
+objective: domain-3/api-integration-basics
+stem: "What is the primary benefit of streaming model completions via Server-Sent Events (SSE) in user interfaces?"
+options:
+  - id: a
+    text: "Reducing perceived user latency (Time-To-First-Token) by displaying tokens as they are generated"
+    correct: true
+    explanation: "Streaming via SSE renders tokens incrementally, improving perceived latency compared to waiting for complete responses."
+  - id: b
+    text: "Increasing total API token consumption fees"
+    correct: false
+    explanation: "Streaming does not increase token count or API fees."
+  - id: c
+    text: "Disabling browser security sandboxing rules"
+    correct: false
+    explanation: "SSE streaming obeys standard HTTP/browser security protocols."
+  - id: d
+    text: "Converting model outputs into static PDF downloads automatically"
+    correct: false
+    explanation: "SSE streams text/event streams; it does not convert outputs to PDF files."
+evidence:
+  - source_id: src-leader-vendor-eval
+    excerpt: "API Vendor Evaluation and Infrastructure Integration"
+    source_sha256: e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:33:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:33:30Z
+course_id: ai-leader
