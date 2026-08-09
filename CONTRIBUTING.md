@@ -60,16 +60,18 @@ content throughput is the expected bottleneck — small batches keep it moving.
 
 ## Local development
 
-The API and deployment do not exist yet (Phase 0/1 — see `PLAN.md`). The Mock
-exam screen's client does: it is a Vite + React + TypeScript app under
-`client/`, driven by a build-time JSON bundle generated from `content/`, with
-no backend of its own.
+The application is live at `academy.mctl.ai` — a Hono API (`server/`) backed
+by PostgreSQL, and a Vite + Vue + TypeScript client (`client/`) driven by a
+build-time JSON bundle generated from `content/`.
 
 ```bash
+bun install
+npm run migrate
+npm start
+
 cd client
-npm ci
+bun install
 npm run dev
 ```
 
-See the README's "Local development — client" section for the full command
-set.
+See the README's "Local development" section for the full command set.

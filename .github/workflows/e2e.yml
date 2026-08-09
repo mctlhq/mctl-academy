@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   e2e:
@@ -44,9 +45,10 @@ jobs:
 
       - name: Install client dependencies
         working-directory: client
-        # See ci.yml's client job — same GitHub Packages token for @mctlhq/ui/css.
+        # See ci.yml's client job — same GitHub Packages auth for @mctlhq/ui/css,
+        # using the ambient GITHUB_TOKEN so this works on fork PRs too.
         env:
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun install --frozen-lockfile
 
       - name: Install Playwright browser

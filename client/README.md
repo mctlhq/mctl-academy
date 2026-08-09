@@ -1,25 +1,24 @@
-# Practice mode (client)
+# Client
 
-A standalone React/Vite screen that lets you answer questions from the
-published question bank one at a time, with instant per-option feedback and
-explanations. It shuffles question order and each question's option order
-once per session, and shows a summary score once you reach the end.
+The Vite + Vue + TypeScript frontend served by `../server/` (a Hono API on
+PostgreSQL). Covers Practice, Mock exam, Review Mistakes, and a progress
+dashboard, with sign-in via GitHub OAuth (Google is configured server-side
+in `server/auth.mjs` but its UI is intentionally hidden until that launch
+flow is ready — see `UserNav.vue`). See
+[`../PLAN.md`](../PLAN.md#7-application) section 7 for the full application
+design and [`../README.md`](../README.md) for the project overview.
 
-## What it is not (yet)
-
-This is issue #19's Practice mode screen only. It has **no backend, no
-authentication, and no persistence** beyond the current browser tab: closing
-or reloading the page starts a fresh, freshly shuffled session, and nothing
-is saved anywhere. There is no Mock mode, no Review-mistakes mode, and no
-progress dashboard here. The eventual full application — an Express host
-serving these static assets, a PostgreSQL `attempts` table, and GitHub
-OAuth — is described in [`../PLAN.md`](../PLAN.md#7-application) section 7,
-and is separate, later work.
+Signed out, the app still shuffles and serves Practice questions
+client-side from the static content bundle described below. Signing in
+additionally unlocks per-question +1/-1 voting, question reporting,
+persisted attempts, Review Mistakes, and the progress dashboard.
 
 ## Running it locally
 
 ```bash
-npm ci
+bun install     # canonical — client/bun.lock is what CI installs from.
+                # `npm install` also works (no package-lock.json is
+                # committed, so use install, not ci).
 npm run dev     # regenerates the content bundle, then starts the Vite dev server
 ```
 

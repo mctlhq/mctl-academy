@@ -64,13 +64,13 @@ exam are in `CONTENT-POLICY.md`, which is the binding document for contributors.
 
 ## Permission request
 
-A positioning and permission request has been sent to Nebius Academy, and its
-status is tracked in a public issue in this repository.
+A positioning and permission request to Nebius Academy has not been sent yet.
+When it is, its status will be tracked in a public issue in this repository.
 
-Launch does not block on a reply. The maintainer has accepted the residual risk
-of launching before receiving one, on the reasoning that a course written from
-public documentation is original work rather than a derivative of exam
-materials.
+Launch does not block on sending it or on receiving a reply. The maintainer
+has accepted the residual risk of operating before either happens, on the
+reasoning that a course written from public documentation is original work
+rather than a derivative of exam materials.
 
 If the vendor objects, the fallback is a one-file change: all certification
 naming, the disclaimer, and objective maps live in course metadata files under
