@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import { auth, assertAuthSecretConfigured } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
+import { votesRouter } from "./routes/votes.mjs";
 import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
@@ -72,6 +73,10 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 // Mount attempt sync router (issue #57)
 app.route("/api/attempts", attemptsRouter);
+
+// Per-question +1/-1 voting for signed-in learners (fully auth-gated, like
+// attempts — see server/routes/votes.mjs).
+app.route("/api/votes", votesRouter);
 
 // Self-service account deletion (Art 17 erasure) — not better-auth's own
 // deleteUser, which requires email verification even for OAuth-only users.

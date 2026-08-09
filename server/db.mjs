@@ -15,6 +15,7 @@ let pool = null;
 // owns that data now and requires a real Postgres unconditionally.
 const memAttempts = []; // array of attempt objects
 const memQuestionReports = []; // array of question report objects
+const memQuestionVotes = []; // array of { userId, questionId, value, createdAt, updatedAt }
 
 /**
  * Initialize the database.
@@ -249,4 +250,93 @@ export async function listRecentQuestionReports(limit = 50) {
 
   return memQuestionReports.slice(-limit).reverse();
 
+}
+
+function assertValidVoteValue(value) {
+  if (value !== 1 && value !== -1) {
+    throw new Error(`Invalid vote value: ${value} (must be 1 or -1)`);
+  }
+}
+
+/**
+ * Casts or changes a learner's vote on a question. "No vote" is the absence
+ * of a row (see deleteQuestionVote), so this is the only write path that
+ * creates or updates one — there is no third state to represent here.
+ *
+ * The ON CONFLICT upsert is what makes a second vote from the same learner on
+ * the same question an update instead of a duplicate row; the UNIQUE
+ * (user_id, question_id) constraint from the migration is what makes that
+ * upsert target well-defined.
+ */
+export async function upsertQuestionVote({ userId, questionId, value }) {
+  assertValidVoteValue(value);
+
+  if (pool) {
+    const res = await pool.query(
+      `INSERT INTO question_votes (user_id, question_id, value)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, question_id)
+       DO UPDATE SET value = EXCLUDED.value, updated_at = now()
+       RETURNING user_id, question_id, value, updated_at;`,
+      [userId, questionId, value]
+    );
+    const row = res.rows[0];
+    return { userId: row.user_id, questionId: row.question_id, value: row.value, updatedAt: row.updated_at };
+  }
+
+  const existing = memQuestionVotes.find((v) => v.userId === userId && v.questionId === questionId);
+  const now = new Date().toISOString();
+  if (existing) {
+    existing.value = value;
+    existing.updatedAt = now;
+    return { ...existing };
+  }
+  const vote = { userId, questionId, value, createdAt: now, updatedAt: now };
+  memQuestionVotes.push(vote);
+  return { ...vote };
+}
+
+/** Removes a learner's vote on a question. Idempotent — a no-op if none exists. */
+export async function deleteQuestionVote({ userId, questionId }) {
+  if (pool) {
+    await pool.query(`DELETE FROM question_votes WHERE user_id = $1 AND question_id = $2;`, [userId, questionId]);
+    return;
+  }
+
+  for (let i = memQuestionVotes.length - 1; i >= 0; i--) {
+    const v = memQuestionVotes[i];
+    if (v.userId === userId && v.questionId === questionId) {
+      memQuestionVotes.splice(i, 1);
+    }
+  }
+}
+
+/**
+ * The net score across every voter on a question, plus this caller's own
+ * vote (0 meaning "hasn't voted", never a stored value — see the migration's
+ * CHECK constraint). One query rather than two so the score and the caller's
+ * own vote are read from the same snapshot.
+ */
+export async function getQuestionVoteSummary({ questionId, userId }) {
+  if (pool) {
+    const res = await pool.query(
+      `SELECT
+         COALESCE(SUM(value), 0)::int AS score,
+         COALESCE(MAX(CASE WHEN user_id = $2 THEN value END), 0)::int AS user_value
+       FROM question_votes
+       WHERE question_id = $1;`,
+      [questionId, userId]
+    );
+    const row = res.rows[0];
+    return { score: row.score, userValue: row.user_value };
+  }
+
+  let score = 0;
+  let userValue = 0;
+  for (const v of memQuestionVotes) {
+    if (v.questionId !== questionId) continue;
+    score += v.value;
+    if (v.userId === userId) userValue = v.value;
+  }
+  return { score, userValue };
 }
