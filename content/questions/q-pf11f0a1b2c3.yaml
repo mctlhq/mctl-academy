@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf11f0a1b2c3
-status: draft
+status: published
 domain: domain-1
 objective: domain-1/playground
 stem: Which inference parameter in the Playground UI controls the randomness of

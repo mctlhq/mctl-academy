@@ -1815,6 +1815,270 @@
     ]
   },
   {
+    "id": "q-pf05f3a4b5c6",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/api-authentication",
+    "stem": "How are API requests authenticated when interacting with Nebius Token Factory endpoints using OpenAI client SDKs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "By passing a Project API key in the Authorization header as a Bearer token",
+        "correct": true,
+        "explanation": "OpenAI SDK compatibility relies on standard HTTP Bearer token authorization using Project API keys."
+      },
+      {
+        "id": "b",
+        "text": "By uploading an mTLS client certificate for every connection",
+        "correct": false,
+        "explanation": "mTLS is not required; standard HTTP Bearer tokens are used."
+      },
+      {
+        "id": "c",
+        "text": "By sending plain-text user passwords in custom headers",
+        "correct": false,
+        "explanation": "Passwords are never used for API authorization."
+      },
+      {
+        "id": "d",
+        "text": "By IP address allowlisting without cryptographic keys",
+        "correct": false,
+        "explanation": "Authorization requires valid API keys regardless of source IP."
+      }
+    ]
+  },
+  {
+    "id": "q-pf06a4b5c6d7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/model-catalog",
+    "stem": "Where can developers discover available base models and their specific context window limits in Nebius Token Factory?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Through the `/v1/models` API endpoint and the platform model catalog UI",
+        "correct": true,
+        "explanation": "Model capabilities, context windows, and available flavors are listed via `/v1/models` and the catalog."
+      },
+      {
+        "id": "b",
+        "text": "By querying DNS TXT records for endpoint subdomains",
+        "correct": false,
+        "explanation": "DNS records contain domain routing info, not model catalog metadata."
+      },
+      {
+        "id": "c",
+        "text": "By inspecting client-side git repository commit histories",
+        "correct": false,
+        "explanation": "Model catalogs are served dynamically from platform APIs."
+      },
+      {
+        "id": "d",
+        "text": "By contacting customer support via email before each request",
+        "correct": false,
+        "explanation": "Model listings are programmatically discoverable via public API endpoints."
+      }
+    ]
+  },
+  {
+    "id": "q-pf07b5c6d7e8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/playground",
+    "stem": "What primary workflow function does the Nebius Token Factory Playground UI serve during initial agent prototyping?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Interactive testing of model prompts, parameters, and tool outputs directly in the browser",
+        "correct": true,
+        "explanation": "The Playground UI enables rapid manual experimentation with prompts, parameters, and responses."
+      },
+      {
+        "id": "b",
+        "text": "Compiling binary Linux kernel modules for custom GPU instances",
+        "correct": false,
+        "explanation": "Playground handles model inference testing, not OS compilation."
+      },
+      {
+        "id": "c",
+        "text": "Provisioning physical rack hardware in remote data centers",
+        "correct": false,
+        "explanation": "Hardware provisioning is managed by infrastructure infrastructure teams, not the prompt playground."
+      },
+      {
+        "id": "d",
+        "text": "Generating automated legal compliance tax forms",
+        "correct": false,
+        "explanation": "The playground is a developer interface for LLM prompt testing."
+      }
+    ]
+  },
+  {
+    "id": "q-pf08c6d7e8f9",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "Which base URL pattern is used to configure standard OpenAI SDK clients to point to Nebius Token Factory inference endpoints?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`https://api.tokenfactory.nebius.com/v1`",
+        "correct": true,
+        "explanation": "The standard base URL path follows `https://api.tokenfactory.nebius.com/v1` for OpenAI client integration."
+      },
+      {
+        "id": "b",
+        "text": "`ftp://legacy.nebius.internal/storage`",
+        "correct": false,
+        "explanation": "FTP protocols are not used for RESTful LLM inference APIs."
+      },
+      {
+        "id": "c",
+        "text": "`ws://localhost:3000/raw-socket`",
+        "correct": false,
+        "explanation": "Local raw WebSockets are not the canonical public API base URL."
+      },
+      {
+        "id": "d",
+        "text": "`https://docs.nebius.com/static/js`",
+        "correct": false,
+        "explanation": "Documentation static assets are not API inference endpoints."
+      }
+    ]
+  },
+  {
+    "id": "q-pf09d8e9f0a1",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/api-authentication",
+    "stem": "What authentication scope is required for API keys to create new dedicated endpoints in a project?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Project administrator or endpoint management write permissions",
+        "correct": true,
+        "explanation": "Creating infrastructure resources requires write permissions scoped to the target project."
+      },
+      {
+        "id": "b",
+        "text": "Read-only guest access across public forum posts",
+        "correct": false,
+        "explanation": "Read-only guest access cannot provision infrastructure endpoints."
+      },
+      {
+        "id": "c",
+        "text": "Anonymous unauthenticated bearer token",
+        "correct": false,
+        "explanation": "Resource creation strictly requires authenticated API keys."
+      },
+      {
+        "id": "d",
+        "text": "Third-party identity provider root certificate private key",
+        "correct": false,
+        "explanation": "Endpoint creation uses project-scoped IAM roles and API keys."
+      }
+    ]
+  },
+  {
+    "id": "q-pf10e9f0a1b2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/model-catalog",
+    "stem": "What happens when a base model version reaches its official deprecation date in Nebius Token Factory?",
+    "options": [
+      {
+        "id": "a",
+        "text": "New request invocations are rejected and developers must migrate to an active model version",
+        "correct": true,
+        "explanation": "Deprecated models are shut down for new inferences after the deprecation date passes."
+      },
+      {
+        "id": "b",
+        "text": "Requests are automatically routed to random third-party web search engines",
+        "correct": false,
+        "explanation": "Deprecation stops inference requests rather than redirecting queries externally."
+      },
+      {
+        "id": "c",
+        "text": "The model automatically doubles its inference speed without cost changes",
+        "correct": false,
+        "explanation": "Deprecation marks model end-of-life, not a performance upgrade."
+      },
+      {
+        "id": "d",
+        "text": "The project API key is permanently revoked",
+        "correct": false,
+        "explanation": "Model deprecation does not invalidate project credentials or API keys."
+      }
+    ]
+  },
+  {
+    "id": "q-pf11f0a1b2c3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/playground",
+    "stem": "Which inference parameter in the Playground UI controls the randomness of generated model completions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Temperature",
+        "correct": true,
+        "explanation": "Temperature scales the logits before sampling, controlling response randomness and creativity."
+      },
+      {
+        "id": "b",
+        "text": "TCP Window Size",
+        "correct": false,
+        "explanation": "TCP window size is a network transport layer configuration."
+      },
+      {
+        "id": "c",
+        "text": "CPU Core Affinity",
+        "correct": false,
+        "explanation": "CPU affinity controls process execution on physical cores, not LLM sampling."
+      },
+      {
+        "id": "d",
+        "text": "Display Screen Refresh Rate",
+        "correct": false,
+        "explanation": "Monitor refresh rate is a hardware display property."
+      }
+    ]
+  },
+  {
+    "id": "q-pf12a1b2c3d4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "Can a single Nebius Token Factory user account belong to multiple organizations simultaneously?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, a user identity can be invited to multiple organizations and switch between them",
+        "correct": true,
+        "explanation": "User identities can hold memberships across multiple independent organizations."
+      },
+      {
+        "id": "b",
+        "text": "No, signing up locks the account to a single organization permanently",
+        "correct": false,
+        "explanation": "Users can belong to multiple organizations and accept invitations."
+      },
+      {
+        "id": "c",
+        "text": "Only if the user registers separate physical credit cards for each organization",
+        "correct": false,
+        "explanation": "Organization membership is managed via IAM roles, not separate credit card registrations."
+      },
+      {
+        "id": "d",
+        "text": "Only during the first 24 hours after account creation",
+        "correct": false,
+        "explanation": "Multi-organization membership is a permanent platform capability."
+      }
+    ]
+  },
+  {
     "id": "q-rl01d7e8f9a0",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
