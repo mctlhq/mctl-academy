@@ -42,18 +42,24 @@
  * email/name/image/githubLogin; a table-wide GRANT would let anything with
  * query access to this role (e.g. Grafana's Explore, not just this one
  * dashboard's fixed panels) read those out directly. The dashboard only
- * ever needs "createdAt" from either table. attempts is also column-scoped
- * — (user_id, domain, correct, attempted_at), the only four the dashboard's
- * SQL ever references — rather than granted whole: even with no OAuth
- * tokens or PII, unrestricted attempts access would hand out every
- * learner's full per-question answer history (id + question_id joined to
- * user_id), which is more than "aggregates for a usage dashboard" needs and
- * more than this role should be able to hand to anything querying it
- * directly (e.g. Grafana Explore) rather than through the dashboard's fixed
- * panels. Deliberately excludes "account" (OAuth
- * accessToken/refreshToken/idToken), "verification", question_reports, and
- * question_votes entirely — this role must never be able to read OAuth
- * tokens even if a future Grafana panel author intends no harm.
+ * ever needs "createdAt" from either table.
+ *
+ * attempts is column-scoped too, and deliberately excludes user_id (as well
+ * as id and question_id): domain/correct/attempted_at alone are pure
+ * aggregates with no way to tie a row back to a specific learner, but
+ * domain+correct+attempted_at *plus* user_id — even though user_id is an
+ * opaque better-auth id, not a name or email — would let anything querying
+ * this role directly (not just through the dashboard's fixed
+ * count()/date_trunc() panels) reconstruct a specific pseudonymous
+ * learner's full per-question performance timeline. That is exactly the
+ * kind of per-individual observability PRIVACY.md promises the product
+ * doesn't do, even internally, so the "Unique active users" metric
+ * (count(DISTINCT user_id)) simply isn't offered here — see the dashboard's
+ * About panel for the corresponding UI-side removal. Deliberately excludes
+ * "account" (OAuth accessToken/refreshToken/idToken), "verification",
+ * question_reports, and question_votes entirely — this role must never be
+ * able to read OAuth tokens even if a future Grafana panel author intends
+ * no harm.
  *
  * GRANT itself needs no CREATEROLE — only ownership of (or GRANT OPTION on)
  * the table, which labs-mctl-academy already has as the owner of every
@@ -77,11 +83,11 @@ export function up(pgm) {
   pgm.sql(`GRANT USAGE ON SCHEMA public TO academy_readonly;`);
   pgm.sql(`GRANT SELECT ("createdAt") ON "user" TO academy_readonly;`);
   pgm.sql(`GRANT SELECT ("createdAt") ON "session" TO academy_readonly;`);
-  pgm.sql(`GRANT SELECT (user_id, domain, correct, attempted_at) ON attempts TO academy_readonly;`);
+  pgm.sql(`GRANT SELECT (domain, correct, attempted_at) ON attempts TO academy_readonly;`);
 }
 
 export function down(pgm) {
-  pgm.sql(`REVOKE SELECT (user_id, domain, correct, attempted_at) ON attempts FROM academy_readonly;`);
+  pgm.sql(`REVOKE SELECT (domain, correct, attempted_at) ON attempts FROM academy_readonly;`);
   pgm.sql(`REVOKE SELECT ("createdAt") ON "session" FROM academy_readonly;`);
   pgm.sql(`REVOKE SELECT ("createdAt") ON "user" FROM academy_readonly;`);
   pgm.sql(`REVOKE USAGE ON SCHEMA public FROM academy_readonly;`);
