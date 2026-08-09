@@ -148,6 +148,59 @@ describe("progressStore service", () => {
     expect(getStoredAttempts()).toEqual([]);
   });
 
+  it("clearProgress makes no server call when sync is disabled, and reports the server as clear", async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+
+    recordAttempt("q-1", "domain-1", true);
+    const result = await clearProgress();
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(result).toEqual({ serverCleared: true });
+    expect(getStoredAttempts()).toEqual([]);
+  });
+
+  it("clearProgress deletes server attempts for a signed-in learner", async () => {
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", true);
+    const result = await clearProgress();
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/attempts",
+      expect.objectContaining({ method: "DELETE", credentials: "same-origin" }),
+    );
+    expect(result).toEqual({ serverCleared: true });
+    expect(getStoredAttempts()).toEqual([]);
+  });
+
+  it("clearProgress reports serverCleared: false when the server delete fails, without losing the local clear", async () => {
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", true);
+    const result = await clearProgress();
+
+    expect(result).toEqual({ serverCleared: false });
+    // Local history is still gone even though the server call failed — the
+    // caller is responsible for telling the learner it isn't permanent yet.
+    expect(getStoredAttempts()).toEqual([]);
+  });
+
+  it("clearProgress reports serverCleared: false on a network error", async () => {
+    const fetchSpy = vi.fn().mockRejectedValue(new Error("offline"));
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", true);
+    const result = await clearProgress();
+
+    expect(result).toEqual({ serverCleared: false });
+  });
+
   it("makes no network call when sync is disabled (the default)", () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);

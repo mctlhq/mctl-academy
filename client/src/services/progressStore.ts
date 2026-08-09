@@ -253,11 +253,32 @@ export function getMistakeQuestionIds(): string[] {
   return attempts.filter((a) => !a.correct).map((a) => a.questionId);
 }
 
-export function clearProgress(): void {
+/**
+ * Clears local progress unconditionally, and — for a signed-in learner —
+ * also deletes the server's copy via DELETE /api/attempts. Without the
+ * server call, "Clear history" only ever looked permanent: the very next
+ * syncFromServer() (next app load, or the periodic background sync) would
+ * pull the untouched server rows straight back into local storage. Returns
+ * whether the server side is actually known to be clear, so a caller can
+ * tell the learner the truth when the network call fails rather than
+ * claiming a deletion that did not happen.
+ */
+export async function clearProgress(): Promise<{ serverCleared: boolean }> {
   try {
     removeItem(STORAGE_KEY);
   } catch {
     // Ignore
+  }
+
+  if (!syncEnabled) {
+    return { serverCleared: true };
+  }
+
+  try {
+    const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
+    return { serverCleared: res.ok };
+  } catch {
+    return { serverCleared: false };
   }
 }
 
