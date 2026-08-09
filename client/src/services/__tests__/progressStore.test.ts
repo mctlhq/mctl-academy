@@ -243,6 +243,84 @@ describe("progressStore service", () => {
     expect(getStoredAttempts()).toEqual([]);
   });
 
+  it("clearProgress waits for a pending recordAttempt POST before deleting server attempts, so a late write cannot resurrect it", async () => {
+    // recordAttempt's POST is fire-and-forget: it can still be in flight when
+    // the learner hits "Clear history". If the DELETE fired first, that POST
+    // landing afterwards would recreate the very row being cleared. Assert
+    // the actual wire order: the pending POST must settle before the DELETE
+    // is ever issued.
+    const callOrder: string[] = [];
+    let resolvePost!: (value: unknown) => void;
+    const postPromise = new Promise((resolve) => {
+      resolvePost = resolve;
+    });
+
+    const fetchSpy = vi.fn((_url: string, init?: RequestInit) => {
+      if (!init || init.method === undefined) {
+        callOrder.push("GET");
+        return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+      }
+      if (init.method === "POST") {
+        callOrder.push("POST-start");
+        return postPromise.then((value) => {
+          callOrder.push("POST-resolve");
+          return value;
+        });
+      }
+      callOrder.push("DELETE");
+      return Promise.resolve({ ok: true });
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", true); // fires the POST, not awaited
+
+    const clearPromise = clearProgress();
+
+    // Flush pending microtasks without letting the still-unresolved POST
+    // settle — the DELETE must not have been issued yet.
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(callOrder).toEqual(["POST-start"]);
+
+    resolvePost({ ok: true });
+    const { serverCleared } = await clearPromise;
+
+    expect(serverCleared).toBe(true);
+    expect(callOrder).toEqual(["POST-start", "POST-resolve", "DELETE"]);
+  });
+
+  it("syncFromServer does not start a GET while a clear is in flight", async () => {
+    const callOrder: string[] = [];
+    let resolveDelete!: (value: unknown) => void;
+    const deletePromise = new Promise((resolve) => {
+      resolveDelete = resolve;
+    });
+
+    const fetchSpy = vi.fn((_url: string, init?: RequestInit) => {
+      if (init?.method === "DELETE") {
+        callOrder.push("DELETE-start");
+        return deletePromise;
+      }
+      callOrder.push("GET");
+      return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    const clearPromise = clearProgress(); // DELETE in flight, not yet resolved
+    await Promise.resolve();
+    await Promise.resolve();
+
+    await syncFromServer(); // must bail out before ever calling fetch for GET
+
+    expect(callOrder).toEqual(["DELETE-start"]);
+
+    resolveDelete({ ok: true });
+    await clearPromise;
+  });
+
   it("makes no network call when sync is disabled (the default)", () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);

@@ -84,6 +84,19 @@ approval is the gate, and a model judging another model's questions is the loop
 this pipeline exists to avoid. Everything else (code, schemas, CI, deployment)
 goes through `claude-review.yml`; merge needs no unaddressed P1/P2.
 
+## Attempt immutability
+
+`attempts` is immutable (PLAN.md §7/§9) in the sense that the **application**
+never mutates a past attempt row — a retired or edited question does not
+rewrite what a learner's historical answer was. That is a different property
+from **learner-requested deletion of their own data**: `PRIVACY.md`'s account
+deletion already cascades to every attempt, and "Clear history" (`DELETE
+/api/attempts`) is the same erasure at a smaller scope, initiated by the data's
+owner rather than the system. Attempt immutability prohibits mutation due to
+content changes; it does not prohibit explicit learner-requested deletion of
+that learner's data. Do not read a hard-DELETE-on-request as an immutability
+violation — it is not one.
+
 ## Deployment
 
 MCP-only, via `mctl_deploy_service` / `mctl_provision_database`. Not yet

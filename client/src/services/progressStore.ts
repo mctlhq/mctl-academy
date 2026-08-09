@@ -59,17 +59,39 @@ const ATTEMPTS_ENDPOINT = "/api/attempts";
 let syncEnabled = false;
 
 /**
- * In-memory only — deliberately never persisted. Guards a single race: a
- * syncFromServer() whose GET was already in flight when clearProgress() ran
- * must not write that stale (pre-clear) response back into local storage.
- * It is NOT used to compare against server timestamps (attemptedAt) — both
- * sides of every comparison here are this same client's own Date.now(), so
- * a skewed device clock cannot cause it to reject legitimate future syncs.
- * And because it resets on reload and is irrelevant once a race hasn't
- * happened, a failed DELETE (offline) can never turn into a permanent local
- * tombstone that hides the server's history on this device forever.
+ * Bumped once per clearProgress() call, never compared to a timestamp.
+ * syncFromServer() snapshots this before its GET and re-checks it after —
+ * a mismatch means a clear started (and possibly already finished) while
+ * that GET was in flight, so the response reflects pre-clear state and must
+ * be discarded wholesale rather than merged. Purely an in-memory counter:
+ * no clock is involved, so client/server clock skew can never affect it.
  */
-let lastClearedAt = 0;
+let clearGeneration = 0;
+
+/**
+ * Set for the duration of a clearProgress() server round-trip (null the rest
+ * of the time). syncFromServer() checks this before starting a GET at all,
+ * so a sync does not even attempt to run concurrently with a clear — it is
+ * not just a stale-response filter, it also avoids doing pointless network
+ * work whose result would be thrown away.
+ */
+let clearInFlight: Promise<void> | null = null;
+
+/**
+ * Every in-flight POST /api/attempts (from recordAttempt's fire-and-forget
+ * sync, or syncFromServer's backfill) is tracked here while it is pending.
+ * clearProgress() awaits all of them before issuing its own DELETE, so a
+ * write that started before Clear cannot land on the server after the
+ * DELETE and silently resurrect an attempt the learner just erased.
+ */
+const pendingWrites = new Set<Promise<unknown>>();
+
+function trackWrite<T>(promise: Promise<T>): Promise<T> {
+  pendingWrites.add(promise);
+  const untrack = () => pendingWrites.delete(promise);
+  promise.then(untrack, untrack);
+  return promise;
+}
 
 export function saveRawAttempts(attempts: QuestionAttempt[]): void {
   setItem(STORAGE_KEY, JSON.stringify(attempts));
@@ -78,7 +100,9 @@ export function saveRawAttempts(attempts: QuestionAttempt[]): void {
 /** Clears stored progress, any memory fallback, and in-memory state. Tests own this. */
 export function resetMemoryFallback(): void {
   resetStorage();
-  lastClearedAt = 0;
+  clearGeneration = 0;
+  clearInFlight = null;
+  pendingWrites.clear();
 }
 
 export function getStoredAttempts(): QuestionAttempt[] {
@@ -186,7 +210,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
   }
 
   if (syncEnabled) {
-    postAttemptToServer(questionId, domain, correct).then((ok) => {
+    trackWrite(postAttemptToServer(questionId, domain, correct)).then((ok) => {
       if (ok) markAttemptSynced(questionId, attemptedAt);
     });
   }
@@ -214,14 +238,16 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
  * A no-op while sync is disabled, and any network failure leaves local data
  * untouched.
  *
- * If clearProgress() ran after this call's GET was issued, the response is
- * discarded wholesale (see `lastClearedAt`) rather than merged in — it
- * reflects pre-clear state.
+ * A clearProgress() call in flight is never raced: this bails out before
+ * starting the GET at all if a clear is already running, and discards the
+ * response wholesale if a clear started while the GET was in flight (see
+ * `clearGeneration`) — either way, pre-clear data never gets merged back in.
  */
 export async function syncFromServer(): Promise<void> {
   if (!syncEnabled) return;
+  if (clearInFlight) return;
 
-  const syncStartedAt = Date.now();
+  const startGeneration = clearGeneration;
 
   let serverAttempts: QuestionAttempt[];
   try {
@@ -233,10 +259,7 @@ export async function syncFromServer(): Promise<void> {
     return;
   }
 
-  // >= rather than >: Date.now() has millisecond resolution, and a
-  // clearProgress() triggered immediately after this sync's GET was issued
-  // can land in the very same millisecond — that must still count as "after".
-  if (lastClearedAt >= syncStartedAt) return;
+  if (clearGeneration !== startGeneration) return;
 
   const local = getStoredAttempts();
   const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
@@ -267,7 +290,7 @@ export async function syncFromServer(): Promise<void> {
       continue;
     }
 
-    postAttemptToServer(a.questionId, a.domain, a.correct).then((ok) => {
+    trackWrite(postAttemptToServer(a.questionId, a.domain, a.correct)).then((ok) => {
       if (ok) markAttemptSynced(a.questionId, a.attemptedAt);
     });
   }
@@ -287,9 +310,15 @@ export function getMistakeQuestionIds(): string[] {
  * whether the server side is actually known to be clear, so a caller can
  * tell the learner the truth when the network call fails rather than
  * claiming a deletion that did not happen.
+ *
+ * Before issuing the DELETE, this waits for every attempt POST already in
+ * flight (see `pendingWrites`) — otherwise a write that started just before
+ * Clear could complete just after the DELETE and recreate the very row the
+ * learner asked to erase. `clearInFlight` is set for the whole round-trip so
+ * syncFromServer() does not race a concurrent GET against it either.
  */
 export async function clearProgress(): Promise<{ serverCleared: boolean }> {
-  lastClearedAt = Date.now();
+  clearGeneration += 1;
   try {
     removeItem(STORAGE_KEY);
   } catch {
@@ -300,11 +329,22 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
     return { serverCleared: true };
   }
 
+  let markDone!: () => void;
+  clearInFlight = new Promise<void>((resolve) => {
+    markDone = resolve;
+  });
+
   try {
+    if (pendingWrites.size > 0) {
+      await Promise.allSettled([...pendingWrites]);
+    }
     const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
     return { serverCleared: res.ok };
   } catch {
     return { serverCleared: false };
+  } finally {
+    markDone();
+    clearInFlight = null;
   }
 }
 
