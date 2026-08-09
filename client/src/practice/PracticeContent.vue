@@ -472,11 +472,27 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   margin: 0;
 }
 
+/* Sticky rather than plain in-flow: at >560px (the ≤560px "focused-practice"
+   tier below already fixes this a different way, via a viewport-height card
+   with an internally-scrolling `.options`), a short question's `.practice`
+   box stretches to the shell's 38rem floor and `margin-top: auto` puts the
+   button at a consistent spot near the bottom of that floor — but any
+   question whose stem+options exceed 38rem (common at desktop's default
+   padding/line-height: measured 660-720px against the 608px floor for
+   typical 4-option questions) makes `.practice` grow past the floor instead,
+   so the button ends up wherever that particular question's content happens
+   to end. Sticking it to the viewport bottom (bounded by `.practice`'s own
+   box, so it still scrolls away normally once the card ends) gives it one
+   predictable on-screen position regardless of question length, matching
+   the mobile tier's fixed action bar instead of drifting with content. */
 .practice-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
   padding-top: 1rem;
+  position: sticky;
+  bottom: 0;
+  background: var(--surface-bg);
 }
 
 .next::after {
@@ -678,6 +694,12 @@ kbd {
   }
 
   .practice-actions {
+    /* This tier already pins the action bar via a viewport-height card with
+       `.options` scrolling internally (see `.practice-stage > .practice`'s
+       `overflow: hidden` above) — `position: sticky` from the base rule has
+       no scrollable range to act within here, but reset it explicitly
+       rather than rely on that. */
+    position: static;
     flex: none;
     margin-right: -0.25rem;
     margin-left: -0.25rem;

@@ -73,4 +73,14 @@ const tone = computed(() => {
   border-radius: inherit;
   transition: width var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
 }
+
+@media (min-width: 981px) {
+  .domain-bar-labels {
+    font-size: 1rem;
+  }
+
+  .domain-bar-value {
+    font-size: 0.85rem;
+  }
+}
 </style>

@@ -224,6 +224,32 @@ const practiceDescription = computed(() => {
   color: var(--status-ok);
 }
 
+/* This screen's own content rarely fills a desktop viewport tall enough for
+   .app-main's sticky-footer flex layout to give it real leftover height
+   (measured ~300px of blank space below the grid at 1440x900) — clamp()
+   already lets .next-card h1 scale with viewport width, but everything else
+   here was sized for the ~980px-and-below tier and just stays small at
+   1440px+. Scaling body copy and the stat numbers up (still well inside the
+   existing type scale — .stem/.next-card h1 already reach ~1.55rem) reads
+   as more considered on a wide screen without adding new layout. */
+@media (min-width: 981px) {
+  .next-card {
+    padding: 2rem 2.25rem;
+  }
+
+  .next-card p {
+    font-size: 0.92rem;
+  }
+
+  .stat-list dd {
+    font-size: 1.3rem;
+  }
+
+  .home-grid {
+    gap: 3.5rem;
+  }
+}
+
 @media (max-width: 800px) {
   .next-card {
     align-items: stretch;
