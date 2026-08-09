@@ -7,13 +7,13 @@ export interface CourseInfo {
 }
 
 /**
- * Client-side course store managing the active certification course selection.
- * Selection is stored in reactive state and persisted in localStorage.
+ * Client-side course store managing active course selection.
+ * Names follow generic domain naming per branding rules (no vendor branding in code).
  */
 export const COURSES: CourseInfo[] = [
-  { id: "agentic-ai-builder", name: "Nebius Agentic AI Builder", shortName: "Agentic AI Builder" },
-  { id: "ai-cloudops-engineer", name: "Nebius AI CloudOps Engineer", shortName: "AI CloudOps Engineer" },
-  { id: "ai-leader", name: "Nebius AI Leader", shortName: "AI Leader" },
+  { id: "agentic-ai-builder", name: "Agentic AI Builder", shortName: "Agentic AI Builder" },
+  { id: "ai-cloudops-engineer", name: "AI CloudOps Engineer", shortName: "AI CloudOps Engineer" },
+  { id: "ai-leader", name: "AI Leader", shortName: "AI Leader" },
 ];
 
 const STORAGE_KEY = "mctl_academy_course_id";
@@ -27,25 +27,24 @@ function getInitialCourseId(): string {
   } catch {
     // Ignore storage errors
   }
-  return "agentic-ai-builder";
+  return COURSES[0].id;
 }
 
-const currentCourseIdRef = ref<string>(getInitialCourseId());
+const currentCourseId = ref<string>(getInitialCourseId());
 
 export function useCourseStore() {
-  const currentCourseId = computed(() => currentCourseIdRef.value);
-
   const currentCourse = computed(
-    () => COURSES.find((c) => c.id === currentCourseIdRef.value) || COURSES[0],
+    () => COURSES.find((c) => c.id === currentCourseId.value) || COURSES[0],
   );
 
   function setCourse(courseId: string) {
-    if (!COURSES.some((c) => c.id === courseId)) return;
-    currentCourseIdRef.value = courseId;
-    try {
-      localStorage.setItem(STORAGE_KEY, courseId);
-    } catch {
-      // Ignore storage errors
+    if (COURSES.some((c) => c.id === courseId)) {
+      currentCourseId.value = courseId;
+      try {
+        localStorage.setItem(STORAGE_KEY, courseId);
+      } catch {
+        // Ignore
+      }
     }
   }
 

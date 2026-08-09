@@ -195,10 +195,7 @@ export async function syncFromServer(): Promise<void> {
   for (const a of serverAttempts) {
     const existing = merged.get(a.questionId);
     if (!existing || new Date(a.attemptedAt).getTime() > new Date(existing.attemptedAt).getTime()) {
-      merged.set(a.questionId, {
-        ...a,
-        courseId: a.courseId || existing?.courseId,
-      });
+      merged.set(a.questionId, a);
     }
   }
 

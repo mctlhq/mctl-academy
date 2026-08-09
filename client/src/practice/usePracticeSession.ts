@@ -73,10 +73,8 @@ export function usePracticeSession(
   const { quarantinedIds, fetchQuarantinedIds } = useQuarantineStore();
   fetchQuarantinedIds();
 
-  // Re-build session reactively when quarantinedIds finishes loading asynchronously
-  const session = computed<BundleQuestion[]>(() =>
-    buildSession(bundle, random, quarantinedIds.value)
-  );
+  // Initialize session array ONCE to prevent reshuffling array indices mid-session
+  const session = ref<BundleQuestion[]>(buildSession(bundle, random, quarantinedIds.value)) as Ref<BundleQuestion[]>;
 
   const index = ref(0);
   const revealedByQuestion = new Map<number, Set<string>>();

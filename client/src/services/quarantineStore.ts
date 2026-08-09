@@ -2,6 +2,7 @@ import { ref } from "vue";
 
 const quarantinedIdsRef = ref<Set<string>>(new Set());
 const loadedRef = ref<boolean>(false);
+const errorRef = ref<string | null>(null);
 let fetchPromise: Promise<Set<string>> | null = null;
 
 export function useQuarantineStore() {
@@ -11,16 +12,21 @@ export function useQuarantineStore() {
 
     fetchPromise = (async () => {
       try {
+        errorRef.value = null;
         const res = await fetch("/api/quarantine");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && Array.isArray(data.quarantinedQuestionIds)) {
-            quarantinedIdsRef.value = new Set(data.quarantinedQuestionIds);
-            loadedRef.value = true;
-          }
+        if (!res.ok) {
+          throw new Error(`Quarantine API returned status ${res.status}`);
         }
-      } catch {
-        // Network/server errors: fetchPromise resets so callers can retry later
+        const data = await res.json();
+        if (data.success && Array.isArray(data.quarantinedQuestionIds)) {
+          quarantinedIdsRef.value = new Set(data.quarantinedQuestionIds);
+          loadedRef.value = true;
+        } else {
+          throw new Error("Invalid response format from quarantine API");
+        }
+      } catch (err: any) {
+        errorRef.value = err?.message || "Failed to fetch quarantine list";
+        console.warn("[quarantineStore] Could not load quarantine status:", errorRef.value);
       } finally {
         fetchPromise = null;
       }
@@ -36,6 +42,8 @@ export function useQuarantineStore() {
 
   return {
     quarantinedIds: quarantinedIdsRef,
+    isLoaded: loadedRef,
+    error: errorRef,
     fetchQuarantinedIds,
     isQuarantined,
   };
