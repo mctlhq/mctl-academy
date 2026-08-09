@@ -321,6 +321,109 @@ describe("progressStore service", () => {
     await clearPromise;
   });
 
+  it("a fast-resolving clearProgress does not release the lock for a still-in-flight overlapping clearProgress (double-click)", async () => {
+    // Two overlapping clearProgress() calls, e.g. from a double-clicked
+    // button: the first call's DELETE resolves quickly, the second's is
+    // still pending. The first call's `finally` must not null out the lock
+    // the second call still owns — otherwise a sync racing in right after
+    // the first resolves would slip through and merge stale data.
+    let resolveSecondDelete!: (value: unknown) => void;
+    const secondDeletePromise = new Promise((resolve) => {
+      resolveSecondDelete = resolve;
+    });
+    let deleteCallCount = 0;
+    const fetchSpy = vi.fn((_url: string, init?: RequestInit) => {
+      if (init?.method === "DELETE") {
+        deleteCallCount += 1;
+        return deleteCallCount === 1 ? Promise.resolve({ ok: true }) : secondDeletePromise;
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    const firstClear = clearProgress();
+    const secondClear = clearProgress();
+
+    const firstResult = await firstClear; // resolves while the second is still pending
+    expect(firstResult).toEqual({ serverCleared: true });
+
+    // The lock must still be held by the second, unresolved clearProgress().
+    const callsBeforeSync = fetchSpy.mock.calls.length;
+    await syncFromServer(); // must still bail out — no GET issued
+    expect(fetchSpy.mock.calls.length).toBe(callsBeforeSync);
+
+    resolveSecondDelete({ ok: true });
+    await secondClear;
+  });
+
+  it("clearProgress drains a recordAttempt POST added after its initial pendingWrites snapshot", async () => {
+    // A learner answers a question while clearProgress() is already awaiting
+    // its first batch of pending writes — that new write must be waited on
+    // too, not just the writes that existed at the moment clearProgress()
+    // started, or its POST could land on the server after the DELETE.
+    const callOrder: string[] = [];
+    let resolveFirstPost!: (value: unknown) => void;
+    const firstPostPromise = new Promise((resolve) => {
+      resolveFirstPost = resolve;
+    });
+    let resolveSecondPost!: (value: unknown) => void;
+    const secondPostPromise = new Promise((resolve) => {
+      resolveSecondPost = resolve;
+    });
+    let postCallCount = 0;
+
+    const fetchSpy = vi.fn((_url: string, init?: RequestInit) => {
+      if (init?.method === "POST") {
+        postCallCount += 1;
+        const callNumber = postCallCount;
+        callOrder.push(`POST-${callNumber}-start`);
+        const promise = callNumber === 1 ? firstPostPromise : secondPostPromise;
+        return promise.then((value) => {
+          callOrder.push(`POST-${callNumber}-resolve`);
+          return value;
+        });
+      }
+      callOrder.push("DELETE");
+      return Promise.resolve({ ok: true });
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", true); // first pending write
+
+    const clearPromise = clearProgress();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(callOrder).toContain("POST-1-start");
+    expect(callOrder).not.toContain("DELETE");
+
+    // A second answer arrives while clearProgress() is still awaiting the
+    // first write's snapshot.
+    recordAttempt("q-2", "domain-1", false);
+    resolveFirstPost({ ok: true });
+
+    // Give the drain loop several microtask turns to pick up the new
+    // pending write and start its POST — the DELETE still must not fire
+    // until that second write also settles.
+    for (let i = 0; i < 5; i++) {
+      await Promise.resolve();
+    }
+    expect(callOrder).toContain("POST-2-start");
+    expect(callOrder).not.toContain("DELETE");
+
+    resolveSecondPost({ ok: true });
+    await clearPromise;
+
+    // Both writes' start/resolve events must all precede the DELETE — their
+    // relative order with each other isn't the point, only that neither can
+    // still be pending when the DELETE fires.
+    expect(callOrder.indexOf("DELETE")).toBe(callOrder.length - 1);
+    expect(callOrder).toEqual(
+      expect.arrayContaining(["POST-1-start", "POST-1-resolve", "POST-2-start", "POST-2-resolve"]),
+    );
+  });
+
   it("makes no network call when sync is disabled (the default)", () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);

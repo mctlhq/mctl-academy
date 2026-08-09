@@ -330,12 +330,18 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
   }
 
   let markDone!: () => void;
-  clearInFlight = new Promise<void>((resolve) => {
+  const thisClear = new Promise<void>((resolve) => {
     markDone = resolve;
   });
+  clearInFlight = thisClear;
 
   try {
-    if (pendingWrites.size > 0) {
+    // A while loop, not a one-time snapshot: recordAttempt() can add a new
+    // entry to pendingWrites while this await is suspended (a learner
+    // answering a question mid-clear), and that entry must be waited on too
+    // — otherwise its POST could still land on the server after the DELETE
+    // below and silently resurrect the very row being cleared.
+    while (pendingWrites.size > 0) {
       await Promise.allSettled([...pendingWrites]);
     }
     const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
@@ -344,7 +350,13 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
     return { serverCleared: false };
   } finally {
     markDone();
-    clearInFlight = null;
+    // Only clear the lock if a later, overlapping clearProgress() call
+    // hasn't already replaced it with its own — otherwise a rapid
+    // double-clear would let this (earlier) call's finally null out the
+    // second call's still-in-progress lock, letting syncFromServer() race it.
+    if (clearInFlight === thisClear) {
+      clearInFlight = null;
+    }
   }
 }
 
