@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld14d4e5f6a7
+status: published
+domain: domain-2
+objective: domain-2/workflow-design
+stem: "When designing multi-step agentic workflows, why are deterministic schema validation checks critical between steps?"
+options:
+  - id: a
+    text: "They catch malformed structured outputs early before passing invalid arguments to downstream tools"
+    correct: true
+    explanation: "Schema validation (e.g. JSON schema / Pydantic) ensures tool inputs are strictly valid, preventing cascading agent failures."
+  - id: b
+    text: "They bypass API key authentication headers"
+    correct: false
+    explanation: "Schema validation validates data structure, not API credentials."
+  - id: c
+    text: "They convert unstructured text into physical binary executable code"
+    correct: false
+    explanation: "Schema validation validates fields; it does not convert text into raw binary machine code."
+  - id: d
+    text: "They disable model context limits"
+    correct: false
+    explanation: "Schema validation has no impact on model context window limits."
+evidence:
+  - source_id: src-leader-product-design
+    excerpt: "AI Product Design and Workflow Integration"
+    source_sha256: 62a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:33:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:33:30Z
+course_id: ai-leader
