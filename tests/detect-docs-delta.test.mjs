@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { detectDocsDelta, classifyDelta } from "../scripts/detect-docs-delta.mjs";
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { detectDocsDelta, classifyDelta, analyzeAllSources } from "../scripts/detect-docs-delta.mjs";
 
 test("detectDocsDelta classifies capability_added when new section is added", () => {
   const oldText = "# Function Calling\nExisting content";
@@ -30,4 +33,24 @@ test("detectDocsDelta classifies behavior_changed when defaults or limits change
 test("classifyDelta classifies formatting_only for identical text", () => {
   const classification = classifyDelta([], []);
   assert.equal(classification, "formatting_only");
+});
+
+test("analyzeAllSources scans sources directory and handles malformed YAML fail-closed", () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "academy-sources-test-"));
+  const sourcesDir = join(tempDir, "sources");
+
+  try {
+    const reports = analyzeAllSources();
+    assert.ok(Array.isArray(reports));
+
+    // Test malformed YAML
+    const fs = import("node:fs");
+    fs.then(({ mkdirSync }) => {
+      mkdirSync(sourcesDir, { recursive: true });
+      writeFileSync(join(sourcesDir, "bad.yaml"), "invalid: : yaml:");
+      assert.throws(() => analyzeAllSources(tempDir), /Failed to parse source file/);
+    });
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
 });

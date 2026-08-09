@@ -107,7 +107,7 @@ async function capture({ url, id, objectives, title }) {
  * workflow can act on it without parsing prose. Exit code 2 means "drift
  * found" — distinct from 1, which means the check itself failed.
  */
-async function check() {
+async function check({ markDrifted = false } = {}) {
   const sources = listSources();
   if (!sources.length) {
     console.log("no sources recorded yet");
@@ -116,7 +116,7 @@ async function check() {
   let drifted = 0;
   let failed = 0;
 
-  for (const { data } of sources) {
+  for (const { path: sourcePath, data } of sources) {
     try {
       const text = await fetchSource(data.url);
       const hash = sha256(Buffer.from(text, "utf8"));
@@ -124,6 +124,10 @@ async function check() {
         console.log(`ok       ${data.id}`);
       } else {
         drifted += 1;
+        if (markDrifted) {
+          data.status = "drifted";
+          writeFileSync(sourcePath, stringifyYaml(data));
+        }
         console.log(`DRIFTED  ${data.id}  ${data.sha256.slice(0, 12)} -> ${hash.slice(0, 12)}  ${data.url}`);
       }
     } catch (e) {
@@ -142,7 +146,8 @@ async function check() {
 const args = process.argv.slice(2);
 
 if (args.includes("--check")) {
-  process.exit(await check());
+  const markDrifted = args.includes("--mark-drifted");
+  process.exit(await check({ markDrifted }));
 }
 
 const url = args.find((a) => a.startsWith("https://"));
