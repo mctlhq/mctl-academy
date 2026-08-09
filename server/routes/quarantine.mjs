@@ -19,18 +19,27 @@ const CACHE_TTL_MS = 60_000;
 export async function loadYamlDirAsync(contentDir, dir) {
   const p = join(contentDir, dir);
   if (!existsSync(p)) return [];
-  const files = await readdir(p);
-  const yamlFiles = files.filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
+  try {
+    const files = await readdir(p);
+    const yamlFiles = files.filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
 
-  const parsed = [];
-  for (const f of yamlFiles) {
-    const text = await readFile(join(p, f), "utf8");
-    const doc = parseYaml(text);
-    if (doc) {
-      parsed.push(doc);
+    const parsed = [];
+    for (const f of yamlFiles) {
+      try {
+        const text = await readFile(join(p, f), "utf8");
+        const doc = parseYaml(text);
+        if (doc) {
+          parsed.push(doc);
+        }
+      } catch (fileErr) {
+        console.error(`[quarantine] Error reading or parsing YAML file ${f} in ${dir}:`, fileErr.message);
+      }
     }
+    return parsed;
+  } catch (dirErr) {
+    console.error(`[quarantine] Error reading directory ${dir}:`, dirErr.message);
+    return [];
   }
-  return parsed;
 }
 
 export async function computeQuarantinedQuestionIdsAsync(contentDir = CONTENT) {
@@ -95,7 +104,7 @@ quarantineRouter.get("/", async (c) => {
       count: ids.length,
     });
   } catch (err) {
-    console.error("[quarantine] Failed to compute quarantine list:", err.message);
-    return c.json({ error: "Failed to compute quarantine status", details: err.message }, 500);
+    console.error("[quarantine] Failed to compute quarantine list:", err);
+    return c.json({ error: "Internal server error" }, 500);
   }
 });

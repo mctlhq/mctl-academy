@@ -6,6 +6,10 @@ export interface CourseInfo {
   shortName: string;
 }
 
+/**
+ * Client-side course store managing the active certification course selection.
+ * Selection is stored in reactive state and persisted in localStorage.
+ */
 export const COURSES: CourseInfo[] = [
   { id: "agentic-ai-builder", name: "Nebius Agentic AI Builder", shortName: "Agentic AI Builder" },
   { id: "ai-cloudops-engineer", name: "Nebius AI CloudOps Engineer", shortName: "AI CloudOps Engineer" },

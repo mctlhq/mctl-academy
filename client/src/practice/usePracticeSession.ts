@@ -33,8 +33,10 @@ export function shuffle<T>(items: readonly T[], random: () => number = Math.rand
   return copy;
 }
 
-function buildSession(bundle: readonly BundleQuestion[], random: () => number, isQuarantinedFn?: (id: string) => boolean): BundleQuestion[] {
-  const valid = isQuarantinedFn ? bundle.filter((q) => !isQuarantinedFn(q.id)) : bundle;
+function buildSession(bundle: readonly BundleQuestion[], random: () => number, quarantinedSet?: Set<string>): BundleQuestion[] {
+  const valid = quarantinedSet && quarantinedSet.size > 0
+    ? bundle.filter((q) => !quarantinedSet.has(q.id))
+    : bundle;
   return shuffle(valid, random).map((q) => ({ ...q, options: shuffle(q.options, random) }));
 }
 
@@ -68,8 +70,14 @@ export function usePracticeSession(
   bundle: readonly BundleQuestion[] = defaultBundle,
   { random = Math.random }: UsePracticeSessionOptions = {},
 ): PracticeSession {
-  const { isQuarantined } = useQuarantineStore();
-  const session = ref<BundleQuestion[]>(buildSession(bundle, random, isQuarantined)) as Ref<BundleQuestion[]>;
+  const { quarantinedIds, fetchQuarantinedIds } = useQuarantineStore();
+  fetchQuarantinedIds();
+
+  // Re-build session reactively when quarantinedIds finishes loading asynchronously
+  const session = computed<BundleQuestion[]>(() =>
+    buildSession(bundle, random, quarantinedIds.value)
+  );
+
   const index = ref(0);
   const revealedByQuestion = new Map<number, Set<string>>();
   const firstCorrectByQuestion = new Map<number, boolean>();
@@ -91,9 +99,9 @@ export function usePracticeSession(
     const set = revealedByQuestion.get(index.value) ?? new Set<string>();
     const isFirstSelection = set.size === 0;
     if (!set.has(optionId)) {
-      const next = new Set(set);
-      next.add(optionId);
-      revealedByQuestion.set(index.value, next);
+      const nextSet = new Set(set);
+      nextSet.add(optionId);
+      revealedByQuestion.set(index.value, nextSet);
     }
     if (isFirstSelection) {
       const option = cur.options.find((o) => o.id === optionId);
