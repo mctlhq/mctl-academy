@@ -264,6 +264,204 @@
     ]
   },
   {
+    "id": "q-co05a1b2c3d4",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "When isolating high-bandwidth GPU cluster traffic, which VPC networking setup prevents public internet exposure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploying nodes in private subnets with internal security group rules",
+        "correct": true,
+        "explanation": "Private subnets paired with restricted internal security groups isolate cluster traffic from public routing."
+      },
+      {
+        "id": "b",
+        "text": "Attaching public IPv4 addresses to every GPU compute interface",
+        "correct": false,
+        "explanation": "Public IP addresses expose interfaces directly to external internet threats."
+      },
+      {
+        "id": "c",
+        "text": "Removing subnet routing tables completely",
+        "correct": false,
+        "explanation": "Removing routing tables breaks all inter-node communication."
+      },
+      {
+        "id": "d",
+        "text": "Routing all internal traffic through external third-party proxies",
+        "correct": false,
+        "explanation": "External proxies add latency and introduce external security risks."
+      }
+    ]
+  },
+  {
+    "id": "q-co06b2c3d4e5",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/storage-volumes",
+    "stem": "Which storage architecture provides high-throughput shared access across distributed GPU training workers?",
+    "options": [
+      {
+        "id": "a",
+        "text": "High-performance POSIX shared filesystems or fast Object Storage endpoints",
+        "correct": true,
+        "explanation": "POSIX shared filesystems and object storage support concurrent high-speed data loading for multi-node jobs."
+      },
+      {
+        "id": "b",
+        "text": "Single-node un-attached local RAM disks",
+        "correct": false,
+        "explanation": "RAM disks are non-persistent and unaccessible across remote worker nodes."
+      },
+      {
+        "id": "c",
+        "text": "Magnetic tape backup archives",
+        "correct": false,
+        "explanation": "Tape archives are ultra-slow offline storage unsuitable for active training workloads."
+      },
+      {
+        "id": "d",
+        "text": "Synchronous REST API polling over public HTTP endpoints",
+        "correct": false,
+        "explanation": "REST API polling introduces extreme latency and network bottlenecks."
+      }
+    ]
+  },
+  {
+    "id": "q-co07c3d4e5f6",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/organization-hierarchy",
+    "stem": "How should enterprise resource boundaries be structured to manage billing and isolation across multiple AI teams?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Grouping teams under distinct Projects within an Organization hierarchy",
+        "correct": true,
+        "explanation": "Organizing teams into dedicated Projects within an Organization enforces clean resource isolation and quota tracking."
+      },
+      {
+        "id": "b",
+        "text": "Sharing a single admin credential file across all corporate departments",
+        "correct": false,
+        "explanation": "Shared admin credentials destroy auditability and resource boundaries."
+      },
+      {
+        "id": "c",
+        "text": "Disabling project quota tracking and organization policies",
+        "correct": false,
+        "explanation": "Disabling quotas leads to unmonitored infrastructure spending."
+      },
+      {
+        "id": "d",
+        "text": "Creating separate cloud accounts for every individual GPU job execution",
+        "correct": false,
+        "explanation": "Creating accounts per job causes unmanageable administrative overhead."
+      }
+    ]
+  },
+  {
+    "id": "q-co08d4e5f6a7",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/security-policies",
+    "stem": "Which governance measure protects cloud API endpoints from unauthorized automated access?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enforcing API key rotation policies and IAM role-based access control",
+        "correct": true,
+        "explanation": "Rotating API keys and RBAC policies prevent credential exposure and unauthorized access."
+      },
+      {
+        "id": "b",
+        "text": "Publishing service account tokens to public source control repositories",
+        "correct": false,
+        "explanation": "Publishing tokens publicly exposes endpoints to immediate exploitation."
+      },
+      {
+        "id": "c",
+        "text": "Disabling security log auditing across all production services",
+        "correct": false,
+        "explanation": "Disabling auditing prevents detection of security breaches."
+      },
+      {
+        "id": "d",
+        "text": "Bypassing TLS encryption for internal API communication",
+        "correct": false,
+        "explanation": "Bypassing TLS exposes sensitive tokens to network sniffing."
+      }
+    ]
+  },
+  {
+    "id": "q-co09e5f6a7b8",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-recovery",
+    "stem": "When an automated health check detects a silent GPU memory hardware fault on a node, what is the recovery procedure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cordoning the node, draining existing workloads, and triggering automated instance replacement",
+        "correct": true,
+        "explanation": "Cordoning and draining prevents scheduling new jobs on broken GPUs while automated replacement restores capacity."
+      },
+      {
+        "id": "b",
+        "text": "Increasing thermal thresholds to bypass hardware alarms",
+        "correct": false,
+        "explanation": "Bypassing hardware alarms causes permanent physical GPU failure."
+      },
+      {
+        "id": "c",
+        "text": "Deleting all node monitoring metrics from the observability database",
+        "correct": false,
+        "explanation": "Deleting metrics hides physical failure evidence without repairing hardware."
+      },
+      {
+        "id": "d",
+        "text": "Re-assigning the degraded GPU node to high-priority production jobs",
+        "correct": false,
+        "explanation": "Assigning degraded nodes to production jobs causes severe customer outage."
+      }
+    ]
+  },
+  {
+    "id": "q-co10f6a7b8c9",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/escalation-workflows",
+    "stem": "Which diagnostic documentation practice ensures rapid incident escalation during critical cluster outages?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attaching structured system logs, timeline of metrics, and reproduction steps to incident tickets",
+        "correct": true,
+        "explanation": "Including structured logs, metric timelines, and reproduction details allows engineering teams to diagnose root causes immediately."
+      },
+      {
+        "id": "b",
+        "text": "Submitting blank support tickets titled urgent without system context",
+        "correct": false,
+        "explanation": "Context-free tickets delay investigation while support requests missing details."
+      },
+      {
+        "id": "c",
+        "text": "Deleting log files from worker nodes prior to escalation",
+        "correct": false,
+        "explanation": "Erasing log files destroys diagnostic evidence."
+      },
+      {
+        "id": "d",
+        "text": "Waiting 30 days before recording operational incident timelines",
+        "correct": false,
+        "explanation": "Delayed reporting severely slows incident resolution and SLA compliance."
+      }
+    ]
+  },
+  {
     "id": "q-cs01d4e5f6a7",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -1745,6 +1943,204 @@
         "text": "Purchasing dedicated hardware nodes for low-volume background tasks",
         "correct": false,
         "explanation": "Over-provisioning dedicated hardware for small workloads wastes operational capital."
+      }
+    ]
+  },
+  {
+    "id": "q-ld05a1b2c3d4",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/model-selection",
+    "stem": "When selecting a model family for complex reasoning tasks versus simple data extraction, what key trade-off should engineering leaders evaluate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Choosing smaller specialized models for routine extraction and larger reasoning models for complex decision tasks",
+        "correct": true,
+        "explanation": "Right-sizing model selection balances cost, latency, and reasoning accuracy for distinct workload tiers."
+      },
+      {
+        "id": "b",
+        "text": "Using maximum parameter models exclusively for all data transformation tasks",
+        "correct": false,
+        "explanation": "Using massive models for simple tasks causes unnecessary inference costs."
+      },
+      {
+        "id": "c",
+        "text": "Disabling prompt validation rules for reasoning workloads",
+        "correct": false,
+        "explanation": "Disabling validation leads to malformed prompts and unreliable model outputs."
+      },
+      {
+        "id": "d",
+        "text": "Hardcoding fixed random seeds across all production endpoints",
+        "correct": false,
+        "explanation": "Fixed random seeds do not alter model capability trade-offs."
+      }
+    ]
+  },
+  {
+    "id": "q-ld06b2c3d4e5",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/workflow-design",
+    "stem": "Which architectural pattern ensures seamless recovery when an AI model endpoint encounters transient downtime?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Designing automated fallback handlers with circuit breakers and human-in-the-loop escalation",
+        "correct": true,
+        "explanation": "Circuit breakers and fallback handlers prevent application crashes during model downtime."
+      },
+      {
+        "id": "b",
+        "text": "Crashing the host web application immediately on first API timeout",
+        "correct": false,
+        "explanation": "Crashing the host app creates poor user experience and service outages."
+      },
+      {
+        "id": "c",
+        "text": "Retrying failing requests infinite times in tight un-throttled loops",
+        "correct": false,
+        "explanation": "Infinite retry loops exacerbate API rate limits and cause system lockup."
+      },
+      {
+        "id": "d",
+        "text": "Deleting input user messages whenever an endpoint returns 5xx errors",
+        "correct": false,
+        "explanation": "Deleting user input loses data without resolving endpoint failure."
+      }
+    ]
+  },
+  {
+    "id": "q-ld07c3d4e5f6",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/api-integration-basics",
+    "stem": "Why is OpenAPI/REST compatibility beneficial when adopting third-party AI model providers?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It enables standardized client SDK integration and simplifies provider migration",
+        "correct": true,
+        "explanation": "Standard OpenAPI compatibility allows existing OpenAI/HTTP clients to integrate without custom rewrites."
+      },
+      {
+        "id": "b",
+        "text": "It guarantees zero network latency across all global regions",
+        "correct": false,
+        "explanation": "API standards define interface specs, not physical network speed."
+      },
+      {
+        "id": "c",
+        "text": "It eliminates the need for API key authentication",
+        "correct": false,
+        "explanation": "OpenAPI standards support standard Bearer token authentication."
+      },
+      {
+        "id": "d",
+        "text": "It automatically fine-tunes base models on incoming request payloads",
+        "correct": false,
+        "explanation": "Standard API inference does not trigger automatic fine-tuning."
+      }
+    ]
+  },
+  {
+    "id": "q-ld08d4e5f6a7",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/risk-compliance",
+    "stem": "Which risk management practice prevents sensitive enterprise data from being exposed during model inference?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enforcing zero-retention data policies, private tenant hosting, and payload redaction",
+        "correct": true,
+        "explanation": "Zero-retention policies and private tenant hosting protect proprietary data from model training reuse."
+      },
+      {
+        "id": "b",
+        "text": "Storing all user prompts in un-encrypted public web caches",
+        "correct": false,
+        "explanation": "Public unencrypted caching exposes sensitive enterprise data."
+      },
+      {
+        "id": "c",
+        "text": "Disabling security log monitoring across corporate network firewalls",
+        "correct": false,
+        "explanation": "Disabling security logs prevents data leak detection."
+      },
+      {
+        "id": "d",
+        "text": "Sharing API keys across external contractor mailing lists",
+        "correct": false,
+        "explanation": "Sharing credentials compromises API access controls."
+      }
+    ]
+  },
+  {
+    "id": "q-ld09e5f6a7b8",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "What is the operational purpose of context window size in generative AI models?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Determining the maximum combined number of input and output tokens a model can process in a single request",
+        "correct": true,
+        "explanation": "Context window size defines the maximum token capacity for input prompts and generated completions per request."
+      },
+      {
+        "id": "b",
+        "text": "Measuring physical GPU network bandwidth between compute nodes",
+        "correct": false,
+        "explanation": "Context window is a token processing limit, not network hardware bandwidth."
+      },
+      {
+        "id": "c",
+        "text": "Setting the maximum number of simultaneous user logins allowed per hour",
+        "correct": false,
+        "explanation": "User login capacity is governed by rate limits and auth services, not context window."
+      },
+      {
+        "id": "d",
+        "text": "Restricting total persistent storage volume size on local SSD drives",
+        "correct": false,
+        "explanation": "Storage volume size is a block storage property, unrelated to model context windows."
+      }
+    ]
+  },
+  {
+    "id": "q-ld10f6a7b8c9",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/cost-economics",
+    "stem": "Which pricing model strategy optimizes operational costs for continuous 24/7 high-volume inference workloads?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Utilizing dedicated endpoint capacity or reserved infrastructure instead of pure pay-as-you-go per token pricing",
+        "correct": true,
+        "explanation": "Dedicated endpoint capacity provides predictable flat-rate billing for continuous high-throughput production workloads."
+      },
+      {
+        "id": "b",
+        "text": "Executing all inference via short-lived un-cached serverless functions without batching",
+        "correct": false,
+        "explanation": "Un-batched serverless functions on high-volume 24/7 workloads incur massive per-request costs."
+      },
+      {
+        "id": "c",
+        "text": "Disabling response caching across all client applications",
+        "correct": false,
+        "explanation": "Disabling caching forces redundant API calls and increases token expenditure."
+      },
+      {
+        "id": "d",
+        "text": "Multiplying input prompt lengths with redundant filler text",
+        "correct": false,
+        "explanation": "Adding filler text increases token consumption and billing unnecessarily."
       }
     ]
   },

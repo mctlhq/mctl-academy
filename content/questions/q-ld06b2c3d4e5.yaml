@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld06b2c3d4e5
+status: published
+domain: domain-2
+objective: domain-2/workflow-design
+stem: "Which architectural pattern ensures seamless recovery when an AI model endpoint encounters transient downtime?"
+options:
+  - id: a
+    text: "Designing automated fallback handlers with circuit breakers and human-in-the-loop escalation"
+    correct: true
+    explanation: "Circuit breakers and fallback handlers prevent application crashes during model downtime."
+  - id: b
+    text: "Crashing the host web application immediately on first API timeout"
+    correct: false
+    explanation: "Crashing the host app creates poor user experience and service outages."
+  - id: c
+    text: "Retrying failing requests infinite times in tight un-throttled loops"
+    correct: false
+    explanation: "Infinite retry loops exacerbate API rate limits and cause system lockup."
+  - id: d
+    text: "Deleting input user messages whenever an endpoint returns 5xx errors"
+    correct: false
+    explanation: "Deleting user input loses data without resolving endpoint failure."
+evidence:
+  - source_id: src-leader-product-design
+    excerpt: "AI Product Design and Workflow Integration"
+    source_sha256: 62a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:25:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:26:00Z
+course_id: ai-leader
