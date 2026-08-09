@@ -271,8 +271,11 @@ Files at Phase 0:
 
 ## 7. Application
 
-Single TypeScript container: React/Vite client built to static assets, served by Express
-alongside the API. PostgreSQL on the shared CNPG cluster.
+**Built, with one stack change from the original design below:** the client
+is Vue, not React, and the API is Hono, not Express — otherwise as planned.
+
+Single TypeScript container: client built to static assets, served by the API
+process alongside it. PostgreSQL on the shared CNPG cluster.
 
 Core tables: `users`, `content_versions`, `questions` (snapshot-referenced),
 `attempts` (immutable), `attempt_items`, `question_reports`.
@@ -287,6 +290,12 @@ Security and session handling:
 - Rate limits on submission and report endpoints; account and session deletion
 
 ## 8. Deployment — MCP-only, no gitops commits
+
+**Done.** Onboarded to `labs`, live at `academy.mctl.ai`. Verified via
+`mctl_get_service_status`: ArgoCD Healthy/Synced, database provisioned,
+`AUTH_ENABLED`/`PUBLIC_ROUTES_ENABLED` both `true` in production. The
+bootstrap order below is kept as a record of how it was done and as the
+reference for the same steps on a future service, not as a pending task.
 
 Target tenant `labs`. Capacity checked: 11/15 services used (Academy → 12), `pods: 25`,
 tenant PVC quota untouched because CNPG is a shared cluster in its own namespace.

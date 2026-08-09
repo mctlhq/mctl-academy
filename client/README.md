@@ -1,20 +1,15 @@
-# Practice mode (client)
+# Client
 
-A standalone React/Vite screen that lets you answer questions from the
-published question bank one at a time, with instant per-option feedback and
-explanations. It shuffles question order and each question's option order
-once per session, and shows a summary score once you reach the end.
+The Vite + Vue + TypeScript frontend served by `../server/` (a Hono API on
+PostgreSQL). Covers Practice (with per-question +1/-1 voting and reporting,
+signed-in learners only), Mock exam, Review Mistakes, and a progress
+dashboard, all behind GitHub/Google OAuth via better-auth. See
+[`../PLAN.md`](../PLAN.md#7-application) section 7 for the full application
+design and [`../README.md`](../README.md) for the project overview.
 
-## What it is not (yet)
-
-This is issue #19's Practice mode screen only. It has **no backend, no
-authentication, and no persistence** beyond the current browser tab: closing
-or reloading the page starts a fresh, freshly shuffled session, and nothing
-is saved anywhere. There is no Mock mode, no Review-mistakes mode, and no
-progress dashboard here. The eventual full application — an Express host
-serving these static assets, a PostgreSQL `attempts` table, and GitHub
-OAuth — is described in [`../PLAN.md`](../PLAN.md#7-application) section 7,
-and is separate, later work.
+Signed out, the app still shuffles and serves questions client-side from the
+static content bundle described below — sign-in only gates the
+persistence-backed features (voting, attempts, mistakes, dashboard).
 
 ## Running it locally
 

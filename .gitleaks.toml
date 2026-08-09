@@ -1,0 +1,18 @@
+title = "mctl-academy gitleaks config"
+
+# Extend the default ruleset rather than replacing it.
+[extend]
+useDefault = true
+
+# `content/sources/*.yaml`'s `sha256:` and `snapshot.key:` fields are the
+# SHA-256 content hash of a fetched public documentation page (see
+# `SOURCES.md`), used as the R2 object key for the evidence snapshot. High
+# entropy hex triggers gitleaks' generic `generic-api-key` rule, but these
+# are content-addressed hashes, not credentials — confirmed 2026-08-09 by
+# reading every flagged file: each `key:` value matches that same file's own
+# `sha256:` field exactly, and there is no other secret-shaped value in the
+# repo (`gitleaks detect --log-opts="--all"` over full history, 19/19
+# findings were this one pattern).
+[allowlist]
+regexes = ['''(?i)^\s*(sha256|key):\s*[0-9a-f]{32,64}\s*$''']
+paths = ['''content/sources/.*\.yaml''']

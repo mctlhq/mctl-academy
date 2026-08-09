@@ -19,23 +19,33 @@ sentence that supports it, and each option explained.
 
 ## Status
 
-Phase 0 — foundation. Policies and schemas are landing; the application is not
-built yet, and there is nothing to sign in to.
+Live at [academy.mctl.ai](https://academy.mctl.ai). Sign in with GitHub, then
+Practice or take a Mock exam — progress, mistakes, and per-question votes are
+saved to your account.
+
+Content coverage varies by course: **Agentic AI Builder** has a published
+question bank; **AI CloudOps Engineer** and **AI Leader** are in the catalog
+but currently have no published questions (their original source citations
+turned out to be fabricated and were pulled — see issues
+[#140](https://github.com/mctlhq/mctl-academy/issues/140) and
+[#141](https://github.com/mctlhq/mctl-academy/issues/141) — the app hides a
+course entirely until it has published content, rather than showing an empty
+shell).
+
+This is an actively developing open-source project, not a finished product —
+see [Contributing](#contributing) if you want to help.
 
 ## Modes
 
 | Mode | What it does |
 |---|---|
-| **Learn** | Lessons per objective, built from cited documentation |
-| **Practice** | Questions with immediate per-option feedback |
-| **Review mistakes** | The questions you got wrong in completed mocks |
+| **Practice** | Questions with immediate per-option feedback, votable, signed-in only |
 | **Mock** | 30 questions, 60 minutes, weighted 6 / 10 / 6 / 8 across the four domains |
+| **Review mistakes** | The questions you got wrong in completed mocks |
+| **Learn** | Lessons per objective, built from cited documentation — not yet built |
 
-Of these, only **Practice** exists today, as a standalone client-side React
-screen with no backend, auth, or persistence yet — see
-[`client/README.md`](client/README.md) for how to run it locally, and
-[`PLAN.md`](PLAN.md#7-application) section 7 for the eventual full
-application.
+See [`client/README.md`](client/README.md) for local client development, and
+[`PLAN.md`](PLAN.md#7-application) section 7 for the application design.
 
 ## This is a study tool, not an assessment
 
@@ -83,18 +93,19 @@ accepted** — citation verification needs credentials that GitHub does not expo
 to fork-triggered workflows, so the check would be unenforceable. See
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-### Local development — client
+### Local development
 
-The Mock exam screen lives in `client/`, a Vite + React + TypeScript app that
-reads a build-time JSON bundle generated from `content/` (no server exists
-yet — see `PLAN.md`).
+`client/` is a Vite + Vue + TypeScript app that reads a build-time JSON
+bundle generated from `content/`. `server/` is a Hono API, backed by
+PostgreSQL (better-auth for sessions, attempts/votes/reports persistence).
+See [`client/README.md`](client/README.md) for client-only setup.
 
 ```bash
-cd client
-npm ci
-npm run dev    # local dev server, regenerates the content bundle first
-npm run build  # type-checks and builds client/dist/
-npm run test   # unit and component tests
+npm ci                # or: bun install
+npm run migrate       # apply DB migrations (needs a local Postgres — see .github/workflows/ci.yml)
+npm start             # runs server/index.mjs
+npm run test:server   # server tests
+cd client && npm ci && npm run dev    # client dev server
 ```
 
 ## Licensing

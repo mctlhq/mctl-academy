@@ -1,6 +1,6 @@
 # LLMS.md — mctl-academy Certification Platform
 
-> `mctl-academy` is an evidence-backed practice platform for agentic AI certification. Built with Bun, Hono API server, React/Vite frontend, and PostgreSQL on CNPG.
+> `mctl-academy` is an evidence-backed practice platform for agentic AI certification. Built with Bun, Hono API server, Vue/Vite frontend, and PostgreSQL on CNPG.
 
 ## Key Rules & Content Policy
 
@@ -12,7 +12,7 @@
 - `content/schemas/`: 2020-12 JSON Schemas for questions, lessons, and sources.
 - `content/questions/`: YAML question items with evidence citations.
 - `server/`: Hono REST API server running on Bun.
-- `client/`: React / Vite frontend application.
+- `client/`: Vue / Vite frontend application.
 - `scripts/`: Content validation (`validate-content.mjs`) and evidence verification (`verify-evidence.mjs`).
 
 ## Commands

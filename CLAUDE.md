@@ -1,9 +1,10 @@
 # mctl-academy
 
-Free, English-first practice for an agentic AI certification. React/Vite client
-and an Express API in one TypeScript container, PostgreSQL on the shared CNPG
-cluster, deployed to the `labs` tenant. The application does not exist yet —
-Phase 0 is content pipeline and policy.
+Free, English-first practice for an agentic AI certification. Vue/Vite client
+and a Hono API in one TypeScript/JS container, PostgreSQL on the shared CNPG
+cluster, deployed to the `labs` tenant at `academy.mctl.ai`. Live: GitHub
+OAuth sign-in, Practice and Mock exam modes, attempts/votes/reports
+persisted.
 
 ## Read these before touching content
 
@@ -99,8 +100,9 @@ violation — it is not one.
 
 ## Deployment
 
-MCP-only, via `mctl_deploy_service` / `mctl_provision_database`. Not yet
-onboarded. Two platform constraints shape configuration when it is:
+MCP-only, via `mctl_deploy_service` / `mctl_provision_database` — no direct
+gitops commits. Already onboarded to `labs`; live and verified via
+`mctl_get_service_status`. Two platform constraints shape configuration:
 
 - `env_vars` silently drops any value containing `:` — so no URL or connection
   string may be a plain env var. They go through `secret_env_vars` into Vault.
