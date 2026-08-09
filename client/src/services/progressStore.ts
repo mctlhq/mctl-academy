@@ -54,7 +54,19 @@ export interface OverallProgress {
 }
 
 const STORAGE_KEY = "mctl_academy_progress_v1";
+// Set by clearProgress() to the moment it ran. Any attempt — local or from
+// the server — timestamped before this must never be resurrected: it
+// guards against a syncFromServer() that was already in flight (fetched
+// before the DELETE landed) writing the pre-clear history straight back
+// into local storage once its stale response arrives.
+const CLEARED_AT_KEY = "mctl_academy_progress_cleared_at";
 const ATTEMPTS_ENDPOINT = "/api/attempts";
+
+function getClearedAtMarker(): number {
+  const raw = getItem(CLEARED_AT_KEY);
+  const parsed = raw ? Number(raw) : 0;
+  return Number.isFinite(parsed) ? parsed : 0;
+}
 
 let syncEnabled = false;
 
@@ -199,6 +211,13 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
  *
  * A no-op while sync is disabled, and any network failure leaves local data
  * untouched.
+ *
+ * Any server row older than the last clearProgress() call is dropped before
+ * any of the above runs. Without that, a sync already in flight when the
+ * learner hits "Clear history" — its GET issued before the DELETE, so its
+ * response still carries the old rows — would otherwise write that
+ * pre-clear history straight back into local storage (marked `synced`, so
+ * it would never be reconsidered again).
  */
 export async function syncFromServer(): Promise<void> {
   if (!syncEnabled) return;
@@ -211,6 +230,11 @@ export async function syncFromServer(): Promise<void> {
     serverAttempts = Array.isArray(data?.attempts) ? data.attempts : [];
   } catch {
     return;
+  }
+
+  const clearedAt = getClearedAtMarker();
+  if (clearedAt > 0) {
+    serverAttempts = serverAttempts.filter((a) => new Date(a.attemptedAt).getTime() >= clearedAt);
   }
 
   const local = getStoredAttempts();
@@ -266,6 +290,7 @@ export function getMistakeQuestionIds(): string[] {
 export async function clearProgress(): Promise<{ serverCleared: boolean }> {
   try {
     removeItem(STORAGE_KEY);
+    setItem(CLEARED_AT_KEY, String(Date.now()));
   } catch {
     // Ignore
   }

@@ -42,9 +42,14 @@ async function handleClearHistory() {
     return;
   }
 
-  const { serverCleared } = await clearProgress();
+  // clearProgress() clears localStorage synchronously before it ever awaits
+  // anything — bumping clearedAt right after calling it (not after awaiting
+  // the server round-trip) reflects that immediately, so a slow network
+  // does not leave the screen showing stale numbers.
+  const clearPromise = clearProgress();
   clearedAt.value += 1;
 
+  const { serverCleared } = await clearPromise;
   if (!serverCleared) {
     // Local storage is already clear, but the server still holds the old
     // history — the next sync would otherwise pull it straight back in.

@@ -201,6 +201,48 @@ describe("progressStore service", () => {
     expect(result).toEqual({ serverCleared: false });
   });
 
+  it("a sync already in flight when history is cleared does not resurrect the pre-clear data", async () => {
+    // The GET was issued (and its response captured) before the learner hit
+    // "Clear history" — the stale server rows must not be written back in
+    // once that response finally resolves.
+    let resolveGet!: (value: unknown) => void;
+    const getPromise = new Promise((resolve) => {
+      resolveGet = resolve;
+    });
+    const fetchSpy = vi.fn((_url: string, init?: RequestInit) => {
+      if (init?.method === "DELETE") {
+        return Promise.resolve({ ok: true });
+      }
+      return getPromise;
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    // Comfortably in the past relative to whenever clearProgress() below
+    // sets its marker, regardless of test-runner clock granularity.
+    const staleAttemptedAt = new Date(Date.now() - 60_000).toISOString();
+    saveRawAttempts([{ questionId: "q-1", domain: "domain-1", correct: true, attemptedAt: staleAttemptedAt }]);
+
+    const syncPromise = syncFromServer(); // GET in flight, not yet resolved
+    const { serverCleared } = await clearProgress(); // clears local + DELETE
+    expect(serverCleared).toBe(true);
+    expect(getStoredAttempts()).toEqual([]);
+
+    // Now the stale GET resolves, carrying the pre-clear row — timestamped
+    // before the clear, same as it would be for real (the server had not
+    // yet processed the DELETE, or never even received this POST's data
+    // past what it already had, when this GET was issued).
+    resolveGet({
+      ok: true,
+      json: async () => ({
+        attempts: [{ questionId: "q-1", domain: "domain-1", correct: true, attemptedAt: staleAttemptedAt }],
+      }),
+    });
+    await syncPromise;
+
+    expect(getStoredAttempts()).toEqual([]);
+  });
+
   it("makes no network call when sync is disabled (the default)", () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);
