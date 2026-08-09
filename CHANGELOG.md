@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.39](https://github.com/mctlhq/mctl-academy/compare/0.1.38...0.1.39) (2026-08-09)
+
+
+### Bug Fixes
+
+* **client:** drop the vote widget's pill chrome for a bare toggle ([e2f7d9a](https://github.com/mctlhq/mctl-academy/commit/e2f7d9a96abfcdbab14b123f9cf93cafbcc34380))
+* **client:** stop the vote widget's active circle overlapping its own border ([8f8d9d4](https://github.com/mctlhq/mctl-academy/commit/8f8d9d48a4d09845e5257029493e5728a94c560c))
+* **client:** stop the vote widget's active circle overlapping its own border ([c9d200b](https://github.com/mctlhq/mctl-academy/commit/c9d200bed48ff935d95cce49838ceb3a4e180ef4))
+
 ## [0.1.38](https://github.com/mctlhq/mctl-academy/compare/0.1.37...0.1.38) (2026-08-09)
 
 
