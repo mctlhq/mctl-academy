@@ -19,23 +19,18 @@ const CACHE_TTL_MS = 60_000;
 export async function loadYamlDirAsync(contentDir, dir) {
   const p = join(contentDir, dir);
   if (!existsSync(p)) return [];
-  try {
-    const files = await readdir(p);
-    const yamlFiles = files.filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
-    const parsed = await Promise.all(
-      yamlFiles.map(async (f) => {
-        try {
-          const text = await readFile(join(p, f), "utf8");
-          return parseYaml(text);
-        } catch {
-          return null;
-        }
-      }),
-    );
-    return parsed.filter(Boolean);
-  } catch {
-    return [];
+  const files = await readdir(p);
+  const yamlFiles = files.filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
+
+  const parsed = [];
+  for (const f of yamlFiles) {
+    const text = await readFile(join(p, f), "utf8");
+    const doc = parseYaml(text);
+    if (doc) {
+      parsed.push(doc);
+    }
   }
+  return parsed;
 }
 
 export async function computeQuarantinedQuestionIdsAsync(contentDir = CONTENT) {
@@ -92,10 +87,15 @@ quarantineRouter.use("*", rateLimit());
 
 // GET /api/quarantine - Returns list of question IDs currently quarantined due to drift or review status
 quarantineRouter.get("/", async (c) => {
-  const ids = await getQuarantinedQuestionIdsAsync();
-  return c.json({
-    success: true,
-    quarantinedQuestionIds: ids,
-    count: ids.length,
-  });
+  try {
+    const ids = await getQuarantinedQuestionIdsAsync();
+    return c.json({
+      success: true,
+      quarantinedQuestionIds: ids,
+      count: ids.length,
+    });
+  } catch (err) {
+    console.error("[quarantine] Failed to compute quarantine list:", err.message);
+    return c.json({ error: "Failed to compute quarantine status", details: err.message }, 500);
+  }
 });

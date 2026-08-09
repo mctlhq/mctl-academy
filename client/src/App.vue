@@ -6,6 +6,10 @@ import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
 import type { UserProfile } from "./types/user";
 import { setSyncEnabled, syncFromServer } from "./services/progressStore";
+import { useQuarantineStore } from "./services/quarantineStore";
+
+const quarantineStore = useQuarantineStore();
+quarantineStore.fetchQuarantinedIds();
 
 const sessionState = authClient.useSession();
 const route = useRoute();
