@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, ref, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, clearProgress } from "../services/progressStore";
@@ -20,7 +20,18 @@ const { currentCourseId } = useCourseStore();
 const courseBundle = questionsForCourse(currentCourseId.value);
 const domainTitles = domainTitlesFor(currentCourseId.value);
 
-const stats = ref(calculateProgressStats(courseBundle, undefined, domainTitles));
+// A background syncFromServer() may merge in progress this device didn't
+// have yet. It must refresh these stats without remounting the screen (an
+// in-progress Practice session elsewhere in the app must survive it) — so
+// this reads syncVersion reactively instead of App.vue keying on it.
+const syncVersion = inject<Ref<number>>("syncVersion");
+const clearedAt = ref(0);
+
+const stats = computed(() => {
+  void syncVersion?.value;
+  void clearedAt.value;
+  return calculateProgressStats(courseBundle, undefined, domainTitles);
+});
 const weakestDomain = computed(() => {
   const attempted = stats.value.domainProgress.filter((domain) => domain.attemptedQuestions > 0);
   return attempted.sort((a, b) => a.accuracy - b.accuracy)[0] ?? null;
@@ -29,7 +40,7 @@ const weakestDomain = computed(() => {
 function handleClearHistory() {
   if (window.confirm("Are you sure you want to clear your learning progress and mistake history?")) {
     clearProgress();
-    stats.value = calculateProgressStats(courseBundle, undefined, domainTitles);
+    clearedAt.value += 1;
   }
 }
 </script>
