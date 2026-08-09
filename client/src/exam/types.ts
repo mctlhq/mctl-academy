@@ -32,10 +32,3 @@ export interface MockConfig {
   discloseBankSize: boolean;
   domains: DomainConfig[];
 }
-
-export interface ContentBundle {
-  mock: MockConfig;
-  bankSize: number;
-  publishedBankSize: number;
-  questions: Question[];
-}
