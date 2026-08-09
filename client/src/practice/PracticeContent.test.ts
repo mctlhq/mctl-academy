@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 import PracticeContent from "./PracticeContent.vue";
 import type { BundleQuestion } from "../services/contentBundle";
 
@@ -40,14 +41,12 @@ describe("PracticeContent", () => {
 
     expect(wrapper.text()).toContain("Why A is wrong, in detail.");
     expect(wrapper.text()).toContain("Incorrect");
-    // The correct option's own feedback must not appear yet.
     expect(wrapper.text()).not.toContain("Why B is right, in detail.");
 
     await optionButton(wrapper, "Option B").trigger("click");
 
     expect(wrapper.text()).toContain("Why B is right, in detail.");
     expect(wrapper.text()).toContain("Correct");
-    // Both selections stay visible — exploring one does not hide the other.
     expect(wrapper.text()).toContain("Why A is wrong, in detail.");
   });
 
@@ -62,11 +61,9 @@ describe("PracticeContent", () => {
     const bundle = [question("q-1"), question("q-2")];
     const wrapper = mount(PracticeContent, { props: { bundle } });
 
-    // Question 1: first click correct (id "b" is correct for both fixtures).
     await optionButton(wrapper, "Option B").trigger("click");
     await actionButton(wrapper, "Next question").trigger("click");
 
-    // Question 2: first click wrong.
     await optionButton(wrapper, "Option A").trigger("click");
     await actionButton(wrapper, "Finish").trigger("click");
 
@@ -88,5 +85,72 @@ describe("PracticeContent", () => {
     expect(wrapper.find("h1").text()).toMatch(/practice/i);
     expect(wrapper.text()).toMatch(/no published questions yet/i);
     expect(wrapper.find("button").exists()).toBe(false);
+  });
+
+  it("renders HTML/script payloads as inert text, never as markup", () => {
+    const wrapper = mount(PracticeContent, {
+      props: {
+        bundle: [
+          question("q-1", {
+            stem: "What is `<script>alert(1)</script>`?",
+            options: [
+              { id: "a", text: "<b>bold</b> claim", correct: true, explanation: "<img src=x onerror=alert(1)> in explain" },
+              { id: "b", text: "Plain", correct: false, explanation: "Plain too" },
+              { id: "c", text: "Also plain", correct: false, explanation: "Also plain" },
+              { id: "d", text: "Last", correct: false, explanation: "Last" },
+            ],
+          }),
+        ],
+      },
+    });
+    expect(wrapper.find("img").exists()).toBe(false);
+    expect(wrapper.find(".stem b").exists()).toBe(false);
+    expect(wrapper.text()).toContain("<script>alert(1)</script>");
+    expect(wrapper.text()).toContain("<b>bold</b>");
+  });
+
+  it("renders backtick code spans as <code> elements in stem, option and explanation", async () => {
+    const wrapper = mount(PracticeContent, {
+      props: {
+        bundle: [
+          question("q-1", {
+            stem: "Set `response_format` correctly",
+            options: [
+              { id: "a", text: "Use `json_object`", correct: true, explanation: "Call `api.create()` first" },
+              { id: "b", text: "No code here", correct: false, explanation: "No code" },
+              { id: "c", text: "Plain", correct: false, explanation: "Plain" },
+              { id: "d", text: "Last", correct: false, explanation: "Last" },
+            ],
+          }),
+        ],
+      },
+    });
+    const stemCode = wrapper.find(".stem code");
+    expect(stemCode.exists()).toBe(true);
+    expect(stemCode.text()).toBe("response_format");
+    const optionCode = wrapper.find(".option-text code");
+    expect(optionCode.exists()).toBe(true);
+    expect(optionCode.text()).toBe("json_object");
+    await optionButton(wrapper, "json_object").trigger("click");
+    const explainCode = wrapper.find(".explanation code");
+    expect(explainCode.exists()).toBe(true);
+    expect(explainCode.text()).toBe("api.create()");
+  });
+
+  it("announces the verdict via a single aria-live region, then clears when advancing", async () => {
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1"), question("q-2")] } });
+    const liveRegion = wrapper.find('[aria-live="polite"]');
+    expect(liveRegion.exists()).toBe(true);
+    expect(liveRegion.text()).toBe("");
+
+    await optionButton(wrapper, "Option A").trigger("click");
+    expect(liveRegion.text()).toBe("Incorrect");
+
+    await optionButton(wrapper, "Option B").trigger("click");
+    expect(liveRegion.text()).toBe("Correct");
+
+    await actionButton(wrapper, "Next question").trigger("click");
+    await nextTick();
+    expect(liveRegion.text()).toBe("");
   });
 });

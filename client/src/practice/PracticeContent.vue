@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { usePracticeSession } from "./usePracticeSession";
 import type { BundleQuestion } from "../services/contentBundle";
-import { renderInlineMarkdown } from "./renderInlineMarkdown";
+import RestrictedMarkdown from "../exam/components/RestrictedMarkdown.vue";
 import ReportModal from "../components/ReportModal.vue";
 
 /**
@@ -49,6 +49,36 @@ function handleShortcut(event: KeyboardEvent) {
 
 onMounted(() => window.addEventListener("keydown", handleShortcut));
 onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
+
+// Single stable live region for screen-reader feedback announcements.
+// Updated with the most recent Correct/Incorrect verdict only — never accumulates
+// past answers, and cleared when advancing to the next question so repeated
+// selections of the same option do not trigger duplicate announcements.
+const lastAnnouncement = ref("");
+
+let prevRevealed = new Set<string>();
+let prevQuestionId: string | undefined;
+watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
+  if (!current.value) {
+    lastAnnouncement.value = "";
+    prevRevealed = new Set();
+    prevQuestionId = undefined;
+    return;
+  }
+  if (questionId !== prevQuestionId) {
+    lastAnnouncement.value = "";
+    prevRevealed = new Set();
+    prevQuestionId = questionId;
+  }
+  const newlyRevealed = [...nextRevealed].filter((id) => !prevRevealed.has(id));
+  prevRevealed = new Set(nextRevealed);
+  if (newlyRevealed.length > 0) {
+    const lastOption = current.value.options.find((o) => o.id === newlyRevealed[newlyRevealed.length - 1]);
+    if (lastOption) {
+      lastAnnouncement.value = lastOption.correct ? "Correct" : "Incorrect";
+    }
+  }
+});
 </script>
 
 <template>
@@ -75,7 +105,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
           <button type="button" class="report-button" @click="isReporting = true">Report question</button>
         </div>
 
-        <h1 class="stem" v-html="renderInlineMarkdown(current.stem)" />
+        <h1 class="stem"><RestrictedMarkdown :text="current.stem" /></h1>
         <ul :key="current.id" class="options">
           <li
             v-for="option in current.options"
@@ -83,11 +113,11 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
             :class="revealed.has(option.id) ? (option.correct ? 'correct' : 'incorrect') : ''"
           >
             <button type="button" @click="selectOption(option.id)">
-              <span class="option-text" v-html="renderInlineMarkdown(option.text)" />
+              <span class="option-text"><RestrictedMarkdown :text="option.text" /></span>
             </button>
             <div v-if="revealed.has(option.id)" class="feedback">
               <p class="verdict">{{ option.correct ? "Correct" : "Incorrect" }}</p>
-              <p class="explanation" v-html="renderInlineMarkdown(option.explanation)" />
+              <p class="explanation"><RestrictedMarkdown :text="option.explanation" /></p>
             </div>
           </li>
         </ul>
@@ -96,6 +126,7 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
             {{ index + 1 === total ? "Finish" : "Next question" }}
           </MButton>
         </div>
+        <p class="sr-only" aria-live="polite" aria-atomic="true">{{ lastAnnouncement }}</p>
       </div>
 
       <aside class="practice-context" :aria-hidden="!contextOpen">
