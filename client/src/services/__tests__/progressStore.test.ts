@@ -264,6 +264,47 @@ describe("progressStore service", () => {
     );
   });
 
+  it("does not re-post a backfilled attempt forever when the local clock is skewed ahead of the server", async () => {
+    // Local clock is skewed into the future relative to the server.
+    recordAttempt("q-skewed", "domain-1", true);
+    const [stored] = getStoredAttempts();
+    const skewedFutureAttemptedAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    saveRawAttempts([{ ...stored, attemptedAt: skewedFutureAttemptedAt }]);
+
+    // The server stamps the row with its own (real, "earlier") clock on
+    // insert — which will never catch up to the skewed local timestamp.
+    const serverAttemptedAt = new Date().toISOString();
+    const fetchSpy = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ attempts: [] }),
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+
+    await syncFromServer();
+    let postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
+    expect(postCalls).toHaveLength(1);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Now the server has a record too, permanently older than the skewed
+    // local timestamp — the naive "is server up to date" comparison would
+    // stay false forever and repost on every subsequent sync.
+    fetchSpy.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        attempts: [{ questionId: "q-skewed", domain: "domain-1", correct: true, attemptedAt: serverAttemptedAt }],
+      }),
+    });
+
+    await syncFromServer();
+    await syncFromServer();
+    await syncFromServer();
+
+    postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
+    expect(postCalls).toHaveLength(1);
+  });
+
   it("syncFromServer backfills local-only attempts the server did not already have", async () => {
     recordAttempt("q-local-only", "domain-1", true);
 

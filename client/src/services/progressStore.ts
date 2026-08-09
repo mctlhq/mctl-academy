@@ -5,6 +5,16 @@ export interface QuestionAttempt {
   domain: string;
   correct: boolean;
   attemptedAt: string;
+  /**
+   * Set once this exact row has been confirmed synced to the server —
+   * either this device POSTed it successfully, or a sync already found the
+   * server's own record at least as recent. Deliberately NOT re-derived from
+   * a timestamp comparison on every syncFromServer call: this device's clock
+   * may be skewed relative to the server's, and a skewed clock that never
+   * "catches up" would otherwise make the same row look stale forever,
+   * reposting it indefinitely. Once true, a row is settled for good.
+   */
+  synced?: boolean;
 }
 
 /**
@@ -113,16 +123,33 @@ export function setSyncEnabled(enabled: boolean): void {
  * personal learner data and create a reconciliation problem the server does
  * not need to have.
  */
-function postAttemptToServer(questionId: string, domain: string, correct: boolean): void {
-  fetch(ATTEMPTS_ENDPOINT, {
+function postAttemptToServer(questionId: string, domain: string, correct: boolean): Promise<boolean> {
+  return fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
     body: JSON.stringify({ questionId, domain, correct }),
-  }).catch(() => {
-    // Best-effort only: the local write already succeeded, so a sync
-    // failure (offline, expired session, 5xx) is never surfaced.
-  });
+  })
+    .then((res) => res.ok)
+    .catch(() => {
+      // Best-effort only: the local write already succeeded, so a sync
+      // failure (offline, expired session, 5xx) is never surfaced.
+      return false;
+    });
+}
+
+/** Flips one stored row to synced once the server has confirmed it, so it is never reconsidered. */
+function markAttemptSynced(questionId: string, attemptedAt: string): void {
+  try {
+    const attempts = getStoredAttempts();
+    const row = attempts.find((a) => a.questionId === questionId && a.attemptedAt === attemptedAt);
+    if (row && !row.synced) {
+      row.synced = true;
+      setItem(STORAGE_KEY, JSON.stringify(attempts));
+    }
+  } catch {
+    // Ignore storage errors
+  }
 }
 
 /**
@@ -135,21 +162,19 @@ function postAttemptToServer(questionId: string, domain: string, correct: boolea
  * question.
  */
 export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
+  const attemptedAt = new Date().toISOString();
   try {
     const attempts = getStoredAttempts();
-    attempts.push({
-      questionId,
-      domain,
-      correct,
-      attemptedAt: new Date().toISOString(),
-    });
+    attempts.push({ questionId, domain, correct, attemptedAt });
     setItem(STORAGE_KEY, JSON.stringify(attempts));
   } catch {
     // Ignore storage errors
   }
 
   if (syncEnabled) {
-    postAttemptToServer(questionId, domain, correct);
+    postAttemptToServer(questionId, domain, correct).then((ok) => {
+      if (ok) markAttemptSynced(questionId, attemptedAt);
+    });
   }
 }
 
@@ -163,11 +188,14 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
  * - A server record is appended locally only if it is strictly newer than
  *   this device's own latest local attempt for that question (i.e. it came
  *   from a different device/session this log has never seen).
- * - A local attempt is backfilled to the server (individual POST
- *   /api/attempts calls) whenever the server's latest record for that
- *   question is missing or older than it — not merely when the server has
- *   no record at all — so an update made offline after an earlier sync is
- *   never stranded on this device.
+ * - A local attempt not yet marked `synced` is backfilled to the server
+ *   (individual POST /api/attempts calls) unless the server's latest record
+ *   for that question is already at least as recent — not merely "the
+ *   server has some record" — so an update made offline after an earlier
+ *   sync is never stranded on this device. Once a row is confirmed synced
+ *   (by either path), it is flagged and never re-evaluated by timestamp
+ *   again, so a skewed local clock cannot make the same row look stale
+ *   forever and get reposted on every sync.
  *
  * A no-op while sync is disabled, and any network failure leaves local data
  * untouched.
@@ -195,7 +223,8 @@ export async function syncFromServer(): Promise<void> {
 
   if (newFromServer.length > 0) {
     try {
-      setItem(STORAGE_KEY, JSON.stringify([...local, ...newFromServer]));
+      const withServerRows = [...local, ...newFromServer.map((a) => ({ ...a, synced: true }))];
+      setItem(STORAGE_KEY, JSON.stringify(withServerRows));
     } catch {
       // Ignore storage errors; fall through so backfill still gets attempted.
     }
@@ -203,12 +232,19 @@ export async function syncFromServer(): Promise<void> {
 
   const serverLatestByQuestion = new Map(serverAttempts.map((a) => [a.questionId, a]));
   for (const a of localLatestByQuestion.values()) {
+    if (a.synced) continue;
+
     const serverRecord = serverLatestByQuestion.get(a.questionId);
     const serverIsUpToDate =
       serverRecord && new Date(serverRecord.attemptedAt).getTime() >= new Date(a.attemptedAt).getTime();
-    if (!serverIsUpToDate) {
-      postAttemptToServer(a.questionId, a.domain, a.correct);
+    if (serverIsUpToDate) {
+      markAttemptSynced(a.questionId, a.attemptedAt);
+      continue;
     }
+
+    postAttemptToServer(a.questionId, a.domain, a.correct).then((ok) => {
+      if (ok) markAttemptSynced(a.questionId, a.attemptedAt);
+    });
   }
 }
 
