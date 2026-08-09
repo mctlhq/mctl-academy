@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { auth } from "../auth.mjs";
-import { recordUserAttempt, getUserAttempts } from "../db.mjs";
+import { recordUserAttempt, getUserAttempts, deleteUserAttempts } from "../db.mjs";
 import { requireSameOrigin } from "../middleware/csrf.mjs";
 
 export const attemptsRouter = new Hono();
@@ -69,4 +69,19 @@ attemptsRouter.get("/", async (c) => {
 
   const attempts = await getUserAttempts(user.id);
   return c.json({ attempts: attempts.map(serializeAttempt) });
+});
+
+// DELETE /api/attempts - Erase every attempt for the signed-in learner
+// ("Clear history"). Local storage is cleared independently of this call —
+// see client/src/services/progressStore.ts — so this is what actually makes
+// the deletion permanent rather than something the next sync silently undoes.
+attemptsRouter.delete("/", requireSameOrigin, async (c) => {
+  const user = await requireUser(c);
+  if (!user) {
+    return c.json({ error: "Authentication required" }, 401);
+  }
+
+  await deleteUserAttempts(user.id);
+
+  return c.json({ success: true });
 });

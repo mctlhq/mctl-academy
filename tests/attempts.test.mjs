@@ -151,4 +151,72 @@ describe("Attempt sync API", () => {
     assert.equal(matches.length, 1);
     assert.equal(matches[0].correct, true);
   });
+
+  test("DELETE /api/attempts without a session cookie returns 401 and deletes nothing", async () => {
+    const cookie = await authedCookie(50106, "attempts-user-106");
+    await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ questionId: "q-attempts-106", domain: "domain-1", correct: true }),
+    });
+
+    const deleteRes = await app.request("/api/attempts", { method: "DELETE" });
+    assert.equal(deleteRes.status, 401);
+
+    const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
+    const getBody = await getRes.json();
+    assert.ok(getBody.attempts.find((a) => a.questionId === "q-attempts-106"));
+  });
+
+  test("DELETE /api/attempts erases every attempt for the authenticated user — Clear history", async () => {
+    const cookie = await authedCookie(50107, "attempts-user-107");
+
+    await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ questionId: "q-attempts-107a", domain: "domain-1", correct: true }),
+    });
+    await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ questionId: "q-attempts-107b", domain: "domain-2", correct: false }),
+    });
+
+    const deleteRes = await app.request("/api/attempts", {
+      method: "DELETE",
+      headers: { Cookie: cookie },
+    });
+    assert.equal(deleteRes.status, 200);
+    const deleteBody = await deleteRes.json();
+    assert.equal(deleteBody.success, true);
+
+    const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
+    const getBody = await getRes.json();
+    assert.equal(getBody.attempts.length, 0);
+  });
+
+  test("DELETE /api/attempts does not touch another learner's attempts", async () => {
+    const cookieA = await authedCookie(50108, "attempts-user-108");
+    const cookieB = await authedCookie(50109, "attempts-user-109");
+
+    await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookieA },
+      body: JSON.stringify({ questionId: "q-attempts-108", domain: "domain-1", correct: true }),
+    });
+    await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookieB },
+      body: JSON.stringify({ questionId: "q-attempts-109", domain: "domain-1", correct: true }),
+    });
+
+    await app.request("/api/attempts", { method: "DELETE", headers: { Cookie: cookieA } });
+
+    const getResA = await app.request("/api/attempts", { headers: { Cookie: cookieA } });
+    assert.equal((await getResA.json()).attempts.length, 0);
+
+    const getResB = await app.request("/api/attempts", { headers: { Cookie: cookieB } });
+    const bodyB = await getResB.json();
+    assert.ok(bodyB.attempts.find((a) => a.questionId === "q-attempts-109"));
+  });
 });

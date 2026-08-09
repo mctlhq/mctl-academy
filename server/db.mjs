@@ -183,6 +183,20 @@ export async function getUserAttempts(userId) {
   return [...map.values()];
 }
 
+/** Deletes every attempt row this learner has — used by "Clear history". */
+export async function deleteUserAttempts(userId) {
+  if (pool) {
+    await pool.query(`DELETE FROM attempts WHERE user_id = $1;`, [userId]);
+    return;
+  }
+
+  for (let i = memAttempts.length - 1; i >= 0; i--) {
+    if (memAttempts[i].userId === userId) {
+      memAttempts.splice(i, 1);
+    }
+  }
+}
+
 export async function insertQuestionReport({ questionId, reason, comment, reporterUserId }) {
   if (pool) {
     const res = await pool.query(

@@ -37,10 +37,27 @@ const weakestDomain = computed(() => {
   return attempted.sort((a, b) => a.accuracy - b.accuracy)[0] ?? null;
 });
 
-function handleClearHistory() {
-  if (window.confirm("Are you sure you want to clear your learning progress and mistake history?")) {
-    clearProgress();
-    clearedAt.value += 1;
+async function handleClearHistory() {
+  if (!window.confirm("Are you sure you want to clear your learning progress and mistake history?")) {
+    return;
+  }
+
+  // clearProgress() clears localStorage synchronously before it ever awaits
+  // anything — bumping clearedAt right after calling it (not after awaiting
+  // the server round-trip) reflects that immediately, so a slow network
+  // does not leave the screen showing stale numbers.
+  const clearPromise = clearProgress();
+  clearedAt.value += 1;
+
+  const { serverCleared } = await clearPromise;
+  if (!serverCleared) {
+    // Local storage is already clear, but the server still holds the old
+    // history — the next sync would otherwise pull it straight back in.
+    // Say so rather than implying the deletion is permanent.
+    window.alert(
+      "Your local history was cleared, but we could not confirm the server copy was deleted. " +
+        "It may reappear next time your progress syncs — please try again.",
+    );
   }
 }
 </script>
