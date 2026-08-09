@@ -109,7 +109,7 @@ jobs:
             existing=$(gh issue list --repo "${{ github.repository }}" \
               --state open --search "\"${title}\" in:title" \
               --json number,title \
-              --jq "[.[] | select(.title == \"${title}\")] | .[0].number // empty")
+              --jq --arg title "$title" '[.[] | select(.title == $title)] | .[0].number // empty')
 
             body="Upstream source changed. Automatically marked \`status: drifted\` (fail-closed quarantine committed to main).
 
