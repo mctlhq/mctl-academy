@@ -1,4 +1,4 @@
-// Shapes mirror content/schemas/question.schema.json and content/branding.yaml,
+// Shapes mirror content/schemas/question.schema.json and content/courses/*.yaml,
 // as produced by scripts/build-content-bundle.mjs. The UI must not depend on
 // any field the schema doesn't guarantee (e.g. `reviewed` is never assumed).
 

@@ -22,8 +22,8 @@ function sampleWithoutReplacement(pool: Question[], count: number, rng: () => nu
 }
 
 /**
- * Selects the mock's 30 questions, distributed per branding.yaml's
- * mock_questions (6/10/6/8) per domain. Filters to status === "published"
+ * Selects a mock's questions, distributed per the active course's own
+ * mock_questions quota per domain (content/courses/<id>.yaml). Filters to status === "published"
  * upstream (the generated bundle already only contains published
  * questions -- see build-content-bundle.mjs -- but this function does not
  * assume that and is safe to call with a mixed-status list too).

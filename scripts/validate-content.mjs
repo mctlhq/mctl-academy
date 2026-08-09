@@ -4,7 +4,7 @@
  *
  * Two layers. JSON Schema covers shape: field types, the four-option rule, the
  * 25-word excerpt cap, the status enum. This script covers everything schema
- * cannot express — cross-file references, the branding objective map, and the
+ * cannot express — cross-file references, the course objective map, and the
  * clean-room authorship rule.
  *
  * Deliberately has no network dependency and reads no secrets, so it runs
@@ -258,6 +258,19 @@ for (const { file, data } of questions) {
   const texts = data.options.map((o) => o.text.trim().toLowerCase());
   if (new Set(texts).size !== texts.length) {
     err(file, "two options have the same text — a duplicate option makes the item unanswerable");
+  }
+}
+
+// A course with nothing publishable is legitimate — it is how a course is
+// added before its content exists — but it ships to learners as "Coming soon"
+// and cannot be selected, which is worth saying out loud rather than leaving
+// an author to discover it in the UI.
+for (const [courseId] of courses) {
+  const publishable = questions.filter(
+    ({ data }) => data.course_id === courseId && checkBundleEligibility(data, sourcesById).eligible,
+  ).length;
+  if (publishable === 0) {
+    warn(`content/courses/${courseId}.yaml`, "no publishable questions — course will show as unavailable");
   }
 }
 

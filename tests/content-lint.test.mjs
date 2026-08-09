@@ -220,7 +220,7 @@ test("accepts the Token Factory docs host", () => {
   assert.equal(ok, true, output);
 });
 
-// Live only once branding.yaml has a populated objective map — before that the
+// Live only once a course file has a populated objective map — before that the
 // check short-circuits, so it went untested until the outline landed.
 // Regression: the first 20 authored questions all put the correct answer in
 // position a. Runtime shuffling hid it in the product, so only a corpus-level
@@ -245,7 +245,7 @@ test("accepts a bank with varied answer positions", () => {
   assert.equal(ok, true, output);
 });
 
-test("rejects an objective absent from the branding map", () => {
+test("rejects an objective absent from the course map", () => {
   const q = question({ objective: "domain-1/not-a-real-objective" });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
