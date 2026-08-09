@@ -104,7 +104,12 @@ See [`client/README.md`](client/README.md) for client-only setup.
 bun install            # canonical — bun.lock is the lockfile CI installs from.
                         # `npm install` also works (no package-lock.json is
                         # committed, so use install, not ci).
-npm run migrate         # apply DB migrations (needs a local Postgres — see .github/workflows/ci.yml)
+npm run migrate         # apply DB migrations (needs a local Postgres — see .github/workflows/ci.yml).
+                        # In prod, CNPG's managed.roles provisions the
+                        # academy_readonly role (see migrations/
+                        # 1755100000000_academy_readonly_role.mjs); on a
+                        # fresh local Postgres, create it yourself first:
+                        #   psql "$DATABASE_URL" -c "CREATE ROLE academy_readonly LOGIN;"
 npm start                # runs server/index.mjs
 npm run test:server      # server tests
 cd client && bun install && npm run dev   # client dev server

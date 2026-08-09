@@ -66,6 +66,16 @@
  * table in this database — so these statements work regardless of this
  * app's own role's privilege level, unlike the CREATE ROLE this migration
  * used to attempt.
+ *
+ * Every dashboard panel reads attempts/session/user directly (live, not an
+ * append-only event log), so learner-initiated deletion changes dashboard
+ * history, not just the present: "Clear history" (deleteUserAttempts) and
+ * account deletion (which cascades to attempts) both retroactively shrink
+ * whatever day those deleted rows used to count toward. This is the
+ * correct behavior — a learner's deletion request should actually remove
+ * their data, including from aggregate counts derived from it — but it
+ * does mean a past day's number on this dashboard is not a durable
+ * historical record and can change after the fact.
  */
 
 export const shorthands = undefined;
