@@ -201,7 +201,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
                 aria-label="Downvote this question"
                 @click="onVoteClick(-1)"
               >
-                −
+                <span class="vote-icon" aria-hidden="true">▼</span>
               </button>
               <span class="vote-score" :class="{ 'vote-score-error': voteErrored }">
                 {{ voteScore === null ? "\u00b7\u00b7" : voteScore }}
@@ -214,7 +214,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
                 aria-label="Upvote this question"
                 @click="onVoteClick(1)"
               >
-                +
+                <span class="vote-icon" aria-hidden="true">▲</span>
               </button>
             </div>
             <button type="button" class="report-button" @click="isReporting = true">Report question</button>
@@ -356,13 +356,18 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   cursor: pointer;
 }
 
+/* Un-boxed by design: it's a two-way toggle over one running count, not a
+   distinct control that needs its own frame — every other in-line action at
+   this scale (.report-button) is bare text/glyph with no border or fill, so
+   a bordered pill here was the odd one out. .vote-button keeps its 44px
+   touch target (WCAG 2.5.5) but paints nothing of its own; .vote-icon is
+   the small glyph that actually carries color, and "active" is communicated
+   the same way .report-button and nav links already do it in this app —
+   with color and weight, not a filled shape. */
 .vote-widget {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.15rem;
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-pill);
+  gap: 0.1rem;
 }
 
 .vote-button {
@@ -371,37 +376,38 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   min-height: 2.75rem;
   place-items: center;
   border: 0;
-  border-radius: var(--mctl-radius-pill);
   background: transparent;
-  color: var(--surface-fg-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1;
   cursor: pointer;
 }
 
-.vote-button:hover {
+.vote-icon {
+  display: grid;
+  place-items: center;
+  color: var(--surface-fg-subtle);
+  font-size: 0.6rem;
+  line-height: 1;
+  transition: color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
+}
+
+.vote-button:hover .vote-icon {
   color: var(--surface-fg);
 }
 
-.vote-button.vote-up.active {
+.vote-button.vote-up.active .vote-icon {
   color: var(--status-ok);
-  background: color-mix(in srgb, var(--status-ok) 14%, transparent);
 }
 
-.vote-button.vote-down.active {
+.vote-button.vote-down.active .vote-icon {
   color: var(--status-bad);
-  background: color-mix(in srgb, var(--status-bad) 14%, transparent);
 }
 
 .vote-score {
-  min-width: 1.5rem;
+  min-width: 1.1rem;
   overflow-wrap: break-word;
   text-align: center;
-  color: var(--surface-fg-muted);
+  color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-variant-numeric: tabular-nums;
 }
 
