@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.38](https://github.com/mctlhq/mctl-academy/compare/0.1.37...0.1.38) (2026-08-09)
+
+
+### Features
+
+* **client:** add inline +/-1 vote widget to Practice and Mistakes ([746bdd5](https://github.com/mctlhq/mctl-academy/commit/746bdd52983ea9779c2d4ce65d95b1e7c09b32af))
+* **server:** add question voting API and question_votes table ([d801a24](https://github.com/mctlhq/mctl-academy/commit/d801a24d403949f3c866eb64365b6d9500baaaf4))
+
+
+### Bug Fixes
+
+* **ci:** make agy-review non-blocking ([1290164](https://github.com/mctlhq/mctl-academy/commit/12901649c974daf7e3ca2f8069a9dc6f030ce09c))
+* **client:** pin Practice's Next-question button, enlarge desktop dashboard type ([00cc054](https://github.com/mctlhq/mctl-academy/commit/00cc054330008c77162bfad01d62e680af095b48))
+* address Codex review findings on question-votes PR ([3582c51](https://github.com/mctlhq/mctl-academy/commit/3582c517929d8af16f94437df34e0370b4edd696))
+* address review findings on public-readiness audit PR ([751733c](https://github.com/mctlhq/mctl-academy/commit/751733c5f64a474c885f669dac06c70ed255ad2e))
+
 ## [0.1.37](https://github.com/mctlhq/mctl-academy/compare/0.1.36...0.1.37) (2026-08-09)
 
 
