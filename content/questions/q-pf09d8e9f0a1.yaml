@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf09d8e9f0a1
-status: draft
+status: published
 domain: domain-1
 objective: domain-1/api-authentication
 stem: What authentication scope is required for API keys to create new dedicated

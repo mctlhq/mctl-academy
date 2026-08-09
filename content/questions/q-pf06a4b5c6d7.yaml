@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf06a4b5c6d7
-status: draft
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
 stem: Where can developers discover available base models and their specific
