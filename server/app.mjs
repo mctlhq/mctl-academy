@@ -3,7 +3,6 @@ import { HTTPException } from "hono/http-exception";
 import { auth, assertAuthSecretConfigured } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
-import { quarantineRouter } from "./routes/quarantine.mjs";
 import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
@@ -79,8 +78,11 @@ app.route("/api/attempts", attemptsRouter);
 // See server/routes/account.mjs.
 app.route("/api/account", accountRouter);
 
-// Tier 1 Runtime Quarantine Overlay endpoint
-app.route("/api/quarantine", quarantineRouter);
+// No content-safety endpoint exists by design. Whether a question is safe to
+// show is decided at build time by scripts/build-content-bundle.mjs, so the
+// shipped bundle contains only eligible published questions and no learner
+// ever depends on a network request to be protected from drifted content.
+// Withdrawing an item means marking its source in content/ and redeploying.
 
 const VALID_REASONS = new Set([
   "typo",
