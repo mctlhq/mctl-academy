@@ -1,6 +1,7 @@
 import { computed, ref, type ComputedRef, type Ref } from "vue";
 import rawBundle from "../content-bundle.json";
 import { recordAttempt } from "../services/progressStore";
+import { useQuarantineStore } from "../services/quarantineStore";
 
 export interface BundleOption {
   id: string;
@@ -32,8 +33,9 @@ export function shuffle<T>(items: readonly T[], random: () => number = Math.rand
   return copy;
 }
 
-function buildSession(bundle: readonly BundleQuestion[], random: () => number): BundleQuestion[] {
-  return shuffle(bundle, random).map((q) => ({ ...q, options: shuffle(q.options, random) }));
+function buildSession(bundle: readonly BundleQuestion[], random: () => number, isQuarantinedFn?: (id: string) => boolean): BundleQuestion[] {
+  const valid = isQuarantinedFn ? bundle.filter((q) => !isQuarantinedFn(q.id)) : bundle;
+  return shuffle(valid, random).map((q) => ({ ...q, options: shuffle(q.options, random) }));
 }
 
 export interface UsePracticeSessionOptions {
@@ -66,7 +68,8 @@ export function usePracticeSession(
   bundle: readonly BundleQuestion[] = defaultBundle,
   { random = Math.random }: UsePracticeSessionOptions = {},
 ): PracticeSession {
-  const session = ref<BundleQuestion[]>(buildSession(bundle, random)) as Ref<BundleQuestion[]>;
+  const { isQuarantined } = useQuarantineStore();
+  const session = ref<BundleQuestion[]>(buildSession(bundle, random, isQuarantined)) as Ref<BundleQuestion[]>;
   const index = ref(0);
   const revealedByQuestion = new Map<number, Set<string>>();
   const firstCorrectByQuestion = new Map<number, boolean>();

@@ -1,8 +1,8 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { quarantineRouter, computeQuarantinedQuestionIds } from "../server/routes/quarantine.mjs";
+import { quarantineRouter, computeQuarantinedQuestionIdsAsync, getQuarantinedQuestionIdsAsync } from "../server/routes/quarantine.mjs";
 
-describe("GET /api/quarantine API & Logic", () => {
+describe("GET /api/quarantine API & Async Logic", () => {
   test("GET / returns list of quarantined question IDs", async () => {
     const res = await quarantineRouter.request("/");
     assert.equal(res.status, 200);
@@ -13,13 +13,18 @@ describe("GET /api/quarantine API & Logic", () => {
     assert.equal(typeof body.count, "number");
   });
 
-  test("computeQuarantinedQuestionIds correctly filters needs_review and drifted citations", () => {
-    const ids = computeQuarantinedQuestionIds();
+  test("computeQuarantinedQuestionIdsAsync correctly parses questions and sources asynchronously", async () => {
+    const ids = await computeQuarantinedQuestionIdsAsync();
     assert.ok(Array.isArray(ids));
-    // Verify every returned ID is a non-empty string
     for (const id of ids) {
       assert.equal(typeof id, "string");
       assert.ok(id.length > 0);
     }
+  });
+
+  test("getQuarantinedQuestionIdsAsync caches results across consecutive calls", async () => {
+    const first = await getQuarantinedQuestionIdsAsync();
+    const second = await getQuarantinedQuestionIdsAsync();
+    assert.equal(first, second); // Same cached array instance
   });
 });
