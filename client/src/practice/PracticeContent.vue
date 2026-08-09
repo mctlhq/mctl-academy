@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, inject, onMounted, onUnmounted, ref, watch, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { usePracticeSession } from "./usePracticeSession";
 import type { BundleQuestion } from "../services/contentBundle";
 import RestrictedMarkdown from "../exam/components/RestrictedMarkdown.vue";
 import ReportModal from "../components/ReportModal.vue";
+import { castVote, fetchVoteSummary, removeVote, type VoteValue } from "../services/questionVotes";
+import type { UserProfile } from "../types/user";
 
 /**
  * Renders one practice session over the questions it is handed. The bundle is
@@ -26,6 +28,86 @@ const { current, index, total, revealed, score, attempted, selectOption, next } 
 );
 
 const isReporting = ref(false);
+
+// Vote widget: authenticated-only (hidden entirely for anonymous visitors,
+// not just disabled — see App.vue's `provide("currentUser", user)`), and
+// scoped to whichever question is current. `voteScore` is null while the
+// summary for the current question hasn't resolved yet, so the widget never
+// flashes a fabricated 0 before the real number loads.
+const currentUser = inject<Ref<UserProfile | null>>("currentUser");
+const voteScore = ref<number | null>(null);
+const userVote = ref<-1 | 0 | 1>(0);
+const voteErrored = ref(false);
+
+// Guards against a stale response landing after the learner has already
+// advanced to a different question (e.g. a slow GET for question A resolving
+// after `next()` has already moved on to question B) — only the response for
+// the question that is still current on arrival is applied.
+let voteRequestToken = 0;
+
+async function loadVoteSummary(questionId: string) {
+  const token = ++voteRequestToken;
+  voteErrored.value = false;
+  try {
+    const summary = await fetchVoteSummary(questionId);
+    if (token !== voteRequestToken) return;
+    voteScore.value = summary.score;
+    userVote.value = summary.userValue;
+  } catch {
+    if (token !== voteRequestToken) return;
+    voteScore.value = null;
+    userVote.value = 0;
+    voteErrored.value = true;
+  }
+}
+
+watch(
+  [() => current.value?.id, currentUser ?? ref(null)],
+  ([questionId, user]) => {
+    voteRequestToken += 1; // invalidate any in-flight request for a prior question
+    voteScore.value = null;
+    userVote.value = 0;
+    voteErrored.value = false;
+    if (questionId && user) {
+      loadVoteSummary(questionId);
+    }
+  },
+  { immediate: true },
+);
+
+/**
+ * Optimistic vote toggle: clicking the same direction again removes the
+ * vote (symmetric +1/-1 toggle behaviour), clicking the other direction
+ * switches it. The local score/active-state update immediately; a failed
+ * request rolls back to the last known-good summary from the server rather
+ * than leaving an optimistic value that never actually landed.
+ */
+async function onVoteClick(direction: VoteValue) {
+  const questionId = current.value?.id;
+  if (!questionId || !currentUser?.value) return;
+
+  const previousScore = voteScore.value;
+  const previousUserVote = userVote.value;
+  const removing = previousUserVote === direction;
+
+  const nextUserVote = removing ? 0 : direction;
+  voteScore.value = (previousScore ?? 0) - previousUserVote + nextUserVote;
+  userVote.value = nextUserVote;
+  voteErrored.value = false;
+
+  try {
+    const summary = removing ? await removeVote(questionId) : await castVote(questionId, direction);
+    if (current.value?.id !== questionId) return; // learner already moved on
+    voteScore.value = summary.score;
+    userVote.value = summary.userValue;
+  } catch {
+    if (current.value?.id !== questionId) return;
+    voteScore.value = previousScore;
+    userVote.value = previousUserVote;
+    voteErrored.value = true;
+  }
+}
+
 const CONTEXT_STORAGE_KEY = "academy.practice-context-open";
 const contextOpen = ref(
   typeof localStorage !== "undefined" && localStorage.getItem(CONTEXT_STORAGE_KEY) === "true",
@@ -102,7 +184,34 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
       <div class="practice">
         <div class="practice-header">
           <p class="progress">Question {{ index + 1 }} of {{ total }} · {{ current.objective }}</p>
-          <button type="button" class="report-button" @click="isReporting = true">Report question</button>
+          <div class="header-actions">
+            <div v-if="currentUser" class="vote-widget" role="group" aria-label="Vote on this question">
+              <button
+                type="button"
+                class="vote-button vote-down"
+                :class="{ active: userVote === -1 }"
+                :aria-pressed="userVote === -1"
+                aria-label="Downvote this question"
+                @click="onVoteClick(-1)"
+              >
+                −
+              </button>
+              <span class="vote-score" :class="{ 'vote-score-error': voteErrored }">
+                {{ voteScore === null ? "\u00b7\u00b7" : voteScore }}
+              </span>
+              <button
+                type="button"
+                class="vote-button vote-up"
+                :class="{ active: userVote === 1 }"
+                :aria-pressed="userVote === 1"
+                aria-label="Upvote this question"
+                @click="onVoteClick(1)"
+              >
+                +
+              </button>
+            </div>
+            <button type="button" class="report-button" @click="isReporting = true">Report question</button>
+          </div>
         </div>
 
         <h1 class="stem"><RestrictedMarkdown :text="current.stem" /></h1>
@@ -221,6 +330,12 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   margin: 0;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .report-button {
   min-height: 2.75rem;
   padding: 0.5rem 0.25rem;
@@ -232,6 +347,59 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font-size: 0.72rem;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.vote-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-pill);
+}
+
+.vote-button {
+  display: inline-grid;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  place-items: center;
+  border: 0;
+  border-radius: var(--mctl-radius-pill);
+  background: transparent;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.vote-button:hover {
+  color: var(--surface-fg);
+}
+
+.vote-button.vote-up.active {
+  color: var(--status-ok);
+  background: color-mix(in srgb, var(--status-ok) 14%, transparent);
+}
+
+.vote-button.vote-down.active {
+  color: var(--status-bad);
+  background: color-mix(in srgb, var(--status-bad) 14%, transparent);
+}
+
+.vote-score {
+  min-width: 1.5rem;
+  overflow-wrap: break-word;
+  text-align: center;
+  color: var(--surface-fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.vote-score-error {
+  color: var(--status-bad);
 }
 
 .options {
@@ -442,7 +610,12 @@ kbd {
   }
 
   .practice-header {
+    flex-wrap: wrap;
     gap: 0.75rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
   }
 }
 
