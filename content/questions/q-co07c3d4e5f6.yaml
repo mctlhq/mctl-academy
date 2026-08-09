@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-co07c3d4e5f6
+status: published
+domain: domain-2
+objective: domain-2/organization-hierarchy
+stem: "How should enterprise resource boundaries be structured to manage billing and isolation across multiple AI teams?"
+options:
+  - id: a
+    text: "Grouping teams under distinct Projects within an Organization hierarchy"
+    correct: true
+    explanation: "Organizing teams into dedicated Projects within an Organization enforces clean resource isolation and quota tracking."
+  - id: b
+    text: "Sharing a single admin credential file across all corporate departments"
+    correct: false
+    explanation: "Shared admin credentials destroy auditability and resource boundaries."
+  - id: c
+    text: "Disabling project quota tracking and organization policies"
+    correct: false
+    explanation: "Disabling quotas leads to unmonitored infrastructure spending."
+  - id: d
+    text: "Creating separate cloud accounts for every individual GPU job execution"
+    correct: false
+    explanation: "Creating accounts per job causes unmanageable administrative overhead."
+evidence:
+  - source_id: src-cloudops-iam-roles
+    excerpt: "User Access, IAM Roles, and Service Accounts"
+    source_sha256: 4e82b794719b48c66e4a4282c0b0fb16f21226b911c470878e38fb509424177d
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:25:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:26:00Z
+course_id: ai-cloudops-engineer

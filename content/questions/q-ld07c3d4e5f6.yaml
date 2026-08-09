@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld07c3d4e5f6
+status: published
+domain: domain-3
+objective: domain-3/api-integration-basics
+stem: "Why is OpenAPI/REST compatibility beneficial when adopting third-party AI model providers?"
+options:
+  - id: a
+    text: "It enables standardized client SDK integration and simplifies provider migration"
+    correct: true
+    explanation: "Standard OpenAPI compatibility allows existing OpenAI/HTTP clients to integrate without custom rewrites."
+  - id: b
+    text: "It guarantees zero network latency across all global regions"
+    correct: false
+    explanation: "API standards define interface specs, not physical network speed."
+  - id: c
+    text: "It eliminates the need for API key authentication"
+    correct: false
+    explanation: "OpenAPI standards support standard Bearer token authentication."
+  - id: d
+    text: "It automatically fine-tunes base models on incoming request payloads"
+    correct: false
+    explanation: "Standard API inference does not trigger automatic fine-tuning."
+evidence:
+  - source_id: src-leader-vendor-eval
+    excerpt: "API Vendor Evaluation and Infrastructure Integration"
+    source_sha256: e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:25:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:26:00Z
+course_id: ai-leader

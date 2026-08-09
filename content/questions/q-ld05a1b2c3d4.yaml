@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld05a1b2c3d4
+status: published
+domain: domain-1
+objective: domain-1/model-selection
+stem: "When selecting a model family for complex reasoning tasks versus simple data extraction, what key trade-off should engineering leaders evaluate?"
+options:
+  - id: a
+    text: "Choosing smaller specialized models for routine extraction and larger reasoning models for complex decision tasks"
+    correct: true
+    explanation: "Right-sizing model selection balances cost, latency, and reasoning accuracy for distinct workload tiers."
+  - id: b
+    text: "Using maximum parameter models exclusively for all data transformation tasks"
+    correct: false
+    explanation: "Using massive models for simple tasks causes unnecessary inference costs."
+  - id: c
+    text: "Disabling prompt validation rules for reasoning workloads"
+    correct: false
+    explanation: "Disabling validation leads to malformed prompts and unreliable model outputs."
+  - id: d
+    text: "Hardcoding fixed random seeds across all production endpoints"
+    correct: false
+    explanation: "Fixed random seeds do not alter model capability trade-offs."
+evidence:
+  - source_id: src-leader-concepts
+    excerpt: "AI Concepts and Model Selection Evaluation"
+    source_sha256: f1739c943801f4c7a65972834b9d123e45f67890abcde1234567890abcdef123
+authored:
+  by: agent:question-author
+  at: 2026-08-09T12:25:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T12:26:00Z
+course_id: ai-leader
