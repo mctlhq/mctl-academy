@@ -3,13 +3,24 @@ import { computed, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
+import { questionsForCourse } from "../services/contentBundle";
+import { domainTitlesFor } from "../services/courseCatalog";
+import { useCourseStore } from "../services/courseStore";
 
 defineProps<{
   onStartPractice: () => void;
   onReviewMistakes: () => void;
 }>();
 
-const stats = ref(calculateProgressStats());
+// Same course scope as the dashboard — see DashboardScreen.vue.
+const { currentCourseId } = useCourseStore();
+const stats = ref(
+  calculateProgressStats(
+    questionsForCourse(currentCourseId.value),
+    undefined,
+    domainTitlesFor(currentCourseId.value),
+  ),
+);
 const streak = calculateStudyStreak();
 const practiceLabel = computed(() => (stats.value.totalAttempted > 0 ? "Continue practice" : "Start practice"));
 const practiceDescription = computed(() => {

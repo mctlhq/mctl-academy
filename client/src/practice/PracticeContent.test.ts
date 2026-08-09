@@ -1,11 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import PracticeScreen from "./PracticeScreen.vue";
-import type { BundleQuestion } from "./usePracticeSession";
+import PracticeContent from "./PracticeContent.vue";
+import type { BundleQuestion } from "../services/contentBundle";
 
 function question(id: string, overrides: Partial<BundleQuestion> = {}): BundleQuestion {
   return {
     id,
+    course_id: "agentic-ai-builder",
     domain: "domain-1",
     objective: "domain-1/api-authentication",
     stem: `Stem for ${id}`,
@@ -31,9 +32,9 @@ function actionButton(wrapper: ReturnType<typeof mount>, label: string) {
   return button;
 }
 
-describe("PracticeScreen", () => {
+describe("PracticeContent", () => {
   it("reveals an incorrect option's explanation without revealing other options, then reveals the correct one independently", async () => {
-    const wrapper = mount(PracticeScreen, { props: { bundle: [question("q-1")] } });
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
 
     await optionButton(wrapper, "Option A").trigger("click");
 
@@ -51,7 +52,7 @@ describe("PracticeScreen", () => {
   });
 
   it("does not reveal anything before any option is selected", () => {
-    const wrapper = mount(PracticeScreen, { props: { bundle: [question("q-1")] } });
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
     expect(wrapper.text()).not.toContain("Why A is wrong, in detail.");
     expect(wrapper.text()).not.toContain("Correct");
     expect(wrapper.text()).not.toContain("Incorrect");
@@ -59,7 +60,7 @@ describe("PracticeScreen", () => {
 
   it("shows a summary with the score after the last question, counting first selections only", async () => {
     const bundle = [question("q-1"), question("q-2")];
-    const wrapper = mount(PracticeScreen, { props: { bundle } });
+    const wrapper = mount(PracticeContent, { props: { bundle } });
 
     // Question 1: first click correct (id "b" is correct for both fixtures).
     await optionButton(wrapper, "Option B").trigger("click");
@@ -74,7 +75,7 @@ describe("PracticeScreen", () => {
   });
 
   it("recreates the options list when advancing so its scroll position resets", async () => {
-    const wrapper = mount(PracticeScreen, { props: { bundle: [question("q-1"), question("q-2")] } });
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1"), question("q-2")] } });
     const firstOptionsList = wrapper.find(".options").element;
 
     await actionButton(wrapper, "Next question").trigger("click");
@@ -83,7 +84,7 @@ describe("PracticeScreen", () => {
   });
 
   it("renders an empty state instead of crashing when the bundle has zero published questions", () => {
-    const wrapper = mount(PracticeScreen, { props: { bundle: [] } });
+    const wrapper = mount(PracticeContent, { props: { bundle: [] } });
     expect(wrapper.find("h1").text()).toMatch(/practice/i);
     expect(wrapper.text()).toMatch(/no published questions yet/i);
     expect(wrapper.find("button").exists()).toBe(false);

@@ -1,57 +1,83 @@
-import { ref, computed } from "vue";
-
-export interface CourseInfo {
-  id: string;
-  name: string;
-  shortName: string;
-}
+import { computed, ref } from "vue";
+import { getItem, removeItem, setItem } from "./storage";
+import {
+  courseCatalog,
+  findCourse,
+  firstAvailableCourseId,
+  isCourseAvailable,
+  type CourseInfo,
+} from "./courseCatalog";
 
 /**
- * Client-side course store managing active course selection.
- * Names follow generic domain naming per branding rules (no vendor branding in code).
+ * Which course the learner is currently studying.
+ *
+ * Backed entirely by the generated catalog: a course id is selectable only if
+ * the build emitted published questions for it. A course defined in
+ * content/courses/ with no published questions stays visible in the switcher
+ * as "Coming soon" but cannot be selected, so the learner can never end up
+ * looking at one course's questions under another course's name.
+ *
+ * The selection is persisted, and a persisted value that no longer names an
+ * available course (renamed, retired, or content pulled) falls back to the
+ * first available course and rewrites storage — a stale id must not strand
+ * the app on an empty screen.
  */
-export const COURSES: CourseInfo[] = [
-  { id: "agentic-ai-builder", name: "Agentic AI Builder", shortName: "Agentic AI Builder" },
-  { id: "ai-cloudops-engineer", name: "AI CloudOps Engineer", shortName: "AI CloudOps Engineer" },
-  { id: "ai-leader", name: "AI Leader", shortName: "AI Leader" },
-];
-
 const STORAGE_KEY = "mctl_academy_course_id";
 
-function getInitialCourseId(): string {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && COURSES.some((c) => c.id === saved)) {
-      return saved;
-    }
-  } catch {
-    // Ignore storage errors
-  }
-  return COURSES[0].id;
+function readStored(): string | null {
+  return getItem(STORAGE_KEY);
 }
 
-const currentCourseId = ref<string>(getInitialCourseId());
+function writeStored(courseId: string | null): void {
+  // Storage may be unavailable (private browsing, quota); ./storage degrades to
+  // an in-memory fallback so selection still works for this session.
+  if (courseId === null) removeItem(STORAGE_KEY);
+  else setItem(STORAGE_KEY, courseId);
+}
+
+function resolveInitialCourseId(): string | null {
+  const stored = readStored();
+  if (stored && isCourseAvailable(stored)) return stored;
+
+  const fallback = firstAvailableCourseId();
+  if (stored !== fallback) writeStored(fallback);
+  return fallback;
+}
+
+const currentCourseId = ref<string | null>(resolveInitialCourseId());
+
+/**
+ * Re-reads storage and rebuilds module state. Tests own this: the store is a
+ * module-level singleton, so without an explicit reset one test's selection
+ * would leak into the next and make the suite order-dependent.
+ */
+export function resetCourseStore(): void {
+  currentCourseId.value = resolveInitialCourseId();
+}
 
 export function useCourseStore() {
-  const currentCourse = computed(
-    () => COURSES.find((c) => c.id === currentCourseId.value) || COURSES[0],
-  );
+  const currentCourse = computed<CourseInfo | undefined>(() => findCourse(currentCourseId.value));
 
-  function setCourse(courseId: string) {
-    if (COURSES.some((c) => c.id === courseId)) {
+  /** True when the id names a course the learner is allowed to switch to. */
+  function canSelect(courseId: string): boolean {
+    return isCourseAvailable(courseId);
+  }
+
+  function setCourse(courseId: string): boolean {
+    if (!canSelect(courseId)) return false;
+    if (currentCourseId.value !== courseId) {
       currentCourseId.value = courseId;
-      try {
-        localStorage.setItem(STORAGE_KEY, courseId);
-      } catch {
-        // Ignore
-      }
     }
+    writeStored(courseId);
+    return true;
   }
 
   return {
-    courses: COURSES,
+    /** Every defined course, available or not — unavailable ones render disabled. */
+    courses: courseCatalog,
     currentCourseId,
     currentCourse,
+    canSelect,
     setCourse,
   };
 }

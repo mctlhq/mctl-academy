@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
-import { usePracticeSession, type BundleQuestion } from "./usePracticeSession";
+import { usePracticeSession } from "./usePracticeSession";
+import type { BundleQuestion } from "../services/contentBundle";
 import { renderInlineMarkdown } from "./renderInlineMarkdown";
 import ReportModal from "../components/ReportModal.vue";
 
-const props = defineProps<{
-  bundle?: readonly BundleQuestion[];
-  title: string;
-  emptyMessage?: string;
-}>();
+/**
+ * Renders one practice session over the questions it is handed. The bundle is
+ * always already scoped to the selected course by the routed view, which also
+ * keys this component on the course id — so switching course remounts a fresh
+ * session rather than mutating a running one.
+ */
+const props = withDefaults(
+  defineProps<{
+    bundle: readonly BundleQuestion[];
+    title?: string;
+    emptyMessage?: string;
+  }>(),
+  { title: "Practice" },
+);
 
 const { current, index, total, revealed, score, attempted, selectOption, next } = usePracticeSession(
   props.bundle,

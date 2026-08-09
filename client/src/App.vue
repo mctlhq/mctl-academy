@@ -5,11 +5,8 @@ import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
 import { authClient } from "./authClient";
 import type { UserProfile } from "./types/user";
+import { useCourseStore } from "./services/courseStore";
 import { setSyncEnabled, syncFromServer } from "./services/progressStore";
-import { useQuarantineStore } from "./services/quarantineStore";
-
-const quarantineStore = useQuarantineStore();
-quarantineStore.fetchQuarantinedIds();
 
 const sessionState = authClient.useSession();
 const route = useRoute();
@@ -22,6 +19,12 @@ const user = computed<UserProfile | null>(() => (sessionState.value?.data?.user 
 // may have just been merged in from the server.
 const syncVersion = ref(0);
 provide("syncVersion", syncVersion);
+
+// The course-switch remount boundary. Every learning surface is scoped to the
+// selected course, and a half-answered practice or mock session belongs to the
+// course it started in — so switching course discards the routed view outright
+// rather than re-filtering a running session in place.
+const { currentCourseId } = useCourseStore();
 
 watch(
   () => [authLoading.value, user.value?.id],
@@ -65,7 +68,10 @@ watch(
 
     <main class="app-main">
       <RouterView v-slot="{ Component, route: currentRoute }">
-        <component :is="Component" :key="`${currentRoute.fullPath}-${syncVersion}`" />
+        <component
+          :is="Component"
+          :key="`${currentRoute.fullPath}-${currentCourseId}-${syncVersion}`"
+        />
       </RouterView>
     </main>
 

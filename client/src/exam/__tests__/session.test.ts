@@ -61,18 +61,20 @@ describe("ExamSession transitions", () => {
   });
 });
 
+const COURSE_ID = "agentic-ai-builder";
+
 describe("session persistence", () => {
   beforeEach(() => {
-    clearSession();
+    clearSession(COURSE_ID);
   });
 
   it("T5: reload restores prior answers and recomputes remainingMs from the persisted expiresAt, not a reset clock", () => {
     const startedAt = 1_000_000;
     const session = answerQuestion(startSession(makeQuestions(), 60, startedAt), "q-1", "a");
-    saveSession(session);
+    saveSession(COURSE_ID, session);
 
     const reloadTime = startedAt + 10 * 60_000; // 10 minutes later
-    const restored = loadSession();
+    const restored = loadSession(COURSE_ID);
     expect(restored).not.toBeNull();
     expect(restored?.answers["q-1"]).toBe("a");
     // 60 minutes total, 10 elapsed -> 50 remaining, computed from the stored
@@ -81,6 +83,6 @@ describe("session persistence", () => {
   });
 
   it("returns null when nothing was saved", () => {
-    expect(loadSession()).toBeNull();
+    expect(loadSession(COURSE_ID)).toBeNull();
   });
 });

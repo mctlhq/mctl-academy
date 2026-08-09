@@ -3,6 +3,7 @@ import { inject, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { calculateStudyStreak, getMistakeQuestionIds } from "../services/progressStore";
 import { useCourseStore } from "../services/courseStore";
+import { questionIdsForCourse } from "../services/contentBundle";
 import { currentTheme, setTheme } from "../theme";
 import UserNav from "./UserNav.vue";
 import type { UserProfile } from "../types/user";
@@ -12,12 +13,18 @@ defineProps<{ user: UserProfile | null; loading: boolean }>();
 const router = useRouter();
 const theme = ref(currentTheme());
 const streak = ref(calculateStudyStreak());
+// Courses come from the generated catalog (content/courses/*.yaml), including
+// ones with no published questions yet — those render disabled as "Coming
+// soon" rather than being hidden, so the roadmap is visible without ever
+// letting a learner select a course that would show another course's content.
 const { courses, currentCourseId, setCourse } = useCourseStore();
 
 function onCourseChange(e: Event) {
   const target = e.target as HTMLSelectElement;
-  if (target?.value) {
-    setCourse(target.value);
+  if (!target?.value) return;
+  if (!setCourse(target.value)) {
+    // Rejected (unavailable course): put the control back where it was.
+    target.value = currentCourseId.value ?? "";
   }
 }
 function toggleTheme() {
@@ -30,12 +37,20 @@ function toggleTheme() {
 // mistake-count badge needs its own refresh trigger: every completed
 // navigation, and every time App.vue bumps syncVersion after a
 // syncFromServer() completes.
-const mistakeCount = ref(getMistakeQuestionIds().length);
+// Scoped to the selected course, like the Mistakes screen the badge links to:
+// the badge and the page behind it must never disagree.
+function courseMistakeCount(): number {
+  const inCourse = questionIdsForCourse(currentCourseId.value);
+  return getMistakeQuestionIds().filter((id) => inCourse.has(id)).length;
+}
+
+const mistakeCount = ref(courseMistakeCount());
 function refreshLearningSummary() {
-  mistakeCount.value = getMistakeQuestionIds().length;
+  mistakeCount.value = courseMistakeCount();
   streak.value = calculateStudyStreak();
 }
 router.afterEach(refreshLearningSummary);
+watch(currentCourseId, refreshLearningSummary);
 const syncVersion = inject<Ref<number>>("syncVersion");
 if (syncVersion) {
   watch(syncVersion, refreshLearningSummary);
@@ -77,14 +92,17 @@ const links = [
 
     <div class="app-nav-actions">
       <div class="course-select-wrapper">
+        <label class="course-select-label" for="course-select">Course:</label>
         <select
+          id="course-select"
           class="course-select"
-          aria-label="Select Certification Course"
-          :value="currentCourseId"
+          data-testid="course-select"
+          aria-label="Course"
+          :value="currentCourseId ?? ''"
           @change="onCourseChange"
         >
-          <option v-for="c in courses" :key="c.id" :value="c.id">
-            {{ c.shortName }}
+          <option v-for="c in courses" :key="c.id" :value="c.id" :disabled="!c.available">
+            {{ c.available ? c.title : `${c.title} — Coming soon` }}
           </option>
         </select>
       </div>
@@ -211,6 +229,14 @@ const links = [
 .course-select-wrapper {
   display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
+}
+
+.course-select-label {
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  white-space: nowrap;
 }
 
 .course-select {
@@ -314,6 +340,11 @@ const links = [
   .app-nav {
     padding-right: calc(1rem + env(safe-area-inset-right));
     padding-left: calc(1rem + env(safe-area-inset-left));
+  }
+
+  /* Compact: the dropdown shows the current course title on its own. */
+  .course-select-label {
+    display: none;
   }
 
   .course-select {

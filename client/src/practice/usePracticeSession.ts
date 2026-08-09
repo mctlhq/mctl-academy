@@ -1,23 +1,8 @@
 import { computed, ref, type ComputedRef, type Ref } from "vue";
-import rawBundle from "../content-bundle.json";
 import { recordAttempt } from "../services/progressStore";
-import { useQuarantineStore } from "../services/quarantineStore";
+import type { BundleQuestion } from "../services/contentBundle";
 
-export interface BundleOption {
-  id: string;
-  text: string;
-  correct: boolean;
-  explanation: string;
-}
-
-export interface BundleQuestion {
-  id: string;
-  domain: string;
-  objective: string;
-  stem: string;
-  options: BundleOption[];
-  course_id?: string;
-}
+export type { BundleOption, BundleQuestion } from "../services/contentBundle";
 
 /**
  * Fisher-Yates, in place on a shallow copy — never mutates the array it is
@@ -33,13 +18,6 @@ export function shuffle<T>(items: readonly T[], random: () => number = Math.rand
   return copy;
 }
 
-function buildSession(bundle: readonly BundleQuestion[], random: () => number, quarantinedSet?: Set<string>): BundleQuestion[] {
-  const valid = quarantinedSet && quarantinedSet.size > 0
-    ? bundle.filter((q) => !quarantinedSet.has(q.id))
-    : bundle;
-  return shuffle(valid, random).map((q) => ({ ...q, options: shuffle(q.options, random) }));
-}
-
 export interface UsePracticeSessionOptions {
   /** Injectable random source, for deterministic tests. Defaults to Math.random. */
   random?: () => number;
@@ -50,7 +28,7 @@ export interface PracticeSession {
   current: ComputedRef<BundleQuestion | undefined>;
   /** Zero-based index of the current question within this session's shuffled order. */
   index: Ref<number>;
-  /** Total questions in this session (the full published bank, shuffled once). */
+  /** Total questions in this session. */
   total: ComputedRef<number>;
   /** Option ids revealed so far for the *current* question. */
   revealed: ComputedRef<ReadonlySet<string>>;
@@ -64,17 +42,27 @@ export interface PracticeSession {
   next: () => void;
 }
 
-const defaultBundle = rawBundle as unknown as BundleQuestion[];
-
+/**
+ * A synchronous session engine, and deliberately nothing more: it receives a
+ * question list, shuffles it once, and tracks answers against that frozen
+ * order.
+ *
+ * It knows nothing about which course is selected. Course scoping happens
+ * before a session exists — the caller passes an already-course-scoped bundle
+ * — so a session can never switch course, re-filter, or rebuild because some
+ * global state changed underneath it. Changing course discards the session by
+ * remounting the screen (see PracticeView/MistakesView's :key), which is the
+ * only correct way to end a shuffled, half-answered session.
+ */
 export function usePracticeSession(
-  bundle: readonly BundleQuestion[] = defaultBundle,
+  bundle: readonly BundleQuestion[],
   { random = Math.random }: UsePracticeSessionOptions = {},
 ): PracticeSession {
-  const { quarantinedIds, fetchQuarantinedIds } = useQuarantineStore();
-  fetchQuarantinedIds();
-
-  // Initialize session array ONCE to prevent reshuffling array indices mid-session
-  const session = ref<BundleQuestion[]>(buildSession(bundle, random, quarantinedIds.value)) as Ref<BundleQuestion[]>;
+  // Built once. Not a computed: a session whose question order can change
+  // mid-flight corrupts every index-keyed answer already recorded.
+  const session = ref<BundleQuestion[]>(
+    shuffle(bundle, random).map((q) => ({ ...q, options: shuffle(q.options, random) })),
+  ) as Ref<BundleQuestion[]>;
 
   const index = ref(0);
   const revealedByQuestion = new Map<number, Set<string>>();
@@ -105,7 +93,7 @@ export function usePracticeSession(
       const option = cur.options.find((o) => o.id === optionId);
       const isCorrect = Boolean(option?.correct);
       firstCorrectByQuestion.set(index.value, isCorrect);
-      recordAttempt(cur.id, cur.domain, isCorrect, cur.course_id);
+      recordAttempt(cur.id, cur.domain, isCorrect);
     }
     updateTick.value += 1;
   }

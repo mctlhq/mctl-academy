@@ -26,13 +26,12 @@ describe("progressStore service", () => {
   it("stores and retrieves question attempts", () => {
     expect(getStoredAttempts()).toEqual([]);
 
-    recordAttempt("q-1", "domain-1", true, "agentic-ai-builder");
+    recordAttempt("q-1", "domain-1", true);
     recordAttempt("q-2", "domain-1", false);
 
     const attempts = getStoredAttempts();
     expect(attempts).toHaveLength(2);
     expect(attempts.find((a) => a.questionId === "q-1")?.correct).toBe(true);
-    expect(attempts.find((a) => a.questionId === "q-1")?.courseId).toBe("agentic-ai-builder");
     expect(attempts.find((a) => a.questionId === "q-2")?.correct).toBe(false);
   });
 
@@ -79,6 +78,36 @@ describe("progressStore service", () => {
     expect(domain2?.attemptedQuestions).toBe(1);
     expect(domain2?.correctQuestions).toBe(1);
     expect(domain2?.accuracy).toBe(100);
+  });
+
+  it("scopes every statistic to the bundle it is given, ignoring other courses' attempts", () => {
+    // The bundle is the course scope. Attempts recorded against another
+    // course's questions match no id here, so they cannot inflate the
+    // denominator, the accuracy, or the open-mistake count.
+    const courseBundle = [
+      { id: "q-1", domain: "domain-1" },
+      { id: "q-2", domain: "domain-1" },
+    ];
+
+    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-2", "domain-1", false);
+    recordAttempt("other-course-q-1", "domain-1", false);
+    recordAttempt("other-course-q-2", "domain-2", false);
+
+    const stats = calculateProgressStats(courseBundle);
+
+    expect(stats.totalBankQuestions).toBe(2);
+    expect(stats.totalAttempted).toBe(2);
+    expect(stats.totalCorrect).toBe(1);
+    expect(stats.totalMistakes).toBe(1);
+    expect(stats.domainProgress.map((d) => d.domainId)).toEqual(["domain-1"]);
+  });
+
+  it("labels domains from the titles it is given, not a hardcoded map", () => {
+    const stats = calculateProgressStats([{ id: "q-1", domain: "domain-1" }], [], {
+      "domain-1": "Cloud Infrastructure",
+    });
+    expect(stats.domainProgress[0].domainTitle).toBe("Cloud Infrastructure");
   });
 
   it("calculates a consecutive study streak ending today or yesterday", () => {
@@ -134,6 +163,43 @@ describe("progressStore service", () => {
     // Give the swallowed rejection a tick to settle; the local write must survive it.
     await Promise.resolve();
     expect(getStoredAttempts()).toHaveLength(1);
+  });
+
+  it("never transmits a course association with an attempt", () => {
+    // Course membership is content metadata derivable from questionId. Sending
+    // it would duplicate content as personal learner data, so the POST body is
+    // pinned to exactly the three permitted fields.
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", true);
+
+    const [, init] = fetchSpy.mock.calls[0];
+    const body = JSON.parse(init.body);
+    expect(Object.keys(body).sort()).toEqual(["correct", "domain", "questionId"]);
+    expect(body).not.toHaveProperty("courseId");
+
+    // Nor is it kept locally, where a later sync would have to reconcile it.
+    expect(getStoredAttempts()[0]).not.toHaveProperty("courseId");
+  });
+
+  it("backfill posts carry no course association either", async () => {
+    recordAttempt("q-local-only", "domain-1", true);
+
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) });
+    vi.stubGlobal("fetch", fetchSpy);
+
+    setSyncEnabled(true);
+    await syncFromServer();
+
+    const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
+    expect(postCalls).toHaveLength(1);
+    expect(Object.keys(JSON.parse(postCalls[0][1].body)).sort()).toEqual([
+      "correct",
+      "domain",
+      "questionId",
+    ]);
   });
 
   it("syncFromServer merges local and server attempts, keeping whichever attemptedAt is newer", async () => {

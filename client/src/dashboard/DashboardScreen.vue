@@ -3,13 +3,24 @@ import { computed, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, clearProgress } from "../services/progressStore";
+import { questionsForCourse } from "../services/contentBundle";
+import { domainTitlesFor } from "../services/courseCatalog";
+import { useCourseStore } from "../services/courseStore";
 
 defineProps<{
   onReviewMistakes: () => void;
   onStartPractice: () => void;
 }>();
 
-const stats = ref(calculateProgressStats());
+// Scoped to the selected course: the denominator, the attempts and the open
+// mistakes all come from the same course's question bundle, so they can never
+// describe different courses at once. App.vue remounts this view on a course
+// change, so reading the id once here is enough.
+const { currentCourseId } = useCourseStore();
+const courseBundle = questionsForCourse(currentCourseId.value);
+const domainTitles = domainTitlesFor(currentCourseId.value);
+
+const stats = ref(calculateProgressStats(courseBundle, undefined, domainTitles));
 const weakestDomain = computed(() => {
   const attempted = stats.value.domainProgress.filter((domain) => domain.attemptedQuestions > 0);
   return attempted.sort((a, b) => a.accuracy - b.accuracy)[0] ?? null;
@@ -18,7 +29,7 @@ const weakestDomain = computed(() => {
 function handleClearHistory() {
   if (window.confirm("Are you sure you want to clear your learning progress and mistake history?")) {
     clearProgress();
-    stats.value = calculateProgressStats();
+    stats.value = calculateProgressStats(courseBundle, undefined, domainTitles);
   }
 }
 </script>

@@ -1,10 +1,9 @@
-import rawBundle from "../content-bundle.json";
+import { getItem, removeItem, resetStorage, setItem } from "./storage";
 
 export interface QuestionAttempt {
   questionId: string;
   domain: string;
   correct: boolean;
-  courseId?: string;
   attemptedAt: string;
 }
 
@@ -29,57 +28,16 @@ export interface OverallProgress {
 const STORAGE_KEY = "mctl_academy_progress_v1";
 const ATTEMPTS_ENDPOINT = "/api/attempts";
 
-let memoryFallback: Record<string, string> = {};
 let syncEnabled = false;
-
-function getItem(key: string): string | null {
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.getItem === "function") {
-      return localStorage.getItem(key);
-    }
-  } catch {}
-  return memoryFallback[key] ?? null;
-}
-
-function setItem(key: string, value: string): void {
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.setItem === "function") {
-      localStorage.setItem(key, value);
-      return;
-    }
-  } catch {}
-  memoryFallback[key] = value;
-}
 
 export function saveRawAttempts(attempts: QuestionAttempt[]): void {
   setItem(STORAGE_KEY, JSON.stringify(attempts));
 }
 
-function removeItem(key: string): void {
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.removeItem === "function") {
-      localStorage.removeItem(key);
-      return;
-    }
-  } catch {}
-  delete memoryFallback[key];
-}
-
+/** Clears stored progress and any memory fallback. Tests own this. */
 export function resetMemoryFallback(): void {
-  memoryFallback = {};
-  try {
-    if (typeof localStorage !== "undefined" && localStorage && typeof localStorage.clear === "function") {
-      localStorage.clear();
-    }
-  } catch {}
+  resetStorage();
 }
-
-const DOMAIN_TITLES: Record<string, string> = {
-  "domain-1": "Domain 1: Inference API & Compatibility",
-  "domain-2": "Domain 2: Agent Architecture & Orchestration",
-  "domain-3": "Domain 3: Data & Post-Training",
-  "domain-4": "Domain 4: Production Operations",
-};
 
 export function getStoredAttempts(): QuestionAttempt[] {
   try {
@@ -130,19 +88,26 @@ export function setSyncEnabled(enabled: boolean): void {
   syncEnabled = enabled;
 }
 
-function postAttemptToServer(questionId: string, domain: string, correct: boolean, courseId?: string): void {
+/**
+ * The complete set of fields a learner attempt ever transmits. Course
+ * membership is deliberately absent: it is canonical content metadata
+ * (questionId -> question.course_id), so sending it would duplicate content as
+ * personal learner data and create a reconciliation problem the server does
+ * not need to have.
+ */
+function postAttemptToServer(questionId: string, domain: string, correct: boolean): void {
   fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
-    body: JSON.stringify({ questionId, domain, correct, courseId }),
+    body: JSON.stringify({ questionId, domain, correct }),
   }).catch(() => {
     // Best-effort only: the local write already succeeded, so a sync
     // failure (offline, expired session, 5xx) is never surfaced.
   });
 }
 
-export function recordAttempt(questionId: string, domain: string, correct: boolean, courseId?: string): void {
+export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
   try {
     const attempts = getStoredAttempts();
     const updated = attempts.filter((a) => a.questionId !== questionId);
@@ -150,7 +115,6 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
       questionId,
       domain,
       correct,
-      courseId,
       attemptedAt: new Date().toISOString(),
     });
     setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -159,7 +123,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
   }
 
   if (syncEnabled) {
-    postAttemptToServer(questionId, domain, correct, courseId);
+    postAttemptToServer(questionId, domain, correct);
   }
 }
 
@@ -207,7 +171,7 @@ export async function syncFromServer(): Promise<void> {
 
   for (const a of local) {
     if (!serverIds.has(a.questionId)) {
-      postAttemptToServer(a.questionId, a.domain, a.correct, a.courseId);
+      postAttemptToServer(a.questionId, a.domain, a.correct);
     }
   }
 }
@@ -225,9 +189,22 @@ export function clearProgress(): void {
   }
 }
 
+/**
+ * Statistics for one course.
+ *
+ * `bundle` is the scope, and the only scope: callers pass the active course's
+ * questions, and every number below is derived by intersecting stored attempts
+ * with those question ids. Attempts from another course simply do not match
+ * any id, so a course's progress is isolated without the attempt records
+ * knowing anything about courses.
+ *
+ * `domainTitles` comes from the generated course catalog rather than a
+ * hardcoded map, so a course whose domains differ still reads correctly.
+ */
 export function calculateProgressStats(
-  bundle: Array<{ id: string; domain: string }> = rawBundle as Array<{ id: string; domain: string }>,
+  bundle: Array<{ id: string; domain: string }>,
   attempts: QuestionAttempt[] = getStoredAttempts(),
+  domainTitles: Record<string, string> = {},
 ): OverallProgress {
   const attemptsMap = new Map<string, QuestionAttempt>();
   for (const a of attempts) {
@@ -266,7 +243,7 @@ export function calculateProgressStats(
 
     domainProgress.push({
       domainId,
-      domainTitle: DOMAIN_TITLES[domainId] || domainId,
+      domainTitle: domainTitles[domainId] || domainId,
       totalQuestions: stats.total,
       attemptedQuestions: stats.attempted,
       correctQuestions: stats.correct,
@@ -274,8 +251,11 @@ export function calculateProgressStats(
     });
   }
 
-  for (const a of attemptsMap.values()) {
-    if (!a.correct) {
+  // Mistakes are counted inside the scope too — an open mistake in another
+  // course is not this course's business.
+  for (const q of bundle) {
+    const attempt = attemptsMap.get(q.id);
+    if (attempt && !attempt.correct) {
       totalMistakes += 1;
     }
   }
