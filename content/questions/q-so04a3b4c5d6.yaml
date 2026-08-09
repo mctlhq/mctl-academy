@@ -7,24 +7,24 @@ stem: What is the main advantage of enforcing JSON Schema constraints at the
   logit level during decoding over prompt engineering?
 options:
   - id: a
-    text: It eliminates the need for an API authentication key
-    correct: false
-    explanation: API authentication is required regardless of output constraint settings.
-  - id: b
-    text: It doubles the context window size of the underlying model
-    correct: false
-    explanation: Context window length is fixed by architecture, not decoding constraints.
-  - id: c
-    text: It automatically translates output into multiple spoken languages
-    correct: false
-    explanation: Structured output enforces data format schemas, not natural
-      language translation.
-  - id: d
     text: It guarantees 100% syntactically valid JSON output matching the schema
       without parsing failures
     correct: true
     explanation: Grammar/logit-constrained decoding physically prevents invalid
       tokens, guaranteeing valid JSON syntax.
+  - id: b
+    text: It eliminates the need for an API authentication key
+    correct: false
+    explanation: API authentication is required regardless of output constraint settings.
+  - id: c
+    text: It doubles the context window size of the underlying model
+    correct: false
+    explanation: Context window length is fixed by architecture, not decoding constraints.
+  - id: d
+    text: It automatically translates output into multiple spoken languages
+    correct: false
+    explanation: Structured output enforces data format schemas, not natural
+      language translation.
 evidence:
   - source_id: src-structured-output
     excerpt: Forces arbitrary JSON output, the model will decide on the schema by itself

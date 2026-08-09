@@ -7,24 +7,24 @@ stem: What is the purpose of the Files API when preparing datasets for model
   fine-tuning?
 options:
   - id: a
-    text: To host static website HTML files
-    correct: false
-    explanation: The Files API stores training data, not static web host assets.
-  - id: b
     text: To upload, store, and manage JSONL dataset files required for fine-tuning
       jobs
     correct: true
     explanation: The Files API manages training and validation JSONL files prior to
       job submission.
-  - id: c
+  - id: b
     text: To stream real-time GPU hardware telemetry logs
     correct: false
     explanation: GPU telemetry is handled by system monitoring endpoints, not the Files API.
-  - id: d
+  - id: c
     text: To dynamically resize image dimensions during inference
     correct: false
     explanation: Image resizing is a vision pre-processing task, not a dataset Files
       API operation.
+  - id: d
+    text: To host static website HTML files
+    correct: false
+    explanation: The Files API stores training data, not static web host assets.
 evidence:
   - source_id: src-dataset-formats
     excerpt: Each training example is a single conversation, represented as one

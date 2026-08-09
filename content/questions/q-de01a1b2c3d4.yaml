@@ -7,26 +7,26 @@ stem: What primary architectural advantage does deploying a dedicated endpoint
   provide over shared pay-as-you-go inference API pools?
 options:
   - id: a
-    text: Free unlimited token consumption without billing charges
-    correct: false
-    explanation: Dedicated instances incur hourly node hosting costs regardless of
-      query volume.
-  - id: b
-    text: Automatic client-side Javascript code transpilation
-    correct: false
-    explanation: Dedicated endpoints handle neural network model inference, not web
-      browser frontend code compilation.
-  - id: c
     text: Guaranteed reserved GPU compute capacity with predictable response latency
       and no noisy neighbor interference
     correct: true
     explanation: Dedicated endpoints allocate isolated GPU instances, ensuring
       consistent latency and reserved capacity.
-  - id: d
+  - id: b
     text: Automatic generation of synthetic training datasets
     correct: false
     explanation: Endpoints execute model inference, not dataset synthesis or
       fine-tuning preprocessing.
+  - id: c
+    text: Free unlimited token consumption without billing charges
+    correct: false
+    explanation: Dedicated instances incur hourly node hosting costs regardless of
+      query volume.
+  - id: d
+    text: Automatic client-side Javascript code transpilation
+    correct: false
+    explanation: Dedicated endpoints handle neural network model inference, not web
+      browser frontend code compilation.
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.

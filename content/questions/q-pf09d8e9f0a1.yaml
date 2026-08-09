@@ -7,22 +7,22 @@ stem: What authentication scope is required for API keys to create new dedicated
   endpoints in a project?
 options:
   - id: a
-    text: Read-only guest access across public forum posts
-    correct: false
-    explanation: Read-only guest access cannot provision infrastructure endpoints.
-  - id: b
-    text: Anonymous unauthenticated bearer token
-    correct: false
-    explanation: Resource creation strictly requires authenticated API keys.
-  - id: c
-    text: Third-party identity provider root certificate private key
-    correct: false
-    explanation: Endpoint creation uses project-scoped IAM roles and API keys.
-  - id: d
     text: Project administrator or endpoint management write permissions
     correct: true
     explanation: Creating infrastructure resources requires write permissions scoped
       to the target project.
+  - id: b
+    text: Read-only guest access across public forum posts
+    correct: false
+    explanation: Read-only guest access cannot provision infrastructure endpoints.
+  - id: c
+    text: Anonymous unauthenticated bearer token
+    correct: false
+    explanation: Resource creation strictly requires authenticated API keys.
+  - id: d
+    text: Third-party identity provider root certificate private key
+    correct: false
+    explanation: Endpoint creation uses project-scoped IAM roles and API keys.
 evidence:
   - source_id: src-org-projects
     excerpt: exist inside a project and inherit its access settings.

@@ -7,22 +7,22 @@ stem: What is the model naming convention when selecting the Fast flavor of an
   inference model?
 options:
   - id: a
-    text: Use port `8443` instead of standard HTTP endpoints
-    correct: false
-    explanation: Port routing does not determine model flavor.
-  - id: b
-    text: Prepend `fast/` before the organization namespace
-    correct: false
-    explanation: Fast suffix is appended to the model name, not prepended to namespace.
-  - id: c
     text: Append `-fast` to the model name string in the request payload
     correct: true
     explanation: Fast flavors are specified by appending `-fast` to the model identifier.
-  - id: d
+  - id: b
     text: 'Set `flavor: "fast"` in the HTTP headers'
     correct: false
     explanation: Flavor selection is specified in the model parameter, not custom
       HTTP headers.
+  - id: c
+    text: Use port `8443` instead of standard HTTP endpoints
+    correct: false
+    explanation: Port routing does not determine model flavor.
+  - id: d
+    text: Prepend `fast/` before the organization namespace
+    correct: false
+    explanation: Fast suffix is appended to the model name, not prepended to namespace.
 evidence:
   - source_id: src-inference-overview
     excerpt: To use the Fast flavor, append `-fast` to the model name in the

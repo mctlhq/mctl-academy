@@ -206,27 +206,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Free unlimited token consumption without billing charges",
-        "correct": false,
-        "explanation": "Dedicated instances incur hourly node hosting costs regardless of query volume."
-      },
-      {
-        "id": "b",
-        "text": "Automatic client-side Javascript code transpilation",
-        "correct": false,
-        "explanation": "Dedicated endpoints handle neural network model inference, not web browser frontend code compilation."
-      },
-      {
-        "id": "c",
         "text": "Guaranteed reserved GPU compute capacity with predictable response latency and no noisy neighbor interference",
         "correct": true,
         "explanation": "Dedicated endpoints allocate isolated GPU instances, ensuring consistent latency and reserved capacity."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Automatic generation of synthetic training datasets",
         "correct": false,
         "explanation": "Endpoints execute model inference, not dataset synthesis or fine-tuning preprocessing."
+      },
+      {
+        "id": "c",
+        "text": "Free unlimited token consumption without billing charges",
+        "correct": false,
+        "explanation": "Dedicated instances incur hourly node hosting costs regardless of query volume."
+      },
+      {
+        "id": "d",
+        "text": "Automatic client-side Javascript code transpilation",
+        "correct": false,
+        "explanation": "Dedicated endpoints handle neural network model inference, not web browser frontend code compilation."
       }
     ]
   },
@@ -239,27 +239,27 @@
     "options": [
       {
         "id": "a",
-        "text": "By embedding base64 encoded SSH keys in system prompts",
-        "correct": false,
-        "explanation": "SSH keys manage shell access, not API request model routing."
-      },
-      {
-        "id": "b",
-        "text": "By specifying purpose: fine-tune in request headers",
-        "correct": false,
-        "explanation": "The purpose header belongs to Files API uploads, not Chat Completion inference calls."
-      },
-      {
-        "id": "c",
         "text": "By passing the dedicated endpoint URL or endpoint deployment ID in the request base URL or model identifier",
         "correct": true,
         "explanation": "Requests route to dedicated instances by specifying the deployment endpoint host or deployment ID."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "By changing the TCP port to 21 on the client host machine",
         "correct": false,
         "explanation": "Port 21 is FTP; API endpoints use standard HTTPS (port 443)."
+      },
+      {
+        "id": "c",
+        "text": "By embedding base64 encoded SSH keys in system prompts",
+        "correct": false,
+        "explanation": "SSH keys manage shell access, not API request model routing."
+      },
+      {
+        "id": "d",
+        "text": "By specifying purpose: fine-tune in request headers",
+        "correct": false,
+        "explanation": "The purpose header belongs to Files API uploads, not Chat Completion inference calls."
       }
     ]
   },
@@ -305,27 +305,27 @@
     "options": [
       {
         "id": "a",
-        "text": "All active user sessions are logged out across the organization",
-        "correct": false,
-        "explanation": "Throttling impacts specific inference requests, not user auth sessions."
-      },
-      {
-        "id": "b",
-        "text": "HTTP responses silently return corrupted random byte strings",
-        "correct": false,
-        "explanation": "Overload conditions return explicit HTTP 429 error codes, not corrupt data."
-      },
-      {
-        "id": "c",
         "text": "Requests queue up to configured limits before returning HTTP 429 rate limit responses",
         "correct": true,
         "explanation": "Over-capacity concurrency triggers request queuing followed by HTTP 429 rate limit errors."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "The active model is permanently deleted from disk to prevent hardware overheating",
         "correct": false,
         "explanation": "Capacity limits trigger throttling responses, not data deletion."
+      },
+      {
+        "id": "c",
+        "text": "All active user sessions are logged out across the organization",
+        "correct": false,
+        "explanation": "Throttling impacts specific inference requests, not user auth sessions."
+      },
+      {
+        "id": "d",
+        "text": "HTTP responses silently return corrupted random byte strings",
+        "correct": false,
+        "explanation": "Overload conditions return explicit HTTP 429 error codes, not corrupt data."
       }
     ]
   },
@@ -338,27 +338,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Number of lines of code compiled in client builds",
-        "correct": false,
-        "explanation": "Code volume is not a billing metric for language model inference APIs."
-      },
-      {
-        "id": "b",
-        "text": "Hard drive disk rotation speed",
-        "correct": false,
-        "explanation": "Disk hardware specs are managed by the cloud platform, not billed per query."
-      },
-      {
-        "id": "c",
         "text": "Total prompt and completion tokens processed",
         "correct": true,
         "explanation": "Pay-as-you-go inference is billed per thousand/million tokens processed."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Fixed flat monthly subscription fee per developer seat",
         "correct": false,
         "explanation": "Shared APIs bill based on actual token usage volume rather than seat counts."
+      },
+      {
+        "id": "c",
+        "text": "Number of lines of code compiled in client builds",
+        "correct": false,
+        "explanation": "Code volume is not a billing metric for language model inference APIs."
+      },
+      {
+        "id": "d",
+        "text": "Hard drive disk rotation speed",
+        "correct": false,
+        "explanation": "Disk hardware specs are managed by the cloud platform, not billed per query."
       }
     ]
   },
@@ -371,27 +371,27 @@
     "options": [
       {
         "id": "a",
+        "text": "READY",
+        "correct": true,
+        "explanation": "The READY state confirms node provisioning, model loading, and traffic capability."
+      },
+      {
+        "id": "b",
         "text": "CREATING",
         "correct": false,
         "explanation": "CREATING signifies ongoing provision of underlying compute nodes."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "DELETING",
         "correct": false,
         "explanation": "DELETING indicates endpoint de-provisioning and resource teardown."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "PAUSED",
         "correct": false,
         "explanation": "PAUSED indicates an inactive endpoint that is not serving live traffic."
-      },
-      {
-        "id": "d",
-        "text": "READY",
-        "correct": true,
-        "explanation": "The READY state confirms node provisioning, model loading, and traffic capability."
       }
     ]
   },
@@ -404,27 +404,27 @@
     "options": [
       {
         "id": "a",
-        "text": "HTTP 401 Unauthorized",
-        "correct": false,
-        "explanation": "HTTP 401 indicates missing or invalid API keys."
-      },
-      {
-        "id": "b",
         "text": "HTTP 429 Too Many Requests",
         "correct": true,
         "explanation": "Exceeding RPM or TPM rate limits triggers HTTP 429 response status."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "HTTP 500 Internal Server Error",
         "correct": false,
         "explanation": "HTTP 500 indicates unhandled server crashes, not client quota rate limits."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "HTTP 404 Not Found",
         "correct": false,
         "explanation": "HTTP 404 indicates missing endpoint URLs or resources."
+      },
+      {
+        "id": "d",
+        "text": "HTTP 401 Unauthorized",
+        "correct": false,
+        "explanation": "HTTP 401 indicates missing or invalid API keys."
       }
     ]
   },
@@ -899,27 +899,27 @@
     "options": [
       {
         "id": "a",
-        "text": "To host static website HTML files",
-        "correct": false,
-        "explanation": "The Files API stores training data, not static web host assets."
-      },
-      {
-        "id": "b",
         "text": "To upload, store, and manage JSONL dataset files required for fine-tuning jobs",
         "correct": true,
         "explanation": "The Files API manages training and validation JSONL files prior to job submission."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "To stream real-time GPU hardware telemetry logs",
         "correct": false,
         "explanation": "GPU telemetry is handled by system monitoring endpoints, not the Files API."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "To dynamically resize image dimensions during inference",
         "correct": false,
         "explanation": "Image resizing is a vision pre-processing task, not a dataset Files API operation."
+      },
+      {
+        "id": "d",
+        "text": "To host static website HTML files",
+        "correct": false,
+        "explanation": "The Files API stores training data, not static web host assets."
       }
     ]
   },
@@ -965,27 +965,27 @@
     "options": [
       {
         "id": "a",
-        "text": "The inference endpoint, which proxies the call to the named service",
-        "correct": false,
-        "explanation": "No proxying happens. The endpoint returns tool-call instructions in the response and does not reach out to any external service on your behalf."
-      },
-      {
-        "id": "b",
-        "text": "The tool schema registry, once the tool has been registered",
-        "correct": false,
-        "explanation": "Tool schemas describe how a tool should be invoked. They are declarative and there is no registry component that executes anything."
-      },
-      {
-        "id": "c",
         "text": "Your application, which then passes the result back to the model",
         "correct": true,
         "explanation": "The model only emits an invocation instruction. Executing the function and feeding its output back into the next prompt is the application's responsibility."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "The model, which executes the function and returns its output directly",
         "correct": false,
         "explanation": "The model never executes anything. It proposes a call; running it is explicitly left to your backend or client."
+      },
+      {
+        "id": "c",
+        "text": "The inference endpoint, which proxies the call to the named service",
+        "correct": false,
+        "explanation": "No proxying happens. The endpoint returns tool-call instructions in the response and does not reach out to any external service on your behalf."
+      },
+      {
+        "id": "d",
+        "text": "The tool schema registry, once the tool has been registered",
+        "correct": false,
+        "explanation": "Tool schemas describe how a tool should be invoked. They are declarative and there is no registry component that executes anything."
       }
     ]
   },
@@ -1196,27 +1196,27 @@
     "options": [
       {
         "id": "a",
-        "text": "A static vector database index",
-        "correct": false,
-        "explanation": "Vector databases store document embeddings for RAG, not fine-tuning weight checkpoints."
-      },
-      {
-        "id": "b",
         "text": "A snapshot of model weights saved at intermediate epoch or step intervals during training",
         "correct": true,
         "explanation": "Checkpoints save intermediate model weight snapshots throughout the fine-tuning run."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "An API token used to authenticate REST requests",
         "correct": false,
         "explanation": "API tokens handle client authentication, not training weight storage."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "A list of active user accounts registered in an organization project",
         "correct": false,
         "explanation": "Organization user rosters belong to IAM management, not fine-tuning job metrics."
+      },
+      {
+        "id": "d",
+        "text": "A static vector database index",
+        "correct": false,
+        "explanation": "Vector databases store document embeddings for RAG, not fine-tuning weight checkpoints."
       }
     ]
   },
@@ -1526,27 +1526,27 @@
     "options": [
       {
         "id": "a",
-        "text": "database_connections_active",
-        "correct": false,
-        "explanation": "Database connections are SQL pool counters, not inference token usage object properties."
-      },
-      {
-        "id": "b",
         "text": "prompt_tokens, completion_tokens, and total_tokens",
         "correct": true,
         "explanation": "The usage object reports exact counts for prompt_tokens, completion_tokens, and total_tokens."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "gpu_temperature_celsius and fan_speed_rpm",
         "correct": false,
         "explanation": "Hardware temperature and fan metrics belong to infrastructure monitoring, not model API usage payloads."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "disk_write_mbps and network_latency_ms",
         "correct": false,
         "explanation": "Disk throughput and network ping latency are transport metrics, not LLM token usage counters."
+      },
+      {
+        "id": "d",
+        "text": "database_connections_active",
+        "correct": false,
+        "explanation": "Database connections are SQL pool counters, not inference token usage object properties."
       }
     ]
   },
@@ -1559,27 +1559,27 @@
     "options": [
       {
         "id": "a",
-        "text": "The API key, since each key is scoped to a single resource",
-        "correct": false,
-        "explanation": "Keys are issued within a project. They express access, but the project is what bounds it."
-      },
-      {
-        "id": "b",
-        "text": "An organization group, since groups own resources directly",
-        "correct": false,
-        "explanation": "Groups configure identity and access for people. Resources belong to projects, not to groups."
-      },
-      {
-        "id": "c",
         "text": "A project, since resources live inside it and inherit its access settings",
         "correct": true,
         "explanation": "Because resources take their access from the enclosing project, giving each team its own project is what produces the isolation."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "The organization, since it is the top of the hierarchy",
         "correct": false,
         "explanation": "The organization is the shared container above projects, so placing both teams in one does not separate them."
+      },
+      {
+        "id": "c",
+        "text": "The API key, since each key is scoped to a single resource",
+        "correct": false,
+        "explanation": "Keys are issued within a project. They express access, but the project is what bounds it."
+      },
+      {
+        "id": "d",
+        "text": "An organization group, since groups own resources directly",
+        "correct": false,
+        "explanation": "Groups configure identity and access for people. Resources belong to projects, not to groups."
       }
     ]
   },
@@ -1658,27 +1658,27 @@
     "options": [
       {
         "id": "a",
+        "text": "A personal organization is created automatically for the user",
+        "correct": true,
+        "explanation": "First-time signup automatically provisions a personal organization."
+      },
+      {
+        "id": "b",
         "text": "The user must submit a support ticket to request organization creation",
         "correct": false,
         "explanation": "Organization provisioning is automated during account onboarding."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "The user is assigned to a shared public sandbox organization",
         "correct": false,
         "explanation": "Each user gets an isolated personal organization, not a shared sandbox."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "Access is restricted until an enterprise agreement is uploaded",
         "correct": false,
         "explanation": "Self-service signup creates a personal organization immediately."
-      },
-      {
-        "id": "d",
-        "text": "A personal organization is created automatically for the user",
-        "correct": true,
-        "explanation": "First-time signup automatically provisions a personal organization."
       }
     ]
   },
@@ -1757,27 +1757,27 @@
     "options": [
       {
         "id": "a",
+        "text": "Differences lie in token pricing, latency, and applied optimization levels while outputs remain identical",
+        "correct": true,
+        "explanation": "Fast flavors optimize latency and pricing while generating identical model outputs."
+      },
+      {
+        "id": "b",
         "text": "Fast flavors return truncated response text to minimize network payload size",
         "correct": false,
         "explanation": "Fast flavors do not truncate output text or alter generation semantics."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "Fast flavors require specialized custom SDKs and cannot use OpenAI client libraries",
         "correct": false,
         "explanation": "Fast flavors use standard OpenAI client endpoints and request formats."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "Fast flavors only accept binary payload inputs instead of JSON",
         "correct": false,
         "explanation": "Standard JSON request bodies apply to both Fast and standard flavors."
-      },
-      {
-        "id": "d",
-        "text": "Differences lie in token pricing, latency, and applied optimization levels while outputs remain identical",
-        "correct": true,
-        "explanation": "Fast flavors optimize latency and pricing while generating identical model outputs."
       }
     ]
   },
@@ -1790,27 +1790,27 @@
     "options": [
       {
         "id": "a",
-        "text": "Use port `8443` instead of standard HTTP endpoints",
-        "correct": false,
-        "explanation": "Port routing does not determine model flavor."
-      },
-      {
-        "id": "b",
-        "text": "Prepend `fast/` before the organization namespace",
-        "correct": false,
-        "explanation": "Fast suffix is appended to the model name, not prepended to namespace."
-      },
-      {
-        "id": "c",
         "text": "Append `-fast` to the model name string in the request payload",
         "correct": true,
         "explanation": "Fast flavors are specified by appending `-fast` to the model identifier."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "Set `flavor: \"fast\"` in the HTTP headers",
         "correct": false,
         "explanation": "Flavor selection is specified in the model parameter, not custom HTTP headers."
+      },
+      {
+        "id": "c",
+        "text": "Use port `8443` instead of standard HTTP endpoints",
+        "correct": false,
+        "explanation": "Port routing does not determine model flavor."
+      },
+      {
+        "id": "d",
+        "text": "Prepend `fast/` before the organization namespace",
+        "correct": false,
+        "explanation": "Fast suffix is appended to the model name, not prepended to namespace."
       }
     ]
   },
@@ -1922,27 +1922,27 @@
     "options": [
       {
         "id": "a",
-        "text": "`https://docs.nebius.com/static/js`",
-        "correct": false,
-        "explanation": "Documentation static assets are not API inference endpoints."
-      },
-      {
-        "id": "b",
         "text": "`https://api.tokenfactory.nebius.com/v1`",
         "correct": true,
         "explanation": "The standard base URL path follows `https://api.tokenfactory.nebius.com/v1` for OpenAI client integration."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "`ftp://legacy.nebius.internal/storage`",
         "correct": false,
         "explanation": "FTP protocols are not used for RESTful LLM inference APIs."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "`ws://localhost:3000/raw-socket`",
         "correct": false,
         "explanation": "Local raw WebSockets are not the canonical public API base URL."
+      },
+      {
+        "id": "d",
+        "text": "`https://docs.nebius.com/static/js`",
+        "correct": false,
+        "explanation": "Documentation static assets are not API inference endpoints."
       }
     ]
   },
@@ -1955,27 +1955,27 @@
     "options": [
       {
         "id": "a",
+        "text": "Project administrator or endpoint management write permissions",
+        "correct": true,
+        "explanation": "Creating infrastructure resources requires write permissions scoped to the target project."
+      },
+      {
+        "id": "b",
         "text": "Read-only guest access across public forum posts",
         "correct": false,
         "explanation": "Read-only guest access cannot provision infrastructure endpoints."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "Anonymous unauthenticated bearer token",
         "correct": false,
         "explanation": "Resource creation strictly requires authenticated API keys."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "Third-party identity provider root certificate private key",
         "correct": false,
         "explanation": "Endpoint creation uses project-scoped IAM roles and API keys."
-      },
-      {
-        "id": "d",
-        "text": "Project administrator or endpoint management write permissions",
-        "correct": true,
-        "explanation": "Creating infrastructure resources requires write permissions scoped to the target project."
       }
     ]
   },
@@ -2021,27 +2021,27 @@
     "options": [
       {
         "id": "a",
-        "text": "CPU Core Affinity",
-        "correct": false,
-        "explanation": "CPU affinity controls process execution on physical cores, not LLM sampling."
-      },
-      {
-        "id": "b",
-        "text": "Display Screen Refresh Rate",
-        "correct": false,
-        "explanation": "Monitor refresh rate is a hardware display property."
-      },
-      {
-        "id": "c",
         "text": "Temperature",
         "correct": true,
         "explanation": "Temperature scales the logits before sampling, controlling response randomness and creativity."
       },
       {
-        "id": "d",
+        "id": "b",
         "text": "TCP Window Size",
         "correct": false,
         "explanation": "TCP window size is a network transport layer configuration."
+      },
+      {
+        "id": "c",
+        "text": "CPU Core Affinity",
+        "correct": false,
+        "explanation": "CPU affinity controls process execution on physical cores, not LLM sampling."
+      },
+      {
+        "id": "d",
+        "text": "Display Screen Refresh Rate",
+        "correct": false,
+        "explanation": "Monitor refresh rate is a hardware display property."
       }
     ]
   },
@@ -2252,27 +2252,27 @@
     "options": [
       {
         "id": "a",
-        "text": "To force the embedding model to output 4096-dimensional vectors",
-        "correct": false,
-        "explanation": "Embedding dimension is fixed by the model architecture, unrelated to chunk overlap length."
-      },
-      {
-        "id": "b",
         "text": "To prevent splitting semantically important context or entity references across chunk boundaries",
         "correct": true,
         "explanation": "Chunk overlap preserves context continuity across boundary cuts so key entities aren't severed."
       },
       {
-        "id": "c",
+        "id": "b",
         "text": "To double the storage efficiency of vector database index nodes",
         "correct": false,
         "explanation": "Overlap increases total stored tokens and index size slightly, not efficiency."
       },
       {
-        "id": "d",
+        "id": "c",
         "text": "To ensure all output tokens are generated deterministically",
         "correct": false,
         "explanation": "Chunking happens prior to retrieval, whereas generation determinism is set via temperature/seed."
+      },
+      {
+        "id": "d",
+        "text": "To force the embedding model to output 4096-dimensional vectors",
+        "correct": false,
+        "explanation": "Embedding dimension is fixed by the model architecture, unrelated to chunk overlap length."
       }
     ]
   },
@@ -2516,27 +2516,27 @@
     "options": [
       {
         "id": "a",
+        "text": "It guarantees 100% syntactically valid JSON output matching the schema without parsing failures",
+        "correct": true,
+        "explanation": "Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax."
+      },
+      {
+        "id": "b",
         "text": "It eliminates the need for an API authentication key",
         "correct": false,
         "explanation": "API authentication is required regardless of output constraint settings."
       },
       {
-        "id": "b",
+        "id": "c",
         "text": "It doubles the context window size of the underlying model",
         "correct": false,
         "explanation": "Context window length is fixed by architecture, not decoding constraints."
       },
       {
-        "id": "c",
+        "id": "d",
         "text": "It automatically translates output into multiple spoken languages",
         "correct": false,
         "explanation": "Structured output enforces data format schemas, not natural language translation."
-      },
-      {
-        "id": "d",
-        "text": "It guarantees 100% syntactically valid JSON output matching the schema without parsing failures",
-        "correct": true,
-        "explanation": "Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax."
       }
     ]
   },

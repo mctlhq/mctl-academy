@@ -7,26 +7,26 @@ stem: Why is chunk overlap typically applied when splitting documents into
   passages for a retrieval pipeline?
 options:
   - id: a
-    text: To force the embedding model to output 4096-dimensional vectors
-    correct: false
-    explanation: Embedding dimension is fixed by the model architecture, unrelated
-      to chunk overlap length.
-  - id: b
     text: To prevent splitting semantically important context or entity references
       across chunk boundaries
     correct: true
     explanation: Chunk overlap preserves context continuity across boundary cuts so
       key entities aren't severed.
-  - id: c
+  - id: b
     text: To double the storage efficiency of vector database index nodes
     correct: false
     explanation: Overlap increases total stored tokens and index size slightly, not
       efficiency.
-  - id: d
+  - id: c
     text: To ensure all output tokens are generated deterministically
     correct: false
     explanation: Chunking happens prior to retrieval, whereas generation determinism
       is set via temperature/seed.
+  - id: d
+    text: To force the embedding model to output 4096-dimensional vectors
+    correct: false
+    explanation: Embedding dimension is fixed by the model architecture, unrelated
+      to chunk overlap length.
 evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,

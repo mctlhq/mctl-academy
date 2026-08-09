@@ -7,22 +7,22 @@ stem: Which base URL pattern is used to configure standard OpenAI SDK clients to
   point to Nebius Token Factory inference endpoints?
 options:
   - id: a
-    text: "`https://docs.nebius.com/static/js`"
-    correct: false
-    explanation: Documentation static assets are not API inference endpoints.
-  - id: b
     text: "`https://api.tokenfactory.nebius.com/v1`"
     correct: true
     explanation: The standard base URL path follows
       `https://api.tokenfactory.nebius.com/v1` for OpenAI client integration.
-  - id: c
+  - id: b
     text: "`ftp://legacy.nebius.internal/storage`"
     correct: false
     explanation: FTP protocols are not used for RESTful LLM inference APIs.
-  - id: d
+  - id: c
     text: "`ws://localhost:3000/raw-socket`"
     correct: false
     explanation: Local raw WebSockets are not the canonical public API base URL.
+  - id: d
+    text: "`https://docs.nebius.com/static/js`"
+    correct: false
+    explanation: Documentation static assets are not API inference endpoints.
 evidence:
   - source_id: src-inference-overview
     excerpt: To use the Fast flavor, append `-fast` to the model name in the

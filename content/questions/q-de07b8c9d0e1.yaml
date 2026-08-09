@@ -7,24 +7,24 @@ stem: How do organization administrators grant new team members access to
   specific projects and endpoints?
 options:
   - id: a
-    text: By committing plaintext passwords directly to source control repositories
-    correct: false
-    explanation: Plaintext secret committing is a critical security vulnerability.
-  - id: b
-    text: By creating a new separate organization for each individual developer
-    correct: false
-    explanation: Teams work within shared organizations and projects via invitations.
-  - id: c
     text: By sending user invitations via email and assigning granular RBAC roles
       within the organization
     correct: true
     explanation: Team management relies on invitations and role-based access control
       per project.
-  - id: d
+  - id: b
     text: By sharing root admin database passwords in public Slack channels
     correct: false
     explanation: Root credentials should never be shared publicly; RBAC invitations
       are used instead.
+  - id: c
+    text: By committing plaintext passwords directly to source control repositories
+    correct: false
+    explanation: Plaintext secret committing is a critical security vulnerability.
+  - id: d
+    text: By creating a new separate organization for each individual developer
+    correct: false
+    explanation: Teams work within shared organizations and projects via invitations.
 evidence:
   - source_id: src-org-projects
     excerpt: exist inside a project and inherit its access settings.
