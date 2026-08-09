@@ -314,6 +314,19 @@ const links = [
     min-height: 2.75rem;
   }
 
+  /* 44px, matching the app's own established touch-target convention
+     (.app-nav-link, .report-button, .mock-exam-footer button all use
+     2.75rem). Previously this was 2.5rem (40px) and only applied at
+     <=560px, so the unscoped 2rem (32px) desktop default was still in
+     effect for the whole 561-980px band -- exactly where 768px sits,
+     still inside this stacked/touch-oriented nav layout. */
+  .theme-toggle,
+  .course-select,
+  .user-nav-signed-in :deep(summary) {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
   .streak {
     display: none;
   }
@@ -340,12 +353,6 @@ const links = [
     padding: 0 0.4rem;
     font-size: 0.68rem;
     text-overflow: ellipsis;
-  }
-
-  .theme-toggle,
-  .user-nav-signed-in :deep(summary) {
-    min-width: 2.5rem;
-    min-height: 2.5rem;
   }
 
   .app-nav-links {

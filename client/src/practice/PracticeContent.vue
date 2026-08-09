@@ -204,6 +204,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font-size: clamp(1.3rem, 2.4vw, 1.55rem);
   line-height: 1.5;
   margin: 0 0 1.5rem;
+  overflow-wrap: break-word;
 }
 
 .practice-header {
@@ -266,6 +267,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font: inherit;
   padding: 0.95rem 1.1rem;
   cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .feedback {
