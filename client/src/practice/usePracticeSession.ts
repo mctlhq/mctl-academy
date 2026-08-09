@@ -15,6 +15,7 @@ export interface BundleQuestion {
   objective: string;
   stem: string;
   options: BundleOption[];
+  course_id?: string;
 }
 
 /**
@@ -65,16 +66,10 @@ export function usePracticeSession(
   bundle: readonly BundleQuestion[] = defaultBundle,
   { random = Math.random }: UsePracticeSessionOptions = {},
 ): PracticeSession {
-  // Shuffled exactly once per call: session is a plain ref seeded at
-  // creation time, matching "once per session" — there is no React-style
-  // remount to guard against here, a composable instance lives exactly as
-  // long as its caller keeps it.
   const session = ref<BundleQuestion[]>(buildSession(bundle, random)) as Ref<BundleQuestion[]>;
   const index = ref(0);
   const revealedByQuestion = new Map<number, Set<string>>();
   const firstCorrectByQuestion = new Map<number, boolean>();
-  // Bumped on every mutation of the plain (non-reactive) maps above so
-  // dependent computeds re-evaluate.
   const updateTick = ref(0);
 
   const total = computed(() => session.value.length);
@@ -101,7 +96,7 @@ export function usePracticeSession(
       const option = cur.options.find((o) => o.id === optionId);
       const isCorrect = Boolean(option?.correct);
       firstCorrectByQuestion.set(index.value, isCorrect);
-      recordAttempt(cur.id, cur.domain, isCorrect, (cur as any).course_id);
+      recordAttempt(cur.id, cur.domain, isCorrect, cur.course_id);
     }
     updateTick.value += 1;
   }

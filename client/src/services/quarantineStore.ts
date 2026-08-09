@@ -12,12 +12,11 @@ export function useQuarantineStore() {
         const data = await res.json();
         if (data.success && Array.isArray(data.quarantinedQuestionIds)) {
           quarantinedIdsRef.value = new Set(data.quarantinedQuestionIds);
+          loadedRef.value = true;
         }
       }
     } catch {
-      // Ignore network errors in offline/standalone mode
-    } finally {
-      loadedRef.value = true;
+      // Network/server errors: do not set loadedRef to true, so subsequent calls can retry
     }
     return quarantinedIdsRef.value;
   }

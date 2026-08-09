@@ -207,7 +207,7 @@ export async function syncFromServer(): Promise<void> {
 
   for (const a of local) {
     if (!serverIds.has(a.questionId)) {
-      postAttemptToServer(a.questionId, a.domain, a.correct);
+      postAttemptToServer(a.questionId, a.domain, a.correct, a.courseId);
     }
   }
 }
