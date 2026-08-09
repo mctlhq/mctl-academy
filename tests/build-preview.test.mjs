@@ -23,7 +23,11 @@ function render(question) {
   const out = join(dir, "out");
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
-    copyFileSync(join(ROOT, "content", "branding.yaml"), join(dir, "branding.yaml"));
+    mkdirSync(join(dir, "courses"), { recursive: true });
+    copyFileSync(
+      join(ROOT, "content", "courses", "agentic-ai-builder.yaml"),
+      join(dir, "courses", "agentic-ai-builder.yaml"),
+    );
     writeFileSync(join(dir, "questions", "q.yaml"), JSON.stringify(question));
     execFileSync("node", [join(ROOT, "scripts", "build-preview.mjs")], {
       env: { ...process.env, ACADEMY_CONTENT_DIR: dir, ACADEMY_PREVIEW_OUT: out },
@@ -38,6 +42,7 @@ function render(question) {
 
 const question = (over = {}) => ({
   id: "q-xxxxxxxxxxxx",
+  course_id: "agentic-ai-builder",
   status: "draft",
   domain: "domain-1",
   objective: "domain-1/api-authentication",

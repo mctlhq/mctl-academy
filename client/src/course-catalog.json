@@ -1,0 +1,113 @@
+[
+  {
+    "id": "agentic-ai-builder",
+    "title": "Agentic AI Builder",
+    "publishedQuestionCount": 72,
+    "available": true,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Platform foundations and API access",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-2",
+          "title": "Inference and agent integration",
+          "weight": 35,
+          "mockQuestions": 10
+        },
+        {
+          "id": "domain-3",
+          "title": "Data and post-training",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-4",
+          "title": "Production operations",
+          "weight": 25,
+          "mockQuestions": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "ai-cloudops-engineer",
+    "title": "AI CloudOps Engineer",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Cloud Infrastructure & Environment Deployment",
+          "weight": 30,
+          "mockQuestions": 9
+        },
+        {
+          "id": "domain-2",
+          "title": "Access Management & Governance",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-3",
+          "title": "Monitoring, Observability & Resource Lifecycle",
+          "weight": 25,
+          "mockQuestions": 7
+        },
+        {
+          "id": "domain-4",
+          "title": "Troubleshooting & Incident Escalation",
+          "weight": 20,
+          "mockQuestions": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "ai-leader",
+    "title": "AI Leader",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "AI Fundamentals & Capability Assessment",
+          "weight": 30,
+          "mockQuestions": 9
+        },
+        {
+          "id": "domain-2",
+          "title": "AI Product Design & Business Value",
+          "weight": 30,
+          "mockQuestions": 9
+        },
+        {
+          "id": "domain-3",
+          "title": "Vendor Evaluation & API Infrastructure",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-4",
+          "title": "Cost, Performance & Risk Management",
+          "weight": 20,
+          "mockQuestions": 6
+        }
+      ]
+    }
+  }
+]

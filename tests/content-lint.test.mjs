@@ -179,6 +179,22 @@ test("rejects publication against a drifted source", () => {
   assert.match(output, /drifted/);
 });
 
+test("rejects publication against a deprecated source", () => {
+  const { ok, output } = lint({ sources: [source({ status: "deprecated" })] });
+  assert.equal(ok, false);
+  assert.match(output, /deprecated/);
+});
+
+test("allows a needs_review question to cite a drifted source", () => {
+  // needs_review is exactly the state a question is moved to when its source
+  // drifts, so the lint must accept it — it just never reaches the bundle.
+  const { ok, output } = lint({
+    sources: [source({ status: "drifted" })],
+    questions: [question({ status: "needs_review" })],
+  });
+  assert.equal(ok, true, output);
+});
+
 test("allows a draft to cite a source with no snapshot", () => {
   const s = source();
   delete s.snapshot;

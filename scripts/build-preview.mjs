@@ -35,7 +35,9 @@ const esc = (s = "") =>
 // would be a script-injection surface for content nobody has reviewed yet.
 const md = (s = "") => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 
-const branding = parseYaml(readFileSync(join(CONTENT, "branding.yaml"), "utf8"));
+// Course metadata comes from content/courses/*.yaml — the canonical, and only,
+// definition of a course. The preview renders one section per course.
+const courses = load("courses").sort((a, b) => String(a.id).localeCompare(String(b.id)));
 const questions = load("questions");
 const sources = load("sources");
 
@@ -45,7 +47,10 @@ for (const q of questions) {
   byObjective.get(q.objective).push(q);
 }
 
-const totalObjectives = branding.domains.reduce((n, d) => n + (d.objectives?.length ?? 0), 0);
+const totalObjectives = courses.reduce(
+  (n, c) => n + (c.domains ?? []).reduce((m, d) => m + (d.objectives?.length ?? 0), 0),
+  0,
+);
 const covered = [...byObjective.keys()].length;
 const published = questions.filter((q) => q.status === "published").length;
 
@@ -79,8 +84,8 @@ const questionHtml = (q) => `
   </footer>
 </article>`;
 
-const domainHtml = (d) => {
-  const qs = questions.filter((q) => q.domain === d.id);
+const domainHtml = (courseId) => (d) => {
+  const qs = questions.filter((q) => q.course_id === courseId && q.domain === d.id);
   return `
 <section class="domain">
   <h2>${esc(d.title)} <span class="weight">${d.weight}%</span></h2>
@@ -99,13 +104,29 @@ const domainHtml = (d) => {
 </section>`;
 };
 
+const courseHtml = (c) => {
+  const qs = questions.filter((q) => q.course_id === c.id);
+  return `
+<section class="course">
+  <h1>${esc(c.title)}</h1>
+  <p class="meta">${esc(c.description)}</p>
+  <div class="disclaimer">${esc(c.disclaimer?.full ?? "")}</div>
+  <div class="stats">
+    <div><b>${qs.length}</b> questions</div>
+    <div><b>${qs.filter((q) => q.status === "published").length}</b> published</div>
+    <div><b>${c.mock?.question_count ?? 0}</b> per mock &middot; ${c.mock?.time_limit_minutes ?? 0} min</div>
+  </div>
+  ${(c.domains ?? []).map(domainHtml(c.id)).join("")}
+</section>`;
+};
+
 const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>${esc(branding.course.title)} — mctl Academy preview</title>
+<title>mctl Academy content preview</title>
 <style>
   :root { --fg:#16161a; --mut:#6b6b76; --line:#e4e4ea; --ok:#0a7d4a; --okbg:#eaf7f0; --bg:#fff; --code:#f4f4f7; }
   @media (prefers-color-scheme: dark) {
@@ -150,26 +171,22 @@ const html = `<!doctype html>
 </head>
 <body>
 <main>
-  <h1>${esc(branding.course.title)}</h1>
-  <p class="meta">${esc(branding.course.description)}</p>
-
   <div class="disclaimer">
-    ${esc(branding.disclaimer.full)}
-    <br><br>
-    This is a Phase&nbsp;0 preview generated from <code>content/</code>. Questions shown as
-    <em>draft</em> have not been approved by a human reviewer yet. Options appear in authored
+    This is a preview generated from <code>content/</code>. Questions shown as
+    <em>draft</em> or <em>needs_review</em> have not been approved by a human reviewer, or cite a
+    source that has drifted — neither ships to learners. Options appear in authored
     order — the application shuffles them at attempt time.
   </div>
 
   <div class="stats">
+    <div><b>${courses.length}</b> courses</div>
     <div><b>${questions.length}</b> questions</div>
     <div><b>${published}</b> published</div>
     <div><b>${sources.length}</b> sources</div>
     <div><b>${covered}/${totalObjectives}</b> objectives covered</div>
-    <div><b>${branding.mock.question_count}</b> per mock &middot; ${branding.mock.time_limit_minutes} min</div>
   </div>
 
-  ${branding.domains.map(domainHtml).join("")}
+  ${courses.map(courseHtml).join("")}
 </main>
 </body>
 </html>`;

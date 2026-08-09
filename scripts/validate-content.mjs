@@ -23,6 +23,7 @@ import { join, basename, resolve } from "node:path";
 import Ajv from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { parse as parseYaml } from "yaml";
+import { checkBundleEligibility, UNUSABLE_SOURCE_STATUSES } from "./lib/content-model.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 // Overridable so the test suite can point the linter at fixture trees and
@@ -85,12 +86,18 @@ for (const kind of ["course", "source", "question", "lesson"]) {
 
 // ------------------------------------------------------------------ courses
 
-const coursesDir = join(CONTENT, "courses");
+// content/courses/*.yaml is the single source of truth for course metadata:
+// ids, titles, domain weights, the objective map and mock composition. There
+// is no second catalog — the client's is generated from these files by
+// scripts/build-content-bundle.mjs.
 const courses = new Map();
 const allKnownObjectives = new Set();
 
-if (existsSync(coursesDir)) {
+{
   const courseFiles = loadYamlDir("courses");
+  if (courseFiles.length === 0) {
+    err("content/courses", "no course definitions found — every question would be orphaned");
+  }
   for (const { file, data } of courseFiles) {
     if (!validators.course(data)) {
       for (const e of validators.course.errors) err(file, `${e.instancePath || "/"} ${e.message}`);
@@ -121,31 +128,13 @@ if (existsSync(coursesDir)) {
 
     courses.set(data.id, { data, objectives });
   }
-} else {
-  // Legacy fallback if content/courses does not exist
-  const brandingPath = join(CONTENT, "branding.yaml");
-  if (existsSync(brandingPath)) {
-    const branding = parseYaml(readFileSync(brandingPath, "utf8"));
-    const objectives = new Set();
-    for (const d of branding.domains ?? []) {
-      for (const o of d.objectives ?? []) {
-        const objFull = `${d.id}/${o.id ?? o}`;
-        objectives.add(objFull);
-        allKnownObjectives.add(objFull);
-      }
-    }
-    courses.set("agentic-ai-builder", { data: branding, objectives });
-  }
-}
-
-if (courses.size === 0) {
-  warn(CONTENT, "no course definitions found — objective references will fail validation");
 }
 
 // ----------------------------------------------------------------- sources
 
 const sources = loadYamlDir("sources");
 const sourceIds = new Set();
+const sourcesById = new Map();
 
 for (const { file, data } of sources) {
   if (!validators.source(data)) {
@@ -154,6 +143,7 @@ for (const { file, data } of sources) {
   }
   if (sourceIds.has(data.id)) err(file, `duplicate source id ${data.id}`);
   sourceIds.add(data.id);
+  sourcesById.set(data.id, data);
 
   const host = new URL(data.url).host;
   if (!ALLOWED_HOSTS.includes(host)) {
@@ -191,9 +181,31 @@ function checkEvidence(file, data) {
         err(file, `cannot be ${data.status}: source ${ev.source_id} has no snapshot to verify against`);
       }
     }
-    if (src.status === "drifted" && data.status === "published") {
-      err(file, `cannot be published: source ${ev.source_id} has drifted and needs re-verification`);
+    // Both terminal source states withdraw everything citing them. drifted:
+    // the upstream document changed and the citation is no longer known to
+    // hold. deprecated: the document is gone, so it can never be re-verified.
+    // Either way a published item is unsafe, and the fix is to mark the item
+    // needs_review and re-author it — not to hide it at runtime.
+    if (UNUSABLE_SOURCE_STATUSES.has(src.status) && data.status === "published") {
+      err(
+        file,
+        `cannot be published: source ${ev.source_id} is ${src.status} and needs re-verification`,
+      );
     }
+  }
+}
+
+/**
+ * The lint half of the build-time evidence gate: a question the repository
+ * marks published must also be one the bundle builder would emit. Without
+ * this the two could disagree — the lint would pass a state whose only
+ * observable effect is that a question silently vanishes from the client.
+ */
+function checkBundleAgreement(file, data) {
+  if (data.status !== "published") return;
+  const { eligible, reasons } = checkBundleEligibility(data, sourcesById);
+  if (!eligible) {
+    err(file, `is published but would be withheld from the client bundle: ${reasons.join("; ")}`);
   }
 }
 
@@ -236,6 +248,7 @@ for (const { file, data } of questions) {
   checkObjective(file, data);
   checkEvidence(file, data);
   checkLifecycle(file, data);
+  checkBundleAgreement(file, data);
 
   // Schema pins the option count and the single correct answer, but cannot
   // compare option contents to each other.
