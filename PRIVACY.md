@@ -12,6 +12,7 @@ your progress, and nothing else.
 | Your name and profile image, as provided by the sign-in provider | Shown in the interface | GitHub or Google OAuth |
 | Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app |
 | Question reports you file | So a reported question can be fixed | Your use of the app |
+| Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app |
 
 That is the complete list.
 
@@ -50,9 +51,9 @@ account deletion.
 ## Deleting your account
 
 Account deletion is available in the application and takes effect immediately.
-It removes your user record, every attempt and answer, and any reports stored in
-the Academy database, by cascade. Nothing from that application data is retained
-in a shadow copy.
+It removes your user record, every attempt and answer, any reports, and any
+question votes stored in the Academy database, by cascade. Nothing from that
+application data is retained in a shadow copy.
 
 Question feedback that you choose to publish as a GitHub issue is managed by
 your GitHub account, not by your Academy account. Deleting your Academy account

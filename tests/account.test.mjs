@@ -87,4 +87,34 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
     ]);
     assert.equal(after.rows.length, 0);
   });
+
+  test("cascades to the deleted user's question votes — the row is gone, not merely orphaned", async () => {
+    const cookie = await authedCookie({ githubLogin: "account-delete-votes-cascade" });
+
+    await app.request("/api/votes/q-co01a1b2c3d4", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Cookie: cookie, Origin: "http://localhost" },
+      body: JSON.stringify({ value: 1 }),
+    });
+
+    const session = await (await app.request("/api/auth/get-session", { headers: { Cookie: cookie } })).json();
+    const userId = session.user.id;
+
+    const before = await authPool.query(`SELECT id FROM question_votes WHERE user_id = $1;`, [userId]);
+    assert.equal(before.rows.length, 1);
+
+    await app.request("/api/account", {
+      method: "DELETE",
+      headers: { Cookie: cookie, Origin: "http://localhost" },
+    });
+
+    // Same promise as attempts/question_reports (ON DELETE CASCADE): the vote
+    // row itself is gone, so it can never contribute to another question's
+    // score under a deleted account's identity. Scoped to this user's id, not
+    // the question id — `q-co01a1b2c3d4` is also drawn from votes.test.mjs's
+    // shared known-question-id pool, so a legitimate vote left there by
+    // another user on the same question must not make this assertion flaky.
+    const after = await authPool.query(`SELECT id FROM question_votes WHERE user_id = $1;`, [userId]);
+    assert.equal(after.rows.length, 0);
+  });
 });
