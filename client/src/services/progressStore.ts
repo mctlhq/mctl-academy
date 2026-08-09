@@ -130,12 +130,12 @@ export function setSyncEnabled(enabled: boolean): void {
   syncEnabled = enabled;
 }
 
-function postAttemptToServer(questionId: string, domain: string, correct: boolean): void {
+function postAttemptToServer(questionId: string, domain: string, correct: boolean, courseId?: string): void {
   fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
-    body: JSON.stringify({ questionId, domain, correct }),
+    body: JSON.stringify({ questionId, domain, correct, courseId }),
   }).catch(() => {
     // Best-effort only: the local write already succeeded, so a sync
     // failure (offline, expired session, 5xx) is never surfaced.
@@ -159,7 +159,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
   }
 
   if (syncEnabled) {
-    postAttemptToServer(questionId, domain, correct);
+    postAttemptToServer(questionId, domain, correct, courseId);
   }
 }
 
@@ -207,7 +207,7 @@ export async function syncFromServer(): Promise<void> {
 
   for (const a of local) {
     if (!serverIds.has(a.questionId)) {
-      postAttemptToServer(a.questionId, a.domain, a.correct);
+      postAttemptToServer(a.questionId, a.domain, a.correct, a.courseId);
     }
   }
 }

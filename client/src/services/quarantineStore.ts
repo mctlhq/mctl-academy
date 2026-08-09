@@ -20,7 +20,6 @@ export function useQuarantineStore() {
         const data = await res.json();
         if (data.success && Array.isArray(data.quarantinedQuestionIds)) {
           quarantinedIdsRef.value = new Set(data.quarantinedQuestionIds);
-          loadedRef.value = true;
         } else {
           throw new Error("Invalid response format from quarantine API");
         }
@@ -28,6 +27,7 @@ export function useQuarantineStore() {
         errorRef.value = err?.message || "Failed to fetch quarantine list";
         console.warn("[quarantineStore] Could not load quarantine status:", errorRef.value);
       } finally {
+        loadedRef.value = true;
         fetchPromise = null;
       }
       return quarantinedIdsRef.value;

@@ -15,6 +15,21 @@ const props = withDefaults(
   { title: "Practice" },
 );
 
+import { useQuarantineStore } from "../services/quarantineStore";
+
+const quarantineStore = useQuarantineStore();
+const isLoadingQuarantine = ref(!props.bundle && !quarantineStore.isLoaded.value);
+
+if (!props.bundle && !quarantineStore.isLoaded.value) {
+  quarantineStore.fetchQuarantinedIds().finally(() => {
+    isLoadingQuarantine.value = false;
+  });
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", handleShortcut);
+});
+
 const { current, index, total, revealed, score, attempted, selectOption, next } = usePracticeSession(
   props.bundle,
 );
@@ -45,7 +60,12 @@ onUnmounted(() => window.removeEventListener("keydown", handleShortcut));
 </script>
 
 <template>
-  <section v-if="total === 0" class="practice practice-empty">
+  <section v-if="isLoadingQuarantine" class="practice practice-loading">
+    <h1>{{ title }}</h1>
+    <p>Loading questions...</p>
+  </section>
+
+  <section v-else-if="total === 0" class="practice practice-empty">
     <h1>{{ title }}</h1>
     <p v-if="emptyMessage">{{ emptyMessage }}</p>
     <p v-else>
