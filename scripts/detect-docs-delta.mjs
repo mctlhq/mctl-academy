@@ -43,8 +43,7 @@ export function classifyDelta(addedLines = [], removedLines = []) {
   // Check for capability added (new headings, new endpoints, new parameters, new features)
   if (
     /^#{1,6}\s+/m.test(addedLines.join("\n")) ||
-    /new|added|supports|support for|endpoint|api|parameter|option|field|introduced/i.test(addedText) ||
-    (addedLines.length > 0 && removedLines.length === 0)
+    /new|added|supports|support for|endpoint|api|parameter|option|field|introduced/i.test(addedText)
   ) {
     return "capability_added";
   }
@@ -55,6 +54,10 @@ export function classifyDelta(addedLines = [], removedLines = []) {
     (addedLines.length > 0 && removedLines.length > 0)
   ) {
     return "behavior_changed";
+  }
+
+  if (addedLines.length > 0 && removedLines.length === 0) {
+    return "capability_added";
   }
 
   return "formatting_only";
@@ -121,7 +124,14 @@ export function analyzeAllSources(contentDir = CONTENT) {
   const reports = [];
 
   for (const f of sourceFiles) {
-    const data = parseYaml(readFileSync(join(sourcesDir, f), "utf8"));
+    const raw = readFileSync(join(sourcesDir, f), "utf8");
+    let data;
+    try {
+      data = parseYaml(raw);
+    } catch (err) {
+      throw new Error(`Failed to parse source file ${f}: ${err.message}`);
+    }
+
     if (data?.id) {
       reports.push({
         sourceId: data.id,
@@ -138,23 +148,35 @@ export function analyzeAllSources(contentDir = CONTENT) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   if (args.includes("--check-all")) {
-    const reports = analyzeAllSources();
-    console.log(`Found ${reports.length} recorded source(s).`);
-    console.log(JSON.stringify(reports, null, 2));
+    try {
+      const reports = analyzeAllSources();
+      console.log(`Found ${reports.length} recorded source(s).`);
+      console.log(JSON.stringify(reports, null, 2));
+    } catch (err) {
+      console.error(`Error analyzing sources: ${err.message}`);
+      process.exit(1);
+    }
   } else {
     const sourceIdx = args.indexOf("--source");
     const oldIdx = args.indexOf("--old");
     const newIdx = args.indexOf("--new");
 
-    if (oldIdx !== -1 && newIdx !== -1) {
-      const oldText = readFileSync(args[oldIdx + 1], "utf8");
-      const newText = readFileSync(args[newIdx + 1], "utf8");
-      const sourceId = sourceIdx !== -1 ? args[sourceIdx + 1] : "cli-source";
-      const delta = detectDocsDelta({ oldText, newText, sourceId });
-      console.log(JSON.stringify(delta, null, 2));
+    if (oldIdx !== -1 && oldIdx + 1 < args.length && newIdx !== -1 && newIdx + 1 < args.length) {
+      try {
+        const oldText = readFileSync(args[oldIdx + 1], "utf8");
+        const newText = readFileSync(args[newIdx + 1], "utf8");
+        const sourceId = sourceIdx !== -1 && sourceIdx + 1 < args.length ? args[sourceIdx + 1] : "cli-source";
+        const delta = detectDocsDelta({ oldText, newText, sourceId });
+        console.log(JSON.stringify(delta, null, 2));
+      } catch (err) {
+        console.error(`Error reading input files: ${err.message}`);
+        process.exit(1);
+      }
     } else {
-      console.log("Usage: node scripts/detect-docs-delta.mjs --source <id> --old <old.md> --new <new.md>");
-      console.log("       node scripts/detect-docs-delta.mjs --check-all");
+      console.error("Error: --old <file> and --new <file> with valid file paths are required.");
+      console.error("Usage: node scripts/detect-docs-delta.mjs --source <id> --old <old.md> --new <new.md>");
+      console.error("       node scripts/detect-docs-delta.mjs --check-all");
+      process.exit(1);
     }
   }
 }

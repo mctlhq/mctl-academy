@@ -1,16 +1,9 @@
 name: Source drift
 
 # Weekly: re-fetch every allowlisted source and compare hashes. When an
-# upstream document changes, open (or update) an agents:intake issue so the
-# platform's dev-loop can pick it up and a human can re-verify the affected
-# questions.
-#
-# Dedup is this workflow's own job and must not be delegated downstream.
-# Temporal dedups DevLoopWorkflow starts by issue number, so it prevents two
-# workflows for one issue — but a weekly job that opened a NEW issue for the
-# same drifted source every week would get a new number each time, and Temporal
-# would happily start a workflow for each. Hence the deterministic title key
-# below.
+# upstream document changes, automatically mark the source as `drifted`
+# (fail-closed quarantine), rebuild the client content bundle to immediately
+# exclude unverified questions, and open/update an agents:intake issue.
 
 on:
   schedule:
@@ -20,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -36,7 +29,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Check sources for drift
+      - name: Check sources for drift and mark quarantine
         id: check
         env:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
@@ -44,7 +37,7 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           set +e
-          npm run --silent snapshot:capture -- --check | tee drift.txt
+          npm run --silent snapshot:capture -- --check --mark-drifted | tee drift.txt
           code=${PIPESTATUS[0]}
           set -e
           # 0 = clean, 2 = drift found, 1 = the check itself failed. Only 1 is
@@ -55,6 +48,11 @@ jobs:
             2) echo "drifted=true"  >> "$GITHUB_OUTPUT" ;;
             *) echo "::error::source drift check failed"; exit 1 ;;
           esac
+
+      - name: Rebuild content bundle to enforce fail-closed quarantine
+        if: steps.check.outputs.drifted == 'true'
+        run: |
+          node scripts/build-content-bundle.mjs
 
       - name: Open or update intake issues
         if: steps.check.outputs.drifted == 'true'
@@ -71,16 +69,15 @@ jobs:
               --json number,title \
               --jq "[.[] | select(.title == \"${title}\")] | .[0].number // empty")
 
-            body="Upstream source changed.
+            body="Upstream source changed. Automatically marked \`status: drifted\` (fail-closed quarantine enforced).
 
           - source: \`${id}\`
           - url: ${url}
           - recorded hash: \`${old}\`
           - current hash: \`${new}\`
 
-          Questions and lessons citing this source must be re-verified against
-          the new text and moved back to \`published\` only if their evidence
-          excerpts still occur verbatim. Re-capture with:
+          Questions citing this source have been excluded from learner selection until re-verified.
+          Re-capture with:
 
           \`\`\`
           npm run snapshot:capture -- ${url} --id ${id} --objective <objective>
