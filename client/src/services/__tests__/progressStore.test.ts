@@ -47,6 +47,18 @@ describe("progressStore service", () => {
     expect(getMistakeQuestionIds()).toEqual(["q-3"]);
   });
 
+  it("keeps prior attempts on a retry instead of erasing them (attempts are append-only)", () => {
+    recordAttempt("q-1", "domain-1", false);
+    recordAttempt("q-1", "domain-1", true);
+
+    const attempts = getStoredAttempts();
+    expect(attempts).toHaveLength(2);
+    expect(attempts.map((a) => a.correct)).toEqual([false, true]);
+
+    // Mistakes/stats still reflect only the *current* (latest) state.
+    expect(getMistakeQuestionIds()).toEqual([]);
+  });
+
   it("calculates domain-by-domain and overall progress statistics", () => {
     const mockBundle = [
       { id: "q-1", domain: "domain-1" },
@@ -202,7 +214,7 @@ describe("progressStore service", () => {
     ]);
   });
 
-  it("syncFromServer merges local and server attempts, keeping whichever attemptedAt is newer", async () => {
+  it("syncFromServer reconciles local and server attempts without deleting either side's history", async () => {
     const older = "2024-01-01T00:00:00.000Z";
     const newer = "2024-06-01T00:00:00.000Z";
     saveRawAttempts([
@@ -225,15 +237,31 @@ describe("progressStore service", () => {
     setSyncEnabled(true);
     await syncFromServer();
 
+    // The log is append-only: the original local rows are still there
+    // (nothing was deleted), plus whatever the server knew that this
+    // device's log didn't already have at least as recent.
     const merged = getStoredAttempts();
-    expect(merged.find((a) => a.questionId === "q-local")?.correct).toBe(true);
-    expect(merged.find((a) => a.questionId === "q-server-newer")?.correct).toBe(true);
-    expect(merged.find((a) => a.questionId === "q-server-only")?.correct).toBe(true);
+    const currentState = new Map(merged.map((a) => [a.questionId, a] as const));
+    for (const a of merged) {
+      const existing = currentState.get(a.questionId)!;
+      if (new Date(a.attemptedAt).getTime() >= new Date(existing.attemptedAt).getTime()) {
+        currentState.set(a.questionId, a);
+      }
+    }
+    expect(currentState.get("q-local")?.correct).toBe(true);
+    expect(currentState.get("q-server-newer")?.correct).toBe(true);
+    expect(currentState.get("q-server-only")?.correct).toBe(true);
 
-    // Every local questionId was already present in the server's response,
-    // so no backfill POST should fire.
+    // q-local's server record was stale (older, correct: false) relative to
+    // this device's newer local record — that must be backfilled, even
+    // though the server already had *some* record for the question. Only
+    // q-server-newer's server record was already at least as recent, so it
+    // is the one questionId that must NOT be re-posted.
     const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
-    expect(postCalls).toHaveLength(0);
+    expect(postCalls).toHaveLength(1);
+    expect(postCalls[0][1].body).toBe(
+      JSON.stringify({ questionId: "q-local", domain: "domain-1", correct: true }),
+    );
   });
 
   it("syncFromServer backfills local-only attempts the server did not already have", async () => {

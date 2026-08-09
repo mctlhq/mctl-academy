@@ -7,6 +7,24 @@ export interface QuestionAttempt {
   attemptedAt: string;
 }
 
+/**
+ * Reduces a raw attempt log (possibly several attempts per question, in any
+ * order) down to one row per question — the most recent by `attemptedAt`.
+ * The log itself stays append-only (see recordAttempt); this is purely a
+ * read-time view for progress/mistake computation, mirroring what the server
+ * already does with `DISTINCT ON (question_id) ... ORDER BY attempted_at DESC`.
+ */
+function latestPerQuestion(attempts: QuestionAttempt[]): QuestionAttempt[] {
+  const latest = new Map<string, QuestionAttempt>();
+  for (const a of attempts) {
+    const existing = latest.get(a.questionId);
+    if (!existing || new Date(a.attemptedAt).getTime() >= new Date(existing.attemptedAt).getTime()) {
+      latest.set(a.questionId, a);
+    }
+  }
+  return [...latest.values()];
+}
+
 export interface DomainProgress {
   domainId: string;
   domainTitle: string;
@@ -107,17 +125,25 @@ function postAttemptToServer(questionId: string, domain: string, correct: boolea
   });
 }
 
+/**
+ * Appends a new attempt to the local log. The log is append-only — a retry
+ * of a question already attempted (e.g. once in Practice, later in a Mock
+ * exam) adds a new row rather than overwriting the earlier one, matching the
+ * server's own immutable `attempts` table. Callers that need "the learner's
+ * current state per question" (progress stats, mistakes) derive it via
+ * latestPerQuestion rather than relying on storage holding one row per
+ * question.
+ */
 export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
   try {
     const attempts = getStoredAttempts();
-    const updated = attempts.filter((a) => a.questionId !== questionId);
-    updated.push({
+    attempts.push({
       questionId,
       domain,
       correct,
       attemptedAt: new Date().toISOString(),
     });
-    setItem(STORAGE_KEY, JSON.stringify(updated));
+    setItem(STORAGE_KEY, JSON.stringify(attempts));
   } catch {
     // Ignore storage errors
   }
@@ -129,12 +155,22 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
 
 /**
  * Pulls the signed-in learner's server-recorded attempts (a single
- * GET /api/attempts call) and merges them into local storage, keeping
- * whichever of the local or server record is newer per questionId. Any
- * local attempt whose questionId the server did not already have is then
- * backfilled with an individual POST /api/attempts call, so history built
- * up anonymously survives a first sign-in. A no-op while sync is disabled,
- * and any network failure leaves local data untouched.
+ * GET /api/attempts call, latest per question) and reconciles them with the
+ * local log. The server's own `attempts` table is append-only and
+ * server-timestamped; this function does not delete or overwrite anything on
+ * either side — it only adds rows neither side already has:
+ *
+ * - A server record is appended locally only if it is strictly newer than
+ *   this device's own latest local attempt for that question (i.e. it came
+ *   from a different device/session this log has never seen).
+ * - A local attempt is backfilled to the server (individual POST
+ *   /api/attempts calls) whenever the server's latest record for that
+ *   question is missing or older than it — not merely when the server has
+ *   no record at all — so an update made offline after an earlier sync is
+ *   never stranded on this device.
+ *
+ * A no-op while sync is disabled, and any network failure leaves local data
+ * untouched.
  */
 export async function syncFromServer(): Promise<void> {
   if (!syncEnabled) return;
@@ -150,34 +186,34 @@ export async function syncFromServer(): Promise<void> {
   }
 
   const local = getStoredAttempts();
-  const serverIds = new Set(serverAttempts.map((a) => a.questionId));
+  const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
 
-  const merged = new Map<string, QuestionAttempt>();
-  for (const a of local) {
-    merged.set(a.questionId, a);
-  }
-  for (const a of serverAttempts) {
-    const existing = merged.get(a.questionId);
-    if (!existing || new Date(a.attemptedAt).getTime() > new Date(existing.attemptedAt).getTime()) {
-      merged.set(a.questionId, a);
+  const newFromServer = serverAttempts.filter((a) => {
+    const existing = localLatestByQuestion.get(a.questionId);
+    return !existing || new Date(a.attemptedAt).getTime() > new Date(existing.attemptedAt).getTime();
+  });
+
+  if (newFromServer.length > 0) {
+    try {
+      setItem(STORAGE_KEY, JSON.stringify([...local, ...newFromServer]));
+    } catch {
+      // Ignore storage errors; fall through so backfill still gets attempted.
     }
   }
 
-  try {
-    setItem(STORAGE_KEY, JSON.stringify([...merged.values()]));
-  } catch {
-    // Ignore storage errors; fall through so backfill still gets attempted.
-  }
-
-  for (const a of local) {
-    if (!serverIds.has(a.questionId)) {
+  const serverLatestByQuestion = new Map(serverAttempts.map((a) => [a.questionId, a]));
+  for (const a of localLatestByQuestion.values()) {
+    const serverRecord = serverLatestByQuestion.get(a.questionId);
+    const serverIsUpToDate =
+      serverRecord && new Date(serverRecord.attemptedAt).getTime() >= new Date(a.attemptedAt).getTime();
+    if (!serverIsUpToDate) {
       postAttemptToServer(a.questionId, a.domain, a.correct);
     }
   }
 }
 
 export function getMistakeQuestionIds(): string[] {
-  const attempts = getStoredAttempts();
+  const attempts = latestPerQuestion(getStoredAttempts());
   return attempts.filter((a) => !a.correct).map((a) => a.questionId);
 }
 
@@ -207,7 +243,7 @@ export function calculateProgressStats(
   domainTitles: Record<string, string> = {},
 ): OverallProgress {
   const attemptsMap = new Map<string, QuestionAttempt>();
-  for (const a of attempts) {
+  for (const a of latestPerQuestion(attempts)) {
     attemptsMap.set(a.questionId, a);
   }
 
