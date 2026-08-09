@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-cloudops-operational-troubleshooting
+url: https://docs.nebius.com/troubleshooting/logs-escalation.md
+title: Operational Troubleshooting and Incident Escalation
+retrieved_at: 2026-08-09T11:00:00Z
+sha256: d18b9588602b9e6912384a861214c7713f01f2f84b6f17849c71b5695029013c
+objectives:
+  - domain-4/operational-troubleshooting
+  - domain-4/escalation-workflows
+snapshot:
+  bucket: academy-source-snapshots
+  key: d18b9588602b9e6912384a861214c7713f01f2f84b6f17849c71b5695029013c
+status: current

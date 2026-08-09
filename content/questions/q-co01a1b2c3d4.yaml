@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-co01a1b2c3d4
+status: published
+domain: domain-1
+objective: domain-1/environment-deployment
+stem: "When provisioning a high-performance GPU cluster environment, which
+  networking configuration ensures low-latency inter-node communication?"
+options:
+  - id: a
+    text: "Pipelining all inter-node compute traffic through public HTTP gateways"
+    correct: false
+    explanation: "Public HTTP gateways introduce latency overhead and public
+      internet exposure."
+  - id: b
+    text: "Configuring dedicated private VPC subnets with high-bandwidth
+      interconnects"
+    correct: true
+    explanation: "Dedicated private VPC subnets with high-speed interconnects
+      optimize GPU cluster throughput."
+  - id: c
+    text: "Disabling security groups and network interfaces across compute nodes"
+    correct: false
+    explanation: "Disabling interfaces renders nodes unreachable."
+  - id: d
+    text: "Enforcing single-threaded HTTP polling on storage endpoints"
+    correct: false
+    explanation: "Polling causes high CPU idle time and severe bottlenecking."
+evidence:
+  - source_id: src-cloudops-env-deploy
+    excerpt: "GPU Environment and Managed Cluster Deployment"
+    source_sha256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+authored:
+  by: agent:question-author
+  at: 2026-08-09T11:20:00Z
+course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T09:39:10Z

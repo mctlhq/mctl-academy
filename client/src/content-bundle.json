@@ -132,6 +132,138 @@
     ]
   },
   {
+    "id": "q-co01a1b2c3d4",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "When provisioning a high-performance GPU cluster environment, which networking configuration ensures low-latency inter-node communication?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pipelining all inter-node compute traffic through public HTTP gateways",
+        "correct": false,
+        "explanation": "Public HTTP gateways introduce latency overhead and public internet exposure."
+      },
+      {
+        "id": "b",
+        "text": "Configuring dedicated private VPC subnets with high-bandwidth interconnects",
+        "correct": true,
+        "explanation": "Dedicated private VPC subnets with high-speed interconnects optimize GPU cluster throughput."
+      },
+      {
+        "id": "c",
+        "text": "Disabling security groups and network interfaces across compute nodes",
+        "correct": false,
+        "explanation": "Disabling interfaces renders nodes unreachable."
+      },
+      {
+        "id": "d",
+        "text": "Enforcing single-threaded HTTP polling on storage endpoints",
+        "correct": false,
+        "explanation": "Polling causes high CPU idle time and severe bottlenecking."
+      }
+    ]
+  },
+  {
+    "id": "q-co02b2c3d4e5",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/iam-roles",
+    "stem": "Which principle should govern service account access permissions across GPU training jobs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Granting full global administrative privileges to every service account",
+        "correct": false,
+        "explanation": "Excessive permissions break the least-privilege principle."
+      },
+      {
+        "id": "b",
+        "text": "Assigning least-privilege IAM roles scoped specifically to required storage and compute resources",
+        "correct": true,
+        "explanation": "Least-privilege IAM roles restrict access to minimum required operations."
+      },
+      {
+        "id": "c",
+        "text": "Embedding root password credentials directly inside job scripts",
+        "correct": false,
+        "explanation": "Hardcoding credentials violates security governance standards."
+      },
+      {
+        "id": "d",
+        "text": "Disabling authentication checks on administrative API endpoints",
+        "correct": false,
+        "explanation": "Disabling authentication exposes infrastructure to unauthorized control."
+      }
+    ]
+  },
+  {
+    "id": "q-co03c3d4e5f6",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-monitoring",
+    "stem": "What action should automated observability metrics trigger when a GPU compute node experiences unrecoverable hardware degradation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ignore the telemetry alert and continue routing new jobs to the node",
+        "correct": false,
+        "explanation": "Routing jobs to degraded nodes leads to failed workloads."
+      },
+      {
+        "id": "b",
+        "text": "Mark the node unhealthy, cordon it from scheduling, and alert cluster operators",
+        "correct": true,
+        "explanation": "Cordoning degraded nodes prevents job failures while operators initiate recovery."
+      },
+      {
+        "id": "c",
+        "text": "Delete all stored checkpoint data from shared storage",
+        "correct": false,
+        "explanation": "Deleting checkpoints causes loss of progress."
+      },
+      {
+        "id": "d",
+        "text": "Increase the resource quota limits on the degraded instance",
+        "correct": false,
+        "explanation": "Increasing quotas on failing hardware does not resolve physical errors."
+      }
+    ]
+  },
+  {
+    "id": "q-co04d4e5f6a7",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "When diagnosing an unexpected throughput drop in a distributed training job, what is the initial recommended diagnostic step?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Re-format the primary boot volume of all cluster nodes",
+        "correct": false,
+        "explanation": "Re-formatting erases system configuration unnecessarily."
+      },
+      {
+        "id": "b",
+        "text": "Inspect cluster interconnect utilization, GPU memory logs, and network drop counters",
+        "correct": true,
+        "explanation": "Interconnect metrics and GPU logs isolate network bottlenecks and memory stalls."
+      },
+      {
+        "id": "c",
+        "text": "Downgrade the cloud API version across all user accounts",
+        "correct": false,
+        "explanation": "API version changes do not address cluster throughput bottlenecks."
+      },
+      {
+        "id": "d",
+        "text": "Disable all network logging and monitoring agents",
+        "correct": false,
+        "explanation": "Disabling logging hides diagnostics needed for resolution."
+      }
+    ]
+  },
+  {
     "id": "q-cs01d4e5f6a7",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",

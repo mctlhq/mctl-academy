@@ -97,7 +97,7 @@ export function promoteQuestions({ contentDir = CONTENT, by, allReviewReady = fa
     return { promoted: [], count: 0 };
   }
 
-  const now = new Date().toISOString();
+  const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   const preparedMutations = [];
 
   // Phase 1: Load and validate ALL target files in memory before modifying disk

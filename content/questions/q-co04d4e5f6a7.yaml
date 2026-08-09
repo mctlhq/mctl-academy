@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-co04d4e5f6a7
+status: published
+domain: domain-4
+objective: domain-4/operational-troubleshooting
+stem: "When diagnosing an unexpected throughput drop in a distributed training
+  job, what is the initial recommended diagnostic step?"
+options:
+  - id: a
+    text: "Re-format the primary boot volume of all cluster nodes"
+    correct: false
+    explanation: "Re-formatting erases system configuration unnecessarily."
+  - id: b
+    text: "Inspect cluster interconnect utilization, GPU memory logs, and network
+      drop counters"
+    correct: true
+    explanation: "Interconnect metrics and GPU logs isolate network bottlenecks and
+      memory stalls."
+  - id: c
+    text: "Downgrade the cloud API version across all user accounts"
+    correct: false
+    explanation: "API version changes do not address cluster throughput bottlenecks."
+  - id: d
+    text: "Disable all network logging and monitoring agents"
+    correct: false
+    explanation: "Disabling logging hides diagnostics needed for resolution."
+evidence:
+  - source_id: src-cloudops-operational-troubleshooting
+    excerpt: "Operational Troubleshooting and Incident Escalation"
+    source_sha256: d18b9588602b9e6912384a861214c7713f01f2f84b6f17849c71b5695029013c
+authored:
+  by: agent:question-author
+  at: 2026-08-09T11:20:00Z
+course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T09:39:10Z
