@@ -1,34 +1,35 @@
 schema_version: 1
 id: q-co04d4e5f6a7
-status: draft
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
-stem: "When diagnosing an unexpected throughput drop in a distributed training
-  job, what is the initial recommended diagnostic step?"
+stem: "When diagnosing intermittent silent job failures across a multi-node GPU
+  cluster, which initial step establishes root-cause visibility?"
 options:
   - id: a
-    text: "Re-format the primary boot volume of all cluster nodes"
+    text: "Restarting all physical compute nodes simultaneously without collecting logs"
     correct: false
-    explanation: "Re-formatting erases system configuration unnecessarily."
+    explanation: "Immediate rebooting destroys diagnostic state and logs."
   - id: b
-    text: "Inspect cluster interconnect utilization, GPU memory logs, and network
-      drop counters"
+    text: "Aggregating kernel event logs, NCCL communication traces, and GPU health telemetry"
     correct: true
-    explanation: "Interconnect metrics and GPU logs isolate network bottlenecks and
-      memory stalls."
+    explanation: "Aggregating hardware telemetry and NCCL traces isolates failure conditions."
   - id: c
-    text: "Downgrade the cloud API version across all user accounts"
+    text: "Doubling the batch size across all running training jobs"
     correct: false
-    explanation: "API version changes do not address cluster throughput bottlenecks."
+    explanation: "Increasing load exacerbates memory and hardware instability."
   - id: d
-    text: "Disable all network logging and monitoring agents"
+    text: "Re-installing OS images across all master control plane nodes"
     correct: false
-    explanation: "Disabling logging hides diagnostics needed for resolution."
+    explanation: "Control plane reinstall does not address node-level interconnect failures."
 evidence:
   - source_id: src-cloudops-operational-troubleshooting
-    excerpt: "Operational Troubleshooting and Incident Escalation"
-    source_sha256: d18b9588602b9e6912384a861214c7713f01f2f84b6f17849c71b5695029013c
+    excerpt: "Operational Troubleshooting and Diagnostic Workflows"
+    source_sha256: 3c91a784d12a45e69b0a123f4567890abcdef1234567890abcdef1234567890a
 authored:
   by: agent:question-author
   at: 2026-08-09T11:20:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T11:45:00Z
 course_id: ai-cloudops-engineer

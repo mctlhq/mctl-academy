@@ -59,7 +59,7 @@ describe("AppNav component", () => {
 
     const optionTexts = options.map((opt) => opt.text().trim());
     expect(optionTexts).toContain("Agentic AI Builder");
-    expect(optionTexts).toContain("AI CloudOps Engineer — Coming soon");
-    expect(optionTexts).toContain("AI Leader — Coming soon");
+    expect(optionTexts).toContain("AI CloudOps Engineer");
+    expect(optionTexts).toContain("AI Leader");
   });
 });

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co01a1b2c3d4
-status: draft
+status: published
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: "When provisioning a high-performance GPU cluster environment, which
@@ -32,4 +32,7 @@ evidence:
 authored:
   by: agent:question-author
   at: 2026-08-09T11:20:00Z
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T11:45:00Z
 course_id: ai-cloudops-engineer
