@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.37](https://github.com/mctlhq/mctl-academy/compare/0.1.36...0.1.37) (2026-08-09)
+
+
+### Bug Fixes
+
+* **client:** compact the signed-out Log-in control below 560px ([9a6a7ef](https://github.com/mctlhq/mctl-academy/commit/9a6a7ef039f22d51fd6fc1fed23766200e7ecf1a))
+* **client:** contain Mock exam/results to Practice's 43rem reading width ([8cef0c9](https://github.com/mctlhq/mctl-academy/commit/8cef0c95070223bb941cf32d6a167fb83d713dda))
+* **client:** frame the recommended-next-step card with existing tokens ([6f1f196](https://github.com/mctlhq/mctl-academy/commit/6f1f196123349bc341c596bbf6c213098c626694))
+* **client:** meet the 44px touch-target convention at 561-980px ([9b164c1](https://github.com/mctlhq/mctl-academy/commit/9b164c1b15102e59a07953aee7493a1aa8f29875))
+* **client:** responsive breakpoint audit — touch targets, containment, overflow ([1ddc7a1](https://github.com/mctlhq/mctl-academy/commit/1ddc7a1cd07a3a7cceb807393cf96a9b4b018a78))
+* **client:** two real 768px bugs surfaced by the new e2e matrix ([1f0b9ed](https://github.com/mctlhq/mctl-academy/commit/1f0b9ede51ca197db51f3e461b6cc2150bfc9ee1))
+* **client:** two real-device overlap bugs from Pixel 7/Pixel 10 validation ([695880d](https://github.com/mctlhq/mctl-academy/commit/695880dacfec725243935ba73affdaa098564333))
+* replace v-html with RestrictedMarkdown and add aria-live ([f1fc965](https://github.com/mctlhq/mctl-academy/commit/f1fc96512fde627d86912d4194739cd16a5161ce))
+* replace v-html with RestrictedMarkdown and add aria-live announcements ([a437840](https://github.com/mctlhq/mctl-academy/commit/a437840c12957676524f7d8f5e969feccd43d60d))
+
 ## [0.1.36](https://github.com/mctlhq/mctl-academy/compare/0.1.35...0.1.36) (2026-08-09)
 
 
