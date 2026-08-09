@@ -214,14 +214,23 @@ function goSubmit() {
   margin-top: 1rem;
 }
 
+/* .mock-exam-nav-item's 44px floor needs to hold everywhere the app's own
+   nav is in its touch-oriented stacked layout (<=980px, see app.css's
+   breakpoint reference map), not just <=620px -- at 768px it was still the
+   36px (2.25rem) desktop default. Kept as its own rule, separate from the
+   <=620px column-count change below, since 10 columns are still fine at
+   768px (verified: ~63.8px/column with the Practice-width-matching 43rem
+   container). */
+@media (max-width: 980px) {
+  .mock-exam-nav-item {
+    min-height: 2.75rem;
+  }
+}
+
 @media (max-width: 620px) {
   .mock-exam-nav {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
-  }
-
-  .mock-exam-nav-item {
-    min-height: 2.75rem;
   }
 
   .mock-exam-footer {
