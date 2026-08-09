@@ -77,6 +77,19 @@ function handleStartOver() {
 
   <template v-else>
     <MockResultsScreen :session="session" />
-    <button type="button" @click="handleStartOver">Start a new mock exam</button>
+    <button type="button" class="mock-restart" @click="handleStartOver">Start a new mock exam</button>
   </template>
 </template>
+
+<style scoped>
+/* .app-main is a flex column with the default align-items:stretch, so a
+   plain <button> with no width of its own stretches to the full app-main
+   width. MockResultsScreen.vue's `.mock-results` caps itself at 43rem, so
+   without this the restart button would be a full-width bar underneath a
+   centered, much narrower results column at desktop sizes. */
+.mock-restart {
+  align-self: center;
+  width: min(100%, 43rem);
+  margin-top: 1.5rem;
+}
+</style>

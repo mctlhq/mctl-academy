@@ -130,6 +130,18 @@ function goSubmit() {
 </template>
 
 <style scoped>
+/* Same reading width as PracticeContent.vue's `.practice` — Mock previously
+   had no cap at all and stretched to the full .app-main width at desktop
+   sizes (~942px at 1024px, ~1328px at 1440px), producing a sparse
+   10-column navigator and very wide option rows. 43rem stays the binding
+   constraint down to 768px too (page-padding leaves ~706.6px there, still
+   more than 688px), so this is a no-op at narrower widths where the app
+   already used the full available width. */
+.mock-exam {
+  width: min(100%, 43rem);
+  margin: 0 auto;
+}
+
 .mock-exam-header {
   display: flex;
   justify-content: space-between;
@@ -177,6 +189,11 @@ function goSubmit() {
   padding: 0.5rem 0.25rem;
   min-height: 2.75rem;
   border-radius: var(--mctl-radius-md, 6px);
+  overflow-wrap: break-word;
+}
+
+.mock-exam-stem {
+  overflow-wrap: break-word;
 }
 
 .mock-exam-footer {
