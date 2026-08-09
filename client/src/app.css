@@ -1,5 +1,66 @@
 /* Application shell on top of the shared mctl semantic tokens. */
 
+/*
+ * Breakpoint reference map — not a mutually-exclusive tier system.
+ *
+ * Every responsive rule in this app is a `max-width` query (plus one
+ * `min-width:981 / max-width:1120` band). Because `max-width` queries are
+ * cumulative (a rule with threshold N is active at *any* viewport ≤ N, not
+ * just "the" band right below N), a single viewport is routinely inside
+ * more than one label below at once — 768px is both T5 and T6. Treat
+ * T1–T8 as names for "the widths where this rule combination matters", not
+ * a mobile/tablet/desktop ladder where exactly one applies. Reuse these
+ * eight thresholds (340, 400, 560, 620, 680, 800, 980, 1120) for any new
+ * responsive work instead of inventing a new number.
+ *
+ *   T1  ≤400px      HomeScreen.vue                extra-compact spacing
+ *                                                  (340/400 rules; smallest
+ *                                                  phones)
+ *   T2  401-560px   app.css / AppNav.vue           focused-practice
+ *                                                  fullscreen mode,
+ *                                                  tightest global padding,
+ *                                                  course-select label
+ *                                                  hidden (≤560, so also
+ *                                                  active under T1)
+ *   T3  561-620px   MockStartScreen.vue /          Mock screens + account
+ *                   MockExamScreen.vue /           name compaction (≤620)
+ *                   MockResultsScreen.vue /
+ *                   UserNav.vue
+ *   T4  621-680px   PracticeContent.vue            context panel: inline
+ *                                                  sidebar -> floating
+ *                                                  overlay (≤680)
+ *   T5  681-800px   DashboardScreen.vue /          two-column grid
+ *                   HomeScreen.vue                 collapses to one
+ *                                                  column (≤800); Practice
+ *                                                  panel is back to an
+ *                                                  inline sidebar (>680)
+ *   T6  801-980px   AppNav.vue                     nav: single row ->
+ *                                                  stacked/scrollable
+ *                                                  (≤980); Dashboard/Home
+ *                                                  are back to two columns
+ *                                                  (>800)
+ *   T7  981-1120px  AppNav.vue                     nav back to single row
+ *                                                  (>980), but the streak
+ *                                                  ("Practiced N days")
+ *                                                  text stays hidden to
+ *                                                  avoid crowding
+ *   T8  >1120px     —                              full desktop: nav
+ *                                                  single row, streak
+ *                                                  visible, all grids at
+ *                                                  their widest
+ *
+ * Validation widths and which of the above are simultaneously active:
+ *   375px, 390px  -> T1 + T2                (both ≤400 and ≤560; small
+ *                                            phones behave identically)
+ *   768px         -> T5 + T6                (tablet: Dashboard/Home content
+ *                                            collapses to one column AND
+ *                                            the nav is still stacked, at
+ *                                            the same time — not a single
+ *                                            "801-980 tablet" tier)
+ *   1024px        -> T7                     (desktop nav, streak hidden)
+ *   1440px        -> T8                     (full desktop, streak visible)
+ */
+
 html {
   min-width: 320px;
   color-scheme: dark;
@@ -77,6 +138,12 @@ code {
   padding: 0.1em 0.35em;
   border-radius: var(--mctl-radius-sm, 4px);
   font-size: 0.9em;
+  /* Question/option/explanation text can contain long unbroken inline code
+     spans (URLs, CLI flags, hashes — e.g. `https://api.tokenfactory.nebius.com/v1`
+     already exists in the content bank). Without this, such a span can
+     force horizontal scroll on narrow screens regardless of the
+     surrounding container's own wrapping rules. */
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 680px) {
