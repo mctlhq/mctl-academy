@@ -333,10 +333,15 @@ const links = [
      2.75rem). Previously this was 2.5rem (40px) and only applied at
      <=560px, so the unscoped 2rem (32px) desktop default was still in
      effect for the whole 561-980px band -- exactly where 768px sits,
-     still inside this stacked/touch-oriented nav layout. */
+     still inside this stacked/touch-oriented nav layout.
+     .signin-github (UserNav.vue's signed-out control) joins this list for
+     the same reason: it sits in `.app-nav-actions` next to course-select and
+     theme-toggle, and was one of the auto-sized items that squeezed
+     `.app-brand`'s minmax(0, 1fr) column down to the overlap fixed above. */
   .theme-toggle,
   .course-select,
-  .user-nav-signed-in :deep(summary) {
+  .user-nav-signed-in :deep(summary),
+  .user-nav-signin :deep(.signin-github) {
     min-width: 2.75rem;
     min-height: 2.75rem;
   }
@@ -367,6 +372,22 @@ const links = [
     padding: 0 0.4rem;
     font-size: 0.68rem;
     text-overflow: ellipsis;
+  }
+
+  /* Same label-hiding precedent as .course-select-label just above: below
+     560px, .app-nav-actions has the least room to give, and "Log in" next
+     to the GitHub icon was pure overhead once the icon alone (with its
+     aria-label) is enough to identify the control. Padding is collapsed to
+     match -- MButton's ghost variant pads for a text label that's now gone,
+     so left as-is the icon would sit off-center in the 2.75rem box set
+     above instead of filling it like .theme-toggle does. */
+  .user-nav-signin :deep(.signin-label) {
+    display: none;
+  }
+
+  .user-nav-signin :deep(.signin-github) {
+    justify-content: center;
+    padding: 0;
   }
 
   .app-nav-links {
