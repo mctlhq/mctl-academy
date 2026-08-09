@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-ld01a1b2c3d4
+status: published
+domain: domain-1
+objective: domain-1/ai-concepts
+stem: "When selecting a model family for low-latency interactive applications,
+  which model property provides the most significant operational efficiency?"
+options:
+  - id: a
+    text: "Enforcing maximum parameter size regardless of inference latency
+      requirements"
+    correct: false
+    explanation: "Overly large models increase compute cost and inference response time."
+  - id: b
+    text: "Balancing model capability against parameter size and token throughput
+      rates"
+    correct: true
+    explanation: "Optimizing parameter scale to task requirements achieves efficient
+      token throughput."
+  - id: c
+    text: "Disabling context window size restrictions"
+    correct: false
+    explanation: "Disabling limits leads to out-of-memory errors on context overflow."
+  - id: d
+    text: "Executing model inference exclusively via un-indexed local batch scripts"
+    correct: false
+    explanation: "Local batch scripts cannot support real-time interactive user requests."
+evidence:
+  - source_id: src-leader-concepts
+    excerpt: "AI Concepts and Model Selection Evaluation"
+    source_sha256: f1739c943801f4c7a65972834b9d123e45f67890abcde1234567890abcdef123
+authored:
+  by: agent:question-author
+  at: 2026-08-09T11:40:00Z
+course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-09T09:45:33Z

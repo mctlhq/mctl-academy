@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-leader-cost-risk
+url: https://docs.nebius.com/overview/cost-risk-governance.md
+title: Token Economics, Cost Control, and Data Risk Management
+retrieved_at: 2026-08-09T11:00:00Z
+sha256: 3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d
+objectives:
+  - domain-4/cost-economics
+  - domain-4/risk-compliance
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d
+status: current

@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-leader-concepts
+url: https://docs.nebius.com/overview/ai-concepts.md
+title: AI Concepts and Model Selection Evaluation
+retrieved_at: 2026-08-09T11:00:00Z
+sha256: f1739c943801f4c7a65972834b9d123e45f67890abcde1234567890abcdef123
+objectives:
+  - domain-1/ai-concepts
+  - domain-1/model-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: f1739c943801f4c7a65972834b9d123e45f67890abcde1234567890abcdef123
+status: current

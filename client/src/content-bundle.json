@@ -1617,6 +1617,138 @@
     ]
   },
   {
+    "id": "q-ld01a1b2c3d4",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "When selecting a model family for low-latency interactive applications, which model property provides the most significant operational efficiency?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enforcing maximum parameter size regardless of inference latency requirements",
+        "correct": false,
+        "explanation": "Overly large models increase compute cost and inference response time."
+      },
+      {
+        "id": "b",
+        "text": "Balancing model capability against parameter size and token throughput rates",
+        "correct": true,
+        "explanation": "Optimizing parameter scale to task requirements achieves efficient token throughput."
+      },
+      {
+        "id": "c",
+        "text": "Disabling context window size restrictions",
+        "correct": false,
+        "explanation": "Disabling limits leads to out-of-memory errors on context overflow."
+      },
+      {
+        "id": "d",
+        "text": "Executing model inference exclusively via un-indexed local batch scripts",
+        "correct": false,
+        "explanation": "Local batch scripts cannot support real-time interactive user requests."
+      }
+    ]
+  },
+  {
+    "id": "q-ld02b2c3d4e5",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/product-outcomes",
+    "stem": "Which strategic approach aligns generative AI capabilities with measurable business outcomes during product discovery?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploying un-evaluated prototype models directly to all external production users",
+        "correct": false,
+        "explanation": "Unvalidated deployments carry severe operational and accuracy risks."
+      },
+      {
+        "id": "b",
+        "text": "Defining specific workflow KPIs, user intent boundaries, and fallback human workflows",
+        "correct": true,
+        "explanation": "Setting clear KPIs and fallback mechanics ensures AI features deliver measurable ROI safely."
+      },
+      {
+        "id": "c",
+        "text": "Replacing all existing database systems with raw prompt text files",
+        "correct": false,
+        "explanation": "Replacing relational/NoSQL databases with prompt text destroys data integrity."
+      },
+      {
+        "id": "d",
+        "text": "Restricting API access to manual command-line execution by system administrators",
+        "correct": false,
+        "explanation": "Manual CLI invocation prevents automated user workflow integration."
+      }
+    ]
+  },
+  {
+    "id": "q-ld03c3d4e5f6",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/vendor-evaluation",
+    "stem": "When evaluating third-party API providers for enterprise AI integration, which operational factor is most critical for compliance?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Requiring proprietary API extensions that prevent industry standard compatibility",
+        "correct": false,
+        "explanation": "Locking into non-standard interfaces increases migration risk."
+      },
+      {
+        "id": "b",
+        "text": "Verifying data privacy policies, SLA guarantees, and enterprise security certifications",
+        "correct": true,
+        "explanation": "Enterprise SLAs and privacy guarantees ensure compliance with regulatory standards."
+      },
+      {
+        "id": "c",
+        "text": "Disabling rate limit controls across public endpoints",
+        "correct": false,
+        "explanation": "Disabling rate limits leads to un-controlled resource usage and outage risk."
+      },
+      {
+        "id": "d",
+        "text": "Selecting providers based solely on marketing announcements without API SLA validation",
+        "correct": false,
+        "explanation": "Relying on claims without SLA verification exposes production applications to downtime."
+      }
+    ]
+  },
+  {
+    "id": "q-ld04d4e5f6a7",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/cost-economics",
+    "stem": "How can engineering leadership control monthly API consumption costs while supporting growing production usage?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Disabling token usage monitoring and budget alert mechanisms",
+        "correct": false,
+        "explanation": "Disabling cost monitoring prevents detection of spending spikes."
+      },
+      {
+        "id": "b",
+        "text": "Implementing prompt caching, token budgets, and automated usage monitoring alerts",
+        "correct": true,
+        "explanation": "Prompt caching and token budgets optimize model efficiency and cap unexpected costs."
+      },
+      {
+        "id": "c",
+        "text": "Hardcoding maximum output token length to 1 for all API requests",
+        "correct": false,
+        "explanation": "Restricting output to 1 token breaks application functionality."
+      },
+      {
+        "id": "d",
+        "text": "Purchasing dedicated hardware nodes for low-volume background tasks",
+        "correct": false,
+        "explanation": "Over-provisioning dedicated hardware for small workloads wastes operational capital."
+      }
+    ]
+  },
+  {
     "id": "q-ob01d8e9f0a1",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
