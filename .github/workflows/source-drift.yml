@@ -16,6 +16,7 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   drift:
@@ -75,11 +76,15 @@ jobs:
                 break
               fi
               echo "Direct push to main failed (attempt $i). Retrying with rebase..."
-              git pull --rebase origin main || true
+              if ! git pull --rebase origin main; then
+                echo "Rebase failed due to conflict. Aborting rebase and creating quarantine PR..."
+                git rebase --abort || true
+                break
+              fi
             done
 
             if [ "$pushed" = "false" ]; then
-              echo "Direct push to main unavailable (e.g. branch protection). Creating quarantine PR..."
+              echo "Direct push to main unavailable. Creating quarantine PR..."
               q_branch="chore/quarantine-drift-$(date +%s)"
               git checkout -b "$q_branch"
               git push origin "$q_branch"
