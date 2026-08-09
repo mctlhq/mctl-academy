@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co04d4e5f6a7
-status: published
+status: draft
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: "When diagnosing an unexpected throughput drop in a distributed training
@@ -32,6 +32,3 @@ authored:
   by: agent:question-author
   at: 2026-08-09T11:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-09T09:39:10Z

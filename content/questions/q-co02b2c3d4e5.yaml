@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co02b2c3d4e5
-status: published
+status: draft
 domain: domain-2
 objective: domain-2/iam-roles
 stem: "Which principle should govern service account access permissions across
@@ -31,6 +31,3 @@ authored:
   by: agent:question-author
   at: 2026-08-09T11:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-09T09:39:10Z
