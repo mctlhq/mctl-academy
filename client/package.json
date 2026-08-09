@@ -1,7 +1,7 @@
 {
   "name": "mctl-academy-client",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Mock exam UI for mctl Academy (issue #20). Reads content/ at build time via a generated JSON bundle; no server exists yet.",
   "scripts": {
