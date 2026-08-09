@@ -47,11 +47,22 @@ const score = computed(() => scoreSession(props.session));
 </template>
 
 <style scoped>
+/* Same reading width as PracticeContent.vue's `.practice` and
+   MockExamScreen.vue's `.mock-exam` — see the comment there for why. */
+.mock-results {
+  width: min(100%, 43rem);
+  margin: 0 auto;
+}
+
 .mock-results-option {
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-md, 6px);
   padding: 0.6rem 0.75rem;
   margin-bottom: 0.5rem;
+  /* Was previously scoped to <=620px only; a long unbroken token (a code
+     span not caught by the global `code` rule, or a bare long word) can
+     force horizontal scroll at any width, not just on narrow screens. */
+  overflow-wrap: break-word;
 }
 
 .mock-results-option.correct {
@@ -72,10 +83,6 @@ const score = computed(() => scoreSession(props.session));
   .mock-results-options {
     padding-left: 0;
     list-style: none;
-  }
-
-  .mock-results-option {
-    overflow-wrap: anywhere;
   }
 }
 </style>

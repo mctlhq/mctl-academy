@@ -130,6 +130,18 @@ function goSubmit() {
 </template>
 
 <style scoped>
+/* Same reading width as PracticeContent.vue's `.practice` — Mock previously
+   had no cap at all and stretched to the full .app-main width at desktop
+   sizes (~942px at 1024px, ~1328px at 1440px), producing a sparse
+   10-column navigator and very wide option rows. 43rem stays the binding
+   constraint down to 768px too (page-padding leaves ~706.6px there, still
+   more than 688px), so this is a no-op at narrower widths where the app
+   already used the full available width. */
+.mock-exam {
+  width: min(100%, 43rem);
+  margin: 0 auto;
+}
+
 .mock-exam-header {
   display: flex;
   justify-content: space-between;
@@ -177,6 +189,11 @@ function goSubmit() {
   padding: 0.5rem 0.25rem;
   min-height: 2.75rem;
   border-radius: var(--mctl-radius-md, 6px);
+  overflow-wrap: break-word;
+}
+
+.mock-exam-stem {
+  overflow-wrap: break-word;
 }
 
 .mock-exam-footer {
@@ -197,14 +214,23 @@ function goSubmit() {
   margin-top: 1rem;
 }
 
+/* .mock-exam-nav-item's 44px floor needs to hold everywhere the app's own
+   nav is in its touch-oriented stacked layout (<=980px, see app.css's
+   breakpoint reference map), not just <=620px -- at 768px it was still the
+   36px (2.25rem) desktop default. Kept as its own rule, separate from the
+   <=620px column-count change below, since 10 columns are still fine at
+   768px (verified: ~63.8px/column with the Practice-width-matching 43rem
+   container). */
+@media (max-width: 980px) {
+  .mock-exam-nav-item {
+    min-height: 2.75rem;
+  }
+}
+
 @media (max-width: 620px) {
   .mock-exam-nav {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
-  }
-
-  .mock-exam-nav-item {
-    min-height: 2.75rem;
   }
 
   .mock-exam-footer {

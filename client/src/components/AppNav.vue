@@ -293,12 +293,26 @@ const links = [
     grid-row: 1;
   }
 
+  /* Column 1 is `minmax(0, 1fr)` so it can shrink all the way to 0 once
+     column 2's auto-sized content (course-select + theme-toggle + account
+     control) needs more room than the viewport has — confirmed on a real
+     Pixel 7 (and reproduced headlessly at the same 375px validation width)
+     where the shrunk column made "mctl academy" wrap into a box narrower
+     than either word, rendering past its own edge and overlapping the
+     course-select on top of it. `min-width: 0` lets the item actually take
+     that shrunk track size instead of forcing the grid to overflow to fit
+     its min-content, and `overflow: hidden` + the nowrap/ellipsis pair stop
+     it from bleeding into the next column when it does. */
   .app-brand {
     grid-column: 1;
     grid-row: 1;
     min-height: 3rem;
+    min-width: 0;
     display: inline-flex;
     align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .app-nav-links {
@@ -311,6 +325,24 @@ const links = [
   }
 
   .app-nav-link {
+    min-height: 2.75rem;
+  }
+
+  /* 44px, matching the app's own established touch-target convention
+     (.app-nav-link, .report-button, .mock-exam-footer button all use
+     2.75rem). Previously this was 2.5rem (40px) and only applied at
+     <=560px, so the unscoped 2rem (32px) desktop default was still in
+     effect for the whole 561-980px band -- exactly where 768px sits,
+     still inside this stacked/touch-oriented nav layout.
+     .signin-github (UserNav.vue's signed-out control) joins this list for
+     the same reason: it sits in `.app-nav-actions` next to course-select and
+     theme-toggle, and was one of the auto-sized items that squeezed
+     `.app-brand`'s minmax(0, 1fr) column down to the overlap fixed above. */
+  .theme-toggle,
+  .course-select,
+  .user-nav-signed-in :deep(summary),
+  .user-nav-signin :deep(.signin-github) {
+    min-width: 2.75rem;
     min-height: 2.75rem;
   }
 
@@ -342,10 +374,20 @@ const links = [
     text-overflow: ellipsis;
   }
 
-  .theme-toggle,
-  .user-nav-signed-in :deep(summary) {
-    min-width: 2.5rem;
-    min-height: 2.5rem;
+  /* Same label-hiding precedent as .course-select-label just above: below
+     560px, .app-nav-actions has the least room to give, and "Log in" next
+     to the GitHub icon was pure overhead once the icon alone (with its
+     aria-label) is enough to identify the control. Padding is collapsed to
+     match -- MButton's ghost variant pads for a text label that's now gone,
+     so left as-is the icon would sit off-center in the 2.75rem box set
+     above instead of filling it like .theme-toggle does. */
+  .user-nav-signin :deep(.signin-label) {
+    display: none;
+  }
+
+  .user-nav-signin :deep(.signin-github) {
+    justify-content: center;
+    padding: 0;
   }
 
   .app-nav-links {

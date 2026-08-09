@@ -204,6 +204,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font-size: clamp(1.3rem, 2.4vw, 1.55rem);
   line-height: 1.5;
   margin: 0 0 1.5rem;
+  overflow-wrap: break-word;
 }
 
 .practice-header {
@@ -266,6 +267,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font: inherit;
   padding: 0.95rem 1.1rem;
   cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .feedback {
@@ -375,6 +377,22 @@ kbd {
 .practice-summary .meta,
 .practice-empty p {
   color: var(--surface-fg-muted);
+}
+
+/* .practice-shell's desktop -4rem margin-top pulls it up into .app-main's
+   own top padding (clamp(2rem,5vw,4rem)) by design, but AppNav switches to
+   its taller two-row stacked layout at <=980px (see app.css's breakpoint
+   reference map) while app-main's padding-top only shrinks at <=680px --
+   in between (e.g. 768px, padding-top ~2.4rem), -4rem overshoots the
+   padding box and drags .practice-context up underneath the nav's second
+   row, making .context-toggle unclickable. Match the <=680px tier's
+   smaller pull here too so it never exceeds app-main's own padding-top
+   for any width AppNav is stacked at (2rem is the minimum, well above
+   1.75rem in this range). */
+@media (max-width: 980px) {
+  .practice-shell {
+    margin-top: -1.75rem;
+  }
 }
 
 @media (max-width: 680px) {
