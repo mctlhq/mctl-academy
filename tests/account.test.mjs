@@ -110,10 +110,11 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
 
     // Same promise as attempts/question_reports (ON DELETE CASCADE): the vote
     // row itself is gone, so it can never contribute to another question's
-    // score under a deleted account's identity.
-    const after = await authPool.query(`SELECT id FROM question_votes WHERE question_id = $1;`, [
-      "q-co01a1b2c3d4",
-    ]);
+    // score under a deleted account's identity. Scoped to this user's id, not
+    // the question id — `q-co01a1b2c3d4` is also drawn from votes.test.mjs's
+    // shared known-question-id pool, so a legitimate vote left there by
+    // another user on the same question must not make this assertion flaky.
+    const after = await authPool.query(`SELECT id FROM question_votes WHERE user_id = $1;`, [userId]);
     assert.equal(after.rows.length, 0);
   });
 });

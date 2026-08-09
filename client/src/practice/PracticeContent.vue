@@ -39,10 +39,12 @@ const voteScore = ref<number | null>(null);
 const userVote = ref<-1 | 0 | 1>(0);
 const voteErrored = ref(false);
 
-// Guards against a stale response landing after the learner has already
-// advanced to a different question (e.g. a slow GET for question A resolving
-// after `next()` has already moved on to question B) — only the response for
-// the question that is still current on arrival is applied.
+// Shared by the summary GET and every vote mutation: guards against any
+// out-of-order response landing over a newer one — a slow GET for question A
+// resolving after `next()` moved on to question B, a summary fetch resolving
+// after a vote click already updated the widget, or two rapid vote clicks
+// resolving out of order. Only the response for the request that is still
+// the latest on arrival is applied.
 let voteRequestToken = 0;
 
 async function loadVoteSummary(questionId: string) {
@@ -95,13 +97,18 @@ async function onVoteClick(direction: VoteValue) {
   userVote.value = nextUserVote;
   voteErrored.value = false;
 
+  // Shares voteRequestToken with loadVoteSummary: bumping it here invalidates
+  // any in-flight summary GET (or an earlier vote click) so a slower, older
+  // response can never land after this action and overwrite it.
+  const token = ++voteRequestToken;
+
   try {
     const summary = removing ? await removeVote(questionId) : await castVote(questionId, direction);
-    if (current.value?.id !== questionId) return; // learner already moved on
+    if (token !== voteRequestToken) return; // superseded by a newer request
     voteScore.value = summary.score;
     userVote.value = summary.userValue;
   } catch {
-    if (current.value?.id !== questionId) return;
+    if (token !== voteRequestToken) return;
     voteScore.value = previousScore;
     userVote.value = previousUserVote;
     voteErrored.value = true;
