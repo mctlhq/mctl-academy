@@ -64,4 +64,24 @@ describe("DashboardScreen", () => {
 
     expect(wrapper.text()).toMatch(/0\/2/);
   });
+
+  it("warns via window.alert when the server-side delete fails, without claiming a permanent deletion", async () => {
+    recordAttempt("q-1", "domain-1", true);
+    const wrapper = mountDashboard();
+
+    setSyncEnabled(true);
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+    await wrapper.find(".reset-progress").trigger("click");
+    await nextTick();
+    await Promise.resolve();
+    await nextTick();
+
+    // Local history is gone regardless — only the server-side confirmation failed.
+    expect(wrapper.text()).toMatch(/0\/2/);
+    expect(alertSpy).toHaveBeenCalledTimes(1);
+    expect(alertSpy.mock.calls[0][0]).toMatch(/could not confirm the server copy was deleted/i);
+  });
 });

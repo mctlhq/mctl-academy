@@ -54,29 +54,31 @@ export interface OverallProgress {
 }
 
 const STORAGE_KEY = "mctl_academy_progress_v1";
-// Set by clearProgress() to the moment it ran. Any attempt — local or from
-// the server — timestamped before this must never be resurrected: it
-// guards against a syncFromServer() that was already in flight (fetched
-// before the DELETE landed) writing the pre-clear history straight back
-// into local storage once its stale response arrives.
-const CLEARED_AT_KEY = "mctl_academy_progress_cleared_at";
 const ATTEMPTS_ENDPOINT = "/api/attempts";
 
-function getClearedAtMarker(): number {
-  const raw = getItem(CLEARED_AT_KEY);
-  const parsed = raw ? Number(raw) : 0;
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
 let syncEnabled = false;
+
+/**
+ * In-memory only — deliberately never persisted. Guards a single race: a
+ * syncFromServer() whose GET was already in flight when clearProgress() ran
+ * must not write that stale (pre-clear) response back into local storage.
+ * It is NOT used to compare against server timestamps (attemptedAt) — both
+ * sides of every comparison here are this same client's own Date.now(), so
+ * a skewed device clock cannot cause it to reject legitimate future syncs.
+ * And because it resets on reload and is irrelevant once a race hasn't
+ * happened, a failed DELETE (offline) can never turn into a permanent local
+ * tombstone that hides the server's history on this device forever.
+ */
+let lastClearedAt = 0;
 
 export function saveRawAttempts(attempts: QuestionAttempt[]): void {
   setItem(STORAGE_KEY, JSON.stringify(attempts));
 }
 
-/** Clears stored progress and any memory fallback. Tests own this. */
+/** Clears stored progress, any memory fallback, and in-memory state. Tests own this. */
 export function resetMemoryFallback(): void {
   resetStorage();
+  lastClearedAt = 0;
 }
 
 export function getStoredAttempts(): QuestionAttempt[] {
@@ -212,15 +214,14 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
  * A no-op while sync is disabled, and any network failure leaves local data
  * untouched.
  *
- * Any server row older than the last clearProgress() call is dropped before
- * any of the above runs. Without that, a sync already in flight when the
- * learner hits "Clear history" — its GET issued before the DELETE, so its
- * response still carries the old rows — would otherwise write that
- * pre-clear history straight back into local storage (marked `synced`, so
- * it would never be reconsidered again).
+ * If clearProgress() ran after this call's GET was issued, the response is
+ * discarded wholesale (see `lastClearedAt`) rather than merged in — it
+ * reflects pre-clear state.
  */
 export async function syncFromServer(): Promise<void> {
   if (!syncEnabled) return;
+
+  const syncStartedAt = Date.now();
 
   let serverAttempts: QuestionAttempt[];
   try {
@@ -232,10 +233,10 @@ export async function syncFromServer(): Promise<void> {
     return;
   }
 
-  const clearedAt = getClearedAtMarker();
-  if (clearedAt > 0) {
-    serverAttempts = serverAttempts.filter((a) => new Date(a.attemptedAt).getTime() >= clearedAt);
-  }
+  // >= rather than >: Date.now() has millisecond resolution, and a
+  // clearProgress() triggered immediately after this sync's GET was issued
+  // can land in the very same millisecond — that must still count as "after".
+  if (lastClearedAt >= syncStartedAt) return;
 
   const local = getStoredAttempts();
   const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
@@ -288,9 +289,9 @@ export function getMistakeQuestionIds(): string[] {
  * claiming a deletion that did not happen.
  */
 export async function clearProgress(): Promise<{ serverCleared: boolean }> {
+  lastClearedAt = Date.now();
   try {
     removeItem(STORAGE_KEY);
-    setItem(CLEARED_AT_KEY, String(Date.now()));
   } catch {
     // Ignore
   }
