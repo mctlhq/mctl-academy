@@ -26,12 +26,13 @@ describe("progressStore service", () => {
   it("stores and retrieves question attempts", () => {
     expect(getStoredAttempts()).toEqual([]);
 
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "agentic-ai-builder");
     recordAttempt("q-2", "domain-1", false);
 
     const attempts = getStoredAttempts();
     expect(attempts).toHaveLength(2);
     expect(attempts.find((a) => a.questionId === "q-1")?.correct).toBe(true);
+    expect(attempts.find((a) => a.questionId === "q-1")?.courseId).toBe("agentic-ai-builder");
     expect(attempts.find((a) => a.questionId === "q-2")?.correct).toBe(false);
   });
 

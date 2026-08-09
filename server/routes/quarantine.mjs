@@ -4,7 +4,6 @@ import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
-import { rateLimit } from "../middleware/rate-limit.mjs";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
@@ -91,8 +90,6 @@ export async function getQuarantinedQuestionIdsAsync(forceRefresh = false, conte
 
   return inFlightPromise;
 }
-
-quarantineRouter.use("*", rateLimit());
 
 // GET /api/quarantine - Returns list of question IDs currently quarantined due to drift or review status
 quarantineRouter.get("/", async (c) => {
