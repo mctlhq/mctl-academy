@@ -154,6 +154,22 @@ code {
     padding-top: 1.75rem;
     padding-bottom: calc(2rem + env(safe-area-inset-bottom));
   }
+
+  /* PracticeContent.vue's `.practice-context` becomes a `position: fixed`
+     bottom-right pill at this same 680px threshold (shared with Mistakes,
+     which reuses PracticeContent) — confirmed on a real Pixel 7 that when a
+     question's content is short enough for AppFooter to render in that same
+     corner, the fixed pill visually sits on top of the footer's "mctl
+     Academy" text, and reproduced headlessly at 375/390/768. AppFooter is a
+     plain document-flow sibling with no awareness of the floating chrome
+     above it, so hide it outright here rather than trying to keep two
+     independently-positioned elements out of each other's way — this also
+     matches "focused-practice" mode's already-stated intent (nav/footer
+     chrome removed from scroll flow), just extended from its ≤560px-only
+     reach up to the ≤680px range where the floating pill actually exists. */
+  .focused-practice .app-footer-safe {
+    display: none;
+  }
 }
 
 @media (max-width: 560px) {

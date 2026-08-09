@@ -27,7 +27,7 @@ async function assertNoHorizontalOverflow(page: Page, viewportWidth: number) {
 
 async function assertNavControlsInBounds(page: Page, viewportWidth: number) {
   const boxes = await page
-    .locator(".app-nav-link, .theme-toggle, .course-select")
+    .locator(".app-nav-link, .theme-toggle, .course-select, .app-brand")
     .evaluateAll((els) =>
       els.map((el) => {
         const rect = el.getBoundingClientRect();
@@ -39,6 +39,29 @@ async function assertNavControlsInBounds(page: Page, viewportWidth: number) {
     expect(box.left).toBeGreaterThanOrEqual(0);
     expect(box.right).toBeLessThanOrEqual(viewportWidth);
   }
+}
+
+/**
+ * Found on a real Pixel 7 during the real-device validation pass: at
+ * <=980px `.app-nav` becomes a `minmax(0,1fr) auto` grid, and that `0`
+ * track minimum lets `.app-brand`'s column shrink well past its own text's
+ * min-content width. Without `overflow: hidden` on `.app-brand`, the
+ * "mctl academy" text doesn't clip at that shrunk box — it renders past its
+ * own edge and visually overlaps `.course-select` next to it (reproduced
+ * headlessly at exactly 375px, so this was never Android-specific). Bounds
+ * checks alone don't catch this: both elements can individually sit inside
+ * [0, viewportWidth] while still overlapping each other.
+ */
+async function assertNoOverlap(page: Page, selectorA: string, selectorB: string) {
+  const [a, b] = await Promise.all([
+    page.locator(selectorA).first().boundingBox(),
+    page.locator(selectorB).first().boundingBox(),
+  ]);
+  expect(a).not.toBeNull();
+  expect(b).not.toBeNull();
+  const horizontallySeparate = a!.x + a!.width <= b!.x || b!.x + b!.width <= a!.x;
+  const verticallySeparate = a!.y + a!.height <= b!.y || b!.y + b!.height <= a!.y;
+  expect(horizontallySeparate || verticallySeparate).toBe(true);
 }
 
 /**
@@ -76,9 +99,10 @@ test.describe("responsive layout matrix", () => {
 
       for (const route of routes) {
         test(`${route} has no horizontal overflow and a bounded nav`, async ({ page }) => {
-          await page.goto(route);
-          await assertNoHorizontalOverflow(page, width);
-          await assertNavControlsInBounds(page, width);
+            await page.goto(route);
+              await assertNoHorizontalOverflow(page, width);
+              await assertNavControlsInBounds(page, width);
+              await assertNoOverlap(page, ".app-brand", ".course-select");
         });
       }
     });
@@ -160,5 +184,44 @@ test.describe("Practice context panel at 768px", () => {
     expect(tabletBoxWithContextOpen).not.toBeNull();
 
     expect(tabletBoxWithContextOpen!.width).toBeGreaterThanOrEqual(mobileBox!.width);
+  });
+});
+
+test.describe("Practice/Mistakes floating context toggle vs. footer", () => {
+  /**
+   * Found on a real Pixel 7: `.practice-context` (PracticeContent.vue)
+   * becomes a `position: fixed` bottom-right pill at <=680px, the same
+   * breakpoint AppFooter switches to being hidden on focused-practice routes
+   * (app.css). Below that threshold AppFooter must stay hidden so it can
+   * never render underneath the fixed pill; above it, the pill goes back to
+   * being an inline sidebar column and the footer must reappear normally.
+   */
+  for (const width of [375, 390, 620, 680]) {
+    test(`${width}px: AppFooter is hidden on /practice so it can't sit under the floating toggle`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto("/practice");
+      await expect(page.locator(".practice .stem")).toBeVisible();
+      await expect(page.locator(".context-toggle")).toBeVisible();
+      await expect(page.locator(".app-footer-safe")).toBeHidden();
+    });
+  }
+
+  test("700px: AppFooter is visible again once the context panel is back to an inline sidebar", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 700, height: 900 });
+    await page.goto("/practice");
+    await expect(page.locator(".practice .stem")).toBeVisible();
+    await expect(page.locator(".app-footer-safe")).toBeVisible();
+  });
+
+  test("375px: AppFooter stays visible on unrelated routes (Home, Mock, Dashboard)", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 900 });
+    for (const route of ["/", "/mock", "/dashboard"]) {
+      await page.goto(route);
+      await expect(page.locator(".app-footer-safe")).toBeVisible();
+    }
   });
 });

@@ -293,12 +293,26 @@ const links = [
     grid-row: 1;
   }
 
+  /* Column 1 is `minmax(0, 1fr)` so it can shrink all the way to 0 once
+     column 2's auto-sized content (course-select + theme-toggle + account
+     control) needs more room than the viewport has — confirmed on a real
+     Pixel 7 (and reproduced headlessly at the same 375px validation width)
+     where the shrunk column made "mctl academy" wrap into a box narrower
+     than either word, rendering past its own edge and overlapping the
+     course-select on top of it. `min-width: 0` lets the item actually take
+     that shrunk track size instead of forcing the grid to overflow to fit
+     its min-content, and `overflow: hidden` + the nowrap/ellipsis pair stop
+     it from bleeding into the next column when it does. */
   .app-brand {
     grid-column: 1;
     grid-row: 1;
     min-height: 3rem;
+    min-width: 0;
     display: inline-flex;
     align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .app-nav-links {
