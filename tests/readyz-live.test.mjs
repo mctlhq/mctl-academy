@@ -77,6 +77,20 @@ describe("GET /readyz against a real, later-killed Postgres", { skip: !dockerAva
       });
       assert.ok(pgReady, "Postgres never became ready");
 
+      // In production this role is provisioned by CNPG's managed.roles, not
+      // by this app (1755100000000_academy_readonly_role's migration only
+      // grants; it can't create the role — see that file). This container
+      // is a from-scratch Postgres of its own, so mirror that external
+      // provisioning step here or the migration below fails with "role
+      // academy_readonly does not exist" and — since NODE_ENV isn't
+      // production in this test — initDb() silently falls back to the
+      // in-memory store instead of throwing, which is exactly the kind of
+      // masked failure this test exists to catch in the first place.
+      execFileSync("docker", [
+        "exec", CONTAINER, "psql", "-U", "postgres", "-d", "readyz_live",
+        "-c", "CREATE ROLE academy_readonly LOGIN;",
+      ]);
+
       serverProcess = spawn(process.execPath, ["server/index.mjs"], {
         cwd: repoRoot,
         env: {

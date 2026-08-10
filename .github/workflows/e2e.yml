@@ -54,6 +54,12 @@ jobs:
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
+      # See the same-named step in ci.yml for why this exists: in production
+      # CNPG's managed.roles provisions this role, not this app's own
+      # migration (which has no CREATEROLE) — mirror that here too.
+      - name: Provision academy_readonly role (mirrors CNPG managed.roles in prod)
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -d mctl_academy_e2e -c "CREATE ROLE academy_readonly LOGIN;"
+
       - name: Migrate the CI database
         run: bun run migrate
 

@@ -100,6 +100,15 @@ jobs:
           GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun install --frozen-lockfile
 
+      # In production this role is provisioned by CNPG's managed.roles
+      # (platform-gitops), not by this app — the migration that grants it
+      # privileges deliberately cannot also create it (its own DB role has
+      # no CREATEROLE). CI has no CNPG, so mirror that provisioning step by
+      # hand before migrating, or 1755100000000_academy_readonly_role's
+      # GRANTs fail with "role academy_readonly does not exist".
+      - name: Provision academy_readonly role (mirrors CNPG managed.roles in prod)
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -d mctl_academy_ci -c "CREATE ROLE academy_readonly LOGIN;"
+
       - name: Migrate the CI database
         run: bun run migrate
 
@@ -143,6 +152,10 @@ jobs:
           bun-version: latest
 
       - run: bun install --frozen-lockfile
+
+      # See the same-named step in the `client` job above for why this exists.
+      - name: Provision academy_readonly role (mirrors CNPG managed.roles in prod)
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -d mctl_academy_ci -c "CREATE ROLE academy_readonly LOGIN;"
 
       - name: Migrate up against an empty database
         run: bun run migrate
