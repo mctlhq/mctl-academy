@@ -53,7 +53,62 @@ export function assertAuthSecretConfigured() {
  * (see app.mjs) allowlists by GitHub username, and better-auth's built-in
  * user table has no such column — only name/email/image, none of which is
  * guaranteed to be the GitHub login.
+ *
+ * It is deliberately declared `input: false` below: better-auth's public
+ * POST /api/auth/update-user accepts any additionalField that isn't marked
+ * input: false, and this field gates the moderator/admin-stats allowlists —
+ * if it were writable there, any signed-in user could self-elevate by
+ * PATCHing their own githubLogin to an allowlisted name.
+ *
+ * The cost of that is that better-auth's own OAuth-profile mapping
+ * (mapProfileToUser below) is filtered by that exact same `input: false`
+ * flag before the value ever reaches the DB — better-auth has no separate
+ * "settable by the provider, not by the user" flag, so the profile-mapped
+ * value is silently dropped on both signup and sign-in, and githubLogin
+ * stays null forever. (Discovered 2026-08-10: the admin-stats/moderator
+ * gates 404'd for an allowlisted, signed-in user because of this.)
+ *
+ * githubProfileLoginByAccountId + backfillGithubLogin below are the
+ * workaround: mapProfileToUser stashes GitHub's login by its stable numeric
+ * account id, and a session.create.after hook writes it straight to
+ * Postgres with a raw query — bypassing the input-filtered field system
+ * entirely, so the update-user endpoint's protection is untouched. This
+ * runs on every GitHub sign-in, not just the first one, so it self-heals
+ * existing rows (like the two production users created before this fix)
+ * the next time they log in — no manual backfill needed.
  */
+const githubProfileLoginByAccountId = new Map();
+
+// Exported for tests/auth-github-login.test.mjs, which exercises the
+// backfill without a real GitHub OAuth handshake — it stashes a profile
+// login via this setter, inserts an account+session row directly (same
+// pattern as tests/helpers/auth-test-helper.mjs), then calls
+// backfillGithubLogin itself to assert the DB write.
+export function stashGithubProfileLogin(accountId, login) {
+  githubProfileLoginByAccountId.set(String(accountId), login);
+}
+
+export async function backfillGithubLogin(session) {
+  try {
+    const { rows } = await authPool.query(
+      `SELECT "accountId" FROM "account" WHERE "userId" = $1 AND "providerId" = 'github' LIMIT 1`,
+      [session.userId]
+    );
+    const accountId = rows[0]?.accountId;
+    const login = accountId && githubProfileLoginByAccountId.get(accountId);
+    if (!login) return;
+    githubProfileLoginByAccountId.delete(accountId);
+    await authPool.query(
+      `UPDATE "user" SET "githubLogin" = $1 WHERE id = $2 AND "githubLogin" IS DISTINCT FROM $1`,
+      [login, session.userId]
+    );
+  } catch (err) {
+    // Never block sign-in on this — worst case githubLogin stays stale
+    // until the next successful login, not a broken session.
+    console.error("[auth] Failed to backfill githubLogin:", err.message);
+  }
+}
+
 export const auth = betterAuth({
   database: authPool,
   secret: process.env.BETTER_AUTH_SECRET,
@@ -88,6 +143,7 @@ export const auth = betterAuth({
         before: async (session) => ({
           data: { ...session, ipAddress: null, userAgent: null },
         }),
+        after: backfillGithubLogin,
       },
     },
   },
@@ -103,9 +159,13 @@ export const auth = betterAuth({
           github: {
             clientId: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            mapProfileToUser: (profile) => ({
-              githubLogin: profile.login,
-            }),
+            mapProfileToUser: (profile) => {
+              // Stashed for backfillGithubLogin's session.create.after hook
+              // — see the comment above githubProfileLoginByAccountId for
+              // why this return value alone never reaches the DB.
+              stashGithubProfileLogin(profile.id, profile.login);
+              return { githubLogin: profile.login };
+            },
           },
         }
       : {}),
