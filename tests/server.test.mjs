@@ -180,3 +180,56 @@ describe("GET /api/reports is moderator-only", () => {
     });
   });
 });
+
+describe("GET /api/admin/stats is admin-only", () => {
+  const withStatsAdmins = async (value, run) => {
+    const previous = process.env.MCTL_ACADEMY_STATS_ADMINS;
+    if (value === undefined) delete process.env.MCTL_ACADEMY_STATS_ADMINS;
+    else process.env.MCTL_ACADEMY_STATS_ADMINS = value;
+    try {
+      await run();
+    } finally {
+      if (previous === undefined) delete process.env.MCTL_ACADEMY_STATS_ADMINS;
+      else process.env.MCTL_ACADEMY_STATS_ADMINS = previous;
+    }
+  };
+
+  test("anonymous request is refused and does not disclose the route exists", async () => {
+    await withStatsAdmins("admin-one", async () => {
+      const res = await app.request("/api/admin/stats");
+      assert.equal(res.status, 404);
+      const body = await res.json();
+      assert.equal(body.totalSignups, undefined);
+    });
+  });
+
+  test("signed-in non-admin is refused", async () => {
+    await withStatsAdmins("admin-one", async () => {
+      const cookie = await signedInCookie(4242004, "ordinary-learner-stats");
+      const res = await app.request("/api/admin/stats", { headers: { Cookie: cookie } });
+      assert.equal(res.status, 404);
+    });
+  });
+
+  test("admin on the allowlist may read stats", async () => {
+    await withStatsAdmins("Admin-One, someone-else", async () => {
+      const cookie = await signedInCookie(4242005, "admin-one");
+      const res = await app.request("/api/admin/stats", { headers: { Cookie: cookie } });
+      assert.equal(res.status, 200);
+      const body = await res.json();
+      assert.equal(typeof body.totalSignups, "number");
+      assert.equal(typeof body.totalSessions, "number");
+      assert.equal(typeof body.totalAttempts, "number");
+      assert.equal(typeof body.accuracy, "number");
+      assert.equal(typeof body.anonymousAttempts, "number");
+    });
+  });
+
+  test("an unset allowlist fails shut, even for a signed-in user", async () => {
+    await withStatsAdmins(undefined, async () => {
+      const cookie = await signedInCookie(4242006, "admin-one-unset-allowlist");
+      const res = await app.request("/api/admin/stats", { headers: { Cookie: cookie } });
+      assert.equal(res.status, 404);
+    });
+  });
+});

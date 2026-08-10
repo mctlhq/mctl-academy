@@ -252,6 +252,44 @@ export async function listRecentQuestionReports(limit = 50) {
 
 }
 
+/**
+ * Aggregate counts for the maintainer-only /api/admin/stats route. Reads
+ * "user" and "session" (better-auth's own tables) alongside attempts —
+ * unlike the Grafana dashboard's academy_readonly role, this runs as
+ * trusted server code through the app's own already-privileged pool, so no
+ * new DB role or column-level grant is needed here.
+ */
+export async function getAdminStats() {
+  if (pool) {
+    const res = await pool.query(
+      `SELECT
+         (SELECT COUNT(*) FROM "user") AS total_signups,
+         (SELECT COUNT(*) FROM "session") AS total_sessions,
+         (SELECT COUNT(*) FROM attempts) AS total_attempts,
+         (SELECT COALESCE(AVG(correct::int), 0) FROM attempts) AS accuracy,
+         (SELECT COUNT(*) FROM attempts WHERE user_id IS NULL) AS anonymous_attempts;`
+    );
+    const row = res.rows[0];
+    return {
+      totalSignups: Number(row.total_signups),
+      totalSessions: Number(row.total_sessions),
+      totalAttempts: Number(row.total_attempts),
+      accuracy: Number(row.accuracy),
+      anonymousAttempts: Number(row.anonymous_attempts),
+    };
+  }
+
+  const totalAttempts = memAttempts.length;
+  const correctAttempts = memAttempts.filter((a) => a.correct).length;
+  return {
+    totalSignups: 0,
+    totalSessions: 0,
+    totalAttempts,
+    accuracy: totalAttempts ? correctAttempts / totalAttempts : 0,
+    anonymousAttempts: memAttempts.filter((a) => !a.userId).length,
+  };
+}
+
 function assertValidVoteValue(value) {
   if (value !== 1 && value !== -1) {
     throw new Error(`Invalid vote value: ${value} (must be 1 or -1)`);
