@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.40](https://github.com/mctlhq/mctl-academy/compare/0.1.39...0.1.40) (2026-08-10)
+
+
+### Features
+
+* add academy_readonly Postgres role for private usage dashboard ([adff60b](https://github.com/mctlhq/mctl-academy/commit/adff60bd30875f33a4ac01c8697d0aa455ca165a))
+* read-only Postgres role for private Grafana usage dashboard ([474ccdb](https://github.com/mctlhq/mctl-academy/commit/474ccdb53edabcbddc7e42895074cb572a902083))
+
+
+### Bug Fixes
+
+* document verified database/schema GRANT privileges, fix stale comment ([1d43b95](https://github.com/mctlhq/mctl-academy/commit/1d43b957bda35ab995582cb868e1183c1d46a478))
+* drop CREATE ROLE (permission denied in prod) and scope attempts grant ([e193431](https://github.com/mctlhq/mctl-academy/commit/e19343117f42d47374b0e0db2ce85e0a1a43f16c))
+* provision academy_readonly role in e2e.yml too ([c95f56a](https://github.com/mctlhq/mctl-academy/commit/c95f56aa284d785563e333fce7aa4b70a42a41c8))
+* scope academy_readonly to column-level grants, not whole tables ([cc9964a](https://github.com/mctlhq/mctl-academy/commit/cc9964a740920bdd30b4d6019a66d420635c37d2))
+* two more real Codex findings — flaky-looking readyz test, per-user attempts exposure ([2b26d20](https://github.com/mctlhq/mctl-academy/commit/2b26d20e1b85e772d2a8a71a9d5fcc6c8ad260d4))
+
 ## [0.1.39](https://github.com/mctlhq/mctl-academy/compare/0.1.38...0.1.39) (2026-08-09)
 
 
