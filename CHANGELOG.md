@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.41](https://github.com/mctlhq/mctl-academy/compare/0.1.40...0.1.41) (2026-08-10)
+
+
+### Features
+
+* add admin-only in-app stats page ([600ad6e](https://github.com/mctlhq/mctl-academy/commit/600ad6e75bddc8a1d5afa09f3b0e51050bc1610b))
+* add admin-only in-app stats page ([cfd97a5](https://github.com/mctlhq/mctl-academy/commit/cfd97a5b8bb27cf76124c694d8d5de3e5fe451f4))
+
+
+### Bug Fixes
+
+* pin create-github-app-token to a commit SHA ([4178223](https://github.com/mctlhq/mctl-academy/commit/4178223eaf23d8486944d9cd10b7b2b806984691))
+
 ## [0.1.40](https://github.com/mctlhq/mctl-academy/compare/0.1.39...0.1.40) (2026-08-10)
 
 
