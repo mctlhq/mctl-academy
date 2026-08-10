@@ -4,7 +4,13 @@ import { auth, assertAuthSecretConfigured } from "./auth.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
 import { votesRouter } from "./routes/votes.mjs";
-import { initDb, checkDbReady, insertQuestionReport, listRecentQuestionReports } from "./db.mjs";
+import {
+  initDb,
+  checkDbReady,
+  insertQuestionReport,
+  listRecentQuestionReports,
+  getAdminStats
+} from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
 import {
@@ -215,6 +221,32 @@ app.get("/api/reports", async (c) => {
     })),
     count: reports.length
   });
+});
+
+/**
+ * GET /api/admin/stats - maintainer-only.
+ *
+ * Aggregate counts (sign-ups, sessions, attempts, accuracy) for an in-app
+ * view of the same numbers the private Grafana dashboard shows. Gated the
+ * same way /api/reports is: a valid session whose GitHub login is in
+ * MCTL_ACADEMY_STATS_ADMINS (a comma-separated allowlist), 404 for everyone
+ * else so an unconfigured environment fails shut and the route's existence
+ * isn't revealed to non-admins.
+ */
+app.get("/api/admin/stats", async (c) => {
+  const admins = (process.env.MCTL_ACADEMY_STATS_ADMINS || "")
+    .split(",")
+    .map((login) => login.trim().toLowerCase())
+    .filter(Boolean);
+
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const githubLogin = session?.user?.githubLogin;
+  if (!githubLogin || !admins.includes(String(githubLogin).toLowerCase())) {
+    return c.json({ error: "Not found" }, 404);
+  }
+
+  const stats = await getAdminStats();
+  return c.json(stats);
 });
 
 // Serve static frontend assets from client/dist with SPA fallback
