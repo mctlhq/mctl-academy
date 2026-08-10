@@ -79,7 +79,7 @@ export function assertAuthSecretConfigured() {
  */
 const githubProfileLoginByAccountId = new Map();
 
-// Exported for tests/auth-github-login.test.mjs, which exercises the
+// Exported for tests/auth.test.mjs's "githubLogin backfill" suite, which exercises the
 // backfill without a real GitHub OAuth handshake — it stashes a profile
 // login via this setter, inserts an account+session row directly (same
 // pattern as tests/helpers/auth-test-helper.mjs), then calls
