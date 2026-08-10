@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.42](https://github.com/mctlhq/mctl-academy/compare/0.1.41...0.1.42) (2026-08-10)
+
+
+### Bug Fixes
+
+* backfill githubLogin, which better-auth silently drops on OAuth sign-in ([ee92ced](https://github.com/mctlhq/mctl-academy/commit/ee92ced3ea212393c3355646036a3f3672a95c4f))
+* backfill githubLogin, which better-auth silently drops on OAuth sign-in ([ec1a2f0](https://github.com/mctlhq/mctl-academy/commit/ec1a2f0f5dd64c0d176f91db025a9e4b65b459c3))
+* correct stale test-file reference in comment ([fdaa3a1](https://github.com/mctlhq/mctl-academy/commit/fdaa3a1f6450e0efb2e29ae56e45426136163cef))
+
 ## [0.1.41](https://github.com/mctlhq/mctl-academy/compare/0.1.40...0.1.41) (2026-08-10)
 
 
