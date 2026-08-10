@@ -13,12 +13,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      # No deploy dispatch yet: mctl-academy is not onboarded as a service, so
-      # there is nothing for a release to deploy to. The centralized
-      # release-deploy dispatch (see mctl-docs for the pattern) gets added in
-      # the same change that onboards the service, not before — a dispatch
-      # naming a component that does not exist fails loudly on every release.
+      # mctl-academy is onboarded (services/labs/mctl-academy) — dispatch
+      # the centralized release-deploy the same way every other mctlhq
+      # service repo does (see mctl-docs/mctl-telegram for the pattern).
+      # No values_path override: this repo's gitops values.yaml already
+      # lives at the default platform-gitops/services/labs/mctl-academy/
+      # values.yaml the dispatch assumes.
+      - name: Generate Platform App token
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        id: app
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: mctlhq
+          repositories: mctl-gitops
+
+      - name: Dispatch centralized release-deploy
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          gh workflow run release-deploy.yaml \
+            --repo mctlhq/mctl-gitops \
+            --ref main \
+            -f repo=mctlhq/mctl-academy \
+            -f git_ref="$TAG" \
+            -f image_name=ghcr.io/mctlhq/mctl-academy \
+            -f image_tag="$TAG" \
+            -f team_name=labs \
+            -f component_name=mctl-academy
