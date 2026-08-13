@@ -19,7 +19,7 @@
     "promote:questions": "node scripts/approve-pr-questions.mjs",
     "revalidate:content": "node scripts/revalidate-content.mjs",
     "detect:delta": "node scripts/detect-docs-delta.mjs",
-    "test:content": "node --test 'tests/content-lint.test.mjs' 'tests/build-content-bundle.test.mjs' 'tests/build-preview.test.mjs' 'tests/verify-evidence.test.mjs' 'tests/verify-evidence-pinning.test.mjs' 'tests/approve-pr-questions.test.mjs' 'tests/revalidate-content.test.mjs' 'tests/detect-docs-delta.test.mjs' 'tests/question-author-contract.test.mjs'",
+    "test:content": "node --test 'tests/content-lint.test.mjs' 'tests/build-content-bundle.test.mjs' 'tests/build-preview.test.mjs' 'tests/verify-evidence.test.mjs' 'tests/verify-evidence-pinning.test.mjs' 'tests/approve-pr-questions.test.mjs' 'tests/revalidate-content.test.mjs' 'tests/detect-docs-delta.test.mjs' 'tests/question-author-contract.test.mjs' 'tests/validate-generated-artifacts.test.mjs'",
     "test:server": "node --test 'tests/server.test.mjs' 'tests/auth.test.mjs' 'tests/attempts.test.mjs' 'tests/votes.test.mjs' 'tests/account.test.mjs' 'tests/db-hard-fail.test.mjs' 'tests/readyz-live.test.mjs' 'tests/security-headers.test.mjs' 'tests/rate-limit.test.mjs'",
     "start": "node server/index.mjs",
     "build:preview": "node scripts/build-preview.mjs",
