@@ -190,14 +190,27 @@ test("catalog discovers every canonical course definition", () => {
 
 test("catalog title and mock config come from canonical course metadata", () => {
   const { catalog } = build({
-    courses: [course({ title: "Renamed Course", mock: { question_count: 12, time_limit_minutes: 25, disclose_bank_size: false } })],
+    courses: [
+      course({
+        title: "Renamed Course",
+        mock: { question_count: 12, time_limit_minutes: 25, disclose_bank_size: false },
+        // Moved off the helper's default 30 deliberately: the per-domain
+        // mock_questions must sum to question_count, which
+        // scripts/lib/validate-generated-artifacts.mjs now enforces at the
+        // build boundary. Overriding only question_count would describe an
+        // exam the mock builder cannot actually compose.
+        domains: [
+          { id: "domain-1", title: "One", weight: 100, mock_questions: 12, objectives: [{ id: "alpha", title: "Alpha" }] },
+        ],
+      }),
+    ],
   });
   assert.equal(catalog[0].title, "Renamed Course");
   assert.equal(catalog[0].mock.questionCount, 12);
   assert.equal(catalog[0].mock.timeLimitMinutes, 25);
   assert.equal(catalog[0].mock.discloseBankSize, false);
   assert.deepEqual(catalog[0].mock.domains, [
-    { id: "domain-1", title: "One", weight: 100, mockQuestions: 30 },
+    { id: "domain-1", title: "One", weight: 100, mockQuestions: 12 },
   ]);
 });
 
