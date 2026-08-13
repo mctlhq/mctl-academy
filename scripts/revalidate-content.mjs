@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseDocument } from "yaml";
+import { parseDocument, isSeq, isMap } from "yaml";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR
@@ -115,11 +115,16 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
 
     if (allExcerptsMatched && proposedRepins.length === data.evidence.length) {
       // Atomic repinning: update evidence hashes ONLY when ALL evidence items match
+      // isSeq/isMap rather than duck-typing on `.get`/`.set`: yaml's own type
+      // guards say what these nodes have to be for the write to mean
+      // anything, and a scalar or an alias would answer the duck-type check
+      // while silently not being the sequence of evidence maps this is
+      // repinning.
       const evidenceNode = doc.get("evidence");
-      for (const { idx, hash } of proposedRepins) {
-        if (evidenceNode && evidenceNode.get) {
+      if (isSeq(evidenceNode)) {
+        for (const { idx, hash } of proposedRepins) {
           const itemNode = evidenceNode.get(idx);
-          if (itemNode && itemNode.set) {
+          if (isMap(itemNode)) {
             itemNode.set("source_sha256", hash);
           }
         }

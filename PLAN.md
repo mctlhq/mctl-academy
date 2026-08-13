@@ -325,8 +325,17 @@ are. The client is unaffected: it has always had `vue-tsc --noEmit`.
 `include` grows **one directory per PR**, which is the whole design. Turning
 `checkJs` on everywhere at once buries the few real defects under a long tail
 of noise, and a check nobody reads is worse than none. Coverage today:
-`server/` and `migrations/`. Remaining, measured 2026-08-13: `scripts/` 7
-errors (all `unknown` narrowing wanting a JSDoc cast), `tests/` 40.
+`server/`, `migrations/` and `scripts/`. Remaining: `tests/`, 40 errors.
+
+Neither of the two things `scripts/` needed was a cast. In
+`validate-generated-artifacts.mjs` the two shape checks pushed their errors
+and relied on a later `errors.length > 0` to stop — correct, but the "both are
+arrays from here on" guarantee lived several lines away from where it was
+established, and now sits in the block that establishes it. In
+`revalidate-content.mjs` the repin loop duck-typed on `.get`/`.set`; it now
+uses yaml's own `isSeq`/`isMap`, which is what the code actually requires — a
+scalar or an alias would have passed the duck-type check while not being the
+sequence of evidence maps being repinned.
 
 `strict` is off on purpose for this first pass. `strictNullChecks` alone
 reports hundreds of "possibly undefined" on paths guarded by runtime
