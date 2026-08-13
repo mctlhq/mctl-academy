@@ -309,6 +309,21 @@ Security and session handling:
   in-memory store is capacity-bounded (`RATE_LIMIT_MAX_ENTRIES`); at
   capacity it sweeps expired entries first and only then fails closed
   (`429`) rather than evicting another client's still-active window.
+- **The limiter logs the conditions that make trusting one header risky.**
+  Keying on `CF-Connecting-IP` alone means its absence — a proxy
+  reconfiguration, direct origin access, Cloudflare bypassed — silently
+  collapses every anonymous caller into the shared fallback bucket, so
+  `POST /api/reports` starts returning `429` site-wide once that one bucket
+  is spent. Fail-closed is the intended behaviour; being invisible was not.
+  The limiter therefore warns (prefix `[rate-limit]`) when a request arrives
+  without the trusted header, and on every rejection, distinguishing a quota
+  rejection from a store-at-capacity one and the shared bucket from a per-IP
+  one. Client IPs are never logged: the bucket *kind* is the operational
+  signal, and addresses would be personal data in Loki for no added value.
+  Each condition can recur at request rate, so lines of the same kind are
+  throttled to one per `RATE_LIMIT_LOG_INTERVAL_MS`, carrying a count of the
+  occurrences they stand for. On the healthy production path the limiter is
+  silent, which is what makes any line at all meaningful.
 
 ## 8. Deployment — MCP-only, no gitops commits
 
