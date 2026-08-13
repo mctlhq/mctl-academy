@@ -198,6 +198,18 @@ export async function deleteUserAttempts(userId) {
   }
 }
 
+/**
+ * @param {object} report
+ * @param {string} report.questionId
+ * @param {string} report.reason
+ * @param {string} [report.comment]
+ * @param {string} [report.reporterUserId] Optional, and in practice never
+ *   passed: POST /api/reports accepts anonymous callers and deliberately does
+ *   not persist a reporter identifier, even for a signed-in user (PLAN.md
+ *   section 7; tests/server.test.mjs asserts it). The column and this
+ *   parameter exist so that attributing a report stays possible if the policy
+ *   ever changes, not because anything supplies them today.
+ */
 export async function insertQuestionReport({ questionId, reason, comment, reporterUserId }) {
   if (pool) {
     const res = await pool.query(

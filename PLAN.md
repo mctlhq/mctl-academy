@@ -298,6 +298,48 @@ human can actually see). The remaining two were the linter's fault, not the
 code's: `server/index.mjs` legitimately references `Bun`, so `Bun` is
 declared a global rather than the code changed.
 
+### Formatting
+
+Prettier over everything except `content/`, `*.md` and `.github/`;
+`bun run format`, enforced by `format:check` in the same CI job as ESLint.
+`printWidth` is 110 and every other setting is the default — 110 was measured,
+not chosen: 99.1% of the lines already written here fit inside it, so the
+hand-wrapping the authors chose mostly survives, where the default 80 would
+have rewrapped the repo for nothing. The exclusions are for reasons, not
+caution: `content/` is schema-validated evidence-pinned material reviewed on
+evidence rather than layout; Markdown gains nothing (Prettier's only changes
+are `*emphasis*` → `_emphasis_` and table padding, and PLAN.md alone becomes
+an 80-line diff of realigned table rows); `.github/` would only change quote
+style, and one of those files is the review gate a PR merges through.
+`eslint-config-prettier` is deliberately absent — `npx eslint-config-prettier`
+reports no conflicting rules, because the ESLint config enables only
+correctness tiers.
+
+### Type checking the `.mjs` half
+
+`tsconfig.check.json` runs `tsc --noEmit` with `allowJs` + `checkJs` over the
+plain-JavaScript side; `bun run typecheck`, enforced in CI. Nothing is
+emitted and no build step is introduced — the `.mjs` files still run as they
+are. The client is unaffected: it has always had `vue-tsc --noEmit`.
+
+`include` grows **one directory per PR**, which is the whole design. Turning
+`checkJs` on everywhere at once buries the few real defects under a long tail
+of noise, and a check nobody reads is worse than none. Coverage today:
+`server/` and `migrations/`. Remaining, measured 2026-08-13: `scripts/` 7
+errors (all `unknown` narrowing wanting a JSDoc cast), `tests/` 40.
+
+`strict` is off on purpose for this first pass. `strictNullChecks` alone
+reports hundreds of "possibly undefined" on paths guarded by runtime
+validation the checker cannot see; each option gets tightened later, on its
+own evidence.
+
+The first pass over `server/` found exactly one substantive thing:
+`insertQuestionReport` declared a `reporterUserId` its only caller never
+passes. That is not a bug — `POST /api/reports` deliberately persists no
+reporter identifier, even for a signed-in user — so the parameter is now
+documented as optional and *why*, rather than reading as an argument someone
+forgot.
+
 ## 7. Application
 
 **Built, with one stack change from the original design below:** the client
