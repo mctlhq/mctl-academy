@@ -39,6 +39,11 @@ jobs:
       - name: Prettier
         run: bun run format:check
 
+      # The client's types are checked by its own `vue-tsc --noEmit` in the
+      # client job; this is the .mjs half, which had no type checking at all.
+      - name: Typecheck (.mjs)
+        run: bun run typecheck
+
   content:
     name: Content lint and tests
     runs-on: ubuntu-latest
