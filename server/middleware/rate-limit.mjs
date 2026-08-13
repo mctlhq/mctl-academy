@@ -18,6 +18,17 @@
  * shared across replicas. Acceptable at MVP scale (no autoscaling
  * configured for this service yet); revisit with a shared store (e.g. a
  * Postgres-backed counter) if the service scales beyond one replica.
+ *
+ * Observability: trusting a single header makes its *absence* a silent
+ * failure mode -- if `CF-Connecting-IP` ever stops arriving (direct origin
+ * access, a proxy reconfiguration, Cloudflare bypassed), every anonymous
+ * caller collapses into the one shared no-IP bucket and the endpoint starts
+ * returning 429 site-wide after `max` requests per window. That is the
+ * intended fail-closed behaviour, but until now it left no trace: neither
+ * this middleware nor the app logged anything about rejections, so the
+ * condition was invisible in Loki. Both the no-IP fallback and every 429 are
+ * therefore logged, throttled so that a flood cannot turn the log itself
+ * into the outage.
  */
 
 const WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS) || 10 * 60 * 1000; // 10 minutes
@@ -28,6 +39,12 @@ const MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX) || 10;
 // next request).
 const MAX_ENTRIES = Number(process.env.RATE_LIMIT_MAX_ENTRIES) || 5000;
 const TRUSTED_IP_HEADER = "cf-connecting-ip";
+// Shortest gap between two log lines of the same kind. The conditions worth
+// logging here are exactly the ones that can repeat at request rate (a
+// missing header affects every request; a client past its quota keeps
+// retrying), so an unthrottled line per occurrence would be both useless and
+// a log-volume amplifier handed to any caller.
+const LOG_INTERVAL_MS = Number(process.env.RATE_LIMIT_LOG_INTERVAL_MS) || 60 * 1000;
 
 // A Symbol, never a string: header values are always strings, so this key
 // can never be produced by any request, spoofed or not. Requests with no
@@ -56,17 +73,66 @@ function evictExpired(store, currentTime) {
   }
 }
 
+/**
+ * Per-event log throttle. Returns a function that, for a given event name,
+ * either grants permission to log now -- reporting how many occurrences were
+ * swallowed since the last granted line, so a throttled log never
+ * misrepresents a flood as a single event -- or returns null.
+ */
+function createLogThrottle({ intervalMs, now }) {
+  const perEvent = new Map(); // event -> { nextAt, suppressed }
+
+  return function claim(event) {
+    const currentTime = now();
+    let state = perEvent.get(event);
+    if (!state) {
+      state = { nextAt: 0, suppressed: 0 };
+      perEvent.set(event, state);
+    }
+    if (currentTime < state.nextAt) {
+      state.suppressed += 1;
+      return null;
+    }
+    const { suppressed } = state;
+    state.suppressed = 0;
+    state.nextAt = currentTime + intervalMs;
+    return { suppressed };
+  };
+}
+
+function since(claimed) {
+  return claimed.suppressed > 0 ? ` (+${claimed.suppressed} suppressed since last line)` : "";
+}
+
 export function rateLimit({
   windowMs = WINDOW_MS,
   max = MAX_REQUESTS,
   maxEntries = MAX_ENTRIES,
   trustedIpHeader = TRUSTED_IP_HEADER,
+  logIntervalMs = LOG_INTERVAL_MS,
   now = Date.now,
+  logger = console,
   store = new Map() // key -> { count, resetAt }
 } = {}) {
+  const claimLog = createLogThrottle({ intervalMs: logIntervalMs, now });
+
   return async (c, next) => {
     const key = clientKey(c, trustedIpHeader);
     const currentTime = now();
+
+    if (key === NO_IP_KEY) {
+      // The diagnostic this whole file's trust model rests on: in production
+      // every request reaches the origin through Cloudflare, so this line
+      // should never appear. If it does, the header is not arriving and one
+      // bucket is standing in for every anonymous client.
+      const claimed = claimLog("no-trusted-ip");
+      if (claimed) {
+        logger.warn(
+          `[rate-limit] no ${trustedIpHeader} header on ${c.req.method} ${c.req.path}; ` +
+            `all such requests share a single bucket${since(claimed)}`
+        );
+      }
+    }
     let entry = store.get(key);
     const isNewKey = !entry || entry.resetAt <= currentTime;
 
@@ -79,6 +145,16 @@ export function rateLimit({
       if (!store.has(key) && store.size >= maxEntries) {
         evictExpired(store, currentTime);
         if (store.size >= maxEntries) {
+          // Distinct from the quota rejection below and far more alarming:
+          // this turns away a client that has made no requests at all,
+          // because the store is genuinely full of live windows.
+          const claimed = claimLog("capacity");
+          if (claimed) {
+            logger.warn(
+              `[rate-limit] rejected ${c.req.method} ${c.req.path}: store at capacity ` +
+                `(${store.size}/${maxEntries} live windows), no room for a new client${since(claimed)}`
+            );
+          }
           return c.json({ error: "Too many requests. Please try again later." }, 429);
         }
       }
@@ -89,6 +165,23 @@ export function rateLimit({
     entry.count += 1;
 
     if (entry.count > max) {
+      // The bucket kind, never the IP itself: knowing *that* a shared no-IP
+      // bucket is doing the rejecting is the operational signal, and logging
+      // caller addresses would put personal data into Loki for no added
+      // diagnostic value.
+      const isNoIp = key === NO_IP_KEY;
+      const bucket = isNoIp ? "the shared no-IP bucket" : "a per-IP bucket";
+      // Throttled as two separate events, not one "quota": a single client
+      // hammering its own bucket would otherwise hold the shared token and
+      // fold every site-wide rejection into its own line's suppressed count,
+      // hiding exactly the condition this logging exists to surface.
+      const claimed = claimLog(isNoIp ? "quota:no-ip" : "quota:per-ip");
+      if (claimed) {
+        logger.warn(
+          `[rate-limit] rejected ${c.req.method} ${c.req.path}: ${bucket} exceeded ` +
+            `${max} requests per ${windowMs}ms${since(claimed)}`
+        );
+      }
       return c.json({ error: "Too many requests. Please try again later." }, 429);
     }
 
