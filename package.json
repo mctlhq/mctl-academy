@@ -13,6 +13,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "lint": "eslint .",
     "lint:content": "node scripts/validate-content.mjs",
     "verify:evidence": "node scripts/verify-evidence.mjs",
     "snapshot:capture": "node scripts/capture-source.mjs",
@@ -38,6 +39,11 @@
     "yaml": "^2.6.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1"
+    "@eslint/js": "^9",
+    "@playwright/test": "^1.49.1",
+    "eslint": "^9",
+    "eslint-plugin-vue": "^9",
+    "globals": "^15",
+    "typescript-eslint": "^8"
   }
 }

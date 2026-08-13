@@ -269,6 +269,35 @@ Files at Phase 0:
   token and merges with `--admin`; `claude-review.yml` needs `allowed_bots` for
   agent-actor PRs.
 
+### Linting
+
+`eslint.config.mjs` (flat config) covers the whole repo: the `.mjs` Node side
+(server, scripts, migrations, `node:test` suites) and the client's TypeScript
+and Vue SFCs. `bun run lint`; enforced by its own `ESLint` CI job, which needs
+no database and no secrets and therefore fails fast and independently of the
+test jobs.
+
+Two scoping decisions worth keeping:
+
+- **Vue's `flat/essential`, not `flat/recommended`.** The recommended tier is
+  mostly the strongly-recommended *stylistic* rules — attribute-per-line, tag
+  newlines, self-closing style. On this codebase they produced 181 warnings
+  and not one genuine defect, while the correctness tier found real problems.
+  Formatting belongs to Prettier, which is the next step; no rule here should
+  ever be in a position to argue with it.
+- **No type-aware presets.** The client already runs `vue-tsc --noEmit` in
+  CI, which is the stronger check; enabling typescript-eslint's type-checked
+  configs would duplicate it at several times the runtime. Type coverage for
+  the `.mjs` side is the later `checkJs` step.
+
+The first run found four violations, all fixed in the same PR: an unused
+`catch` binding, and a literal U+00A0 inside a regex in
+`scripts/verify-evidence.mjs` (intentional — that line normalizes
+non-breaking spaces — now written as `\u00a0`, which the linter accepts and a
+human can actually see). The remaining two were the linter's fault, not the
+code's: `server/index.mjs` legitimately references `Bun`, so `Bun` is
+declared a global rather than the code changed.
+
 ## 7. Application
 
 **Built, with one stack change from the original design below:** the client
