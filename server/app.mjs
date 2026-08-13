@@ -197,7 +197,7 @@ app.post("/api/reports", requireSameOrigin, rateLimit(), async (c) => {
       },
       201
     );
-  } catch (err) {
+  } catch {
     return c.json({ error: "Invalid JSON payload" }, 400);
   }
 });

@@ -43,7 +43,7 @@ export function normalize(text) {
   return text
     .replace(/[‘’‛]/g, "'")
     .replace(/[“”‟]/g, '"')
-    .replace(/ /g, " ")
+    .replace(/\u00a0/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }

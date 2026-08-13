@@ -10,6 +10,28 @@ permissions:
   packages: read
 
 jobs:
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    # Its own job rather than a step inside another: linting needs no
+    # database, no secrets and no network, so it starts and fails fast, and
+    # a lint failure never obscures whether the tests themselves passed.
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Root install only. eslint.config.mjs lints client/**/*.{ts,vue} as
+      # well, but every plugin and parser it needs resolves from the root
+      # node_modules -- verified by linting the client clean with
+      # client/node_modules absent.
+      - run: bun install --frozen-lockfile
+
+      - name: ESLint
+        run: bun run lint
+
   content:
     name: Content lint and tests
     runs-on: ubuntu-latest
