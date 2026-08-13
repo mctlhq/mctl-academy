@@ -337,6 +337,18 @@ uses yaml's own `isSeq`/`isMap`, which is what the code actually requires — a
 scalar or an alias would have passed the duck-type check while not being the
 sequence of evidence maps being repinned.
 
+That second one exposed a real defect underneath, raised as a P1 in review of
+the same PR. When the evidence node was not writable, the loop skipped
+silently and the question was still pushed to `revalidated` — so the run
+reported a repin that never reached disk, and the question advanced carrying
+its old hashes. This is the one claim the evidence gate must never make
+falsely. Atomicity now covers the document's *shape* as well as excerpt
+matching: every target node is resolved before anything is written, and if any
+is unwritable the question is reported as unmatched with an explicit error
+instead. `tests/revalidate-content.test.mjs` covers it with an aliased
+`evidence` node — a shape that `toJS()` resolves into a perfectly ordinary
+array, so every upstream check passes and only the write can detect it.
+
 `strict` is off on purpose for this first pass. `strictNullChecks` alone
 reports hundreds of "possibly undefined" on paths guarded by runtime
 validation the checker cannot see; each option gets tightened later, on its
