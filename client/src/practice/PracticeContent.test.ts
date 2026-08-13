@@ -94,7 +94,12 @@ describe("PracticeContent", () => {
           question("q-1", {
             stem: "What is `<script>alert(1)</script>`?",
             options: [
-              { id: "a", text: "<b>bold</b> claim", correct: true, explanation: "<img src=x onerror=alert(1)> in explain" },
+              {
+                id: "a",
+                text: "<b>bold</b> claim",
+                correct: true,
+                explanation: "<img src=x onerror=alert(1)> in explain",
+              },
               { id: "b", text: "Plain", correct: false, explanation: "Plain too" },
               { id: "c", text: "Also plain", correct: false, explanation: "Also plain" },
               { id: "d", text: "Last", correct: false, explanation: "Last" },

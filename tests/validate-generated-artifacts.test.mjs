@@ -126,14 +126,30 @@ describe("validateGeneratedArtifacts — malformed catalog", () => {
   test("rejects duplicate domain ids within one course", () => {
     const { bundle } = valid();
     const catalog = [
-      course({ mock: { questionCount: 30, timeLimitMinutes: 60, discloseBankSize: true, domains: [domain({ mockQuestions: 15 }), domain({ mockQuestions: 15 })] } }),
+      course({
+        mock: {
+          questionCount: 30,
+          timeLimitMinutes: 60,
+          discloseBankSize: true,
+          domains: [domain({ mockQuestions: 15 }), domain({ mockQuestions: 15 })],
+        },
+      }),
     ];
     assertRejects(bundle, catalog, "duplicate domain id");
   });
 
   test("rejects domain mockQuestions that do not sum to questionCount", () => {
     const { bundle } = valid();
-    const catalog = [course({ mock: { questionCount: 30, timeLimitMinutes: 60, discloseBankSize: true, domains: [domain({ mockQuestions: 29 })] } })];
+    const catalog = [
+      course({
+        mock: {
+          questionCount: 30,
+          timeLimitMinutes: 60,
+          discloseBankSize: true,
+          domains: [domain({ mockQuestions: 29 })],
+        },
+      }),
+    ];
     assertRejects(bundle, catalog, "sum to 29, but questionCount is 30");
   });
 });
@@ -145,7 +161,11 @@ describe("validateGeneratedArtifacts — cross-artefact coherence", () => {
   });
 
   test("rejects available=true on a course with no published questions", () => {
-    assertRejects([], [course({ publishedQuestionCount: 0, available: true })], "expected false for publishedQuestionCount 0");
+    assertRejects(
+      [],
+      [course({ publishedQuestionCount: 0, available: true })],
+      "expected false for publishedQuestionCount 0",
+    );
   });
 
   test("rejects available=false on a course that does have published questions", () => {

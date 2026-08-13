@@ -187,10 +187,7 @@ function checkEvidence(file, data) {
     // Either way a published item is unsafe, and the fix is to mark the item
     // needs_review and re-author it — not to hide it at runtime.
     if (UNUSABLE_SOURCE_STATUSES.has(src.status) && data.status === "published") {
-      err(
-        file,
-        `cannot be published: source ${ev.source_id} is ${src.status} and needs re-verification`,
-      );
+      err(file, `cannot be published: source ${ev.source_id} is ${src.status} and needs re-verification`);
     }
   }
 }
@@ -253,7 +250,8 @@ for (const { file, data } of questions) {
   // Schema pins the option count and the single correct answer, but cannot
   // compare option contents to each other.
   const ids = data.options.map((o) => o.id);
-  if (new Set(ids).size !== 4) err(file, `option ids must be a, b, c, d exactly once — got ${ids.join(", ")}`);
+  if (new Set(ids).size !== 4)
+    err(file, `option ids must be a, b, c, d exactly once — got ${ids.join(", ")}`);
 
   const texts = data.options.map((o) => o.text.trim().toLowerCase());
   if (new Set(texts).size !== texts.length) {

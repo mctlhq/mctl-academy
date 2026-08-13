@@ -28,7 +28,13 @@ const course = (over = {}) => ({
   description: "Course description mentioning Some Vendor.",
   mock: { question_count: 30, time_limit_minutes: 60, disclose_bank_size: true },
   domains: [
-    { id: "domain-1", title: "One", weight: 100, mock_questions: 30, objectives: [{ id: "alpha", title: "Alpha" }] },
+    {
+      id: "domain-1",
+      title: "One",
+      weight: 100,
+      mock_questions: 30,
+      objectives: [{ id: "alpha", title: "Alpha" }],
+    },
   ],
   ...over,
 });
@@ -77,7 +83,12 @@ function build({ questions = [], sources = [source()], courses = [course()] } = 
     for (const q of questions) writeFileSync(join(dir, "questions", `${q.id}.yaml`), JSON.stringify(q));
 
     execFileSync("node", [join(ROOT, "scripts", "build-content-bundle.mjs")], {
-      env: { ...process.env, ACADEMY_CONTENT_DIR: dir, ACADEMY_BUNDLE_OUT: out, ACADEMY_CATALOG_OUT: catalogOut },
+      env: {
+        ...process.env,
+        ACADEMY_CONTENT_DIR: dir,
+        ACADEMY_BUNDLE_OUT: out,
+        ACADEMY_CATALOG_OUT: catalogOut,
+      },
       stdio: "ignore",
     });
     return {
@@ -167,7 +178,10 @@ test("emits only the fields the client needs, per question and per option", () =
   const { bundle } = build({ questions: [question("q-published0002", "published")] });
   const [q] = bundle;
 
-  assert.deepEqual(Object.keys(q).sort(), ["course_id", "domain", "id", "objective", "options", "stem"].sort());
+  assert.deepEqual(
+    Object.keys(q).sort(),
+    ["course_id", "domain", "id", "objective", "options", "stem"].sort(),
+  );
   assert.deepEqual(Object.keys(q.options[0]).sort(), ["correct", "explanation", "id", "text"].sort());
 });
 
@@ -200,7 +214,13 @@ test("catalog title and mock config come from canonical course metadata", () => 
         // build boundary. Overriding only question_count would describe an
         // exam the mock builder cannot actually compose.
         domains: [
-          { id: "domain-1", title: "One", weight: 100, mock_questions: 12, objectives: [{ id: "alpha", title: "Alpha" }] },
+          {
+            id: "domain-1",
+            title: "One",
+            weight: 100,
+            mock_questions: 12,
+            objectives: [{ id: "alpha", title: "Alpha" }],
+          },
         ],
       }),
     ],

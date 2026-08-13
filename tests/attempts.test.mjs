@@ -66,10 +66,12 @@ describe("Attempt sync API", () => {
     assert.equal(postRes.status, 201);
 
     const postBody = await postRes.json();
-    assert.deepEqual(
-      Object.keys(postBody.attempt).sort(),
-      ["attemptedAt", "correct", "domain", "questionId"],
-    );
+    assert.deepEqual(Object.keys(postBody.attempt).sort(), [
+      "attemptedAt",
+      "correct",
+      "domain",
+      "questionId",
+    ]);
 
     const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
     const getBody = await getRes.json();
@@ -127,7 +129,10 @@ describe("Attempt sync API", () => {
 
     const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
     const getBody = await getRes.json();
-    assert.equal(getBody.attempts.find((a) => a.questionId === "q-attempts-3"), undefined);
+    assert.equal(
+      getBody.attempts.find((a) => a.questionId === "q-attempts-3"),
+      undefined,
+    );
   });
 
   test("re-recording an attempt keeps only the latest value per questionId", async () => {

@@ -24,7 +24,7 @@ const CSP = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'"
+  "frame-ancestors 'none'",
 ].join("; ");
 
 function securityHeaderEntries() {
@@ -39,7 +39,7 @@ function securityHeaderEntries() {
     ["X-Frame-Options", "DENY"],
     ["X-Content-Type-Options", "nosniff"],
     ["Referrer-Policy", "strict-origin-when-cross-origin"],
-    ["Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()"]
+    ["Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()"],
   ];
   // HTTPS is terminated at the ingress; NODE_ENV=production is this app's
   // existing signal for "we are behind that ingress" (see db-ssl.mjs), so

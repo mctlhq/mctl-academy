@@ -14,10 +14,8 @@ import { rateLimit } from "../server/middleware/rate-limit.mjs";
 function probeApp(options = {}) {
   const logs = [];
   const app = new Hono();
-  app.post(
-    "/probe",
-    rateLimit({ logger: { warn: (message) => logs.push(message) }, ...options }),
-    (c) => c.json({ ok: true })
+  app.post("/probe", rateLimit({ logger: { warn: (message) => logs.push(message) }, ...options }), (c) =>
+    c.json({ ok: true }),
   );
   return { app, logs };
 }
@@ -31,14 +29,20 @@ describe("rateLimit — trusted IP source (PLAN.md PR 2b)", () => {
   test("trusts only CF-Connecting-IP: two different values get independent budgets", async () => {
     const { app } = probeApp({ max: 1, store: new Map() });
 
-    const first = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.1" } });
-    const second = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.2" } });
+    const first = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "203.0.113.1" },
+    });
+    const second = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "203.0.113.2" },
+    });
     assert.equal(first.status, 200);
     assert.equal(second.status, 200);
 
     const firstAgain = await app.request("/probe", {
       method: "POST",
-      headers: { "cf-connecting-ip": "203.0.113.1" }
+      headers: { "cf-connecting-ip": "203.0.113.1" },
     });
     assert.equal(firstAgain.status, 429);
   });
@@ -46,14 +50,20 @@ describe("rateLimit — trusted IP source (PLAN.md PR 2b)", () => {
   test("a spoofed X-Forwarded-For is never read as client identity", async () => {
     const { app } = probeApp({ max: 1, store: new Map() });
 
-    const first = await app.request("/probe", { method: "POST", headers: { "x-forwarded-for": "203.0.113.1" } });
+    const first = await app.request("/probe", {
+      method: "POST",
+      headers: { "x-forwarded-for": "203.0.113.1" },
+    });
     assert.equal(first.status, 200);
 
     // Different spoofed X-Forwarded-For, still no cf-connecting-ip: this is
     // the *same* untrusted request from the middleware's point of view, so
     // it must land in the same bucket as the first and be rejected --
     // proving X-Forwarded-For cannot be used to fabricate a fresh identity.
-    const second = await app.request("/probe", { method: "POST", headers: { "x-forwarded-for": "203.0.113.2" } });
+    const second = await app.request("/probe", {
+      method: "POST",
+      headers: { "x-forwarded-for": "203.0.113.2" },
+    });
     assert.equal(second.status, 429);
   });
 
@@ -62,7 +72,7 @@ describe("rateLimit — trusted IP source (PLAN.md PR 2b)", () => {
 
     const literalUnknown = await app.request("/probe", {
       method: "POST",
-      headers: { "cf-connecting-ip": "unknown" }
+      headers: { "cf-connecting-ip": "unknown" },
     });
     assert.equal(literalUnknown.status, 200);
 
@@ -94,7 +104,10 @@ describe("rateLimit — bounded storage (PLAN.md PR 2b)", () => {
     assert.ok(store.has("10.0.0.2"), "an active entry must not be evicted to make room");
 
     // 10.0.0.1's own budget must be untouched by the rejected newcomer.
-    const aAgain = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
+    const aAgain = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "10.0.0.1" },
+    });
     assert.equal(aAgain.status, 200);
   });
 
@@ -114,7 +127,6 @@ describe("rateLimit — bounded storage (PLAN.md PR 2b)", () => {
     assert.equal(store.size, 1, "expired entries are removed, leaving only the new one");
     assert.ok(store.has("10.0.0.3"));
   });
-
 });
 
 describe("rateLimit — observability", () => {
@@ -145,7 +157,7 @@ describe("rateLimit — observability", () => {
     await perIp.app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.1" } });
     const rejected = await perIp.app.request("/probe", {
       method: "POST",
-      headers: { "cf-connecting-ip": "203.0.113.1" }
+      headers: { "cf-connecting-ip": "203.0.113.1" },
     });
     assert.equal(rejected.status, 429);
     assert.equal(perIp.logs.length, 1);
@@ -159,7 +171,7 @@ describe("rateLimit — observability", () => {
     // bucket, not one client, is what ran out of budget.
     assert.ok(
       noIp.logs.some((line) => /the shared no-IP bucket exceeded/.test(line)),
-      `expected a shared-bucket rejection line, got ${JSON.stringify(noIp.logs)}`
+      `expected a shared-bucket rejection line, got ${JSON.stringify(noIp.logs)}`,
     );
   });
 
@@ -168,7 +180,10 @@ describe("rateLimit — observability", () => {
 
     await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
     await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.2" } });
-    const turnedAway = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.3" } });
+    const turnedAway = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "10.0.0.3" },
+    });
 
     assert.equal(turnedAway.status, 429);
     assert.equal(logs.length, 1);
@@ -192,7 +207,7 @@ describe("rateLimit — observability", () => {
     assert.match(logs[1], /exceeded/);
     assert.ok(
       logs.every((line) => !/suppressed/.test(line)),
-      "a first line has nothing to report as suppressed"
+      "a first line has nothing to report as suppressed",
     );
 
     advance(1000);
@@ -210,7 +225,13 @@ describe("rateLimit — observability", () => {
     // One middleware instance, one store, one throttle -- the concurrency the
     // per-bucket tests above cannot exercise, since they each use their own
     // probe app.
-    const { app, logs } = probeApp({ max: 1, windowMs: 600_000, logIntervalMs: 600_000, store: new Map(), now });
+    const { app, logs } = probeApp({
+      max: 1,
+      windowMs: 600_000,
+      logIntervalMs: 600_000,
+      store: new Map(),
+      now,
+    });
 
     // A single client hammering its own bucket, well inside the throttle
     // interval: it claims the per-IP quota token and keeps re-triggering it.
@@ -229,7 +250,7 @@ describe("rateLimit — observability", () => {
     assert.equal(sharedRejection.status, 429);
     assert.ok(
       logs.some((line) => /the shared no-IP bucket exceeded/.test(line)),
-      `the shared-bucket rejection must be logged in its own right, got ${JSON.stringify(logs)}`
+      `the shared-bucket rejection must be logged in its own right, got ${JSON.stringify(logs)}`,
     );
   });
 
@@ -241,7 +262,7 @@ describe("rateLimit — observability", () => {
       windowMs: 600_000,
       logIntervalMs: 600_000,
       store: new Map(),
-      now
+      now,
     });
 
     await app.request("/probe", { method: "POST", headers: {} }); // missing header: logged
@@ -250,7 +271,7 @@ describe("rateLimit — observability", () => {
     // throttle interval of both events logged above.
     const turnedAway = await app.request("/probe", {
       method: "POST",
-      headers: { "cf-connecting-ip": "10.0.0.9" }
+      headers: { "cf-connecting-ip": "10.0.0.9" },
     });
 
     assert.equal(turnedAway.status, 429);
@@ -264,12 +285,15 @@ describe("rateLimit — window rollover", () => {
     const { now, advance } = clock(0);
     const { app } = probeApp({ max: 1, windowMs: 1000, store: new Map(), now });
 
-    const first = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
+    const first = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "10.0.0.1" },
+    });
     assert.equal(first.status, 200);
 
     const stillWithinWindow = await app.request("/probe", {
       method: "POST",
-      headers: { "cf-connecting-ip": "10.0.0.1" }
+      headers: { "cf-connecting-ip": "10.0.0.1" },
     });
     assert.equal(stillWithinWindow.status, 429);
 
@@ -277,7 +301,7 @@ describe("rateLimit — window rollover", () => {
 
     const afterRollover = await app.request("/probe", {
       method: "POST",
-      headers: { "cf-connecting-ip": "10.0.0.1" }
+      headers: { "cf-connecting-ip": "10.0.0.1" },
     });
     assert.equal(afterRollover.status, 200);
   });

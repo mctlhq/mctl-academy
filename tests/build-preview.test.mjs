@@ -14,8 +14,23 @@ const ROOT = new URL("..", import.meta.url).pathname;
 
 /** Tags the template itself emits. Anything else came from content. */
 const TEMPLATE_TAGS = new Set([
-  "h1", "h2", "p", "div", "span", "section", "article",
-  "ul", "ol", "li", "a", "code", "em", "br", "header", "footer", "b",
+  "h1",
+  "h2",
+  "p",
+  "div",
+  "span",
+  "section",
+  "article",
+  "ul",
+  "ol",
+  "li",
+  "a",
+  "code",
+  "em",
+  "br",
+  "header",
+  "footer",
+  "b",
 ]);
 
 function render(question) {

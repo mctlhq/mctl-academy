@@ -62,15 +62,19 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
 
   test("cascades to the deleted user's question reports — the row is gone, not merely anonymized", async () => {
     const cookie = await authedCookie({ githubLogin: "account-delete-reports-cascade" });
-    const session = await (await app.request("/api/auth/get-session", { headers: { Cookie: cookie } })).json();
+    const session = await (
+      await app.request("/api/auth/get-session", { headers: { Cookie: cookie } })
+    ).json();
     const userId = session.user.id;
 
     await authPool.query(
       `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id) VALUES ($1, $2, $3, $4);`,
-      ["q-account-delete-reports", "typo", "test report", userId]
+      ["q-account-delete-reports", "typo", "test report", userId],
     );
 
-    const before = await authPool.query(`SELECT id FROM question_reports WHERE reporter_user_id = $1;`, [userId]);
+    const before = await authPool.query(`SELECT id FROM question_reports WHERE reporter_user_id = $1;`, [
+      userId,
+    ]);
     assert.equal(before.rows.length, 1);
 
     await app.request("/api/account", {
@@ -97,7 +101,9 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
       body: JSON.stringify({ value: 1 }),
     });
 
-    const session = await (await app.request("/api/auth/get-session", { headers: { Cookie: cookie } })).json();
+    const session = await (
+      await app.request("/api/auth/get-session", { headers: { Cookie: cookie } })
+    ).json();
     const userId = session.user.id;
 
     const before = await authPool.query(`SELECT id FROM question_votes WHERE user_id = $1;`, [userId]);

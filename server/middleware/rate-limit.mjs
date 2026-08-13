@@ -112,7 +112,7 @@ export function rateLimit({
   logIntervalMs = LOG_INTERVAL_MS,
   now = Date.now,
   logger = console,
-  store = new Map() // key -> { count, resetAt }
+  store = new Map(), // key -> { count, resetAt }
 } = {}) {
   const claimLog = createLogThrottle({ intervalMs: logIntervalMs, now });
 
@@ -129,7 +129,7 @@ export function rateLimit({
       if (claimed) {
         logger.warn(
           `[rate-limit] no ${trustedIpHeader} header on ${c.req.method} ${c.req.path}; ` +
-            `all such requests share a single bucket${since(claimed)}`
+            `all such requests share a single bucket${since(claimed)}`,
         );
       }
     }
@@ -152,7 +152,7 @@ export function rateLimit({
           if (claimed) {
             logger.warn(
               `[rate-limit] rejected ${c.req.method} ${c.req.path}: store at capacity ` +
-                `(${store.size}/${maxEntries} live windows), no room for a new client${since(claimed)}`
+                `(${store.size}/${maxEntries} live windows), no room for a new client${since(claimed)}`,
             );
           }
           return c.json({ error: "Too many requests. Please try again later." }, 429);
@@ -179,7 +179,7 @@ export function rateLimit({
       if (claimed) {
         logger.warn(
           `[rate-limit] rejected ${c.req.method} ${c.req.path}: ${bucket} exceeded ` +
-            `${max} requests per ${windowMs}ms${since(claimed)}`
+            `${max} requests per ${windowMs}ms${since(claimed)}`,
         );
       }
       return c.json({ error: "Too many requests. Please try again later." }, 429);

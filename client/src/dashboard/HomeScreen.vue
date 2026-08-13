@@ -30,7 +30,9 @@ const streak = computed(() => {
   void syncVersion?.value;
   return calculateStudyStreak();
 });
-const practiceLabel = computed(() => (stats.value.totalAttempted > 0 ? "Continue practice" : "Start practice"));
+const practiceLabel = computed(() =>
+  stats.value.totalAttempted > 0 ? "Continue practice" : "Start practice",
+);
 const practiceDescription = computed(() => {
   if (stats.value.totalAttempted === 0) return "Build your baseline with evidence-backed practice questions.";
   return `${stats.value.totalAttempted} of ${stats.value.totalBankQuestions} questions attempted.`;
@@ -45,7 +47,9 @@ const practiceDescription = computed(() => {
         <h1>{{ practiceLabel }}</h1>
         <p>{{ practiceDescription }}</p>
       </div>
-      <MButton type="button" @click="onStartPractice">{{ practiceLabel }} <span aria-hidden="true">→</span></MButton>
+      <MButton type="button" @click="onStartPractice"
+        >{{ practiceLabel }} <span aria-hidden="true">→</span></MButton
+      >
     </div>
 
     <div class="home-grid">

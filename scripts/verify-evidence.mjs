@@ -88,10 +88,7 @@ export async function verifyEvidence({ contentDir, store }) {
   const sources = loadYamlDir(contentDir, "sources");
   const byId = new Map(sources.map((s) => [s.data.id, s.data]));
 
-  const items = [
-    ...loadYamlDir(contentDir, "questions"),
-    ...loadYamlDir(contentDir, "lessons"),
-  ];
+  const items = [...loadYamlDir(contentDir, "questions"), ...loadYamlDir(contentDir, "lessons")];
 
   const enforced = items.filter((i) => requiresVerification(i.data?.status));
 

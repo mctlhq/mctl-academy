@@ -1,0 +1,31 @@
+# Generated or vendored -- rewriting these would either be undone by the next
+# build or churn a file nobody hand-edits.
+node_modules/
+client/dist/
+client/src/data/
+dist/
+coverage/
+playwright-report/
+test-results/
+bun.lock
+
+# Markdown, all of it. On this repo Prettier's only Markdown changes are
+# swapping *emphasis* for _emphasis_ and re-padding table cells -- no
+# readability gained, while PLAN.md alone becomes an 80-line diff of rewritten
+# table rows. These documents are the project's canon and are reviewed as
+# prose; keeping them out means a documentation diff always shows what was
+# actually said, not how a formatter chose to align it.
+*.md
+
+# The question bank and its sources. These are content, not code: every file
+# is schema-validated and evidence-pinned, agents author them from documented
+# excerpts, and a reformat would put an 80-file diff in front of the
+# maintainer whose review criteria are about evidence, not layout. Content
+# lint (`bun run lint:content`) is what governs their shape.
+content/
+
+# Workflow definitions. The only change Prettier makes here is quote style,
+# and one of these files IS the review gate this repo merges through --
+# rewriting it inside a formatting PR risks changing how that PR gets
+# reviewed, for no gain at all.
+.github/

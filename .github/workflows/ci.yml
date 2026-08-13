@@ -11,10 +11,10 @@ permissions:
 
 jobs:
   lint:
-    name: ESLint
+    name: Lint and format
     runs-on: ubuntu-latest
-    # Its own job rather than a step inside another: linting needs no
-    # database, no secrets and no network, so it starts and fails fast, and
+    # Its own job rather than steps inside another: these checks need no
+    # database, no secrets and no network, so they start and fail fast, and
     # a lint failure never obscures whether the tests themselves passed.
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -31,6 +31,13 @@ jobs:
 
       - name: ESLint
         run: bun run lint
+
+      # Same job as ESLint on purpose: both are whole-repo static checks with
+      # no dependencies, and a contributor who has to fix one usually has to
+      # fix the other. Running them as separate jobs would double the install
+      # for two commands that together take seconds.
+      - name: Prettier
+        run: bun run format:check
 
   content:
     name: Content lint and tests

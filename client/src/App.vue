@@ -12,7 +12,9 @@ const sessionState = authClient.useSession();
 const route = useRoute();
 const focusedPractice = computed(() => route.name === "practice" || route.name === "mistakes");
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
-const user = computed<UserProfile | null>(() => (sessionState.value?.data?.user as UserProfile | undefined) ?? null);
+const user = computed<UserProfile | null>(
+  () => (sessionState.value?.data?.user as UserProfile | undefined) ?? null,
+);
 
 // Exposed so any routed view can gate authenticated-only UI (e.g.
 // PracticeContent.vue's vote widget) without re-calling
@@ -77,10 +79,7 @@ watch(
 
     <main class="app-main">
       <RouterView v-slot="{ Component, route: currentRoute }">
-        <component
-          :is="Component"
-          :key="`${currentRoute.fullPath}-${currentCourseId}`"
-        />
+        <component :is="Component" :key="`${currentRoute.fullPath}-${currentCourseId}`" />
       </RouterView>
     </main>
 

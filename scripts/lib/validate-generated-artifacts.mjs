@@ -75,7 +75,9 @@ function validateBundleQuestion(question, index, errors) {
     // The narrowing the client's type declaration relies on. Anything outside
     // this set would make `BundleOption.id: OptionId` a lie.
     if (!OPTION_IDS.includes(option.id)) {
-      errors.push(`${optionAt}.id: expected one of ${OPTION_IDS.join("/")}, got ${JSON.stringify(option.id)}`);
+      errors.push(
+        `${optionAt}.id: expected one of ${OPTION_IDS.join("/")}, got ${JSON.stringify(option.id)}`,
+      );
     } else if (seenOptionIds.has(option.id)) {
       errors.push(`${optionAt}.id: duplicate option id ${JSON.stringify(option.id)} within this question`);
     } else {
@@ -175,7 +177,9 @@ function validateCatalogCourse(course, index, errors) {
 
     for (const field of ["id", "title"]) {
       if (!isNonEmptyString(domain[field])) {
-        errors.push(`${domainAt}.${field}: expected a non-empty string, got ${JSON.stringify(domain[field])}`);
+        errors.push(
+          `${domainAt}.${field}: expected a non-empty string, got ${JSON.stringify(domain[field])}`,
+        );
       }
     }
 
@@ -195,7 +199,9 @@ function validateCatalogCourse(course, index, errors) {
     }
 
     if (!isNonNegativeInteger(domain.mockQuestions)) {
-      errors.push(`${domainAt}.mockQuestions: expected a non-negative integer, got ${JSON.stringify(domain.mockQuestions)}`);
+      errors.push(
+        `${domainAt}.mockQuestions: expected a non-negative integer, got ${JSON.stringify(domain.mockQuestions)}`,
+      );
       everyDomainCountValid = false;
     } else {
       mockQuestionSum += domain.mockQuestions;
@@ -206,7 +212,11 @@ function validateCatalogCourse(course, index, errors) {
   // `questionCount`-long exam. If these disagree the exam is quietly the
   // wrong length — checked only when every part is individually sane, so a
   // single bad domain doesn't also produce a confusing sum error.
-  if (everyDomainCountValid && isNonNegativeInteger(mock.questionCount) && mockQuestionSum !== mock.questionCount) {
+  if (
+    everyDomainCountValid &&
+    isNonNegativeInteger(mock.questionCount) &&
+    mockQuestionSum !== mock.questionCount
+  ) {
     errors.push(
       `${at}.mock: domain mockQuestions sum to ${mockQuestionSum}, but questionCount is ${mock.questionCount}`,
     );

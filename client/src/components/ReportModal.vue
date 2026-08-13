@@ -14,15 +14,10 @@ const issueUrl = computed(() => buildQuestionIssueUrl(props.questionId, reason.v
 </script>
 
 <template>
-  <MModal
-    :open="true"
-    title="Create a GitHub issue"
-    @update:open="emit('close')"
-  >
+  <MModal :open="true" title="Create a GitHub issue" @update:open="emit('close')">
     <p class="report-intro">
-      This opens a pre-filled issue in <strong>mctlhq/mctl-academy</strong>. You can review it on
-      GitHub before submitting. The issue is managed by your GitHub account, not your Academy
-      account.
+      This opens a pre-filled issue in <strong>mctlhq/mctl-academy</strong>. You can review it on GitHub
+      before submitting. The issue is managed by your GitHub account, not your Academy account.
     </p>
     <p class="report-meta">
       Question ID: <code>{{ questionId }}</code>
@@ -56,9 +51,7 @@ const issueUrl = computed(() => buildQuestionIssueUrl(props.questionId, reason.v
       <p class="report-char-count">{{ comment.length }} / {{ MAX_COMMENT_LENGTH }}</p>
 
       <div class="report-actions">
-        <MButton type="button" variant="ghost" @click="emit('close')">
-          Cancel
-        </MButton>
+        <MButton type="button" variant="ghost" @click="emit('close')"> Cancel </MButton>
         <MButton as="a" :href="issueUrl" target="_blank" rel="noopener noreferrer">
           Continue to GitHub <span aria-hidden="true">↗</span>
         </MButton>

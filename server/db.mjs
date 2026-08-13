@@ -39,7 +39,7 @@ export async function initDb() {
         (isProduction ? " in production" : "") +
         ". Refusing to start on an in-memory store, which silently loses all " +
         "sessions and attempts on restart, and which better-auth has no " +
-        "equivalent of at all."
+        "equivalent of at all.",
     );
   }
 
@@ -126,7 +126,7 @@ export async function recordUserAttempt({ userId, questionId, domain, correct })
       `INSERT INTO attempts (user_id, question_id, domain, correct)
        VALUES ($1, $2, $3, $4)
        RETURNING id, question_id, domain, correct, attempted_at;`,
-      [userId || null, questionId, domain, correct]
+      [userId || null, questionId, domain, correct],
     );
     const row = res.rows[0];
     return {
@@ -166,7 +166,7 @@ export async function getUserAttempts(userId) {
        FROM attempts
        WHERE user_id = $1
        ORDER BY question_id, attempted_at DESC;`,
-      [userId]
+      [userId],
     );
     return res.rows.map((r) => ({
       questionId: r.question_id,
@@ -204,7 +204,7 @@ export async function insertQuestionReport({ questionId, reason, comment, report
       `INSERT INTO question_reports (question_id, reason, comment, reporter_user_id)
        VALUES ($1, $2, $3, $4)
        RETURNING id, question_id, reason, comment, reporter_user_id, created_at;`,
-      [questionId, reason, comment || null, reporterUserId || null]
+      [questionId, reason, comment || null, reporterUserId || null],
     );
     const row = res.rows[0];
     return {
@@ -236,7 +236,7 @@ export async function listRecentQuestionReports(limit = 50) {
        FROM question_reports
        ORDER BY created_at DESC
        LIMIT $1;`,
-      [limit]
+      [limit],
     );
     return res.rows.map((row) => ({
       id: row.id,
@@ -249,7 +249,6 @@ export async function listRecentQuestionReports(limit = 50) {
   }
 
   return memQuestionReports.slice(-limit).reverse();
-
 }
 
 /**
@@ -267,7 +266,7 @@ export async function getAdminStats() {
          (SELECT COUNT(*) FROM "session") AS total_sessions,
          (SELECT COUNT(*) FROM attempts) AS total_attempts,
          (SELECT COALESCE(AVG(correct::int), 0) FROM attempts) AS accuracy,
-         (SELECT COUNT(*) FROM attempts WHERE user_id IS NULL) AS anonymous_attempts;`
+         (SELECT COUNT(*) FROM attempts WHERE user_id IS NULL) AS anonymous_attempts;`,
     );
     const row = res.rows[0];
     return {
@@ -316,7 +315,7 @@ export async function upsertQuestionVote({ userId, questionId, value }) {
        ON CONFLICT (user_id, question_id)
        DO UPDATE SET value = EXCLUDED.value, updated_at = now()
        RETURNING user_id, question_id, value, updated_at;`,
-      [userId, questionId, value]
+      [userId, questionId, value],
     );
     const row = res.rows[0];
     return { userId: row.user_id, questionId: row.question_id, value: row.value, updatedAt: row.updated_at };
@@ -337,7 +336,10 @@ export async function upsertQuestionVote({ userId, questionId, value }) {
 /** Removes a learner's vote on a question. Idempotent — a no-op if none exists. */
 export async function deleteQuestionVote({ userId, questionId }) {
   if (pool) {
-    await pool.query(`DELETE FROM question_votes WHERE user_id = $1 AND question_id = $2;`, [userId, questionId]);
+    await pool.query(`DELETE FROM question_votes WHERE user_id = $1 AND question_id = $2;`, [
+      userId,
+      questionId,
+    ]);
     return;
   }
 
@@ -363,7 +365,7 @@ export async function getQuestionVoteSummary({ questionId, userId }) {
          COALESCE(MAX(CASE WHEN user_id = $2 THEN value END), 0)::int AS user_value
        FROM question_votes
        WHERE question_id = $1;`,
-      [questionId, userId]
+      [questionId, userId],
     );
     const row = res.rows[0];
     return { score: row.score, userValue: row.user_value };

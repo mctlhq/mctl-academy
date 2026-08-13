@@ -7,8 +7,7 @@ export interface DomainShortfall {
 }
 
 export type SelectMockResult =
-  | { ok: true; questions: Question[] }
-  | { ok: false; shortfall: DomainShortfall[] };
+  { ok: true; questions: Question[] } | { ok: false; shortfall: DomainShortfall[] };
 
 function sampleWithoutReplacement(pool: Question[], count: number, rng: () => number): Question[] {
   const copy = pool.slice();

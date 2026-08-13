@@ -221,7 +221,9 @@ describe("progressStore service", () => {
     // Comfortably in the past relative to whenever clearProgress() below
     // sets its marker, regardless of test-runner clock granularity.
     const staleAttemptedAt = new Date(Date.now() - 60_000).toISOString();
-    saveRawAttempts([{ questionId: "q-1", domain: "domain-1", correct: true, attemptedAt: staleAttemptedAt }]);
+    saveRawAttempts([
+      { questionId: "q-1", domain: "domain-1", correct: true, attemptedAt: staleAttemptedAt },
+    ]);
 
     const syncPromise = syncFromServer(); // GET in flight, not yet resolved
     const { serverCleared } = await clearProgress(); // clears local + DELETE
@@ -483,11 +485,7 @@ describe("progressStore service", () => {
 
     const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
     expect(postCalls).toHaveLength(1);
-    expect(Object.keys(JSON.parse(postCalls[0][1].body)).sort()).toEqual([
-      "correct",
-      "domain",
-      "questionId",
-    ]);
+    expect(Object.keys(JSON.parse(postCalls[0][1].body)).sort()).toEqual(["correct", "domain", "questionId"]);
   });
 
   it("syncFromServer reconciles local and server attempts without deleting either side's history", async () => {
@@ -569,7 +567,9 @@ describe("progressStore service", () => {
     fetchSpy.mockResolvedValue({
       ok: true,
       json: async () => ({
-        attempts: [{ questionId: "q-skewed", domain: "domain-1", correct: true, attemptedAt: serverAttemptedAt }],
+        attempts: [
+          { questionId: "q-skewed", domain: "domain-1", correct: true, attemptedAt: serverAttemptedAt },
+        ],
       }),
     });
 
@@ -595,6 +595,8 @@ describe("progressStore service", () => {
 
     const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
     expect(postCalls).toHaveLength(1);
-    expect(postCalls[0][1].body).toBe(JSON.stringify({ questionId: "q-local-only", domain: "domain-1", correct: true }));
+    expect(postCalls[0][1].body).toBe(
+      JSON.stringify({ questionId: "q-local-only", domain: "domain-1", correct: true }),
+    );
   });
 });
