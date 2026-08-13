@@ -14,6 +14,7 @@
 * bounded, trusted-proxy-aware rate limiter ([2d0899e](https://github.com/mctlhq/mctl-academy/commit/2d0899ea79e244f7e92d60a63ce70fd1c3fb2c56))
 * require same-origin on POST /api/reports, document anonymous-report policy ([b4d4196](https://github.com/mctlhq/mctl-academy/commit/b4d4196c2e73cb123e6ffc2425d6b52458834362))
 * requireSameOrigin on POST /api/reports + anonymous-report policy ([9327459](https://github.com/mctlhq/mctl-academy/commit/93274599e9f5087ddec4518ceb705b1a3c62c4f4))
+* send X-Frame-Options: DENY alongside the CSP's frame-ancestors ([b6f8647](https://github.com/mctlhq/mctl-academy/commit/b6f8647e043880d9d7253ce2f78f58636749c8e6))
 * trust only CF-Connecting-IP for rate limiting, bound the hits store ([36c0228](https://github.com/mctlhq/mctl-academy/commit/36c02286dd55c9d56e6fe4c418d2e4551d525bbb))
 
 ## [0.1.42](https://github.com/mctlhq/mctl-academy/compare/0.1.41...0.1.42) (2026-08-10)
