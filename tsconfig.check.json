@@ -9,9 +9,8 @@
   // long tail of noise, and a check nobody reads is worse than no check. A
   // directory joins the list in the PR that makes it pass; see PLAN.md.
   //
-  // Current coverage: server/ and migrations/.
-  // Remaining, measured 2026-08-13: scripts/ 7 errors (all `unknown`
-  // narrowing that wants a JSDoc cast), tests/ 40.
+  // Current coverage: server/, migrations/ and scripts/.
+  // Remaining, measured 2026-08-13: tests/ 40 errors.
   "compilerOptions": {
     "target": "ES2023",
     "module": "ESNext",
@@ -32,5 +31,5 @@
     // each can be argued for on its own evidence.
     "strict": false
   },
-  "include": ["server/**/*.mjs", "migrations/**/*.mjs"]
+  "include": ["server/**/*.mjs", "migrations/**/*.mjs", "scripts/**/*.mjs"]
 }

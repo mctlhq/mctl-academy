@@ -233,14 +233,19 @@ function validateCatalogCourse(course, index, errors) {
 export function validateGeneratedArtifacts(bundle, catalog) {
   const errors = [];
 
-  if (!Array.isArray(bundle)) {
-    errors.push(`bundle: expected an array, got ${typeof bundle}`);
+  // Nothing below can be checked meaningfully without both shapes, so the two
+  // shape checks and their shared early return live in one block: it keeps
+  // the "both are arrays from here on" guarantee visible at the point it is
+  // established, rather than resting on `errors` being empty further down.
+  if (!Array.isArray(bundle) || !Array.isArray(catalog)) {
+    if (!Array.isArray(bundle)) {
+      errors.push(`bundle: expected an array, got ${typeof bundle}`);
+    }
+    if (!Array.isArray(catalog)) {
+      errors.push(`catalog: expected an array, got ${typeof catalog}`);
+    }
+    return errors;
   }
-  if (!Array.isArray(catalog)) {
-    errors.push(`catalog: expected an array, got ${typeof catalog}`);
-  }
-  // Nothing below can be checked meaningfully without both shapes.
-  if (errors.length > 0) return errors;
 
   bundle.forEach((question, index) => validateBundleQuestion(question, index, errors));
   catalog.forEach((course, index) => validateCatalogCourse(course, index, errors));

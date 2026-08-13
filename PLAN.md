@@ -325,8 +325,29 @@ are. The client is unaffected: it has always had `vue-tsc --noEmit`.
 `include` grows **one directory per PR**, which is the whole design. Turning
 `checkJs` on everywhere at once buries the few real defects under a long tail
 of noise, and a check nobody reads is worse than none. Coverage today:
-`server/` and `migrations/`. Remaining, measured 2026-08-13: `scripts/` 7
-errors (all `unknown` narrowing wanting a JSDoc cast), `tests/` 40.
+`server/`, `migrations/` and `scripts/`. Remaining: `tests/`, 40 errors.
+
+Neither of the two things `scripts/` needed was a cast. In
+`validate-generated-artifacts.mjs` the two shape checks pushed their errors
+and relied on a later `errors.length > 0` to stop — correct, but the "both are
+arrays from here on" guarantee lived several lines away from where it was
+established, and now sits in the block that establishes it. In
+`revalidate-content.mjs` the repin loop duck-typed on `.get`/`.set`; it now
+uses yaml's own `isSeq`/`isMap`, which is what the code actually requires — a
+scalar or an alias would have passed the duck-type check while not being the
+sequence of evidence maps being repinned.
+
+That second one exposed a real defect underneath, raised as a P1 in review of
+the same PR. When the evidence node was not writable, the loop skipped
+silently and the question was still pushed to `revalidated` — so the run
+reported a repin that never reached disk, and the question advanced carrying
+its old hashes. This is the one claim the evidence gate must never make
+falsely. Atomicity now covers the document's *shape* as well as excerpt
+matching: every target node is resolved before anything is written, and if any
+is unwritable the question is reported as unmatched with an explicit error
+instead. `tests/revalidate-content.test.mjs` covers it with an aliased
+`evidence` node — a shape that `toJS()` resolves into a perfectly ordinary
+array, so every upstream check passes and only the write can detect it.
 
 `strict` is off on purpose for this first pass. `strictNullChecks` alone
 reports hundreds of "possibly undefined" on paths guarded by runtime

@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseDocument } from "yaml";
+import { parseDocument, isSeq, isMap } from "yaml";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR
@@ -115,17 +115,42 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
 
     if (allExcerptsMatched && proposedRepins.length === data.evidence.length) {
       // Atomic repinning: update evidence hashes ONLY when ALL evidence items match
+      // isSeq/isMap rather than duck-typing on `.get`/`.set`: yaml's own type
+      // guards say what these nodes have to be for the write to mean
+      // anything, and a scalar or an alias would answer the duck-type check
+      // while silently not being the sequence of evidence maps this is
+      // repinning.
+      // Every target node is resolved *before* anything is written, because
+      // atomicity has to hold against the document's shape too, not just
+      // against excerpt matching: writing some hashes and then discovering
+      // the next node cannot take one would leave the file half-repinned.
       const evidenceNode = doc.get("evidence");
-      for (const { idx, hash } of proposedRepins) {
-        if (evidenceNode && evidenceNode.get) {
+      const targets = [];
+      if (isSeq(evidenceNode)) {
+        for (const { idx } of proposedRepins) {
           const itemNode = evidenceNode.get(idx);
-          if (itemNode && itemNode.set) {
-            itemNode.set("source_sha256", hash);
-          }
+          if (isMap(itemNode)) targets.push(itemNode);
         }
       }
-      doc.set("status", "review_ready");
-      revalidated.push(data.id);
+
+      if (targets.length === proposedRepins.length) {
+        proposedRepins.forEach(({ hash }, i) => targets[i].set("source_sha256", hash));
+        doc.set("status", "review_ready");
+        revalidated.push(data.id);
+      } else {
+        // The excerpts all matched, but the hashes could not actually be
+        // written: `evidence` resolves to an array through toJS() while its
+        // AST is something a repin cannot address -- an alias, or a sequence
+        // whose entries are not maps. Reporting this as revalidated would
+        // advance the question while leaving its old hashes on disk, which is
+        // exactly the claim the evidence gate must never make falsely.
+        errors.push(
+          `Question ${data.id || file}: evidence matched but its YAML structure cannot be repinned ` +
+            `(expected a sequence of mappings; got ${evidenceNode?.constructor?.name ?? typeof evidenceNode})`,
+        );
+        doc.set("status", "review_ready");
+        unmatched.push(data.id);
+      }
     } else {
       doc.set("status", "review_ready");
       unmatched.push(data.id);
