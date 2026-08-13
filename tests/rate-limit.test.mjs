@@ -205,6 +205,34 @@ describe("rateLimit — observability", () => {
     assert.match(logs[3], /\(\+2 suppressed since last line\)/);
   });
 
+  test("a per-IP flood cannot suppress the shared no-IP rejection on the same instance", async () => {
+    const { now } = clock(0);
+    // One middleware instance, one store, one throttle -- the concurrency the
+    // per-bucket tests above cannot exercise, since they each use their own
+    // probe app.
+    const { app, logs } = probeApp({ max: 1, windowMs: 600_000, logIntervalMs: 600_000, store: new Map(), now });
+
+    // A single client hammering its own bucket, well inside the throttle
+    // interval: it claims the per-IP quota token and keeps re-triggering it.
+    await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.1" } });
+    for (let i = 0; i < 3; i += 1) {
+      await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.1" } });
+    }
+
+    // Meanwhile the header stops arriving and legitimate traffic collapses
+    // into the shared bucket. That rejection is the site-wide condition this
+    // logging exists for, so a noisy neighbour must not fold it into its own
+    // line's suppressed count.
+    await app.request("/probe", { method: "POST", headers: {} });
+    const sharedRejection = await app.request("/probe", { method: "POST", headers: {} });
+
+    assert.equal(sharedRejection.status, 429);
+    assert.ok(
+      logs.some((line) => /the shared no-IP bucket exceeded/.test(line)),
+      `the shared-bucket rejection must be logged in its own right, got ${JSON.stringify(logs)}`
+    );
+  });
+
   test("throttling one event does not silence a different one", async () => {
     const { now } = clock(0);
     const { app, logs } = probeApp({

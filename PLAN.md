@@ -322,8 +322,12 @@ Security and session handling:
   signal, and addresses would be personal data in Loki for no added value.
   Each condition can recur at request rate, so lines of the same kind are
   throttled to one per `RATE_LIMIT_LOG_INTERVAL_MS`, carrying a count of the
-  occurrences they stand for. On the healthy production path the limiter is
-  silent, which is what makes any line at all meaningful.
+  occurrences they stand for. The throttle is keyed per condition, shared and
+  per-IP quota rejections included: sharing one token would let a single noisy
+  client hold it and fold every site-wide rejection into its own line's
+  suppressed count, hiding the condition this logging exists for. On the
+  healthy production path the limiter is silent, which is what makes any line
+  at all meaningful.
 
 ## 8. Deployment — MCP-only, no gitops commits
 

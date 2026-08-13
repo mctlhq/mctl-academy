@@ -169,8 +169,13 @@ export function rateLimit({
       // bucket is doing the rejecting is the operational signal, and logging
       // caller addresses would put personal data into Loki for no added
       // diagnostic value.
-      const bucket = key === NO_IP_KEY ? "the shared no-IP bucket" : "a per-IP bucket";
-      const claimed = claimLog("quota");
+      const isNoIp = key === NO_IP_KEY;
+      const bucket = isNoIp ? "the shared no-IP bucket" : "a per-IP bucket";
+      // Throttled as two separate events, not one "quota": a single client
+      // hammering its own bucket would otherwise hold the shared token and
+      // fold every site-wide rejection into its own line's suppressed count,
+      // hiding exactly the condition this logging exists to surface.
+      const claimed = claimLog(isNoIp ? "quota:no-ip" : "quota:per-ip");
       if (claimed) {
         logger.warn(
           `[rate-limit] rejected ${c.req.method} ${c.req.path}: ${bucket} exceeded ` +
