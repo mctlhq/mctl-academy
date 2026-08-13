@@ -87,13 +87,26 @@ export default [
   },
 
   {
-    // Vitest suites use the globals-free API (explicit imports), so nothing
-    // extra is needed here beyond the browser-ish jsdom environment already
-    // set above; this block exists only to allow test-only escapes.
-    files: ["client/**/*.spec.ts", "tests/**/*.mjs"],
+    // A test may deliberately construct a broken value and never use it, so
+    // an underscore prefix is an accepted escape here.
+    files: ["tests/**/*.mjs"],
     rules: {
-      // A test may deliberately construct a broken value and never use it.
       "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
+    }
+  },
+
+  {
+    // Same escape for the client's Vitest suites -- but via the
+    // typescript-eslint rule, not the base one. On TypeScript files the base
+    // `no-unused-vars` is switched off by the recommended config precisely
+    // because it double-reports (and misreads type-only symbols); re-enabling
+    // it here would have reintroduced exactly that.
+    files: ["client/**/*.spec.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
+      ]
     }
   }
 ];
