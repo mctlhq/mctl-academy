@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.44](https://github.com/mctlhq/mctl-academy/compare/0.1.43...0.1.44) (2026-08-13)
+
+
+### Features
+
+* make rate-limit rejections and a missing CF-Connecting-IP visible in logs ([613c2f7](https://github.com/mctlhq/mctl-academy/commit/613c2f74857d858fcc28f6eb448c27ff91b6cc93))
+* make rate-limit rejections and a missing CF-Connecting-IP visible in logs ([d16d645](https://github.com/mctlhq/mctl-academy/commit/d16d645c202290a67e8203a952e1f365293f9e3a))
+
+
+### Bug Fixes
+
+* throttle shared and per-IP quota rejections as separate events ([5d501bd](https://github.com/mctlhq/mctl-academy/commit/5d501bd8c3a32dc076981a0b3ee38c7ce1be00bd))
+
 ## [0.1.43](https://github.com/mctlhq/mctl-academy/compare/0.1.42...0.1.43) (2026-08-13)
 
 
