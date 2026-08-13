@@ -14,6 +14,8 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint:content": "node scripts/validate-content.mjs",
     "verify:evidence": "node scripts/verify-evidence.mjs",
     "snapshot:capture": "node scripts/capture-source.mjs",
@@ -44,6 +46,7 @@
     "eslint": "^9",
     "eslint-plugin-vue": "^9",
     "globals": "^15",
+    "prettier": "^3",
     "typescript-eslint": "^8"
   }
 }

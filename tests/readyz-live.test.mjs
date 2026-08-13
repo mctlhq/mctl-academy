@@ -47,93 +47,114 @@ async function httpGetJson(url) {
  * hard-fail-at-boot behavior is covered separately in db-hard-fail.test.mjs;
  * this test is about checkDbReady()'s live-failure branch, not about SSL.
  */
-describe("GET /readyz against a real, later-killed Postgres", { skip: !dockerAvailable() && "docker is not available" }, () => {
-  test("reports ready while the database is up, and fails within seconds once it is gone — without crashing the process", async () => {
-    try {
-      execFileSync("docker", ["rm", "-f", CONTAINER], { stdio: "ignore" });
-    } catch {
-      // no prior container — fine
-    }
+describe(
+  "GET /readyz against a real, later-killed Postgres",
+  { skip: !dockerAvailable() && "docker is not available" },
+  () => {
+    test("reports ready while the database is up, and fails within seconds once it is gone — without crashing the process", async () => {
+      try {
+        execFileSync("docker", ["rm", "-f", CONTAINER], { stdio: "ignore" });
+      } catch {
+        // no prior container — fine
+      }
 
-    execFileSync("docker", [
-      "run", "-d", "--name", CONTAINER,
-      "-e", "POSTGRES_PASSWORD=test",
-      "-e", "POSTGRES_DB=readyz_live",
-      "-p", `${PG_PORT}:5432`,
-      "postgres:17-alpine",
-    ]);
-
-    let serverProcess;
-    try {
-      const pgReady = await waitFor(() => {
-        try {
-          execFileSync("docker", ["exec", CONTAINER, "psql", "-U", "postgres", "-d", "readyz_live", "-c", "select 1"], {
-            stdio: "ignore",
-          });
-          return true;
-        } catch {
-          return false;
-        }
-      });
-      assert.ok(pgReady, "Postgres never became ready");
-
-      // In production this role is provisioned by CNPG's managed.roles, not
-      // by this app (1755100000000_academy_readonly_role's migration only
-      // grants; it can't create the role — see that file). This container
-      // is a from-scratch Postgres of its own, so mirror that external
-      // provisioning step here or the migration below fails with "role
-      // academy_readonly does not exist" and — since NODE_ENV isn't
-      // production in this test — initDb() silently falls back to the
-      // in-memory store instead of throwing, which is exactly the kind of
-      // masked failure this test exists to catch in the first place.
       execFileSync("docker", [
-        "exec", CONTAINER, "psql", "-U", "postgres", "-d", "readyz_live",
-        "-c", "CREATE ROLE academy_readonly LOGIN;",
+        "run",
+        "-d",
+        "--name",
+        CONTAINER,
+        "-e",
+        "POSTGRES_PASSWORD=test",
+        "-e",
+        "POSTGRES_DB=readyz_live",
+        "-p",
+        `${PG_PORT}:5432`,
+        "postgres:17-alpine",
       ]);
 
-      serverProcess = spawn(process.execPath, ["server/index.mjs"], {
-        cwd: repoRoot,
-        env: {
-          ...process.env,
-          DATABASE_URL: `postgresql://postgres:test@localhost:${PG_PORT}/readyz_live`,
-          PORT: String(APP_PORT),
-        },
-      });
+      let serverProcess;
+      try {
+        const pgReady = await waitFor(() => {
+          try {
+            execFileSync(
+              "docker",
+              ["exec", CONTAINER, "psql", "-U", "postgres", "-d", "readyz_live", "-c", "select 1"],
+              {
+                stdio: "ignore",
+              },
+            );
+            return true;
+          } catch {
+            return false;
+          }
+        });
+        assert.ok(pgReady, "Postgres never became ready");
 
-      const serverUp = await waitFor(async () => {
-        try {
-          const { status } = await httpGetJson(`http://localhost:${APP_PORT}/livez`);
-          return status === 200;
-        } catch {
-          return false;
-        }
-      });
-      assert.ok(serverUp, "server never came up");
+        // In production this role is provisioned by CNPG's managed.roles, not
+        // by this app (1755100000000_academy_readonly_role's migration only
+        // grants; it can't create the role — see that file). This container
+        // is a from-scratch Postgres of its own, so mirror that external
+        // provisioning step here or the migration below fails with "role
+        // academy_readonly does not exist" and — since NODE_ENV isn't
+        // production in this test — initDb() silently falls back to the
+        // in-memory store instead of throwing, which is exactly the kind of
+        // masked failure this test exists to catch in the first place.
+        execFileSync("docker", [
+          "exec",
+          CONTAINER,
+          "psql",
+          "-U",
+          "postgres",
+          "-d",
+          "readyz_live",
+          "-c",
+          "CREATE ROLE academy_readonly LOGIN;",
+        ]);
 
-      const readyBefore = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
-      assert.equal(readyBefore.status, 200);
-      assert.equal(readyBefore.body.db, "postgres");
+        serverProcess = spawn(process.execPath, ["server/index.mjs"], {
+          cwd: repoRoot,
+          env: {
+            ...process.env,
+            DATABASE_URL: `postgresql://postgres:test@localhost:${PG_PORT}/readyz_live`,
+            PORT: String(APP_PORT),
+          },
+        });
 
-      execFileSync("docker", ["stop", CONTAINER]);
+        const serverUp = await waitFor(async () => {
+          try {
+            const { status } = await httpGetJson(`http://localhost:${APP_PORT}/livez`);
+            return status === 200;
+          } catch {
+            return false;
+          }
+        });
+        assert.ok(serverUp, "server never came up");
 
-      const readyAfter = await waitFor(async () => {
-        const { status } = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
-        return status === 503;
-      });
-      assert.ok(readyAfter, "/readyz never reported the database as unreachable");
+        const readyBefore = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
+        assert.equal(readyBefore.status, 200);
+        assert.equal(readyBefore.body.db, "postgres");
 
-      const finalCheck = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
-      assert.equal(finalCheck.status, 503);
-      assert.equal(finalCheck.body.error, "database unreachable");
+        execFileSync("docker", ["stop", CONTAINER]);
 
-      // The whole point of pool.on('error', ...): an idle-connection drop is
-      // not an unhandled exception. If it were, the process would already be
-      // dead and this would fail to connect at all.
-      const stillAlive = await httpGetJson(`http://localhost:${APP_PORT}/livez`);
-      assert.equal(stillAlive.status, 200, "the process must survive a database outage, not crash");
-    } finally {
-      serverProcess?.kill();
-      execFileSync("docker", ["rm", "-f", CONTAINER], { stdio: "ignore" });
-    }
-  });
-});
+        const readyAfter = await waitFor(async () => {
+          const { status } = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
+          return status === 503;
+        });
+        assert.ok(readyAfter, "/readyz never reported the database as unreachable");
+
+        const finalCheck = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
+        assert.equal(finalCheck.status, 503);
+        assert.equal(finalCheck.body.error, "database unreachable");
+
+        // The whole point of pool.on('error', ...): an idle-connection drop is
+        // not an unhandled exception. If it were, the process would already be
+        // dead and this would fail to connect at all.
+        const stillAlive = await httpGetJson(`http://localhost:${APP_PORT}/livez`);
+        assert.equal(stillAlive.status, 200, "the process must survive a database outage, not crash");
+      } finally {
+        serverProcess?.kill();
+        execFileSync("docker", ["rm", "-f", CONTAINER], { stdio: "ignore" });
+      }
+    });
+  },
+);

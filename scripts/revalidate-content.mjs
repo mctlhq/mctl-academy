@@ -15,7 +15,9 @@ import { fileURLToPath } from "node:url";
 import { parseDocument } from "yaml";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
 
 export const normalize = (str) =>
   str

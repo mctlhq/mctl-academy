@@ -18,7 +18,8 @@ import { verifyEvidence } from "../scripts/verify-evidence.mjs";
 
 const sha256 = (s) => createHash("sha256").update(Buffer.from(s, "utf8")).digest("hex");
 
-const SAMPLE_SNAPSHOT_DOC = "Function calling allows LLMs to return JSON structured data matching a tool schema for agentic workflows.";
+const SAMPLE_SNAPSHOT_DOC =
+  "Function calling allows LLMs to return JSON structured data matching a tool schema for agentic workflows.";
 const SNAPSHOT_SHA256 = sha256(SAMPLE_SNAPSHOT_DOC);
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -72,7 +73,8 @@ const sampleAuthorCandidate = () => ({
       id: "a",
       text: "Function calling capability",
       correct: true,
-      explanation: "Function calling allows LLMs to return structured JSON data according to defined tool schemas.",
+      explanation:
+        "Function calling allows LLMs to return structured JSON data according to defined tool schemas.",
     },
     {
       id: "b",

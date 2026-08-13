@@ -28,8 +28,8 @@ export default [
       "client/src/data/**",
       "coverage/**",
       "playwright-report/**",
-      "test-results/**"
-    ]
+      "test-results/**",
+    ],
   },
 
   js.configs.recommended,
@@ -46,22 +46,22 @@ export default [
         // The image runs on Bun and server/index.mjs branches on `Bun` being
         // defined to pick its HTTP server; the same file runs on plain Node
         // in the test suites, which is exactly why the guard exists.
-        Bun: "readonly"
-      }
-    }
+        Bun: "readonly",
+      },
+    },
   },
 
   {
     // Playwright specs and config run on Node too, but are TypeScript.
     files: ["e2e/**/*.ts", "playwright.config.ts"],
     languageOptions: {
-      globals: { ...globals.node }
-    }
+      globals: { ...globals.node },
+    },
   },
 
   ...tseslint.configs.recommended.map((config) => ({
     ...config,
-    files: ["**/*.ts", "**/*.vue"]
+    files: ["**/*.ts", "**/*.vue"],
   })),
 
   // `flat/essential`, not `flat/recommended`: the recommended tier is mostly
@@ -81,9 +81,9 @@ export default [
         // TypeScript one or every `lang="ts"` block fails to parse.
         parser: tseslint.parser,
         ecmaVersion: 2023,
-        sourceType: "module"
-      }
-    }
+        sourceType: "module",
+      },
+    },
   },
 
   {
@@ -91,8 +91,8 @@ export default [
     // an underscore prefix is an accepted escape here.
     files: ["tests/**/*.mjs"],
     rules: {
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
-    }
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+    },
   },
 
   {
@@ -103,10 +103,7 @@ export default [
     // it here would have reintroduced exactly that.
     files: ["client/**/*.spec.ts"],
     rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
-      ]
-    }
-  }
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+    },
+  },
 ];

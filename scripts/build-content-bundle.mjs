@@ -33,7 +33,9 @@ import { loadCourses, partitionQuestions } from "./lib/content-model.mjs";
 import { validateGeneratedArtifacts } from "./lib/validate-generated-artifacts.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
 const OUT = process.env.ACADEMY_BUNDLE_OUT
   ? resolve(process.env.ACADEMY_BUNDLE_OUT)
   : join(ROOT, "client", "src", "content-bundle.json");

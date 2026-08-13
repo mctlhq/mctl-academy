@@ -16,7 +16,9 @@ import { fileURLToPath } from "node:url";
 import { parseDocument } from "yaml";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
 
 export function parseArgs(args) {
   let by = process.env.MAINTAINER_HANDLE || process.env.GITHUB_USER || process.env.USER || null;
@@ -39,13 +41,21 @@ export function parseArgs(args) {
 
   const modesCount = [allReviewReady, !!courseId, idsOrPaths.length > 0].filter(Boolean).length;
   if (modesCount > 1) {
-    throw new Error("Selection modes (--all-review-ready, --course, and explicit IDs/paths) are mutually exclusive. Specify only one mode.");
+    throw new Error(
+      "Selection modes (--all-review-ready, --course, and explicit IDs/paths) are mutually exclusive. Specify only one mode.",
+    );
   }
 
   return { by, allReviewReady, courseId, idsOrPaths };
 }
 
-export function promoteQuestions({ contentDir = CONTENT, by, allReviewReady = false, courseId = null, idsOrPaths = [] }) {
+export function promoteQuestions({
+  contentDir = CONTENT,
+  by,
+  allReviewReady = false,
+  courseId = null,
+  idsOrPaths = [],
+}) {
   const qDir = join(contentDir, "questions");
   if (!existsSync(qDir)) {
     throw new Error(`Questions directory not found at ${qDir}`);
@@ -57,12 +67,16 @@ export function promoteQuestions({ contentDir = CONTENT, by, allReviewReady = fa
 
   const handle = by.trim();
   if (handle.startsWith("agent:")) {
-    throw new Error(`Invalid maintainer handle "${handle}". Humans approve in reviewed.by; agent handles (agent:*) are rejected.`);
+    throw new Error(
+      `Invalid maintainer handle "${handle}". Humans approve in reviewed.by; agent handles (agent:*) are rejected.`,
+    );
   }
 
   const modesCount = [allReviewReady, !!courseId, idsOrPaths.length > 0].filter(Boolean).length;
   if (modesCount > 1) {
-    throw new Error("Selection modes (allReviewReady, courseId, idsOrPaths) are mutually exclusive. Specify only one mode.");
+    throw new Error(
+      "Selection modes (allReviewReady, courseId, idsOrPaths) are mutually exclusive. Specify only one mode.",
+    );
   }
 
   const filesToProcess = [];

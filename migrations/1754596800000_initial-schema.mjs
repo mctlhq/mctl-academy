@@ -28,7 +28,7 @@ export function up(pgm) {
       created_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
       updated_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
     },
-    { ifNotExists: true }
+    { ifNotExists: true },
   );
 
   pgm.createTable(
@@ -44,7 +44,7 @@ export function up(pgm) {
       expires_at: { type: "timestamptz", notNull: true },
       created_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
     },
-    { ifNotExists: true }
+    { ifNotExists: true },
   );
 
   pgm.createTable(
@@ -61,7 +61,7 @@ export function up(pgm) {
       correct: { type: "boolean", notNull: true },
       attempted_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
     },
-    { ifNotExists: true }
+    { ifNotExists: true },
   );
 
   pgm.createTable(
@@ -78,7 +78,7 @@ export function up(pgm) {
       },
       created_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
     },
-    { ifNotExists: true }
+    { ifNotExists: true },
   );
 
   pgm.createIndex("question_reports", "question_id", {

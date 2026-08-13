@@ -20,7 +20,8 @@ let nextQuestionIdIndex = 0;
 function freshKnownQuestionId() {
   const id = KNOWN_QUESTION_IDS[nextQuestionIdIndex];
   nextQuestionIdIndex += 1;
-  if (!id) throw new Error("Ran out of distinct known question ids for tests — add more to the fixture list.");
+  if (!id)
+    throw new Error("Ran out of distinct known question ids for tests — add more to the fixture list.");
   return id;
 }
 
@@ -165,10 +166,7 @@ describe("Question voting API", () => {
     const cookie = await authedCookie({ githubLogin: "votes-user-concurrent" });
     const questionId = freshKnownQuestionId();
 
-    const [resA, resB] = await Promise.all([
-      putVote(questionId, 1, cookie),
-      putVote(questionId, 1, cookie),
-    ]);
+    const [resA, resB] = await Promise.all([putVote(questionId, 1, cookie), putVote(questionId, 1, cookie)]);
 
     assert.equal(resA.status, 200);
     assert.equal(resB.status, 200);

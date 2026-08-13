@@ -76,7 +76,10 @@ async function fetchSource(url) {
 
 async function capture({ url, id, objectives, title }) {
   const store = storeFromEnv();
-  if (!store) throw new Error("snapshot store is not configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY)");
+  if (!store)
+    throw new Error(
+      "snapshot store is not configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY)",
+    );
 
   const text = await fetchSource(url);
   const hash = sha256(Buffer.from(text, "utf8"));

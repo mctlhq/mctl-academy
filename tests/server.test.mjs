@@ -40,8 +40,8 @@ describe("Hono server & Report API", () => {
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "typo",
-        comment: "Found a minor typo in option A"
-      })
+        comment: "Found a minor typo in option A",
+      }),
     });
 
     assert.equal(res.status, 201);
@@ -57,8 +57,8 @@ describe("Hono server & Report API", () => {
       method: "POST",
       headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.2" },
       body: JSON.stringify({
-        reason: "typo"
-      })
+        reason: "typo",
+      }),
     });
 
     assert.equal(res.status, 400);
@@ -72,8 +72,8 @@ describe("Hono server & Report API", () => {
       headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.3" },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
-        reason: "invalid_reason_string"
-      })
+        reason: "invalid_reason_string",
+      }),
     });
 
     assert.equal(res.status, 400);
@@ -87,8 +87,8 @@ describe("Hono server & Report API", () => {
       headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.4" },
       body: JSON.stringify({
         question_id: "q-doesnotexist9",
-        reason: "typo"
-      })
+        reason: "typo",
+      }),
     });
 
     assert.equal(res.status, 404);
@@ -103,8 +103,8 @@ describe("Hono server & Report API", () => {
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "typo",
-        comment: "x".repeat(2001)
-      })
+        comment: "x".repeat(2001),
+      }),
     });
 
     assert.equal(res.status, 400);
@@ -118,12 +118,12 @@ describe("Hono server & Report API", () => {
       headers: {
         "Content-Type": "application/json",
         "cf-connecting-ip": "203.0.113.7",
-        Origin: "https://evil.example.com"
+        Origin: "https://evil.example.com",
       },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
-        reason: "typo"
-      })
+        reason: "typo",
+      }),
     });
 
     assert.equal(res.status, 403);
@@ -137,12 +137,12 @@ describe("Hono server & Report API", () => {
       headers: {
         "Content-Type": "application/json",
         "cf-connecting-ip": "203.0.113.8",
-        "Sec-Fetch-Site": "cross-site"
+        "Sec-Fetch-Site": "cross-site",
       },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
-        reason: "typo"
-      })
+        reason: "typo",
+      }),
     });
 
     assert.equal(res.status, 403);
@@ -157,8 +157,8 @@ describe("Hono server & Report API", () => {
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "other",
-        comment: "No session, no cookie, still a valid report."
-      })
+        comment: "No session, no cookie, still a valid report.",
+      }),
     });
 
     assert.equal(res.status, 201);
@@ -178,8 +178,8 @@ describe("Hono server & Report API", () => {
         headers: { "Content-Type": "application/json", "cf-connecting-ip": ip },
         body: JSON.stringify({
           question_id: "q-df01f3a4b5c6",
-          reason: "typo"
-        })
+          reason: "typo",
+        }),
       });
       lastStatus = res.status;
     }
@@ -198,12 +198,12 @@ describe("Hono server & Report API", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-forwarded-for": `198.51.100.${i}`
+          "x-forwarded-for": `198.51.100.${i}`,
         },
         body: JSON.stringify({
           question_id: "q-df01f3a4b5c6",
-          reason: "typo"
-        })
+          reason: "typo",
+        }),
       });
       lastStatus = res.status;
     }

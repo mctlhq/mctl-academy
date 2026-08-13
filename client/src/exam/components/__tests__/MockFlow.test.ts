@@ -53,7 +53,9 @@ describe("MockFlow", () => {
   });
 
   it("records a progress attempt for every question on submit", async () => {
-    const wrapper = mount(MockFlow, { props: { dataSource: makeDataSource(), courseId: "agentic-ai-builder" } });
+    const wrapper = mount(MockFlow, {
+      props: { dataSource: makeDataSource(), courseId: "agentic-ai-builder" },
+    });
 
     await flushPromises();
     expect(wrapper.find('[data-testid="mock-start"]').exists()).toBe(true);

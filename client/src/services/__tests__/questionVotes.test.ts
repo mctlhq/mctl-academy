@@ -12,7 +12,10 @@ describe("questionVotes service", () => {
 
     const summary = await fetchVoteSummary("q-1");
 
-    expect(fetchSpy).toHaveBeenCalledWith("/api/votes/q-1", expect.objectContaining({ credentials: "same-origin" }));
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/votes/q-1",
+      expect.objectContaining({ credentials: "same-origin" }),
+    );
     expect(summary).toEqual({ score: 3, userValue: 1 });
   });
 
@@ -47,7 +50,9 @@ describe("questionVotes service", () => {
   });
 
   it("casts a downvote via PUT with -1", async () => {
-    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ score: -1, userValue: -1 }) });
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => ({ score: -1, userValue: -1 }) });
     vi.stubGlobal("fetch", fetchSpy);
 
     await castVote("q-1", -1);

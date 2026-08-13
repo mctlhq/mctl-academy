@@ -101,7 +101,11 @@ test("revalidateContent atomic repinning: does NOT repin any hash if second evid
         sampleQuestion({
           id: "q-multi",
           evidence: [
-            { source_id: "src-auth", source_sha256: HASH_A, excerpt: "requests must include Authorization Bearer header" },
+            {
+              source_id: "src-auth",
+              source_sha256: HASH_A,
+              excerpt: "requests must include Authorization Bearer header",
+            },
             { source_id: "src-auth", source_sha256: HASH_A, excerpt: "NONEXISTENT EXCERPT IN BBB" },
           ],
         }),
