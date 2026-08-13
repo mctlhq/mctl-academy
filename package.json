@@ -1,6 +1,6 @@
 {
   "name": "mctl-academy",
-  "version": "0.1.42",
+  "version": "0.1.45",
   "private": true,
   "type": "module",
   "description": "Free, evidence-backed practice for agentic AI certification",
@@ -13,14 +13,18 @@
     "node": ">=22"
   },
   "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.check.json",
     "lint:content": "node scripts/validate-content.mjs",
     "verify:evidence": "node scripts/verify-evidence.mjs",
     "snapshot:capture": "node scripts/capture-source.mjs",
     "promote:questions": "node scripts/approve-pr-questions.mjs",
     "revalidate:content": "node scripts/revalidate-content.mjs",
     "detect:delta": "node scripts/detect-docs-delta.mjs",
-    "test:content": "node --test 'tests/content-lint.test.mjs' 'tests/build-content-bundle.test.mjs' 'tests/build-preview.test.mjs' 'tests/verify-evidence.test.mjs' 'tests/verify-evidence-pinning.test.mjs' 'tests/approve-pr-questions.test.mjs' 'tests/revalidate-content.test.mjs' 'tests/detect-docs-delta.test.mjs' 'tests/question-author-contract.test.mjs'",
-    "test:server": "node --test 'tests/server.test.mjs' 'tests/auth.test.mjs' 'tests/attempts.test.mjs' 'tests/votes.test.mjs' 'tests/account.test.mjs' 'tests/db-hard-fail.test.mjs' 'tests/readyz-live.test.mjs' 'tests/security-headers.test.mjs'",
+    "test:content": "node --test 'tests/content-lint.test.mjs' 'tests/build-content-bundle.test.mjs' 'tests/build-preview.test.mjs' 'tests/verify-evidence.test.mjs' 'tests/verify-evidence-pinning.test.mjs' 'tests/approve-pr-questions.test.mjs' 'tests/revalidate-content.test.mjs' 'tests/detect-docs-delta.test.mjs' 'tests/question-author-contract.test.mjs' 'tests/validate-generated-artifacts.test.mjs'",
+    "test:server": "node --test 'tests/server.test.mjs' 'tests/auth.test.mjs' 'tests/attempts.test.mjs' 'tests/votes.test.mjs' 'tests/account.test.mjs' 'tests/db-hard-fail.test.mjs' 'tests/readyz-live.test.mjs' 'tests/security-headers.test.mjs' 'tests/rate-limit.test.mjs'",
     "start": "node server/index.mjs",
     "build:preview": "node scripts/build-preview.mjs",
     "migrate": "node scripts/migrate.mjs up",
@@ -38,6 +42,16 @@
     "yaml": "^2.6.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1"
+    "@eslint/js": "^9",
+    "@playwright/test": "^1.49.1",
+    "@types/bun": "^1.3.14",
+    "@types/node": "^22",
+    "@types/pg": "^8.21.0",
+    "eslint": "^9",
+    "eslint-plugin-vue": "^9",
+    "globals": "^15",
+    "prettier": "^3",
+    "typescript": "^5",
+    "typescript-eslint": "^8"
   }
 }

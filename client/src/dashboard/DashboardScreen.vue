@@ -68,7 +68,11 @@ async function handleClearHistory() {
       <div>
         <div class="readiness-heading">
           <strong>{{ stats.overallAccuracy }}%</strong>
-          <span>{{ stats.totalAttempted > 0 ? "Based on attempted questions" : "Start practicing to build your baseline" }}</span>
+          <span>{{
+            stats.totalAttempted > 0
+              ? "Based on attempted questions"
+              : "Start practicing to build your baseline"
+          }}</span>
         </div>
         <p class="section-marker">Overall readiness</p>
 
@@ -106,7 +110,9 @@ async function handleClearHistory() {
           <button v-if="stats.totalMistakes > 0" type="button" @click="onReviewMistakes">
             Review {{ stats.totalMistakes }} mistakes <span aria-hidden="true">→</span>
           </button>
-          <button v-else type="button" @click="onStartPractice">Continue practice <span aria-hidden="true">→</span></button>
+          <button v-else type="button" @click="onStartPractice">
+            Continue practice <span aria-hidden="true">→</span>
+          </button>
         </div>
 
         <MButton type="button" variant="ghost" size="sm" class="reset-progress" @click="handleClearHistory">

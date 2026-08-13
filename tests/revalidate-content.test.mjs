@@ -101,7 +101,11 @@ test("revalidateContent atomic repinning: does NOT repin any hash if second evid
         sampleQuestion({
           id: "q-multi",
           evidence: [
-            { source_id: "src-auth", source_sha256: HASH_A, excerpt: "requests must include Authorization Bearer header" },
+            {
+              source_id: "src-auth",
+              source_sha256: HASH_A,
+              excerpt: "requests must include Authorization Bearer header",
+            },
             { source_id: "src-auth", source_sha256: HASH_A, excerpt: "NONEXISTENT EXCERPT IN BBB" },
           ],
         }),
@@ -156,6 +160,68 @@ test("revalidateContent fault-tolerant R2 errors: records error and keeps questi
 
     const updated = parseYaml(readFileSync(qPath, "utf8"));
     assert.equal(updated.status, "review_ready");
+    assert.equal(updated.evidence[0].source_sha256, HASH_A);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("revalidateContent refuses to claim a repin it could not write into the YAML", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-revalidate-"));
+  try {
+    mkdirSync(join(dir, "sources"), { recursive: true });
+    mkdirSync(join(dir, "questions"), { recursive: true });
+
+    writeFileSync(join(dir, "sources", "src-auth.yaml"), JSON.stringify(sampleSource()));
+
+    // `evidence` is an alias here. toJS() resolves it, so every excerpt check
+    // upstream sees a perfectly ordinary array and matches -- but the node
+    // under the `evidence` key is an Alias, which no repin can be written
+    // into. This is the shape that used to be skipped silently while the
+    // question was still reported as revalidated.
+    const qPath = join(dir, "questions", "q-alias.yaml");
+    writeFileSync(
+      qPath,
+      [
+        "schema_version: 1",
+        "id: q-alias",
+        "course_id: agentic-ai-builder",
+        "status: needs_review",
+        "domain: domain-1",
+        "objective: domain-1/api-authentication",
+        "stem: Which header passes the API key in requests?",
+        "options:",
+        "  - { id: a, text: 'Authorization: Bearer <key>', correct: true, explanation: Valid. }",
+        "  - { id: b, text: 'X-Key: <key>', correct: false, explanation: Wrong name. }",
+        "_evidence: &ev",
+        "  - source_id: src-auth",
+        `    source_sha256: ${HASH_A}`,
+        "    excerpt: requests must include Authorization Bearer header",
+        "evidence: *ev",
+        "authored: { by: 'agent:question-author', at: '2026-08-06T10:00:00Z' }",
+        "",
+      ].join("\n"),
+    );
+
+    const store = {
+      async get(key) {
+        if (key === HASH_B) {
+          return "Documentation: requests must include Authorization Bearer header for API calls.";
+        }
+        return null;
+      },
+    };
+
+    const result = await revalidateContent({ contentDir: dir, store });
+
+    assert.deepEqual(result.revalidated, [], "a question whose hashes were never written is not revalidated");
+    assert.deepEqual(result.unmatched, ["q-alias"]);
+    assert.equal(result.errors.length, 1);
+    assert.match(result.errors[0], /cannot be repinned/);
+
+    // The decisive assertion: the hash on disk is still the old one, which is
+    // precisely why claiming revalidation would have been a lie.
+    const updated = parseYaml(readFileSync(qPath, "utf8"));
     assert.equal(updated.evidence[0].source_sha256, HASH_A);
   } finally {
     rmSync(dir, { recursive: true, force: true });

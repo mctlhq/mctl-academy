@@ -81,14 +81,20 @@ describe("selectMockQuestions", () => {
     expect(available.length).toBeGreaterThan(0);
 
     for (const course of available) {
-      const result = selectMockQuestions(questionsForCourse(course.id) as Question[], course.mock as MockConfig);
+      const result = selectMockQuestions(
+        questionsForCourse(course.id) as Question[],
+        course.mock as MockConfig,
+      );
       expect(result.ok, `course ${course.id} cannot fill its mock`).toBe(true);
     }
   });
 
   it("a course's mock never draws a question from another course", () => {
     const course = courseCatalog.find((c) => c.available)!;
-    const result = selectMockQuestions(questionsForCourse(course.id) as Question[], course.mock as MockConfig);
+    const result = selectMockQuestions(
+      questionsForCourse(course.id) as Question[],
+      course.mock as MockConfig,
+    );
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 

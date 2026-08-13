@@ -1,15 +1,18 @@
 /**
  * Baseline security response headers (PLAN.md Track A, PR2b).
  *
- * style-src keeps 'unsafe-inline': the React client still sets inline
- * `style={{...}}` props in several components (App.tsx, UserNav.tsx,
- * DashboardScreen.tsx), which the browser treats as an inline style
- * attribute for CSP purposes regardless of it being JS-set rather than
- * markup. Tightening style-src is scoped to the PR6 Vue/@mctlhq/css
- * migration, which replaces that pattern with external stylesheets rather
- * than working around it here. script-src has no such constraint — the
- * client ships no inline scripts, only the hashed Vite bundle — so it stays
- * strict.
+ * style-src keeps 'unsafe-inline' because the Vue client uses runtime style
+ * bindings, which the browser treats as inline style attributes for CSP
+ * purposes regardless of being JS-set rather than authored in markup. The
+ * bindings compute a value that cannot be a static class (a percentage
+ * width), so this is a property of how the UI renders rather than a
+ * shortcut waiting to be tidied away. Deliberately stated as the reason
+ * rather than as a list of files: an enumeration goes stale the moment a
+ * component is added, renamed, or ported, and the previous version of this
+ * comment had rotted into naming React `.tsx` files that no longer exist.
+ *
+ * script-src has no such constraint — the client ships no inline scripts,
+ * only the hashed Vite bundle — so it stays strict.
  */
 const CSP = [
   "default-src 'self'",
@@ -21,15 +24,22 @@ const CSP = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'"
+  "frame-ancestors 'none'",
 ].join("; ");
 
 function securityHeaderEntries() {
   const entries = [
     ["Content-Security-Policy", CSP],
+    // Redundant with the CSP's frame-ancestors 'none' for any browser that
+    // implements CSP Level 2, and deliberately kept anyway: X-Frame-Options
+    // is the only clickjacking control some embedded webviews and older
+    // corporate browsers honour, and the two cannot disagree here because
+    // both are emitted from this one list. DENY rather than SAMEORIGIN —
+    // nothing in this app frames itself.
+    ["X-Frame-Options", "DENY"],
     ["X-Content-Type-Options", "nosniff"],
     ["Referrer-Policy", "strict-origin-when-cross-origin"],
-    ["Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()"]
+    ["Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()"],
   ];
   // HTTPS is terminated at the ingress; NODE_ENV=production is this app's
   // existing signal for "we are behind that ingress" (see db-ssl.mjs), so

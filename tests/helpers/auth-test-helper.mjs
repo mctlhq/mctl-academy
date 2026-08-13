@@ -26,7 +26,7 @@ export async function authedCookie({ githubLogin, email }) {
   await authPool.query(
     `INSERT INTO "user" (id, name, email, "emailVerified", "githubLogin", "createdAt", "updatedAt")
      VALUES ($1, $2, $3, true, $4, $5, $5);`,
-    [userId, githubLogin, email || `${githubLogin}@users.noreply.github.com`, githubLogin, now]
+    [userId, githubLogin, email || `${githubLogin}@users.noreply.github.com`, githubLogin, now],
   );
 
   const token = randomUUID().replace(/-/g, "");
@@ -35,7 +35,7 @@ export async function authedCookie({ githubLogin, email }) {
   await authPool.query(
     `INSERT INTO "session" (id, "userId", token, "expiresAt", "createdAt", "updatedAt")
      VALUES ($1, $2, $3, $4, $5, $5);`,
-    [randomUUID(), userId, token, expiresAt, now]
+    [randomUUID(), userId, token, expiresAt, now],
   );
 
   const signature = await makeSignature(token, secret);

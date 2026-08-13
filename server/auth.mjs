@@ -43,7 +43,7 @@ export function assertAuthSecretConfigured() {
     throw new Error(
       "BETTER_AUTH_SECRET is not set in production. Refusing to start: better-auth " +
         "would otherwise sign session cookies with its own public, hardcoded dev " +
-        "secret, letting anyone forge a valid session for any user."
+        "secret, letting anyone forge a valid session for any user.",
     );
   }
 }
@@ -92,7 +92,7 @@ export async function backfillGithubLogin(session) {
   try {
     const { rows } = await authPool.query(
       `SELECT "accountId" FROM "account" WHERE "userId" = $1 AND "providerId" = 'github' LIMIT 1`,
-      [session.userId]
+      [session.userId],
     );
     const accountId = rows[0]?.accountId;
     const login = accountId && githubProfileLoginByAccountId.get(accountId);
@@ -100,7 +100,7 @@ export async function backfillGithubLogin(session) {
     githubProfileLoginByAccountId.delete(accountId);
     await authPool.query(
       `UPDATE "user" SET "githubLogin" = $1 WHERE id = $2 AND "githubLogin" IS DISTINCT FROM $1`,
-      [login, session.userId]
+      [login, session.userId],
     );
   } catch (err) {
     // Never block sign-in on this — worst case githubLogin stays stale

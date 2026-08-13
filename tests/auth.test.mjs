@@ -103,12 +103,12 @@ describe("githubLogin backfill (session.create.after)", () => {
     await authPool.query(
       `INSERT INTO "user" (id, name, email, "emailVerified", "createdAt", "updatedAt")
        VALUES ($1, $2, $3, true, $4, $4);`,
-      [userId, "backfill-test", `${userId}@users.noreply.github.com`, now]
+      [userId, "backfill-test", `${userId}@users.noreply.github.com`, now],
     );
     await authPool.query(
       `INSERT INTO "account" (id, "accountId", "providerId", "userId", "createdAt", "updatedAt")
        VALUES ($1, $2, 'github', $3, $4, $4);`,
-      [randomUUID(), githubAccountId, userId, now]
+      [randomUUID(), githubAccountId, userId, now],
     );
     return userId;
   }

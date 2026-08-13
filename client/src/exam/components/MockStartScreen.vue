@@ -69,26 +69,25 @@ function handleStart() {
     </dl>
 
     <p class="mock-start-weighting">
-      Weighted {{ loaded.config.domains.map((domain) => domain.mockQuestions).join("/") }} across the four domains.
+      Weighted {{ loaded.config.domains.map((domain) => domain.mockQuestions).join("/") }} across the four
+      domains.
     </p>
 
     <details class="mock-start-details">
       <summary>How the mock exam works</summary>
       <p v-if="loaded.config.discloseBankSize" class="mock-start-disclosure">
-        Questions are drawn from the current bank above. A repeat mock exam may include
-        questions you have already seen -- it is not guaranteed to be entirely fresh.
+        Questions are drawn from the current bank above. A repeat mock exam may include questions you have
+        already seen -- it is not guaranteed to be entirely fresh.
       </p>
 
       <p>
-        No feedback is shown while the exam is in progress. Answer, skip, revisit, and change
-        any of the {{ loaded.config.questionCount }} questions freely before you submit; results
-        and explanations appear only after submission or when time runs out.
+        No feedback is shown while the exam is in progress. Answer, skip, revisit, and change any of the
+        {{ loaded.config.questionCount }} questions freely before you submit; results and explanations appear
+        only after submission or when time runs out.
       </p>
     </details>
 
-    <MButton v-if="loaded.selection.ok" type="button" @click="handleStart">
-      Start mock exam
-    </MButton>
+    <MButton v-if="loaded.selection.ok" type="button" @click="handleStart"> Start mock exam </MButton>
     <div v-else class="mock-start-shortfall" data-testid="not-enough-content" role="alert">
       <p>Not enough published questions to start a mock exam yet.</p>
       <ul>

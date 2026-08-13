@@ -41,10 +41,12 @@ export class StaticBundleDataSource implements ExamDataSource {
   }
 
   async getQuestions(): Promise<Question[]> {
-    // The bundle types option ids as plain strings; the exam types narrow them
-    // to "a" | "b" | "c" | "d", which content/schemas/question.schema.json
-    // already enforces at build time.
-    return questionsForCourse(this.courseId) as unknown as Question[];
+    // No cast: BundleQuestion carries every field Question requires, with the
+    // same narrowed option-id union, so it is structurally a Question (plus
+    // `course_id`, which the exam simply ignores). The two types are kept
+    // compatible by scripts/lib/validate-generated-artifacts.mjs failing the
+    // build if the emitted bundle ever stops matching.
+    return questionsForCourse(this.courseId);
   }
 
   async getBankSize(): Promise<number> {

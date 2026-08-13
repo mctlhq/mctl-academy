@@ -119,7 +119,9 @@ const CONTEXT_STORAGE_KEY = "academy.practice-context-open";
 const contextOpen = ref(
   typeof localStorage !== "undefined" && localStorage.getItem(CONTEXT_STORAGE_KEY) === "true",
 );
-const progressPercent = computed(() => (total.value === 0 ? 0 : Math.round(((index.value + 1) / total.value) * 100)));
+const progressPercent = computed(() =>
+  total.value === 0 ? 0 : Math.round(((index.value + 1) / total.value) * 100),
+);
 
 function toggleContext() {
   contextOpen.value = !contextOpen.value;

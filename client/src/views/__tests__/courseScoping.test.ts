@@ -52,9 +52,7 @@ vi.mock("../../services/contentBundle", () => ({
   questionsForCourse: (courseId: string | null) =>
     courseId ? fixtures.all.filter((q) => q.course_id === courseId) : [],
   questionIdsForCourse: (courseId: string | null) =>
-    new Set(
-      (courseId ? fixtures.all.filter((q) => q.course_id === courseId) : []).map((q) => q.id),
-    ),
+    new Set((courseId ? fixtures.all.filter((q) => q.course_id === courseId) : []).map((q) => q.id)),
 }));
 
 vi.mock("../../services/progressStore", async (importOriginal) => {

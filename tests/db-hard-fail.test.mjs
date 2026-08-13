@@ -93,10 +93,14 @@ describe("production refuses to boot without a working database", () => {
         },
         timeout: 5000,
         encoding: "utf8",
-      }
+      },
     );
 
-    assert.notEqual(result.status, 0, "must exit non-zero rather than silently accept a forgeable dev secret");
+    assert.notEqual(
+      result.status,
+      0,
+      "must exit non-zero rather than silently accept a forgeable dev secret",
+    );
     assert.match(result.stderr, /BETTER_AUTH_SECRET is not set in production/);
   });
 });

@@ -19,7 +19,9 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
 
 /**
  * Classify a line delta into a specific change category based on keyword heuristics.

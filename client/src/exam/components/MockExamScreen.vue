@@ -120,8 +120,7 @@ function goSubmit() {
 
     <div v-if="confirmingSubmit" class="mock-exam-confirm" role="alertdialog" data-testid="submit-confirm">
       <p>
-        {{ unanswered }} question{{ unanswered === 1 ? " is" : "s are" }} still unanswered. Submit
-        anyway?
+        {{ unanswered }} question{{ unanswered === 1 ? " is" : "s are" }} still unanswered. Submit anyway?
       </p>
       <button type="button" @click="emit('submit')">Submit anyway</button>
       <button type="button" @click="confirmingSubmit = false">Keep going</button>

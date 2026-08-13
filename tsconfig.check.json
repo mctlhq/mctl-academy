@@ -1,0 +1,35 @@
+{
+  // Type-checking for the plain-JavaScript half of the repo. Nothing is
+  // emitted: this is a linter that happens to be tsc. The .mjs files run as
+  // they are -- on Bun in the image, on Node in the test suites -- and no
+  // build step is introduced by this file.
+  //
+  // `include` grows one directory at a time, and that is the point. Turning
+  // checkJs on everywhere at once buries the handful of real defects in a
+  // long tail of noise, and a check nobody reads is worse than no check. A
+  // directory joins the list in the PR that makes it pass; see PLAN.md.
+  //
+  // Current coverage: server/, migrations/ and scripts/.
+  // Remaining, measured 2026-08-13: tests/ 40 errors.
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    // "bun" because server/index.mjs branches on `Bun` to pick its HTTP
+    // server; "node" because the very same file falls back to
+    // @hono/node-server and the suites run it there.
+    "types": ["node", "bun"],
+    // Deliberately NOT strict. This is a first pass over code written with no
+    // type checker in mind; strictNullChecks alone reports hundreds of
+    // "possibly undefined" on paths guarded by runtime validation the checker
+    // cannot see. Tightening happens one option at a time afterwards, when
+    // each can be argued for on its own evidence.
+    "strict": false
+  },
+  "include": ["server/**/*.mjs", "migrations/**/*.mjs", "scripts/**/*.mjs"]
+}

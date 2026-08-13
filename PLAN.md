@@ -269,6 +269,98 @@ Files at Phase 0:
   token and merges with `--admin`; `claude-review.yml` needs `allowed_bots` for
   agent-actor PRs.
 
+### Linting
+
+`eslint.config.mjs` (flat config) covers the whole repo: the `.mjs` Node side
+(server, scripts, migrations, `node:test` suites) and the client's TypeScript
+and Vue SFCs. `bun run lint`; enforced by its own `ESLint` CI job, which needs
+no database and no secrets and therefore fails fast and independently of the
+test jobs.
+
+Two scoping decisions worth keeping:
+
+- **Vue's `flat/essential`, not `flat/recommended`.** The recommended tier is
+  mostly the strongly-recommended *stylistic* rules — attribute-per-line, tag
+  newlines, self-closing style. On this codebase they produced 181 warnings
+  and not one genuine defect, while the correctness tier found real problems.
+  Formatting belongs to Prettier, which is the next step; no rule here should
+  ever be in a position to argue with it.
+- **No type-aware presets.** The client already runs `vue-tsc --noEmit` in
+  CI, which is the stronger check; enabling typescript-eslint's type-checked
+  configs would duplicate it at several times the runtime. Type coverage for
+  the `.mjs` side is the later `checkJs` step.
+
+The first run found four violations, all fixed in the same PR: an unused
+`catch` binding, and a literal U+00A0 inside a regex in
+`scripts/verify-evidence.mjs` (intentional — that line normalizes
+non-breaking spaces — now written as `\u00a0`, which the linter accepts and a
+human can actually see). The remaining two were the linter's fault, not the
+code's: `server/index.mjs` legitimately references `Bun`, so `Bun` is
+declared a global rather than the code changed.
+
+### Formatting
+
+Prettier over everything except `content/`, `*.md` and `.github/`;
+`bun run format`, enforced by `format:check` in the same CI job as ESLint.
+`printWidth` is 110 and every other setting is the default — 110 was measured,
+not chosen: 99.1% of the lines already written here fit inside it, so the
+hand-wrapping the authors chose mostly survives, where the default 80 would
+have rewrapped the repo for nothing. The exclusions are for reasons, not
+caution: `content/` is schema-validated evidence-pinned material reviewed on
+evidence rather than layout; Markdown gains nothing (Prettier's only changes
+are `*emphasis*` → `_emphasis_` and table padding, and PLAN.md alone becomes
+an 80-line diff of realigned table rows); `.github/` would only change quote
+style, and one of those files is the review gate a PR merges through.
+`eslint-config-prettier` is deliberately absent — `npx eslint-config-prettier`
+reports no conflicting rules, because the ESLint config enables only
+correctness tiers.
+
+### Type checking the `.mjs` half
+
+`tsconfig.check.json` runs `tsc --noEmit` with `allowJs` + `checkJs` over the
+plain-JavaScript side; `bun run typecheck`, enforced in CI. Nothing is
+emitted and no build step is introduced — the `.mjs` files still run as they
+are. The client is unaffected: it has always had `vue-tsc --noEmit`.
+
+`include` grows **one directory per PR**, which is the whole design. Turning
+`checkJs` on everywhere at once buries the few real defects under a long tail
+of noise, and a check nobody reads is worse than none. Coverage today:
+`server/`, `migrations/` and `scripts/`. Remaining: `tests/`, 40 errors.
+
+Neither of the two things `scripts/` needed was a cast. In
+`validate-generated-artifacts.mjs` the two shape checks pushed their errors
+and relied on a later `errors.length > 0` to stop — correct, but the "both are
+arrays from here on" guarantee lived several lines away from where it was
+established, and now sits in the block that establishes it. In
+`revalidate-content.mjs` the repin loop duck-typed on `.get`/`.set`; it now
+uses yaml's own `isSeq`/`isMap`, which is what the code actually requires — a
+scalar or an alias would have passed the duck-type check while not being the
+sequence of evidence maps being repinned.
+
+That second one exposed a real defect underneath, raised as a P1 in review of
+the same PR. When the evidence node was not writable, the loop skipped
+silently and the question was still pushed to `revalidated` — so the run
+reported a repin that never reached disk, and the question advanced carrying
+its old hashes. This is the one claim the evidence gate must never make
+falsely. Atomicity now covers the document's *shape* as well as excerpt
+matching: every target node is resolved before anything is written, and if any
+is unwritable the question is reported as unmatched with an explicit error
+instead. `tests/revalidate-content.test.mjs` covers it with an aliased
+`evidence` node — a shape that `toJS()` resolves into a perfectly ordinary
+array, so every upstream check passes and only the write can detect it.
+
+`strict` is off on purpose for this first pass. `strictNullChecks` alone
+reports hundreds of "possibly undefined" on paths guarded by runtime
+validation the checker cannot see; each option gets tightened later, on its
+own evidence.
+
+The first pass over `server/` found exactly one substantive thing:
+`insertQuestionReport` declared a `reporterUserId` its only caller never
+passes. That is not a bug — `POST /api/reports` deliberately persists no
+reporter identifier, even for a signed-in user — so the parameter is now
+documented as optional and *why*, rather than reading as an argument someone
+forgot.
+
 ## 7. Application
 
 **Built, with one stack change from the original design below:** the client
@@ -288,6 +380,46 @@ Security and session handling:
 - **Server-side UTC `started_at` / `expires_at`**; post-deadline scoring is decided
   solely by server receipt time — the client clock is never trusted
 - Rate limits on submission and report endpoints; account and session deletion
+- **Question reports stay anonymous by design**: `POST /api/reports` accepts
+  unauthenticated callers (Practice mode itself doesn't require sign-in, so
+  gating reports behind a session would suppress them from exactly the
+  learners most likely to hit a bad question) and never records a reporter
+  identifier, even though `question_reports.reporter_user_id` exists for a
+  possible future moderator-linked flow. Abuse is bounded instead by
+  `requireSameOrigin`, the per-client rate limit, question ID validation
+  against the published bundle, and the comment length cap — not by
+  authentication.
+- **The rate limiter trusts only `CF-Connecting-IP`** as client identity.
+  `academy.mctl.ai` is fronted by Cloudflare, which unconditionally
+  overwrites that header with the TCP peer it saw — a client cannot forge
+  it. `X-Forwarded-For` is not trusted for the same purpose: a reverse proxy
+  typically only appends to it, so a client-supplied prefix survives
+  untouched, which previously let any caller pick its own bucket (or a
+  fresh one per request) at will. Requests with no trusted IP header share
+  one dedicated fallback bucket, keyed by a `Symbol` so no header value —
+  including the literal string `"unknown"` — can collide with it. The
+  in-memory store is capacity-bounded (`RATE_LIMIT_MAX_ENTRIES`); at
+  capacity it sweeps expired entries first and only then fails closed
+  (`429`) rather than evicting another client's still-active window.
+- **The limiter logs the conditions that make trusting one header risky.**
+  Keying on `CF-Connecting-IP` alone means its absence — a proxy
+  reconfiguration, direct origin access, Cloudflare bypassed — silently
+  collapses every anonymous caller into the shared fallback bucket, so
+  `POST /api/reports` starts returning `429` site-wide once that one bucket
+  is spent. Fail-closed is the intended behaviour; being invisible was not.
+  The limiter therefore warns (prefix `[rate-limit]`) when a request arrives
+  without the trusted header, and on every rejection, distinguishing a quota
+  rejection from a store-at-capacity one and the shared bucket from a per-IP
+  one. Client IPs are never logged: the bucket *kind* is the operational
+  signal, and addresses would be personal data in Loki for no added value.
+  Each condition can recur at request rate, so lines of the same kind are
+  throttled to one per `RATE_LIMIT_LOG_INTERVAL_MS`, carrying a count of the
+  occurrences they stand for. The throttle is keyed per condition, shared and
+  per-IP quota rejections included: sharing one token would let a single noisy
+  client hold it and fold every site-wide rejection into its own line's
+  suppressed count, hiding the condition this logging exists for. On the
+  healthy production path the limiter is silent, which is what makes any line
+  at all meaningful.
 
 ## 8. Deployment — MCP-only, no gitops commits
 

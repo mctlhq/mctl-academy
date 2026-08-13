@@ -16,8 +16,12 @@ import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 
 const ROOT = new URL("..", import.meta.url).pathname;
-const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
-const OUT = process.env.ACADEMY_PREVIEW_OUT ? resolve(process.env.ACADEMY_PREVIEW_OUT) : join(ROOT, "dist", "preview");
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
+const OUT = process.env.ACADEMY_PREVIEW_OUT
+  ? resolve(process.env.ACADEMY_PREVIEW_OUT)
+  : join(ROOT, "dist", "preview");
 
 const load = (dir) => {
   const p = join(CONTENT, dir);
@@ -28,7 +32,10 @@ const load = (dir) => {
 };
 
 const esc = (s = "") =>
-  String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  String(s).replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+  );
 
 // Restricted inline markdown only: backtick code and nothing else. The content
 // schema allows Markdown, but a preview that interpreted arbitrary markup

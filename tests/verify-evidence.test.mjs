@@ -15,7 +15,8 @@ import { verifyEvidence, normalize, requiresVerification } from "../scripts/veri
 
 const sha256 = (s) => createHash("sha256").update(Buffer.from(s, "utf8")).digest("hex");
 
-const DOC = "Function calling lets a model request tools that your application then executes and returns results for.";
+const DOC =
+  "Function calling lets a model request tools that your application then executes and returns results for.";
 const DOC_HASH = sha256(DOC);
 
 /** In-memory stand-in for the R2 store. */
@@ -70,7 +71,13 @@ test("passes when the excerpt appears verbatim", async () => {
 });
 
 test("fails when the excerpt does not appear", async () => {
-  const items = [item({ evidence: [{ source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "lets a model invent tools" }] })];
+  const items = [
+    item({
+      evidence: [
+        { source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "lets a model invent tools" },
+      ],
+    }),
+  ];
   const { errors } = await run({ items });
   assert.equal(errors.length, 1);
   assert.match(errors[0], /not found verbatim/);
@@ -78,7 +85,13 @@ test("fails when the excerpt does not appear", async () => {
 
 test("fails a paraphrase that preserves meaning", async () => {
   // The whole point: semantically identical, textually different.
-  const items = [item({ evidence: [{ source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "allows a model to request tools" }] })];
+  const items = [
+    item({
+      evidence: [
+        { source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "allows a model to request tools" },
+      ],
+    }),
+  ];
   const { errors } = await run({ items });
   assert.equal(errors.length, 1);
 });
@@ -86,7 +99,11 @@ test("fails a paraphrase that preserves meaning", async () => {
 test("tolerates line wrapping in the stored document", async () => {
   const wrapped = DOC.replace("request tools", "request\ntools");
   const key = sha256(wrapped);
-  const items = [item({ evidence: [{ source_id: "src-fn-calling", source_sha256: key, excerpt: "lets a model request tools" }] })];
+  const items = [
+    item({
+      evidence: [{ source_id: "src-fn-calling", source_sha256: key, excerpt: "lets a model request tools" }],
+    }),
+  ];
   const { errors, checked } = await run({
     sources: [source({ sha256: key, snapshot: { bucket: "academy-source-snapshots", key } })],
     items,
@@ -99,7 +116,11 @@ test("tolerates line wrapping in the stored document", async () => {
 test("tolerates curly quotes in the stored document", async () => {
   const curly = "The model’s response includes a tool call.";
   const key = sha256(curly);
-  const items = [item({ evidence: [{ source_id: "src-fn-calling", source_sha256: key, excerpt: "The model's response" }] })];
+  const items = [
+    item({
+      evidence: [{ source_id: "src-fn-calling", source_sha256: key, excerpt: "The model's response" }],
+    }),
+  ];
   const { errors } = await run({
     sources: [source({ sha256: key, snapshot: { bucket: "academy-source-snapshots", key } })],
     items,
@@ -109,7 +130,13 @@ test("tolerates curly quotes in the stored document", async () => {
 });
 
 test("does not fold case — case is meaning", async () => {
-  const items = [item({ evidence: [{ source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "LETS A MODEL REQUEST TOOLS" }] })];
+  const items = [
+    item({
+      evidence: [
+        { source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "LETS A MODEL REQUEST TOOLS" },
+      ],
+    }),
+  ];
   const { errors } = await run({ items });
   assert.equal(errors.length, 1);
 });
@@ -127,7 +154,9 @@ test("fails when the source records no snapshot or hash mismatch", async () => {
 });
 
 test("fails when the citation names an unknown source", async () => {
-  const items = [item({ evidence: [{ source_id: "src-nope", source_sha256: DOC_HASH, excerpt: "anything" }] })];
+  const items = [
+    item({ evidence: [{ source_id: "src-nope", source_sha256: DOC_HASH, excerpt: "anything" }] }),
+  ];
   const { errors } = await run({ items });
   assert.match(errors[0], /unknown source/);
 });

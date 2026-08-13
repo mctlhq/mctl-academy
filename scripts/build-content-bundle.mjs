@@ -30,9 +30,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCourses, partitionQuestions } from "./lib/content-model.mjs";
+import { validateGeneratedArtifacts } from "./lib/validate-generated-artifacts.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const CONTENT = process.env.ACADEMY_CONTENT_DIR ? resolve(process.env.ACADEMY_CONTENT_DIR) : join(ROOT, "content");
+const CONTENT = process.env.ACADEMY_CONTENT_DIR
+  ? resolve(process.env.ACADEMY_CONTENT_DIR)
+  : join(ROOT, "content");
 const OUT = process.env.ACADEMY_BUNDLE_OUT
   ? resolve(process.env.ACADEMY_BUNDLE_OUT)
   : join(ROOT, "client", "src", "content-bundle.json");
@@ -101,6 +104,20 @@ for (const [courseId, count] of publishedByCourse) {
     console.error(`ERROR: ${count} published question(s) reference unknown course_id ${courseId}`);
     process.exit(1);
   }
+}
+
+// Output-contract check, before either file is written: a malformed artefact
+// must fail the build rather than land on disk, where the next dev/test/build
+// run would import it and the client would assert it into a type it no longer
+// matches. See scripts/lib/validate-generated-artifacts.mjs for why this is
+// not a restatement of the source-side schema checks.
+const contractErrors = validateGeneratedArtifacts(bundle, catalog);
+if (contractErrors.length > 0) {
+  console.error(
+    `ERROR: generated artefacts failed their output contract (${contractErrors.length} problem(s)):`,
+  );
+  for (const problem of contractErrors) console.error(`  - ${problem}`);
+  process.exit(1);
 }
 
 mkdirSync(join(OUT, ".."), { recursive: true });

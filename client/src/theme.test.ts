@@ -16,24 +16,18 @@ describe("applyTheme", () => {
   it("uses dark browser chrome for the dark theme", () => {
     applyTheme("dark");
 
-    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe(
-      "#0a0b0d",
-    );
+    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe("#0a0b0d");
     expect(
-      document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]')
-        ?.content,
+      document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]')?.content,
     ).toBe("black-translucent");
   });
 
   it("uses contrasting browser chrome for the light theme", () => {
     applyTheme("light");
 
-    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe(
-      "#f5f2ea",
-    );
+    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe("#f5f2ea");
     expect(
-      document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]')
-        ?.content,
+      document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]')?.content,
     ).toBe("default");
   });
 });

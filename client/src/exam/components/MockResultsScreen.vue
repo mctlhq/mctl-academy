@@ -38,9 +38,7 @@ const score = computed(() => scoreSession(props.session));
             </p>
           </li>
         </ul>
-        <p v-if="session.answers[question.id] === undefined" class="mock-results-unanswered">
-          Not answered.
-        </p>
+        <p v-if="session.answers[question.id] === undefined" class="mock-results-unanswered">Not answered.</p>
       </li>
     </ol>
   </section>

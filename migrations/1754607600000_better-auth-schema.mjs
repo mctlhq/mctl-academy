@@ -132,7 +132,7 @@ export function down(pgm) {
       created_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
       updated_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
     },
-    { ifNotExists: true }
+    { ifNotExists: true },
   );
 
   pgm.createTable(
@@ -148,7 +148,7 @@ export function down(pgm) {
       expires_at: { type: "timestamptz", notNull: true },
       created_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
     },
-    { ifNotExists: true }
+    { ifNotExists: true },
   );
 
   // better-auth's generateId() produces non-UUID text (see the up() comment

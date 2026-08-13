@@ -85,15 +85,9 @@ test("rejects promotion if selection modes are conflicting", () => {
     /mutually exclusive/,
   );
 
-  assert.throws(
-    () => parseArgs(["--all-review-ready", "q1"]),
-    /mutually exclusive/,
-  );
+  assert.throws(() => parseArgs(["--all-review-ready", "q1"]), /mutually exclusive/);
 
-  assert.throws(
-    () => parseArgs(["--course", "agentic-ai-builder", "q1"]),
-    /mutually exclusive/,
-  );
+  assert.throws(() => parseArgs(["--course", "agentic-ai-builder", "q1"]), /mutually exclusive/);
 
   const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
   try {
@@ -102,7 +96,13 @@ test("rejects promotion if selection modes are conflicting", () => {
     writeFileSync(filePath, JSON.stringify(sampleQuestion()));
 
     assert.throws(
-      () => promoteQuestions({ contentDir: dir, by: "mashkovd", allReviewReady: true, courseId: "agentic-ai-builder" }),
+      () =>
+        promoteQuestions({
+          contentDir: dir,
+          by: "mashkovd",
+          allReviewReady: true,
+          courseId: "agentic-ai-builder",
+        }),
       /mutually exclusive/,
     );
   } finally {
@@ -115,7 +115,10 @@ test("rejects promotion if question is authored by a human rather than an agent"
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
     const filePath = join(dir, "questions", "q-review000001.yaml");
-    writeFileSync(filePath, JSON.stringify(sampleQuestion({ authored: { by: "mashkovd", at: "2026-08-06T10:00:00Z" } })));
+    writeFileSync(
+      filePath,
+      JSON.stringify(sampleQuestion({ authored: { by: "mashkovd", at: "2026-08-06T10:00:00Z" } })),
+    );
 
     assert.throws(
       () => promoteQuestions({ contentDir: dir, by: "mashkovd", idsOrPaths: [filePath] }),
@@ -175,9 +178,18 @@ test("promotes all review_ready questions when allReviewReady is specified", () 
   const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
-    writeFileSync(join(dir, "questions", "q1.yaml"), JSON.stringify(sampleQuestion({ id: "q-review000001" })));
-    writeFileSync(join(dir, "questions", "q2.yaml"), JSON.stringify(sampleQuestion({ id: "q-review000002" })));
-    writeFileSync(join(dir, "questions", "q3.yaml"), JSON.stringify(sampleQuestion({ id: "q-review000003", status: "published" })));
+    writeFileSync(
+      join(dir, "questions", "q1.yaml"),
+      JSON.stringify(sampleQuestion({ id: "q-review000001" })),
+    );
+    writeFileSync(
+      join(dir, "questions", "q2.yaml"),
+      JSON.stringify(sampleQuestion({ id: "q-review000002" })),
+    );
+    writeFileSync(
+      join(dir, "questions", "q3.yaml"),
+      JSON.stringify(sampleQuestion({ id: "q-review000003", status: "published" })),
+    );
 
     const result = promoteQuestions({
       contentDir: dir,

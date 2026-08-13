@@ -99,10 +99,10 @@ test.describe("responsive layout matrix", () => {
 
       for (const route of routes) {
         test(`${route} has no horizontal overflow and a bounded nav`, async ({ page }) => {
-            await page.goto(route);
-              await assertNoHorizontalOverflow(page, width);
-              await assertNavControlsInBounds(page, width);
-              await assertNoOverlap(page, ".app-brand", ".course-select");
+          await page.goto(route);
+          await assertNoHorizontalOverflow(page, width);
+          await assertNavControlsInBounds(page, width);
+          await assertNoOverlap(page, ".app-brand", ".course-select");
         });
       }
     });

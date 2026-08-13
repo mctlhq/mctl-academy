@@ -41,12 +41,7 @@ export class SnapshotStore {
     const canonicalRequest = [method, path, "", canonicalHeaders, signedHeaders, payloadHash].join("\n");
 
     const scope = `${dateStamp}/${REGION}/${SERVICE}/aws4_request`;
-    const stringToSign = [
-      "AWS4-HMAC-SHA256",
-      amzDate,
-      scope,
-      sha256(canonicalRequest),
-    ].join("\n");
+    const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, sha256(canonicalRequest)].join("\n");
 
     let key = hmac(`AWS4${this.secretAccessKey}`, dateStamp);
     key = hmac(key, REGION);

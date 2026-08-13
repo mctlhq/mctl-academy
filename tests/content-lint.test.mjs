@@ -24,10 +24,34 @@ const COURSE_DEF = {
   description: "Test description for course map",
   mock: { question_count: 30, time_limit_minutes: 60 },
   domains: [
-    { id: "domain-1", title: "One", weight: 20, mock_questions: 6, objectives: [{ id: "alpha", title: "Alpha" }] },
-    { id: "domain-2", title: "Two", weight: 35, mock_questions: 10, objectives: [{ id: "beta", title: "Beta" }] },
-    { id: "domain-3", title: "Three", weight: 20, mock_questions: 6, objectives: [{ id: "gamma", title: "Gamma" }] },
-    { id: "domain-4", title: "Four", weight: 25, mock_questions: 8, objectives: [{ id: "delta", title: "Delta" }] },
+    {
+      id: "domain-1",
+      title: "One",
+      weight: 20,
+      mock_questions: 6,
+      objectives: [{ id: "alpha", title: "Alpha" }],
+    },
+    {
+      id: "domain-2",
+      title: "Two",
+      weight: 35,
+      mock_questions: 10,
+      objectives: [{ id: "beta", title: "Beta" }],
+    },
+    {
+      id: "domain-3",
+      title: "Three",
+      weight: 20,
+      mock_questions: 6,
+      objectives: [{ id: "gamma", title: "Gamma" }],
+    },
+    {
+      id: "domain-4",
+      title: "Four",
+      weight: 25,
+      mock_questions: 8,
+      objectives: [{ id: "delta", title: "Delta" }],
+    },
   ],
 };
 
@@ -66,7 +90,9 @@ const question = (over = {}) => ({
     option("c", false, "Another wrong one"),
     option("d", false, "A third wrong one"),
   ],
-  evidence: [{ source_id: "src-docs-agents", source_sha256: HASH, excerpt: "agents run tools on your behalf" }],
+  evidence: [
+    { source_id: "src-docs-agents", source_sha256: HASH, excerpt: "agents run tools on your behalf" },
+  ],
   authored: { by: "agent:writer", at: "2026-08-06T10:00:00Z" },
   reviewed: { by: "mashkovd", at: "2026-08-06T11:00:00Z" },
   ...over,
@@ -120,7 +146,13 @@ test("rejects zero correct answers", () => {
 
 test("rejects an excerpt longer than 25 words", () => {
   const q = question({
-    evidence: [{ source_id: "src-docs-agents", source_sha256: HASH, excerpt: Array.from({ length: 26 }, (_, i) => `w${i}`).join(" ") }],
+    evidence: [
+      {
+        source_id: "src-docs-agents",
+        source_sha256: HASH,
+        excerpt: Array.from({ length: 26 }, (_, i) => `w${i}`).join(" "),
+      },
+    ],
   });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
@@ -129,7 +161,13 @@ test("rejects an excerpt longer than 25 words", () => {
 
 test("accepts an excerpt of exactly 25 words", () => {
   const q = question({
-    evidence: [{ source_id: "src-docs-agents", source_sha256: HASH, excerpt: Array.from({ length: 25 }, (_, i) => `w${i}`).join(" ") }],
+    evidence: [
+      {
+        source_id: "src-docs-agents",
+        source_sha256: HASH,
+        excerpt: Array.from({ length: 25 }, (_, i) => `w${i}`).join(" "),
+      },
+    ],
   });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, true, output);
@@ -159,7 +197,9 @@ test("rejects duplicate option text", () => {
 });
 
 test("rejects a citation to an unknown source", () => {
-  const q = question({ evidence: [{ source_id: "src-does-not-exist", source_sha256: HASH, excerpt: "nope" }] });
+  const q = question({
+    evidence: [{ source_id: "src-does-not-exist", source_sha256: HASH, excerpt: "nope" }],
+  });
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
   assert.match(output, /unknown source/);

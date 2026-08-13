@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.1.45](https://github.com/mctlhq/mctl-academy/compare/0.1.44...0.1.45) (2026-08-13)
+
+
+### Bug Fixes
+
+* stop reporting a database failure as an invalid JSON payload ([1bccbd8](https://github.com/mctlhq/mctl-academy/commit/1bccbd80f3f48ad48f2dac5fcbea3c7a4875fc7f))
+* stop reporting a database failure as an invalid JSON payload ([250c554](https://github.com/mctlhq/mctl-academy/commit/250c5546990e900abb4d55a882557ebb41a9b14c))
+
+## [0.1.44](https://github.com/mctlhq/mctl-academy/compare/0.1.43...0.1.44) (2026-08-13)
+
+
+### Features
+
+* make rate-limit rejections and a missing CF-Connecting-IP visible in logs ([613c2f7](https://github.com/mctlhq/mctl-academy/commit/613c2f74857d858fcc28f6eb448c27ff91b6cc93))
+* make rate-limit rejections and a missing CF-Connecting-IP visible in logs ([d16d645](https://github.com/mctlhq/mctl-academy/commit/d16d645c202290a67e8203a952e1f365293f9e3a))
+
+
+### Bug Fixes
+
+* throttle shared and per-IP quota rejections as separate events ([5d501bd](https://github.com/mctlhq/mctl-academy/commit/5d501bd8c3a32dc076981a0b3ee38c7ce1be00bd))
+
+## [0.1.43](https://github.com/mctlhq/mctl-academy/compare/0.1.42...0.1.43) (2026-08-13)
+
+
+### Features
+
+* validate generated artefacts at the build boundary ([edad33f](https://github.com/mctlhq/mctl-academy/commit/edad33fea34d6ecfea19e45e6a5b05e81f61771c))
+* validate generated artefacts at the build boundary ([202be4f](https://github.com/mctlhq/mctl-academy/commit/202be4ff37d3e44998fee3815348ee6a3c4392f2))
+
+
+### Bug Fixes
+
+* bounded, trusted-proxy-aware rate limiter ([2d0899e](https://github.com/mctlhq/mctl-academy/commit/2d0899ea79e244f7e92d60a63ce70fd1c3fb2c56))
+* require same-origin on POST /api/reports, document anonymous-report policy ([b4d4196](https://github.com/mctlhq/mctl-academy/commit/b4d4196c2e73cb123e6ffc2425d6b52458834362))
+* requireSameOrigin on POST /api/reports + anonymous-report policy ([9327459](https://github.com/mctlhq/mctl-academy/commit/93274599e9f5087ddec4518ceb705b1a3c62c4f4))
+* send X-Frame-Options: DENY alongside the CSP's frame-ancestors ([b6f8647](https://github.com/mctlhq/mctl-academy/commit/b6f8647e043880d9d7253ce2f78f58636749c8e6))
+* trust only CF-Connecting-IP for rate limiting, bound the hits store ([36c0228](https://github.com/mctlhq/mctl-academy/commit/36c02286dd55c9d56e6fe4c418d2e4551d525bbb))
+
 ## [0.1.42](https://github.com/mctlhq/mctl-academy/compare/0.1.41...0.1.42) (2026-08-10)
 
 

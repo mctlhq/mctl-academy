@@ -9,14 +9,15 @@ import {
   checkDbReady,
   insertQuestionReport,
   listRecentQuestionReports,
-  getAdminStats
+  getAdminStats,
 } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
+import { requireSameOrigin } from "./middleware/csrf.mjs";
 import {
   securityHeaders,
   applySecurityHeaders,
-  applySecurityHeadersToResponse
+  applySecurityHeadersToResponse,
 } from "./middleware/security-headers.mjs";
 
 export const app = new Hono();
@@ -95,13 +96,7 @@ app.route("/api/account", accountRouter);
 // ever depends on a network request to be protected from drifted content.
 // Withdrawing an item means marking its source in content/ and redeploying.
 
-const VALID_REASONS = new Set([
-  "typo",
-  "factual_error",
-  "unclear_stem",
-  "bad_distractor",
-  "other"
-]);
+const VALID_REASONS = new Set(["typo", "factual_error", "unclear_stem", "bad_distractor", "other"]);
 
 const MAX_COMMENT_LENGTH = 2000;
 
@@ -112,7 +107,11 @@ const MAX_COMMENT_LENGTH = 2000;
  * as an alias: it is the chart's configured liveness path today.
  */
 function livenessHandler(c) {
-  return c.json({ status: "ok", service: "mctl-academy", runtime: typeof Bun !== "undefined" ? "bun" : "node" });
+  return c.json({
+    status: "ok",
+    service: "mctl-academy",
+    runtime: typeof Bun !== "undefined" ? "bun" : "node",
+  });
 }
 app.get("/healthz", livenessHandler);
 app.get("/livez", livenessHandler);
@@ -138,55 +137,75 @@ app.get("/readyz", async (c) => {
   }
 });
 
-// Question Report intake endpoint (issue #22)
-app.post("/api/reports", rateLimit(), async (c) => {
+/**
+ * Question Report intake endpoint (issue #22).
+ *
+ * Practice mode is reachable without signing in, so this route deliberately
+ * stays open to anonymous callers rather than gating it behind a session the
+ * way /api/attempts is — requiring a GitHub login just to flag a bad question
+ * would suppress reports from exactly the learners most likely to hit one.
+ * No reporter identifier is captured (insertQuestionReport's reporterUserId
+ * is never passed here, even though the column exists for a possible future
+ * moderator-linked flow): rate limiting, same-origin checks, question ID
+ * validation and the comment length cap are the abuse controls instead of
+ * authentication.
+ */
+app.post("/api/reports", requireSameOrigin, rateLimit(), async (c) => {
+  // Only the parse is guarded, matching routes/attempts.mjs and
+  // routes/votes.mjs: a malformed body is the client's fault and 400 is the
+  // truth. Everything after this -- the insert in particular -- must be
+  // allowed to reach app.onError, which logs it and returns 500. A wider try
+  // here reported a database outage as "Invalid JSON payload", blaming the
+  // caller for a request that was perfectly valid, and logged nothing at all.
+  let body;
   try {
-    const body = await c.req.json();
-    const { question_id, reason, comment } = body || {};
-
-    if (!question_id || typeof question_id !== "string") {
-      return c.json({ error: "question_id is required" }, 400);
-    }
-
-    if (!reason || !VALID_REASONS.has(reason)) {
-      return c.json({ error: "Invalid or missing reason" }, 400);
-    }
-
-    if (comment !== undefined && comment !== null) {
-      if (typeof comment !== "string") {
-        return c.json({ error: "comment must be a string" }, 400);
-      }
-      if (comment.length > MAX_COMMENT_LENGTH) {
-        return c.json({ error: `comment must be ${MAX_COMMENT_LENGTH} characters or fewer` }, 400);
-      }
-    }
-
-    if (!isKnownQuestionId(question_id)) {
-      return c.json({ error: "Unknown question_id" }, 404);
-    }
-
-    const report = await insertQuestionReport({
-      questionId: question_id,
-      reason,
-      comment: typeof comment === "string" ? comment : ""
-    });
-
-    return c.json(
-      {
-        success: true,
-        report: {
-          id: report.id,
-          question_id: report.questionId,
-          reason: report.reason,
-          comment: report.comment,
-          created_at: report.createdAt
-        }
-      },
-      201
-    );
-  } catch (err) {
+    body = await c.req.json();
+  } catch {
     return c.json({ error: "Invalid JSON payload" }, 400);
   }
+
+  const { question_id, reason, comment } = body || {};
+
+  if (!question_id || typeof question_id !== "string") {
+    return c.json({ error: "question_id is required" }, 400);
+  }
+
+  if (!reason || !VALID_REASONS.has(reason)) {
+    return c.json({ error: "Invalid or missing reason" }, 400);
+  }
+
+  if (comment !== undefined && comment !== null) {
+    if (typeof comment !== "string") {
+      return c.json({ error: "comment must be a string" }, 400);
+    }
+    if (comment.length > MAX_COMMENT_LENGTH) {
+      return c.json({ error: `comment must be ${MAX_COMMENT_LENGTH} characters or fewer` }, 400);
+    }
+  }
+
+  if (!isKnownQuestionId(question_id)) {
+    return c.json({ error: "Unknown question_id" }, 404);
+  }
+
+  const report = await insertQuestionReport({
+    questionId: question_id,
+    reason,
+    comment: typeof comment === "string" ? comment : "",
+  });
+
+  return c.json(
+    {
+      success: true,
+      report: {
+        id: report.id,
+        question_id: report.questionId,
+        reason: report.reason,
+        comment: report.comment,
+        created_at: report.createdAt,
+      },
+    },
+    201,
+  );
 });
 
 /**
@@ -217,9 +236,9 @@ app.get("/api/reports", async (c) => {
       question_id: r.questionId,
       reason: r.reason,
       comment: r.comment,
-      created_at: r.createdAt
+      created_at: r.createdAt,
     })),
-    count: reports.length
+    count: reports.length,
   });
 });
 
