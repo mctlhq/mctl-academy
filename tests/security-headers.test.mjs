@@ -17,6 +17,32 @@ describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
     assert.ok(res.headers.get("permissions-policy"));
   });
 
+  test("clickjacking is refused by both controls at once, and they agree", async () => {
+    // X-Frame-Options is the legacy compatibility half of the same decision
+    // the CSP's frame-ancestors makes. Asserted together so a future change
+    // cannot relax one while leaving the other looking protective — e.g.
+    // loosening frame-ancestors to 'self' and forgetting XFO still says DENY.
+    const res = await app.request("/healthz");
+    assert.equal(res.headers.get("x-frame-options"), "DENY");
+    assert.match(res.headers.get("content-security-policy"), /frame-ancestors 'none'/);
+  });
+
+  test("the error paths carry X-Frame-Options too, not just the success path", async () => {
+    // The 500 and HTTPException paths build their headers through the same
+    // shared list; this pins that the new header travels with them rather
+    // than only on responses that went through the middleware's happy path.
+    const { Hono } = await import("hono");
+    const probe = new Hono();
+    probe.onError(errorHandler);
+    probe.get("/boom", () => {
+      throw new Error("simulated unhandled failure");
+    });
+
+    const res = await probe.request("/boom");
+    assert.equal(res.status, 500);
+    assert.equal(res.headers.get("x-frame-options"), "DENY");
+  });
+
   test("static SPA fallback also carries the baseline headers", async () => {
     const res = await app.request("/");
     assert.match(res.headers.get("content-security-policy") || "", /default-src 'self'/);
