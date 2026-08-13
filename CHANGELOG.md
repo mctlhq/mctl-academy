@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.45](https://github.com/mctlhq/mctl-academy/compare/0.1.44...0.1.45) (2026-08-13)
+
+
+### Bug Fixes
+
+* stop reporting a database failure as an invalid JSON payload ([1bccbd8](https://github.com/mctlhq/mctl-academy/commit/1bccbd80f3f48ad48f2dac5fcbea3c7a4875fc7f))
+* stop reporting a database failure as an invalid JSON payload ([250c554](https://github.com/mctlhq/mctl-academy/commit/250c5546990e900abb4d55a882557ebb41a9b14c))
+
 ## [0.1.44](https://github.com/mctlhq/mctl-academy/compare/0.1.43...0.1.44) (2026-08-13)
 
 
