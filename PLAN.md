@@ -297,6 +297,18 @@ Security and session handling:
   `requireSameOrigin`, the per-client rate limit, question ID validation
   against the published bundle, and the comment length cap — not by
   authentication.
+- **The rate limiter trusts only `CF-Connecting-IP`** as client identity.
+  `academy.mctl.ai` is fronted by Cloudflare, which unconditionally
+  overwrites that header with the TCP peer it saw — a client cannot forge
+  it. `X-Forwarded-For` is not trusted for the same purpose: a reverse proxy
+  typically only appends to it, so a client-supplied prefix survives
+  untouched, which previously let any caller pick its own bucket (or a
+  fresh one per request) at will. Requests with no trusted IP header share
+  one dedicated fallback bucket, keyed by a `Symbol` so no header value —
+  including the literal string `"unknown"` — can collide with it. The
+  in-memory store is capacity-bounded (`RATE_LIMIT_MAX_ENTRIES`); at
+  capacity it sweeps expired entries first and only then fails closed
+  (`429`) rather than evicting another client's still-active window.
 
 ## 8. Deployment — MCP-only, no gitops commits
 

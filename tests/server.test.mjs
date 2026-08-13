@@ -36,7 +36,7 @@ describe("Hono server & Report API", () => {
   test("POST /api/reports accepts valid report", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.1" },
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.1" },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "typo",
@@ -55,7 +55,7 @@ describe("Hono server & Report API", () => {
   test("POST /api/reports rejects missing question_id", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.2" },
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.2" },
       body: JSON.stringify({
         reason: "typo"
       })
@@ -69,7 +69,7 @@ describe("Hono server & Report API", () => {
   test("POST /api/reports rejects invalid reason", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.3" },
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.3" },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "invalid_reason_string"
@@ -84,7 +84,7 @@ describe("Hono server & Report API", () => {
   test("POST /api/reports rejects unknown question_id with 404", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.4" },
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.4" },
       body: JSON.stringify({
         question_id: "q-doesnotexist9",
         reason: "typo"
@@ -99,7 +99,7 @@ describe("Hono server & Report API", () => {
   test("POST /api/reports rejects comment longer than 2000 characters", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.5" },
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.5" },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "typo",
@@ -117,7 +117,7 @@ describe("Hono server & Report API", () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-forwarded-for": "203.0.113.7",
+        "cf-connecting-ip": "203.0.113.7",
         Origin: "https://evil.example.com"
       },
       body: JSON.stringify({
@@ -136,7 +136,7 @@ describe("Hono server & Report API", () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-forwarded-for": "203.0.113.8",
+        "cf-connecting-ip": "203.0.113.8",
         "Sec-Fetch-Site": "cross-site"
       },
       body: JSON.stringify({
@@ -153,7 +153,7 @@ describe("Hono server & Report API", () => {
   test("POST /api/reports accepts anonymous callers and never persists a reporter identifier", async () => {
     const res = await app.request("/api/reports", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.9" },
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.9" },
       body: JSON.stringify({
         question_id: "q-df01f3a4b5c6",
         reason: "other",
@@ -175,7 +175,31 @@ describe("Hono server & Report API", () => {
     for (let i = 0; i < 11; i += 1) {
       const res = await app.request("/api/reports", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-forwarded-for": ip },
+        headers: { "Content-Type": "application/json", "cf-connecting-ip": ip },
+        body: JSON.stringify({
+          question_id: "q-df01f3a4b5c6",
+          reason: "typo"
+        })
+      });
+      lastStatus = res.status;
+    }
+
+    assert.equal(lastStatus, 429);
+  });
+
+  test("POST /api/reports ignores a spoofed X-Forwarded-For — it cannot buy a fresh rate-limit bucket", async () => {
+    // No cf-connecting-ip on any of these: every request lands in the one
+    // shared "no trusted IP" bucket regardless of how many distinct,
+    // attacker-chosen X-Forwarded-For values it sends.
+    let lastStatus;
+
+    for (let i = 0; i < 11; i += 1) {
+      const res = await app.request("/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-forwarded-for": `198.51.100.${i}`
+        },
         body: JSON.stringify({
           question_id: "q-df01f3a4b5c6",
           reason: "typo"

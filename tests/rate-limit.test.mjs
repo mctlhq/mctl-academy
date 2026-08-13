@@ -1,0 +1,130 @@
+import { test, describe } from "node:test";
+import assert from "node:assert/strict";
+import { Hono } from "hono";
+import { rateLimit } from "../server/middleware/rate-limit.mjs";
+
+// A throwaway probe app per test, never server/app.mjs -- the middleware
+// itself has no DB dependency, and keeping these tests off the real app
+// means no shared rate-limit store leaks between them or requires a live
+// Postgres connection.
+function probeApp(options) {
+  const app = new Hono();
+  app.post("/probe", rateLimit(options), (c) => c.json({ ok: true }));
+  return app;
+}
+
+function clock(startMs) {
+  let current = startMs;
+  return { now: () => current, advance: (ms) => (current += ms) };
+}
+
+describe("rateLimit — trusted IP source (PLAN.md PR 2b)", () => {
+  test("trusts only CF-Connecting-IP: two different values get independent budgets", async () => {
+    const app = probeApp({ max: 1, store: new Map() });
+
+    const first = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.1" } });
+    const second = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "203.0.113.2" } });
+    assert.equal(first.status, 200);
+    assert.equal(second.status, 200);
+
+    const firstAgain = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "203.0.113.1" }
+    });
+    assert.equal(firstAgain.status, 429);
+  });
+
+  test("a spoofed X-Forwarded-For is never read as client identity", async () => {
+    const app = probeApp({ max: 1, store: new Map() });
+
+    const first = await app.request("/probe", { method: "POST", headers: { "x-forwarded-for": "203.0.113.1" } });
+    assert.equal(first.status, 200);
+
+    // Different spoofed X-Forwarded-For, still no cf-connecting-ip: this is
+    // the *same* untrusted request from the middleware's point of view, so
+    // it must land in the same bucket as the first and be rejected --
+    // proving X-Forwarded-For cannot be used to fabricate a fresh identity.
+    const second = await app.request("/probe", { method: "POST", headers: { "x-forwarded-for": "203.0.113.2" } });
+    assert.equal(second.status, 429);
+  });
+
+  test("a literal 'unknown' header value gets its own bucket, distinct from a genuinely missing header", async () => {
+    const app = probeApp({ max: 1, store: new Map() });
+
+    const literalUnknown = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "unknown" }
+    });
+    assert.equal(literalUnknown.status, 200);
+
+    // No cf-connecting-ip at all -- must not have been consumed by the
+    // request above, which set the header to the literal string "unknown"
+    // rather than omitting it.
+    const trulyMissing = await app.request("/probe", { method: "POST", headers: {} });
+    assert.equal(trulyMissing.status, 200);
+  });
+});
+
+describe("rateLimit — bounded storage (PLAN.md PR 2b)", () => {
+  test("capacity exhaustion fails closed instead of evicting an active entry", async () => {
+    const store = new Map();
+    const app = probeApp({ max: 10, maxEntries: 2, store });
+
+    const a = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
+    const b = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.2" } });
+    assert.equal(a.status, 200);
+    assert.equal(b.status, 200);
+    assert.equal(store.size, 2);
+
+    // A third, brand-new key with the store already at maxEntries: must be
+    // rejected rather than silently evicting 10.0.0.1's still-active entry.
+    const c = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.3" } });
+    assert.equal(c.status, 429);
+    assert.equal(store.size, 2);
+    assert.ok(store.has("10.0.0.1"), "an active entry must not be evicted to make room");
+    assert.ok(store.has("10.0.0.2"), "an active entry must not be evicted to make room");
+
+    // 10.0.0.1's own budget must be untouched by the rejected newcomer.
+    const aAgain = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
+    assert.equal(aAgain.status, 200);
+  });
+
+  test("expired entries are swept before a capacity-exhausted request fails closed", async () => {
+    const store = new Map();
+    const { now, advance } = clock(1_000_000);
+    const app = probeApp({ max: 10, maxEntries: 2, windowMs: 1000, store, now });
+
+    await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
+    await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.2" } });
+    assert.equal(store.size, 2);
+
+    advance(1001); // both entries are now expired
+
+    const c = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.3" } });
+    assert.equal(c.status, 200, "the sweep should have reclaimed room for a new key");
+    assert.equal(store.size, 1, "expired entries are removed, leaving only the new one");
+    assert.ok(store.has("10.0.0.3"));
+  });
+
+  test("an injected clock deterministically rolls the window over", async () => {
+    const { now, advance } = clock(0);
+    const app = probeApp({ max: 1, windowMs: 1000, store: new Map(), now });
+
+    const first = await app.request("/probe", { method: "POST", headers: { "cf-connecting-ip": "10.0.0.1" } });
+    assert.equal(first.status, 200);
+
+    const stillWithinWindow = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "10.0.0.1" }
+    });
+    assert.equal(stillWithinWindow.status, 429);
+
+    advance(1000);
+
+    const afterRollover = await app.request("/probe", {
+      method: "POST",
+      headers: { "cf-connecting-ip": "10.0.0.1" }
+    });
+    assert.equal(afterRollover.status, 200);
+  });
+});
