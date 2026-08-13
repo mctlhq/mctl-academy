@@ -288,6 +288,15 @@ Security and session handling:
 - **Server-side UTC `started_at` / `expires_at`**; post-deadline scoring is decided
   solely by server receipt time — the client clock is never trusted
 - Rate limits on submission and report endpoints; account and session deletion
+- **Question reports stay anonymous by design**: `POST /api/reports` accepts
+  unauthenticated callers (Practice mode itself doesn't require sign-in, so
+  gating reports behind a session would suppress them from exactly the
+  learners most likely to hit a bad question) and never records a reporter
+  identifier, even though `question_reports.reporter_user_id` exists for a
+  possible future moderator-linked flow. Abuse is bounded instead by
+  `requireSameOrigin`, the per-client rate limit, question ID validation
+  against the published bundle, and the comment length cap — not by
+  authentication.
 
 ## 8. Deployment — MCP-only, no gitops commits
 

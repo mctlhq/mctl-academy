@@ -13,6 +13,7 @@ import {
 } from "./db.mjs";
 import { isKnownQuestionId } from "./questions.mjs";
 import { rateLimit } from "./middleware/rate-limit.mjs";
+import { requireSameOrigin } from "./middleware/csrf.mjs";
 import {
   securityHeaders,
   applySecurityHeaders,
@@ -138,8 +139,20 @@ app.get("/readyz", async (c) => {
   }
 });
 
-// Question Report intake endpoint (issue #22)
-app.post("/api/reports", rateLimit(), async (c) => {
+/**
+ * Question Report intake endpoint (issue #22).
+ *
+ * Practice mode is reachable without signing in, so this route deliberately
+ * stays open to anonymous callers rather than gating it behind a session the
+ * way /api/attempts is — requiring a GitHub login just to flag a bad question
+ * would suppress reports from exactly the learners most likely to hit one.
+ * No reporter identifier is captured (insertQuestionReport's reporterUserId
+ * is never passed here, even though the column exists for a possible future
+ * moderator-linked flow): rate limiting, same-origin checks, question ID
+ * validation and the comment length cap are the abuse controls instead of
+ * authentication.
+ */
+app.post("/api/reports", requireSameOrigin, rateLimit(), async (c) => {
   try {
     const body = await c.req.json();
     const { question_id, reason, comment } = body || {};

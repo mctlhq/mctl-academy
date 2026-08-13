@@ -112,6 +112,62 @@ describe("Hono server & Report API", () => {
     assert.equal(body.error, "comment must be 2000 characters or fewer");
   });
 
+  test("POST /api/reports rejects a cross-origin request", async () => {
+    const res = await app.request("/api/reports", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-forwarded-for": "203.0.113.7",
+        Origin: "https://evil.example.com"
+      },
+      body: JSON.stringify({
+        question_id: "q-df01f3a4b5c6",
+        reason: "typo"
+      })
+    });
+
+    assert.equal(res.status, 403);
+    const body = await res.json();
+    assert.equal(body.error, "Cross-origin request rejected.");
+  });
+
+  test("POST /api/reports rejects a cross-site request flagged via Sec-Fetch-Site", async () => {
+    const res = await app.request("/api/reports", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-forwarded-for": "203.0.113.8",
+        "Sec-Fetch-Site": "cross-site"
+      },
+      body: JSON.stringify({
+        question_id: "q-df01f3a4b5c6",
+        reason: "typo"
+      })
+    });
+
+    assert.equal(res.status, 403);
+    const body = await res.json();
+    assert.equal(body.error, "Cross-origin request rejected.");
+  });
+
+  test("POST /api/reports accepts anonymous callers and never persists a reporter identifier", async () => {
+    const res = await app.request("/api/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-forwarded-for": "203.0.113.9" },
+      body: JSON.stringify({
+        question_id: "q-df01f3a4b5c6",
+        reason: "other",
+        comment: "No session, no cookie, still a valid report."
+      })
+    });
+
+    assert.equal(res.status, 201);
+    const body = await res.json();
+    assert.equal(body.success, true);
+    assert.ok(!("reporter_user_id" in body.report));
+    assert.ok(!("reporterUserId" in body.report));
+  });
+
   test("POST /api/reports enforces a per-client rate limit and responds 429", async () => {
     const ip = "203.0.113.6";
     let lastStatus;
