@@ -248,9 +248,16 @@ describe("Hono server & Report API", () => {
       // per run, so this only matters on a developer's long-lived one, which
       // is exactly where the confusion would be hardest to place.
       await pool.query(drop);
+      // NOT VALID, which here is not a compromise: it skips the scan of
+      // existing rows -- none of which can hold the sentinel anyway, since the
+      // constraint is what makes writing it fail -- while still enforcing the
+      // check on every new insert, which is the only row this test cares
+      // about. Without it, ADD CONSTRAINT holds an ACCESS EXCLUSIVE lock for
+      // the length of a sequential scan, stalling the concurrent test files
+      // this whole approach exists to leave alone.
       await pool.query(
         `ALTER TABLE question_reports
-           ADD CONSTRAINT ${constraint} CHECK (comment <> '${sentinel}')`,
+           ADD CONSTRAINT ${constraint} CHECK (comment <> '${sentinel}') NOT VALID`,
       );
 
       const res = await app.request("/api/reports", {
