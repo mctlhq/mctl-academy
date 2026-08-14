@@ -104,6 +104,21 @@ function since(claimed) {
   return claimed.suppressed > 0 ? ` (+${claimed.suppressed} suppressed since last line)` : "";
 }
 
+/**
+ * @param {object} [options]
+ * @param {number} [options.windowMs]
+ * @param {number} [options.max]
+ * @param {number} [options.maxEntries]
+ * @param {string} [options.trustedIpHeader]
+ * @param {number} [options.logIntervalMs]
+ * @param {() => number} [options.now]
+ * @param {{ warn: (message: string) => void }} [options.logger] Only `warn`
+ *   is ever called, so that is all this asks for. Inferring the type from the
+ *   `console` default would demand a whole Console of any caller -- including
+ *   the recording logger the tests inject, whose entire job is to be two
+ *   lines long.
+ * @param {Map<string | symbol, { count: number, resetAt: number }>} [options.store]
+ */
 export function rateLimit({
   windowMs = WINDOW_MS,
   max = MAX_REQUESTS,
