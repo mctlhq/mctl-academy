@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.46](https://github.com/mctlhq/mctl-academy/compare/0.1.45...0.1.46) (2026-08-14)
+
+
+### Bug Fixes
+
+* never report a repin that was not written to the file ([adf6a9a](https://github.com/mctlhq/mctl-academy/commit/adf6a9aa9e2679b71cbabe7a20883a7eec1dac22))
+
 ## [0.1.45](https://github.com/mctlhq/mctl-academy/compare/0.1.44...0.1.45) (2026-08-13)
 
 
