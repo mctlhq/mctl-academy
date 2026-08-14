@@ -210,6 +210,47 @@ describe("Hono server & Report API", () => {
 
     assert.equal(lastStatus, 429);
   });
+
+  test("a failing insert surfaces as 500, not as a 400 blaming the caller", async () => {
+    // The regression this pins (fixed in #168): the handler used to wrap both
+    // the body parse and the insert in one try that returned
+    // 400 "Invalid JSON payload", so a database outage was reported as the
+    // client's malformed request and nothing was logged at all.
+    //
+    // Failing the insert for real, rather than stubbing insertQuestionReport,
+    // is a deliberate choice: mock.module needs
+    // --experimental-test-module-mocks, which changes how the whole suite is
+    // invoked, and a stub would prove only that a thrown error becomes a 500 --
+    // not that this route's actual query can fail that way. The suite already
+    // runs against a real Postgres; db-hard-fail.test.mjs makes the same
+    // preference explicit for boot-time failures.
+    //
+    // The failure is induced by the *value*, not by touching the schema, and
+    // that is what makes it safe here. `node --test` runs test files in
+    // parallel processes against one database and account.test.mjs writes to
+    // question_reports, so anything that drops, renames or locks that table --
+    // ALTER TABLE takes an ACCESS EXCLUSIVE lock even when it does no work --
+    // stalls or breaks an unrelated file for a reason it could never diagnose.
+    // A NUL byte needs none of that: Postgres rejects it outright with
+    // SQLSTATE 22021, invalid byte sequence for encoding UTF8, because no text
+    // column can store one. Nothing to set up, nothing to clean up, and the
+    // request that fails is an ordinary one the handler validated and accepted.
+    const comment = `a report the database cannot store${String.fromCharCode(0)}`;
+
+    const res = await app.request("/api/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.77" },
+      body: JSON.stringify({
+        question_id: "q-df01f3a4b5c6",
+        reason: "typo",
+        comment,
+      }),
+    });
+
+    assert.equal(res.status, 500, "a database failure is the server's fault, not the caller's");
+    const body = await res.json();
+    assert.equal(body.error, "Internal server error");
+  });
 });
 
 describe("GET /api/reports is moderator-only", () => {
