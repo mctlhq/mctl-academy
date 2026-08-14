@@ -238,10 +238,19 @@ describe("Hono server & Report API", () => {
     // take a bind parameter; the value is this literal constant, never input.
     const sentinel = "sentinel: reports-insert-failure-500 regression test";
     const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+    const constraint = "tmp_reports_insert_failure_probe";
+    const drop = `ALTER TABLE question_reports DROP CONSTRAINT IF EXISTS ${constraint}`;
     try {
+      // Dropped first as well as last: the finally below cannot run if the
+      // process is killed mid-test (a CI timeout, an OOM), and a constraint
+      // left behind would make the next run fail on "already exists" -- an
+      // error pointing at the wrong thing entirely. CI gets a fresh database
+      // per run, so this only matters on a developer's long-lived one, which
+      // is exactly where the confusion would be hardest to place.
+      await pool.query(drop);
       await pool.query(
         `ALTER TABLE question_reports
-           ADD CONSTRAINT tmp_reports_insert_failure_probe CHECK (comment <> '${sentinel}')`,
+           ADD CONSTRAINT ${constraint} CHECK (comment <> '${sentinel}')`,
       );
 
       const res = await app.request("/api/reports", {
@@ -258,9 +267,7 @@ describe("Hono server & Report API", () => {
       const body = await res.json();
       assert.equal(body.error, "Internal server error");
     } finally {
-      await pool.query(
-        "ALTER TABLE question_reports DROP CONSTRAINT IF EXISTS tmp_reports_insert_failure_probe",
-      );
+      await pool.query(drop);
       await pool.end();
     }
   });
