@@ -52,7 +52,19 @@ const item = (over = {}) => ({
   ...over,
 });
 
-async function run({ sources = [source()], items = [item()], objects = { [DOC_HASH]: DOC }, store }) {
+/**
+ * @param {object} [opts]
+ * @param {object[]} [opts.sources]
+ * @param {object[]} [opts.items]
+ * @param {Record<string, string | Error>} [opts.objects] Snapshot bodies by
+ *   hash. An Error value makes the fake store throw for that key, which is
+ *   how the corrupt-snapshot path is exercised.
+ * @param {{ get: (key: string) => Promise<string | null> } | null} [opts.store]
+ *   Overrides the fake store built from `objects`. `null` is meaningful and
+ *   distinct from omitting it: it stands for an unconfigured store, which
+ *   verification must fail closed on.
+ */
+async function run({ sources = [source()], items = [item()], objects = { [DOC_HASH]: DOC }, store } = {}) {
   const dir = tree({ sources, items });
   try {
     return await verifyEvidence({

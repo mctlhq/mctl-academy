@@ -324,8 +324,9 @@ are. The client is unaffected: it has always had `vue-tsc --noEmit`.
 
 `include` grows **one directory per PR**, which is the whole design. Turning
 `checkJs` on everywhere at once buries the few real defects under a long tail
-of noise, and a check nobody reads is worse than none. Coverage today:
-`server/`, `migrations/` and `scripts/`. Remaining: `tests/`, 40 errors.
+of noise, and a check nobody reads is worse than none. Coverage is now the
+whole `.mjs` side — `server/`, `migrations/`, `scripts/` and `tests/` — so
+nothing is left to add; what remains is tightening the compiler options.
 
 Neither of the two things `scripts/` needed was a cast. In
 `validate-generated-artifacts.mjs` the two shape checks pushed their errors
@@ -348,6 +349,20 @@ is unwritable the question is reported as unmatched with an explicit error
 instead. `tests/revalidate-content.test.mjs` covers it with an aliased
 `evidence` node — a shape that `toJS()` resolves into a perfectly ordinary
 array, so every upstream check passes and only the write can detect it.
+
+`tests/` closed the rollout with 32 errors, and all but three were one shape:
+a helper's destructured parameters read as required when the function itself
+treats them as optional. `authedCookie` demanded an `email` no caller passes
+and that it defaults itself; `verify-evidence`'s `run()` demanded a `store`
+whose `undefined` case it explicitly handles — and where `null` means
+something different again (an unconfigured store, which verification must
+fail closed on). Both are now documented, which is what the checker was
+asking for. Of the remaining three, `rateLimit` inferred a whole `Console`
+from its `logger = console` default while only ever calling `warn`, so any
+caller injecting a recorder had to satisfy 24 methods it never uses; and the
+session-hook test built a session missing `createdAt`/`updatedAt`, fields
+better-auth really does pass, so the stand-in now matches the real shape
+rather than the subset that one assertion happened to read.
 
 `strict` is off on purpose for this first pass. `strictNullChecks` alone
 reports hundreds of "possibly undefined" on paths guarded by runtime

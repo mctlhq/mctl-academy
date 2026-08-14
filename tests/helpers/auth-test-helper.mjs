@@ -13,6 +13,13 @@ import { authPool } from "../../server/auth.mjs";
  * this project's `node --test` runner), so it verifies through the exact
  * same auth.api.getSession() signature check every real request goes
  * through.
+ *
+ * @param {object} identity
+ * @param {string} identity.githubLogin
+ * @param {string} [identity.email] Optional, and no caller passes it today:
+ *   the default below mirrors GitHub's own noreply address, which is what a
+ *   real sign-in yields for a user with a private email. Supply it only when
+ *   a test is specifically about the address.
  */
 export async function authedCookie({ githubLogin, email }) {
   const secret = process.env.BETTER_AUTH_SECRET;

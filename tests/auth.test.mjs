@@ -67,6 +67,10 @@ describe("session ipAddress/userAgent scrub (PRIVACY.md)", () => {
     const hook = auth.options.databaseHooks.session.create.before;
     assert.equal(typeof hook, "function");
 
+    // createdAt/updatedAt are part of what better-auth actually hands this
+    // hook; including them keeps the stand-in session the same shape as the
+    // real one rather than the subset this assertion happens to read.
+    const now = new Date();
     const result = await hook({
       id: "session-scrub-test",
       userId: "user-scrub-test",
@@ -74,6 +78,8 @@ describe("session ipAddress/userAgent scrub (PRIVACY.md)", () => {
       ipAddress: "203.0.113.99",
       userAgent: "Mozilla/5.0 (test)",
       expiresAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
     });
 
     assert.equal(result.data.ipAddress, null);

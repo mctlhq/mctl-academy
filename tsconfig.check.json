@@ -9,8 +9,9 @@
   // long tail of noise, and a check nobody reads is worse than no check. A
   // directory joins the list in the PR that makes it pass; see PLAN.md.
   //
-  // Current coverage: server/, migrations/ and scripts/.
-  // Remaining, measured 2026-08-13: tests/ 40 errors.
+  // Coverage is now the whole .mjs side: server/, migrations/, scripts/ and
+  // tests/. Nothing is left to add; what remains is tightening the options,
+  // starting from `strict: false` below.
   "compilerOptions": {
     "target": "ES2023",
     "module": "ESNext",
@@ -31,5 +32,5 @@
     // each can be argued for on its own evidence.
     "strict": false
   },
-  "include": ["server/**/*.mjs", "migrations/**/*.mjs", "scripts/**/*.mjs"]
+  "include": ["server/**/*.mjs", "migrations/**/*.mjs", "scripts/**/*.mjs", "tests/**/*.mjs"]
 }
