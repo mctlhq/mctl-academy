@@ -1,6 +1,5 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import pg from "pg";
 import { app } from "../server/app.mjs";
 import { authedCookie as createAuthedCookie } from "./helpers/auth-test-helper.mjs";
 
@@ -226,57 +225,31 @@ describe("Hono server & Report API", () => {
     // runs against a real Postgres; db-hard-fail.test.mjs makes the same
     // preference explicit for boot-time failures.
     //
-    // The failure is induced with a CHECK constraint on one sentinel comment
-    // rather than by dropping or renaming the table, and that distinction is
-    // load-bearing. `node --test` runs test *files* in parallel processes
-    // against this one database, and account.test.mjs writes to
-    // question_reports -- so a table that briefly does not exist would fail
-    // that file sporadically, from here, for no reason it could diagnose. A
-    // constraint that only a string this test invents can violate leaves every
-    // concurrent writer working normally.
-    // Interpolated rather than parameterised because a CHECK expression cannot
-    // take a bind parameter; the value is this literal constant, never input.
-    const sentinel = "sentinel: reports-insert-failure-500 regression test";
-    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-    const constraint = "tmp_reports_insert_failure_probe";
-    const drop = `ALTER TABLE question_reports DROP CONSTRAINT IF EXISTS ${constraint}`;
-    try {
-      // Dropped first as well as last: the finally below cannot run if the
-      // process is killed mid-test (a CI timeout, an OOM), and a constraint
-      // left behind would make the next run fail on "already exists" -- an
-      // error pointing at the wrong thing entirely. CI gets a fresh database
-      // per run, so this only matters on a developer's long-lived one, which
-      // is exactly where the confusion would be hardest to place.
-      await pool.query(drop);
-      // NOT VALID, which here is not a compromise: it skips the scan of
-      // existing rows -- none of which can hold the sentinel anyway, since the
-      // constraint is what makes writing it fail -- while still enforcing the
-      // check on every new insert, which is the only row this test cares
-      // about. Without it, ADD CONSTRAINT holds an ACCESS EXCLUSIVE lock for
-      // the length of a sequential scan, stalling the concurrent test files
-      // this whole approach exists to leave alone.
-      await pool.query(
-        `ALTER TABLE question_reports
-           ADD CONSTRAINT ${constraint} CHECK (comment <> '${sentinel}') NOT VALID`,
-      );
+    // The failure is induced by the *value*, not by touching the schema, and
+    // that is what makes it safe here. `node --test` runs test files in
+    // parallel processes against one database and account.test.mjs writes to
+    // question_reports, so anything that drops, renames or locks that table --
+    // ALTER TABLE takes an ACCESS EXCLUSIVE lock even when it does no work --
+    // stalls or breaks an unrelated file for a reason it could never diagnose.
+    // A NUL byte needs none of that: Postgres rejects it outright with
+    // SQLSTATE 22021, invalid byte sequence for encoding UTF8, because no text
+    // column can store one. Nothing to set up, nothing to clean up, and the
+    // request that fails is an ordinary one the handler validated and accepted.
+    const comment = `a report the database cannot store${String.fromCharCode(0)}`;
 
-      const res = await app.request("/api/reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.77" },
-        body: JSON.stringify({
-          question_id: "q-df01f3a4b5c6",
-          reason: "typo",
-          comment: sentinel,
-        }),
-      });
+    const res = await app.request("/api/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.77" },
+      body: JSON.stringify({
+        question_id: "q-df01f3a4b5c6",
+        reason: "typo",
+        comment,
+      }),
+    });
 
-      assert.equal(res.status, 500, "a database failure is the server's fault, not the caller's");
-      const body = await res.json();
-      assert.equal(body.error, "Internal server error");
-    } finally {
-      await pool.query(drop);
-      await pool.end();
-    }
+    assert.equal(res.status, 500, "a database failure is the server's fault, not the caller's");
+    const body = await res.json();
+    assert.equal(body.error, "Internal server error");
   });
 });
 
