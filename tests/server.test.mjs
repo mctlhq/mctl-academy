@@ -1,5 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
+import pg from "pg";
 import { app } from "../server/app.mjs";
 import { authedCookie as createAuthedCookie } from "./helpers/auth-test-helper.mjs";
 
@@ -209,6 +210,42 @@ describe("Hono server & Report API", () => {
     }
 
     assert.equal(lastStatus, 429);
+  });
+
+  test("a failing insert surfaces as 500, not as a 400 blaming the caller", async () => {
+    // The regression this pins (fixed in #168): the handler used to wrap both
+    // the body parse and the insert in one try that returned
+    // 400 "Invalid JSON payload", so a database outage was reported as the
+    // client's malformed request and nothing was logged at all.
+    //
+    // Breaking the table for real, rather than stubbing insertQuestionReport,
+    // is a deliberate choice: mock.module needs
+    // --experimental-test-module-mocks, which changes how the whole suite is
+    // invoked, and a stub would prove only that a thrown error becomes a 500 --
+    // not that this route's actual query can fail that way. tests already run
+    // against a real Postgres (see db-hard-fail.test.mjs for the same
+    // preference), and the rename is restored in finally.
+    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+    try {
+      await pool.query("ALTER TABLE question_reports RENAME TO question_reports_hidden");
+
+      const res = await app.request("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.77" },
+        body: JSON.stringify({
+          question_id: "q-df01f3a4b5c6",
+          reason: "typo",
+          comment: "A perfectly valid report that the database cannot store right now.",
+        }),
+      });
+
+      assert.equal(res.status, 500, "a database failure is the server's fault, not the caller's");
+      const body = await res.json();
+      assert.equal(body.error, "Internal server error");
+    } finally {
+      await pool.query("ALTER TABLE question_reports_hidden RENAME TO question_reports");
+      await pool.end();
+    }
   });
 });
 
