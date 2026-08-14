@@ -25,11 +25,33 @@
     // server; "node" because the very same file falls back to
     // @hono/node-server and the suites run it there.
     "types": ["node", "bun"],
-    // Deliberately NOT strict. This is a first pass over code written with no
-    // type checker in mind; strictNullChecks alone reports hundreds of
-    // "possibly undefined" on paths guarded by runtime validation the checker
-    // cannot see. Tightening happens one option at a time afterwards, when
-    // each can be argued for on its own evidence.
+    // `strict` is an umbrella over eight options with wildly different costs
+    // here, so it stays off and the members are enabled individually. Measured
+    // against the current tree (each option alone, everything else as below):
+    //
+    //   noImplicitThis              0     enabled
+    //   strictFunctionTypes         0     enabled
+    //   strictBindCallApply         0     enabled
+    //   alwaysStrict                0     enabled
+    //   useUnknownInCatchVariables  19
+    //   strictNullChecks            78
+    //   noImplicitAny             272
+    //   strict (all together)     348
+    //
+    // The four above cost nothing today. They are on not because they found
+    // anything, but because they are ratchets: free now, and expensive to
+    // adopt later once code has been written against their absence.
+    //
+    // The rest wait for a PR each, argued on its own evidence. Sizes are not
+    // the whole story -- useUnknownInCatchVariables' 19 are all `err.message`
+    // in a catch, and fixing them adds a narrowing dance to every error path
+    // for a throw shape this codebase does not actually produce. Note also
+    // that noImplicitAny, not strictNullChecks, is the real wall; an earlier
+    // version of this comment guessed the opposite.
+    "noImplicitThis": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "alwaysStrict": true,
     "strict": false
   },
   "include": ["server/**/*.mjs", "migrations/**/*.mjs", "scripts/**/*.mjs", "tests/**/*.mjs"]
