@@ -364,10 +364,26 @@ session-hook test built a session missing `createdAt`/`updatedAt`, fields
 better-auth really does pass, so the stand-in now matches the real shape
 rather than the subset that one assertion happened to read.
 
-`strict` is off on purpose for this first pass. `strictNullChecks` alone
-reports hundreds of "possibly undefined" on paths guarded by runtime
-validation the checker cannot see; each option gets tightened later, on its
-own evidence.
+`strict` stays off as an umbrella, because its eight members cost wildly
+different amounts here. Measured one at a time against the tree at 0.1.46:
+`noImplicitThis`, `strictFunctionTypes`, `strictBindCallApply` and
+`alwaysStrict` report **nothing**, and are now enabled individually — not
+because they found a defect, but because they are ratchets that are free today
+and expensive to adopt once code has been written against their absence. The
+rest are `useUnknownInCatchVariables` 19, `strictNullChecks` 78,
+`noImplicitAny` 272 (348 for `strict` as a whole), and each gets its own PR
+argued on its own evidence.
+
+Two things that measurement corrected. `noImplicitAny`, not
+`strictNullChecks`, is the wall — this document previously guessed the
+opposite and said "hundreds" of the latter. And a count is not a cost:
+`useUnknownInCatchVariables` is the smallest number on the list, but all 19
+are `err.message` inside a `catch`, so clearing it means adding a narrowing
+dance to every error path in the repo to defend against a throw shape this
+codebase does not produce. `strictNullChecks` is larger and more interesting —
+49 of its 78 are in `tests/`, only 5 in `server/`, and most are the familiar
+shape of a parameter default (`= null`) narrowing an inferred type down to
+something no real caller satisfies.
 
 The first pass over `server/` found exactly one substantive thing:
 `insertQuestionReport` declared a `reporterUserId` its only caller never
