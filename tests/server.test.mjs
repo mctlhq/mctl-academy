@@ -218,16 +218,31 @@ describe("Hono server & Report API", () => {
     // 400 "Invalid JSON payload", so a database outage was reported as the
     // client's malformed request and nothing was logged at all.
     //
-    // Breaking the table for real, rather than stubbing insertQuestionReport,
+    // Failing the insert for real, rather than stubbing insertQuestionReport,
     // is a deliberate choice: mock.module needs
     // --experimental-test-module-mocks, which changes how the whole suite is
     // invoked, and a stub would prove only that a thrown error becomes a 500 --
-    // not that this route's actual query can fail that way. tests already run
-    // against a real Postgres (see db-hard-fail.test.mjs for the same
-    // preference), and the rename is restored in finally.
+    // not that this route's actual query can fail that way. The suite already
+    // runs against a real Postgres; db-hard-fail.test.mjs makes the same
+    // preference explicit for boot-time failures.
+    //
+    // The failure is induced with a CHECK constraint on one sentinel comment
+    // rather than by dropping or renaming the table, and that distinction is
+    // load-bearing. `node --test` runs test *files* in parallel processes
+    // against this one database, and account.test.mjs writes to
+    // question_reports -- so a table that briefly does not exist would fail
+    // that file sporadically, from here, for no reason it could diagnose. A
+    // constraint that only a string this test invents can violate leaves every
+    // concurrent writer working normally.
+    // Interpolated rather than parameterised because a CHECK expression cannot
+    // take a bind parameter; the value is this literal constant, never input.
+    const sentinel = "sentinel: reports-insert-failure-500 regression test";
     const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
     try {
-      await pool.query("ALTER TABLE question_reports RENAME TO question_reports_hidden");
+      await pool.query(
+        `ALTER TABLE question_reports
+           ADD CONSTRAINT tmp_reports_insert_failure_probe CHECK (comment <> '${sentinel}')`,
+      );
 
       const res = await app.request("/api/reports", {
         method: "POST",
@@ -235,7 +250,7 @@ describe("Hono server & Report API", () => {
         body: JSON.stringify({
           question_id: "q-df01f3a4b5c6",
           reason: "typo",
-          comment: "A perfectly valid report that the database cannot store right now.",
+          comment: sentinel,
         }),
       });
 
@@ -243,7 +258,9 @@ describe("Hono server & Report API", () => {
       const body = await res.json();
       assert.equal(body.error, "Internal server error");
     } finally {
-      await pool.query("ALTER TABLE question_reports_hidden RENAME TO question_reports");
+      await pool.query(
+        "ALTER TABLE question_reports DROP CONSTRAINT IF EXISTS tmp_reports_insert_failure_probe",
+      );
       await pool.end();
     }
   });
