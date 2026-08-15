@@ -12,6 +12,7 @@ describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
     assert.match(res.headers.get("content-security-policy"), /frame-ancestors 'none'/);
     assert.match(res.headers.get("content-security-policy"), /script-src 'self'/);
     assert.match(res.headers.get("content-security-policy"), /https:\/\/ui\.mctl\.ai/);
+    assert.match(res.headers.get("content-security-policy"), /img-src[^;]*https:\/\/ui\.mctl\.ai/);
     assert.match(res.headers.get("content-security-policy"), /fonts\.gstatic\.com/);
     assert.ok(!res.headers.get("content-security-policy").includes("script-src 'self' 'unsafe-inline'"));
     assert.equal(res.headers.get("x-content-type-options"), "nosniff");

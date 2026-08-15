@@ -9,7 +9,8 @@
  * shortcut waiting to be tidied away.
  *
  * Theme tokens and Google Fonts load from ui.mctl.ai / fonts.googleapis.com;
- * those hosts are allow-listed on style-src and font-src.
+ * those hosts are allow-listed on style-src, font-src, and img-src (CSS
+ * url() assets on the CDN).
  *
  * script-src has no such constraint — the client ships no inline scripts,
  * only the hashed Vite bundle — so it stays strict.
@@ -18,7 +19,7 @@ const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline' https://ui.mctl.ai https://fonts.googleapis.com",
-  "img-src 'self' data: https://avatars.githubusercontent.com https://*.googleusercontent.com",
+  "img-src 'self' data: https://ui.mctl.ai https://avatars.githubusercontent.com https://*.googleusercontent.com",
   "font-src 'self' https://fonts.gstatic.com",
   "connect-src 'self'",
   "object-src 'none'",
