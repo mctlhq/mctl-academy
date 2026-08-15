@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.47](https://github.com/mctlhq/mctl-academy/compare/0.1.46...0.1.47) (2026-08-15)
+
+
+### Features
+
+* load editorial-warm tokens from the design CDN ([b245768](https://github.com/mctlhq/mctl-academy/commit/b2457680b2c9470691683f0ae445b35ba6960415))
+* load editorial-warm tokens from the design CDN ([3b014d5](https://github.com/mctlhq/mctl-academy/commit/3b014d58e9b5df75d1824728a974d7052571a2f9))
+
+
+### Bug Fixes
+
+* allow CDN images in CSP and satisfy Prettier ([daf2bc4](https://github.com/mctlhq/mctl-academy/commit/daf2bc47b4e05edf6873896796bd1eaf2a310905))
+
 ## [0.1.46](https://github.com/mctlhq/mctl-academy/compare/0.1.45...0.1.46) (2026-08-14)
 
 
