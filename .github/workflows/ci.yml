@@ -124,8 +124,8 @@ jobs:
 
       - name: Install client dependencies
         working-directory: client
-        # client/.npmrc pulls @mctlhq/ui and @mctlhq/css from GitHub
-        # Packages (Track C — see PLAN.md). Both packages are public, but
+        # client/.npmrc pulls @mctlhq/ui from GitHub
+        # Packages (Track C — see PLAN.md). The package is public, but
         # GitHub Packages' npm registry requires *some* authenticated token
         # even for public packages (unlike GHCR, which allows anonymous
         # pulls) — the ambient GITHUB_TOKEN works and, unlike the org

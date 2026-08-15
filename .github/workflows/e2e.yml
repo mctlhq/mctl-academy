@@ -45,7 +45,7 @@ jobs:
 
       - name: Install client dependencies
         working-directory: client
-        # See ci.yml's client job — same GitHub Packages auth for @mctlhq/ui/css,
+        # See ci.yml's client job — same GitHub Packages auth for @mctlhq/ui,
         # using the ambient GITHUB_TOKEN so this works on fork PRs too.
         env:
           GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}

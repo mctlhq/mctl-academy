@@ -6,10 +6,10 @@
  * purposes regardless of being JS-set rather than authored in markup. The
  * bindings compute a value that cannot be a static class (a percentage
  * width), so this is a property of how the UI renders rather than a
- * shortcut waiting to be tidied away. Deliberately stated as the reason
- * rather than as a list of files: an enumeration goes stale the moment a
- * component is added, renamed, or ported, and the previous version of this
- * comment had rotted into naming React `.tsx` files that no longer exist.
+ * shortcut waiting to be tidied away.
+ *
+ * Theme tokens and Google Fonts load from ui.mctl.ai / fonts.googleapis.com;
+ * those hosts are allow-listed on style-src and font-src.
  *
  * script-src has no such constraint — the client ships no inline scripts,
  * only the hashed Vite bundle — so it stays strict.
@@ -17,9 +17,9 @@
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",
-  "style-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://ui.mctl.ai https://fonts.googleapis.com",
   "img-src 'self' data: https://avatars.githubusercontent.com https://*.googleusercontent.com",
-  "font-src 'self'",
+  "font-src 'self' https://fonts.gstatic.com",
   "connect-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
