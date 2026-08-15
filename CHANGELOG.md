@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.48](https://github.com/mctlhq/mctl-academy/compare/0.1.47...0.1.48) (2026-08-15)
+
+
+### Features
+
+* load the academy favicon from the design CDN ([f686b88](https://github.com/mctlhq/mctl-academy/commit/f686b880155b90aa3beb675444beefccbfe0b57c))
+* load the academy favicon from the design CDN ([d358c9d](https://github.com/mctlhq/mctl-academy/commit/d358c9d711e3bdf45e417842e30e7d8e482319fd))
+
+
+### Bug Fixes
+
+* cache-bust the CDN academy favicon ([e41525c](https://github.com/mctlhq/mctl-academy/commit/e41525c20b8a7e31d9b3ef1541e05f88190f1e56))
+* wrap the academy favicon href for Prettier ([c759bd9](https://github.com/mctlhq/mctl-academy/commit/c759bd9d8eca427b53d286f0e39cc5d4d79c16ac))
+
 ## [0.1.47](https://github.com/mctlhq/mctl-academy/compare/0.1.46...0.1.47) (2026-08-15)
 
 
