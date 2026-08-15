@@ -1,6 +1,4 @@
 import { createApp } from "vue";
-import "@mctlhq/css/theme.css";
-import "@mctlhq/css/global.css";
 import "@mctlhq/ui/style.css";
 import "./app.css";
 import App from "./App.vue";

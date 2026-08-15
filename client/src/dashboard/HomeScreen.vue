@@ -111,8 +111,8 @@ const practiceDescription = computed(() => {
   text-transform: uppercase;
 }
 
-/* --accent is theme-selectable (cyan/lime/vermilion/lilac — see
-   @mctlhq/css theme.css) and can be a loud color; spending it on a small
+/* --accent is theme-selectable via the ui.mctl.ai CDN default (terracotta)
+   and can be a loud color; spending it on a small
    uppercase caption reads as decoration, not signal, and every other
    ".section-marker" in the app (DashboardScreen.vue's "Overall readiness")
    uses --surface-fg-subtle instead. Matching that keeps this eyebrow
