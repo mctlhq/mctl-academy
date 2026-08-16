@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-ld368c2b3786
+status: review_ready
+domain: domain-2
+objective: domain-2/product-outcomes
+stem: In the Playground, which control is intended for the instructions that guide how the
+  model behaves across a conversation?
+options:
+  - id: a
+    text: The system prompt, where few-shot examples can also be added
+    correct: true
+    explanation: Correct. It holds behavioural instructions, and few-shot examples there demonstrate
+      the desired output format.
+  - id: b
+    text: The prompt preset, which stores behaviour permanently for all users
+    correct: false
+    explanation: A preset saves a setup for later use or sharing; it is not itself the instruction
+      field.
+  - id: c
+    text: The View code panel, which fixes behaviour in the exported snippet
+    correct: false
+    explanation: That exports the current setup for use in an application.
+  - id: d
+    text: The Compare view, which applies instructions to both chats at once
+    correct: false
+    explanation: Compare runs two setups side by side; parameters and prompts are copied deliberately
+      between them.
+evidence:
+  - source_id: src-ld-playground
+    excerpt: Under **System prompt**, enter instructions that guide the model’s behavior.
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

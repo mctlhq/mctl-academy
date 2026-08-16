@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld303f1c1fce
+status: review_ready
+domain: domain-1
+objective: domain-1/model-selection
+stem: A team wants the full parameter list for every model programmatically, not just what
+  the card shows. How do they get it?
+options:
+  - id: a
+    text: Open each model card and copy the values by hand
+    correct: false
+    explanation: That is the manual path the API query parameter exists to replace.
+  - id: b
+    text: Request the List models endpoint with `verbose=true`
+    correct: true
+    explanation: Correct. That query parameter returns the extended list of model parameters.
+  - id: c
+    text: Export the setup as code from the playground
+    correct: false
+    explanation: Exporting code reproduces one chat setup, not the catalogue of model parameters.
+  - id: d
+    text: Enable comparison mode and read both panels
+    correct: false
+    explanation: Comparison shows two setups side by side in the UI rather than returning
+      data.
+evidence:
+  - source_id: src-ld-playground
+    excerpt: send a request to the **List models** endpoint with the query parameter `verbose=true`
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

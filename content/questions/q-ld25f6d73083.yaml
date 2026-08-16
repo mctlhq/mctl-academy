@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld25f6d73083
+status: review_ready
+domain: domain-1
+objective: domain-1/ai-concepts
+stem: A team plans an application that must read screenshots and answer questions about them.
+  Which model type do they need?
+options:
+  - id: a
+    text: Embedding
+    correct: false
+    explanation: Embedding models turn inputs into vectors for search and similarity, not
+      into answers about an image.
+  - id: b
+    text: Vision
+    correct: true
+    explanation: Correct. Vision is the supported modality for turning image input into text.
+  - id: c
+    text: Text-to-text
+    correct: false
+    explanation: Text-to-text covers generative language tasks and does not accept image input.
+  - id: d
+    text: Any text-to-text model configured with a longer context window
+    correct: false
+    explanation: Context length governs how much text fits, not whether images can be interpreted.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: 'Nebius Token Factory supports the following model types:'
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader
