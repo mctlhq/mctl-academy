@@ -9,12 +9,17 @@ import { authedCookie } from "./helpers/auth-test-helper.mjs";
 // file touches — reusing one across tests would let unrelated votes leak
 // into the same aggregate.
 const KNOWN_QUESTION_ID = "q-bc01b0c1d2e3";
+// Every id below must be a published agentic-ai-builder question that no other
+// voting test touches. Two of these used to be `q-co01…`/`q-co02…`, which were
+// quarantined CloudOps drafts — deleting that bank took the fixtures with it.
+// Draft ids satisfy isKnownQuestionId but are exactly the ids most likely to be
+// deleted, so prefer published ones.
 const KNOWN_QUESTION_IDS = [
   "q-bc02c1d2e3f4",
   "q-cc01a1b2c3d4",
   "q-cc02b2c3d4e5",
-  "q-co01a1b2c3d4",
-  "q-co02b2c3d4e5",
+  "q-de06a7b8c9d0",
+  "q-de08c9d0e1f2",
 ];
 let nextQuestionIdIndex = 0;
 function freshKnownQuestionId() {
