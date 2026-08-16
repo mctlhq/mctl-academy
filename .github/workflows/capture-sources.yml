@@ -86,16 +86,37 @@ jobs:
               console.error("manifest selected no sources");
               process.exit(1);
             }
+            // These patterns are content/schemas/source.schema.json's. That
+            // schema only ever validates a record that was written
+            // successfully, so it is never reached for a source that failed to
+            // capture -- yet a failed id still flows onward into shell and into
+            // step outputs. Enforce the same shape here, before any of that.
+            const ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
+            const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
             const seen = new Set();
             for (const s of rows) {
               for (const f of ["id", "url", "title"]) {
-                if (!s[f]) {
-                  console.error(`${s.id ?? "?"}: missing ${f}`);
+                if (!s[f] || typeof s[f] !== "string") {
+                  console.error(`${s.id ?? "?"}: missing or non-string ${f}`);
                   process.exit(1);
                 }
               }
+              if (!ID.test(s.id)) {
+                console.error(`${s.id}: id does not match ${ID}`);
+                process.exit(1);
+              }
               if (!Array.isArray(s.objectives) || !s.objectives.length) {
                 console.error(`${s.id}: missing objectives`);
+                process.exit(1);
+              }
+              for (const o of s.objectives) {
+                if (typeof o !== "string" || !OBJECTIVE.test(o)) {
+                  console.error(`${s.id}: bad objective ${JSON.stringify(o)}`);
+                  process.exit(1);
+                }
+              }
+              if (!/^https:\/\/[^\s]+$/.test(s.url)) {
+                console.error(`${s.id}: url must be https and contain no whitespace`);
                 process.exit(1);
               }
               if (seen.has(s.id)) {
@@ -103,10 +124,13 @@ jobs:
                 process.exit(1);
               }
               seen.add(s.id);
-              // Tabs are the field separator below, so a tab in a title would
-              // silently shift every later column.
-              if (/\t/.test(s.title)) {
-                console.error(`${s.id}: title contains a tab`);
+              // The row below is tab-joined and read back by a `while IFS read`
+              // loop, so any tab or newline in a field would split one entry
+              // across two lines and misalign every later column rather than
+              // failing cleanly. id/url/objectives are already constrained
+              // above; title is free text, so check it explicitly.
+              if (/[\t\r\n]/.test(s.title)) {
+                console.error(`${s.id}: title contains a tab or newline`);
                 process.exit(1);
               }
               console.log([s.id, s.url, s.title, s.objectives.join(",")].join("\t"));
@@ -192,6 +216,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ github.ref_name }}
+          CAPTURED_COUNT: ${{ steps.capture.outputs.captured }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -200,7 +227,7 @@ jobs:
             echo "No source record changes to commit."
             exit 0
           fi
-          git commit -m "chore(sources): capture ${{ steps.capture.outputs.captured }} source snapshot(s)"
+          git commit -m "chore(sources): capture ${CAPTURED_COUNT} source snapshot(s)"
           pushed=false
           for i in 1 2 3; do
             if git push origin "HEAD:${BRANCH}"; then pushed=true; break; fi
@@ -212,13 +239,13 @@ jobs:
             fi
           done
           if [ "$pushed" = "false" ]; then
-            side="chore/captured-sources-${{ github.run_id }}"
+            side="chore/captured-sources-${RUN_ID}"
             git checkout -b "$side"
             git push origin "$side"
-            gh pr create --repo "${{ github.repository }}" \
+            gh pr create --repo "${REPO}" \
               --base "${BRANCH}" --head "$side" \
               --title "chore(sources): captured source snapshots" \
-              --body "Capture run ${{ github.run_id }} could not push to \`${BRANCH}\`. Records are on \`${side}\`."
+              --body "Capture run ${RUN_ID} could not push to \`${BRANCH}\`. Records are on \`${side}\`."
           fi
 
       # Fail only after everything salvageable is committed and uploaded: a
@@ -226,6 +253,13 @@ jobs:
       # Re-dispatch with `only:` listing exactly the ids named here.
       - name: Fail on partial capture
         if: steps.capture.outputs.failed != ''
+        # Via env, never spliced into the script body: this value is built from
+        # manifest ids, and an expression interpolated into `run:` is expanded
+        # by the runner before bash ever sees it, so shell metacharacters in it
+        # would execute (CWE-78) with contents:write and the checkout's
+        # persisted push credentials.
+        env:
+          FAILED_IDS: ${{ steps.capture.outputs.failed }}
         run: |
-          echo "::error::capture failed for: ${{ steps.capture.outputs.failed }}"
+          echo "::error::capture failed for: ${FAILED_IDS}"
           exit 1
