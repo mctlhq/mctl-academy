@@ -8,8 +8,13 @@ unpublished rather than being covered from general knowledge.
 
 | Source Host | Scope | Retention | Approved Date |
 |---|---|---|---|
-| `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints | Snapshot to private R2 | 2026-08-06 |
-| `docs.nebius.com` | Public AI Cloud documentation — GPU compute, K8s, Storage, IAM, monitoring, node lifecycle | Snapshot to private R2 | 2026-08-06 |
+| `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints, inference observability, team access and single sign-on, billing and consumption | Snapshot to private R2 | 2026-08-06 |
+| `docs.nebius.com` | Public AI Cloud documentation — GPU compute and clusters, Managed Service for Kubernetes, block/shared/object storage, VPC networking and security groups, IAM, projects and federations, Observability (metrics, dashboards, alerts, logs), quotas and limits, node lifecycle and troubleshooting | Snapshot to private R2 | 2026-08-06 |
+
+Scope widened 2026-08-16 (no new hosts) to cover the page families the CloudOps
+and Leader banks are authored from. Retention terms were re-confirmed for both
+hosts at that time; the pages captured are the same public documentation already
+covered by the original 2026-08-06 review.
 
 ### Candidates under review
 - `docs.tavily.com`: Recommended learning on public certification pages for web search tool integration. Currently **pending retention review** before any content cites it.
@@ -51,6 +56,16 @@ A new source requires all of the following before any content cites it:
 1. **Explicit allowlisting** — a pull request adding a row to the allowlist table.
 2. **Retention-terms review** — confirmation that storing a snapshot in R2 is compatible with the source's terms. Recorded in the PR description.
 3. **A stated scope** — which parts of the source are in bounds.
+
+Once allowlisted, a page is captured by adding it to `content/capture-manifest.yaml`
+and dispatching the **Capture sources** workflow on the branch. That workflow is
+the only sanctioned way to mint a source record: `sha256` and `snapshot.key` must
+come out of `scripts/capture-source.mjs` actually fetching and hashing the bytes.
+A hand-written hash is the exact failure that produced the fabricated CloudOps and
+Leader banks — see issues #140 and #141.
+
+To check recorded sources against their live documents without credentials, run
+`npm run snapshot:capture -- --check` (exit 0 clean, 2 drifted, 1 unreachable).
 
 ## Evidence records
 

@@ -21,7 +21,7 @@ constraint rather than a theoretical one. See CONTENT-POLICY.md.
 - [ ] Reviewed against exactly two criteria: (a) the cited evidence supports the
       statement, (b) exactly one option is best. Resemblance to the real exam was
       **not** used as a criterion.
-- [ ] This PR contains at most 10 questions.
+- [ ] This PR contains at most 20 questions.
 
 ## Checks
 

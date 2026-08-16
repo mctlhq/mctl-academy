@@ -52,9 +52,10 @@ never a reason to prefer it.
 
 ## Topic priority
 
-Coverage is allocated from the **published domain weights only** (20 / 35 / 20 /
-25). Personal recollection of what appeared on a sitting never influences
-weighting.
+Coverage is allocated from the **published domain weights only**, as recorded
+per course in `content/courses/<course-id>.yaml`. Each course has its own split;
+there is no single global weighting. Personal recollection of what appeared on a
+sitting never influences weighting.
 
 ## Legitimate use of exam experience
 

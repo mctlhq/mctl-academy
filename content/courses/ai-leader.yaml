@@ -2,7 +2,7 @@ schema_version: 1
 id: ai-leader
 prepares_for: "Nebius AI Leader"
 title: "AI Leader"
-description: "Practice for the Nebius AI Leader certification. Foundational business and product track covering AI concepts, business outcomes, API vendor evaluation, cost models, and risk tradeoffs."
+description: "Practice for the Nebius AI Leader certification. Foundational business and product track covering AI fundamentals, product design, controlling model outputs, and platform capabilities."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
@@ -12,43 +12,49 @@ mock:
   time_limit_minutes: 60
   disclose_bank_size: true
 
+# Domain titles reach client/src/course-catalog.json, so they stay
+# vendor-neutral per LEGAL.md. The fourth domain is published upstream as
+# "Capabilities of Nebius products"; it ships here as "Platform Capabilities"
+# for that reason, and the vendor name lives only in `prepares_for` above.
 domains:
   - id: domain-1
-    title: "AI Fundamentals & Capability Assessment"
-    weight: 30
-    mock_questions: 9
+    title: "AI Fundamentals"
+    weight: 40
+    mock_questions: 12
     objectives:
       - id: ai-concepts
-        title: "Understanding generative AI models, flavors, and capabilities"
+        title: "Generative model families, capabilities, and where each fits"
       - id: model-selection
-        title: "Evaluating model families, context windows, and tradeoffs"
+        title: "Choosing a model: context windows, modality, and tradeoffs"
+      - id: inference-basics
+        title: "How inference is served and consumed through an API"
 
   - id: domain-2
-    title: "AI Product Design & Business Value"
-    weight: 30
-    mock_questions: 9
+    title: "AI Product Design"
+    weight: 25
+    mock_questions: 7
     objectives:
       - id: product-outcomes
-        title: "Aligning AI capabilities with business outcomes and user needs"
+        title: "Aligning model capabilities with business outcomes and user needs"
       - id: workflow-design
         title: "Designing AI-assisted workflows and integration patterns"
 
   - id: domain-3
-    title: "Vendor Evaluation & API Infrastructure"
+    title: "Controlling AI Outputs"
     weight: 20
     mock_questions: 6
     objectives:
-      - id: vendor-evaluation
-        title: "Evaluating API providers and model hosting services"
-      - id: api-integration-basics
-        title: "Understanding API access models and integration architecture"
+      - id: structured-output
+        title: "Constraining responses to a schema for downstream systems"
+      - id: tool-use
+        title: "Grounding answers by letting a model call tools and functions"
 
   - id: domain-4
-    title: "Cost, Performance & Risk Management"
-    weight: 20
-    mock_questions: 6
+    title: "Platform Capabilities"
+    weight: 15
+    mock_questions: 5
     objectives:
-      - id: cost-economics
+      - id: platform-capabilities
+        title: "Endpoint options, scaling, quotas, and team access"
+      - id: cost-and-billing
         title: "Token economics, consumption pricing, and cost controls"
-      - id: risk-compliance
-        title: "Managing data privacy, compliance, and operational risks"

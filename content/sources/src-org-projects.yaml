@@ -6,6 +6,7 @@ retrieved_at: 2026-08-06T00:33:32Z
 sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 objectives:
   - domain-1/organizations-and-projects
+  - domain-4/platform-capabilities
 snapshot:
   bucket: academy-source-snapshots
   key: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0

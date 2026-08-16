@@ -1,0 +1,196 @@
+schema_version: 1
+
+# Pages captured by .github/workflows/capture-sources.yml.
+#
+# Each entry becomes exactly one content/sources/<id>.yaml, written by
+# scripts/capture-source.mjs after it fetches the URL, hashes the response
+# bytes, and PUTs the snapshot into the private R2 store. Nothing here is read
+# at build time: the content loaders only ever walk content/{courses,sources,
+# questions,lessons}, so this file is inert to the lint and to the bundler.
+#
+# Why a committed manifest rather than workflow_dispatch inputs:
+#
+#   - `objectives` is content. validate-content.mjs cross-checks every entry
+#     against the course maps, and it decides which objective a citation can
+#     support. It belongs under a CODEOWNERS-reviewed path, not in a run form.
+#   - Re-runs must be reproducible. When one page drifts mid-authoring you
+#     re-dispatch with `only: <id>` against this same reviewed list, and the
+#     diff proves nothing else moved.
+#   - SOURCES.md's "Adding a source" requires a stated scope recorded in a PR.
+#     This file is that record, diffable beside the allowlist row it justifies.
+#
+# capture-source.mjs rewrites the whole record from these fields alone — it is
+# not a merge. Any objective omitted here disappears on the next capture, and
+# hand-added `coverage:`/`notes:` must be re-applied after a re-dispatch. Keep
+# each entry's objective list complete.
+#
+# Sources already captured and verifying are deliberately absent: re-capturing
+# them would churn snapshots for no reason. Where an existing record needed an
+# extra objective for a second course, that objective was appended to the
+# record by hand instead, which changes no bytes and no sha256.
+
+sources:
+  # ---------------------------------------------------------------------
+  # ai-cloudops-engineer — docs.nebius.com (the course's primary host)
+  # ---------------------------------------------------------------------
+
+  - id: src-co-k8s-quickstart
+    url: https://docs.nebius.com/kubernetes/quickstart.md
+    title: "How to get started with Managed Service for Kubernetes: Create your first cluster"
+    objectives:
+      - domain-1/environment-deployment
+
+  - id: src-co-gpu-clusters
+    url: https://docs.nebius.com/compute/clusters/gpu/index.md
+    title: "InfiniBand networking for Compute virtual machines with GPUs"
+    objectives:
+      - domain-1/environment-deployment
+
+  - id: src-co-vpc-security-groups
+    url: https://docs.nebius.com/vpc/security-groups/overview.md
+    title: "Security groups in Nebius AI Cloud"
+    objectives:
+      - domain-1/network-vpc
+
+  - id: src-co-vpc-isolation
+    url: https://docs.nebius.com/vpc/networking/isolation.md
+    title: "Isolating Nebius AI Cloud resources in separate networks"
+    objectives:
+      - domain-1/network-vpc
+
+  - id: src-co-storage-types
+    url: https://docs.nebius.com/compute/storage/types.md
+    title: "Types of storage volumes in Compute"
+    objectives:
+      - domain-1/storage-volumes
+
+  - id: src-co-storage-manage
+    url: https://docs.nebius.com/compute/storage/manage.md
+    title: "Managing Compute volumes"
+    objectives:
+      - domain-1/storage-volumes
+
+  - id: src-co-iam-overview
+    url: https://docs.nebius.com/iam/overview.md
+    title: "How resources, identities and access are managed in Nebius AI Cloud"
+    objectives:
+      - domain-2/iam-roles
+      - domain-2/organization-hierarchy
+
+  - id: src-co-iam-roles
+    url: https://docs.nebius.com/iam/authorization/roles.md
+    title: "Roles for Nebius AI Cloud groups"
+    objectives:
+      - domain-2/iam-roles
+
+  - id: src-co-manage-projects
+    url: https://docs.nebius.com/iam/manage-projects.md
+    title: "Managing projects in Nebius AI Cloud"
+    objectives:
+      - domain-2/organization-hierarchy
+
+  - id: src-co-iam-federations
+    url: https://docs.nebius.com/iam/federations.md
+    title: "How to manage federations in Nebius AI Cloud"
+    objectives:
+      - domain-2/security-policies
+
+  # observability/monitoring.md is a 900-byte link index and cannot support an
+  # item; these are the pages that actually describe node metrics.
+  - id: src-co-vm-monitoring
+    url: https://docs.nebius.com/compute/monitoring/virtual-machines.md
+    title: "Monitoring virtual machines in Nebius AI Cloud"
+    objectives:
+      - domain-3/node-monitoring
+
+  - id: src-co-prometheus
+    url: https://docs.nebius.com/observability/metrics/prometheus.md
+    title: "How to view metrics in Prometheus"
+    objectives:
+      - domain-3/node-monitoring
+
+  - id: src-co-alerts
+    url: https://docs.nebius.com/observability/alerts.md
+    title: "How to set up alerts"
+    objectives:
+      - domain-3/node-monitoring
+
+  - id: src-co-k8s-health-checks
+    url: https://docs.nebius.com/kubernetes/maintenance/health-checks.md
+    title: "Health checks and automatic recovery of Managed Service for Kubernetes nodes"
+    objectives:
+      - domain-3/node-recovery
+
+  - id: src-co-k8s-node-groups
+    url: https://docs.nebius.com/kubernetes/node-groups/manage.md
+    title: "Creating and modifying Managed Service for Kubernetes node groups"
+    objectives:
+      - domain-3/node-recovery
+
+  - id: src-co-compute-quotas
+    url: https://docs.nebius.com/compute/resources/quotas-limits.md
+    title: "Quotas in Compute"
+    objectives:
+      - domain-3/resource-quotas
+
+  - id: src-co-vm-logs
+    url: https://docs.nebius.com/compute/virtual-machines/logs.md
+    title: "How to collect diagnostic logs from Compute virtual machines"
+    objectives:
+      - domain-4/operational-troubleshooting
+
+  - id: src-co-cuda-init-error
+    url: https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md
+    title: "CUDA initialization error on virtual machines in Nebius AI Cloud"
+    objectives:
+      - domain-4/operational-troubleshooting
+
+  - id: src-co-logs-query-language
+    url: https://docs.nebius.com/observability/logs/query-language.md
+    title: "LogQL implementation by Nebius AI Cloud"
+    objectives:
+      - domain-4/escalation-workflows
+
+  # ---------------------------------------------------------------------
+  # ai-leader — docs.tokenfactory.nebius.com
+  #
+  # SOURCES.md names Token Factory as this course's primary host. The
+  # fabricated records this replaces all pointed at docs.nebius.com, the
+  # declared secondary, which was one of the tells.
+  # ---------------------------------------------------------------------
+
+  - id: src-ld-models
+    url: https://docs.tokenfactory.nebius.com/post-training/models.md
+    title: "Models for fine-tuning in Nebius Token Factory"
+    objectives:
+      - domain-1/model-selection
+
+  - id: src-ld-playground
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md
+    title: "UI and Playground"
+    objectives:
+      - domain-2/product-outcomes
+
+  - id: src-ld-dedicated-overview
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md
+    title: "Dedicated endpoints overview"
+    objectives:
+      - domain-2/workflow-design
+
+  - id: src-ld-capacity-and-scaling
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md
+    title: "Capacity, availability, and service guarantees"
+    objectives:
+      - domain-4/platform-capabilities
+
+  - id: src-ld-billing
+    url: https://docs.tokenfactory.nebius.com/other-capabilities/billing-new.md
+    title: "Billing and consumption"
+    objectives:
+      - domain-4/cost-and-billing
+
+  - id: src-ld-dedicated-billing-policy
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/billing-policy.md
+    title: "Dedicated endpoint billing policy"
+    objectives:
+      - domain-4/cost-and-billing

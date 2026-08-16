@@ -85,27 +85,27 @@
       "domains": [
         {
           "id": "domain-1",
-          "title": "AI Fundamentals & Capability Assessment",
-          "weight": 30,
-          "mockQuestions": 9
+          "title": "AI Fundamentals",
+          "weight": 40,
+          "mockQuestions": 12
         },
         {
           "id": "domain-2",
-          "title": "AI Product Design & Business Value",
-          "weight": 30,
-          "mockQuestions": 9
+          "title": "AI Product Design",
+          "weight": 25,
+          "mockQuestions": 7
         },
         {
           "id": "domain-3",
-          "title": "Vendor Evaluation & API Infrastructure",
+          "title": "Controlling AI Outputs",
           "weight": 20,
           "mockQuestions": 6
         },
         {
           "id": "domain-4",
-          "title": "Cost, Performance & Risk Management",
-          "weight": 20,
-          "mockQuestions": 6
+          "title": "Platform Capabilities",
+          "weight": 15,
+          "mockQuestions": 5
         }
       ]
     }
