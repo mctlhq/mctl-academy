@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-co45cdfe9d9a
+status: review_ready
+domain: domain-3
+objective: domain-3/node-monitoring
+stem: A brief utilization spike keeps paging the team. Which alert setting is intended to
+  stop momentary spikes from firing?
+options:
+  - id: a
+    text: Threshold, by raising the value the metric must reach
+    correct: false
+    explanation: Raising the threshold changes what counts as a spike, but a brief excursion
+      above the new value would still fire.
+  - id: b
+    text: Duration, the time during which the condition must be met
+    correct: true
+    explanation: Correct. Requiring the condition to hold for a period is what filters out
+      momentary spikes.
+  - id: c
+    text: Condition, by switching from exceeds to drops below
+    correct: false
+    explanation: That inverts which direction triggers the alert rather than requiring persistence.
+  - id: d
+    text: Metric, by selecting a different series to watch
+    correct: false
+    explanation: Changing the series avoids this particular signal instead of handling its
+      brevity.
+evidence:
+  - source_id: src-co-alerts
+    excerpt: '**Duration**: Time during which the condition is met.'
+    source_sha256: 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

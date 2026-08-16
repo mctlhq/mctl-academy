@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-co48348207ce
+status: review_ready
+domain: domain-3
+objective: domain-3/node-recovery
+stem: After a Network SSD NRD boot disk reported persistent I/O errors, the node disappeared
+  and a differently named node appeared. What happened?
+options:
+  - id: a
+    text: The node was renamed as part of resetting its boot disk
+    correct: false
+    explanation: Nodes are not renamed in place; the new name belongs to a genuinely new node.
+  - id: b
+    text: Automatic recovery deleted the node and created a new one with a healthy boot disk
+    correct: true
+    explanation: Correct. That is the documented remedy for a boot disk with persistent I/O
+      errors.
+  - id: c
+    text: The autoscaler removed the node because its disk reduced available capacity
+    correct: false
+    explanation: Scaling decisions are about capacity, not about a failing boot disk.
+  - id: d
+    text: An operator must have drained and deleted it manually
+    correct: false
+    explanation: No manual action is needed; the service performs this recovery itself.
+evidence:
+  - source_id: src-co-k8s-health-checks
+    excerpt: it deletes the node and then creates a new one with a different name and healthy
+      boot disk
+    source_sha256: 49a0244b277225ad4d733b709450d9c89d3e41c768523f80c81b3484955750b4
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

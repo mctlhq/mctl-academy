@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-co46427e70ca
+status: review_ready
+domain: domain-3
+objective: domain-3/node-monitoring
+stem: While adding a notification email to an alert, an engineer without admin rights sees
+  a much shorter list of contacts than a colleague does. Why?
+options:
+  - id: a
+    text: The list only shows emails that have never been used for notifications
+    correct: false
+    explanation: The list is drawn from emails already used for notifications, not from unused
+      ones.
+  - id: b
+    text: The list is limited to contacts in the same project as the alert
+    correct: false
+    explanation: Visibility follows admin rights rather than the project the alert belongs
+      to.
+  - id: c
+    text: Without admin rights, only their own contacts are visible
+    correct: true
+    explanation: Correct. Admins see all tenant contacts; everyone else sees only their own.
+  - id: d
+    text: The list hides anyone already subscribed to that same alert
+    correct: false
+    explanation: Existing subscribers are not filtered out of the list.
+evidence:
+  - source_id: src-co-alerts
+    excerpt: If you don't have admin rights, you can see only your own contacts
+    source_sha256: 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

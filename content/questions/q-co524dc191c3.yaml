@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-co524dc191c3
+status: review_ready
+domain: domain-3
+objective: domain-3/resource-quotas
+stem: Planning capacity, an engineer assumes one VM quota governs every machine type. What
+  correction is needed?
+options:
+  - id: a
+    text: Quotas are per project and identical across all machine types within it
+    correct: false
+    explanation: Quotas do vary by scope, but the distinction being missed here is between
+      GPU and non-GPU machines.
+  - id: b
+    text: Quotas apply only to GPU virtual machines; other machines are unlimited
+    correct: false
+    explanation: Non-GPU virtual machines are also subject to quotas.
+  - id: c
+    text: Compute has different quotas for GPU and non-GPU virtual machines
+    correct: true
+    explanation: Correct. The two categories are governed separately, so one number does not
+      describe both.
+  - id: d
+    text: Quotas apply to storage only, since compute is billed rather than capped
+    correct: false
+    explanation: Compute has quotas on virtual machines as well as on storage and InfiniBand
+      usage.
+evidence:
+  - source_id: src-co-compute-quotas
+    excerpt: Compute has different quotas for GPU and non-GPU virtual machines.
+    source_sha256: 3c9dc77bb8c3eb7f75c3b60c5449ae71a21253ca89dd1d5bf8f752bf700c774e
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer
