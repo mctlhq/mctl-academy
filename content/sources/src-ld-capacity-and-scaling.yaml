@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-ld-capacity-and-scaling
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md
+title: Capacity, availability, and service guarantees
+retrieved_at: 2026-08-16T18:54:45Z
+sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+objectives:
+  - domain-4/platform-capabilities
+snapshot:
+  bucket: academy-source-snapshots
+  key: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+status: current

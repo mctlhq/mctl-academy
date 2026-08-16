@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-co24917d1a57
+status: review_ready
+domain: domain-1
+objective: domain-1/environment-deployment
+stem: A colleague creating their first Managed Service for Kubernetes cluster asks what leaving
+  the public endpoint enabled will mean in practice. What should you tell them?
+options:
+  - id: a
+    text: The cluster becomes reachable from the internet, so they can connect from any machine
+    correct: true
+    explanation: Correct. That is what the public endpoint provides, and it is why the quickstart
+      path can connect with kubectl from anywhere.
+  - id: b
+    text: The cluster's nodes are moved onto public IP addresses in the default subnet
+    correct: false
+    explanation: The endpoint concerns how the control plane is reached; the cluster's control
+      plane and nodes still use private addresses from the subnet.
+  - id: c
+    text: Every workload scheduled on the cluster is exposed on the internet automatically
+    correct: false
+    explanation: Exposing workloads is done per service; enabling the cluster endpoint does
+      not publish what runs inside.
+  - id: d
+    text: The cluster can only be reached from inside the same node group
+    correct: false
+    explanation: That describes no available option, and it is the opposite of what a public
+      endpoint does.
+evidence:
+  - source_id: src-co-k8s-quickstart
+    excerpt: Keep the public endpoint enabled. As a result, the cluster is available from
+      the internet, and you can connect to it from any machine.
+    source_sha256: 20de84a4580cc464d0397e9c897dc993865b37b79ca13019678d7f178ecddfdb
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

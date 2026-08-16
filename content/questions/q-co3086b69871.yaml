@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-co3086b69871
+status: review_ready
+domain: domain-1
+objective: domain-1/storage-volumes
+stem: Four running VMs must read and write one common dataset at the same time. Which storage
+  option supports this directly?
+options:
+  - id: a
+    text: One network SSD disk attached to all four VMs
+    correct: false
+    explanation: A network SSD disk can only be added to one running VM at a time, so it cannot
+      serve four simultaneously.
+  - id: b
+    text: A local SSD disk on each VM holding its own copy
+    correct: false
+    explanation: Per-VM copies are not one common dataset, and local SSD data does not survive
+      a stop.
+  - id: c
+    text: A boot disk image shared between the four VMs
+    correct: false
+    explanation: Images are a source for creating boot disks, not a medium several VMs read
+      and write concurrently.
+  - id: d
+    text: A shared filesystem attached to all four VMs
+    correct: true
+    explanation: Correct. A shared filesystem is file storage that can be attached to multiple
+      VMs at once.
+evidence:
+  - source_id: src-co-storage-types
+    excerpt: One shared filesystem can be attached to multiple VMs at once.
+    source_sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

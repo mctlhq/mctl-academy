@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-co3981dd0ddc
+status: review_ready
+domain: domain-2
+objective: domain-2/organization-hierarchy
+stem: An automation script uses the Nebius AI Cloud CLI to create a project in a private region
+  and fails. What is the explanation?
+options:
+  - id: a
+    text: Project creation via the CLI is restricted to public regions
+    correct: true
+    explanation: Correct. Attempting to create a project in a private region through the CLI
+      returns an error.
+  - id: b
+    text: Projects can only be created in the web console, never via the CLI
+    correct: false
+    explanation: The CLI is a supported way to create projects; the constraint is which regions
+      it covers.
+  - id: c
+    text: A project already exists in that region, and only one is permitted
+    correct: false
+    explanation: A project per region is created by default, but that does not cap the total
+      at one.
+  - id: d
+    text: Private regions require the project to be created without a name
+    correct: false
+    explanation: No such requirement exists.
+evidence:
+  - source_id: src-co-manage-projects
+    excerpt: If you try to create a project in a private region, you receive an error.
+    source_sha256: 13279ab9827971fd76d921ad32f657caccef4f47379291b005bdd6d394aaece6
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

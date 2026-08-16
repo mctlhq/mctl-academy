@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-ld-dedicated-billing-policy
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/billing-policy.md
+title: Dedicated endpoint billing policy
+retrieved_at: 2026-08-16T18:54:49Z
+sha256: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
+objectives:
+  - domain-4/cost-and-billing
+snapshot:
+  bucket: academy-source-snapshots
+  key: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
+status: current

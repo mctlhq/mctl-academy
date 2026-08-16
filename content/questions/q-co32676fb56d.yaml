@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-co32676fb56d
+status: review_ready
+domain: domain-1
+objective: domain-1/storage-volumes
+stem: Two teams keep their VMs in separate projects in the same region and want both to mount
+  one shared filesystem. What should you tell them?
+options:
+  - id: a
+    text: It works if both projects belong to the same tenant
+    correct: false
+    explanation: Sharing a tenant does not lift the restriction; the boundary that matters
+      here is the project.
+  - id: b
+    text: It works once the filesystem is mounted as a virtiofs device on each VM
+    correct: false
+    explanation: Mounting as virtiofs is required on any VM the filesystem is attached to,
+      but it does not permit crossing projects.
+  - id: c
+    text: It is not supported; all attached VMs must be in the same project
+    correct: true
+    explanation: Correct. Cross-project sharing is explicitly unsupported, even when the projects
+      sit in the same region.
+  - id: d
+    text: It works only if encryption is disabled on the filesystem
+    correct: false
+    explanation: Filesystem encryption is on by default and cannot be disabled, and it has
+      no bearing on project scope.
+evidence:
+  - source_id: src-co-storage-types
+    excerpt: Sharing a filesystem across projects is not supported, even if the projects are
+      in the same
+    source_sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

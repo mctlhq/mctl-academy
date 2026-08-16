@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-iam-federations
+url: https://docs.nebius.com/iam/federations.md
+title: How to manage federations in Nebius AI Cloud
+retrieved_at: 2026-08-16T18:54:23Z
+sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
+objectives:
+  - domain-2/security-policies
+snapshot:
+  bucket: academy-source-snapshots
+  key: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
+status: current

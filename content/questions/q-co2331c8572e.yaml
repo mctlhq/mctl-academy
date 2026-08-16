@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-co2331c8572e
+status: review_ready
+domain: domain-1
+objective: domain-1/environment-deployment
+stem: You are creating a GPU cluster and must pick an InfiniBand fabric. Why does the choice
+  constrain the cluster later?
+options:
+  - id: a
+    text: The fabric fixes how many nodes the cluster may ever contain
+    correct: false
+    explanation: Fabric capacity is finite, but the documented consequence of the choice is
+      which GPU platform can be added, not a fixed node count.
+  - id: b
+    text: The fabric determines which project the cluster's resources belong to
+    correct: false
+    explanation: Project membership is an IAM concern and is unrelated to the physical fabric
+      a cluster sits in.
+  - id: c
+    text: The fabric sets the partition key that other tenants use to reach the cluster
+    correct: false
+    explanation: A partition key isolates a cluster rather than granting anyone access, and
+      it is assigned per cluster.
+  - id: d
+    text: The fabric limits which GPU platform can be added to that cluster
+    correct: true
+    explanation: Correct. Each fabric serves particular GPU platforms, so the fabric must
+      be chosen against the GPU type you intend to run.
+evidence:
+  - source_id: src-co-gpu-clusters
+    excerpt: if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire
+      Rapids GPUs to this cluster
+    source_sha256: 105f1b6a145bbdf8a3c52e7a0c77803091c9996fcfc291cf7b40723891ee7ec6
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

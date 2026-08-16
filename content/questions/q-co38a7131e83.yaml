@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-co38a7131e83
+status: review_ready
+domain: domain-2
+objective: domain-2/organization-hierarchy
+stem: During a cleanup, a team asks you to delete an unused tenant along with its projects.
+  What is the correct response?
+options:
+  - id: a
+    text: Delete it after all its projects have been deleted first
+    correct: false
+    explanation: Emptying the tenant does not make it deletable.
+  - id: b
+    text: Tenants cannot be deleted, so the cleanup must stop at its contents
+    correct: true
+    explanation: Correct. A tenant cannot be deleted; only what it contains can be cleaned
+      up.
+  - id: c
+    text: Delete it only if it was created after sign-up rather than automatically
+    correct: false
+    explanation: How the tenant came to exist does not change whether it can be removed.
+  - id: d
+    text: Delete it by removing every user account from it
+    correct: false
+    explanation: Removing accounts changes who can act in the tenant, not whether the tenant
+      exists.
+evidence:
+  - source_id: src-co-iam-overview
+    excerpt: You cannot delete a tenant.
+    source_sha256: 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

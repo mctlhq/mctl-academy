@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-co219916c0e5
+status: review_ready
+domain: domain-1
+objective: domain-1/environment-deployment
+stem: Two teams run separate GPU clusters that were placed in the same InfiniBand fabric.
+  A security review asks whether one cluster's nodes could reach the other's over InfiniBand.
+  What is the answer?
+options:
+  - id: a
+    text: Yes, because sharing a fabric means sharing one InfiniBand address space
+    correct: false
+    explanation: Sharing a fabric is exactly the case the partition key mechanism exists to
+      handle, so a shared fabric does not imply reachability.
+  - id: b
+    text: No, because each cluster gets a unique partition key that isolates its traffic
+    correct: true
+    explanation: Correct. Per-cluster P-Keys isolate traffic inside a shared physical fabric,
+      so this isolation holds without giving each cluster its own hardware.
+  - id: c
+    text: Yes, unless a security group is attached to each node's network interface
+    correct: false
+    explanation: Security groups filter VPC traffic on network interfaces; the InfiniBand
+      fabric is a separate network whose isolation is not configured that way.
+  - id: d
+    text: No, because two clusters can never be created in the same fabric
+    correct: false
+    explanation: Multiple clusters do share a fabric — that is the normal arrangement, and
+      why an isolation mechanism is needed at all.
+evidence:
+  - source_id: src-co-gpu-clusters
+    excerpt: nodes in different GPU clusters cannot communicate over InfiniBand™ even if they
+      use the same fabric infrastructure
+    source_sha256: 105f1b6a145bbdf8a3c52e7a0c77803091c9996fcfc291cf7b40723891ee7ec6
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

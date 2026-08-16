@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-vm-monitoring
+url: https://docs.nebius.com/compute/monitoring/virtual-machines.md
+title: Monitoring virtual machines in Nebius AI Cloud
+retrieved_at: 2026-08-16T18:54:25Z
+sha256: 6e90ceb68709954382c0bd6df8868cb0698ac552e7fb6c0161ddafe829066f49
+objectives:
+  - domain-3/node-monitoring
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6e90ceb68709954382c0bd6df8868cb0698ac552e7fb6c0161ddafe829066f49
+status: current

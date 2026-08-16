@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-co2738f2a8fd
+status: review_ready
+domain: domain-1
+objective: domain-1/network-vpc
+stem: An engineer created a security group with the intended rules, but the VM's traffic is
+  still unfiltered. What step is most likely missing?
+options:
+  - id: a
+    text: The security group has not been associated with the VM's project
+    correct: false
+    explanation: Security groups are associated with a network, and project membership is
+      not what puts a group into effect for a VM.
+  - id: b
+    text: The rules were created without a priority, so none of them are evaluated
+    correct: false
+    explanation: Priority orders rules against one another; a missing association explains
+      traffic being unfiltered altogether.
+  - id: c
+    text: The VM must be restarted before any security group takes effect
+    correct: false
+    explanation: A restart is not the documented requirement for a security group to apply.
+  - id: d
+    text: The security group has not been assigned to the VM's network interface
+    correct: true
+    explanation: Correct. A security group only applies to a VM once it is assigned to that
+      VM's network interface.
+evidence:
+  - source_id: src-co-vpc-security-groups
+    excerpt: For a security group to apply to a VM, you need to assign the security group
+      to a VM's network interface.
+    source_sha256: 713756c7ee69d7b51477c85b5632e9c2e4576b0325f6b247e9033b9806877f8c
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer
