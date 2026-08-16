@@ -166,6 +166,17 @@ jobs:
             if [ "$DRY_RUN" = "true" ]; then
               node --input-type=module -e '
                 import { sha256 } from "./scripts/lib/snapshot-store.mjs";
+                // capture-source.mjs enforces the SOURCES.md host allowlist
+                // inside fetchSource(); this path does its own fetch, so it has
+                // to enforce it too. Otherwise `dry_run` would be a way to make
+                // the runner fetch an arbitrary host from a manifest entry that
+                // the real capture path would have refused.
+                const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
+                const host = new URL(process.argv[1]).host;
+                if (!ALLOWED_HOSTS.includes(host)) {
+                  console.error(`refusing to fetch ${host}: not on the SOURCES.md allowlist`);
+                  process.exit(1);
+                }
                 const res = await fetch(process.argv[1], {
                   headers: { accept: "text/markdown, text/plain, text/html" },
                 });
@@ -186,6 +197,10 @@ jobs:
                 import { readFileSync, writeFileSync } from "node:fs";
                 import { parse } from "yaml";
                 import { storeFromEnv } from "./scripts/lib/snapshot-store.mjs";
+                // `id` interpolates into both paths below. It cannot traverse:
+                // the manifest reader rejects anything not matching
+                // ^src-[a-z0-9][a-z0-9-]{2,62}$, which admits no slash, no dot
+                // and no leading separator. Keep that check if this moves.
                 const id = process.argv[1];
                 const record = parse(readFileSync(`content/sources/${id}.yaml`, "utf8"));
                 const text = await storeFromEnv().get(record.snapshot.key);
