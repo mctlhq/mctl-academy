@@ -6,6 +6,7 @@ retrieved_at: 2026-08-06T00:33:26Z
 sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
 objectives:
   - domain-2/function-calling
+  - domain-3/tool-use
 snapshot:
   bucket: academy-source-snapshots
   key: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b

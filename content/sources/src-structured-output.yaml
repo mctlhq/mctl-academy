@@ -6,6 +6,7 @@ retrieved_at: 2026-08-06T00:33:27Z
 sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
 objectives:
   - domain-2/structured-output
+  - domain-3/structured-output
 snapshot:
   bucket: academy-source-snapshots
   key: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8

@@ -1,0 +1,221 @@
+name: Capture sources
+
+# Batch-capture the pages listed in content/capture-manifest.yaml: fetch each
+# one, hash the response bytes, PUT the snapshot into the private R2 store, and
+# commit the resulting content/sources/*.yaml back onto the dispatched branch.
+#
+# This workflow exists because R2 credentials are Actions secrets and nothing
+# else. scripts/capture-source.mjs calls storeFromEnv() inside capture(), so a
+# workstation can run `--check` but can never mint a source record. Hand-writing
+# one instead is precisely the failure that produced the fabricated CloudOps and
+# Leader banks (see #140, #141) -- so this is the only sanctioned path.
+#
+# It also uploads the exact fetched bytes as a build artifact. That artifact is
+# what an author writes excerpts from: it is byte-identical to what was hashed
+# and stored, which closes the window in which an upstream page could change
+# between capture and authoring. The snapshots themselves are never committed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: "Manifest path"
+        required: false
+        default: content/capture-manifest.yaml
+      only:
+        description: "Comma-separated source ids to capture (blank = all)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Fetch and hash only; write nothing, store nothing"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Two concurrent runs would race on the same content/sources/ tree and one
+# would push over the other's records.
+concurrency:
+  group: capture-sources-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      # Content never lands on main directly. Capturing onto main would push
+      # source records straight past the CODEOWNERS review this repository
+      # exists to enforce, so refuse rather than quietly do it.
+      - name: Refuse to capture onto main
+        if: github.ref_name == 'main'
+        run: |
+          echo "::error::dispatch this workflow on a feature branch, not main"
+          exit 1
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          # A real branch, not the detached SHA checkout defaults to on
+          # workflow_dispatch -- the commit step below has to push somewhere.
+          ref: ${{ github.ref_name }}
+
+      # Bun, not setup-node + npm ci: this repository ships only bun.lock.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Read the manifest
+        env:
+          MANIFEST: ${{ inputs.manifest }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            import { parse } from "yaml";
+            const doc = parse(readFileSync(process.env.MANIFEST, "utf8"));
+            const only = (process.env.ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
+            const rows = (doc.sources ?? []).filter((s) => !only.length || only.includes(s.id));
+            if (!rows.length) {
+              console.error("manifest selected no sources");
+              process.exit(1);
+            }
+            const seen = new Set();
+            for (const s of rows) {
+              for (const f of ["id", "url", "title"]) {
+                if (!s[f]) {
+                  console.error(`${s.id ?? "?"}: missing ${f}`);
+                  process.exit(1);
+                }
+              }
+              if (!Array.isArray(s.objectives) || !s.objectives.length) {
+                console.error(`${s.id}: missing objectives`);
+                process.exit(1);
+              }
+              if (seen.has(s.id)) {
+                console.error(`${s.id}: duplicate id in manifest`);
+                process.exit(1);
+              }
+              seen.add(s.id);
+              // Tabs are the field separator below, so a tab in a title would
+              // silently shift every later column.
+              if (/\t/.test(s.title)) {
+                console.error(`${s.id}: title contains a tab`);
+                process.exit(1);
+              }
+              console.log([s.id, s.url, s.title, s.objectives.join(",")].join("\t"));
+            }
+          ' > batch.tsv
+          echo "selected $(wc -l < batch.tsv) source(s):"
+          cut -f1 batch.tsv
+
+      - name: Capture each source
+        id: capture
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: academy-source-snapshots
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          mkdir -p captured
+          failed=""
+          ok=0
+          while IFS=$'\t' read -r id url title objs; do
+            echo "::group::$id"
+            args=("$url" --id "$id" --title "$title")
+            # Objective ids cannot contain whitespace -- the schema pattern
+            # forbids it -- so splitting on spaces here is safe and intended.
+            for o in ${objs//,/ }; do args+=(--objective "$o"); done
+
+            if [ "$DRY_RUN" = "true" ]; then
+              node --input-type=module -e '
+                import { sha256 } from "./scripts/lib/snapshot-store.mjs";
+                const res = await fetch(process.argv[1], {
+                  headers: { accept: "text/markdown, text/plain, text/html" },
+                });
+                if (!res.ok) { console.error("HTTP", res.status); process.exit(1); }
+                const text = await res.text();
+                console.log(sha256(Buffer.from(text, "utf8")), text.length, "bytes");
+              ' "$url" || failed="$failed $id"
+            elif node scripts/capture-source.mjs "${args[@]}"; then
+              ok=$((ok + 1))
+              # Keep the exact bytes for the authoring artifact, using the same
+              # headers and the same decode path capture-source.mjs used, so
+              # this file hashes to the sha256 just committed.
+              node --input-type=module -e '
+                import { writeFileSync } from "node:fs";
+                const res = await fetch(process.argv[1], {
+                  headers: { accept: "text/markdown, text/plain, text/html" },
+                });
+                writeFileSync(`captured/${process.argv[2]}.md`, await res.text(), "utf8");
+              ' "$url" "$id" || true
+            else
+              failed="$failed $id"
+            fi
+            echo "::endgroup::"
+          done < batch.tsv
+
+          echo "captured=$ok" >> "$GITHUB_OUTPUT"
+          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
+          [ -z "$failed" ] || echo "::warning::capture failed for:$failed"
+
+      # Uploaded before the commit step so a later push failure cannot cost the
+      # bytes an author needs. Public documentation; contains no secrets.
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always() && inputs.dry_run != true
+        with:
+          name: captured-sources-${{ github.run_id }}
+          path: captured/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Verify what was captured still lints
+        if: inputs.dry_run != true
+        run: bun run lint:content
+
+      - name: Commit and push captured source records
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/sources/
+          if git diff --staged --quiet; then
+            echo "No source record changes to commit."
+            exit 0
+          fi
+          git commit -m "chore(sources): capture ${{ steps.capture.outputs.captured }} source snapshot(s)"
+          pushed=false
+          for i in 1 2 3; do
+            if git push origin "HEAD:${BRANCH}"; then pushed=true; break; fi
+            echo "Push to ${BRANCH} failed (attempt $i). Rebasing..."
+            git fetch origin "${BRANCH}"
+            if ! git rebase "origin/${BRANCH}"; then
+              git rebase --abort || true
+              break
+            fi
+          done
+          if [ "$pushed" = "false" ]; then
+            side="chore/captured-sources-${{ github.run_id }}"
+            git checkout -b "$side"
+            git push origin "$side"
+            gh pr create --repo "${{ github.repository }}" \
+              --base "${BRANCH}" --head "$side" \
+              --title "chore(sources): captured source snapshots" \
+              --body "Capture run ${{ github.run_id }} could not push to \`${BRANCH}\`. Records are on \`${side}\`."
+          fi
+
+      # Fail only after everything salvageable is committed and uploaded: a
+      # partial batch is worth keeping, a silent partial batch is not.
+      # Re-dispatch with `only:` listing exactly the ids named here.
+      - name: Fail on partial capture
+        if: steps.capture.outputs.failed != ''
+        run: |
+          echo "::error::capture failed for: ${{ steps.capture.outputs.failed }}"
+          exit 1
