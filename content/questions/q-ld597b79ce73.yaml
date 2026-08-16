@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-ld597b79ce73
+status: review_ready
+domain: domain-4
+objective: domain-4/cost-and-billing
+stem: What happens to an account when an automatic card charge fails?
+options:
+  - id: a
+    text: The account is suspended
+    correct: true
+    explanation: Correct. A failed charge suspends the account, which is why the payment method
+      must stay valid.
+  - id: b
+    text: Requests continue but are throttled to the free tier
+    correct: false
+    explanation: No free-tier fallback is described.
+  - id: c
+    text: The balance is carried to the next month with a fee
+    correct: false
+    explanation: Nothing describes deferring the balance in this way.
+  - id: d
+    text: Dedicated endpoints keep running while shared inference stops
+    correct: false
+    explanation: The consequence applies to the account rather than to one product.
+evidence:
+  - source_id: src-ld-billing
+    excerpt: If a card charge fails, your account is **suspended**.
+    source_sha256: 4c7e391a50f276908d8fd240edf85dd94c8705c93d80a2de50f43eea6b240b74
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

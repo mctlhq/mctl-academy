@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-ld6022d95b1b
+status: review_ready
+domain: domain-4
+objective: domain-4/cost-and-billing
+stem: Under which conditions is a bank card charged automatically?
+options:
+  - id: a
+    text: Only when the customer manually tops up the balance
+    correct: false
+    explanation: A manual top-up is an alternative to automatic charging, not a trigger for
+      it.
+  - id: b
+    text: Only at the end of a billing period, in arrears
+    correct: false
+    explanation: The balance is debited in real time, with charges triggered by the conditions
+      below.
+  - id: c
+    text: At the start of the month if the balance is negative, or when the billing threshold
+      is reached
+    correct: true
+    explanation: Correct. Those are the two documented triggers, each charging enough to bring
+      the balance back to zero.
+  - id: d
+    text: Whenever any request is made against a paid model
+    correct: false
+    explanation: Charging is not per request; the balance is debited and settled on those
+      triggers.
+evidence:
+  - source_id: src-ld-billing
+    excerpt: At the start of the month, if your balance is negative
+    source_sha256: 4c7e391a50f276908d8fd240edf85dd94c8705c93d80a2de50f43eea6b240b74
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

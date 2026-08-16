@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-ld4146dd5675
+status: review_ready
+domain: domain-2
+objective: domain-2/product-outcomes
+stem: After settling on a prompt and parameters in the Playground, a team wants the same setup
+  available to colleagues later. What does the tool provide?
+options:
+  - id: a
+    text: Saving the setup as a prompt preset for later use or sharing
+    correct: true
+    explanation: Correct. A preset stores the configuration so it can be reused or shared.
+  - id: b
+    text: Publishing the setup as a dedicated endpoint
+    correct: false
+    explanation: Deploying an endpoint is an infrastructure action, not how a Playground setup
+      is retained.
+  - id: c
+    text: Committing the setup to the model card
+    correct: false
+    explanation: Model cards report the model's own parameters and pricing; they are not per-team
+      storage.
+  - id: d
+    text: Nothing; the setup must be rebuilt each session
+    correct: false
+    explanation: Setups can be both exported as code and saved as presets.
+evidence:
+  - source_id: src-ld-playground
+    excerpt: '**Save as a prompt preset** — Click **Save preset** in the left panel to store
+      your setup for later use or sharing.'
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

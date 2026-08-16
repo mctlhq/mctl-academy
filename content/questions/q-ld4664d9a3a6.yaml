@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld4664d9a3a6
+status: review_ready
+domain: domain-3
+objective: domain-3/structured-output
+stem: 'A team sets `response_format` to `{"type": "json_object"}` and is surprised the field
+  names vary between calls. Why?'
+options:
+  - id: a
+    text: The setting only applies to the first message in a conversation
+    correct: false
+    explanation: Nothing limits the parameter to the opening message.
+  - id: b
+    text: Field names always vary unless the temperature is set to zero
+    correct: false
+    explanation: Sampling settings do not determine whether a schema is enforced.
+  - id: c
+    text: That setting forces arbitrary JSON and lets the model decide the schema
+    correct: true
+    explanation: Correct. `json_object` guarantees JSON but not any particular shape; the
+      model chooses it.
+  - id: d
+    text: The setting was ignored because a schema was not also supplied
+    correct: false
+    explanation: It is not ignored; it produces valid JSON of the model's own design.
+evidence:
+  - source_id: src-structured-output
+    excerpt: '**Arbitrary JSON object.** Forces arbitrary JSON output, the model will decide
+      on the schema by itself'
+    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld5108ea0df2
+status: review_ready
+domain: domain-3
+objective: domain-3/tool-use
+stem: A product manager asks what function calling makes possible that a bare text model cannot
+  do. Which capability is documented?
+options:
+  - id: a
+    text: Retrieving real-time data through external code or services
+    correct: true
+    explanation: Correct. Reaching live data and third-party services is exactly what tool
+      integration enables.
+  - id: b
+    text: Increasing the model's context window beyond its published limit
+    correct: false
+    explanation: Context length is a property of the model, unchanged by tool use.
+  - id: c
+    text: Guaranteeing the response is valid JSON
+    correct: false
+    explanation: That is what structured output settings are for.
+  - id: d
+    text: Removing per-token charges for tool responses
+    correct: false
+    explanation: Tool use does not alter how tokens are billed.
+evidence:
+  - source_id: src-function-calling
+    excerpt: Retrieve real-time data
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader
