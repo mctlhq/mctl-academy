@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-gpu-clusters
+url: https://docs.nebius.com/compute/clusters/gpu/index.md
+title: InfiniBand networking for Compute virtual machines with GPUs
+retrieved_at: 2026-08-16T18:54:09Z
+sha256: 105f1b6a145bbdf8a3c52e7a0c77803091c9996fcfc291cf7b40723891ee7ec6
+objectives:
+  - domain-1/environment-deployment
+snapshot:
+  bucket: academy-source-snapshots
+  key: 105f1b6a145bbdf8a3c52e7a0c77803091c9996fcfc291cf7b40723891ee7ec6
+status: current

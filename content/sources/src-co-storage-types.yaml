@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-storage-types
+url: https://docs.nebius.com/compute/storage/types.md
+title: Types of storage volumes in Compute
+retrieved_at: 2026-08-16T18:54:14Z
+sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
+objectives:
+  - domain-1/storage-volumes
+snapshot:
+  bucket: academy-source-snapshots
+  key: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
+status: current

@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-ld-dedicated-overview
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md
+title: Dedicated endpoints overview
+retrieved_at: 2026-08-16T18:54:44Z
+sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+objectives:
+  - domain-2/workflow-design
+snapshot:
+  bucket: academy-source-snapshots
+  key: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+status: current

@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-co-iam-overview
+url: https://docs.nebius.com/iam/overview.md
+title: How resources, identities and access are managed in Nebius AI Cloud
+retrieved_at: 2026-08-16T18:54:17Z
+sha256: 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
+objectives:
+  - domain-2/iam-roles
+  - domain-2/organization-hierarchy
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
+status: current

@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-k8s-health-checks
+url: https://docs.nebius.com/kubernetes/maintenance/health-checks.md
+title: Health checks and automatic recovery of Managed Service for Kubernetes nodes
+retrieved_at: 2026-08-16T18:54:30Z
+sha256: 49a0244b277225ad4d733b709450d9c89d3e41c768523f80c81b3484955750b4
+objectives:
+  - domain-3/node-recovery
+snapshot:
+  bucket: academy-source-snapshots
+  key: 49a0244b277225ad4d733b709450d9c89d3e41c768523f80c81b3484955750b4
+status: current

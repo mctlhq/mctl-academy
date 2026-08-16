@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-ld-models
+url: https://docs.tokenfactory.nebius.com/post-training/models.md
+title: Models for fine-tuning in Nebius Token Factory
+retrieved_at: 2026-08-16T18:54:40Z
+sha256: 3b72254af3b4649d0cf1e434a4c529e5aa97da97eafc0f52ed0bc6d708b1a69d
+objectives:
+  - domain-1/model-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3b72254af3b4649d0cf1e434a4c529e5aa97da97eafc0f52ed0bc6d708b1a69d
+status: current

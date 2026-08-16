@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-vpc-security-groups
+url: https://docs.nebius.com/vpc/security-groups/overview.md
+title: Security groups in Nebius AI Cloud
+retrieved_at: 2026-08-16T18:54:10Z
+sha256: 713756c7ee69d7b51477c85b5632e9c2e4576b0325f6b247e9033b9806877f8c
+objectives:
+  - domain-1/network-vpc
+snapshot:
+  bucket: academy-source-snapshots
+  key: 713756c7ee69d7b51477c85b5632e9c2e4576b0325f6b247e9033b9806877f8c
+status: current

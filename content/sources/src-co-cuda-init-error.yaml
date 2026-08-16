@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-cuda-init-error
+url: https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md
+title: CUDA initialization error on virtual machines in Nebius AI Cloud
+retrieved_at: 2026-08-16T18:54:37Z
+sha256: a7d4ef62cd37c7779687f9dfb6608166c0303249d0113e95fd1297affd311b2e
+objectives:
+  - domain-4/operational-troubleshooting
+snapshot:
+  bucket: academy-source-snapshots
+  key: a7d4ef62cd37c7779687f9dfb6608166c0303249d0113e95fd1297affd311b2e
+status: current

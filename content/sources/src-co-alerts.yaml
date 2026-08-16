@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-alerts
+url: https://docs.nebius.com/observability/alerts.md
+title: How to set up alerts
+retrieved_at: 2026-08-16T18:54:28Z
+sha256: 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
+objectives:
+  - domain-3/node-monitoring
+snapshot:
+  bucket: academy-source-snapshots
+  key: 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
+status: current
