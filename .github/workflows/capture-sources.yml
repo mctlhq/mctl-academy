@@ -86,11 +86,16 @@ jobs:
               console.error("manifest selected no sources");
               process.exit(1);
             }
-            // These patterns are content/schemas/source.schema.json's. That
-            // schema only ever validates a record that was written
+            // These patterns are copied from content/schemas/source.schema.json.
+            // That schema only ever validates a record that was written
             // successfully, so it is never reached for a source that failed to
             // capture -- yet a failed id still flows onward into shell and into
             // step outputs. Enforce the same shape here, before any of that.
+            //
+            // NB: this script is embedded in a single-quoted shell string, so
+            // it must contain no apostrophe anywhere, comments included. One in
+            // this comment closed the string early and the next line ran as a
+            // shell command.
             const ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
             const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
             const seen = new Set();
