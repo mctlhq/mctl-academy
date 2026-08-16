@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.1.49](https://github.com/mctlhq/mctl-academy/compare/0.1.48...0.1.49) (2026-08-16)
+
+
+### Features
+
+* **content:** add source capture workflow and correct the AI Leader map ([9b11a22](https://github.com/mctlhq/mctl-academy/commit/9b11a22d78f9a7e9b6e7d313708666f62e011b1e))
+* **content:** add source capture workflow and correct the AI Leader map ([c6de572](https://github.com/mctlhq/mctl-academy/commit/c6de57207a16d651944d59768382730d21915023))
+* **content:** author 20 AI Leader questions for domains 1 and 2 ([fec21ff](https://github.com/mctlhq/mctl-academy/commit/fec21ff7f0f0788a36b86e01b6f1569369a9a7b3))
+* **content:** author 20 AI Leader questions for domains 1 and 2 ([e07dea3](https://github.com/mctlhq/mctl-academy/commit/e07dea3a02165a8585dec52ddd7a379db3b93369)), closes [#141](https://github.com/mctlhq/mctl-academy/issues/141)
+* **content:** author 20 CloudOps questions for domains 1 and 2 ([b8e6e8f](https://github.com/mctlhq/mctl-academy/commit/b8e6e8fd95c043cd2c7b801e64c2fcdc44653cde))
+* **content:** author 20 CloudOps questions for domains 1 and 2 ([e61c293](https://github.com/mctlhq/mctl-academy/commit/e61c29326c783be8ebb5eaa5b271ef00e1f37b88)), closes [#140](https://github.com/mctlhq/mctl-academy/issues/140)
+* **content:** complete the AI Leader bank with domains 3 and 4 ([b61b22d](https://github.com/mctlhq/mctl-academy/commit/b61b22dbee26ffc89498efb46fc781ab8b7dd1e6))
+* **content:** complete the AI Leader bank with domains 3 and 4 ([8975890](https://github.com/mctlhq/mctl-academy/commit/897589036c487111f6505ec30f6991935be20101)), closes [#141](https://github.com/mctlhq/mctl-academy/issues/141)
+* **content:** complete the CloudOps bank with domains 3 and 4 ([bd1d156](https://github.com/mctlhq/mctl-academy/commit/bd1d15675c246ba9d7bf823397deeff673c87c1f))
+* **content:** complete the CloudOps bank with domains 3 and 4 ([c5e2a9a](https://github.com/mctlhq/mctl-academy/commit/c5e2a9a92cea2282dd7dbb38b5daa19c11d92fa7)), closes [#140](https://github.com/mctlhq/mctl-academy/issues/140)
+* **content:** publish the CloudOps and Leader banks ([f0835df](https://github.com/mctlhq/mctl-academy/commit/f0835dfc302bf80297440396c8796df61d2d7a7f))
+* **content:** publish the CloudOps and Leader banks ([423b951](https://github.com/mctlhq/mctl-academy/commit/423b951d3e019882c9df4e21acd9ace23f87680a)), closes [#140](https://github.com/mctlhq/mctl-academy/issues/140) [#141](https://github.com/mctlhq/mctl-academy/issues/141)
+
+
+### Bug Fixes
+
+* **ci:** enforce the host allowlist on the dry_run fetch path ([0619b70](https://github.com/mctlhq/mctl-academy/commit/0619b7017b72e7310b4af86bbd7036fb3c3348bf))
+* **ci:** harden objective splitting and the push-retry rebase ([1057452](https://github.com/mctlhq/mctl-academy/commit/1057452e62bc64041a74826d17fdb25aa4bb3554))
+* **ci:** pass capture step outputs through env, and validate manifest ids ([976c3e1](https://github.com/mctlhq/mctl-academy/commit/976c3e18eb5b1ec5e3814b44f5812614d388393b))
+* **ci:** remove an apostrophe that closed the embedded script early ([1dc93c9](https://github.com/mctlhq/mctl-academy/commit/1dc93c92cc701e41e2405d819c9c3afa0034ccae))
+* **ci:** stage the authoring copy from the store, not a second fetch ([1df071e](https://github.com/mctlhq/mctl-academy/commit/1df071e8f2861220d6464f952b3ce594e3adf4c3))
+* **content:** delete fabricated source records and their quarantined banks ([d3d6eb4](https://github.com/mctlhq/mctl-academy/commit/d3d6eb4f05ec6021a916b74880b60c951e708143))
+* **content:** delete fabricated source records and their quarantined banks ([97f20c5](https://github.com/mctlhq/mctl-academy/commit/97f20c5e2e72481e209600343e0c999aeda9b666))
+* replace leftover cyan local favicon with terracotta A ([36b1c9b](https://github.com/mctlhq/mctl-academy/commit/36b1c9b77b85b47a37405adfa9bcde607cacd697))
+* replace leftover cyan local favicon with terracotta A ([4c4903f](https://github.com/mctlhq/mctl-academy/commit/4c4903fdeb1007d367d939d0314dd3959c9c1d07))
+
 ## [0.1.48](https://github.com/mctlhq/mctl-academy/compare/0.1.47...0.1.48) (2026-08-15)
 
 
