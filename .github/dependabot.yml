@@ -1,0 +1,31 @@
+version: 2
+
+# GitHub Actions only, on purpose.
+#
+# Every action in .github/workflows/ is pinned to a commit SHA, which stops an
+# upstream tag being repointed under us but also freezes the pin: without
+# something to bump it, a pinned action never picks up an upstream fix, and the
+# pin quietly becomes the stale thing it was meant to prevent. Dependabot is
+# what keeps that honest — each bump arrives as a reviewable PR with the new
+# SHA and the release notes behind it.
+#
+# The npm ecosystem is deliberately absent. Application dependencies here are
+# governed by bun.lock and the test suite, and turning that on would open a
+# steady stream of PRs against a repository whose review capacity is the stated
+# bottleneck for content. Add it as a separate decision if that changes.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - enhancement
+    groups:
+      # One PR a month rather than one per action: these are almost always
+      # routine runner-side bumps, and reviewing them together is cheaper than
+      # reviewing them one at a time.
+      actions:
+        patterns:
+          - "*"
