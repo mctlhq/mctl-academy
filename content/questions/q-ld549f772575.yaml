@@ -1,16 +1,18 @@
 schema_version: 1
 id: q-ld549f772575
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
-stem: A business continuity plan assumes a dedicated endpoint will return to full capacity
-  immediately after a maintenance window. What risk should you flag?
+stem: A business continuity plan assumes a dedicated endpoint will return to
+  full capacity immediately after a maintenance window. What risk should you
+  flag?
 options:
   - id: a
-    text: Restarting may take longer than the first deployment when capacity is scarce
+    text: Restarting may take longer than the first deployment when capacity is
+      scarce
     correct: true
-    explanation: Correct. Under high demand or for scarce GPU types, capacity may be temporarily
-      unavailable and the restart can take significantly longer.
+    explanation: Correct. Under high demand or for scarce GPU types, capacity may be
+      temporarily unavailable and the restart can take significantly longer.
   - id: b
     text: The endpoint's model weights must be uploaded again after maintenance
     correct: false
@@ -22,14 +24,17 @@ options:
   - id: d
     text: Billing continues at full rate while the endpoint waits for capacity
     correct: false
-    explanation: Charges apply when replicas are running, so a stopped endpoint is not billed
-      at full rate.
+    explanation: Charges apply when replicas are running, so a stopped endpoint is
+      not billed at full rate.
 evidence:
   - source_id: src-ld-capacity-and-scaling
-    excerpt: restarting may take significantly longer than the initial deployment, and capacity
-      may be temporarily unavailable
+    excerpt: restarting may take significantly longer than the initial deployment,
+      and capacity may be temporarily unavailable
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

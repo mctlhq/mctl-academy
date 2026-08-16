@@ -1,28 +1,29 @@
 schema_version: 1
 id: q-co43c175d040
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
-stem: A VM was created two minutes ago and its Metrics tab is empty. What is the appropriate
-  response?
+stem: A VM was created two minutes ago and its Metrics tab is empty. What is the
+  appropriate response?
 options:
   - id: a
     text: Reinstall the monitoring agent, since an empty tab means collection failed
     correct: false
-    explanation: Data is collected automatically; an empty tab this soon after creation is
-      expected rather than a failure.
+    explanation: Data is collected automatically; an empty tab this soon after
+      creation is expected rather than a failure.
   - id: b
     text: Raise a support case, because usage data should appear immediately
     correct: false
-    explanation: Immediate appearance is not what the platform promises, so there is nothing
-      yet to escalate.
+    explanation: Immediate appearance is not what the platform promises, so there is
+      nothing yet to escalate.
   - id: c
     text: Widen the time filter, because the data is there but outside the window
     correct: false
-    explanation: Adjusting filters cannot surface data for a period in which none has been
-      collected yet.
+    explanation: Adjusting filters cannot surface data for a period in which none
+      has been collected yet.
   - id: d
-    text: Wait, because usage data becomes available 5-10 minutes after the VM is created
+    text: Wait, because usage data becomes available 5-10 minutes after the VM is
+      created
     correct: true
     explanation: Correct. There is a documented delay before a new VM's usage data appears.
 evidence:
@@ -33,3 +34,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

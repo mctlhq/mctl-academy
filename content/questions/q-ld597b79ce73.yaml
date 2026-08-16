@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld597b79ce73
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/cost-and-billing
 stem: What happens to an account when an automatic card charge fails?
@@ -8,8 +8,8 @@ options:
   - id: a
     text: The account is suspended
     correct: true
-    explanation: Correct. A failed charge suspends the account, which is why the payment method
-      must stay valid.
+    explanation: Correct. A failed charge suspends the account, which is why the
+      payment method must stay valid.
   - id: b
     text: Requests continue but are throttled to the free tier
     correct: false
@@ -30,3 +30,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

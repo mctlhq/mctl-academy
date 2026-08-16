@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld5748e509af
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/cost-and-billing
 stem: A finance lead asks when a dedicated endpoint incurs charges. What is the rule?
@@ -16,18 +16,22 @@ options:
   - id: c
     text: Whenever at least one replica is running
     correct: true
-    explanation: Correct. One or more running replicas makes the endpoint active, accessible
-      and billable.
+    explanation: Correct. One or more running replicas makes the endpoint active,
+      accessible and billable.
   - id: d
     text: Monthly in advance, based on the maximum replica setting
     correct: false
-    explanation: Billing follows actual running replicas rather than a pre-purchased maximum.
+    explanation: Billing follows actual running replicas rather than a pre-purchased
+      maximum.
 evidence:
   - source_id: src-ld-dedicated-billing-policy
-    excerpt: A dedicated endpoint is considered **active, accessible, and billable** when
-      **at least one replica is running**
+    excerpt: A dedicated endpoint is considered **active, accessible, and billable**
+      when **at least one replica is running**
     source_sha256: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

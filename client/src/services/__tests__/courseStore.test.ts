@@ -6,7 +6,6 @@ import { getItem, resetStorage, setItem } from "../storage";
 const STORAGE_KEY = "mctl_academy_course_id";
 
 const firstAvailable = courseCatalog.find((c) => c.available)!;
-const firstUnavailable = courseCatalog.find((c) => !c.available);
 
 /**
  * The store is a module-level singleton backed by localStorage, so both have
@@ -48,21 +47,11 @@ describe("courseStore", () => {
     expect(getItem(STORAGE_KEY)).toBe(firstAvailable.id);
   });
 
-  it.runIf(firstUnavailable)("falls back when the stored course has no published questions", () => {
-    setItem(STORAGE_KEY, firstUnavailable!.id);
-    resetCourseStore();
-
-    const store = useCourseStore();
-    expect(store.currentCourseId.value).toBe(firstAvailable.id);
-    expect(getItem(STORAGE_KEY)).toBe(firstAvailable.id);
-  });
-
-  it.runIf(firstUnavailable)("refuses to select an unavailable course", () => {
-    const store = useCourseStore();
-    expect(store.canSelect(firstUnavailable!.id)).toBe(false);
-    expect(store.setCourse(firstUnavailable!.id)).toBe(false);
-    expect(store.currentCourseId.value).toBe(firstAvailable.id);
-  });
+  // The fallback-to-available and refuse-unavailable cases used to live here
+  // behind it.runIf(firstUnavailable). Every shipping course now has published
+  // questions, so that guard silently stopped running them rather than failing.
+  // They moved to courseStoreUnavailable.test.ts, which mocks the catalog and
+  // therefore keeps covering that path regardless of what content ships.
 
   it("refuses to select an unknown course id", () => {
     const store = useCourseStore();

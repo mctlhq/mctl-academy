@@ -1,16 +1,16 @@
 schema_version: 1
 id: q-ld43c53921d4
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
-stem: Leadership asks what dedicated endpoints give the business that shared inference does
-  not. Which pair of use cases is documented?
+stem: Leadership asks what dedicated endpoints give the business that shared
+  inference does not. Which pair of use cases is documented?
 options:
   - id: a
     text: Free trial capacity and unlimited request rates
     correct: false
-    explanation: Neither is offered; trial credit and rate limits are separate topics with
-      their own rules.
+    explanation: Neither is offered; trial credit and rate limits are separate
+      topics with their own rules.
   - id: b
     text: Automatic prompt optimization and managed evaluation
     correct: false
@@ -18,8 +18,8 @@ options:
   - id: c
     text: Zero-cost idling and permanent GPU reservation
     correct: false
-    explanation: Capacity is released when an endpoint stops, and billing follows running
-      replicas.
+    explanation: Capacity is released when an endpoint stops, and billing follows
+      running replicas.
   - id: d
     text: Predictable capacity and serving a finetuned base model with custom weights
     correct: true
@@ -32,3 +32,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

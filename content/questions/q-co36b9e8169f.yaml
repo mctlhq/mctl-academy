@@ -1,35 +1,40 @@
 schema_version: 1
 id: q-co36b9e8169f
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/iam-roles
-stem: A data-collection agent must drop files into a bucket but must not be able to read back
-  or enumerate what is already there. Which role matches?
+stem: A data-collection agent must drop files into a bucket but must not be able
+  to read back or enumerate what is already there. Which role matches?
 options:
   - id: a
     text: '`storage.object-viewer`'
     correct: false
-    explanation: That grants reading objects, which is what this agent must not be able to
-      do.
+    explanation: That grants reading objects, which is what this agent must not be
+      able to do.
   - id: b
     text: '`storage.object-lister`'
     correct: false
-    explanation: Listing objects and viewing version metadata is exactly the enumeration being
-      withheld.
+    explanation: Listing objects and viewing version metadata is exactly the
+      enumeration being withheld.
   - id: c
     text: '`storage.uploader`'
     correct: true
-    explanation: Correct. It allows viewing buckets and uploading objects while withholding
-      listing and downloading.
+    explanation: Correct. It allows viewing buckets and uploading objects while
+      withholding listing and downloading.
   - id: d
     text: '`storage.editor`'
     correct: false
-    explanation: That is a broad Object Storage role and grants far more than write-only submission.
+    explanation: That is a broad Object Storage role and grants far more than
+      write-only submission.
 evidence:
   - source_id: src-co-iam-roles
-    excerpt: '`storage.uploader`: view buckets, upload objects but not list or download them'
+    excerpt: '`storage.uploader`: view buckets, upload objects but not list or
+      download them'
     source_sha256: 8877ba59c6d0454d0e7b2945f28f099ff03a5976d65b137cd65e668b867f4ef7
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

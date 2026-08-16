@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-ld403e852cea
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
-stem: A workload's traffic varies sharply between business hours and overnight. Which dedicated
-  endpoint control is designed for that?
+stem: A workload's traffic varies sharply between business hours and overnight.
+  Which dedicated endpoint control is designed for that?
 options:
   - id: a
     text: Region, by placing the deployment near the daytime user base
@@ -13,22 +13,27 @@ options:
   - id: b
     text: Lifecycle management, by deleting and recreating the deployment daily
     correct: false
-    explanation: Lifecycle operations exist, but they are not the mechanism for tracking traffic
-      automatically.
+    explanation: Lifecycle operations exist, but they are not the mechanism for
+      tracking traffic automatically.
   - id: c
     text: GPU configuration, by choosing a GPU type that idles cheaply
     correct: false
-    explanation: GPU selection sets performance per replica rather than adjusting capacity
-      over time.
+    explanation: GPU selection sets performance per replica rather than adjusting
+      capacity over time.
   - id: d
     text: Autoscaling, by setting minimum and maximum replicas
     correct: true
-    explanation: Correct. Minimum and maximum replicas let capacity scale with traffic automatically.
+    explanation: Correct. Minimum and maximum replicas let capacity scale with
+      traffic automatically.
 evidence:
   - source_id: src-ld-dedicated-overview
-    excerpt: Set minimum and maximum replicas to automatically scale capacity with traffic.
+    excerpt: Set minimum and maximum replicas to automatically scale capacity with
+      traffic.
     source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

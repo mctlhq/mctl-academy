@@ -1,15 +1,16 @@
 schema_version: 1
 id: q-co502cd7b152
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/resource-quotas
-stem: A team stops several GPU VMs overnight and expects the freed quota to let them launch
-  a new cluster. Does it?
+stem: A team stops several GPU VMs overnight and expects the freed quota to let
+  them launch a new cluster. Does it?
 options:
   - id: a
     text: Yes, stopped VMs release their quota until they are started again
     correct: false
-    explanation: Stopping does not release quota; the reservation persists while the VM exists.
+    explanation: Stopping does not release quota; the reservation persists while the
+      VM exists.
   - id: b
     text: Yes, but only for GPU quotas, not for storage quotas
     correct: false
@@ -19,15 +20,19 @@ options:
     correct: false
     explanation: Quota accounting is not tied to capacity rebalancing.
   - id: d
-    text: No, a VM counts toward quota from creation to deletion regardless of power state
+    text: No, a VM counts toward quota from creation to deletion regardless of power
+      state
     correct: true
     explanation: Correct. Only deleting the VM releases what it counts against.
 evidence:
   - source_id: src-co-compute-quotas
-    excerpt: count towards the quotas throughout the VM's lifecycle, from its creation to
-      deletion, regardless of whether it is running or stopped
+    excerpt: count towards the quotas throughout the VM's lifecycle, from its
+      creation to deletion, regardless of whether it is running or stopped
     source_sha256: 3c9dc77bb8c3eb7f75c3b60c5449ae71a21253ca89dd1d5bf8f752bf700c774e
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

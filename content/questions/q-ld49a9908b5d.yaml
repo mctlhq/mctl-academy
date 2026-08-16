@@ -1,36 +1,40 @@
 schema_version: 1
 id: q-ld49a9908b5d
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/tool-use
-stem: A model returns a tool call for a function your application defined. Who runs the function?
+stem: A model returns a tool call for a function your application defined. Who
+  runs the function?
 options:
   - id: a
     text: The inference platform, which proxies the call to the named service
     correct: false
-    explanation: The platform emits instructions; it does not reach out to external services
-      on your behalf.
+    explanation: The platform emits instructions; it does not reach out to external
+      services on your behalf.
   - id: b
     text: Your application, which executes it and feeds the result back
     correct: true
-    explanation: Correct. The model does not execute functions; parsing the output and running
-      the code is your responsibility.
+    explanation: Correct. The model does not execute functions; parsing the output
+      and running the code is your responsibility.
   - id: c
     text: The model, once the tool schema has been registered
     correct: false
-    explanation: Registering a schema tells the model how a tool is invoked, not that the
-      model runs it.
+    explanation: Registering a schema tells the model how a tool is invoked, not
+      that the model runs it.
   - id: d
     text: Whichever MCP server is connected to the conversation
     correct: false
-    explanation: MCP servers are one thing tools can reach, but execution is still driven
-      by your code.
+    explanation: MCP servers are one thing tools can reach, but execution is still
+      driven by your code.
 evidence:
   - source_id: src-function-calling
-    excerpt: The model **does not execute** the functions itself. Instead, it outputs tool
-      invocation instructions
+    excerpt: The model **does not execute** the functions itself. Instead, it
+      outputs tool invocation instructions
     source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

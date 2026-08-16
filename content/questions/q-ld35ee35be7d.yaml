@@ -1,21 +1,21 @@
 schema_version: 1
 id: q-ld35ee35be7d
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/product-outcomes
-stem: A non-technical product manager wants to try a model and shape its behaviour before
-  any engineering work is scheduled. What should they use?
+stem: A non-technical product manager wants to try a model and shape its
+  behaviour before any engineering work is scheduled. What should they use?
 options:
   - id: a
     text: A dedicated endpoint deployed with minimum replicas set to one
     correct: false
-    explanation: Deploying an endpoint is an infrastructure step and is not needed to try
-      a model.
+    explanation: Deploying an endpoint is an infrastructure step and is not needed
+      to try a model.
   - id: b
     text: The Playground, which requires no coding
     correct: true
-    explanation: Correct. It exists so a model can be exercised through a web interface without
-      writing code.
+    explanation: Correct. It exists so a model can be exercised through a web
+      interface without writing code.
   - id: c
     text: A fine-tuning job on a small sample of data
     correct: false
@@ -23,14 +23,17 @@ options:
   - id: d
     text: The List models endpoint with `verbose=true`
     correct: false
-    explanation: That returns model parameters rather than letting someone interact with a
-      model.
+    explanation: That returns model parameters rather than letting someone interact
+      with a model.
 evidence:
   - source_id: src-ld-playground
-    excerpt: lets you experiment with available AI models through a web interface — no coding
-      required.
+    excerpt: lets you experiment with available AI models through a web interface —
+      no coding required.
     source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

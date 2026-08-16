@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-co5875c6855b
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/escalation-workflows
-stem: A LogQL query is syntactically valid but returns nothing at all, and the stream selector
-  omits `__bucket__`. What explains the empty result?
+stem: A LogQL query is syntactically valid but returns nothing at all, and the
+  stream selector omits `__bucket__`. What explains the empty result?
 options:
   - id: a
     text: The query silently defaults to the `default` bucket, which is empty
@@ -13,13 +13,14 @@ options:
   - id: b
     text: Without the bucket label, queries return no entries
     correct: true
-    explanation: Correct. Omitting `__bucket__` (or `--bucket` in the CLI) yields no entries
-      at all.
+    explanation: Correct. Omitting `__bucket__` (or `--bucket` in the CLI) yields no
+      entries at all.
   - id: c
-    text: The results were dropped because entries carried a non-empty `__error__` value
+    text: The results were dropped because entries carried a non-empty `__error__`
+      value
     correct: false
-    explanation: Error entries are ignored, but that is a separate limitation from omitting
-      the bucket.
+    explanation: Error entries are ignored, but that is a separate limitation from
+      omitting the bucket.
   - id: d
     text: The `step` value exceeded the `range` value, so no points were produced
     correct: false
@@ -32,3 +33,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,16 +1,16 @@
 schema_version: 1
 id: q-ld47ff8016a6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/structured-output
-stem: Which `response_format` setting should be used when the response must conform to a schema
-  the application supplies?
+stem: Which `response_format` setting should be used when the response must
+  conform to a schema the application supplies?
 options:
   - id: a
     text: '`{"type": "json_object"}`, with the schema described in the system prompt'
     correct: false
-    explanation: That yields arbitrary JSON; a prompt alone does not bind the response to
-      the schema.
+    explanation: That yields arbitrary JSON; a prompt alone does not bind the
+      response to the schema.
   - id: b
     text: '`{"type": "text"}`, with a post-processing validation step'
     correct: false
@@ -22,14 +22,17 @@ options:
   - id: d
     text: '`{"type": "json_schema"}`, supplying the schema in the request'
     correct: true
-    explanation: Correct. That is the setting that makes the response follow a schema you
-      provide.
+    explanation: Correct. That is the setting that makes the response follow a
+      schema you provide.
 evidence:
   - source_id: src-structured-output
-    excerpt: '**JSON schema following.** Follows the specific schema you provide - `{"type":
-      "json_schema"}` in `response_format `parameter.'
+    excerpt: '**JSON schema following.** Follows the specific schema you provide -
+      `{"type": "json_schema"}` in `response_format `parameter.'
     source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

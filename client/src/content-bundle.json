@@ -132,6 +132,1326 @@
     ]
   },
   {
+    "id": "q-co219916c0e5",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "Two teams run separate GPU clusters that were placed in the same InfiniBand fabric. A security review asks whether one cluster's nodes could reach the other's over InfiniBand. What is the answer?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, because sharing a fabric means sharing one InfiniBand address space",
+        "correct": false,
+        "explanation": "Sharing a fabric is exactly the case the partition key mechanism exists to handle, so a shared fabric does not imply reachability."
+      },
+      {
+        "id": "b",
+        "text": "No, because each cluster gets a unique partition key that isolates its traffic",
+        "correct": true,
+        "explanation": "Correct. Per-cluster P-Keys isolate traffic inside a shared physical fabric, so this isolation holds without giving each cluster its own hardware."
+      },
+      {
+        "id": "c",
+        "text": "Yes, unless a security group is attached to each node's network interface",
+        "correct": false,
+        "explanation": "Security groups filter VPC traffic on network interfaces; the InfiniBand fabric is a separate network whose isolation is not configured that way."
+      },
+      {
+        "id": "d",
+        "text": "No, because two clusters can never be created in the same fabric",
+        "correct": false,
+        "explanation": "Multiple clusters do share a fabric — that is the normal arrangement, and why an isolation mechanism is needed at all."
+      }
+    ]
+  },
+  {
+    "id": "q-co220dde0756",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "A training job on a GPU cluster is bottlenecked moving tensors between GPUs on different nodes. Which property of the cluster's networking is intended to address this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Each node's traffic is serialized through a single shared host NIC",
+        "correct": false,
+        "explanation": "Serializing through one shared NIC would create a bottleneck rather than relieve one; each GPU has its own NIC."
+      },
+      {
+        "id": "b",
+        "text": "Transfers are staged through object storage to decouple the endpoints",
+        "correct": false,
+        "explanation": "Staging through object storage adds a slower hop; it is not the mechanism that accelerates GPU-to-GPU exchange."
+      },
+      {
+        "id": "c",
+        "text": "Data moves directly between each GPU and its NIC without passing through the CPU",
+        "correct": true,
+        "explanation": "Correct. GPUDirect RDMA takes the CPU out of the transfer path, which is what raises data exchange speed for this pattern."
+      },
+      {
+        "id": "d",
+        "text": "The CPU copies each buffer into host memory before the NIC transmits it",
+        "correct": false,
+        "explanation": "That host-memory bounce is precisely the step the technology removes."
+      }
+    ]
+  },
+  {
+    "id": "q-co2331c8572e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "You are creating a GPU cluster and must pick an InfiniBand fabric. Why does the choice constrain the cluster later?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The fabric fixes how many nodes the cluster may ever contain",
+        "correct": false,
+        "explanation": "Fabric capacity is finite, but the documented consequence of the choice is which GPU platform can be added, not a fixed node count."
+      },
+      {
+        "id": "b",
+        "text": "The fabric determines which project the cluster's resources belong to",
+        "correct": false,
+        "explanation": "Project membership is an IAM concern and is unrelated to the physical fabric a cluster sits in."
+      },
+      {
+        "id": "c",
+        "text": "The fabric sets the partition key that other tenants use to reach the cluster",
+        "correct": false,
+        "explanation": "A partition key isolates a cluster rather than granting anyone access, and it is assigned per cluster."
+      },
+      {
+        "id": "d",
+        "text": "The fabric limits which GPU platform can be added to that cluster",
+        "correct": true,
+        "explanation": "Correct. Each fabric serves particular GPU platforms, so the fabric must be chosen against the GPU type you intend to run."
+      }
+    ]
+  },
+  {
+    "id": "q-co24917d1a57",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "A colleague creating their first Managed Service for Kubernetes cluster asks what leaving the public endpoint enabled will mean in practice. What should you tell them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The cluster becomes reachable from the internet, so they can connect from any machine",
+        "correct": true,
+        "explanation": "Correct. That is what the public endpoint provides, and it is why the quickstart path can connect with kubectl from anywhere."
+      },
+      {
+        "id": "b",
+        "text": "The cluster's nodes are moved onto public IP addresses in the default subnet",
+        "correct": false,
+        "explanation": "The endpoint concerns how the control plane is reached; the cluster's control plane and nodes still use private addresses from the subnet."
+      },
+      {
+        "id": "c",
+        "text": "Every workload scheduled on the cluster is exposed on the internet automatically",
+        "correct": false,
+        "explanation": "Exposing workloads is done per service; enabling the cluster endpoint does not publish what runs inside."
+      },
+      {
+        "id": "d",
+        "text": "The cluster can only be reached from inside the same node group",
+        "correct": false,
+        "explanation": "That describes no available option, and it is the opposite of what a public endpoint does."
+      }
+    ]
+  },
+  {
+    "id": "q-co253cd43986",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "A VM was created in the wrong subnet. The team wants it moved to the correct subnet without rebuilding it. What is the outcome?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It can be moved once the VM is stopped, then restarted in the new subnet",
+        "correct": false,
+        "explanation": "Stopping the VM does not unlock the change; the assignment is fixed at creation regardless of power state."
+      },
+      {
+        "id": "b",
+        "text": "It cannot be moved; the VM has to be recreated in the correct subnet",
+        "correct": true,
+        "explanation": "Correct. Network and subnet are set at creation and cannot be changed afterwards, so recreating the resource is the only route."
+      },
+      {
+        "id": "c",
+        "text": "It can be moved by attaching a second network interface in the target subnet",
+        "correct": false,
+        "explanation": "Adding an interface does not relocate the resource, and the documented rule admits no such workaround."
+      },
+      {
+        "id": "d",
+        "text": "It can be moved by editing the security group assigned to its interface",
+        "correct": false,
+        "explanation": "Security groups filter traffic; they do not determine which subnet a resource lives in."
+      }
+    ]
+  },
+  {
+    "id": "q-co26744a9769",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "A team wants two test environments that use identical private IP addressing and must not be able to reach each other. What arrangement achieves this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Put both in one network and rely on distinct subnet CIDR ranges",
+        "correct": false,
+        "explanation": "One network gives direct private connectivity between resources, and duplicate addressing is not possible within it."
+      },
+      {
+        "id": "b",
+        "text": "Put both in one network and deny all traffic with security rules",
+        "correct": false,
+        "explanation": "Rules could block traffic, but they cannot let the same private IP address be assigned to resources in both environments."
+      },
+      {
+        "id": "c",
+        "text": "Create a separate network for each environment",
+        "correct": true,
+        "explanation": "Correct. Separate networks are the documented answer both for disabling connectivity and for reusing the same private addresses."
+      },
+      {
+        "id": "d",
+        "text": "Create one network per region and place the environments in different regions",
+        "correct": false,
+        "explanation": "Region placement is not what governs private connectivity or address reuse here."
+      }
+    ]
+  },
+  {
+    "id": "q-co2738f2a8fd",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "An engineer created a security group with the intended rules, but the VM's traffic is still unfiltered. What step is most likely missing?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The security group has not been associated with the VM's project",
+        "correct": false,
+        "explanation": "Security groups are associated with a network, and project membership is not what puts a group into effect for a VM."
+      },
+      {
+        "id": "b",
+        "text": "The rules were created without a priority, so none of them are evaluated",
+        "correct": false,
+        "explanation": "Priority orders rules against one another; a missing association explains traffic being unfiltered altogether."
+      },
+      {
+        "id": "c",
+        "text": "The VM must be restarted before any security group takes effect",
+        "correct": false,
+        "explanation": "A restart is not the documented requirement for a security group to apply."
+      },
+      {
+        "id": "d",
+        "text": "The security group has not been assigned to the VM's network interface",
+        "correct": true,
+        "explanation": "Correct. A security group only applies to a VM once it is assigned to that VM's network interface."
+      }
+    ]
+  },
+  {
+    "id": "q-co285d098105",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "Two security rules in one group match the same packet with conflicting access settings. One has priority 1 and the other priority 900. Which wins?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The rule with priority 900, because larger values are evaluated first",
+        "correct": false,
+        "explanation": "The scale runs the other way: a larger number means lower priority."
+      },
+      {
+        "id": "b",
+        "text": "The rule with priority 1, because 1 is the highest priority",
+        "correct": true,
+        "explanation": "Correct. Priority 1 is the highest and 1000 the lowest, so the lower number takes precedence."
+      },
+      {
+        "id": "c",
+        "text": "Neither, because conflicting rules cause the group to be rejected",
+        "correct": false,
+        "explanation": "Conflicts are resolved by priority rather than by refusing the configuration."
+      },
+      {
+        "id": "d",
+        "text": "Whichever rule is stateful, regardless of the priority values",
+        "correct": false,
+        "explanation": "Stateful versus stateless controls connection tracking, not which of two matching rules is applied."
+      }
+    ]
+  },
+  {
+    "id": "q-co29b9f076dc",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/storage-volumes",
+    "stem": "A workload writes intermediate shards to a local SSD disk. The VM is stopped overnight to save cost. What happens to that data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is erased, because local SSD disks are ephemeral",
+        "correct": true,
+        "explanation": "Correct. Local SSD data is erased when the VM is stopped or deleted, which is why it suits only recreatable data."
+      },
+      {
+        "id": "b",
+        "text": "It is preserved, because the disk is physically attached to the host",
+        "correct": false,
+        "explanation": "Physical attachment is what makes the storage fast and host-local; it does not make it durable across a stop."
+      },
+      {
+        "id": "c",
+        "text": "It is preserved only if the disk was created from a disk snapshot",
+        "correct": false,
+        "explanation": "Local SSD disks are not created as separate managed resources from images or snapshots."
+      },
+      {
+        "id": "d",
+        "text": "It is migrated automatically to a network SSD disk on shutdown",
+        "correct": false,
+        "explanation": "No such migration happens; nothing moves the data off the host."
+      }
+    ]
+  },
+  {
+    "id": "q-co3086b69871",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/storage-volumes",
+    "stem": "Four running VMs must read and write one common dataset at the same time. Which storage option supports this directly?",
+    "options": [
+      {
+        "id": "a",
+        "text": "One network SSD disk attached to all four VMs",
+        "correct": false,
+        "explanation": "A network SSD disk can only be added to one running VM at a time, so it cannot serve four simultaneously."
+      },
+      {
+        "id": "b",
+        "text": "A local SSD disk on each VM holding its own copy",
+        "correct": false,
+        "explanation": "Per-VM copies are not one common dataset, and local SSD data does not survive a stop."
+      },
+      {
+        "id": "c",
+        "text": "A boot disk image shared between the four VMs",
+        "correct": false,
+        "explanation": "Images are a source for creating boot disks, not a medium several VMs read and write concurrently."
+      },
+      {
+        "id": "d",
+        "text": "A shared filesystem attached to all four VMs",
+        "correct": true,
+        "explanation": "Correct. A shared filesystem is file storage that can be attached to multiple VMs at once."
+      }
+    ]
+  },
+  {
+    "id": "q-co3128de5d55",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/storage-volumes",
+    "stem": "An engineer tries to create a 100 GiB Network SSD Non-replicated disk and the request is rejected. What explains this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Non-replicated disks have a fixed size that cannot be chosen",
+        "correct": false,
+        "explanation": "The size is chosen; it is the permitted increment that is constrained."
+      },
+      {
+        "id": "b",
+        "text": "The size must be a multiple of 93 GiB, and 100 GiB is not",
+        "correct": true,
+        "explanation": "Correct. Data blocks sit in 93 GiB NVMe namespaces, so the disk size has to be a multiple of that."
+      },
+      {
+        "id": "c",
+        "text": "Non-replicated disks cannot be used as additional disks",
+        "correct": false,
+        "explanation": "Their suitability is about redundancy, not about the additional-disk role."
+      },
+      {
+        "id": "d",
+        "text": "Disks under 128 GiB must be local SSD disks",
+        "correct": false,
+        "explanation": "No such threshold governs the choice between the two kinds of disk."
+      }
+    ]
+  },
+  {
+    "id": "q-co32676fb56d",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/storage-volumes",
+    "stem": "Two teams keep their VMs in separate projects in the same region and want both to mount one shared filesystem. What should you tell them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It works if both projects belong to the same tenant",
+        "correct": false,
+        "explanation": "Sharing a tenant does not lift the restriction; the boundary that matters here is the project."
+      },
+      {
+        "id": "b",
+        "text": "It works once the filesystem is mounted as a virtiofs device on each VM",
+        "correct": false,
+        "explanation": "Mounting as virtiofs is required on any VM the filesystem is attached to, but it does not permit crossing projects."
+      },
+      {
+        "id": "c",
+        "text": "It is not supported; all attached VMs must be in the same project",
+        "correct": true,
+        "explanation": "Correct. Cross-project sharing is explicitly unsupported, even when the projects sit in the same region."
+      },
+      {
+        "id": "d",
+        "text": "It works only if encryption is disabled on the filesystem",
+        "correct": false,
+        "explanation": "Filesystem encryption is on by default and cannot be disabled, and it has no bearing on project scope."
+      }
+    ]
+  },
+  {
+    "id": "q-co33486f6ab7",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/iam-roles",
+    "stem": "A new engineer appears on the tenant user list but cannot see any resources. What is the most likely reason?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Their account has not finished federation sync and will populate shortly",
+        "correct": false,
+        "explanation": "Appearing on the user list already means the account exists; nothing further populates access on its own."
+      },
+      {
+        "id": "b",
+        "text": "They need a service account key before resources become visible",
+        "correct": false,
+        "explanation": "Service account keys authenticate service accounts, not a human user browsing resources."
+      },
+      {
+        "id": "c",
+        "text": "Resources are only visible to the user who created them",
+        "correct": false,
+        "explanation": "Visibility follows group membership rather than who created a resource."
+      },
+      {
+        "id": "d",
+        "text": "They have not been assigned to a group, so no access has been granted",
+        "correct": true,
+        "explanation": "Correct. Being on the tenant user list grants nothing by itself; access comes from the group an account is assigned to."
+      }
+    ]
+  },
+  {
+    "id": "q-co3467c7f2ed",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/iam-roles",
+    "stem": "A service account was created in the tooling project. It now needs to manage buckets that live in a different project in the same tenant. Is that possible?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, its access follows the groups it is added to, not the project it was created in",
+        "correct": true,
+        "explanation": "Correct. The creating project sets where the account lives, while group membership can extend its access anywhere in the tenant."
+      },
+      {
+        "id": "b",
+        "text": "No, a service account can only ever act inside the project that created it",
+        "correct": false,
+        "explanation": "That is the intuition the documentation explicitly corrects; the account is not confined to its home project."
+      },
+      {
+        "id": "c",
+        "text": "No, it must be recreated in the target project for each additional project",
+        "correct": false,
+        "explanation": "Recreating per project is unnecessary given how group membership determines access."
+      },
+      {
+        "id": "d",
+        "text": "Yes, but only after the two projects are merged into one",
+        "correct": false,
+        "explanation": "Projects are not merged to share access, and nothing requires it here."
+      }
+    ]
+  },
+  {
+    "id": "q-co356433d8e1",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/iam-roles",
+    "stem": "An on-call rotation must be able to stop and start VMs during incidents, but should not gain broader Compute permissions. Which role fits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`editor`, scoped to the project containing the VMs",
+        "correct": false,
+        "explanation": "The editor role grants management of most resource types, which is broader than the task requires."
+      },
+      {
+        "id": "b",
+        "text": "`compute.instance-power-operator`",
+        "correct": true,
+        "explanation": "Correct. It exists precisely to allow power operations on VMs without broader Compute permissions."
+      },
+      {
+        "id": "c",
+        "text": "`compute.serial-console-user`",
+        "correct": false,
+        "explanation": "That role covers interactive troubleshooting over the serial console, not powering machines on and off."
+      },
+      {
+        "id": "d",
+        "text": "`viewer`, which permits state changes on resources it can see",
+        "correct": false,
+        "explanation": "The viewer role is for viewing resources and accessing data in them, not for changing their power state."
+      }
+    ]
+  },
+  {
+    "id": "q-co36b9e8169f",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/iam-roles",
+    "stem": "A data-collection agent must drop files into a bucket but must not be able to read back or enumerate what is already there. Which role matches?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`storage.object-viewer`",
+        "correct": false,
+        "explanation": "That grants reading objects, which is what this agent must not be able to do."
+      },
+      {
+        "id": "b",
+        "text": "`storage.object-lister`",
+        "correct": false,
+        "explanation": "Listing objects and viewing version metadata is exactly the enumeration being withheld."
+      },
+      {
+        "id": "c",
+        "text": "`storage.uploader`",
+        "correct": true,
+        "explanation": "Correct. It allows viewing buckets and uploading objects while withholding listing and downloading."
+      },
+      {
+        "id": "d",
+        "text": "`storage.editor`",
+        "correct": false,
+        "explanation": "That is a broad Object Storage role and grants far more than write-only submission."
+      }
+    ]
+  },
+  {
+    "id": "q-co37d7aa468e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/organization-hierarchy",
+    "stem": "A project was created in the wrong region. What can be changed on it afterwards?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Its region, by editing the project and selecting another one",
+        "correct": false,
+        "explanation": "Region is fixed once the project exists."
+      },
+      {
+        "id": "b",
+        "text": "Its tenant, by transferring the project to another tenant",
+        "correct": false,
+        "explanation": "A project cannot be moved to another tenant."
+      },
+      {
+        "id": "c",
+        "text": "Both its region and tenant, provided the project holds no resources",
+        "correct": false,
+        "explanation": "Being empty does not unlock either change."
+      },
+      {
+        "id": "d",
+        "text": "Only its name; the project must be recreated in the correct region",
+        "correct": true,
+        "explanation": "Correct. Name is the only editable field, so a wrong region means creating a new project."
+      }
+    ]
+  },
+  {
+    "id": "q-co38a7131e83",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/organization-hierarchy",
+    "stem": "During a cleanup, a team asks you to delete an unused tenant along with its projects. What is the correct response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete it after all its projects have been deleted first",
+        "correct": false,
+        "explanation": "Emptying the tenant does not make it deletable."
+      },
+      {
+        "id": "b",
+        "text": "Tenants cannot be deleted, so the cleanup must stop at its contents",
+        "correct": true,
+        "explanation": "Correct. A tenant cannot be deleted; only what it contains can be cleaned up."
+      },
+      {
+        "id": "c",
+        "text": "Delete it only if it was created after sign-up rather than automatically",
+        "correct": false,
+        "explanation": "How the tenant came to exist does not change whether it can be removed."
+      },
+      {
+        "id": "d",
+        "text": "Delete it by removing every user account from it",
+        "correct": false,
+        "explanation": "Removing accounts changes who can act in the tenant, not whether the tenant exists."
+      }
+    ]
+  },
+  {
+    "id": "q-co3981dd0ddc",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/organization-hierarchy",
+    "stem": "An automation script uses the Nebius AI Cloud CLI to create a project in a private region and fails. What is the explanation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Project creation via the CLI is restricted to public regions",
+        "correct": true,
+        "explanation": "Correct. Attempting to create a project in a private region through the CLI returns an error."
+      },
+      {
+        "id": "b",
+        "text": "Projects can only be created in the web console, never via the CLI",
+        "correct": false,
+        "explanation": "The CLI is a supported way to create projects; the constraint is which regions it covers."
+      },
+      {
+        "id": "c",
+        "text": "A project already exists in that region, and only one is permitted",
+        "correct": false,
+        "explanation": "A project per region is created by default, but that does not cap the total at one."
+      },
+      {
+        "id": "d",
+        "text": "Private regions require the project to be created without a name",
+        "correct": false,
+        "explanation": "No such requirement exists."
+      }
+    ]
+  },
+  {
+    "id": "q-co40c9898d9e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/security-policies",
+    "stem": "Your organization's IdP has rotated the signing certificate used for single sign-on. What does the federation configuration in Nebius AI Cloud let you do about it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing; the federation must be deleted and created again",
+        "correct": false,
+        "explanation": "Certificates are managed on an existing federation, so a rebuild is not required."
+      },
+      {
+        "id": "b",
+        "text": "Only deactivate the federation until the IdP is rolled back",
+        "correct": false,
+        "explanation": "Deactivation is available, but it is not the mechanism for handling a rotated certificate."
+      },
+      {
+        "id": "c",
+        "text": "Rotate it automatically, since certificates are synced from the IdP",
+        "correct": false,
+        "explanation": "Certificates are uploaded and managed deliberately rather than synchronized on their own."
+      },
+      {
+        "id": "d",
+        "text": "Upload the new certificate and delete the old one on the existing federation",
+        "correct": true,
+        "explanation": "Correct. Attached certificates can be uploaded or deleted as part of managing a federation."
+      }
+    ]
+  },
+  {
+    "id": "q-co41d66f720d",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/security-policies",
+    "stem": "An engineer with the `editor` role is asked to set up a federation so staff can sign in through the company IdP. What blocks them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Federations can only be created by the account that first signed up for the tenant",
+        "correct": false,
+        "explanation": "Access is governed by group membership rather than by who originally created the tenant."
+      },
+      {
+        "id": "b",
+        "text": "Managing federations requires the `admin` role, which `editor` does not confer",
+        "correct": true,
+        "explanation": "Correct. The task requires being in a group holding the admin role at tenant or project scope."
+      },
+      {
+        "id": "c",
+        "text": "Nothing blocks them; `editor` covers all identity configuration",
+        "correct": false,
+        "explanation": "The editor role manages most resource types, but identity federation is reserved for admins."
+      },
+      {
+        "id": "d",
+        "text": "They must first be removed from every other group in the tenant",
+        "correct": false,
+        "explanation": "Group membership is additive; nothing requires stripping other memberships."
+      }
+    ]
+  },
+  {
+    "id": "q-co427b99b29e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/security-policies",
+    "stem": "You are preparing to create a federation and want to gather everything needed beforehand. What must you obtain from the identity provider?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A service account access key issued by the identity provider",
+        "correct": false,
+        "explanation": "Access keys authenticate service accounts against AWS-compatible APIs; they are unrelated to configuring an IdP."
+      },
+      {
+        "id": "b",
+        "text": "The private signing key used by the identity provider",
+        "correct": false,
+        "explanation": "A private key is never handed over; the federation is configured with the public certificate instead."
+      },
+      {
+        "id": "c",
+        "text": "The SAML application metadata: login URL, identifier and certificate",
+        "correct": true,
+        "explanation": "Correct. These are the values the federation is built from, obtained through the IdP admin portal."
+      },
+      {
+        "id": "d",
+        "text": "A list of every user account that should be allowed to sign in",
+        "correct": false,
+        "explanation": "Users arrive through the federation itself; enumerating them up front is not part of creating it."
+      }
+    ]
+  },
+  {
+    "id": "q-co43c175d040",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-monitoring",
+    "stem": "A VM was created two minutes ago and its Metrics tab is empty. What is the appropriate response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reinstall the monitoring agent, since an empty tab means collection failed",
+        "correct": false,
+        "explanation": "Data is collected automatically; an empty tab this soon after creation is expected rather than a failure."
+      },
+      {
+        "id": "b",
+        "text": "Raise a support case, because usage data should appear immediately",
+        "correct": false,
+        "explanation": "Immediate appearance is not what the platform promises, so there is nothing yet to escalate."
+      },
+      {
+        "id": "c",
+        "text": "Widen the time filter, because the data is there but outside the window",
+        "correct": false,
+        "explanation": "Adjusting filters cannot surface data for a period in which none has been collected yet."
+      },
+      {
+        "id": "d",
+        "text": "Wait, because usage data becomes available 5-10 minutes after the VM is created",
+        "correct": true,
+        "explanation": "Correct. There is a documented delay before a new VM's usage data appears."
+      }
+    ]
+  },
+  {
+    "id": "q-co449f443013",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-monitoring",
+    "stem": "An engineer watching a dashboard during an incident asks how current the numbers are. What is true by default?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The data refreshes every 15 seconds, and the interval can be changed",
+        "correct": true,
+        "explanation": "Correct. Fifteen seconds is the default refresh, configurable next to the time filters."
+      },
+      {
+        "id": "b",
+        "text": "The data refreshes only when the page is reloaded manually",
+        "correct": false,
+        "explanation": "The dashboard refreshes on its own; a manual reload is not required."
+      },
+      {
+        "id": "c",
+        "text": "The data refreshes every five minutes and the interval is fixed",
+        "correct": false,
+        "explanation": "Neither the interval nor its immutability matches the dashboard's behaviour."
+      },
+      {
+        "id": "d",
+        "text": "The data refreshes once per hour, matching the metrics retention window",
+        "correct": false,
+        "explanation": "An hourly cadence would be useless during an incident and is not what is configured."
+      }
+    ]
+  },
+  {
+    "id": "q-co45cdfe9d9a",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-monitoring",
+    "stem": "A brief utilization spike keeps paging the team. Which alert setting is intended to stop momentary spikes from firing?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Threshold, by raising the value the metric must reach",
+        "correct": false,
+        "explanation": "Raising the threshold changes what counts as a spike, but a brief excursion above the new value would still fire."
+      },
+      {
+        "id": "b",
+        "text": "Duration, the time during which the condition must be met",
+        "correct": true,
+        "explanation": "Correct. Requiring the condition to hold for a period is what filters out momentary spikes."
+      },
+      {
+        "id": "c",
+        "text": "Condition, by switching from exceeds to drops below",
+        "correct": false,
+        "explanation": "That inverts which direction triggers the alert rather than requiring persistence."
+      },
+      {
+        "id": "d",
+        "text": "Metric, by selecting a different series to watch",
+        "correct": false,
+        "explanation": "Changing the series avoids this particular signal instead of handling its brevity."
+      }
+    ]
+  },
+  {
+    "id": "q-co46427e70ca",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-monitoring",
+    "stem": "While adding a notification email to an alert, an engineer without admin rights sees a much shorter list of contacts than a colleague does. Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The list only shows emails that have never been used for notifications",
+        "correct": false,
+        "explanation": "The list is drawn from emails already used for notifications, not from unused ones."
+      },
+      {
+        "id": "b",
+        "text": "The list is limited to contacts in the same project as the alert",
+        "correct": false,
+        "explanation": "Visibility follows admin rights rather than the project the alert belongs to."
+      },
+      {
+        "id": "c",
+        "text": "Without admin rights, only their own contacts are visible",
+        "correct": true,
+        "explanation": "Correct. Admins see all tenant contacts; everyone else sees only their own."
+      },
+      {
+        "id": "d",
+        "text": "The list hides anyone already subscribed to that same alert",
+        "correct": false,
+        "explanation": "Existing subscribers are not filtered out of the list."
+      }
+    ]
+  },
+  {
+    "id": "q-co47ac4ebcf8",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-recovery",
+    "stem": "A node has been reporting the `NodeReady` condition as `False` for eight minutes. What does Managed Kubernetes do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing automatic; the node stays until an operator intervenes",
+        "correct": false,
+        "explanation": "Automatic recovery exists precisely so an operator does not have to act on this."
+      },
+      {
+        "id": "b",
+        "text": "It reboots the node in place and keeps its name",
+        "correct": false,
+        "explanation": "The response to a false status is replacement rather than an in-place reboot."
+      },
+      {
+        "id": "c",
+        "text": "It waits for the full 15-minute window that applies to any unhealthy node",
+        "correct": false,
+        "explanation": "Fifteen minutes is the threshold for the `Unknown` status; `False` is acted on after five."
+      },
+      {
+        "id": "d",
+        "text": "It runs an automatic recovery, having passed the five-minute threshold",
+        "correct": true,
+        "explanation": "Correct. A `False` status lasting more than five minutes triggers automatic recovery."
+      }
+    ]
+  },
+  {
+    "id": "q-co48348207ce",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-recovery",
+    "stem": "After a Network SSD NRD boot disk reported persistent I/O errors, the node disappeared and a differently named node appeared. What happened?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The node was renamed as part of resetting its boot disk",
+        "correct": false,
+        "explanation": "Nodes are not renamed in place; the new name belongs to a genuinely new node."
+      },
+      {
+        "id": "b",
+        "text": "Automatic recovery deleted the node and created a new one with a healthy boot disk",
+        "correct": true,
+        "explanation": "Correct. That is the documented remedy for a boot disk with persistent I/O errors."
+      },
+      {
+        "id": "c",
+        "text": "The autoscaler removed the node because its disk reduced available capacity",
+        "correct": false,
+        "explanation": "Scaling decisions are about capacity, not about a failing boot disk."
+      },
+      {
+        "id": "d",
+        "text": "An operator must have drained and deleted it manually",
+        "correct": false,
+        "explanation": "No manual action is needed; the service performs this recovery itself."
+      }
+    ]
+  },
+  {
+    "id": "q-co49d3cee498",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-recovery",
+    "stem": "A team plans to scale a node group from six nodes to ten and worries the running workloads will be disrupted by node replacement. What should you tell them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Scaling does not recreate nodes, so existing nodes are left in place",
+        "correct": true,
+        "explanation": "Correct. Scaling a node group up or down does not recreate any nodes; replacement comes from template changes instead."
+      },
+      {
+        "id": "b",
+        "text": "Every node is replaced on any change to the node group's size",
+        "correct": false,
+        "explanation": "Replacement is triggered by modifying the node group template, not by changing its size."
+      },
+      {
+        "id": "c",
+        "text": "Scaling always drains and recreates one node at a time",
+        "correct": false,
+        "explanation": "That describes the rolling update that follows a template change."
+      },
+      {
+        "id": "d",
+        "text": "Scaling is only safe when the group is first cordoned entirely",
+        "correct": false,
+        "explanation": "No such precaution is required for scaling."
+      }
+    ]
+  },
+  {
+    "id": "q-co502cd7b152",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "A team stops several GPU VMs overnight and expects the freed quota to let them launch a new cluster. Does it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, stopped VMs release their quota until they are started again",
+        "correct": false,
+        "explanation": "Stopping does not release quota; the reservation persists while the VM exists."
+      },
+      {
+        "id": "b",
+        "text": "Yes, but only for GPU quotas, not for storage quotas",
+        "correct": false,
+        "explanation": "The rule does not distinguish stopped from running for either category."
+      },
+      {
+        "id": "c",
+        "text": "No, quota is only released once the region's capacity is rebalanced",
+        "correct": false,
+        "explanation": "Quota accounting is not tied to capacity rebalancing."
+      },
+      {
+        "id": "d",
+        "text": "No, a VM counts toward quota from creation to deletion regardless of power state",
+        "correct": true,
+        "explanation": "Correct. Only deleting the VM releases what it counts against."
+      }
+    ]
+  },
+  {
+    "id": "q-co51437baad6",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "A Managed Kubernetes node group fails to grow because of a quota limit, though no standalone VMs were created. Why is a Compute quota involved?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Node groups consume a separate Kubernetes quota that mirrors Compute limits",
+        "correct": false,
+        "explanation": "There is no mirrored quota; the nodes count against the Compute quotas themselves."
+      },
+      {
+        "id": "b",
+        "text": "Managed Kubernetes nodes are based on Compute VMs and count against the same quotas",
+        "correct": true,
+        "explanation": "Correct. The quotas cover Compute VMs and equally the Kubernetes and Soperator nodes built on them."
+      },
+      {
+        "id": "c",
+        "text": "The cluster's control plane counts as a virtual machine in the quota",
+        "correct": false,
+        "explanation": "The nodes are what consume the quota here, not the managed control plane."
+      },
+      {
+        "id": "d",
+        "text": "Compute quota is only consulted when a node group uses a GPU cluster",
+        "correct": false,
+        "explanation": "The accounting does not depend on whether the node group is attached to a GPU cluster."
+      }
+    ]
+  },
+  {
+    "id": "q-co524dc191c3",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "Planning capacity, an engineer assumes one VM quota governs every machine type. What correction is needed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Quotas are per project and identical across all machine types within it",
+        "correct": false,
+        "explanation": "Quotas do vary by scope, but the distinction being missed here is between GPU and non-GPU machines."
+      },
+      {
+        "id": "b",
+        "text": "Quotas apply only to GPU virtual machines; other machines are unlimited",
+        "correct": false,
+        "explanation": "Non-GPU virtual machines are also subject to quotas."
+      },
+      {
+        "id": "c",
+        "text": "Compute has different quotas for GPU and non-GPU virtual machines",
+        "correct": true,
+        "explanation": "Correct. The two categories are governed separately, so one number does not describe both."
+      },
+      {
+        "id": "d",
+        "text": "Quotas apply to storage only, since compute is billed rather than capped",
+        "correct": false,
+        "explanation": "Compute has quotas on virtual machines as well as on storage and InfiniBand usage."
+      }
+    ]
+  },
+  {
+    "id": "q-co5387b84806",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "PyTorch on a multi-GPU VM fails with `system not yet initialized (error 802)`. Which cause should you investigate first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The GPU quota for the project has been exhausted",
+        "correct": false,
+        "explanation": "A quota problem prevents creating machines; it does not surface as a CUDA initialization error on a running VM."
+      },
+      {
+        "id": "b",
+        "text": "The boot disk image lacks an NVIDIA driver",
+        "correct": false,
+        "explanation": "The error reports that the driver is present but CUDA failed to initialize."
+      },
+      {
+        "id": "c",
+        "text": "A security group is blocking traffic between the GPUs",
+        "correct": false,
+        "explanation": "GPU initialization on a single VM does not depend on VPC traffic filtering."
+      },
+      {
+        "id": "d",
+        "text": "The `nvidia-fabricmanager` service failed to initialize at VM startup",
+        "correct": true,
+        "explanation": "Correct. A race condition or timing issue can leave that service uninitialized, which breaks CUDA initialization."
+      }
+    ]
+  },
+  {
+    "id": "q-co546c4c3ecd",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "You have confirmed a CUDA initialization failure on a GPU VM. What is the documented range of remedies?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Restart the NVIDIA Fabric Manager service, the GPUs, or the entire VM",
+        "correct": true,
+        "explanation": "Correct. These are the three documented remedies, in increasing order of disruption."
+      },
+      {
+        "id": "b",
+        "text": "Recreate the VM from a different boot disk image",
+        "correct": false,
+        "explanation": "The failure is not attributed to the image, and rebuilding is not the documented fix."
+      },
+      {
+        "id": "c",
+        "text": "Detach and reattach the local SSD disks holding the workload data",
+        "correct": false,
+        "explanation": "Storage attachment is unrelated to CUDA initialization."
+      },
+      {
+        "id": "d",
+        "text": "Move the VM into a different InfiniBand fabric",
+        "correct": false,
+        "explanation": "Fabric choice concerns cluster networking and cannot be changed for an existing resource anyway."
+      }
+    ]
+  },
+  {
+    "id": "q-co55ed4440ca",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "A team believes CUDA initialization failures only affect one GPU platform, and plans to migrate away from it. Is that reasoning sound?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, the failure is specific to eight-GPU platforms",
+        "correct": false,
+        "explanation": "The number of GPUs is explicitly not what determines exposure."
+      },
+      {
+        "id": "b",
+        "text": "No, it can occur on any VM with GPUs regardless of platform, GPU count or image",
+        "correct": true,
+        "explanation": "Correct. The failure is not tied to a platform, so migrating on that basis would not remove it."
+      },
+      {
+        "id": "c",
+        "text": "Yes, but only for VMs built from custom disk images",
+        "correct": false,
+        "explanation": "The boot disk image is explicitly not a differentiator."
+      },
+      {
+        "id": "d",
+        "text": "No, because the failure only affects VMs inside GPU clusters",
+        "correct": false,
+        "explanation": "It is not confined to clustered VMs either."
+      }
+    ]
+  },
+  {
+    "id": "q-co564ab8cfb2",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "An intermittent VM fault has just cleared. Support asks for diagnostic logs. What is the best practice?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Collect them now that the system is stable, so the output is not distorted",
+        "correct": false,
+        "explanation": "A recovered system no longer holds the evidence that explains the fault."
+      },
+      {
+        "id": "b",
+        "text": "Collect only the logs that postdate the recovery, to avoid noise",
+        "correct": false,
+        "explanation": "Excluding the broken period discards precisely what the investigation needs."
+      },
+      {
+        "id": "c",
+        "text": "Collect logs while the issue is still occurring, because they capture more about the broken state",
+        "correct": true,
+        "explanation": "Correct. Logs taken during the fault carry more information than logs taken after it clears."
+      },
+      {
+        "id": "d",
+        "text": "Collect no logs and reproduce the fault in a fresh VM instead",
+        "correct": false,
+        "explanation": "Reproduction may be impossible for an intermittent fault, and log collection is the documented first step."
+      }
+    ]
+  },
+  {
+    "id": "q-co575c01880f",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/escalation-workflows",
+    "stem": "An engineer new to Logs asks how any LogQL query must begin. What is the answer?",
+    "options": [
+      {
+        "id": "a",
+        "text": "With an aggregation function that defines the range",
+        "correct": false,
+        "explanation": "Aggregations may appear later in a query, but they are not how one begins."
+      },
+      {
+        "id": "b",
+        "text": "With the time range, given before any label matching",
+        "correct": false,
+        "explanation": "The time range is supplied alongside the query rather than opening it."
+      },
+      {
+        "id": "c",
+        "text": "With the name of the service whose logs are wanted",
+        "correct": false,
+        "explanation": "Selection is done through labels in the stream selector, not by a bare service name."
+      },
+      {
+        "id": "d",
+        "text": "With a stream selector inside curly braces",
+        "correct": true,
+        "explanation": "Correct. Every LogQL query opens with a stream selector written in curly braces."
+      }
+    ]
+  },
+  {
+    "id": "q-co5875c6855b",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/escalation-workflows",
+    "stem": "A LogQL query is syntactically valid but returns nothing at all, and the stream selector omits `__bucket__`. What explains the empty result?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The query silently defaults to the `default` bucket, which is empty",
+        "correct": false,
+        "explanation": "No implicit default is applied; the label is genuinely required."
+      },
+      {
+        "id": "b",
+        "text": "Without the bucket label, queries return no entries",
+        "correct": true,
+        "explanation": "Correct. Omitting `__bucket__` (or `--bucket` in the CLI) yields no entries at all."
+      },
+      {
+        "id": "c",
+        "text": "The results were dropped because entries carried a non-empty `__error__` value",
+        "correct": false,
+        "explanation": "Error entries are ignored, but that is a separate limitation from omitting the bucket."
+      },
+      {
+        "id": "d",
+        "text": "The `step` value exceeded the `range` value, so no points were produced",
+        "correct": false,
+        "explanation": "That constraint governs aggregation intervals, not label selection."
+      }
+    ]
+  },
+  {
+    "id": "q-co59980cc53a",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/escalation-workflows",
+    "stem": "You need the serial logs of a Compute virtual machine to escalate a boot failure. Which bucket should the stream selector name?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`sp_serial`",
+        "correct": true,
+        "explanation": "Correct. That bucket holds serial logs for Compute virtual machines."
+      },
+      {
+        "id": "b",
+        "text": "`sp_mk8s_control_plane`",
+        "correct": false,
+        "explanation": "That bucket carries Managed Kubernetes control plane logs."
+      },
+      {
+        "id": "c",
+        "text": "`sp_cloudapps`",
+        "correct": false,
+        "explanation": "That bucket is for Standalone Applications."
+      },
+      {
+        "id": "d",
+        "text": "`default`",
+        "correct": false,
+        "explanation": "The default bucket holds user-ingested logs rather than platform serial logs."
+      }
+    ]
+  },
+  {
+    "id": "q-co60d070417e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/escalation-workflows",
+    "stem": "An aggregated LogQL query is rejected because its `step` and `range` values are inconsistent. What is the rule?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`step` and `range` must be equal for aggregation to work",
+        "correct": false,
+        "explanation": "Equality is not the requirement; one must be strictly smaller."
+      },
+      {
+        "id": "b",
+        "text": "`range` must be smaller than `step`",
+        "correct": false,
+        "explanation": "That inverts the relationship."
+      },
+      {
+        "id": "c",
+        "text": "Both must divide evenly into the query's total time window",
+        "correct": false,
+        "explanation": "No divisibility requirement is imposed."
+      },
+      {
+        "id": "d",
+        "text": "`step` must be smaller than `range`",
+        "correct": true,
+        "explanation": "Correct. The interval between points must be smaller than the interval aggregation covers."
+      }
+    ]
+  },
+  {
     "id": "q-cs01d4e5f6a7",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -1481,6 +2801,1326 @@
         "text": "r (rank)",
         "correct": true,
         "explanation": "The parameter r defines the rank dimension of decomposition matrices in LoRA adapters."
+      }
+    ]
+  },
+  {
+    "id": "q-ld217205c155",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A product lead asks whether choosing the Fast flavor of a model will change the answers users receive. What is the accurate response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, Fast trades some answer quality for lower latency",
+        "correct": false,
+        "explanation": "The flavors differ in pricing, latency and optimization level, not in the answers produced."
+      },
+      {
+        "id": "b",
+        "text": "No, both flavors deliver identical model outputs",
+        "correct": true,
+        "explanation": "Correct. The difference is in token pricing, latency and applied optimizations, not in what the model returns."
+      },
+      {
+        "id": "c",
+        "text": "Yes, Fast truncates long responses to keep latency down",
+        "correct": false,
+        "explanation": "Nothing about the flavor shortens responses."
+      },
+      {
+        "id": "d",
+        "text": "No, because Fast is only a billing label with no runtime difference",
+        "correct": false,
+        "explanation": "There is a real runtime difference: smaller batch sizes, more compute and techniques such as speculative decoding."
+      }
+    ]
+  },
+  {
+    "id": "q-ld2298670345",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "An engineering team wants to understand what actually makes the Fast flavor faster. Which description matches?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It routes requests to a geographically closer region",
+        "correct": false,
+        "explanation": "Region choice is a dedicated endpoint concern, not what defines this flavor."
+      },
+      {
+        "id": "b",
+        "text": "It reduces the model's parameter count to shorten computation",
+        "correct": false,
+        "explanation": "The model is unchanged; a smaller model would not deliver identical outputs."
+      },
+      {
+        "id": "c",
+        "text": "It uses smaller batch sizes, more compute, and techniques such as speculative decoding",
+        "correct": true,
+        "explanation": "Correct. Those are the levers the Fast flavor pulls to reduce latency and improve responsiveness."
+      },
+      {
+        "id": "d",
+        "text": "It caps the number of output tokens the model may generate",
+        "correct": false,
+        "explanation": "No output cap is part of the flavor."
+      }
+    ]
+  },
+  {
+    "id": "q-ld235c9164e4",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "How does speculative decoding raise throughput without degrading output quality?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An auxiliary model pre-generates likely tokens that the main model then verifies",
+        "correct": true,
+        "explanation": "Correct. Verification by the main model is what preserves quality while cutting the number of forward passes."
+      },
+      {
+        "id": "b",
+        "text": "Low-confidence tokens are dropped from the response before it is returned",
+        "correct": false,
+        "explanation": "Dropping tokens would change the output, which is exactly what this technique avoids."
+      },
+      {
+        "id": "c",
+        "text": "The prompt is truncated so fewer tokens need to be processed",
+        "correct": false,
+        "explanation": "Truncating input is not part of the technique and would change results."
+      },
+      {
+        "id": "d",
+        "text": "Several user requests are merged into a single forward pass",
+        "correct": false,
+        "explanation": "Batching multiple sequences together describes continuous batching instead."
+      }
+    ]
+  },
+  {
+    "id": "q-ld2443c1b29d",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A stakeholder asks which optimization reduces memory usage by lowering the numeric precision of the model itself. Which one is it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Paged Attention",
+        "correct": false,
+        "explanation": "That divides the input sequence into chunks processed separately, which is a memory layout change rather than a precision change."
+      },
+      {
+        "id": "b",
+        "text": "Continuous Batching",
+        "correct": false,
+        "explanation": "That groups multiple input sequences to raise throughput; precision is untouched."
+      },
+      {
+        "id": "c",
+        "text": "KV Cache",
+        "correct": false,
+        "explanation": "That stores frequently accessed key-value pairs to avoid recomputation."
+      },
+      {
+        "id": "d",
+        "text": "Quantization",
+        "correct": true,
+        "explanation": "Correct. It reduces the precision of model weights and activations, lowering memory use and computation."
+      }
+    ]
+  },
+  {
+    "id": "q-ld25f6d73083",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A team plans an application that must read screenshots and answer questions about them. Which model type do they need?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Embedding",
+        "correct": false,
+        "explanation": "Embedding models turn inputs into vectors for search and similarity, not into answers about an image."
+      },
+      {
+        "id": "b",
+        "text": "Vision",
+        "correct": true,
+        "explanation": "Correct. Vision is the supported modality for turning image input into text."
+      },
+      {
+        "id": "c",
+        "text": "Text-to-text",
+        "correct": false,
+        "explanation": "Text-to-text covers generative language tasks and does not accept image input."
+      },
+      {
+        "id": "d",
+        "text": "Any text-to-text model configured with a longer context window",
+        "correct": false,
+        "explanation": "Context length governs how much text fits, not whether images can be interpreted."
+      }
+    ]
+  },
+  {
+    "id": "q-ld26959cd0bd",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/model-selection",
+    "stem": "Comparing two candidate models on their cards in the UI, a team wants a published measure of answer quality. Which field carries it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Tokens per second, since faster models are better tuned",
+        "correct": false,
+        "explanation": "That is an approximate generation speed and says nothing about answer quality."
+      },
+      {
+        "id": "b",
+        "text": "Input tokens, since richer models cost more per token",
+        "correct": false,
+        "explanation": "That is a price in USD per million tokens, not a quality measure."
+      },
+      {
+        "id": "c",
+        "text": "Quality, which reports the MMLU score published by the model provider",
+        "correct": true,
+        "explanation": "Correct. The Quality field on the card is the provider-reported MMLU score."
+      },
+      {
+        "id": "d",
+        "text": "Output tokens, which reflects how much reasoning the model produces",
+        "correct": false,
+        "explanation": "That is the price of generated tokens, again a cost rather than a quality signal."
+      }
+    ]
+  },
+  {
+    "id": "q-ld278e02131d",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/model-selection",
+    "stem": "A finance stakeholder asks how per-token pricing is presented when comparing models in the UI. What should you tell them?",
+    "options": [
+      {
+        "id": "a",
+        "text": "As a monthly subscription per model",
+        "correct": false,
+        "explanation": "Pricing shown on the card is per token, not a recurring subscription."
+      },
+      {
+        "id": "b",
+        "text": "In USD per million tokens, separately for input and output",
+        "correct": true,
+        "explanation": "Correct. Input and output tokens are each priced in USD per million tokens."
+      },
+      {
+        "id": "c",
+        "text": "As a single blended rate covering both input and output",
+        "correct": false,
+        "explanation": "The two directions are listed separately, precisely because they differ."
+      },
+      {
+        "id": "d",
+        "text": "In USD per request, regardless of length",
+        "correct": false,
+        "explanation": "Charging is per token, so request length matters."
+      }
+    ]
+  },
+  {
+    "id": "q-ld28389db1f6",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/model-selection",
+    "stem": "A team starts a fine-tuning job and does not set `context_length`. What length applies?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The maximum the base model supports",
+        "correct": false,
+        "explanation": "The default is not the model's maximum; it must be raised deliberately."
+      },
+      {
+        "id": "b",
+        "text": "131072 tokens, the largest supported value",
+        "correct": false,
+        "explanation": "That is the top of the supported range, not the default."
+      },
+      {
+        "id": "c",
+        "text": "No default; the job fails until the value is supplied",
+        "correct": false,
+        "explanation": "The job does not require the hyperparameter, because a default applies."
+      },
+      {
+        "id": "d",
+        "text": "8192 tokens",
+        "correct": true,
+        "explanation": "Correct. Unless overridden by the hyperparameter, fine-tuning defaults to 8192 tokens."
+      }
+    ]
+  },
+  {
+    "id": "q-ld295930cb94",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/model-selection",
+    "stem": "When shortlisting a base model to fine-tune, which two properties does the supported-models reference let you compare?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Supported context lengths and available fine-tuning types",
+        "correct": true,
+        "explanation": "Correct. The page lists which context lengths a base model supports and whether LoRA, full fine-tuning, or both are available."
+      },
+      {
+        "id": "b",
+        "text": "Training data sources and benchmark leaderboards",
+        "correct": false,
+        "explanation": "Neither is what this reference enumerates."
+      },
+      {
+        "id": "c",
+        "text": "Guaranteed throughput and regional availability",
+        "correct": false,
+        "explanation": "Those concern serving capacity rather than fine-tuning support."
+      },
+      {
+        "id": "d",
+        "text": "Hourly GPU price and reserved capacity terms",
+        "correct": false,
+        "explanation": "Pricing and reservations are billing topics, not properties of a base model."
+      }
+    ]
+  },
+  {
+    "id": "q-ld303f1c1fce",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/model-selection",
+    "stem": "A team wants the full parameter list for every model programmatically, not just what the card shows. How do they get it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Open each model card and copy the values by hand",
+        "correct": false,
+        "explanation": "That is the manual path the API query parameter exists to replace."
+      },
+      {
+        "id": "b",
+        "text": "Request the List models endpoint with `verbose=true`",
+        "correct": true,
+        "explanation": "Correct. That query parameter returns the extended list of model parameters."
+      },
+      {
+        "id": "c",
+        "text": "Export the setup as code from the playground",
+        "correct": false,
+        "explanation": "Exporting code reproduces one chat setup, not the catalogue of model parameters."
+      },
+      {
+        "id": "d",
+        "text": "Enable comparison mode and read both panels",
+        "correct": false,
+        "explanation": "Comparison shows two setups side by side in the UI rather than returning data."
+      }
+    ]
+  },
+  {
+    "id": "q-ld31ea78838c",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "A developer asks how to send traffic to the Fast flavor of a model from their application. What is required?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set a flavor field in the request body",
+        "correct": false,
+        "explanation": "The flavor is selected through the model name rather than a separate field."
+      },
+      {
+        "id": "b",
+        "text": "Call a different base URL reserved for Fast endpoints",
+        "correct": false,
+        "explanation": "The endpoint stays the same; only the model name changes."
+      },
+      {
+        "id": "c",
+        "text": "Append `-fast` to the model name in the API",
+        "correct": true,
+        "explanation": "Correct. The suffix on the model name is what selects the Fast flavor."
+      },
+      {
+        "id": "d",
+        "text": "Request access from support before the flavor becomes callable",
+        "correct": false,
+        "explanation": "Both flavors are available without a request; one is chosen per call."
+      }
+    ]
+  },
+  {
+    "id": "q-ld3211bef699",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "Which factors determine the inference performance of an endpoint?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only the number of parameters in the chosen model",
+        "correct": false,
+        "explanation": "Model size matters, but the endpoint's configuration is what this list describes."
+      },
+      {
+        "id": "b",
+        "text": "Only the region the caller sends requests from",
+        "correct": false,
+        "explanation": "Region affects latency for a dedicated deployment but is not this set of factors."
+      },
+      {
+        "id": "c",
+        "text": "The length of the system prompt supplied by the application",
+        "correct": false,
+        "explanation": "Prompt length affects individual requests, not how the endpoint itself is configured."
+      },
+      {
+        "id": "d",
+        "text": "Batch size, GPU type, GPU count, and inference-time optimizations",
+        "correct": true,
+        "explanation": "Correct. Performance follows from how the endpoint balances these four."
+      }
+    ]
+  },
+  {
+    "id": "q-ld332ac50bc0",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "Which optimization works by splitting an input sequence into smaller chunks that are processed separately?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Paged Attention",
+        "correct": true,
+        "explanation": "Correct. Chunking the input this way reduces memory usage and computation."
+      },
+      {
+        "id": "b",
+        "text": "Context Caching",
+        "correct": false,
+        "explanation": "That stores the output of previous layers for each input sequence to avoid recomputation."
+      },
+      {
+        "id": "c",
+        "text": "Flash Attention",
+        "correct": false,
+        "explanation": "That is a modified attention mechanism that reduces the computations attention requires."
+      },
+      {
+        "id": "d",
+        "text": "Quantization",
+        "correct": false,
+        "explanation": "That lowers numeric precision rather than restructuring the sequence."
+      }
+    ]
+  },
+  {
+    "id": "q-ld3465e45f6f",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "An application repeatedly sends requests that share a long common prefix. Which optimization is described as storing the output of previous layers for each input sequence?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Continuous Batching",
+        "correct": false,
+        "explanation": "That batches multiple sequences together to reduce per-request overhead."
+      },
+      {
+        "id": "b",
+        "text": "Speculative decoding",
+        "correct": false,
+        "explanation": "That predicts likely next tokens with an auxiliary model and verifies them."
+      },
+      {
+        "id": "c",
+        "text": "Flash Attention",
+        "correct": false,
+        "explanation": "That reduces the computations needed for attention calculations."
+      },
+      {
+        "id": "d",
+        "text": "Context Caching",
+        "correct": true,
+        "explanation": "Correct. It caches the context — the output of previous layers — for each input sequence, cutting recomputation."
+      }
+    ]
+  },
+  {
+    "id": "q-ld35ee35be7d",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/product-outcomes",
+    "stem": "A non-technical product manager wants to try a model and shape its behaviour before any engineering work is scheduled. What should they use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A dedicated endpoint deployed with minimum replicas set to one",
+        "correct": false,
+        "explanation": "Deploying an endpoint is an infrastructure step and is not needed to try a model."
+      },
+      {
+        "id": "b",
+        "text": "The Playground, which requires no coding",
+        "correct": true,
+        "explanation": "Correct. It exists so a model can be exercised through a web interface without writing code."
+      },
+      {
+        "id": "c",
+        "text": "A fine-tuning job on a small sample of data",
+        "correct": false,
+        "explanation": "Fine-tuning changes the model and is far heavier than trying one out."
+      },
+      {
+        "id": "d",
+        "text": "The List models endpoint with `verbose=true`",
+        "correct": false,
+        "explanation": "That returns model parameters rather than letting someone interact with a model."
+      }
+    ]
+  },
+  {
+    "id": "q-ld368c2b3786",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/product-outcomes",
+    "stem": "In the Playground, which control is intended for the instructions that guide how the model behaves across a conversation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The system prompt, where few-shot examples can also be added",
+        "correct": true,
+        "explanation": "Correct. It holds behavioural instructions, and few-shot examples there demonstrate the desired output format."
+      },
+      {
+        "id": "b",
+        "text": "The prompt preset, which stores behaviour permanently for all users",
+        "correct": false,
+        "explanation": "A preset saves a setup for later use or sharing; it is not itself the instruction field."
+      },
+      {
+        "id": "c",
+        "text": "The View code panel, which fixes behaviour in the exported snippet",
+        "correct": false,
+        "explanation": "That exports the current setup for use in an application."
+      },
+      {
+        "id": "d",
+        "text": "The Compare view, which applies instructions to both chats at once",
+        "correct": false,
+        "explanation": "Compare runs two setups side by side; parameters and prompts are copied deliberately between them."
+      }
+    ]
+  },
+  {
+    "id": "q-ld372617b284",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/product-outcomes",
+    "stem": "A team is torn between two prompt-and-parameter configurations and wants a like-for-like trial. What does the Playground offer?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A batch evaluation that scores both against a labelled dataset",
+        "correct": false,
+        "explanation": "No scoring harness is described; the comparison is interactive."
+      },
+      {
+        "id": "b",
+        "text": "An automatic winner based on the MMLU score of each setup",
+        "correct": false,
+        "explanation": "MMLU is a provider-reported figure on the model card, not a verdict on two setups."
+      },
+      {
+        "id": "c",
+        "text": "Compare, which opens two chat windows fed the same input at once",
+        "correct": true,
+        "explanation": "Correct. Compare runs two setups side by side and can submit inputs to both simultaneously."
+      },
+      {
+        "id": "d",
+        "text": "A rolling deployment that shifts traffic between the two",
+        "correct": false,
+        "explanation": "Traffic shifting is a deployment concern, not a Playground feature."
+      }
+    ]
+  },
+  {
+    "id": "q-ld388171b0f1",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/workflow-design",
+    "stem": "An application must keep inference inside a particular jurisdiction. Which dedicated endpoint control addresses that?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Autoscaling, by keeping replicas within one pool",
+        "correct": false,
+        "explanation": "Autoscaling governs how capacity follows traffic, not where it runs."
+      },
+      {
+        "id": "b",
+        "text": "Region, which is chosen to meet data residency requirements",
+        "correct": true,
+        "explanation": "Correct. Region selection is what optimizes latency and satisfies data residency."
+      },
+      {
+        "id": "c",
+        "text": "GPU configuration, by selecting hardware sold in that market",
+        "correct": false,
+        "explanation": "GPU type and count are matched to performance needs rather than jurisdiction."
+      },
+      {
+        "id": "d",
+        "text": "Lifecycle management, by stopping the endpoint outside business hours",
+        "correct": false,
+        "explanation": "Stopping and starting a deployment does not constrain where it runs."
+      }
+    ]
+  },
+  {
+    "id": "q-ld39cd7b5510",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/workflow-design",
+    "stem": "How is a dedicated endpoint deployment managed versus how inference traffic reaches it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Both go through the control plane, with the data plane reserved for logs",
+        "correct": false,
+        "explanation": "Inference runs through the data plane, not the control plane."
+      },
+      {
+        "id": "b",
+        "text": "Both go through the data plane, with the control plane used only for billing",
+        "correct": false,
+        "explanation": "Creating and managing deployments is exactly what the control plane is for."
+      },
+      {
+        "id": "c",
+        "text": "The control plane creates and manages deployments; the data plane serves inference over OpenAI-compatible APIs",
+        "correct": true,
+        "explanation": "Correct. That split is what the overview describes."
+      },
+      {
+        "id": "d",
+        "text": "Deployments are managed through the Playground, and traffic through the control plane",
+        "correct": false,
+        "explanation": "The Playground is for experimenting with models, not for managing deployments."
+      }
+    ]
+  },
+  {
+    "id": "q-ld403e852cea",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/workflow-design",
+    "stem": "A workload's traffic varies sharply between business hours and overnight. Which dedicated endpoint control is designed for that?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Region, by placing the deployment near the daytime user base",
+        "correct": false,
+        "explanation": "Region placement addresses latency and residency, not fluctuating demand."
+      },
+      {
+        "id": "b",
+        "text": "Lifecycle management, by deleting and recreating the deployment daily",
+        "correct": false,
+        "explanation": "Lifecycle operations exist, but they are not the mechanism for tracking traffic automatically."
+      },
+      {
+        "id": "c",
+        "text": "GPU configuration, by choosing a GPU type that idles cheaply",
+        "correct": false,
+        "explanation": "GPU selection sets performance per replica rather than adjusting capacity over time."
+      },
+      {
+        "id": "d",
+        "text": "Autoscaling, by setting minimum and maximum replicas",
+        "correct": true,
+        "explanation": "Correct. Minimum and maximum replicas let capacity scale with traffic automatically."
+      }
+    ]
+  },
+  {
+    "id": "q-ld4146dd5675",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/product-outcomes",
+    "stem": "After settling on a prompt and parameters in the Playground, a team wants the same setup available to colleagues later. What does the tool provide?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Saving the setup as a prompt preset for later use or sharing",
+        "correct": true,
+        "explanation": "Correct. A preset stores the configuration so it can be reused or shared."
+      },
+      {
+        "id": "b",
+        "text": "Publishing the setup as a dedicated endpoint",
+        "correct": false,
+        "explanation": "Deploying an endpoint is an infrastructure action, not how a Playground setup is retained."
+      },
+      {
+        "id": "c",
+        "text": "Committing the setup to the model card",
+        "correct": false,
+        "explanation": "Model cards report the model's own parameters and pricing; they are not per-team storage."
+      },
+      {
+        "id": "d",
+        "text": "Nothing; the setup must be rebuilt each session",
+        "correct": false,
+        "explanation": "Setups can be both exported as code and saved as presets."
+      }
+    ]
+  },
+  {
+    "id": "q-ld42b692341b",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/product-outcomes",
+    "stem": "A developer has finished tuning a chat setup in the Playground and needs it inside their application. What is the intended path?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Re-enter the parameters by hand in the application code",
+        "correct": false,
+        "explanation": "Manual transcription is what the export feature exists to avoid."
+      },
+      {
+        "id": "b",
+        "text": "Export it as code with View code, which includes the chat",
+        "correct": true,
+        "explanation": "Correct. View code copies the model setup, chat included, for use in an application."
+      },
+      {
+        "id": "c",
+        "text": "Grant the application access to the saved preset at runtime",
+        "correct": false,
+        "explanation": "Presets store a setup for people to reuse in the UI, not as a runtime API."
+      },
+      {
+        "id": "d",
+        "text": "Fine-tune a model so the behaviour is baked into the weights",
+        "correct": false,
+        "explanation": "Fine-tuning is a far heavier step and is not how a prompt setup moves into code."
+      }
+    ]
+  },
+  {
+    "id": "q-ld43c53921d4",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/workflow-design",
+    "stem": "Leadership asks what dedicated endpoints give the business that shared inference does not. Which pair of use cases is documented?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Free trial capacity and unlimited request rates",
+        "correct": false,
+        "explanation": "Neither is offered; trial credit and rate limits are separate topics with their own rules."
+      },
+      {
+        "id": "b",
+        "text": "Automatic prompt optimization and managed evaluation",
+        "correct": false,
+        "explanation": "No such capabilities are attributed to dedicated endpoints."
+      },
+      {
+        "id": "c",
+        "text": "Zero-cost idling and permanent GPU reservation",
+        "correct": false,
+        "explanation": "Capacity is released when an endpoint stops, and billing follows running replicas."
+      },
+      {
+        "id": "d",
+        "text": "Predictable capacity and serving a finetuned base model with custom weights",
+        "correct": true,
+        "explanation": "Correct. Those are the documented key use cases for dedicated endpoints."
+      }
+    ]
+  },
+  {
+    "id": "q-ld448ca61125",
+    "course_id": "ai-leader",
+    "domain": "domain-2",
+    "objective": "domain-2/workflow-design",
+    "stem": "An architect asks how much control a dedicated endpoint gives over the hardware behind a deployment. What is accurate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "GPU type and the number of GPUs per replica are both selectable",
+        "correct": true,
+        "explanation": "Correct. Both are chosen to match the deployment's performance and throughput needs."
+      },
+      {
+        "id": "b",
+        "text": "Only the total number of replicas can be chosen; hardware is assigned",
+        "correct": false,
+        "explanation": "GPU type and GPUs per replica are explicitly under the customer's control."
+      },
+      {
+        "id": "c",
+        "text": "Hardware is fixed per region and cannot be influenced",
+        "correct": false,
+        "explanation": "Region is a separate control from GPU configuration."
+      },
+      {
+        "id": "d",
+        "text": "GPU type is selectable only under an enterprise contract",
+        "correct": false,
+        "explanation": "Selecting GPU type is part of configuring a dedicated endpoint."
+      }
+    ]
+  },
+  {
+    "id": "q-ld458c2b9572",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/structured-output",
+    "stem": "A downstream service needs the model's answer in a fixed shape it can parse. What does the platform provide by default, and what must change?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Output is JSON by default; a parameter switches it to prose",
+        "correct": false,
+        "explanation": "The default is natural language, not JSON."
+      },
+      {
+        "id": "b",
+        "text": "Output is natural language by default; `response_format` forces JSON",
+        "correct": true,
+        "explanation": "Correct. Text is the default, and the parameter is what makes the response machine-readable."
+      },
+      {
+        "id": "c",
+        "text": "Output shape is set per model and cannot be changed per request",
+        "correct": false,
+        "explanation": "The shape is chosen per request through the parameter."
+      },
+      {
+        "id": "d",
+        "text": "Output must be reshaped by a second model after generation",
+        "correct": false,
+        "explanation": "A second pass is unnecessary when the format can be requested directly."
+      }
+    ]
+  },
+  {
+    "id": "q-ld4664d9a3a6",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/structured-output",
+    "stem": "A team sets `response_format` to `{\"type\": \"json_object\"}` and is surprised the field names vary between calls. Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The setting only applies to the first message in a conversation",
+        "correct": false,
+        "explanation": "Nothing limits the parameter to the opening message."
+      },
+      {
+        "id": "b",
+        "text": "Field names always vary unless the temperature is set to zero",
+        "correct": false,
+        "explanation": "Sampling settings do not determine whether a schema is enforced."
+      },
+      {
+        "id": "c",
+        "text": "That setting forces arbitrary JSON and lets the model decide the schema",
+        "correct": true,
+        "explanation": "Correct. `json_object` guarantees JSON but not any particular shape; the model chooses it."
+      },
+      {
+        "id": "d",
+        "text": "The setting was ignored because a schema was not also supplied",
+        "correct": false,
+        "explanation": "It is not ignored; it produces valid JSON of the model's own design."
+      }
+    ]
+  },
+  {
+    "id": "q-ld47ff8016a6",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/structured-output",
+    "stem": "Which `response_format` setting should be used when the response must conform to a schema the application supplies?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`{\"type\": \"json_object\"}`, with the schema described in the system prompt",
+        "correct": false,
+        "explanation": "That yields arbitrary JSON; a prompt alone does not bind the response to the schema."
+      },
+      {
+        "id": "b",
+        "text": "`{\"type\": \"text\"}`, with a post-processing validation step",
+        "correct": false,
+        "explanation": "That returns natural language and pushes all the work downstream."
+      },
+      {
+        "id": "c",
+        "text": "No setting is needed; schemas are inferred from the request body",
+        "correct": false,
+        "explanation": "Nothing infers a schema automatically."
+      },
+      {
+        "id": "d",
+        "text": "`{\"type\": \"json_schema\"}`, supplying the schema in the request",
+        "correct": true,
+        "explanation": "Correct. That is the setting that makes the response follow a schema you provide."
+      }
+    ]
+  },
+  {
+    "id": "q-ld48bb71c2de",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/structured-output",
+    "stem": "A team already passes a JSON schema in the request. What additional practice does the documentation recommend?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Also describe the schema in the text prompt given to the model",
+        "correct": true,
+        "explanation": "Correct. Practical testing showed it is always better to supply the schema in both places."
+      },
+      {
+        "id": "b",
+        "text": "Send the schema only in the prompt and drop the parameter",
+        "correct": false,
+        "explanation": "Dropping the parameter would remove the mechanism that enforces the shape."
+      },
+      {
+        "id": "c",
+        "text": "Split the schema across several requests to stay within limits",
+        "correct": false,
+        "explanation": "No such splitting is suggested."
+      },
+      {
+        "id": "d",
+        "text": "Validate the schema by first requesting an arbitrary JSON object",
+        "correct": false,
+        "explanation": "A preliminary arbitrary-JSON call is not part of the recommendation."
+      }
+    ]
+  },
+  {
+    "id": "q-ld49a9908b5d",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/tool-use",
+    "stem": "A model returns a tool call for a function your application defined. Who runs the function?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The inference platform, which proxies the call to the named service",
+        "correct": false,
+        "explanation": "The platform emits instructions; it does not reach out to external services on your behalf."
+      },
+      {
+        "id": "b",
+        "text": "Your application, which executes it and feeds the result back",
+        "correct": true,
+        "explanation": "Correct. The model does not execute functions; parsing the output and running the code is your responsibility."
+      },
+      {
+        "id": "c",
+        "text": "The model, once the tool schema has been registered",
+        "correct": false,
+        "explanation": "Registering a schema tells the model how a tool is invoked, not that the model runs it."
+      },
+      {
+        "id": "d",
+        "text": "Whichever MCP server is connected to the conversation",
+        "correct": false,
+        "explanation": "MCP servers are one thing tools can reach, but execution is still driven by your code."
+      }
+    ]
+  },
+  {
+    "id": "q-ld5098b0009c",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/tool-use",
+    "stem": "How is each available tool described to the model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "As a natural-language sentence in the system prompt",
+        "correct": false,
+        "explanation": "Prompt text can add guidance, but tools are declared structurally."
+      },
+      {
+        "id": "b",
+        "text": "As an example request and response pair",
+        "correct": false,
+        "explanation": "Examples may help behaviour, but they are not the tool definition."
+      },
+      {
+        "id": "c",
+        "text": "As a JSON Schema giving its name, input parameters and data types",
+        "correct": true,
+        "explanation": "Correct. That schema is what tells the model how the tool should be invoked."
+      },
+      {
+        "id": "d",
+        "text": "As a URL the model calls directly when needed",
+        "correct": false,
+        "explanation": "The model proposes calls rather than invoking endpoints itself."
+      }
+    ]
+  },
+  {
+    "id": "q-ld5108ea0df2",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/tool-use",
+    "stem": "A product manager asks what function calling makes possible that a bare text model cannot do. Which capability is documented?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Retrieving real-time data through external code or services",
+        "correct": true,
+        "explanation": "Correct. Reaching live data and third-party services is exactly what tool integration enables."
+      },
+      {
+        "id": "b",
+        "text": "Increasing the model's context window beyond its published limit",
+        "correct": false,
+        "explanation": "Context length is a property of the model, unchanged by tool use."
+      },
+      {
+        "id": "c",
+        "text": "Guaranteeing the response is valid JSON",
+        "correct": false,
+        "explanation": "That is what structured output settings are for."
+      },
+      {
+        "id": "d",
+        "text": "Removing per-token charges for tool responses",
+        "correct": false,
+        "explanation": "Tool use does not alter how tokens are billed."
+      }
+    ]
+  },
+  {
+    "id": "q-ld52897530eb",
+    "course_id": "ai-leader",
+    "domain": "domain-3",
+    "objective": "domain-3/tool-use",
+    "stem": "Given a user query and a set of available tools, what are the model's two documented options?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Execute a tool, or escalate the request to a human reviewer",
+        "correct": false,
+        "explanation": "The model never executes tools, and no human escalation path is described."
+      },
+      {
+        "id": "b",
+        "text": "Respond conversationally, or propose a function call with filled-in arguments",
+        "correct": true,
+        "explanation": "Correct. It analyses intent and either answers directly or suggests a call matching the schema."
+      },
+      {
+        "id": "c",
+        "text": "Return JSON, or return natural language, depending on the tool schema",
+        "correct": false,
+        "explanation": "Output format is governed by response_format, not by tool availability."
+      },
+      {
+        "id": "d",
+        "text": "Call every registered tool, then summarize the combined results",
+        "correct": false,
+        "explanation": "Tools are selected by relevance rather than invoked exhaustively."
+      }
+    ]
+  },
+  {
+    "id": "q-ld537a96b931",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/platform-capabilities",
+    "stem": "A team stops a dedicated endpoint overnight to save money and expects the same GPUs back in the morning. What actually happens?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The GPUs are held for the endpoint and reattached on start",
+        "correct": false,
+        "explanation": "Nothing holds the previous GPUs; there is no such mechanism."
+      },
+      {
+        "id": "b",
+        "text": "The GPUs are held only if the endpoint was stopped manually",
+        "correct": false,
+        "explanation": "The release happens regardless of why the endpoint stopped."
+      },
+      {
+        "id": "c",
+        "text": "Capacity returns to a shared pool and is requested anew on start",
+        "correct": true,
+        "explanation": "Correct. Capacity is allocated only while the endpoint runs, and a restart re-requests it subject to availability."
+      },
+      {
+        "id": "d",
+        "text": "The endpoint keeps its minimum replicas reserved while stopped",
+        "correct": false,
+        "explanation": "The minimum replicas guarantee applies only while the endpoint is running."
+      }
+    ]
+  },
+  {
+    "id": "q-ld549f772575",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/platform-capabilities",
+    "stem": "A business continuity plan assumes a dedicated endpoint will return to full capacity immediately after a maintenance window. What risk should you flag?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Restarting may take longer than the first deployment when capacity is scarce",
+        "correct": true,
+        "explanation": "Correct. Under high demand or for scarce GPU types, capacity may be temporarily unavailable and the restart can take significantly longer."
+      },
+      {
+        "id": "b",
+        "text": "The endpoint's model weights must be uploaded again after maintenance",
+        "correct": false,
+        "explanation": "Nothing indicates weights are lost across a maintenance event."
+      },
+      {
+        "id": "c",
+        "text": "The endpoint is deleted automatically if maintenance exceeds an hour",
+        "correct": false,
+        "explanation": "Maintenance does not delete deployments."
+      },
+      {
+        "id": "d",
+        "text": "Billing continues at full rate while the endpoint waits for capacity",
+        "correct": false,
+        "explanation": "Charges apply when replicas are running, so a stopped endpoint is not billed at full rate."
+      }
+    ]
+  },
+  {
+    "id": "q-ld55363f7872",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/platform-capabilities",
+    "stem": "An operations dashboard shows a dedicated endpoint as Updating. What does that indicate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The endpoint is being created for the first time",
+        "correct": false,
+        "explanation": "That is the Starting stage."
+      },
+      {
+        "id": "b",
+        "text": "The endpoint has failed and is retrying deployment",
+        "correct": false,
+        "explanation": "Updating describes configuration being applied, not a failure state."
+      },
+      {
+        "id": "c",
+        "text": "The endpoint is applying configuration changes and capacity may degrade",
+        "correct": true,
+        "explanation": "Correct. Traffic may continue during an update while capacity temporarily degrades."
+      },
+      {
+        "id": "d",
+        "text": "The endpoint's model is being replaced with a newer published version",
+        "correct": false,
+        "explanation": "Nothing swaps the model automatically under this status."
+      }
+    ]
+  },
+  {
+    "id": "q-ld56c5356b61",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/platform-capabilities",
+    "stem": "Why do dedicated endpoints report two separate status types rather than one?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To distinguish billing state from technical state",
+        "correct": false,
+        "explanation": "Billing follows running replicas and is not one of the two status types."
+      },
+      {
+        "id": "b",
+        "text": "To separate deployment progress from whether traffic can be served",
+        "correct": true,
+        "explanation": "Correct. Lifecycle describes the stage, readiness describes current ability to serve."
+      },
+      {
+        "id": "c",
+        "text": "To report the control plane and the data plane independently",
+        "correct": false,
+        "explanation": "The planes describe how the endpoint is managed and used, not these statuses."
+      },
+      {
+        "id": "d",
+        "text": "To track the minimum and maximum replica counts separately",
+        "correct": false,
+        "explanation": "Replica bounds are autoscaling settings rather than statuses."
+      }
+    ]
+  },
+  {
+    "id": "q-ld5748e509af",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/cost-and-billing",
+    "stem": "A finance lead asks when a dedicated endpoint incurs charges. What is the rule?",
+    "options": [
+      {
+        "id": "a",
+        "text": "From creation until deletion, regardless of replica count",
+        "correct": false,
+        "explanation": "Charges track running replicas, not the mere existence of the endpoint."
+      },
+      {
+        "id": "b",
+        "text": "Only while traffic is actively being served",
+        "correct": false,
+        "explanation": "A running replica is billable whether or not requests are arriving."
+      },
+      {
+        "id": "c",
+        "text": "Whenever at least one replica is running",
+        "correct": true,
+        "explanation": "Correct. One or more running replicas makes the endpoint active, accessible and billable."
+      },
+      {
+        "id": "d",
+        "text": "Monthly in advance, based on the maximum replica setting",
+        "correct": false,
+        "explanation": "Billing follows actual running replicas rather than a pre-purchased maximum."
+      }
+    ]
+  },
+  {
+    "id": "q-ld583078adf3",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/cost-and-billing",
+    "stem": "An endpoint has been scaled to zero replicas. What is the billing and availability position?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It remains billable so its capacity stays reserved",
+        "correct": false,
+        "explanation": "Capacity is not retained once released, and charges do not apply."
+      },
+      {
+        "id": "b",
+        "text": "It is not accessible and no charges apply",
+        "correct": true,
+        "explanation": "Correct. With zero replicas running, the endpoint serves nothing and is not billed."
+      },
+      {
+        "id": "c",
+        "text": "It is still accessible, served from a shared pool at a reduced rate",
+        "correct": false,
+        "explanation": "There is no reduced-rate shared serving mode for a scaled-to-zero endpoint."
+      },
+      {
+        "id": "d",
+        "text": "It is billed at the minimum replica rate regardless",
+        "correct": false,
+        "explanation": "Minimum replicas are allocated only while the endpoint is active."
+      }
+    ]
+  },
+  {
+    "id": "q-ld597b79ce73",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/cost-and-billing",
+    "stem": "What happens to an account when an automatic card charge fails?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The account is suspended",
+        "correct": true,
+        "explanation": "Correct. A failed charge suspends the account, which is why the payment method must stay valid."
+      },
+      {
+        "id": "b",
+        "text": "Requests continue but are throttled to the free tier",
+        "correct": false,
+        "explanation": "No free-tier fallback is described."
+      },
+      {
+        "id": "c",
+        "text": "The balance is carried to the next month with a fee",
+        "correct": false,
+        "explanation": "Nothing describes deferring the balance in this way."
+      },
+      {
+        "id": "d",
+        "text": "Dedicated endpoints keep running while shared inference stops",
+        "correct": false,
+        "explanation": "The consequence applies to the account rather than to one product."
+      }
+    ]
+  },
+  {
+    "id": "q-ld6022d95b1b",
+    "course_id": "ai-leader",
+    "domain": "domain-4",
+    "objective": "domain-4/cost-and-billing",
+    "stem": "Under which conditions is a bank card charged automatically?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only when the customer manually tops up the balance",
+        "correct": false,
+        "explanation": "A manual top-up is an alternative to automatic charging, not a trigger for it."
+      },
+      {
+        "id": "b",
+        "text": "Only at the end of a billing period, in arrears",
+        "correct": false,
+        "explanation": "The balance is debited in real time, with charges triggered by the conditions below."
+      },
+      {
+        "id": "c",
+        "text": "At the start of the month if the balance is negative, or when the billing threshold is reached",
+        "correct": true,
+        "explanation": "Correct. Those are the two documented triggers, each charging enough to bring the balance back to zero."
+      },
+      {
+        "id": "d",
+        "text": "Whenever any request is made against a paid model",
+        "correct": false,
+        "explanation": "Charging is not per request; the balance is debited and settled on those triggers."
       }
     ]
   },

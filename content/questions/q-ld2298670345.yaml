@@ -1,34 +1,40 @@
 schema_version: 1
 id: q-ld2298670345
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
-stem: An engineering team wants to understand what actually makes the Fast flavor faster.
-  Which description matches?
+stem: An engineering team wants to understand what actually makes the Fast
+  flavor faster. Which description matches?
 options:
   - id: a
     text: It routes requests to a geographically closer region
     correct: false
-    explanation: Region choice is a dedicated endpoint concern, not what defines this flavor.
+    explanation: Region choice is a dedicated endpoint concern, not what defines
+      this flavor.
   - id: b
     text: It reduces the model's parameter count to shorten computation
     correct: false
-    explanation: The model is unchanged; a smaller model would not deliver identical outputs.
+    explanation: The model is unchanged; a smaller model would not deliver identical
+      outputs.
   - id: c
-    text: It uses smaller batch sizes, more compute, and techniques such as speculative decoding
+    text: It uses smaller batch sizes, more compute, and techniques such as
+      speculative decoding
     correct: true
-    explanation: Correct. Those are the levers the Fast flavor pulls to reduce latency and
-      improve responsiveness.
+    explanation: Correct. Those are the levers the Fast flavor pulls to reduce
+      latency and improve responsiveness.
   - id: d
     text: It caps the number of output tokens the model may generate
     correct: false
     explanation: No output cap is part of the flavor.
 evidence:
   - source_id: src-inference-overview
-    excerpt: The Fast flavor uses smaller batch sizes, increased compute allocation, and techniques
-      such as speculative decoding to reduce latency
+    excerpt: The Fast flavor uses smaller batch sizes, increased compute allocation,
+      and techniques such as speculative decoding to reduce latency
     source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

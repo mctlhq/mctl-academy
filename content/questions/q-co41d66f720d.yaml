@@ -1,36 +1,41 @@
 schema_version: 1
 id: q-co41d66f720d
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/security-policies
-stem: An engineer with the `editor` role is asked to set up a federation so staff can sign
-  in through the company IdP. What blocks them?
+stem: An engineer with the `editor` role is asked to set up a federation so
+  staff can sign in through the company IdP. What blocks them?
 options:
   - id: a
-    text: Federations can only be created by the account that first signed up for the tenant
+    text: Federations can only be created by the account that first signed up for
+      the tenant
     correct: false
-    explanation: Access is governed by group membership rather than by who originally created
-      the tenant.
+    explanation: Access is governed by group membership rather than by who
+      originally created the tenant.
   - id: b
-    text: Managing federations requires the `admin` role, which `editor` does not confer
+    text: Managing federations requires the `admin` role, which `editor` does not
+      confer
     correct: true
-    explanation: Correct. The task requires being in a group holding the admin role at tenant
-      or project scope.
+    explanation: Correct. The task requires being in a group holding the admin role
+      at tenant or project scope.
   - id: c
     text: Nothing blocks them; `editor` covers all identity configuration
     correct: false
-    explanation: The editor role manages most resource types, but identity federation is reserved
-      for admins.
+    explanation: The editor role manages most resource types, but identity
+      federation is reserved for admins.
   - id: d
     text: They must first be removed from every other group in the tenant
     correct: false
     explanation: Group membership is additive; nothing requires stripping other memberships.
 evidence:
   - source_id: src-co-iam-federations
-    excerpt: that has the `admin` role within your tenant or project; for example, the default
-      `admins` group.
+    excerpt: that has the `admin` role within your tenant or project; for example,
+      the default `admins` group.
     source_sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,21 +1,21 @@
 schema_version: 1
 id: q-co546c4c3ecd
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
-stem: You have confirmed a CUDA initialization failure on a GPU VM. What is the documented
-  range of remedies?
+stem: You have confirmed a CUDA initialization failure on a GPU VM. What is the
+  documented range of remedies?
 options:
   - id: a
     text: Restart the NVIDIA Fabric Manager service, the GPUs, or the entire VM
     correct: true
-    explanation: Correct. These are the three documented remedies, in increasing order of
-      disruption.
+    explanation: Correct. These are the three documented remedies, in increasing
+      order of disruption.
   - id: b
     text: Recreate the VM from a different boot disk image
     correct: false
-    explanation: The failure is not attributed to the image, and rebuilding is not the documented
-      fix.
+    explanation: The failure is not attributed to the image, and rebuilding is not
+      the documented fix.
   - id: c
     text: Detach and reattach the local SSD disks holding the workload data
     correct: false
@@ -23,14 +23,17 @@ options:
   - id: d
     text: Move the VM into a different InfiniBand fabric
     correct: false
-    explanation: Fabric choice concerns cluster networking and cannot be changed for an existing
-      resource anyway.
+    explanation: Fabric choice concerns cluster networking and cannot be changed for
+      an existing resource anyway.
 evidence:
   - source_id: src-co-cuda-init-error
-    excerpt: You can resolve this issue by restarting the NVIDIA Fabric Manager service, the
-      GPUs on the VM or the entire VM.
+    excerpt: You can resolve this issue by restarting the NVIDIA Fabric Manager
+      service, the GPUs on the VM or the entire VM.
     source_sha256: a7d4ef62cd37c7779687f9dfb6608166c0303249d0113e95fd1297affd311b2e
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

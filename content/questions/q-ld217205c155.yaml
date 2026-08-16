@@ -1,21 +1,21 @@
 schema_version: 1
 id: q-ld217205c155
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
-stem: A product lead asks whether choosing the Fast flavor of a model will change the answers
-  users receive. What is the accurate response?
+stem: A product lead asks whether choosing the Fast flavor of a model will
+  change the answers users receive. What is the accurate response?
 options:
   - id: a
     text: Yes, Fast trades some answer quality for lower latency
     correct: false
-    explanation: The flavors differ in pricing, latency and optimization level, not in the
-      answers produced.
+    explanation: The flavors differ in pricing, latency and optimization level, not
+      in the answers produced.
   - id: b
     text: No, both flavors deliver identical model outputs
     correct: true
-    explanation: Correct. The difference is in token pricing, latency and applied optimizations,
-      not in what the model returns.
+    explanation: Correct. The difference is in token pricing, latency and applied
+      optimizations, not in what the model returns.
   - id: c
     text: Yes, Fast truncates long responses to keep latency down
     correct: false
@@ -23,14 +23,17 @@ options:
   - id: d
     text: No, because Fast is only a billing label with no runtime difference
     correct: false
-    explanation: 'There is a real runtime difference: smaller batch sizes, more compute and
-      techniques such as speculative decoding.'
+    explanation: 'There is a real runtime difference: smaller batch sizes, more
+      compute and techniques such as speculative decoding.'
 evidence:
   - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing, latency,
-      and the level of applied optimizations.
+    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
+      latency, and the level of applied optimizations.
     source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

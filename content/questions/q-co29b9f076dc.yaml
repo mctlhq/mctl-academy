@@ -1,36 +1,39 @@
 schema_version: 1
 id: q-co29b9f076dc
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/storage-volumes
-stem: A workload writes intermediate shards to a local SSD disk. The VM is stopped overnight
-  to save cost. What happens to that data?
+stem: A workload writes intermediate shards to a local SSD disk. The VM is
+  stopped overnight to save cost. What happens to that data?
 options:
   - id: a
     text: It is erased, because local SSD disks are ephemeral
     correct: true
-    explanation: Correct. Local SSD data is erased when the VM is stopped or deleted, which
-      is why it suits only recreatable data.
+    explanation: Correct. Local SSD data is erased when the VM is stopped or
+      deleted, which is why it suits only recreatable data.
   - id: b
     text: It is preserved, because the disk is physically attached to the host
     correct: false
-    explanation: Physical attachment is what makes the storage fast and host-local; it does
-      not make it durable across a stop.
+    explanation: Physical attachment is what makes the storage fast and host-local;
+      it does not make it durable across a stop.
   - id: c
     text: It is preserved only if the disk was created from a disk snapshot
     correct: false
-    explanation: Local SSD disks are not created as separate managed resources from images
-      or snapshots.
+    explanation: Local SSD disks are not created as separate managed resources from
+      images or snapshots.
   - id: d
     text: It is migrated automatically to a network SSD disk on shutdown
     correct: false
     explanation: No such migration happens; nothing moves the data off the host.
 evidence:
   - source_id: src-co-storage-types
-    excerpt: 'Local SSD disks are ephemeral, meaning temporary: their data is erased when
-      the VM is stopped or deleted.'
+    excerpt: 'Local SSD disks are ephemeral, meaning temporary: their data is erased
+      when the VM is stopped or deleted.'
     source_sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

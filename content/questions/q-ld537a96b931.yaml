@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-ld537a96b931
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
-stem: A team stops a dedicated endpoint overnight to save money and expects the same GPUs
-  back in the morning. What actually happens?
+stem: A team stops a dedicated endpoint overnight to save money and expects the
+  same GPUs back in the morning. What actually happens?
 options:
   - id: a
     text: The GPUs are held for the endpoint and reattached on start
@@ -17,17 +17,21 @@ options:
   - id: c
     text: Capacity returns to a shared pool and is requested anew on start
     correct: true
-    explanation: Correct. Capacity is allocated only while the endpoint runs, and a restart
-      re-requests it subject to availability.
+    explanation: Correct. Capacity is allocated only while the endpoint runs, and a
+      restart re-requests it subject to availability.
   - id: d
     text: The endpoint keeps its minimum replicas reserved while stopped
     correct: false
     explanation: The minimum replicas guarantee applies only while the endpoint is running.
 evidence:
   - source_id: src-ld-capacity-and-scaling
-    excerpt: When an endpoint stops, its GPU capacity is released back to the shared pool.
+    excerpt: When an endpoint stops, its GPU capacity is released back to the shared
+      pool.
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

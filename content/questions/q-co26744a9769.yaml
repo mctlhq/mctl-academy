@@ -1,37 +1,42 @@
 schema_version: 1
 id: q-co26744a9769
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/network-vpc
-stem: A team wants two test environments that use identical private IP addressing and must
-  not be able to reach each other. What arrangement achieves this?
+stem: A team wants two test environments that use identical private IP
+  addressing and must not be able to reach each other. What arrangement achieves
+  this?
 options:
   - id: a
     text: Put both in one network and rely on distinct subnet CIDR ranges
     correct: false
-    explanation: One network gives direct private connectivity between resources, and duplicate
-      addressing is not possible within it.
+    explanation: One network gives direct private connectivity between resources,
+      and duplicate addressing is not possible within it.
   - id: b
     text: Put both in one network and deny all traffic with security rules
     correct: false
-    explanation: Rules could block traffic, but they cannot let the same private IP address
-      be assigned to resources in both environments.
+    explanation: Rules could block traffic, but they cannot let the same private IP
+      address be assigned to resources in both environments.
   - id: c
     text: Create a separate network for each environment
     correct: true
-    explanation: Correct. Separate networks are the documented answer both for disabling connectivity
-      and for reusing the same private addresses.
+    explanation: Correct. Separate networks are the documented answer both for
+      disabling connectivity and for reusing the same private addresses.
   - id: d
-    text: Create one network per region and place the environments in different regions
+    text: Create one network per region and place the environments in different
+      regions
     correct: false
-    explanation: Region placement is not what governs private connectivity or address reuse
-      here.
+    explanation: Region placement is not what governs private connectivity or
+      address reuse here.
 evidence:
   - source_id: src-co-vpc-isolation
-    excerpt: If you want to disable connectivity between resources or allocate the same private
-      IP address to multiple different resources
+    excerpt: If you want to disable connectivity between resources or allocate the
+      same private IP address to multiple different resources
     source_sha256: 300245e387a72a3aac25eb26e8bdd047169342c42829f5bded0b5f4de9ad617b
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

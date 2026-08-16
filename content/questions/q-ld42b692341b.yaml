@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-ld42b692341b
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/product-outcomes
-stem: A developer has finished tuning a chat setup in the Playground and needs it inside their
-  application. What is the intended path?
+stem: A developer has finished tuning a chat setup in the Playground and needs
+  it inside their application. What is the intended path?
 options:
   - id: a
     text: Re-enter the parameters by hand in the application code
@@ -13,7 +13,8 @@ options:
   - id: b
     text: Export it as code with View code, which includes the chat
     correct: true
-    explanation: Correct. View code copies the model setup, chat included, for use in an application.
+    explanation: Correct. View code copies the model setup, chat included, for use
+      in an application.
   - id: c
     text: Grant the application access to the saved preset at runtime
     correct: false
@@ -21,14 +22,17 @@ options:
   - id: d
     text: Fine-tune a model so the behaviour is baked into the weights
     correct: false
-    explanation: Fine-tuning is a far heavier step and is not how a prompt setup moves into
-      code.
+    explanation: Fine-tuning is a far heavier step and is not how a prompt setup
+      moves into code.
 evidence:
   - source_id: src-ld-playground
-    excerpt: '**Export as code** — Click **View code** in the left panel to copy your model
-      setup (including the chat) for use in your application.'
+    excerpt: '**Export as code** — Click **View code** in the left panel to copy
+      your model setup (including the chat) for use in your application.'
     source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

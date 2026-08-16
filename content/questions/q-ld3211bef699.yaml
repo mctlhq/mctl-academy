@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld3211bef699
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
 stem: Which factors determine the inference performance of an endpoint?
@@ -8,26 +8,31 @@ options:
   - id: a
     text: Only the number of parameters in the chosen model
     correct: false
-    explanation: Model size matters, but the endpoint's configuration is what this list describes.
+    explanation: Model size matters, but the endpoint's configuration is what this
+      list describes.
   - id: b
     text: Only the region the caller sends requests from
     correct: false
-    explanation: Region affects latency for a dedicated deployment but is not this set of
-      factors.
+    explanation: Region affects latency for a dedicated deployment but is not this
+      set of factors.
   - id: c
     text: The length of the system prompt supplied by the application
     correct: false
-    explanation: Prompt length affects individual requests, not how the endpoint itself is
-      configured.
+    explanation: Prompt length affects individual requests, not how the endpoint
+      itself is configured.
   - id: d
     text: Batch size, GPU type, GPU count, and inference-time optimizations
     correct: true
     explanation: Correct. Performance follows from how the endpoint balances these four.
 evidence:
   - source_id: src-inference-overview
-    excerpt: 'Inference performance is determined by how the endpoint is configured - balancing:'
+    excerpt: 'Inference performance is determined by how the endpoint is configured
+      - balancing:'
     source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

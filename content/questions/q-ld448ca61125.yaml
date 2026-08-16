@@ -1,16 +1,16 @@
 schema_version: 1
 id: q-ld448ca61125
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
-stem: An architect asks how much control a dedicated endpoint gives over the hardware behind
-  a deployment. What is accurate?
+stem: An architect asks how much control a dedicated endpoint gives over the
+  hardware behind a deployment. What is accurate?
 options:
   - id: a
     text: GPU type and the number of GPUs per replica are both selectable
     correct: true
-    explanation: Correct. Both are chosen to match the deployment's performance and throughput
-      needs.
+    explanation: Correct. Both are chosen to match the deployment's performance and
+      throughput needs.
   - id: b
     text: Only the total number of replicas can be chosen; hardware is assigned
     correct: false
@@ -25,10 +25,13 @@ options:
     explanation: Selecting GPU type is part of configuring a dedicated endpoint.
 evidence:
   - source_id: src-ld-dedicated-overview
-    excerpt: Select GPU type and GPUs per replica to match your performance and throughput
-      needs.
+    excerpt: Select GPU type and GPUs per replica to match your performance and
+      throughput needs.
     source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z
