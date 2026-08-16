@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-co356433d8e1
+status: review_ready
+domain: domain-2
+objective: domain-2/iam-roles
+stem: An on-call rotation must be able to stop and start VMs during incidents, but should
+  not gain broader Compute permissions. Which role fits?
+options:
+  - id: a
+    text: '`editor`, scoped to the project containing the VMs'
+    correct: false
+    explanation: The editor role grants management of most resource types, which is broader
+      than the task requires.
+  - id: b
+    text: '`compute.instance-power-operator`'
+    correct: true
+    explanation: Correct. It exists precisely to allow power operations on VMs without broader
+      Compute permissions.
+  - id: c
+    text: '`compute.serial-console-user`'
+    correct: false
+    explanation: That role covers interactive troubleshooting over the serial console, not
+      powering machines on and off.
+  - id: d
+    text: '`viewer`, which permits state changes on resources it can see'
+    correct: false
+    explanation: The viewer role is for viewing resources and accessing data in them, not
+      for changing their power state.
+evidence:
+  - source_id: src-co-iam-roles
+    excerpt: '`compute.instance-power-operator`: perform power operations on virtual machines
+      without broader Compute permissions'
+    source_sha256: 8877ba59c6d0454d0e7b2945f28f099ff03a5976d65b137cd65e668b867f4ef7
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

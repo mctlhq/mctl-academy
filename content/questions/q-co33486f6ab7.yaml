@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-co33486f6ab7
+status: review_ready
+domain: domain-2
+objective: domain-2/iam-roles
+stem: A new engineer appears on the tenant user list but cannot see any resources. What is
+  the most likely reason?
+options:
+  - id: a
+    text: Their account has not finished federation sync and will populate shortly
+    correct: false
+    explanation: Appearing on the user list already means the account exists; nothing further
+      populates access on its own.
+  - id: b
+    text: They need a service account key before resources become visible
+    correct: false
+    explanation: Service account keys authenticate service accounts, not a human user browsing
+      resources.
+  - id: c
+    text: Resources are only visible to the user who created them
+    correct: false
+    explanation: Visibility follows group membership rather than who created a resource.
+  - id: d
+    text: They have not been assigned to a group, so no access has been granted
+    correct: true
+    explanation: Correct. Being on the tenant user list grants nothing by itself; access comes
+      from the group an account is assigned to.
+evidence:
+  - source_id: src-co-iam-overview
+    excerpt: Being on the tenant user list does not grant access to resources. Each account
+      should be assigned to a group
+    source_sha256: 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

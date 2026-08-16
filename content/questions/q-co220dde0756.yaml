@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-co220dde0756
+status: review_ready
+domain: domain-1
+objective: domain-1/environment-deployment
+stem: A training job on a GPU cluster is bottlenecked moving tensors between GPUs on different
+  nodes. Which property of the cluster's networking is intended to address this?
+options:
+  - id: a
+    text: Each node's traffic is serialized through a single shared host NIC
+    correct: false
+    explanation: Serializing through one shared NIC would create a bottleneck rather than
+      relieve one; each GPU has its own NIC.
+  - id: b
+    text: Transfers are staged through object storage to decouple the endpoints
+    correct: false
+    explanation: Staging through object storage adds a slower hop; it is not the mechanism
+      that accelerates GPU-to-GPU exchange.
+  - id: c
+    text: Data moves directly between each GPU and its NIC without passing through the CPU
+    correct: true
+    explanation: Correct. GPUDirect RDMA takes the CPU out of the transfer path, which is
+      what raises data exchange speed for this pattern.
+  - id: d
+    text: The CPU copies each buffer into host memory before the NIC transmits it
+    correct: false
+    explanation: That host-memory bounce is precisely the step the technology removes.
+evidence:
+  - source_id: src-co-gpu-clusters
+    excerpt: allows data to flow directly between each GPU and its NIC, avoiding CPU, thus
+      boosting the data exchange speed
+    source_sha256: 105f1b6a145bbdf8a3c52e7a0c77803091c9996fcfc291cf7b40723891ee7ec6
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

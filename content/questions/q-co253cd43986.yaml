@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-co253cd43986
+status: review_ready
+domain: domain-1
+objective: domain-1/network-vpc
+stem: A VM was created in the wrong subnet. The team wants it moved to the correct subnet
+  without rebuilding it. What is the outcome?
+options:
+  - id: a
+    text: It can be moved once the VM is stopped, then restarted in the new subnet
+    correct: false
+    explanation: Stopping the VM does not unlock the change; the assignment is fixed at creation
+      regardless of power state.
+  - id: b
+    text: It cannot be moved; the VM has to be recreated in the correct subnet
+    correct: true
+    explanation: Correct. Network and subnet are set at creation and cannot be changed afterwards,
+      so recreating the resource is the only route.
+  - id: c
+    text: It can be moved by attaching a second network interface in the target subnet
+    correct: false
+    explanation: Adding an interface does not relocate the resource, and the documented rule
+      admits no such workaround.
+  - id: d
+    text: It can be moved by editing the security group assigned to its interface
+    correct: false
+    explanation: Security groups filter traffic; they do not determine which subnet a resource
+      lives in.
+evidence:
+  - source_id: src-co-vpc-isolation
+    excerpt: You cannot move a resource to another network or subnet after creation.
+    source_sha256: 300245e387a72a3aac25eb26e8bdd047169342c42829f5bded0b5f4de9ad617b
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

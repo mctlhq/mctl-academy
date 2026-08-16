@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-co285d098105
+status: review_ready
+domain: domain-1
+objective: domain-1/network-vpc
+stem: Two security rules in one group match the same packet with conflicting access settings.
+  One has priority 1 and the other priority 900. Which wins?
+options:
+  - id: a
+    text: The rule with priority 900, because larger values are evaluated first
+    correct: false
+    explanation: 'The scale runs the other way: a larger number means lower priority.'
+  - id: b
+    text: The rule with priority 1, because 1 is the highest priority
+    correct: true
+    explanation: Correct. Priority 1 is the highest and 1000 the lowest, so the lower number
+      takes precedence.
+  - id: c
+    text: Neither, because conflicting rules cause the group to be rejected
+    correct: false
+    explanation: Conflicts are resolved by priority rather than by refusing the configuration.
+  - id: d
+    text: Whichever rule is stateful, regardless of the priority values
+    correct: false
+    explanation: Stateful versus stateless controls connection tracking, not which of two
+      matching rules is applied.
+evidence:
+  - source_id: src-co-vpc-security-groups
+    excerpt: '`.spec.priority`: Priority of the rule. 1 is the highest priority, 1000 is the
+      lowest.'
+    source_sha256: 713756c7ee69d7b51477c85b5632e9c2e4576b0325f6b247e9033b9806877f8c
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer
