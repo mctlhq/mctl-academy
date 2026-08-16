@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld52897530eb
+status: review_ready
+domain: domain-3
+objective: domain-3/tool-use
+stem: Given a user query and a set of available tools, what are the model's two documented
+  options?
+options:
+  - id: a
+    text: Execute a tool, or escalate the request to a human reviewer
+    correct: false
+    explanation: The model never executes tools, and no human escalation path is described.
+  - id: b
+    text: Respond conversationally, or propose a function call with filled-in arguments
+    correct: true
+    explanation: Correct. It analyses intent and either answers directly or suggests a call
+      matching the schema.
+  - id: c
+    text: Return JSON, or return natural language, depending on the tool schema
+    correct: false
+    explanation: Output format is governed by response_format, not by tool availability.
+  - id: d
+    text: Call every registered tool, then summarize the combined results
+    correct: false
+    explanation: Tools are selected by relevance rather than invoked exhaustively.
+evidence:
+  - source_id: src-function-calling
+    excerpt: Propose a function call by selecting a relevant tool and filling in the required
+      arguments according to the schema.
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-ld5098b0009c
+status: review_ready
+domain: domain-3
+objective: domain-3/tool-use
+stem: How is each available tool described to the model?
+options:
+  - id: a
+    text: As a natural-language sentence in the system prompt
+    correct: false
+    explanation: Prompt text can add guidance, but tools are declared structurally.
+  - id: b
+    text: As an example request and response pair
+    correct: false
+    explanation: Examples may help behaviour, but they are not the tool definition.
+  - id: c
+    text: As a JSON Schema giving its name, input parameters and data types
+    correct: true
+    explanation: Correct. That schema is what tells the model how the tool should be invoked.
+  - id: d
+    text: As a URL the model calls directly when needed
+    correct: false
+    explanation: The model proposes calls rather than invoking endpoints itself.
+evidence:
+  - source_id: src-function-calling
+    excerpt: Each tool is described using a JSON Schema that defines its name, input parameters,
+      and expected data types.
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

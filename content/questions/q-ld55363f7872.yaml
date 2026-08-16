@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-ld55363f7872
+status: review_ready
+domain: domain-4
+objective: domain-4/platform-capabilities
+stem: An operations dashboard shows a dedicated endpoint as Updating. What does that indicate?
+options:
+  - id: a
+    text: The endpoint is being created for the first time
+    correct: false
+    explanation: That is the Starting stage.
+  - id: b
+    text: The endpoint has failed and is retrying deployment
+    correct: false
+    explanation: Updating describes configuration being applied, not a failure state.
+  - id: c
+    text: The endpoint is applying configuration changes and capacity may degrade
+    correct: true
+    explanation: Correct. Traffic may continue during an update while capacity temporarily
+      degrades.
+  - id: d
+    text: The endpoint's model is being replaced with a newer published version
+    correct: false
+    explanation: Nothing swaps the model automatically under this status.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: Endpoint is applying configuration changes.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

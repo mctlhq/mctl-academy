@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-ld56c5356b61
+status: review_ready
+domain: domain-4
+objective: domain-4/platform-capabilities
+stem: Why do dedicated endpoints report two separate status types rather than one?
+options:
+  - id: a
+    text: To distinguish billing state from technical state
+    correct: false
+    explanation: Billing follows running replicas and is not one of the two status types.
+  - id: b
+    text: To separate deployment progress from whether traffic can be served
+    correct: true
+    explanation: Correct. Lifecycle describes the stage, readiness describes current ability
+      to serve.
+  - id: c
+    text: To report the control plane and the data plane independently
+    correct: false
+    explanation: The planes describe how the endpoint is managed and used, not these statuses.
+  - id: d
+    text: To track the minimum and maximum replica counts separately
+    correct: false
+    explanation: Replica bounds are autoscaling settings rather than statuses.
+evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: This distinction helps separate deployment progress from actual availability.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld48bb71c2de
+status: review_ready
+domain: domain-3
+objective: domain-3/structured-output
+stem: A team already passes a JSON schema in the request. What additional practice does the
+  documentation recommend?
+options:
+  - id: a
+    text: Also describe the schema in the text prompt given to the model
+    correct: true
+    explanation: Correct. Practical testing showed it is always better to supply the schema
+      in both places.
+  - id: b
+    text: Send the schema only in the prompt and drop the parameter
+    correct: false
+    explanation: Dropping the parameter would remove the mechanism that enforces the shape.
+  - id: c
+    text: Split the schema across several requests to stay within limits
+    correct: false
+    explanation: No such splitting is suggested.
+  - id: d
+    text: Validate the schema by first requesting an arbitrary JSON object
+    correct: false
+    explanation: A preliminary arbitrary-JSON call is not part of the recommendation.
+evidence:
+  - source_id: src-structured-output
+    excerpt: it's always better to provide the schema both in text prompt for the model and
+    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

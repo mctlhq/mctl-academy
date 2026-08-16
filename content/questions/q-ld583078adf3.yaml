@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld583078adf3
+status: review_ready
+domain: domain-4
+objective: domain-4/cost-and-billing
+stem: An endpoint has been scaled to zero replicas. What is the billing and availability position?
+options:
+  - id: a
+    text: It remains billable so its capacity stays reserved
+    correct: false
+    explanation: Capacity is not retained once released, and charges do not apply.
+  - id: b
+    text: It is not accessible and no charges apply
+    correct: true
+    explanation: Correct. With zero replicas running, the endpoint serves nothing and is not
+      billed.
+  - id: c
+    text: It is still accessible, served from a shared pool at a reduced rate
+    correct: false
+    explanation: There is no reduced-rate shared serving mode for a scaled-to-zero endpoint.
+  - id: d
+    text: It is billed at the minimum replica rate regardless
+    correct: false
+    explanation: Minimum replicas are allocated only while the endpoint is active.
+evidence:
+  - source_id: src-ld-dedicated-billing-policy
+    excerpt: When **zero replicas are running**, the endpoint is not accessible and billing
+      charges do not apply.
+    source_sha256: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader
