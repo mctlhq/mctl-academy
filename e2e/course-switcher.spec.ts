@@ -25,6 +25,14 @@ test("course switcher lists canonical courses and disables the empty ones", asyn
   expect(selectedValue).not.toBe("");
   expect(options.find((o) => o.value === selectedValue)?.disabled).toBe(false);
 
+  // Every course in the catalog is offered, whether or not it has content.
+  // Asserted positively: the loop below is vacuous once every course has
+  // published questions, so on its own it would pass while proving nothing.
+  const courseCount = (await import("../client/src/course-catalog.json", { with: { type: "json" } })).default
+    .length;
+  expect(options.length).toBe(courseCount);
+  expect(options.every((o) => o.label !== "")).toBe(true);
+
   // Any course without published questions is offered but not selectable.
   for (const option of options.filter((o) => o.disabled)) {
     expect(option.label).toContain("Coming soon");

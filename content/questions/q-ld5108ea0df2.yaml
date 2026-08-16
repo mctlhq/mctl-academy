@@ -1,16 +1,16 @@
 schema_version: 1
 id: q-ld5108ea0df2
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/tool-use
-stem: A product manager asks what function calling makes possible that a bare text model cannot
-  do. Which capability is documented?
+stem: A product manager asks what function calling makes possible that a bare
+  text model cannot do. Which capability is documented?
 options:
   - id: a
     text: Retrieving real-time data through external code or services
     correct: true
-    explanation: Correct. Reaching live data and third-party services is exactly what tool
-      integration enables.
+    explanation: Correct. Reaching live data and third-party services is exactly
+      what tool integration enables.
   - id: b
     text: Increasing the model's context window beyond its published limit
     correct: false
@@ -31,3 +31,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,9 +1,10 @@
 schema_version: 1
 id: q-ld28389db1f6
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
-stem: A team starts a fine-tuning job and does not set `context_length`. What length applies?
+stem: A team starts a fine-tuning job and does not set `context_length`. What
+  length applies?
 options:
   - id: a
     text: The maximum the base model supports
@@ -20,14 +21,17 @@ options:
   - id: d
     text: 8192 tokens
     correct: true
-    explanation: Correct. Unless overridden by the hyperparameter, fine-tuning defaults to
-      8192 tokens.
+    explanation: Correct. Unless overridden by the hyperparameter, fine-tuning
+      defaults to 8192 tokens.
 evidence:
   - source_id: src-ld-models
-    excerpt: Unless you override it via the `context_length` hyperparameter, the default context
-      length for fine-tuning is **8192 tokens**.
+    excerpt: Unless you override it via the `context_length` hyperparameter, the
+      default context length for fine-tuning is **8192 tokens**.
     source_sha256: 3b72254af3b4649d0cf1e434a4c529e5aa97da97eafc0f52ed0bc6d708b1a69d
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

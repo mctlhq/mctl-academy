@@ -1,15 +1,16 @@
 schema_version: 1
 id: q-ld26959cd0bd
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
-stem: Comparing two candidate models on their cards in the UI, a team wants a published measure
-  of answer quality. Which field carries it?
+stem: Comparing two candidate models on their cards in the UI, a team wants a
+  published measure of answer quality. Which field carries it?
 options:
   - id: a
     text: Tokens per second, since faster models are better tuned
     correct: false
-    explanation: That is an approximate generation speed and says nothing about answer quality.
+    explanation: That is an approximate generation speed and says nothing about
+      answer quality.
   - id: b
     text: Input tokens, since richer models cost more per token
     correct: false
@@ -21,8 +22,8 @@ options:
   - id: d
     text: Output tokens, which reflects how much reasoning the model produces
     correct: false
-    explanation: That is the price of generated tokens, again a cost rather than a quality
-      signal.
+    explanation: That is the price of generated tokens, again a cost rather than a
+      quality signal.
 evidence:
   - source_id: src-ld-playground
     excerpt: '**Quality** — MMLU score reported by the model provider.'
@@ -31,3 +32,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

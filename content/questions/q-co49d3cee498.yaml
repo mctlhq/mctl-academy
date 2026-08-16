@@ -1,21 +1,22 @@
 schema_version: 1
 id: q-co49d3cee498
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-recovery
-stem: A team plans to scale a node group from six nodes to ten and worries the running workloads
-  will be disrupted by node replacement. What should you tell them?
+stem: A team plans to scale a node group from six nodes to ten and worries the
+  running workloads will be disrupted by node replacement. What should you tell
+  them?
 options:
   - id: a
     text: Scaling does not recreate nodes, so existing nodes are left in place
     correct: true
-    explanation: Correct. Scaling a node group up or down does not recreate any nodes; replacement
-      comes from template changes instead.
+    explanation: Correct. Scaling a node group up or down does not recreate any
+      nodes; replacement comes from template changes instead.
   - id: b
     text: Every node is replaced on any change to the node group's size
     correct: false
-    explanation: Replacement is triggered by modifying the node group template, not by changing
-      its size.
+    explanation: Replacement is triggered by modifying the node group template, not
+      by changing its size.
   - id: c
     text: Scaling always drains and recreates one node at a time
     correct: false
@@ -26,9 +27,13 @@ options:
     explanation: No such precaution is required for scaling.
 evidence:
   - source_id: src-co-k8s-node-groups
-    excerpt: scales a node group up or down, Managed Kubernetes does not recreate any nodes
+    excerpt: scales a node group up or down, Managed Kubernetes does not recreate
+      any nodes
     source_sha256: ed4169d3f8c9c40dc2f0c011fea41084a4a7e5cb08fea864f773ad857fa1b374
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,9 +1,10 @@
 schema_version: 1
 id: q-co575c01880f
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/escalation-workflows
-stem: An engineer new to Logs asks how any LogQL query must begin. What is the answer?
+stem: An engineer new to Logs asks how any LogQL query must begin. What is the
+  answer?
 options:
   - id: a
     text: With an aggregation function that defines the range
@@ -16,13 +17,13 @@ options:
   - id: c
     text: With the name of the service whose logs are wanted
     correct: false
-    explanation: Selection is done through labels in the stream selector, not by a bare service
-      name.
+    explanation: Selection is done through labels in the stream selector, not by a
+      bare service name.
   - id: d
     text: With a stream selector inside curly braces
     correct: true
-    explanation: Correct. Every LogQL query opens with a stream selector written in curly
-      braces.
+    explanation: Correct. Every LogQL query opens with a stream selector written in
+      curly braces.
 evidence:
   - source_id: src-co-logs-query-language
     excerpt: Every LogQL query starts with a stream selector inside curly braces.
@@ -31,3 +32,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,20 +1,21 @@
 schema_version: 1
 id: q-co55ed4440ca
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
-stem: A team believes CUDA initialization failures only affect one GPU platform, and plans
-  to migrate away from it. Is that reasoning sound?
+stem: A team believes CUDA initialization failures only affect one GPU platform,
+  and plans to migrate away from it. Is that reasoning sound?
 options:
   - id: a
     text: Yes, the failure is specific to eight-GPU platforms
     correct: false
     explanation: The number of GPUs is explicitly not what determines exposure.
   - id: b
-    text: No, it can occur on any VM with GPUs regardless of platform, GPU count or image
+    text: No, it can occur on any VM with GPUs regardless of platform, GPU count or
+      image
     correct: true
-    explanation: Correct. The failure is not tied to a platform, so migrating on that basis
-      would not remove it.
+    explanation: Correct. The failure is not tied to a platform, so migrating on
+      that basis would not remove it.
   - id: c
     text: Yes, but only for VMs built from custom disk images
     correct: false
@@ -25,10 +26,13 @@ options:
     explanation: It is not confined to clustered VMs either.
 evidence:
   - source_id: src-co-cuda-init-error
-    excerpt: This can occur on any VM with GPUs, regardless of the specific platform, number
-      of GPUs or boot disk image.
+    excerpt: This can occur on any VM with GPUs, regardless of the specific
+      platform, number of GPUs or boot disk image.
     source_sha256: a7d4ef62cd37c7779687f9dfb6608166c0303249d0113e95fd1297affd311b2e
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

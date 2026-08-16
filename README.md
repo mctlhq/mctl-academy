@@ -23,14 +23,15 @@ Live at [academy.mctl.ai](https://academy.mctl.ai). Sign in with GitHub, then
 Practice or take a Mock exam — progress, mistakes, and per-question votes are
 saved to your account.
 
-Content coverage varies by course: **Agentic AI Builder** has a published
-question bank; **AI CloudOps Engineer** and **AI Leader** are in the catalog
-but currently have no published questions (their original source citations
-turned out to be fabricated and were pulled — see issues
-[#140](https://github.com/mctlhq/mctl-academy/issues/140) and
-[#141](https://github.com/mctlhq/mctl-academy/issues/141) — the app hides a
-course entirely until it has published content, rather than showing an empty
-shell).
+All three courses have a published question bank: **Agentic AI Builder** (80
+items), **AI CloudOps Engineer** (40) and **AI Leader** (40). The CloudOps and
+Leader banks were re-authored from scratch in August 2026 after their original
+source citations turned out to be fabricated
+([#140](https://github.com/mctlhq/mctl-academy/issues/140),
+[#141](https://github.com/mctlhq/mctl-academy/issues/141)); every replacement
+item cites documentation captured into the snapshot store, and CI checks each
+excerpt against those exact bytes. A course with no published content is shown
+as unavailable rather than as an empty shell.
 
 This is an actively developing open-source project, not a finished product —
 see [Contributing](#contributing) if you want to help.
@@ -40,7 +41,7 @@ see [Contributing](#contributing) if you want to help.
 | Mode | What it does |
 |---|---|
 | **Practice** | Questions with immediate per-option feedback; signed in additionally unlocks per-question voting and persisted progress |
-| **Mock** | 30 questions, 60 minutes, weighted 6 / 10 / 6 / 8 across the four domains |
+| **Mock** | 30 questions in 60 minutes, drawn per domain according to the selected course's own weighting in `content/courses/<id>.yaml` |
 | **Review mistakes** | Every question you've gotten wrong, from Practice or a Mock exam |
 | **Learn** | Lessons per objective, built from cited documentation — not yet built |
 

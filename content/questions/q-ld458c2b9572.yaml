@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-ld458c2b9572
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/structured-output
-stem: A downstream service needs the model's answer in a fixed shape it can parse. What does
-  the platform provide by default, and what must change?
+stem: A downstream service needs the model's answer in a fixed shape it can
+  parse. What does the platform provide by default, and what must change?
 options:
   - id: a
     text: Output is JSON by default; a parameter switches it to prose
@@ -13,8 +13,8 @@ options:
   - id: b
     text: Output is natural language by default; `response_format` forces JSON
     correct: true
-    explanation: Correct. Text is the default, and the parameter is what makes the response
-      machine-readable.
+    explanation: Correct. Text is the default, and the parameter is what makes the
+      response machine-readable.
   - id: c
     text: Output shape is set per model and cannot be changed per request
     correct: false
@@ -25,10 +25,13 @@ options:
     explanation: A second pass is unnecessary when the format can be requested directly.
 evidence:
   - source_id: src-structured-output
-    excerpt: By default, a text generation model responds to your requests with a text in
-      natural language.
+    excerpt: By default, a text generation model responds to your requests with a
+      text in natural language.
     source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

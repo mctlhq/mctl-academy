@@ -1,16 +1,16 @@
 schema_version: 1
 id: q-ld295930cb94
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
-stem: When shortlisting a base model to fine-tune, which two properties does the supported-models
-  reference let you compare?
+stem: When shortlisting a base model to fine-tune, which two properties does the
+  supported-models reference let you compare?
 options:
   - id: a
     text: Supported context lengths and available fine-tuning types
     correct: true
-    explanation: Correct. The page lists which context lengths a base model supports and whether
-      LoRA, full fine-tuning, or both are available.
+    explanation: Correct. The page lists which context lengths a base model supports
+      and whether LoRA, full fine-tuning, or both are available.
   - id: b
     text: Training data sources and benchmark leaderboards
     correct: false
@@ -22,7 +22,8 @@ options:
   - id: d
     text: Hourly GPU price and reserved capacity terms
     correct: false
-    explanation: Pricing and reservations are billing topics, not properties of a base model.
+    explanation: Pricing and reservations are billing topics, not properties of a
+      base model.
 evidence:
   - source_id: src-ld-models
     excerpt: Which **context lengths** they support
@@ -31,3 +32,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

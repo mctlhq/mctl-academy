@@ -1,21 +1,21 @@
 schema_version: 1
 id: q-co46427e70ca
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
-stem: While adding a notification email to an alert, an engineer without admin rights sees
-  a much shorter list of contacts than a colleague does. Why?
+stem: While adding a notification email to an alert, an engineer without admin
+  rights sees a much shorter list of contacts than a colleague does. Why?
 options:
   - id: a
     text: The list only shows emails that have never been used for notifications
     correct: false
-    explanation: The list is drawn from emails already used for notifications, not from unused
-      ones.
+    explanation: The list is drawn from emails already used for notifications, not
+      from unused ones.
   - id: b
     text: The list is limited to contacts in the same project as the alert
     correct: false
-    explanation: Visibility follows admin rights rather than the project the alert belongs
-      to.
+    explanation: Visibility follows admin rights rather than the project the alert
+      belongs to.
   - id: c
     text: Without admin rights, only their own contacts are visible
     correct: true
@@ -32,3 +32,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,37 +1,41 @@
 schema_version: 1
 id: q-co3467c7f2ed
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/iam-roles
-stem: A service account was created in the tooling project. It now needs to manage buckets
-  that live in a different project in the same tenant. Is that possible?
+stem: A service account was created in the tooling project. It now needs to
+  manage buckets that live in a different project in the same tenant. Is that
+  possible?
 options:
   - id: a
-    text: Yes, its access follows the groups it is added to, not the project it was created
-      in
+    text: Yes, its access follows the groups it is added to, not the project it was
+      created in
     correct: true
-    explanation: Correct. The creating project sets where the account lives, while group membership
-      can extend its access anywhere in the tenant.
+    explanation: Correct. The creating project sets where the account lives, while
+      group membership can extend its access anywhere in the tenant.
   - id: b
     text: No, a service account can only ever act inside the project that created it
     correct: false
-    explanation: That is the intuition the documentation explicitly corrects; the account
-      is not confined to its home project.
+    explanation: That is the intuition the documentation explicitly corrects; the
+      account is not confined to its home project.
   - id: c
     text: No, it must be recreated in the target project for each additional project
     correct: false
-    explanation: Recreating per project is unnecessary given how group membership determines
-      access.
+    explanation: Recreating per project is unnecessary given how group membership
+      determines access.
   - id: d
     text: Yes, but only after the two projects are merged into one
     correct: false
     explanation: Projects are not merged to share access, and nothing requires it here.
 evidence:
   - source_id: src-co-iam-overview
-    excerpt: a service account can be granted access to any resource in the tenant regardless
-      of the project
+    excerpt: a service account can be granted access to any resource in the tenant
+      regardless of the project
     source_sha256: 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

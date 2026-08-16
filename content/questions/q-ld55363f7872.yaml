@@ -1,9 +1,10 @@
 schema_version: 1
 id: q-ld55363f7872
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
-stem: An operations dashboard shows a dedicated endpoint as Updating. What does that indicate?
+stem: An operations dashboard shows a dedicated endpoint as Updating. What does
+  that indicate?
 options:
   - id: a
     text: The endpoint is being created for the first time
@@ -16,8 +17,8 @@ options:
   - id: c
     text: The endpoint is applying configuration changes and capacity may degrade
     correct: true
-    explanation: Correct. Traffic may continue during an update while capacity temporarily
-      degrades.
+    explanation: Correct. Traffic may continue during an update while capacity
+      temporarily degrades.
   - id: d
     text: The endpoint's model is being replaced with a newer published version
     correct: false
@@ -30,3 +31,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

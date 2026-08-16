@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-co3128de5d55
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/storage-volumes
-stem: An engineer tries to create a 100 GiB Network SSD Non-replicated disk and the request
-  is rejected. What explains this?
+stem: An engineer tries to create a 100 GiB Network SSD Non-replicated disk and
+  the request is rejected. What explains this?
 options:
   - id: a
     text: Non-replicated disks have a fixed size that cannot be chosen
@@ -13,8 +13,8 @@ options:
   - id: b
     text: The size must be a multiple of 93 GiB, and 100 GiB is not
     correct: true
-    explanation: Correct. Data blocks sit in 93 GiB NVMe namespaces, so the disk size has
-      to be a multiple of that.
+    explanation: Correct. Data blocks sit in 93 GiB NVMe namespaces, so the disk
+      size has to be a multiple of that.
   - id: c
     text: Non-replicated disks cannot be used as additional disks
     correct: false
@@ -25,10 +25,13 @@ options:
     explanation: No such threshold governs the choice between the two kinds of disk.
 evidence:
   - source_id: src-co-storage-types
-    excerpt: The size of each namespace is 93 GiB, so the disk size must be a multiple of
-      93 GiB.
+    excerpt: The size of each namespace is 93 GiB, so the disk size must be a
+      multiple of 93 GiB.
     source_sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

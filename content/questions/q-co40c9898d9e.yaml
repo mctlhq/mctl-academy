@@ -1,36 +1,43 @@
 schema_version: 1
 id: q-co40c9898d9e
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/security-policies
-stem: Your organization's IdP has rotated the signing certificate used for single sign-on.
-  What does the federation configuration in Nebius AI Cloud let you do about it?
+stem: Your organization's IdP has rotated the signing certificate used for
+  single sign-on. What does the federation configuration in Nebius AI Cloud let
+  you do about it?
 options:
   - id: a
     text: Nothing; the federation must be deleted and created again
     correct: false
-    explanation: Certificates are managed on an existing federation, so a rebuild is not required.
+    explanation: Certificates are managed on an existing federation, so a rebuild is
+      not required.
   - id: b
     text: Only deactivate the federation until the IdP is rolled back
     correct: false
-    explanation: Deactivation is available, but it is not the mechanism for handling a rotated
-      certificate.
+    explanation: Deactivation is available, but it is not the mechanism for handling
+      a rotated certificate.
   - id: c
     text: Rotate it automatically, since certificates are synced from the IdP
     correct: false
-    explanation: Certificates are uploaded and managed deliberately rather than synchronized
-      on their own.
+    explanation: Certificates are uploaded and managed deliberately rather than
+      synchronized on their own.
   - id: d
-    text: Upload the new certificate and delete the old one on the existing federation
+    text: Upload the new certificate and delete the old one on the existing
+      federation
     correct: true
-    explanation: Correct. Attached certificates can be uploaded or deleted as part of managing
-      a federation.
+    explanation: Correct. Attached certificates can be uploaded or deleted as part
+      of managing a federation.
 evidence:
   - source_id: src-co-iam-federations
-    excerpt: In Nebius AI Cloud, you can create, activate and deactivate federations, change
-      their settings, and upload or delete attached certificates.
+    excerpt: In Nebius AI Cloud, you can create, activate and deactivate
+      federations, change their settings, and upload or delete attached
+      certificates.
     source_sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

@@ -1,20 +1,22 @@
 schema_version: 1
 id: q-co51437baad6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/resource-quotas
-stem: A Managed Kubernetes node group fails to grow because of a quota limit, though no standalone
-  VMs were created. Why is a Compute quota involved?
+stem: A Managed Kubernetes node group fails to grow because of a quota limit,
+  though no standalone VMs were created. Why is a Compute quota involved?
 options:
   - id: a
     text: Node groups consume a separate Kubernetes quota that mirrors Compute limits
     correct: false
-    explanation: There is no mirrored quota; the nodes count against the Compute quotas themselves.
+    explanation: There is no mirrored quota; the nodes count against the Compute
+      quotas themselves.
   - id: b
-    text: Managed Kubernetes nodes are based on Compute VMs and count against the same quotas
+    text: Managed Kubernetes nodes are based on Compute VMs and count against the
+      same quotas
     correct: true
-    explanation: Correct. The quotas cover Compute VMs and equally the Kubernetes and Soperator
-      nodes built on them.
+    explanation: Correct. The quotas cover Compute VMs and equally the Kubernetes
+      and Soperator nodes built on them.
   - id: c
     text: The cluster's control plane counts as a virtual machine in the quota
     correct: false
@@ -22,14 +24,17 @@ options:
   - id: d
     text: Compute quota is only consulted when a node group uses a GPU cluster
     correct: false
-    explanation: The accounting does not depend on whether the node group is attached to a
-      GPU cluster.
+    explanation: The accounting does not depend on whether the node group is
+      attached to a GPU cluster.
 evidence:
   - source_id: src-co-compute-quotas
-    excerpt: These quotas apply to Compute VMs and also to Managed Service for Soperator and
-      Managed Service for Kubernetes® nodes
+    excerpt: These quotas apply to Compute VMs and also to Managed Service for
+      Soperator and Managed Service for Kubernetes® nodes
     source_sha256: 3c9dc77bb8c3eb7f75c3b60c5449ae71a21253ca89dd1d5bf8f752bf700c774e
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

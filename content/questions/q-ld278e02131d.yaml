@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-ld278e02131d
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
-stem: A finance stakeholder asks how per-token pricing is presented when comparing models
-  in the UI. What should you tell them?
+stem: A finance stakeholder asks how per-token pricing is presented when
+  comparing models in the UI. What should you tell them?
 options:
   - id: a
     text: As a monthly subscription per model
@@ -24,10 +24,13 @@ options:
     explanation: Charging is per token, so request length matters.
 evidence:
   - source_id: src-ld-playground
-    excerpt: '**Input tokens** — Price per token included in an API request, shown in USD
-      per million tokens.'
+    excerpt: '**Input tokens** — Price per token included in an API request, shown
+      in USD per million tokens.'
     source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

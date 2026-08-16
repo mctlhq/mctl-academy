@@ -1,10 +1,11 @@
 schema_version: 1
 id: q-ld3465e45f6f
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
-stem: An application repeatedly sends requests that share a long common prefix. Which optimization
-  is described as storing the output of previous layers for each input sequence?
+stem: An application repeatedly sends requests that share a long common prefix.
+  Which optimization is described as storing the output of previous layers for
+  each input sequence?
 options:
   - id: a
     text: Continuous Batching
@@ -21,14 +22,17 @@ options:
   - id: d
     text: Context Caching
     correct: true
-    explanation: Correct. It caches the context — the output of previous layers — for each
-      input sequence, cutting recomputation.
+    explanation: Correct. It caches the context — the output of previous layers —
+      for each input sequence, cutting recomputation.
 evidence:
   - source_id: src-inference-overview
-    excerpt: A caching mechanism that stores the context (i.e., the output of previous layers)
-      for each input sequence
+    excerpt: A caching mechanism that stores the context (i.e., the output of
+      previous layers) for each input sequence
     source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z

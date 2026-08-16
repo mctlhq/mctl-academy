@@ -1,30 +1,31 @@
 schema_version: 1
 id: q-co47ac4ebcf8
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-recovery
-stem: A node has been reporting the `NodeReady` condition as `False` for eight minutes. What
-  does Managed Kubernetes do?
+stem: A node has been reporting the `NodeReady` condition as `False` for eight
+  minutes. What does Managed Kubernetes do?
 options:
   - id: a
     text: Nothing automatic; the node stays until an operator intervenes
     correct: false
-    explanation: Automatic recovery exists precisely so an operator does not have to act on
-      this.
+    explanation: Automatic recovery exists precisely so an operator does not have to
+      act on this.
   - id: b
     text: It reboots the node in place and keeps its name
     correct: false
-    explanation: The response to a false status is replacement rather than an in-place reboot.
+    explanation: The response to a false status is replacement rather than an
+      in-place reboot.
   - id: c
     text: It waits for the full 15-minute window that applies to any unhealthy node
     correct: false
-    explanation: Fifteen minutes is the threshold for the `Unknown` status; `False` is acted
-      on after five.
+    explanation: Fifteen minutes is the threshold for the `Unknown` status; `False`
+      is acted on after five.
   - id: d
     text: It runs an automatic recovery, having passed the five-minute threshold
     correct: true
-    explanation: Correct. A `False` status lasting more than five minutes triggers automatic
-      recovery.
+    explanation: Correct. A `False` status lasting more than five minutes triggers
+      automatic recovery.
 evidence:
   - source_id: src-co-k8s-health-checks
     excerpt: If the condition remains in the `False` status for more than five minutes
@@ -33,3 +34,6 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: mashkovd
+  at: 2026-08-16T20:24:29Z
