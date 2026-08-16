@@ -10,10 +10,13 @@ name: Capture sources
 # one instead is precisely the failure that produced the fabricated CloudOps and
 # Leader banks (see #140, #141) -- so this is the only sanctioned path.
 #
-# It also uploads the exact fetched bytes as a build artifact. That artifact is
-# what an author writes excerpts from: it is byte-identical to what was hashed
-# and stored, which closes the window in which an upstream page could change
-# between capture and authoring. The snapshots themselves are never committed.
+# It also stages an authoring copy of each captured document as a build
+# artifact, read back out of the content-addressed store by the key just
+# recorded rather than re-fetched from upstream. That makes it byte-identical
+# to the snapshot the citation check verifies against, which is the point: an
+# author writes excerpts from those exact bytes, so an upstream page changing
+# mid-run cannot leave an excerpt verbatim in a document nobody stored. The
+# snapshots themselves are never committed.
 
 on:
   workflow_dispatch:
@@ -143,16 +146,23 @@ jobs:
               ' "$url" || failed="$failed $id"
             elif node scripts/capture-source.mjs "${args[@]}"; then
               ok=$((ok + 1))
-              # Keep the exact bytes for the authoring artifact, using the same
-              # headers and the same decode path capture-source.mjs used, so
-              # this file hashes to the sha256 just committed.
+              # Read the authoring copy back out of R2 by the key just recorded,
+              # rather than fetching the URL a second time. A second upstream
+              # fetch could return different bytes than the ones that were
+              # hashed and stored, which would reopen the very drift window this
+              # artifact exists to close. The store is content-addressed and
+              # get() re-hashes what it returns, so this copy is byte-identical
+              # to the snapshot the citation check will later verify against.
               node --input-type=module -e '
-                import { writeFileSync } from "node:fs";
-                const res = await fetch(process.argv[1], {
-                  headers: { accept: "text/markdown, text/plain, text/html" },
-                });
-                writeFileSync(`captured/${process.argv[2]}.md`, await res.text(), "utf8");
-              ' "$url" "$id" || true
+                import { readFileSync, writeFileSync } from "node:fs";
+                import { parse } from "yaml";
+                import { storeFromEnv } from "./scripts/lib/snapshot-store.mjs";
+                const id = process.argv[1];
+                const record = parse(readFileSync(`content/sources/${id}.yaml`, "utf8"));
+                const text = await storeFromEnv().get(record.snapshot.key);
+                if (text === null) throw new Error(`snapshot ${record.snapshot.key} absent right after capture`);
+                writeFileSync(`captured/${id}.md`, text, "utf8");
+              ' "$id" || echo "::warning::could not stage authoring copy for $id"
             else
               failed="$failed $id"
             fi
