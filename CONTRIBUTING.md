@@ -54,9 +54,12 @@ Standard for this organization:
 | Application code, schemas, CI, deployment config | Automated review, no unaddressed P1/P2, plus green CI |
 | Content | Schema lint, verbatim citation verification, and human approval from a `CODEOWNERS` owner |
 
-Content pull requests are capped at **10 questions**. With a single human
+Content pull requests are capped at **20 questions**. With a single human
 reviewer this is a ceiling on review load rather than an ideal batch size, and
 content throughput is the expected bottleneck — small batches keep it moving.
+The cap was 10 until 2026-08-16; it was raised so a full course bank lands in a
+handful of reviewable batches rather than nine. It is a ceiling, not a target —
+prefer a smaller PR when the items are unrelated.
 
 ## Local development
 
