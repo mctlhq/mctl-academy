@@ -154,9 +154,14 @@ jobs:
           while IFS=$'\t' read -r id url title objs; do
             echo "::group::$id"
             args=("$url" --id "$id" --title "$title")
-            # Objective ids cannot contain whitespace -- the schema pattern
-            # forbids it -- so splitting on spaces here is safe and intended.
-            for o in ${objs//,/ }; do args+=(--objective "$o"); done
+            # Split on the comma with IFS rather than via an unquoted
+            # ${objs//,/ } expansion. The reader above already constrains every
+            # objective to ^domain-N/[a-z0-9-]+$, so neither word-splitting nor
+            # globbing is reachable today -- but an unquoted expansion here
+            # would silently turn any future loosening of that pattern into a
+            # glob against the runner's working directory.
+            IFS=',' read -ra objective_args <<< "$objs"
+            for o in "${objective_args[@]}"; do args+=(--objective "$o"); done
 
             if [ "$DRY_RUN" = "true" ]; then
               node --input-type=module -e '
@@ -232,8 +237,14 @@ jobs:
           for i in 1 2 3; do
             if git push origin "HEAD:${BRANCH}"; then pushed=true; break; fi
             echo "Push to ${BRANCH} failed (attempt $i). Rebasing..."
-            git fetch origin "${BRANCH}"
-            if ! git rebase "origin/${BRANCH}"; then
+            # `git pull --rebase`, matching source-drift.yml. The two-step
+            # `git fetch origin "$BRANCH"` then `git rebase "origin/$BRANCH"`
+            # only works when the remote's configured refspec happens to cover
+            # the branch and so opportunistically updates the tracking ref;
+            # where it does not, the rebase silently replays onto a stale ref,
+            # every retry pushes the same commits, and the run falls through to
+            # the side-branch PR for no reason.
+            if ! git pull --rebase origin "${BRANCH}"; then
               git rebase --abort || true
               break
             fi
