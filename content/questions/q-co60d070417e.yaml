@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-co60d070417e
+status: review_ready
+domain: domain-4
+objective: domain-4/escalation-workflows
+stem: An aggregated LogQL query is rejected because its `step` and `range` values are inconsistent.
+  What is the rule?
+options:
+  - id: a
+    text: '`step` and `range` must be equal for aggregation to work'
+    correct: false
+    explanation: Equality is not the requirement; one must be strictly smaller.
+  - id: b
+    text: '`range` must be smaller than `step`'
+    correct: false
+    explanation: That inverts the relationship.
+  - id: c
+    text: Both must divide evenly into the query's total time window
+    correct: false
+    explanation: No divisibility requirement is imposed.
+  - id: d
+    text: '`step` must be smaller than `range`'
+    correct: true
+    explanation: Correct. The interval between points must be smaller than the interval aggregation
+      covers.
+evidence:
+  - source_id: src-co-logs-query-language
+    excerpt: The `step` value (interval between points) must be smaller than the `range` value
+      (the interval over which aggregation is performed).
+    source_sha256: 703f578284a89761e264801c97448607bae0ec78ee2521b5ccf8cd1770d4a172
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

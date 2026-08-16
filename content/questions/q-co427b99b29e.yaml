@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-co427b99b29e
+status: review_ready
+domain: domain-2
+objective: domain-2/security-policies
+stem: You are preparing to create a federation and want to gather everything needed beforehand.
+  What must you obtain from the identity provider?
+options:
+  - id: a
+    text: A service account access key issued by the identity provider
+    correct: false
+    explanation: Access keys authenticate service accounts against AWS-compatible APIs; they
+      are unrelated to configuring an IdP.
+  - id: b
+    text: The private signing key used by the identity provider
+    correct: false
+    explanation: A private key is never handed over; the federation is configured with the
+      public certificate instead.
+  - id: c
+    text: 'The SAML application metadata: login URL, identifier and certificate'
+    correct: true
+    explanation: Correct. These are the values the federation is built from, obtained through
+      the IdP admin portal.
+  - id: d
+    text: A list of every user account that should be allowed to sign in
+    correct: false
+    explanation: Users arrive through the federation itself; enumerating them up front is
+      not part of creating it.
+evidence:
+  - source_id: src-co-iam-federations
+    excerpt: you have access to your IdP admin portal and can get the SAML application metadata
+      (login URL, identifier, certificate)
+    source_sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

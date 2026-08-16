@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-co59980cc53a
+status: review_ready
+domain: domain-4
+objective: domain-4/escalation-workflows
+stem: You need the serial logs of a Compute virtual machine to escalate a boot failure. Which
+  bucket should the stream selector name?
+options:
+  - id: a
+    text: '`sp_serial`'
+    correct: true
+    explanation: Correct. That bucket holds serial logs for Compute virtual machines.
+  - id: b
+    text: '`sp_mk8s_control_plane`'
+    correct: false
+    explanation: That bucket carries Managed Kubernetes control plane logs.
+  - id: c
+    text: '`sp_cloudapps`'
+    correct: false
+    explanation: That bucket is for Standalone Applications.
+  - id: d
+    text: '`default`'
+    correct: false
+    explanation: The default bucket holds user-ingested logs rather than platform serial logs.
+evidence:
+  - source_id: src-co-logs-query-language
+    excerpt: '`sp_serial`: Compute virtual machines (serial logs)'
+    source_sha256: 703f578284a89761e264801c97448607bae0ec78ee2521b5ccf8cd1770d4a172
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

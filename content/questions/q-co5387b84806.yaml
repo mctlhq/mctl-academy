@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-co5387b84806
+status: review_ready
+domain: domain-4
+objective: domain-4/operational-troubleshooting
+stem: PyTorch on a multi-GPU VM fails with `system not yet initialized (error 802)`. Which
+  cause should you investigate first?
+options:
+  - id: a
+    text: The GPU quota for the project has been exhausted
+    correct: false
+    explanation: A quota problem prevents creating machines; it does not surface as a CUDA
+      initialization error on a running VM.
+  - id: b
+    text: The boot disk image lacks an NVIDIA driver
+    correct: false
+    explanation: The error reports that the driver is present but CUDA failed to initialize.
+  - id: c
+    text: A security group is blocking traffic between the GPUs
+    correct: false
+    explanation: GPU initialization on a single VM does not depend on VPC traffic filtering.
+  - id: d
+    text: The `nvidia-fabricmanager` service failed to initialize at VM startup
+    correct: true
+    explanation: Correct. A race condition or timing issue can leave that service uninitialized,
+      which breaks CUDA initialization.
+evidence:
+  - source_id: src-co-cuda-init-error
+    excerpt: its service, `nvidia-fabricmanager`, does not initialize on VM startup because
+      of a race condition or other timing issues
+    source_sha256: a7d4ef62cd37c7779687f9dfb6608166c0303249d0113e95fd1297affd311b2e
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer

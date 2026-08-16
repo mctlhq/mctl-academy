@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-co449f443013
+status: review_ready
+domain: domain-3
+objective: domain-3/node-monitoring
+stem: An engineer watching a dashboard during an incident asks how current the numbers are.
+  What is true by default?
+options:
+  - id: a
+    text: The data refreshes every 15 seconds, and the interval can be changed
+    correct: true
+    explanation: Correct. Fifteen seconds is the default refresh, configurable next to the
+      time filters.
+  - id: b
+    text: The data refreshes only when the page is reloaded manually
+    correct: false
+    explanation: The dashboard refreshes on its own; a manual reload is not required.
+  - id: c
+    text: The data refreshes every five minutes and the interval is fixed
+    correct: false
+    explanation: Neither the interval nor its immutability matches the dashboard's behaviour.
+  - id: d
+    text: The data refreshes once per hour, matching the metrics retention window
+    correct: false
+    explanation: An hourly cadence would be useless during an incident and is not what is
+      configured.
+evidence:
+  - source_id: src-co-vm-monitoring
+    excerpt: By default, the data is refreshed every 15 seconds. You can configure this interval
+      to the right of the time filters.
+    source_sha256: 6e90ceb68709954382c0bd6df8868cb0698ac552e7fb6c0161ddafe829066f49
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-cloudops-engineer
