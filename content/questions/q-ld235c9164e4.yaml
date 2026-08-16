@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld235c9164e4
+status: review_ready
+domain: domain-1
+objective: domain-1/ai-concepts
+stem: How does speculative decoding raise throughput without degrading output quality?
+options:
+  - id: a
+    text: An auxiliary model pre-generates likely tokens that the main model then verifies
+    correct: true
+    explanation: Correct. Verification by the main model is what preserves quality while cutting
+      the number of forward passes.
+  - id: b
+    text: Low-confidence tokens are dropped from the response before it is returned
+    correct: false
+    explanation: Dropping tokens would change the output, which is exactly what this technique
+      avoids.
+  - id: c
+    text: The prompt is truncated so fewer tokens need to be processed
+    correct: false
+    explanation: Truncating input is not part of the technique and would change results.
+  - id: d
+    text: Several user requests are merged into a single forward pass
+    correct: false
+    explanation: Batching multiple sequences together describes continuous batching instead.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: uses auxiliary models to pre-generate likely next tokens. The main model verifies
+      these predictions
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

@@ -1,0 +1,34 @@
+schema_version: 1
+id: q-ld372617b284
+status: review_ready
+domain: domain-2
+objective: domain-2/product-outcomes
+stem: A team is torn between two prompt-and-parameter configurations and wants a like-for-like
+  trial. What does the Playground offer?
+options:
+  - id: a
+    text: A batch evaluation that scores both against a labelled dataset
+    correct: false
+    explanation: No scoring harness is described; the comparison is interactive.
+  - id: b
+    text: An automatic winner based on the MMLU score of each setup
+    correct: false
+    explanation: MMLU is a provider-reported figure on the model card, not a verdict on two
+      setups.
+  - id: c
+    text: Compare, which opens two chat windows fed the same input at once
+    correct: true
+    explanation: Correct. Compare runs two setups side by side and can submit inputs to both
+      simultaneously.
+  - id: d
+    text: A rolling deployment that shifts traffic between the two
+    correct: false
+    explanation: Traffic shifting is a deployment concern, not a Playground feature.
+evidence:
+  - source_id: src-ld-playground
+    excerpt: To work with two model setups side by side, click **Compare**.
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

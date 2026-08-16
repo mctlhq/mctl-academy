@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-ld332ac50bc0
+status: review_ready
+domain: domain-1
+objective: domain-1/inference-basics
+stem: Which optimization works by splitting an input sequence into smaller chunks that are
+  processed separately?
+options:
+  - id: a
+    text: Paged Attention
+    correct: true
+    explanation: Correct. Chunking the input this way reduces memory usage and computation.
+  - id: b
+    text: Context Caching
+    correct: false
+    explanation: That stores the output of previous layers for each input sequence to avoid
+      recomputation.
+  - id: c
+    text: Flash Attention
+    correct: false
+    explanation: That is a modified attention mechanism that reduces the computations attention
+      requires.
+  - id: d
+    text: Quantization
+    correct: false
+    explanation: That lowers numeric precision rather than restructuring the sequence.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: A technique that divides the input sequence into smaller chunks, processing each
+      chunk separately to reduce memory usage
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

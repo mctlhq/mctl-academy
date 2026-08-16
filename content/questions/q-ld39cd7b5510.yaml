@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-ld39cd7b5510
+status: review_ready
+domain: domain-2
+objective: domain-2/workflow-design
+stem: How is a dedicated endpoint deployment managed versus how inference traffic reaches
+  it?
+options:
+  - id: a
+    text: Both go through the control plane, with the data plane reserved for logs
+    correct: false
+    explanation: Inference runs through the data plane, not the control plane.
+  - id: b
+    text: Both go through the data plane, with the control plane used only for billing
+    correct: false
+    explanation: Creating and managing deployments is exactly what the control plane is for.
+  - id: c
+    text: The control plane creates and manages deployments; the data plane serves inference
+      over OpenAI-compatible APIs
+    correct: true
+    explanation: Correct. That split is what the overview describes.
+  - id: d
+    text: Deployments are managed through the Playground, and traffic through the control
+      plane
+    correct: false
+    explanation: The Playground is for experimenting with models, not for managing deployments.
+evidence:
+  - source_id: src-ld-dedicated-overview
+    excerpt: Use the control plane to create and manage deployments, and the data plane to
+      run inference through OpenAI-compatible APIs.
+    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

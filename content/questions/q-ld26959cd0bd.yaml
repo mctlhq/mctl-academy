@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld26959cd0bd
+status: review_ready
+domain: domain-1
+objective: domain-1/model-selection
+stem: Comparing two candidate models on their cards in the UI, a team wants a published measure
+  of answer quality. Which field carries it?
+options:
+  - id: a
+    text: Tokens per second, since faster models are better tuned
+    correct: false
+    explanation: That is an approximate generation speed and says nothing about answer quality.
+  - id: b
+    text: Input tokens, since richer models cost more per token
+    correct: false
+    explanation: That is a price in USD per million tokens, not a quality measure.
+  - id: c
+    text: Quality, which reports the MMLU score published by the model provider
+    correct: true
+    explanation: Correct. The Quality field on the card is the provider-reported MMLU score.
+  - id: d
+    text: Output tokens, which reflects how much reasoning the model produces
+    correct: false
+    explanation: That is the price of generated tokens, again a cost rather than a quality
+      signal.
+evidence:
+  - source_id: src-ld-playground
+    excerpt: '**Quality** — MMLU score reported by the model provider.'
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

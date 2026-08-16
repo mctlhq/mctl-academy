@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-ld31ea78838c
+status: review_ready
+domain: domain-1
+objective: domain-1/inference-basics
+stem: A developer asks how to send traffic to the Fast flavor of a model from their application.
+  What is required?
+options:
+  - id: a
+    text: Set a flavor field in the request body
+    correct: false
+    explanation: The flavor is selected through the model name rather than a separate field.
+  - id: b
+    text: Call a different base URL reserved for Fast endpoints
+    correct: false
+    explanation: The endpoint stays the same; only the model name changes.
+  - id: c
+    text: Append `-fast` to the model name in the API
+    correct: true
+    explanation: Correct. The suffix on the model name is what selects the Fast flavor.
+  - id: d
+    text: Request access from support before the flavor becomes callable
+    correct: false
+    explanation: Both flavors are available without a request; one is chosen per call.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: To use the Fast flavor, append `-fast` to the model name in the
+    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader

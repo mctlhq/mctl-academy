@@ -1,0 +1,33 @@
+schema_version: 1
+id: q-ld388171b0f1
+status: review_ready
+domain: domain-2
+objective: domain-2/workflow-design
+stem: An application must keep inference inside a particular jurisdiction. Which dedicated
+  endpoint control addresses that?
+options:
+  - id: a
+    text: Autoscaling, by keeping replicas within one pool
+    correct: false
+    explanation: Autoscaling governs how capacity follows traffic, not where it runs.
+  - id: b
+    text: Region, which is chosen to meet data residency requirements
+    correct: true
+    explanation: Correct. Region selection is what optimizes latency and satisfies data residency.
+  - id: c
+    text: GPU configuration, by selecting hardware sold in that market
+    correct: false
+    explanation: GPU type and count are matched to performance needs rather than jurisdiction.
+  - id: d
+    text: Lifecycle management, by stopping the endpoint outside business hours
+    correct: false
+    explanation: Stopping and starting a deployment does not constrain where it runs.
+evidence:
+  - source_id: src-ld-dedicated-overview
+    excerpt: Choose where your deployment runs to optimize latency and meet data residency
+      requirements.
+    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+authored:
+  by: agent:claude
+  at: 2026-08-16T19:20:00Z
+course_id: ai-leader
