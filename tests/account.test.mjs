@@ -95,7 +95,7 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
   test("cascades to the deleted user's question votes — the row is gone, not merely orphaned", async () => {
     const cookie = await authedCookie({ githubLogin: "account-delete-votes-cascade" });
 
-    await app.request("/api/votes/q-co01a1b2c3d4", {
+    await app.request("/api/votes/q-de09d0e1f2a3", {
       method: "PUT",
       headers: { "Content-Type": "application/json", Cookie: cookie, Origin: "http://localhost" },
       body: JSON.stringify({ value: 1 }),
@@ -117,9 +117,10 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
     // Same promise as attempts/question_reports (ON DELETE CASCADE): the vote
     // row itself is gone, so it can never contribute to another question's
     // score under a deleted account's identity. Scoped to this user's id, not
-    // the question id — `q-co01a1b2c3d4` is also drawn from votes.test.mjs's
-    // shared known-question-id pool, so a legitimate vote left there by
-    // another user on the same question must not make this assertion flaky.
+    // the question id. `q-de09d0e1f2a3` is deliberately outside
+    // votes.test.mjs's known-question-id pool: every test in that pool asserts
+    // an exact global score, and these two files share a database, so a vote
+    // left here by another user would make those assertions flaky.
     const after = await authPool.query(`SELECT id FROM question_votes WHERE user_id = $1;`, [userId]);
     assert.equal(after.rows.length, 0);
   });
