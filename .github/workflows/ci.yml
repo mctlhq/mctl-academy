@@ -63,6 +63,15 @@ jobs:
       - name: Content lint
         run: bun run lint:content
 
+      # Proves the bytes committed in client/src/content-bundle.json and
+      # client/src/course-catalog.json are what content/ actually generates.
+      # No secrets, no network: same fork-PR-safe property as the rest of
+      # this job.
+      - name: Verify committed content bundle matches generated output
+        run: |
+          node scripts/build-content-bundle.mjs
+          git diff --exit-code client/src/content-bundle.json client/src/course-catalog.json
+
       - name: Content lint tests
         run: bun run test:content
 
