@@ -54,6 +54,21 @@ jobs:
             *) echo "::error::source drift check failed"; exit 1 ;;
           esac
 
+      # Second half of the lifecycle SOURCES.md documents ("Dependent published
+      # questions transition published -> needs_review"). Must run before the
+      # bundle rebuild below only in the sense that either order produces a
+      # correct bundle (checkBundleEligibility already excludes anything citing
+      # a drifted source regardless of the question's own status) -- but running
+      # it first keeps content/ itself lint-valid at every intermediate step,
+      # rather than only after the commit lands. Before this step existed, a
+      # question could sit at status: published while citing a drifted source,
+      # which validate-content.mjs correctly rejects as invalid on its own
+      # terms (#199).
+      - name: Quarantine published questions whose source drifted
+        if: steps.check.outputs.drifted == 'true'
+        run: |
+          node scripts/quarantine-drifted-questions.mjs
+
       - name: Rebuild content bundle to enforce fail-closed quarantine
         if: steps.check.outputs.drifted == 'true'
         run: |
@@ -66,7 +81,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add content/sources/ client/src/content-bundle.json client/src/course-catalog.json
+          git add content/sources/ content/questions/ client/src/content-bundle.json client/src/course-catalog.json
           if git diff --staged --quiet; then
             echo "No new quarantine changes to commit."
           else
