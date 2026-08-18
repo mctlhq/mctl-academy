@@ -34,7 +34,9 @@ const sampleQuestion = (over = {}) => ({
     { id: "c", text: "Cookie: key=<key>", correct: false, explanation: "Incorrect header type." },
     { id: "d", text: "User-Agent: key", correct: false, explanation: "Incorrect header." },
   ],
-  evidence: [{ source_id: "src-auth", source_sha256: HASH, excerpt: "requests must include Authorization Bearer" }],
+  evidence: [
+    { source_id: "src-auth", source_sha256: HASH, excerpt: "requests must include Authorization Bearer" },
+  ],
   authored: { by: "agent:question-author", at: "2026-08-06T10:00:00Z" },
   reviewed: { by: "mashkovd", at: "2026-08-06T11:00:00Z" },
   ...over,
@@ -72,7 +74,10 @@ test("quarantines a published question citing a drifted source", () => {
 test("quarantines a published question citing a deprecated source", () => {
   const dir = makeDir();
   try {
-    writeFileSync(join(dir, "sources", "src-auth.yaml"), JSON.stringify(sampleSource({ status: "deprecated" })));
+    writeFileSync(
+      join(dir, "sources", "src-auth.yaml"),
+      JSON.stringify(sampleSource({ status: "deprecated" })),
+    );
     writeFileSync(join(dir, "questions", "q-published01.yaml"), JSON.stringify(sampleQuestion()));
 
     const result = quarantineDriftedQuestions({ contentDir: dir });
@@ -152,8 +157,16 @@ test("a multi-source question is quarantined if any one citation is unusable", (
       JSON.stringify(
         sampleQuestion({
           evidence: [
-            { source_id: "src-auth", source_sha256: HASH, excerpt: "requests must include Authorization Bearer" },
-            { source_id: "src-other", source_sha256: HASH, excerpt: "requests must include Authorization Bearer" },
+            {
+              source_id: "src-auth",
+              source_sha256: HASH,
+              excerpt: "requests must include Authorization Bearer",
+            },
+            {
+              source_id: "src-other",
+              source_sha256: HASH,
+              excerpt: "requests must include Authorization Bearer",
+            },
           ],
         }),
       ),
