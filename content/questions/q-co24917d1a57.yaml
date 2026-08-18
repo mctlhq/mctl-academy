@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co24917d1a57
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: A colleague creating their first Managed Service for Kubernetes cluster
