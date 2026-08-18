@@ -2,11 +2,11 @@ schema_version: 1
 id: src-co-k8s-node-groups
 url: https://docs.nebius.com/kubernetes/node-groups/manage.md
 title: Creating and modifying Managed Service for Kubernetes node groups
-retrieved_at: 2026-08-16T18:54:31Z
-sha256: ed4169d3f8c9c40dc2f0c011fea41084a4a7e5cb08fea864f773ad857fa1b374
+retrieved_at: 2026-08-18T21:42:40Z
+sha256: 9016900e46c9fdf89b2219276466bbf487b9c4f12ddbfade6330f404217881e1
 objectives:
   - domain-3/node-recovery
 snapshot:
   bucket: academy-source-snapshots
-  key: ed4169d3f8c9c40dc2f0c011fea41084a4a7e5cb08fea864f773ad857fa1b374
-status: drifted
+  key: 9016900e46c9fdf89b2219276466bbf487b9c4f12ddbfade6330f404217881e1
+status: current

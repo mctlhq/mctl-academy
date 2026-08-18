@@ -3,11 +3,11 @@ id: src-co-k8s-quickstart
 url: https://docs.nebius.com/kubernetes/quickstart.md
 title: "How to get started with Managed Service for Kubernetes: Create your
   first cluster"
-retrieved_at: 2026-08-16T18:54:07Z
-sha256: 20de84a4580cc464d0397e9c897dc993865b37b79ca13019678d7f178ecddfdb
+retrieved_at: 2026-08-18T21:42:39Z
+sha256: ac878d2716a05e81e04a04be7c932c09fb75ab3b0c812a76686571361fc3a287
 objectives:
   - domain-1/environment-deployment
 snapshot:
   bucket: academy-source-snapshots
-  key: 20de84a4580cc464d0397e9c897dc993865b37b79ca13019678d7f178ecddfdb
-status: drifted
+  key: ac878d2716a05e81e04a04be7c932c09fb75ab3b0c812a76686571361fc3a287
+status: current
