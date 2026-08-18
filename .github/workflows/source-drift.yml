@@ -91,11 +91,21 @@ jobs:
               q_branch="chore/quarantine-drift-$(date +%s)"
               git checkout -b "$q_branch"
               git push origin "$q_branch"
-              gh pr create --repo "${{ github.repository }}" \
+              # PR creation is the load-bearing step here -- it is what turns a
+              # quarantine commit sitting on an orphan branch into something a
+              # human will actually see. Labels are not: create the PR without
+              # them first, then apply each with its own failure tolerance, so
+              # a renamed or never-created label (agents:quarantine did not
+              # exist when this ran on 2026-08-18, see #198) degrades to a
+              # missing label instead of silently dropping the whole PR.
+              pr_url=$(gh pr create --repo "${{ github.repository }}" \
                 --title "chore(quarantine): auto-quarantine drifted sources" \
-                --body "Upstream documentation drift detected. Quarantine state committed on branch \`${q_branch}\`. Merge to deploy fail-closed bundle." \
-                --label "agents:intake" \
-                --label "agents:quarantine"
+                --body "Upstream documentation drift detected. Quarantine state committed on branch \`${q_branch}\`. Merge to deploy fail-closed bundle.")
+              echo "opened $pr_url"
+              for label in "agents:intake" "agents:quarantine"; do
+                gh pr edit "$pr_url" --repo "${{ github.repository }}" --add-label "$label" \
+                  || echo "::warning::could not add label '$label' to $pr_url"
+              done
             fi
           fi
 
