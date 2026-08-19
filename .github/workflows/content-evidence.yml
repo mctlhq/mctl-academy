@@ -18,10 +18,21 @@ permissions:
 jobs:
   evidence:
     name: Verify citations
-    # Same-repo only. On a fork PR the secrets below would be empty and the
-    # verifier would fail closed — correct, but a permanently red check on a
-    # contribution nobody can fix is just noise. Skip it explicitly instead.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    # Same-repo, non-dependabot only. Both exclusions exist for the same
+    # reason: the secrets below are empty, the verifier fails closed — correct
+    # — and a permanently red check nobody can fix in the PR is just noise.
+    #
+    # Fork PRs: GitHub does not expose secrets to fork-triggered runs at all.
+    # Dependabot PRs: the run reads the separate Dependabot secret store, which
+    # is a different store from Actions secrets. Putting the R2 credentials
+    # there would be worse than the red check: `bun install` above installs the
+    # freshly bumped dependencies before this step, so a postinstall script in
+    # a bumped package would run with the snapshot store's credentials in env.
+    # A dependency bump changes no content, so there is nothing to verify.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+       github.actor != 'dependabot[bot]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
