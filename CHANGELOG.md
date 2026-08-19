@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.1.50](https://github.com/mctlhq/mctl-academy/compare/0.1.49...0.1.50) (2026-08-19)
+
+
+### Features
+
+* **agents:** issue-191-ci-fail-the-build-when-the-committed-con ([49e2c51](https://github.com/mctlhq/mctl-academy/commit/49e2c51d97465d5522d8f36aea29d5ba9835c0aa))
+* **content:** republish the two revalidated CloudOps questions ([0882e69](https://github.com/mctlhq/mctl-academy/commit/0882e6907bb009e78a642e66816cc0f26719ea77))
+* **content:** republish the two revalidated CloudOps questions ([3663ca6](https://github.com/mctlhq/mctl-academy/commit/3663ca6494e526945f57830d2ff7dacae0bbf635))
+
+
+### Bug Fixes
+
+* **ci:** add mctl-agents to claude-review's allowed-bots ([4d4744c](https://github.com/mctlhq/mctl-academy/commit/4d4744c3d50c9dfd8b6d37cd9629840090567d57))
+* **ci:** add mctl-agents to claude-review's allowed-bots ([5bfb6bb](https://github.com/mctlhq/mctl-academy/commit/5bfb6bb8d3712ebe09206678217dd538aae92a65))
+* **ci:** correct actions/checkout pin comments after the v7 bump ([56e89ff](https://github.com/mctlhq/mctl-academy/commit/56e89fff71f3078dd3c8429d69d0f26a75d2d2ad))
+* **ci:** implement the missing published-&gt;needs_review quarantine step ([974e7ec](https://github.com/mctlhq/mctl-academy/commit/974e7ec8031acfeece686048de610a5b09f1d81a))
+* **ci:** implement the missing published-&gt;needs_review quarantine step ([c9e040a](https://github.com/mctlhq/mctl-academy/commit/c9e040a8bcaf951034f8879f8e960bd6edf580dc)), closes [#198](https://github.com/mctlhq/mctl-academy/issues/198)
+* **ci:** make the quarantine-PR fallback resilient to a missing label ([c864cc0](https://github.com/mctlhq/mctl-academy/commit/c864cc072f00cc317f37bc9be2a5479ccd72f923))
+* **ci:** make the quarantine-PR fallback resilient to a missing label ([9a8fe3b](https://github.com/mctlhq/mctl-academy/commit/9a8fe3b85379949983fae2c9c911c3cddf98b2f0))
+* **content:** recapture and revalidate the two drifted CloudOps sources ([363cb2f](https://github.com/mctlhq/mctl-academy/commit/363cb2fe6913cd1263d78c1018a0e2ea4872041b))
+* **content:** repin the two IAM-roles citations to the recaptured hash ([c47e21a](https://github.com/mctlhq/mctl-academy/commit/c47e21a8f81fbbd422fed02e19b1db451246bc39))
+* **content:** repin the two IAM-roles citations to the recaptured hash ([1016248](https://github.com/mctlhq/mctl-academy/commit/101624850d69ebff733f375dd5b096b58373551d))
+* **content:** revalidate the two quarantined CloudOps questions ([824fcee](https://github.com/mctlhq/mctl-academy/commit/824fcee903eaf2f6ac27904783dc3dfbaea4ce22))
+* **content:** transition the two drifted-source questions to needs_review ([9ec4017](https://github.com/mctlhq/mctl-academy/commit/9ec4017b2109981f5e17b5eb6e3ae604794de844))
+
 ## [0.1.49](https://github.com/mctlhq/mctl-academy/compare/0.1.48...0.1.49) (2026-08-16)
 
 
