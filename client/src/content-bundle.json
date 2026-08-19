@@ -2914,7 +2914,7 @@
         "id": "a",
         "text": "Paged Attention",
         "correct": false,
-        "explanation": "That divides the input sequence into chunks processed separately, which is a memory layout change rather than a precision change."
+        "explanation": "That partitions a request's KV cache into fixed-size memory blocks, which is a memory layout change rather than a precision change."
       },
       {
         "id": "b",
@@ -3197,39 +3197,6 @@
         "text": "Batch size, GPU type, GPU count, and inference-time optimizations",
         "correct": true,
         "explanation": "Correct. Performance follows from how the endpoint balances these four."
-      }
-    ]
-  },
-  {
-    "id": "q-ld332ac50bc0",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/inference-basics",
-    "stem": "Which optimization works by splitting an input sequence into smaller chunks that are processed separately?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Paged Attention",
-        "correct": true,
-        "explanation": "Correct. Chunking the input this way reduces memory usage and computation."
-      },
-      {
-        "id": "b",
-        "text": "Context Caching",
-        "correct": false,
-        "explanation": "That stores the output of previous layers for each input sequence to avoid recomputation."
-      },
-      {
-        "id": "c",
-        "text": "Flash Attention",
-        "correct": false,
-        "explanation": "That is a modified attention mechanism that reduces the computations attention requires."
-      },
-      {
-        "id": "d",
-        "text": "Quantization",
-        "correct": false,
-        "explanation": "That lowers numeric precision rather than restructuring the sequence."
       }
     ]
   },

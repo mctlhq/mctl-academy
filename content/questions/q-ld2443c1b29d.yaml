@@ -9,8 +9,8 @@ options:
   - id: a
     text: Paged Attention
     correct: false
-    explanation: That divides the input sequence into chunks processed separately,
-      which is a memory layout change rather than a precision change.
+    explanation: That partitions a request's KV cache into fixed-size memory
+      blocks, which is a memory layout change rather than a precision change.
   - id: b
     text: Continuous Batching
     correct: false
@@ -29,7 +29,7 @@ evidence:
   - source_id: src-inference-overview
     excerpt: A technique that reduces the precision of model weights and
       activations, decreasing memory usage and computation.
-    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
