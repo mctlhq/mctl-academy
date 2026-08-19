@@ -30,6 +30,17 @@ schema_version: 1
 # record by hand instead, which changes no bytes and no sha256.
 
 sources:
+  # Originally captured 2026-08-06, before this manifest existed. Added here
+  # so a re-capture (triggered by drift on 2026-08-19) can be dispatched with
+  # `only: src-inference-overview` like every other source.
+  - id: src-inference-overview
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md
+    title: "Inference Overview"
+    objectives:
+      - domain-1/openai-compatibility
+      - domain-1/ai-concepts
+      - domain-1/inference-basics
+
   # ---------------------------------------------------------------------
   # ai-cloudops-engineer — docs.nebius.com (the course's primary host)
   # ---------------------------------------------------------------------
