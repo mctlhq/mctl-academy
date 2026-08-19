@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-ld6125477cda
+status: review_ready
+domain: domain-1
+objective: domain-1/inference-basics
+stem: An engineer wants to know which optimization reduces memory fragmentation
+  by partitioning each request's KV cache into fixed-size blocks that can be
+  stored non-contiguously and allocated on demand. Which technique is this?
+options:
+  - id: a
+    text: KV Cache
+    correct: false
+    explanation: That is the general mechanism of caching key-value pairs to avoid
+      recomputation; the fixed-size, non-contiguous block layout is a separate,
+      more specific technique.
+  - id: b
+    text: Paged Attention
+    correct: true
+    explanation: Correct. It manages a request's KV cache in fixed-size blocks that
+      can sit non-contiguously in memory and be allocated as needed, which is what
+      reduces fragmentation.
+  - id: c
+    text: Flash Attention
+    correct: false
+    explanation: That is a modified attention mechanism that reduces the
+      computations attention itself requires, not a memory layout scheme.
+  - id: d
+    text: Context Caching
+    correct: false
+    explanation: That stores the output of previous layers for an input sequence to
+      avoid recomputation, rather than partitioning the KV cache into blocks.
+evidence:
+  - source_id: src-inference-overview
+    excerpt: A memory-management technique that partitions each request's KV cache
+      into fixed-size blocks. The blocks can be stored non-contiguously and
+      allocated on demand, reducing memory fragmentation.
+    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+authored:
+  by: agent:claude
+  at: 2026-08-19T13:45:00Z
+course_id: ai-leader
