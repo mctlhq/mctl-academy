@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co49d3cee498
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-recovery
 stem: A team plans to scale a node group from six nodes to ten and worries the
@@ -36,4 +36,4 @@ authored:
 course_id: ai-cloudops-engineer
 reviewed:
   by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  at: 2026-08-18T21:49:42Z
