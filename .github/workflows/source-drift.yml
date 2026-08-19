@@ -22,7 +22,7 @@ jobs:
   drift:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Bun, matching ci.yml and content-evidence.yml. This job previously used
       # setup-node with `cache: npm` plus `npm ci` and had never once succeeded:

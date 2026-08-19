@@ -58,7 +58,7 @@ jobs:
           echo "::error::dispatch this workflow on a feature branch, not main"
           exit 1
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # A real branch, not the detached SHA checkout defaults to on
           # workflow_dispatch -- the commit step below has to push somewhere.
