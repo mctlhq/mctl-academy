@@ -9,8 +9,8 @@ options:
   - id: a
     text: Paged Attention
     correct: false
-    explanation: That divides the input sequence into chunks processed separately,
-      which is a memory layout change rather than a precision change.
+    explanation: That partitions a request's KV cache into fixed-size memory
+      blocks, which is a memory layout change rather than a precision change.
   - id: b
     text: Continuous Batching
     correct: false
