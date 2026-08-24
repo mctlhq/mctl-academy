@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co2331c8572e
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: You are creating a GPU cluster and must pick an InfiniBand fabric. Why
