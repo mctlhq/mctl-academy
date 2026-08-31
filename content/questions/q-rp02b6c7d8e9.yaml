@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rp02b6c7d8e9
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: What is Hybrid Search in a modern retrieval architecture?

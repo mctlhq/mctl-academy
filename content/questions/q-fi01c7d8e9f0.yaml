@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fi01c7d8e9f0
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/framework-integrations
 stem: When configuring OpenAI-compatible client SDKs to connect to an external

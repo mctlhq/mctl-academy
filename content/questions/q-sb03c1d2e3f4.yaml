@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sb03c1d2e3f4
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: How should environment variables containing secret API keys be passed to

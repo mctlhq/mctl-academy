@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fi02d8e9f0a1
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/framework-integrations
 stem: What standard protocol enables AI agents to dynamically discover and
