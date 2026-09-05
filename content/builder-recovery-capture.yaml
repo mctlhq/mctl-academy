@@ -1,0 +1,136 @@
+schema_version: 1
+
+# Fresh recovery records preserve existing snapshot records and historic pins.
+sources:
+  - id: src-recovery-quickstart
+    url: https://docs.tokenfactory.nebius.com/quickstart.md
+    title: "Quickstart"
+    objectives:
+      - domain-1/api-authentication
+      - domain-1/openai-compatibility
+  - id: src-recovery-datasets
+    url: https://docs.tokenfactory.nebius.com/post-training/datasets.md
+    title: "Dataset formats"
+    objectives:
+      - domain-3/datasets
+      - domain-3/dataset-formats
+  - id: src-recovery-finetune
+    url: https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md
+    title: "Supervised fine-tuning"
+    objectives:
+      - domain-3/supervised-fine-tuning
+      - domain-3/files-api
+      - domain-3/fine-tuning-jobs
+  - id: src-recovery-tools
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md
+    title: "Function calling"
+    objectives:
+      - domain-2/function-calling
+  - id: src-recovery-json
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/json.md
+    title: "Structured output"
+    objectives:
+      - domain-2/structured-output
+  - id: src-recovery-data-lab
+    url: https://docs.tokenfactory.nebius.com/data-lab/overview.md
+    title: "Data Lab"
+    objectives:
+      - domain-3/data-lab
+  - id: src-recovery-processing
+    url: https://docs.tokenfactory.nebius.com/data-lab/data-processing.md
+    title: "Data processing"
+    objectives:
+      - domain-3/data-lab
+      - domain-3/datasets
+  - id: src-recovery-lora
+    url: https://docs.tokenfactory.nebius.com/post-training/merge-moe-lora-weights.md
+    title: "Merging LoRA adapters"
+    objectives:
+      - domain-3/lora-adapters
+  - id: src-recovery-lifecycle
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md
+    title: "Endpoint lifecycle"
+    objectives:
+      - domain-4/endpoint-lifecycle
+      - domain-4/capacity-and-scaling
+  - id: src-recovery-capacity
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md
+    title: "Endpoint capacity"
+    objectives:
+      - domain-4/capacity-and-scaling
+      - domain-4/dedicated-endpoints
+  - id: src-recovery-endpoint
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md
+    title: "Dedicated endpoints"
+    objectives:
+      - domain-4/dedicated-endpoints
+  - id: src-recovery-planes
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/control-data-plane.md
+    title: "Control and data plane"
+    objectives:
+      - domain-4/dedicated-endpoints
+  - id: src-recovery-billing
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/billing-policy.md
+    title: "Dedicated billing"
+    objectives:
+      - domain-4/billing-and-consumption
+      - domain-4/dedicated-endpoints
+  - id: src-recovery-limits
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md
+    title: "Rate limits"
+    objectives:
+      - domain-4/rate-limits
+  - id: src-recovery-orgs
+    url: https://docs.tokenfactory.nebius.com/team-access/org-projects.md
+    title: "Organizations and projects"
+    objectives:
+      - domain-1/organizations-and-projects
+      - domain-4/team-access
+  - id: src-recovery-playground
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md
+    title: "Playground"
+    objectives:
+      - domain-1/playground
+  - id: src-recovery-sandbox
+    url: https://docs.tokenfactory.nebius.com/sandboxes/overview.md
+    title: "Sandboxes"
+    objectives:
+      - domain-2/agent-sandboxes
+  - id: src-recovery-mcp
+    url: https://docs.tokenfactory.nebius.com/sandboxes/mcp/overview.md
+    title: "Sandbox MCP"
+    objectives:
+      - domain-2/agent-sandboxes
+      - domain-2/framework-integrations
+  - id: src-recovery-chat
+    url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md
+    title: "Chat completion API"
+    objectives:
+      - domain-2/chat-completions
+      - domain-4/observability
+  - id: src-recovery-models
+    url: https://docs.tokenfactory.nebius.com/api-reference/models/list-models.md
+    title: "List models API"
+    objectives:
+      - domain-1/model-catalog
+  - id: src-recovery-deprecation
+    url: https://docs.tokenfactory.nebius.com/august-2026-deprecation-notice.md
+    title: "Model deprecations August 2026"
+    objectives:
+      - domain-1/model-catalog
+  - id: src-recovery-rerank
+    url: https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md
+    title: "Reranking API"
+    objectives:
+      - domain-2/embeddings-and-rerank
+  - id: src-recovery-embedding
+    url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-embeddings.md
+    title: "Embeddings API"
+    objectives:
+      - domain-2/embeddings-and-rerank
+  - id: src-recovery-consumption
+    url: https://docs.tokenfactory.nebius.com/other-capabilities/billing-new.md
+    title: "Billing and consumption"
+    objectives:
+      - domain-4/billing-and-consumption
+

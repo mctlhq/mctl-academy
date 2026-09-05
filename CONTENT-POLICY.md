@@ -28,6 +28,23 @@ the questions, and the process that writes the questions has never seen it.
 
 ## Review
 
+Question approval may be performed by a human or an independent reviewing agent.
+An agent that writes or edits an item must not approve that revision itself: a
+separate agent reviews the final text and captured evidence. Record the actual
+reviewer as `agent:<name>`, never impersonate a human owner. The editing agent is
+recorded in `authored.by`; preserve earlier authorship/review history in git.
+
+Agent approvals must carry `reviewed.content_sha256`, computed from the question
+excluding only `status` and `reviewed`, using the canonical fingerprint helper.
+Any change to that material requires fresh review. Record item-level decisions
+and the reviewed fingerprints in a committed audit. Different labels alone do
+not prove independent review; the separate review execution must actually occur.
+Existing human approvals remain valid without a fingerprint. GitHub CODEOWNERS
+approval of changes and permission to merge/deploy are separate, unchanged gates.
+
+Mechanical evidence checks remain mandatory. Finding a citation verbatim does
+not prove that it supports an answer; the reviewer must read it in context.
+
 **The review checklist has exactly two criteria:**
 
 1. Does the cited evidence support this statement?
