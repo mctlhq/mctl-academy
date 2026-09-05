@@ -8,6 +8,6 @@ const router = useRouter();
 <template>
   <DashboardScreen
     :on-review-mistakes="() => router.push('/mistakes')"
-    :on-start-practice="() => router.push('/practice')"
+    :on-start-practice="(domain) => router.push({ path: '/practice', query: domain ? { domain } : {} })"
   />
 </template>

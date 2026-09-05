@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-bc01b0c1d2e3
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: How is billing calculated for shared pay-as-you-go inference requests

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de06a7b8c9d0
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: What is the primary billing model metric used for shared pay-as-you-go

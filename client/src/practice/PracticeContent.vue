@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref, watch, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
-import { usePracticeSession } from "./usePracticeSession";
+import { usePracticeSession, type PracticeMode } from "./usePracticeSession";
+import { getItem, setItem } from "../services/storage";
 import type { BundleQuestion } from "../services/contentBundle";
 import RestrictedMarkdown from "../exam/components/RestrictedMarkdown.vue";
 import ReportModal from "../components/ReportModal.vue";
@@ -10,22 +11,34 @@ import type { UserProfile } from "../types/user";
 
 /**
  * Renders one practice session over the questions it is handed. The bundle is
- * always already scoped to the selected course by the routed view, which also
- * keys this component on the course id — so switching course remounts a fresh
- * session rather than mutating a running one.
+ * already scoped to course/domain by the routed view. Its key includes the
+ * account and mode so remounts restore the appropriate device-local cursor.
  */
 const props = withDefaults(
   defineProps<{
     bundle: readonly BundleQuestion[];
     title?: string;
     emptyMessage?: string;
+    storageKey?: string;
+    mode?: PracticeMode;
   }>(),
   { title: "Practice" },
 );
 
-const { current, index, total, revealed, score, attempted, selectOption, next } = usePracticeSession(
-  props.bundle,
-);
+const {
+  current,
+  index,
+  total,
+  revealed,
+  firstCorrect,
+  score,
+  attempted,
+  skipped,
+  remaining,
+  selectOption,
+  next,
+  restart,
+} = usePracticeSession(() => props.bundle, { storageKey: props.storageKey, mode: props.mode });
 
 const isReporting = ref(false);
 
@@ -34,7 +47,7 @@ const isReporting = ref(false);
 // scoped to whichever question is current. `voteScore` is null while the
 // summary for the current question hasn't resolved yet, so the widget never
 // flashes a fabricated 0 before the real number loads.
-const currentUser = inject<Ref<UserProfile | null>>("currentUser");
+const currentUser = inject<Ref<UserProfile | null>>("currentUser", ref(null));
 const voteScore = ref<number | null>(null);
 const userVote = ref<-1 | 0 | 1>(0);
 const voteErrored = ref(false);
@@ -116,16 +129,14 @@ async function onVoteClick(direction: VoteValue) {
 }
 
 const CONTEXT_STORAGE_KEY = "academy.practice-context-open";
-const contextOpen = ref(
-  typeof localStorage !== "undefined" && localStorage.getItem(CONTEXT_STORAGE_KEY) === "true",
-);
+const contextOpen = ref(getItem(CONTEXT_STORAGE_KEY) === "true");
 const progressPercent = computed(() =>
   total.value === 0 ? 0 : Math.round(((index.value + 1) / total.value) * 100),
 );
 
 function toggleContext() {
   contextOpen.value = !contextOpen.value;
-  localStorage.setItem(CONTEXT_STORAGE_KEY, String(contextOpen.value));
+  setItem(CONTEXT_STORAGE_KEY, String(contextOpen.value));
 }
 
 function handleShortcut(event: KeyboardEvent) {
@@ -175,25 +186,55 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 <template>
   <section v-if="total === 0" class="practice practice-empty">
     <h1>{{ title }}</h1>
-    <p v-if="emptyMessage">{{ emptyMessage }}</p>
-    <p v-else>
-      There are no published questions yet. Check back once the content bank has questions with
-      <code>status: published</code>.
+    <p v-if="bundle.length === 0">There are no published questions in this selection yet.</p>
+    <p v-else-if="remaining > 0">
+      Your progress has changed. Continue with the questions now waiting for practice.
+    </p>
+    <p v-else-if="emptyMessage">{{ emptyMessage }}</p>
+    <p v-else>All published questions in this selection are solved.</p>
+    <MButton v-if="remaining > 0" type="button" @click="restart">Continue practice</MButton>
+    <p v-if="bundle.length > 0" class="completion-links">
+      <a href="/practice?mode=all">Repeat all</a> · <a href="/mock">Mock exam</a>
     </p>
   </section>
 
   <section v-else-if="!current" class="practice practice-summary">
     <h1>Session complete</h1>
     <p class="score">{{ score }} / {{ attempted }} correct on first try</p>
-    <p class="meta">{{ total }} questions attempted this session.</p>
+    <p class="meta">{{ attempted }} questions attempted; {{ skipped }} skipped this pass.</p>
+    <p v-if="mode !== 'all'">
+      {{
+        remaining === 0
+          ? mode === "mistakes"
+            ? "No mistakes left in this course."
+            : "All questions in this selection are solved."
+          : `${remaining} questions remain in this selection.`
+      }}
+    </p>
+    <MButton v-if="remaining > 0" type="button" @click="restart">{{
+      mode === "all" ? "Repeat all again" : "Continue practice"
+    }}</MButton>
+    <p class="completion-links">
+      <a href="/practice?mode=all">Repeat all</a> · <a href="/mock">Mock exam</a>
+    </p>
   </section>
 
   <section v-else class="practice-shell" :class="{ 'context-open': contextOpen }">
     <div class="practice-stage">
       <div class="practice">
         <div class="practice-header">
-          <p class="progress">Question {{ index + 1 }} of {{ total }} · {{ current.objective }}</p>
+          <p class="progress">Question {{ index + 1 }} of {{ total }} this pass</p>
           <div class="header-actions">
+            <button
+              type="button"
+              class="context-toggle"
+              :aria-expanded="contextOpen"
+              aria-controls="practice-context"
+              aria-label="Toggle practice context"
+              @click="toggleContext"
+            >
+              Info
+            </button>
             <div v-if="currentUser" class="vote-widget" role="group" aria-label="Vote on this question">
               <button
                 type="button"
@@ -223,6 +264,9 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
           </div>
         </div>
 
+        <p class="objective-title">
+          {{ current.objectiveTitle ?? current.objective.split("/").at(-1)?.replaceAll("-", " ") }}
+        </p>
         <h1 class="stem"><RestrictedMarkdown :text="current.stem" /></h1>
         <ul :key="current.id" class="options">
           <li
@@ -239,24 +283,27 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
             </div>
           </li>
         </ul>
+        <div v-if="revealed.size > 0" class="answer-details">
+          <p v-if="firstCorrect === false" class="retry-note">
+            This question stays in review. Answer correctly on the first try in a new pass to solve it.
+          </p>
+          <details v-if="current.sources?.length" class="answer-sources">
+            <summary>Sources and evidence</summary>
+            <div v-for="(source, sourceIndex) in current.sources" :key="sourceIndex">
+              <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
+              <blockquote><RestrictedMarkdown :text="source.excerpt" /></blockquote>
+            </div>
+          </details>
+        </div>
         <div class="practice-actions">
           <MButton type="button" class="next" @click="next">
-            {{ index + 1 === total ? "Finish" : "Next question" }}
+            {{ revealed.size === 0 ? "Skip" : index + 1 === total ? "Finish" : "Next question" }}
           </MButton>
         </div>
         <p class="sr-only" aria-live="polite" aria-atomic="true">{{ lastAnnouncement }}</p>
       </div>
 
-      <aside class="practice-context" :aria-hidden="!contextOpen">
-        <button
-          type="button"
-          class="context-toggle"
-          :aria-expanded="contextOpen"
-          aria-label="Toggle practice context"
-          @click="toggleContext"
-        >
-          <span aria-hidden="true">{{ contextOpen ? "›" : "i" }}</span>
-        </button>
+      <aside v-if="contextOpen" id="practice-context" class="practice-context">
         <div v-if="contextOpen" class="context-content">
           <section>
             <h2>Session</h2>
@@ -265,7 +312,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
           </section>
           <section>
             <h2>Objective</h2>
-            <p>{{ current.objective }}</p>
+            <p>{{ current.objectiveTitle ?? current.objective }}</p>
           </section>
           <section>
             <h2>Shortcuts</h2>
@@ -280,6 +327,30 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 </template>
 
 <style scoped>
+.objective-title {
+  color: var(--surface-fg-muted);
+  font-size: 0.8rem;
+  margin: 0 0 0.5rem;
+}
+.answer-details {
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  color: var(--surface-fg-muted);
+}
+.answer-sources summary {
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+.answer-sources blockquote {
+  margin: 0.5rem 0;
+}
+.completion-links a {
+  color: var(--accent);
+}
+.practice-empty,
+.practice-summary {
+  overflow-y: auto;
+}
 .practice {
   width: min(100%, 43rem);
   margin: 0 auto;
@@ -297,7 +368,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   display: grid;
   flex: 1;
   width: 100%;
-  grid-template-columns: minmax(0, 1fr) 3rem;
+  grid-template-columns: minmax(0, 1fr);
   min-height: inherit;
 }
 
@@ -516,8 +587,8 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 
 .context-toggle {
   display: grid;
-  width: 100%;
-  height: 3rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   padding: 0;
   place-items: center;
   border: 0;
@@ -610,18 +681,15 @@ kbd {
   }
 
   .practice-context {
-    position: fixed;
-    right: calc(1rem + env(safe-area-inset-right));
-    bottom: calc(1rem + env(safe-area-inset-bottom));
-    z-index: var(--mctl-z-index-overlay);
-    width: 2.75rem;
+    position: static;
+    width: auto;
     border: 1px solid var(--surface-line-strong);
     border-radius: var(--mctl-radius-pill);
     box-shadow: var(--mctl-shadow-overlay);
   }
 
   .context-open .practice-context {
-    width: min(17rem, calc(100vw - 2rem));
+    width: 100%;
     border-radius: var(--mctl-radius-lg);
   }
 
@@ -634,10 +702,7 @@ kbd {
   }
 
   .progress {
-    max-width: 72%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .practice-header {
@@ -659,20 +724,19 @@ kbd {
 
   .practice-stage,
   .practice-shell.context-open .practice-stage {
-    grid-template-rows: minmax(0, 1fr);
+    display: block;
     height: auto;
     min-height: 0;
-    overflow: hidden;
+    overflow-y: auto;
   }
 
   .practice-stage > .practice {
     box-sizing: border-box;
-    height: 100%;
-    max-height: 100%;
-    min-height: 0;
+    height: auto;
+    min-height: 100%;
     padding-top: 1rem;
     padding-bottom: 1rem;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .practice-header {
@@ -686,10 +750,10 @@ kbd {
   }
 
   .options {
-    flex: 1;
+    flex: none;
     min-height: 0;
     margin-bottom: 0;
-    overflow-y: auto;
+    overflow: visible;
     overscroll-behavior: contain;
   }
 
@@ -707,7 +771,7 @@ kbd {
        `overflow: hidden` above) — `position: sticky` from the base rule has
        no scrollable range to act within here, but reset it explicitly
        rather than rely on that. */
-    position: static;
+    position: sticky;
     flex: none;
     margin-right: -0.25rem;
     margin-left: -0.25rem;

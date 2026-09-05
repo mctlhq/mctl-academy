@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc05d2e3f4a5
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/function-calling
 stem: When a model returns a tool_calls payload in a Chat Completion response,

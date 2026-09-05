@@ -90,7 +90,13 @@ describe("selectMockQuestions", () => {
   });
 
   it("a course's mock never draws a question from another course", () => {
-    const course = courseCatalog.find((c) => c.available)!;
+    const course = courseCatalog.find(
+      (c) =>
+        c.available &&
+        c.mock.domains.every(
+          (d) => questionsForCourse(c.id).filter((q) => q.domain === d.id).length >= d.mockQuestions,
+        ),
+    )!;
     const result = selectMockQuestions(
       questionsForCourse(course.id) as Question[],
       course.mock as MockConfig,

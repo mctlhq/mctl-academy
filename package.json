@@ -18,6 +18,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.check.json",
     "lint:content": "node scripts/validate-content.mjs",
+    "report:content-quality": "node scripts/content-quality-report.mjs",
     "verify:evidence": "node scripts/verify-evidence.mjs",
     "snapshot:capture": "node scripts/capture-source.mjs",
     "promote:questions": "node scripts/approve-pr-questions.mjs",
@@ -30,7 +31,8 @@
     "build:preview": "node scripts/build-preview.mjs",
     "migrate": "node scripts/migrate.mjs up",
     "migrate:down": "node scripts/migrate.mjs down",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:client": "playwright test --config playwright.client.config.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.0",

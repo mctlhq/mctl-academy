@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de08c9d0e1f2
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: What status indicates that a dedicated endpoint has completed node

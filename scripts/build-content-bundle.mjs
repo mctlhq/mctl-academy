@@ -18,9 +18,8 @@
  * and a safe question. Marking a source drifted and rebuilding is the
  * withdrawal mechanism.
  *
- * Deliberately strips fields the client does not need (evidence, authored,
- * reviewed, schema_version) so the bundle carries only what the learning
- * screens render.
+ * Only public source links and short excerpts reach answer feedback. Private
+ * snapshots, author/reviewer metadata and snapshot keys stay out of the bundle.
  *
  * The catalog exposes only vendor-neutral fields. `prepares_for`, the course
  * description and the disclaimer name a certification vendor and stay in
@@ -43,16 +42,31 @@ const CATALOG_OUT = process.env.ACADEMY_CATALOG_OUT
   ? resolve(process.env.ACADEMY_CATALOG_OUT)
   : join(ROOT, "client", "src", "course-catalog.json");
 
-const { eligible, excluded, total } = partitionQuestions(CONTENT, (file, msg) =>
+const { eligible, excluded, total, sourcesById } = partitionQuestions(CONTENT, (file, msg) =>
   console.warn(`warn  ${file}: ${msg}`),
 );
 
+const courses = loadCourses(CONTENT, (file, msg) => console.warn(`warn  ${file}: ${msg}`));
+const objectiveTitles = new Map();
+for (const course of courses.values()) {
+  for (const domain of course.domains ?? []) {
+    for (const objective of domain.objectives ?? []) {
+      objectiveTitles.set(`${course.id}/${domain.id}/${objective.id}`, objective.title);
+    }
+  }
+}
 const bundle = eligible.map(({ data: q }) => ({
   id: q.id,
   course_id: q.course_id,
   domain: q.domain,
   objective: q.objective,
   stem: q.stem,
+  objectiveTitle: objectiveTitles.get(`${q.course_id}/${q.objective}`) ?? q.objective,
+  sources: q.evidence.map((ev) => ({
+    title: sourcesById.get(ev.source_id).title,
+    url: sourcesById.get(ev.source_id).url,
+    excerpt: ev.excerpt,
+  })),
   options: q.options.map((o) => ({
     id: o.id,
     text: o.text,
@@ -62,8 +76,6 @@ const bundle = eligible.map(({ data: q }) => ({
 }));
 
 // ---------------------------------------------------------------- catalog
-
-const courses = loadCourses(CONTENT, (file, msg) => console.warn(`warn  ${file}: ${msg}`));
 
 const publishedByCourse = new Map();
 for (const q of bundle) {

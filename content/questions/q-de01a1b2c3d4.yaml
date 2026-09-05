@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de01a1b2c3d4
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/dedicated-endpoints
 stem: What primary architectural advantage does deploying a dedicated endpoint

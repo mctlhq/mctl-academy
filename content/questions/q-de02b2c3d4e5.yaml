@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de02b2c3d4e5
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/dedicated-endpoints
 stem: How are dedicated endpoints targeted when making OpenAI-compatible chat

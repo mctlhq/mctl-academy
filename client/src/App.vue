@@ -25,16 +25,14 @@ provide("currentUser", user);
 // Bumped after a successful syncFromServer() so views that inject it (see
 // AppNav.vue, DashboardScreen.vue, HomeScreen.vue, MistakesView.vue) can
 // reactively refresh their progress/mistake data. Deliberately NOT part of
-// the RouterView remount key below: an in-progress Practice/Mock session
-// lives only in memory, and a background sync completing mid-session must
-// never force-unmount it and silently discard the learner's answers so far.
+// the RouterView remount key below: background sync must not interrupt an
+// open question or a running Mock. Local writes also notify progressVersion.
 const syncVersion = ref(0);
 provide("syncVersion", syncVersion);
 
 // The course-switch remount boundary. Every learning surface is scoped to the
-// selected course, and a half-answered practice or mock session belongs to the
-// course it started in — so switching course discards the routed view outright
-// rather than re-filtering a running session in place.
+// selected course and account. Remount to restore that scope's own persisted
+// session rather than re-filtering a running session in place.
 const { currentCourseId } = useCourseStore();
 
 watch(
@@ -79,7 +77,11 @@ watch(
 
     <main class="app-main">
       <RouterView v-slot="{ Component, route: currentRoute }">
-        <component :is="Component" :key="`${currentRoute.fullPath}-${currentCourseId}`" />
+        <component
+          v-if="!focusedPractice || !authLoading"
+          :is="Component"
+          :key="`${currentRoute.fullPath}-${currentCourseId}-${user?.id ?? 'guest'}`"
+        />
       </RouterView>
     </main>
 

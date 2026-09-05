@@ -2,7 +2,7 @@
   {
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
-    "publishedQuestionCount": 80,
+    "publishedQuestionCount": 28,
     "available": true,
     "mock": {
       "questionCount": 30,

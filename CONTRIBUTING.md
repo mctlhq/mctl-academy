@@ -1,5 +1,28 @@
 # Contributing
 
+## Writing evidence-backed practice
+
+Start with a course objective, one claim to test, and a captured documentation
+excerpt supporting that claim. Write the scenario and four plausible options
+from that material. Keep options comparable in specificity and length; use
+documented misconceptions rather than obviously unrelated or absurd distractors.
+Prefer a different decision or failure scenario over paraphrasing an existing fact.
+
+Before human approval, have an independent reader inspect the claim, correct
+answer, and explanations against the cited passage in context. Record unresolved
+support gaps for the human reviewer. Agent feedback is advisory, never approval.
+The existing human checklist in CONTENT-POLICY.md remains authoritative.
+
+Run `npm run report:content-quality` (or append `-- --json`) to inspect coverage,
+repeated citations, similar questions, source/objective mappings, answer-length
+bias, and mock shortfalls. These are review signals, not evidence of correctness.
+Verbatim citation CI cannot prove that a real quotation supports an unrelated claim.
+Do not edit a source's objective mappings merely to silence a report.
+
+Unsupported published items move to `needs_review`, without altering historical
+attempts. Re-author from captured evidence, return as `review_ready`, and obtain
+human approval before publication. See the [Builder audit](docs/content/builder-evidence-audit.md).
+
 Thanks for looking. Here is what is open, what is closed, and why.
 
 ## Open to everyone

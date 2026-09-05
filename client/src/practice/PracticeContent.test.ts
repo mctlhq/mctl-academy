@@ -75,7 +75,7 @@ describe("PracticeContent", () => {
     const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1"), question("q-2")] } });
     const firstOptionsList = wrapper.find(".options").element;
 
-    await actionButton(wrapper, "Next question").trigger("click");
+    await actionButton(wrapper, "Skip").trigger("click");
 
     expect(wrapper.find(".options").element).not.toBe(firstOptionsList);
   });
@@ -83,7 +83,7 @@ describe("PracticeContent", () => {
   it("renders an empty state instead of crashing when the bundle has zero published questions", () => {
     const wrapper = mount(PracticeContent, { props: { bundle: [] } });
     expect(wrapper.find("h1").text()).toMatch(/practice/i);
-    expect(wrapper.text()).toMatch(/no published questions yet/i);
+    expect(wrapper.text()).toMatch(/no published questions in this selection yet/i);
     expect(wrapper.find("button").exists()).toBe(false);
   });
 

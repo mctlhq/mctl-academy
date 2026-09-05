@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-er01c3d4e5f6
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: In a RAG retrieval system, what primary purpose does a cross-encoder

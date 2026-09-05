@@ -1,142 +1,18 @@
 [
   {
-    "id": "q-bc01b0c1d2e3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/billing-and-consumption",
-    "stem": "How is billing calculated for shared pay-as-you-go inference requests versus dedicated endpoints?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Shared pay-as-you-go is billed by raw storage GBs; dedicated is billed per SQL query",
-        "correct": false,
-        "explanation": "Storage GBs belong to database/file storage billing, not LLM token inference billing."
-      },
-      {
-        "id": "b",
-        "text": "Shared pay-as-you-go is billed per processed input/output token; dedicated is billed per provisioned GPU node hour",
-        "correct": true,
-        "explanation": "Shared models bill per 1M processed tokens, while dedicated instances bill fixed hourly rates for allocated node capacity."
-      },
-      {
-        "id": "c",
-        "text": "Shared pay-as-you-go is free; dedicated charges a fixed annual license fee",
-        "correct": false,
-        "explanation": "Shared API usage incurs token consumption costs; dedicated endpoints charge per node hour."
-      },
-      {
-        "id": "d",
-        "text": "Both charge identical flat fees per HTTP request regardless of length or hardware",
-        "correct": false,
-        "explanation": "Shared models bill dynamically on token length; dedicated endpoints bill per hardware instance hour."
-      }
-    ]
-  },
-  {
-    "id": "q-bc02c1d2e3f4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/billing-and-consumption",
-    "stem": "What cost control safeguard prevents unexpected usage charges on an organization account?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Disabling SSL certificate validation on requests",
-        "correct": false,
-        "explanation": "Disabling SSL compromises transport security and has no impact on billing thresholds."
-      },
-      {
-        "id": "b",
-        "text": "Setting temperature to 1.0 on all completion calls",
-        "correct": false,
-        "explanation": "Temperature controls output entropy, not monetary spend caps."
-      },
-      {
-        "id": "c",
-        "text": "Configuring spending budget alerts and hard credit caps on the organization account",
-        "correct": true,
-        "explanation": "Budget thresholds and hard spending caps prevent unexpected cost overruns."
-      },
-      {
-        "id": "d",
-        "text": "Changing API request content-type to application/xml",
-        "correct": false,
-        "explanation": "MIME headers specify payload format, not billing caps."
-      }
-    ]
-  },
-  {
-    "id": "q-cc01a1b2c3d4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/chat-completions",
-    "stem": "When configuring streaming responses in the Chat Completions API, what format are the event stream data chunks delivered in?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Server-Sent Events (SSE) data streams formatted with data: [JSON]",
-        "correct": true,
-        "explanation": "Streaming chat completions use standard Server-Sent Events (SSE) where each chunk is prefixed with data."
-      },
-      {
-        "id": "b",
-        "text": "Raw binary WebSocket frame packets",
-        "correct": false,
-        "explanation": "The Chat Completions API uses standard HTTP streaming with SSE, not WebSockets."
-      },
-      {
-        "id": "c",
-        "text": "A multipart/form-data MIME payload",
-        "correct": false,
-        "explanation": "Multipart encoding is used for file uploads, not streaming LLM tokens."
-      },
-      {
-        "id": "d",
-        "text": "A single chunked JSON array containing all tokens",
-        "correct": false,
-        "explanation": "JSON arrays cannot be incrementally parsed per token without custom stream parsers; SSE line streams are used."
-      }
-    ]
-  },
-  {
-    "id": "q-cc02b2c3d4e5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/chat-completions",
-    "stem": "How does setting temperature to 0.0 affect the sampling output of a chat completion model?",
-    "options": [
-      {
-        "id": "a",
-        "text": "It causes the model to sample tokens purely randomly across the full vocabulary",
-        "correct": false,
-        "explanation": "High temperature increases randomness; zero temperature removes random sampling."
-      },
-      {
-        "id": "b",
-        "text": "It enables deterministic greedy decoding by always selecting the highest-probability token",
-        "correct": true,
-        "explanation": "Setting temperature to 0 selects top logprob tokens deterministically (greedy decoding)."
-      },
-      {
-        "id": "c",
-        "text": "It disables system prompt instructions and safety filtering",
-        "correct": false,
-        "explanation": "Temperature only controls logit scaling during generation, not prompt handling or moderation."
-      },
-      {
-        "id": "d",
-        "text": "It restricts token generation to a maximum of 100 completion tokens",
-        "correct": false,
-        "explanation": "Output length is controlled by max_tokens, not temperature."
-      }
-    ]
-  },
-  {
     "id": "q-co219916c0e5",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-1",
     "objective": "domain-1/environment-deployment",
     "stem": "Two teams run separate GPU clusters that were placed in the same InfiniBand fabric. A security review asks whether one cluster's nodes could reach the other's over InfiniBand. What is the answer?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -170,6 +46,14 @@
     "domain": "domain-1",
     "objective": "domain-1/environment-deployment",
     "stem": "A training job on a GPU cluster is bottlenecked moving tensors between GPUs on different nodes. Which property of the cluster's networking is intended to address this?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -203,6 +87,14 @@
     "domain": "domain-1",
     "objective": "domain-1/environment-deployment",
     "stem": "You are creating a GPU cluster and must pick an InfiniBand fabric. Why does the choice constrain the cluster later?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids GPUs to this cluster"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -236,6 +128,14 @@
     "domain": "domain-1",
     "objective": "domain-1/environment-deployment",
     "stem": "A colleague creating their first Managed Service for Kubernetes cluster asks what leaving the public endpoint enabled will mean in practice. What should you tell them?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "How to get started with Managed Service for Kubernetes: Create your first cluster",
+        "url": "https://docs.nebius.com/kubernetes/quickstart.md",
+        "excerpt": "Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -269,6 +169,14 @@
     "domain": "domain-1",
     "objective": "domain-1/network-vpc",
     "stem": "A VM was created in the wrong subnet. The team wants it moved to the correct subnet without rebuilding it. What is the outcome?",
+    "objectiveTitle": "VPC networking, subnets, and security group configuration",
+    "sources": [
+      {
+        "title": "Isolating Nebius AI Cloud resources in separate networks",
+        "url": "https://docs.nebius.com/vpc/networking/isolation.md",
+        "excerpt": "You cannot move a resource to another network or subnet after creation."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -302,6 +210,14 @@
     "domain": "domain-1",
     "objective": "domain-1/network-vpc",
     "stem": "A team wants two test environments that use identical private IP addressing and must not be able to reach each other. What arrangement achieves this?",
+    "objectiveTitle": "VPC networking, subnets, and security group configuration",
+    "sources": [
+      {
+        "title": "Isolating Nebius AI Cloud resources in separate networks",
+        "url": "https://docs.nebius.com/vpc/networking/isolation.md",
+        "excerpt": "If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -335,6 +251,14 @@
     "domain": "domain-1",
     "objective": "domain-1/network-vpc",
     "stem": "An engineer created a security group with the intended rules, but the VM's traffic is still unfiltered. What step is most likely missing?",
+    "objectiveTitle": "VPC networking, subnets, and security group configuration",
+    "sources": [
+      {
+        "title": "Security groups in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/vpc/security-groups/overview.md",
+        "excerpt": "For a security group to apply to a VM, you need to assign the security group to a VM's network interface."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -368,6 +292,14 @@
     "domain": "domain-1",
     "objective": "domain-1/network-vpc",
     "stem": "Two security rules in one group match the same packet with conflicting access settings. One has priority 1 and the other priority 900. Which wins?",
+    "objectiveTitle": "VPC networking, subnets, and security group configuration",
+    "sources": [
+      {
+        "title": "Security groups in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/vpc/security-groups/overview.md",
+        "excerpt": "`.spec.priority`: Priority of the rule. 1 is the highest priority, 1000 is the lowest."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -401,6 +333,14 @@
     "domain": "domain-1",
     "objective": "domain-1/storage-volumes",
     "stem": "A workload writes intermediate shards to a local SSD disk. The VM is stopped overnight to save cost. What happens to that data?",
+    "objectiveTitle": "Block storage, shared filesystems, and object storage setup",
+    "sources": [
+      {
+        "title": "Types of storage volumes in Compute",
+        "url": "https://docs.nebius.com/compute/storage/types.md",
+        "excerpt": "Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -434,6 +374,14 @@
     "domain": "domain-1",
     "objective": "domain-1/storage-volumes",
     "stem": "Four running VMs must read and write one common dataset at the same time. Which storage option supports this directly?",
+    "objectiveTitle": "Block storage, shared filesystems, and object storage setup",
+    "sources": [
+      {
+        "title": "Types of storage volumes in Compute",
+        "url": "https://docs.nebius.com/compute/storage/types.md",
+        "excerpt": "One shared filesystem can be attached to multiple VMs at once."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -467,6 +415,14 @@
     "domain": "domain-1",
     "objective": "domain-1/storage-volumes",
     "stem": "An engineer tries to create a 100 GiB Network SSD Non-replicated disk and the request is rejected. What explains this?",
+    "objectiveTitle": "Block storage, shared filesystems, and object storage setup",
+    "sources": [
+      {
+        "title": "Types of storage volumes in Compute",
+        "url": "https://docs.nebius.com/compute/storage/types.md",
+        "excerpt": "The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -500,6 +456,14 @@
     "domain": "domain-1",
     "objective": "domain-1/storage-volumes",
     "stem": "Two teams keep their VMs in separate projects in the same region and want both to mount one shared filesystem. What should you tell them?",
+    "objectiveTitle": "Block storage, shared filesystems, and object storage setup",
+    "sources": [
+      {
+        "title": "Types of storage volumes in Compute",
+        "url": "https://docs.nebius.com/compute/storage/types.md",
+        "excerpt": "Sharing a filesystem across projects is not supported, even if the projects are in the same"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -533,6 +497,14 @@
     "domain": "domain-2",
     "objective": "domain-2/iam-roles",
     "stem": "A new engineer appears on the tenant user list but cannot see any resources. What is the most likely reason?",
+    "objectiveTitle": "User access, IAM roles, service accounts, and permissions",
+    "sources": [
+      {
+        "title": "How resources, identities and access are managed in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/overview.md",
+        "excerpt": "Being on the tenant user list does not grant access to resources. Each account should be assigned to a group"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -566,6 +538,14 @@
     "domain": "domain-2",
     "objective": "domain-2/iam-roles",
     "stem": "A service account was created in the tooling project. It now needs to manage buckets that live in a different project in the same tenant. Is that possible?",
+    "objectiveTitle": "User access, IAM roles, service accounts, and permissions",
+    "sources": [
+      {
+        "title": "How resources, identities and access are managed in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/overview.md",
+        "excerpt": "a service account can be granted access to any resource in the tenant regardless of the project"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -599,6 +579,14 @@
     "domain": "domain-2",
     "objective": "domain-2/iam-roles",
     "stem": "An on-call rotation must be able to stop and start VMs during incidents, but should not gain broader Compute permissions. Which role fits?",
+    "objectiveTitle": "User access, IAM roles, service accounts, and permissions",
+    "sources": [
+      {
+        "title": "Roles for Nebius AI Cloud groups",
+        "url": "https://docs.nebius.com/iam/authorization/roles.md",
+        "excerpt": "`compute.instance-power-operator`: perform power operations on virtual machines without broader Compute permissions"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -632,6 +620,14 @@
     "domain": "domain-2",
     "objective": "domain-2/iam-roles",
     "stem": "A data-collection agent must drop files into a bucket but must not be able to read back or enumerate what is already there. Which role matches?",
+    "objectiveTitle": "User access, IAM roles, service accounts, and permissions",
+    "sources": [
+      {
+        "title": "Roles for Nebius AI Cloud groups",
+        "url": "https://docs.nebius.com/iam/authorization/roles.md",
+        "excerpt": "`storage.uploader`: view buckets, upload objects but not list or download them"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -665,6 +661,14 @@
     "domain": "domain-2",
     "objective": "domain-2/organization-hierarchy",
     "stem": "A project was created in the wrong region. What can be changed on it afterwards?",
+    "objectiveTitle": "Managing organizations, projects, and resource boundaries",
+    "sources": [
+      {
+        "title": "Managing projects in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/manage-projects.md",
+        "excerpt": "For an existing project, you can only edit the name. You cannot move a project to another region or tenant."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -698,6 +702,14 @@
     "domain": "domain-2",
     "objective": "domain-2/organization-hierarchy",
     "stem": "During a cleanup, a team asks you to delete an unused tenant along with its projects. What is the correct response?",
+    "objectiveTitle": "Managing organizations, projects, and resource boundaries",
+    "sources": [
+      {
+        "title": "How resources, identities and access are managed in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/overview.md",
+        "excerpt": "You cannot delete a tenant."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -731,6 +743,14 @@
     "domain": "domain-2",
     "objective": "domain-2/organization-hierarchy",
     "stem": "An automation script uses the Nebius AI Cloud CLI to create a project in a private region and fails. What is the explanation?",
+    "objectiveTitle": "Managing organizations, projects, and resource boundaries",
+    "sources": [
+      {
+        "title": "Managing projects in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/manage-projects.md",
+        "excerpt": "If you try to create a project in a private region, you receive an error."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -764,6 +784,14 @@
     "domain": "domain-2",
     "objective": "domain-2/security-policies",
     "stem": "Your organization's IdP has rotated the signing certificate used for single sign-on. What does the federation configuration in Nebius AI Cloud let you do about it?",
+    "objectiveTitle": "Enforcing security policies and single sign-on",
+    "sources": [
+      {
+        "title": "How to manage federations in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/federations.md",
+        "excerpt": "In Nebius AI Cloud, you can create, activate and deactivate federations, change their settings, and upload or delete attached certificates."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -797,6 +825,14 @@
     "domain": "domain-2",
     "objective": "domain-2/security-policies",
     "stem": "An engineer with the `editor` role is asked to set up a federation so staff can sign in through the company IdP. What blocks them?",
+    "objectiveTitle": "Enforcing security policies and single sign-on",
+    "sources": [
+      {
+        "title": "How to manage federations in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/federations.md",
+        "excerpt": "that has the `admin` role within your tenant or project; for example, the default `admins` group."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -830,6 +866,14 @@
     "domain": "domain-2",
     "objective": "domain-2/security-policies",
     "stem": "You are preparing to create a federation and want to gather everything needed beforehand. What must you obtain from the identity provider?",
+    "objectiveTitle": "Enforcing security policies and single sign-on",
+    "sources": [
+      {
+        "title": "How to manage federations in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/federations.md",
+        "excerpt": "you have access to your IdP admin portal and can get the SAML application metadata (login URL, identifier, certificate)"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -863,6 +907,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-monitoring",
     "stem": "A VM was created two minutes ago and its Metrics tab is empty. What is the appropriate response?",
+    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
+    "sources": [
+      {
+        "title": "Monitoring virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/monitoring/virtual-machines.md",
+        "excerpt": "The VM usage data becomes available 5–10 minutes after the VM is created."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -896,6 +948,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-monitoring",
     "stem": "An engineer watching a dashboard during an incident asks how current the numbers are. What is true by default?",
+    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
+    "sources": [
+      {
+        "title": "Monitoring virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/monitoring/virtual-machines.md",
+        "excerpt": "By default, the data is refreshed every 15 seconds. You can configure this interval to the right of the time filters."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -929,6 +989,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-monitoring",
     "stem": "A brief utilization spike keeps paging the team. Which alert setting is intended to stop momentary spikes from firing?",
+    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
+    "sources": [
+      {
+        "title": "How to set up alerts",
+        "url": "https://docs.nebius.com/observability/alerts.md",
+        "excerpt": "**Duration**: Time during which the condition is met."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -962,6 +1030,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-monitoring",
     "stem": "While adding a notification email to an alert, an engineer without admin rights sees a much shorter list of contacts than a colleague does. Why?",
+    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
+    "sources": [
+      {
+        "title": "How to set up alerts",
+        "url": "https://docs.nebius.com/observability/alerts.md",
+        "excerpt": "If you don't have admin rights, you can see only your own contacts"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -995,6 +1071,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-recovery",
     "stem": "A node has been reporting the `NodeReady` condition as `False` for eight minutes. What does Managed Kubernetes do?",
+    "objectiveTitle": "Handling failed GPU nodes, node restarts, and health checks",
+    "sources": [
+      {
+        "title": "Health checks and automatic recovery of Managed Service for Kubernetes nodes",
+        "url": "https://docs.nebius.com/kubernetes/maintenance/health-checks.md",
+        "excerpt": "If the condition remains in the `False` status for more than five minutes"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1028,6 +1112,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-recovery",
     "stem": "After a Network SSD NRD boot disk reported persistent I/O errors, the node disappeared and a differently named node appeared. What happened?",
+    "objectiveTitle": "Handling failed GPU nodes, node restarts, and health checks",
+    "sources": [
+      {
+        "title": "Health checks and automatic recovery of Managed Service for Kubernetes nodes",
+        "url": "https://docs.nebius.com/kubernetes/maintenance/health-checks.md",
+        "excerpt": "it deletes the node and then creates a new one with a different name and healthy boot disk"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1061,6 +1153,14 @@
     "domain": "domain-3",
     "objective": "domain-3/node-recovery",
     "stem": "A team plans to scale a node group from six nodes to ten and worries the running workloads will be disrupted by node replacement. What should you tell them?",
+    "objectiveTitle": "Handling failed GPU nodes, node restarts, and health checks",
+    "sources": [
+      {
+        "title": "Creating and modifying Managed Service for Kubernetes node groups",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/manage.md",
+        "excerpt": "scales a node group up or down, Managed Kubernetes does not recreate any nodes"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1094,6 +1194,14 @@
     "domain": "domain-3",
     "objective": "domain-3/resource-quotas",
     "stem": "A team stops several GPU VMs overnight and expects the freed quota to let them launch a new cluster. Does it?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1127,6 +1235,14 @@
     "domain": "domain-3",
     "objective": "domain-3/resource-quotas",
     "stem": "A Managed Kubernetes node group fails to grow because of a quota limit, though no standalone VMs were created. Why is a Compute quota involved?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1160,6 +1276,14 @@
     "domain": "domain-3",
     "objective": "domain-3/resource-quotas",
     "stem": "Planning capacity, an engineer assumes one VM quota governs every machine type. What correction is needed?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "Compute has different quotas for GPU and non-GPU virtual machines."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1193,6 +1317,14 @@
     "domain": "domain-4",
     "objective": "domain-4/operational-troubleshooting",
     "stem": "PyTorch on a multi-GPU VM fails with `system not yet initialized (error 802)`. Which cause should you investigate first?",
+    "objectiveTitle": "Diagnosing GPU workload failures and network bottlenecks",
+    "sources": [
+      {
+        "title": "CUDA initialization error on virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md",
+        "excerpt": "its service, `nvidia-fabricmanager`, does not initialize on VM startup because of a race condition or other timing issues"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1226,6 +1358,14 @@
     "domain": "domain-4",
     "objective": "domain-4/operational-troubleshooting",
     "stem": "You have confirmed a CUDA initialization failure on a GPU VM. What is the documented range of remedies?",
+    "objectiveTitle": "Diagnosing GPU workload failures and network bottlenecks",
+    "sources": [
+      {
+        "title": "CUDA initialization error on virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md",
+        "excerpt": "You can resolve this issue by restarting the NVIDIA Fabric Manager service, the GPUs on the VM or the entire VM."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1259,6 +1399,14 @@
     "domain": "domain-4",
     "objective": "domain-4/operational-troubleshooting",
     "stem": "A team believes CUDA initialization failures only affect one GPU platform, and plans to migrate away from it. Is that reasoning sound?",
+    "objectiveTitle": "Diagnosing GPU workload failures and network bottlenecks",
+    "sources": [
+      {
+        "title": "CUDA initialization error on virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md",
+        "excerpt": "This can occur on any VM with GPUs, regardless of the specific platform, number of GPUs or boot disk image."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1292,6 +1440,14 @@
     "domain": "domain-4",
     "objective": "domain-4/operational-troubleshooting",
     "stem": "An intermittent VM fault has just cleared. Support asks for diagnostic logs. What is the best practice?",
+    "objectiveTitle": "Diagnosing GPU workload failures and network bottlenecks",
+    "sources": [
+      {
+        "title": "How to collect diagnostic logs from Compute virtual machines",
+        "url": "https://docs.nebius.com/compute/virtual-machines/logs.md",
+        "excerpt": "We strongly recommend collecting logs while the issue is still occurring, because they capture more information about the broken state"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1325,6 +1481,14 @@
     "domain": "domain-4",
     "objective": "domain-4/escalation-workflows",
     "stem": "An engineer new to Logs asks how any LogQL query must begin. What is the answer?",
+    "objectiveTitle": "Operational troubleshooting, log analysis, and escalation paths",
+    "sources": [
+      {
+        "title": "LogQL implementation by Nebius AI Cloud",
+        "url": "https://docs.nebius.com/observability/logs/query-language.md",
+        "excerpt": "Every LogQL query starts with a stream selector inside curly braces."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1358,6 +1522,14 @@
     "domain": "domain-4",
     "objective": "domain-4/escalation-workflows",
     "stem": "A LogQL query is syntactically valid but returns nothing at all, and the stream selector omits `__bucket__`. What explains the empty result?",
+    "objectiveTitle": "Operational troubleshooting, log analysis, and escalation paths",
+    "sources": [
+      {
+        "title": "LogQL implementation by Nebius AI Cloud",
+        "url": "https://docs.nebius.com/observability/logs/query-language.md",
+        "excerpt": "Queries without it return no entries."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1391,6 +1563,14 @@
     "domain": "domain-4",
     "objective": "domain-4/escalation-workflows",
     "stem": "You need the serial logs of a Compute virtual machine to escalate a boot failure. Which bucket should the stream selector name?",
+    "objectiveTitle": "Operational troubleshooting, log analysis, and escalation paths",
+    "sources": [
+      {
+        "title": "LogQL implementation by Nebius AI Cloud",
+        "url": "https://docs.nebius.com/observability/logs/query-language.md",
+        "excerpt": "`sp_serial`: Compute virtual machines (serial logs)"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1424,6 +1604,14 @@
     "domain": "domain-4",
     "objective": "domain-4/escalation-workflows",
     "stem": "An aggregated LogQL query is rejected because its `step` and `range` values are inconsistent. What is the rule?",
+    "objectiveTitle": "Operational troubleshooting, log analysis, and escalation paths",
+    "sources": [
+      {
+        "title": "LogQL implementation by Nebius AI Cloud",
+        "url": "https://docs.nebius.com/observability/logs/query-language.md",
+        "excerpt": "The `step` value (interval between points) must be smaller than the `range` value (the interval over which aggregation is performed)."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1452,308 +1640,19 @@
     ]
   },
   {
-    "id": "q-cs01d4e5f6a7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/capacity-and-scaling",
-    "stem": "What status indicates that a dedicated endpoint is currently operational but serving at reduced capacity during instance scaling or node recovery?",
-    "options": [
-      {
-        "id": "a",
-        "text": "`Status: Terminated`",
-        "correct": false,
-        "explanation": "Terminated means the endpoint has been destroyed and cannot process requests."
-      },
-      {
-        "id": "b",
-        "text": "`Status: Failed`",
-        "correct": false,
-        "explanation": "Failed indicates a critical unrecoverable deployment error."
-      },
-      {
-        "id": "c",
-        "text": "`Status: Creating`",
-        "correct": false,
-        "explanation": "Creating is the initial provisioning phase before any traffic can be served."
-      },
-      {
-        "id": "d",
-        "text": "`Status: Degraded` (or serving below expected capacity)",
-        "correct": true,
-        "explanation": "Degraded status indicates the endpoint is online and serving requests, but with reduced instance capacity."
-      }
-    ]
-  },
-  {
-    "id": "q-cs02a5b6c7d8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/capacity-and-scaling",
-    "stem": "How does automatic scaling function when dedicated endpoints experience high request concurrency spikes?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Additional replica instances are auto-provisioned to handle load according to configured scaling policies",
-        "correct": true,
-        "explanation": "Autoscaling policies dynamically add replica instances as concurrency metrics exceed thresholds."
-      },
-      {
-        "id": "b",
-        "text": "System memory is wiped to free up GPU cache",
-        "correct": false,
-        "explanation": "Wiping memory would drop active request contexts, causing failures rather than scaling compute."
-      },
-      {
-        "id": "c",
-        "text": "Requests are converted to offline fine-tuning datasets automatically",
-        "correct": false,
-        "explanation": "Inference traffic remains real-time inference and is not converted into fine-tuning datasets."
-      },
-      {
-        "id": "d",
-        "text": "All incoming requests are dropped with HTTP 500 server error codes permanently",
-        "correct": false,
-        "explanation": "Autoscaling prevents drop errors by expanding instance capacity under load."
-      }
-    ]
-  },
-  {
-    "id": "q-de01a1b2c3d4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/dedicated-endpoints",
-    "stem": "What primary architectural advantage does deploying a dedicated endpoint provide over shared pay-as-you-go inference API pools?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Guaranteed reserved GPU compute capacity with predictable response latency and no noisy neighbor interference",
-        "correct": true,
-        "explanation": "Dedicated endpoints allocate isolated GPU instances, ensuring consistent latency and reserved capacity."
-      },
-      {
-        "id": "b",
-        "text": "Automatic generation of synthetic training datasets",
-        "correct": false,
-        "explanation": "Endpoints execute model inference, not dataset synthesis or fine-tuning preprocessing."
-      },
-      {
-        "id": "c",
-        "text": "Free unlimited token consumption without billing charges",
-        "correct": false,
-        "explanation": "Dedicated instances incur hourly node hosting costs regardless of query volume."
-      },
-      {
-        "id": "d",
-        "text": "Automatic client-side Javascript code transpilation",
-        "correct": false,
-        "explanation": "Dedicated endpoints handle neural network model inference, not web browser frontend code compilation."
-      }
-    ]
-  },
-  {
-    "id": "q-de02b2c3d4e5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/dedicated-endpoints",
-    "stem": "How are dedicated endpoints targeted when making OpenAI-compatible chat completion requests?",
-    "options": [
-      {
-        "id": "a",
-        "text": "By passing the dedicated endpoint URL or endpoint deployment ID in the request base URL or model identifier",
-        "correct": true,
-        "explanation": "Requests route to dedicated instances by specifying the deployment endpoint host or deployment ID."
-      },
-      {
-        "id": "b",
-        "text": "By changing the TCP port to 21 on the client host machine",
-        "correct": false,
-        "explanation": "Port 21 is FTP; API endpoints use standard HTTPS (port 443)."
-      },
-      {
-        "id": "c",
-        "text": "By embedding base64 encoded SSH keys in system prompts",
-        "correct": false,
-        "explanation": "SSH keys manage shell access, not API request model routing."
-      },
-      {
-        "id": "d",
-        "text": "By specifying purpose: fine-tune in request headers",
-        "correct": false,
-        "explanation": "The purpose header belongs to Files API uploads, not Chat Completion inference calls."
-      }
-    ]
-  },
-  {
-    "id": "q-de03c5d6e7f8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/dedicated-endpoints",
-    "stem": "Why might an enterprise choose to host a fine-tuned LoRA adapter on a dedicated endpoint instead of a shared server pool?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Dedicated endpoints automatically rewrite Python code into Rust binaries",
-        "correct": false,
-        "explanation": "Endpoints execute inference models, not programming language translation."
-      },
-      {
-        "id": "b",
-        "text": "Shared pools do not support any fine-tuning adapters",
-        "correct": false,
-        "explanation": "Shared pools can support popular public models, but dedicated instances allow custom private adapter loading."
-      },
-      {
-        "id": "c",
-        "text": "Dedicated endpoints allow loading custom private adapter weights on dedicated hardware with strict SLA guarantees",
-        "correct": true,
-        "explanation": "Private custom LoRA weights and strict SLAs require dedicated hardware resources."
-      },
-      {
-        "id": "d",
-        "text": "Dedicated endpoints eliminate network latency completely (0 ms ping)",
-        "correct": false,
-        "explanation": "Physical network transport latency always exists regardless of hosting choice."
-      }
-    ]
-  },
-  {
-    "id": "q-de04e5f6a7b8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/capacity-and-scaling",
-    "stem": "How does automatic endpoint scaling behave when incoming request concurrency exceeds provisioned instance capacity?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Requests queue up to configured limits before returning HTTP 429 rate limit responses",
-        "correct": true,
-        "explanation": "Over-capacity concurrency triggers request queuing followed by HTTP 429 rate limit errors."
-      },
-      {
-        "id": "b",
-        "text": "The active model is permanently deleted from disk to prevent hardware overheating",
-        "correct": false,
-        "explanation": "Capacity limits trigger throttling responses, not data deletion."
-      },
-      {
-        "id": "c",
-        "text": "All active user sessions are logged out across the organization",
-        "correct": false,
-        "explanation": "Throttling impacts specific inference requests, not user auth sessions."
-      },
-      {
-        "id": "d",
-        "text": "HTTP responses silently return corrupted random byte strings",
-        "correct": false,
-        "explanation": "Overload conditions return explicit HTTP 429 error codes, not corrupt data."
-      }
-    ]
-  },
-  {
-    "id": "q-de06a7b8c9d0",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/billing-and-consumption",
-    "stem": "What is the primary billing model metric used for shared pay-as-you-go inference API pools?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Total prompt and completion tokens processed",
-        "correct": true,
-        "explanation": "Pay-as-you-go inference is billed per thousand/million tokens processed."
-      },
-      {
-        "id": "b",
-        "text": "Fixed flat monthly subscription fee per developer seat",
-        "correct": false,
-        "explanation": "Shared APIs bill based on actual token usage volume rather than seat counts."
-      },
-      {
-        "id": "c",
-        "text": "Number of lines of code compiled in client builds",
-        "correct": false,
-        "explanation": "Code volume is not a billing metric for language model inference APIs."
-      },
-      {
-        "id": "d",
-        "text": "Hard drive disk rotation speed",
-        "correct": false,
-        "explanation": "Disk hardware specs are managed by the cloud platform, not billed per query."
-      }
-    ]
-  },
-  {
-    "id": "q-de08c9d0e1f2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/endpoint-lifecycle",
-    "stem": "What status indicates that a dedicated endpoint has completed node allocation and model weight loading, and is actively ready for inference requests?",
-    "options": [
-      {
-        "id": "a",
-        "text": "READY",
-        "correct": true,
-        "explanation": "The READY state confirms node provisioning, model loading, and traffic capability."
-      },
-      {
-        "id": "b",
-        "text": "CREATING",
-        "correct": false,
-        "explanation": "CREATING signifies ongoing provision of underlying compute nodes."
-      },
-      {
-        "id": "c",
-        "text": "DELETING",
-        "correct": false,
-        "explanation": "DELETING indicates endpoint de-provisioning and resource teardown."
-      },
-      {
-        "id": "d",
-        "text": "PAUSED",
-        "correct": false,
-        "explanation": "PAUSED indicates an inactive endpoint that is not serving live traffic."
-      }
-    ]
-  },
-  {
-    "id": "q-de09d0e1f2a3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/rate-limits",
-    "stem": "What error code and response payload are returned when a project exceeds its assigned Requests Per Minute (RPM) quota?",
-    "options": [
-      {
-        "id": "a",
-        "text": "HTTP 429 Too Many Requests",
-        "correct": true,
-        "explanation": "Exceeding RPM or TPM rate limits triggers HTTP 429 response status."
-      },
-      {
-        "id": "b",
-        "text": "HTTP 500 Internal Server Error",
-        "correct": false,
-        "explanation": "HTTP 500 indicates unhandled server crashes, not client quota rate limits."
-      },
-      {
-        "id": "c",
-        "text": "HTTP 404 Not Found",
-        "correct": false,
-        "explanation": "HTTP 404 indicates missing endpoint URLs or resources."
-      },
-      {
-        "id": "d",
-        "text": "HTTP 401 Unauthorized",
-        "correct": false,
-        "explanation": "HTTP 401 indicates missing or invalid API keys."
-      }
-    ]
-  },
-  {
     "id": "q-df01f3a4b5c6",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
     "stem": "You are preparing chat-style training data. How should a single training example be structured?",
+    "objectiveTitle": "Dataset formats required for fine-tuning",
+    "sources": [
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "Each training example is a single conversation, represented as one `messages` array."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1787,6 +1686,14 @@
     "domain": "domain-3",
     "objective": "domain-3/dataset-formats",
     "stem": "You want a fine-tuned model to be better at calling your tools. What can a training example include to support that?",
+    "objectiveTitle": "Dataset formats required for fine-tuning",
+    "sources": [
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "Each training example can optionally include a `tools` field that defines the tools available in that conversation."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -1815,242 +1722,19 @@
     ]
   },
   {
-    "id": "q-df03a5b6c7d8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/dataset-formats",
-    "stem": "In a multi-turn conversation training example, which message `role` values are valid in the `messages` array?",
-    "options": [
-      {
-        "id": "a",
-        "text": "`system`, `user`, `assistant`, and optionally `tool`",
-        "correct": true,
-        "explanation": "Fine-tuning conversation examples support standard message roles: system, user, assistant, and tool."
-      },
-      {
-        "id": "b",
-        "text": "`admin`, `moderator`, and `guest`",
-        "correct": false,
-        "explanation": "RBAC user permissions are application roles, not Chat Completion message roles."
-      },
-      {
-        "id": "c",
-        "text": "`input` and `output` only",
-        "correct": false,
-        "explanation": "Instruct dataset format uses prompt/completion, whereas conversational format uses messages array with roles."
-      },
-      {
-        "id": "d",
-        "text": "`query` and `document`",
-        "correct": false,
-        "explanation": "Query/document pairs belong to retrieval reranker inputs, not chat dataset message objects."
-      }
-    ]
-  },
-  {
-    "id": "q-df04b6c7d8e9",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/dataset-formats",
-    "stem": "When fine-tuning a model to perform tool calling, how are tool definitions provided within a conversation example?",
-    "options": [
-      {
-        "id": "a",
-        "text": "As a binary blob appended to the end of the JSONL file",
-        "correct": false,
-        "explanation": "Tool definitions must be embedded as JSON objects within the dataset example, not binary attachments."
-      },
-      {
-        "id": "b",
-        "text": "In a top-level `tools` array field containing JSON Schema function specifications",
-        "correct": true,
-        "explanation": "Tool specifications are included in a `tools` array field within the training example object."
-      },
-      {
-        "id": "c",
-        "text": "As comments inside the system prompt string",
-        "correct": false,
-        "explanation": "Tool calling models use structured JSON schema definitions in `tools`, not freeform system comments."
-      },
-      {
-        "id": "d",
-        "text": "Via external HTTP webhooks during training execution",
-        "correct": false,
-        "explanation": "Fine-tuning processes static dataset files and does not make external HTTP webhook calls during training."
-      }
-    ]
-  },
-  {
-    "id": "q-dl01a3b4c5d6",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/data-lab",
-    "stem": "What is the primary function of a Data Lab tool in a dataset curation workflow?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Importing, filtering, cleaning, and formatting raw text datasets prior to model fine-tuning",
-        "correct": true,
-        "explanation": "Data Lab tools automate dataset ingestion, filtering out low-quality rows and normalizing target formats."
-      },
-      {
-        "id": "b",
-        "text": "Managing DNS SSL TLS certificates for custom web domains",
-        "correct": false,
-        "explanation": "Certificates handle domain HTTPS encryption, not training data processing."
-      },
-      {
-        "id": "c",
-        "text": "Provisioning Kubernetes worker nodes",
-        "correct": false,
-        "explanation": "Kubernetes cluster node provisioning is cloud infrastructure management, not dataset curation."
-      },
-      {
-        "id": "d",
-        "text": "Executing SQL queries against relational production databases",
-        "correct": false,
-        "explanation": "Production SQL databases serve application state, whereas Data Lab processes training datasets."
-      }
-    ]
-  },
-  {
-    "id": "q-dl02b4c5d6e7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/data-lab",
-    "stem": "Why is token length truncation verification critical during dataset preprocessing in Data Lab?",
-    "options": [
-      {
-        "id": "a",
-        "text": "To prevent the model from generating responses in upper case",
-        "correct": false,
-        "explanation": "Capitalization formatting is set by prompt style, not token sequence truncation."
-      },
-      {
-        "id": "b",
-        "text": "To ensure training examples do not exceed the model maximum context length and get silently clipped",
-        "correct": true,
-        "explanation": "Exceeding context length truncates target messages or system prompts, damaging fine-tuning Quality."
-      },
-      {
-        "id": "c",
-        "text": "To force every response to be exactly 256 tokens long",
-        "correct": false,
-        "explanation": "Preprocessing caps maximum length, but does not force fixed token generation lengths."
-      },
-      {
-        "id": "d",
-        "text": "To automatically encrypt training text with RSA 4096-bit keys",
-        "correct": false,
-        "explanation": "Encryption protects data in transit/at rest, but is not token sequence truncation verification."
-      }
-    ]
-  },
-  {
-    "id": "q-dl03c5d6e7f8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/data-lab",
-    "stem": "What dataset quality filter prevents a model from learning repetitive or template-dominated completions during fine-tuning?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Disabling system prompt headers entirely",
-        "correct": false,
-        "explanation": "System prompts define behavior rules; removing them does not solve dataset template repetition."
-      },
-      {
-        "id": "b",
-        "text": "Doubling the learning rate parameter on every epoch",
-        "correct": false,
-        "explanation": "Increasing learning rate does not deduplicate or clean repetitive dataset text."
-      },
-      {
-        "id": "c",
-        "text": "Semantic deduplication and near-duplicate removal across dataset lines",
-        "correct": true,
-        "explanation": "Deduplication removes repetitive prompt/response pairs so the model learns generalizable skills rather than memorizing templates."
-      },
-      {
-        "id": "d",
-        "text": "Converting all floating-point weights into 8-bit integers",
-        "correct": false,
-        "explanation": "8-bit quantization reduces memory, not dataset duplicate text patterns."
-      }
-    ]
-  },
-  {
-    "id": "q-ds01c3d4e5f6",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/datasets",
-    "stem": "Why is it recommended to split dataset files into training and validation sets before initiating a fine-tuning job?",
-    "options": [
-      {
-        "id": "a",
-        "text": "To decrease the price of token generation per request",
-        "correct": false,
-        "explanation": "Splitting datasets evaluates model generalization; it does not change inference pricing."
-      },
-      {
-        "id": "b",
-        "text": "To allow parallel training across multiple GPU data centers",
-        "correct": false,
-        "explanation": "Multi-GPU distribution is handled by distributed training frameworks, not manual dataset splitting."
-      },
-      {
-        "id": "c",
-        "text": "To measure out-of-sample loss and detect model overfitting during training epochs",
-        "correct": true,
-        "explanation": "Validation sets evaluate generalization on unseen examples to identify overfitting."
-      },
-      {
-        "id": "d",
-        "text": "To automatically generate multi-language translations",
-        "correct": false,
-        "explanation": "Validation sets check training convergence, not language translation."
-      }
-    ]
-  },
-  {
-    "id": "q-ds02d4e5f6a7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/datasets",
-    "stem": "What structural format is required for dataset lines in a fine-tuning file?",
-    "options": [
-      {
-        "id": "a",
-        "text": "XML document tree nodes with nested tag attributes",
-        "correct": false,
-        "explanation": "Fine-tuning dataset files use JSON Lines (JSONL), not XML."
-      },
-      {
-        "id": "b",
-        "text": "CSV spreadsheet lines separated by tab characters",
-        "correct": false,
-        "explanation": "Fine-tuning requires JSONL objects per line, not CSV tables."
-      },
-      {
-        "id": "c",
-        "text": "Binary Protocol Buffer payloads",
-        "correct": false,
-        "explanation": "Protobuf is a binary wire protocol; fine-tuning datasets use plain text JSONL."
-      },
-      {
-        "id": "d",
-        "text": "JSON Lines (JSONL) where each line is a valid JSON object",
-        "correct": true,
-        "explanation": "Dataset files must contain exactly one JSON object per line (JSONL format)."
-      }
-    ]
-  },
-  {
     "id": "q-el01a0b1c2d3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/endpoint-lifecycle",
     "stem": "Your load balancer must decide whether to route traffic to a dedicated endpoint. Which of the two status types should it read?",
+    "objectiveTitle": "Endpoint lifecycle and readiness status",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Lifecycle is deployment state. Readiness is traffic-serving capability."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2084,6 +1768,14 @@
     "domain": "domain-4",
     "objective": "domain-4/endpoint-lifecycle",
     "stem": "An endpoint reports readiness \"Partially ready\". What does that tell you?",
+    "objectiveTitle": "Endpoint lifecycle and readiness status",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Endpoint can serve traffic, but below expected capacity."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2117,6 +1809,14 @@
     "domain": "domain-4",
     "objective": "domain-4/endpoint-lifecycle",
     "stem": "What is the difference between an endpoint's deployment lifecycle state and its readiness status?",
+    "objectiveTitle": "Endpoint lifecycle and readiness status",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Lifecycle is deployment state. Readiness is traffic-serving capability."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2145,143 +1845,19 @@
     ]
   },
   {
-    "id": "q-er01c3d4e5f6",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/embeddings-and-rerank",
-    "stem": "In a RAG retrieval system, what primary purpose does a cross-encoder reranking model serve after initial vector search retrieval?",
-    "options": [
-      {
-        "id": "a",
-        "text": "To generate synthetic training dataset pairs for fine-tuning",
-        "correct": false,
-        "explanation": "Rerankers evaluate query-document relevance, not dataset synthesis."
-      },
-      {
-        "id": "b",
-        "text": "To compress text chunks into 8-bit quantized embeddings",
-        "correct": false,
-        "explanation": "Quantization reduces vector memory usage, whereas reranking improves ranking precision."
-      },
-      {
-        "id": "c",
-        "text": "To re-score retrieved candidate passages using full joint attention over query and document pairs",
-        "correct": true,
-        "explanation": "Reranking models compute joint attention across query-document pairs to produce more accurate relevance scores."
-      },
-      {
-        "id": "d",
-        "text": "To execute client-side Javascript code inside an isolated sandbox",
-        "correct": false,
-        "explanation": "Sandboxes run code; rerankers are neural models for search relevance."
-      }
-    ]
-  },
-  {
-    "id": "q-er02d4e5f6a7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/embeddings-and-rerank",
-    "stem": "What vector distance metric is standard for computing similarity between normalized embedding vectors?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Manhattan L1 distance metric",
-        "correct": false,
-        "explanation": "L1 distance sums absolute component differences and is not normalized for direction."
-      },
-      {
-        "id": "b",
-        "text": "Levenshtein edit distance metric",
-        "correct": false,
-        "explanation": "Levenshtein distance operates on string characters, not dense floating-point vector spaces."
-      },
-      {
-        "id": "c",
-        "text": "Hamming bitwise distance metric",
-        "correct": false,
-        "explanation": "Hamming distance measures bit differences in binary vectors, not floating-point embeddings."
-      },
-      {
-        "id": "d",
-        "text": "Cosine similarity or inner dot product",
-        "correct": true,
-        "explanation": "Cosine similarity (dot product for normalized vectors) measures angular alignment between text embeddings."
-      }
-    ]
-  },
-  {
-    "id": "q-fa01a1b2c3d4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/files-api",
-    "stem": "What is the purpose of the Files API when preparing datasets for model fine-tuning?",
-    "options": [
-      {
-        "id": "a",
-        "text": "To upload, store, and manage JSONL dataset files required for fine-tuning jobs",
-        "correct": true,
-        "explanation": "The Files API manages training and validation JSONL files prior to job submission."
-      },
-      {
-        "id": "b",
-        "text": "To stream real-time GPU hardware telemetry logs",
-        "correct": false,
-        "explanation": "GPU telemetry is handled by system monitoring endpoints, not the Files API."
-      },
-      {
-        "id": "c",
-        "text": "To dynamically resize image dimensions during inference",
-        "correct": false,
-        "explanation": "Image resizing is a vision pre-processing task, not a dataset Files API operation."
-      },
-      {
-        "id": "d",
-        "text": "To host static website HTML files",
-        "correct": false,
-        "explanation": "The Files API stores training data, not static web host assets."
-      }
-    ]
-  },
-  {
-    "id": "q-fa02b2c3d4e5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/files-api",
-    "stem": "Which file `purpose` string must be specified when uploading a JSONL file intended for supervised fine-tuning?",
-    "options": [
-      {
-        "id": "a",
-        "text": "`purpose: \"user_avatar\"`",
-        "correct": false,
-        "explanation": "User avatar is not a valid file purpose for training datasets."
-      },
-      {
-        "id": "b",
-        "text": "`purpose: \"fine-tune\"`",
-        "correct": true,
-        "explanation": "The Files API requires `purpose: \"fine-tune\"` to validate and register training datasets."
-      },
-      {
-        "id": "c",
-        "text": "`purpose: \"web_search\"`",
-        "correct": false,
-        "explanation": "Web search is a retrieval tool capability, not a fine-tuning file purpose."
-      },
-      {
-        "id": "d",
-        "text": "`purpose: \"cache_backup\"`",
-        "correct": false,
-        "explanation": "Cache backup is an internal storage term, not a dataset fine-tuning upload purpose."
-      }
-    ]
-  },
-  {
     "id": "q-fc01a2b3c4d5",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "Your application defines a `get_weather` tool and the model returns a tool call for it. Which component runs the actual weather lookup?",
+    "objectiveTitle": "Function calling and tool use",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "You are responsible for parsing these outputs and executing the corresponding functions on your backend or client side."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2315,6 +1891,14 @@
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "You send a request with several tools defined but do not set `tool_choice`. How does the model decide which tool to use?",
+    "objectiveTitle": "Function calling and tool use",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "The model automatically selects the most appropriate function based on the context of the prompt. This is the default behavior"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2348,6 +1932,14 @@
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "How is each available tool described to the model?",
+    "objectiveTitle": "Function calling and tool use",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "Each tool is described using a JSON Schema that defines its name, input parameters, and expected data types."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2381,6 +1973,14 @@
     "domain": "domain-2",
     "objective": "domain-2/function-calling",
     "stem": "A workflow must always call `read_file` first, regardless of what the user asked. You set `tool_choice` to that function explicitly. What is the effect?",
+    "objectiveTitle": "Function calling and tool use",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "This forces the model to call the `read_file` function regardless of context, overriding its own tool selection logic."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2409,110 +2009,19 @@
     ]
   },
   {
-    "id": "q-fc05d2e3f4a5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/function-calling",
-    "stem": "When a model returns a tool_calls payload in a Chat Completion response, what must the application client do next?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Terminate the conversation session immediately",
-        "correct": false,
-        "explanation": "Tool calls require executing the specified function and returning results to continue."
-      },
-      {
-        "id": "b",
-        "text": "Re-send the exact prompt without modification",
-        "correct": false,
-        "explanation": "Resending without tool execution causes infinite loops."
-      },
-      {
-        "id": "c",
-        "text": "Delete the tool definition from the client registry",
-        "correct": false,
-        "explanation": "Tool definitions remain registered for future turns in the conversation."
-      },
-      {
-        "id": "d",
-        "text": "Execute the requested function locally and return a message with role tool containing the result",
-        "correct": true,
-        "explanation": "The client executes the tool and appends a tool role message with tool_call_id and output string."
-      }
-    ]
-  },
-  {
-    "id": "q-fi01c7d8e9f0",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/framework-integrations",
-    "stem": "When configuring OpenAI-compatible client SDKs to connect to an external inference endpoint, what two parameters must be updated?",
-    "options": [
-      {
-        "id": "a",
-        "text": "model_type and system_prompt",
-        "correct": false,
-        "explanation": "Prompt and model selections belong to request calls, not base client URL routing."
-      },
-      {
-        "id": "b",
-        "text": "storage_bucket and db_url",
-        "correct": false,
-        "explanation": "Storage and database configuration belong to database credentials, not API endpoint setup."
-      },
-      {
-        "id": "c",
-        "text": "base_url and api_key",
-        "correct": true,
-        "explanation": "Overriding base_url points client SDKs to the custom endpoint, and api_key authenticates requests."
-      },
-      {
-        "id": "d",
-        "text": "tcp_port and dns_server",
-        "correct": false,
-        "explanation": "Network sockets are handled by standard HTTP client transports, not SDK client constructor parameters."
-      }
-    ]
-  },
-  {
-    "id": "q-fi02d8e9f0a1",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/framework-integrations",
-    "stem": "What standard protocol enables AI agents to dynamically discover and invoke tools, resources, and prompts provided by external servers?",
-    "options": [
-      {
-        "id": "a",
-        "text": "OAuth 2.0 PKCE authentication flow",
-        "correct": false,
-        "explanation": "OAuth PKCE is an identity authorization workflow, not an agent tool discovery protocol."
-      },
-      {
-        "id": "b",
-        "text": "gRPC Protocol Buffer schema compiler",
-        "correct": false,
-        "explanation": "gRPC is an RPC framework, whereas MCP specifically standardizes tool/resource discovery for agents."
-      },
-      {
-        "id": "c",
-        "text": "Simple Object Access Protocol (SOAP)",
-        "correct": false,
-        "explanation": "SOAP is an XML web service protocol from enterprise legacy integrations, not modern agent tool protocols."
-      },
-      {
-        "id": "d",
-        "text": "Model Context Protocol (MCP)",
-        "correct": true,
-        "explanation": "Model Context Protocol (MCP) provides an open standard for agents to discover tools, resources, and prompts."
-      }
-    ]
-  },
-  {
     "id": "q-fj01a9b0c1d2",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/fine-tuning-jobs",
     "stem": "What is a fine-tuning checkpoint artifact?",
+    "objectiveTitle": "Fine-tuning job lifecycle, events, and checkpoints",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "represents the model after a certain number of training steps (often per epoch)."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2541,44 +2050,19 @@
     ]
   },
   {
-    "id": "q-fj02b0c1d2e3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/fine-tuning-jobs",
-    "stem": "How can a developer monitor training progress, loss values, and validation metrics during an active fine-tuning job execution?",
-    "options": [
-      {
-        "id": "a",
-        "text": "By connecting a browser directly to the GPU hardware motherboard serial console",
-        "correct": false,
-        "explanation": "Direct hardware console access is not exposed in cloud platform APIs."
-      },
-      {
-        "id": "b",
-        "text": "By polling the Fine-Tuning Job Events API or viewing job event logs",
-        "correct": true,
-        "explanation": "Job events stream progress logs, step counts, training loss, and validation metrics."
-      },
-      {
-        "id": "c",
-        "text": "By inspecting DNS CNAME lookup records",
-        "correct": false,
-        "explanation": "DNS records map domain names to IP addresses, not fine-tuning job metrics."
-      },
-      {
-        "id": "d",
-        "text": "By sending HTTP POST requests to external payment gateways",
-        "correct": false,
-        "explanation": "Payment webhooks handle billing transactions, not training loss metric logs."
-      }
-    ]
-  },
-  {
     "id": "q-ft01b5c6d7e8",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
     "stem": "A completed fine-tuning job produced several checkpoints. What is a checkpoint?",
+    "objectiveTitle": "Running supervised fine-tuning",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "represents the model after a certain number of training steps (often per epoch)."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2612,6 +2096,14 @@
     "domain": "domain-3",
     "objective": "domain-3/supervised-fine-tuning",
     "stem": "A fine-tuning job is running and you want to know whether the dataset was accepted and how training is progressing. What should you inspect?",
+    "objectiveTitle": "Running supervised fine-tuning",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "Events help you understand the lifecycle (file validation, dataset processing, training progress)."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2640,176 +2132,19 @@
     ]
   },
   {
-    "id": "q-ft03c7d8e9f0",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/supervised-fine-tuning",
-    "stem": "What primary parameter determines how many times the model iterates over the entire training dataset during supervised fine-tuning?",
-    "options": [
-      {
-        "id": "a",
-        "text": "batch_size",
-        "correct": false,
-        "explanation": "Batch size specifies how many training examples are processed per gradient update step."
-      },
-      {
-        "id": "b",
-        "text": "learning_rate_multiplier",
-        "correct": false,
-        "explanation": "Learning rate multiplier scales the step size taken during optimizer weight updates."
-      },
-      {
-        "id": "c",
-        "text": "n_epochs",
-        "correct": true,
-        "explanation": "The n_epochs parameter specifies the total number of full passes over the dataset."
-      },
-      {
-        "id": "d",
-        "text": "temperature",
-        "correct": false,
-        "explanation": "Temperature is an inference sampling parameter, not a fine-tuning training hyperparameter."
-      }
-    ]
-  },
-  {
-    "id": "q-ft04d8e9f0a1",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/supervised-fine-tuning",
-    "stem": "What happens if the `learning_rate` parameter set during fine-tuning is excessively high?",
-    "options": [
-      {
-        "id": "a",
-        "text": "The training job automatically converts base weights into 4-bit GGUF format",
-        "correct": false,
-        "explanation": "Format quantization is a model export conversion step, not a training dynamics consequence."
-      },
-      {
-        "id": "b",
-        "text": "Dataset JSONL lines are permanently deleted from the Files API storage",
-        "correct": false,
-        "explanation": "Files API uploads are persistent resources and are never altered by training hyperparameters."
-      },
-      {
-        "id": "c",
-        "text": "Training loss drops to zero instantly on step 1 without processing tokens",
-        "correct": false,
-        "explanation": "High learning rates cause loss divergence or instability, not instant zero-loss convergence."
-      },
-      {
-        "id": "d",
-        "text": "Training loss diverges or oscillates erratically, preventing model convergence",
-        "correct": true,
-        "explanation": "An excessively large learning rate causes gradient step divergence, ruining model performance."
-      }
-    ]
-  },
-  {
-    "id": "q-la01c1d2e3f4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/lora-adapters",
-    "stem": "What is the core benefit of Low-Rank Adaptation (LoRA) over full parameter fine-tuning?",
-    "options": [
-      {
-        "id": "a",
-        "text": "It converts text data into 3D polygon meshes for graphics rendering",
-        "correct": false,
-        "explanation": "LoRA is a parameter-efficient fine-tuning method for neural networks, not a 3D graphics renderer."
-      },
-      {
-        "id": "b",
-        "text": "It eliminates the requirement for system prompt instructions",
-        "correct": false,
-        "explanation": "System prompts remain available and functional regardless of fine-tuning strategy."
-      },
-      {
-        "id": "c",
-        "text": "It trains small low-rank adapter matrix parameters while keeping base model weights frozen, drastically reducing memory usage",
-        "correct": true,
-        "explanation": "LoRA freezes base model weights and trains rank-decomposition matrices, dramatically lowering compute/VRAM requirements."
-      },
-      {
-        "id": "d",
-        "text": "It forces all model responses to be formatted as CSV rows",
-        "correct": false,
-        "explanation": "Output format is controlled by response formatting parameters, not adapter weight factorization."
-      }
-    ]
-  },
-  {
-    "id": "q-la02d2e3f4a5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/lora-adapters",
-    "stem": "What operation combines trained LoRA adapter weights directly back into the base model weights for zero-overhead inference deployment?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Quantized gradient accumulation",
-        "correct": false,
-        "explanation": "Gradient accumulation splits micro-batches during training, not weight merging for deployment."
-      },
-      {
-        "id": "b",
-        "text": "Dataset token deduplication",
-        "correct": false,
-        "explanation": "Token deduplication cleans text datasets prior to training."
-      },
-      {
-        "id": "c",
-        "text": "Zero-shot prompt prefixing",
-        "correct": false,
-        "explanation": "Prompt prefixing appends system text at query time, not model weight matrix addition."
-      },
-      {
-        "id": "d",
-        "text": "Weight merging (computing $W_{final} = W_{base} + \\Delta W$)",
-        "correct": true,
-        "explanation": "Merging computes matrix addition ($W_{base} + B \\cdot A$), integrating adapter weights into base weights for fast serving."
-      }
-    ]
-  },
-  {
-    "id": "q-la03d6e7f8a9",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/lora-adapters",
-    "stem": "What key hyperparameter in LoRA configuration controls the rank of the low-rank update matrices A and B?",
-    "options": [
-      {
-        "id": "a",
-        "text": "top_p",
-        "correct": false,
-        "explanation": "Top-p (nucleus sampling) controls cumulative probability sampling during generation."
-      },
-      {
-        "id": "b",
-        "text": "presence_penalty",
-        "correct": false,
-        "explanation": "Presence penalty penalizes new tokens based on occurrence in generated output."
-      },
-      {
-        "id": "c",
-        "text": "context_window",
-        "correct": false,
-        "explanation": "Context window specifies total input token capacity of the model architecture."
-      },
-      {
-        "id": "d",
-        "text": "r (rank)",
-        "correct": true,
-        "explanation": "The parameter r defines the rank dimension of decomposition matrices in LoRA adapters."
-      }
-    ]
-  },
-  {
     "id": "q-ld217205c155",
     "course_id": "ai-leader",
     "domain": "domain-1",
     "objective": "domain-1/ai-concepts",
     "stem": "A product lead asks whether choosing the Fast flavor of a model will change the answers users receive. What is the accurate response?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2843,6 +2178,14 @@
     "domain": "domain-1",
     "objective": "domain-1/ai-concepts",
     "stem": "An engineering team wants to understand what actually makes the Fast flavor faster. Which description matches?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "The Fast flavor uses smaller batch sizes, increased compute allocation, and techniques such as speculative decoding to reduce latency"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2876,6 +2219,14 @@
     "domain": "domain-1",
     "objective": "domain-1/ai-concepts",
     "stem": "How does speculative decoding raise throughput without degrading output quality?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "uses auxiliary models to pre-generate likely next tokens. The main model verifies these predictions"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2909,6 +2260,14 @@
     "domain": "domain-1",
     "objective": "domain-1/ai-concepts",
     "stem": "A stakeholder asks which optimization reduces memory usage by lowering the numeric precision of the model itself. Which one is it?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "A technique that reduces the precision of model weights and activations, decreasing memory usage and computation."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2942,6 +2301,14 @@
     "domain": "domain-1",
     "objective": "domain-1/ai-concepts",
     "stem": "A team plans an application that must read screenshots and answer questions about them. Which model type do they need?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Nebius Token Factory supports the following model types:"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -2975,6 +2342,14 @@
     "domain": "domain-1",
     "objective": "domain-1/model-selection",
     "stem": "Comparing two candidate models on their cards in the UI, a team wants a published measure of answer quality. Which field carries it?",
+    "objectiveTitle": "Choosing a model: context windows, modality, and tradeoffs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "**Quality** — MMLU score reported by the model provider."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3008,6 +2383,14 @@
     "domain": "domain-1",
     "objective": "domain-1/model-selection",
     "stem": "A finance stakeholder asks how per-token pricing is presented when comparing models in the UI. What should you tell them?",
+    "objectiveTitle": "Choosing a model: context windows, modality, and tradeoffs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "**Input tokens** — Price per token included in an API request, shown in USD per million tokens."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3041,6 +2424,14 @@
     "domain": "domain-1",
     "objective": "domain-1/model-selection",
     "stem": "A team starts a fine-tuning job and does not set `context_length`. What length applies?",
+    "objectiveTitle": "Choosing a model: context windows, modality, and tradeoffs",
+    "sources": [
+      {
+        "title": "Models for fine-tuning in Nebius Token Factory",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/models.md",
+        "excerpt": "Unless you override it via the `context_length` hyperparameter, the default context length for fine-tuning is **8192 tokens**."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3074,6 +2465,14 @@
     "domain": "domain-1",
     "objective": "domain-1/model-selection",
     "stem": "When shortlisting a base model to fine-tune, which two properties does the supported-models reference let you compare?",
+    "objectiveTitle": "Choosing a model: context windows, modality, and tradeoffs",
+    "sources": [
+      {
+        "title": "Models for fine-tuning in Nebius Token Factory",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/models.md",
+        "excerpt": "Which **context lengths** they support"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3107,6 +2506,14 @@
     "domain": "domain-1",
     "objective": "domain-1/model-selection",
     "stem": "A team wants the full parameter list for every model programmatically, not just what the card shows. How do they get it?",
+    "objectiveTitle": "Choosing a model: context windows, modality, and tradeoffs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "send a request to the **List models** endpoint with the query parameter `verbose=true`"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3140,6 +2547,14 @@
     "domain": "domain-1",
     "objective": "domain-1/inference-basics",
     "stem": "A developer asks how to send traffic to the Fast flavor of a model from their application. What is required?",
+    "objectiveTitle": "How inference is served and consumed through an API",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "To use the Fast flavor, append `-fast` to the model name in the"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3173,6 +2588,14 @@
     "domain": "domain-1",
     "objective": "domain-1/inference-basics",
     "stem": "Which factors determine the inference performance of an endpoint?",
+    "objectiveTitle": "How inference is served and consumed through an API",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Inference performance is determined by how the endpoint is configured - balancing:"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3206,6 +2629,14 @@
     "domain": "domain-1",
     "objective": "domain-1/inference-basics",
     "stem": "An application repeatedly sends requests that share a long common prefix. Which optimization is described as storing the output of previous layers for each input sequence?",
+    "objectiveTitle": "How inference is served and consumed through an API",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "A caching mechanism that stores the context (i.e., the output of previous layers) for each input sequence"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3239,6 +2670,14 @@
     "domain": "domain-2",
     "objective": "domain-2/product-outcomes",
     "stem": "A non-technical product manager wants to try a model and shape its behaviour before any engineering work is scheduled. What should they use?",
+    "objectiveTitle": "Aligning model capabilities with business outcomes and user needs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "lets you experiment with available AI models through a web interface — no coding required."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3272,6 +2711,14 @@
     "domain": "domain-2",
     "objective": "domain-2/product-outcomes",
     "stem": "In the Playground, which control is intended for the instructions that guide how the model behaves across a conversation?",
+    "objectiveTitle": "Aligning model capabilities with business outcomes and user needs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "Under **System prompt**, enter instructions that guide the model’s behavior."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3305,6 +2752,14 @@
     "domain": "domain-2",
     "objective": "domain-2/product-outcomes",
     "stem": "A team is torn between two prompt-and-parameter configurations and wants a like-for-like trial. What does the Playground offer?",
+    "objectiveTitle": "Aligning model capabilities with business outcomes and user needs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "To work with two model setups side by side, click **Compare**."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3338,6 +2793,14 @@
     "domain": "domain-2",
     "objective": "domain-2/workflow-design",
     "stem": "An application must keep inference inside a particular jurisdiction. Which dedicated endpoint control addresses that?",
+    "objectiveTitle": "Designing AI-assisted workflows and integration patterns",
+    "sources": [
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Choose where your deployment runs to optimize latency and meet data residency requirements."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3371,6 +2834,14 @@
     "domain": "domain-2",
     "objective": "domain-2/workflow-design",
     "stem": "How is a dedicated endpoint deployment managed versus how inference traffic reaches it?",
+    "objectiveTitle": "Designing AI-assisted workflows and integration patterns",
+    "sources": [
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Use the control plane to create and manage deployments, and the data plane to run inference through OpenAI-compatible APIs."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3404,6 +2875,14 @@
     "domain": "domain-2",
     "objective": "domain-2/workflow-design",
     "stem": "A workload's traffic varies sharply between business hours and overnight. Which dedicated endpoint control is designed for that?",
+    "objectiveTitle": "Designing AI-assisted workflows and integration patterns",
+    "sources": [
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Set minimum and maximum replicas to automatically scale capacity with traffic."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3437,6 +2916,14 @@
     "domain": "domain-2",
     "objective": "domain-2/product-outcomes",
     "stem": "After settling on a prompt and parameters in the Playground, a team wants the same setup available to colleagues later. What does the tool provide?",
+    "objectiveTitle": "Aligning model capabilities with business outcomes and user needs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "**Save as a prompt preset** — Click **Save preset** in the left panel to store your setup for later use or sharing."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3470,6 +2957,14 @@
     "domain": "domain-2",
     "objective": "domain-2/product-outcomes",
     "stem": "A developer has finished tuning a chat setup in the Playground and needs it inside their application. What is the intended path?",
+    "objectiveTitle": "Aligning model capabilities with business outcomes and user needs",
+    "sources": [
+      {
+        "title": "UI and Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "**Export as code** — Click **View code** in the left panel to copy your model setup (including the chat) for use in your application."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3503,6 +2998,14 @@
     "domain": "domain-2",
     "objective": "domain-2/workflow-design",
     "stem": "Leadership asks what dedicated endpoints give the business that shared inference does not. Which pair of use cases is documented?",
+    "objectiveTitle": "Designing AI-assisted workflows and integration patterns",
+    "sources": [
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "predictable capacity"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3536,6 +3039,14 @@
     "domain": "domain-2",
     "objective": "domain-2/workflow-design",
     "stem": "An architect asks how much control a dedicated endpoint gives over the hardware behind a deployment. What is accurate?",
+    "objectiveTitle": "Designing AI-assisted workflows and integration patterns",
+    "sources": [
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Select GPU type and GPUs per replica to match your performance and throughput needs."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3569,6 +3080,14 @@
     "domain": "domain-3",
     "objective": "domain-3/structured-output",
     "stem": "A downstream service needs the model's answer in a fixed shape it can parse. What does the platform provide by default, and what must change?",
+    "objectiveTitle": "Constraining responses to a schema for downstream systems",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "By default, a text generation model responds to your requests with a text in natural language."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3602,6 +3121,14 @@
     "domain": "domain-3",
     "objective": "domain-3/structured-output",
     "stem": "A team sets `response_format` to `{\"type\": \"json_object\"}` and is surprised the field names vary between calls. Why?",
+    "objectiveTitle": "Constraining responses to a schema for downstream systems",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "**Arbitrary JSON object.** Forces arbitrary JSON output, the model will decide on the schema by itself"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3635,6 +3162,14 @@
     "domain": "domain-3",
     "objective": "domain-3/structured-output",
     "stem": "Which `response_format` setting should be used when the response must conform to a schema the application supplies?",
+    "objectiveTitle": "Constraining responses to a schema for downstream systems",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "**JSON schema following.** Follows the specific schema you provide - `{\"type\": \"json_schema\"}` in `response_format `parameter."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3668,6 +3203,14 @@
     "domain": "domain-3",
     "objective": "domain-3/structured-output",
     "stem": "A team already passes a JSON schema in the request. What additional practice does the documentation recommend?",
+    "objectiveTitle": "Constraining responses to a schema for downstream systems",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "it's always better to provide the schema both in text prompt for the model and"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3701,6 +3244,14 @@
     "domain": "domain-3",
     "objective": "domain-3/tool-use",
     "stem": "A model returns a tool call for a function your application defined. Who runs the function?",
+    "objectiveTitle": "Grounding answers by letting a model call tools and functions",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "The model **does not execute** the functions itself. Instead, it outputs tool invocation instructions"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3734,6 +3285,14 @@
     "domain": "domain-3",
     "objective": "domain-3/tool-use",
     "stem": "How is each available tool described to the model?",
+    "objectiveTitle": "Grounding answers by letting a model call tools and functions",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "Each tool is described using a JSON Schema that defines its name, input parameters, and expected data types."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3767,6 +3326,14 @@
     "domain": "domain-3",
     "objective": "domain-3/tool-use",
     "stem": "A product manager asks what function calling makes possible that a bare text model cannot do. Which capability is documented?",
+    "objectiveTitle": "Grounding answers by letting a model call tools and functions",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "Retrieve real-time data"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3800,6 +3367,14 @@
     "domain": "domain-3",
     "objective": "domain-3/tool-use",
     "stem": "Given a user query and a set of available tools, what are the model's two documented options?",
+    "objectiveTitle": "Grounding answers by letting a model call tools and functions",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "Propose a function call by selecting a relevant tool and filling in the required arguments according to the schema."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3833,6 +3408,14 @@
     "domain": "domain-4",
     "objective": "domain-4/platform-capabilities",
     "stem": "A team stops a dedicated endpoint overnight to save money and expects the same GPUs back in the morning. What actually happens?",
+    "objectiveTitle": "Endpoint options, scaling, quotas, and team access",
+    "sources": [
+      {
+        "title": "Capacity, availability, and service guarantees",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "When an endpoint stops, its GPU capacity is released back to the shared pool."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3866,6 +3449,14 @@
     "domain": "domain-4",
     "objective": "domain-4/platform-capabilities",
     "stem": "A business continuity plan assumes a dedicated endpoint will return to full capacity immediately after a maintenance window. What risk should you flag?",
+    "objectiveTitle": "Endpoint options, scaling, quotas, and team access",
+    "sources": [
+      {
+        "title": "Capacity, availability, and service guarantees",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "restarting may take significantly longer than the initial deployment, and capacity may be temporarily unavailable"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3899,6 +3490,14 @@
     "domain": "domain-4",
     "objective": "domain-4/platform-capabilities",
     "stem": "An operations dashboard shows a dedicated endpoint as Updating. What does that indicate?",
+    "objectiveTitle": "Endpoint options, scaling, quotas, and team access",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Endpoint is applying configuration changes."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3932,6 +3531,14 @@
     "domain": "domain-4",
     "objective": "domain-4/platform-capabilities",
     "stem": "Why do dedicated endpoints report two separate status types rather than one?",
+    "objectiveTitle": "Endpoint options, scaling, quotas, and team access",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "This distinction helps separate deployment progress from actual availability."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3965,6 +3572,14 @@
     "domain": "domain-4",
     "objective": "domain-4/cost-and-billing",
     "stem": "A finance lead asks when a dedicated endpoint incurs charges. What is the rule?",
+    "objectiveTitle": "Token economics, consumption pricing, and cost controls",
+    "sources": [
+      {
+        "title": "Dedicated endpoint billing policy",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/billing-policy.md",
+        "excerpt": "A dedicated endpoint is considered **active, accessible, and billable** when **at least one replica is running**"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -3998,6 +3613,14 @@
     "domain": "domain-4",
     "objective": "domain-4/cost-and-billing",
     "stem": "An endpoint has been scaled to zero replicas. What is the billing and availability position?",
+    "objectiveTitle": "Token economics, consumption pricing, and cost controls",
+    "sources": [
+      {
+        "title": "Dedicated endpoint billing policy",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/billing-policy.md",
+        "excerpt": "When **zero replicas are running**, the endpoint is not accessible and billing charges do not apply."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4031,6 +3654,14 @@
     "domain": "domain-4",
     "objective": "domain-4/cost-and-billing",
     "stem": "What happens to an account when an automatic card charge fails?",
+    "objectiveTitle": "Token economics, consumption pricing, and cost controls",
+    "sources": [
+      {
+        "title": "Billing and consumption",
+        "url": "https://docs.tokenfactory.nebius.com/other-capabilities/billing-new.md",
+        "excerpt": "If a card charge fails, your account is **suspended**."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4064,6 +3695,14 @@
     "domain": "domain-4",
     "objective": "domain-4/cost-and-billing",
     "stem": "Under which conditions is a bank card charged automatically?",
+    "objectiveTitle": "Token economics, consumption pricing, and cost controls",
+    "sources": [
+      {
+        "title": "Billing and consumption",
+        "url": "https://docs.tokenfactory.nebius.com/other-capabilities/billing-new.md",
+        "excerpt": "At the start of the month, if your balance is negative"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4097,6 +3736,14 @@
     "domain": "domain-4",
     "objective": "domain-4/observability",
     "stem": "What response headers should client applications inspect to monitor remaining request and token quotas in real time?",
+    "objectiveTitle": "Inference observability and integrations",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4125,44 +3772,19 @@
     ]
   },
   {
-    "id": "q-ob02a9b0c1d2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/observability",
-    "stem": "Which metric token usage counts are returned in standard Chat Completion response payloads under the usage object?",
-    "options": [
-      {
-        "id": "a",
-        "text": "prompt_tokens, completion_tokens, and total_tokens",
-        "correct": true,
-        "explanation": "The usage object reports exact counts for prompt_tokens, completion_tokens, and total_tokens."
-      },
-      {
-        "id": "b",
-        "text": "gpu_temperature_celsius and fan_speed_rpm",
-        "correct": false,
-        "explanation": "Hardware temperature and fan metrics belong to infrastructure monitoring, not model API usage payloads."
-      },
-      {
-        "id": "c",
-        "text": "disk_write_mbps and network_latency_ms",
-        "correct": false,
-        "explanation": "Disk throughput and network ping latency are transport metrics, not LLM token usage counters."
-      },
-      {
-        "id": "d",
-        "text": "database_connections_active",
-        "correct": false,
-        "explanation": "Database connections are SQL pool counters, not inference token usage object properties."
-      }
-    ]
-  },
-  {
     "id": "q-op01d1e2f3a4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
     "objective": "domain-1/organizations-and-projects",
     "stem": "Two teams must not see each other's datasets or endpoints. Which level of the resource model isolates them?",
+    "objectiveTitle": "Organizations, projects, and how resources are scoped",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "exist inside a project and inherit its access settings."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4196,6 +3818,14 @@
     "domain": "domain-1",
     "objective": "domain-1/organizations-and-projects",
     "stem": "What exists immediately after you sign up, before you create anything?",
+    "objectiveTitle": "Organizations, projects, and how resources are scoped",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "When you sign up for Nebius Token Factory, a personal organization is created automatically."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4224,44 +3854,19 @@
     ]
   },
   {
-    "id": "q-op03f4a5b6c7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/organizations-and-projects",
-    "stem": "Which scope level in Nebius Token Factory directly owns API keys, budget limits, and deployed resources?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Projects",
-        "correct": true,
-        "explanation": "API keys, budgets, and endpoints belong to a specific Project within an Organization."
-      },
-      {
-        "id": "b",
-        "text": "Global user profile",
-        "correct": false,
-        "explanation": "User profiles span across organizations but do not own resource quotas directly."
-      },
-      {
-        "id": "c",
-        "text": "Region endpoints",
-        "correct": false,
-        "explanation": "Regions dictate data residency, not project isolation or credential scopes."
-      },
-      {
-        "id": "d",
-        "text": "Model registry",
-        "correct": false,
-        "explanation": "The model registry is a global catalog of available base weights."
-      }
-    ]
-  },
-  {
     "id": "q-op04a1b2c3d4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
     "objective": "domain-1/organizations-and-projects",
     "stem": "What happens when a new user signs up for Nebius Token Factory for the first time?",
+    "objectiveTitle": "Organizations, projects, and how resources are scoped",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "When you sign up for Nebius Token Factory, a personal organization is created automatically."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4295,6 +3900,14 @@
     "domain": "domain-1",
     "objective": "domain-1/openai-compatibility",
     "stem": "Latency matters more than token cost for your chat feature. How do you request the Fast flavor of a model?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "To use the Fast flavor, append `-fast` to the model name in the"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4328,6 +3941,14 @@
     "domain": "domain-1",
     "objective": "domain-1/openai-compatibility",
     "stem": "A colleague argues you should not use the Fast flavor because it will change what the model answers. Are they right?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4361,6 +3982,14 @@
     "domain": "domain-1",
     "objective": "domain-1/openai-compatibility",
     "stem": "How do Fast model flavors differ from standard model flavors in Nebius Token Factory when invoked via OpenAI-compatible APIs?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4394,6 +4023,14 @@
     "domain": "domain-1",
     "objective": "domain-1/openai-compatibility",
     "stem": "What is the model naming convention when selecting the Fast flavor of an inference model?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "To use the Fast flavor, append `-fast` to the model name in the"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4422,275 +4059,19 @@
     ]
   },
   {
-    "id": "q-pf05f3a4b5c6",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/api-authentication",
-    "stem": "How are API requests authenticated when interacting with Nebius Token Factory endpoints using OpenAI client SDKs?",
-    "options": [
-      {
-        "id": "a",
-        "text": "By passing a Project API key in the Authorization header as a Bearer token",
-        "correct": true,
-        "explanation": "OpenAI SDK compatibility relies on standard HTTP Bearer token authorization using Project API keys."
-      },
-      {
-        "id": "b",
-        "text": "By uploading an mTLS client certificate for every connection",
-        "correct": false,
-        "explanation": "mTLS is not required; standard HTTP Bearer tokens are used."
-      },
-      {
-        "id": "c",
-        "text": "By sending plain-text user passwords in custom headers",
-        "correct": false,
-        "explanation": "Passwords are never used for API authorization."
-      },
-      {
-        "id": "d",
-        "text": "By IP address allowlisting without cryptographic keys",
-        "correct": false,
-        "explanation": "Authorization requires valid API keys regardless of source IP."
-      }
-    ]
-  },
-  {
-    "id": "q-pf06a4b5c6d7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/model-catalog",
-    "stem": "Where can developers discover available base models and their specific context window limits in Nebius Token Factory?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Through the `/v1/models` API endpoint and the platform model catalog UI",
-        "correct": true,
-        "explanation": "Model capabilities, context windows, and available flavors are listed via `/v1/models` and the catalog."
-      },
-      {
-        "id": "b",
-        "text": "By querying DNS TXT records for endpoint subdomains",
-        "correct": false,
-        "explanation": "DNS records contain domain routing info, not model catalog metadata."
-      },
-      {
-        "id": "c",
-        "text": "By inspecting client-side git repository commit histories",
-        "correct": false,
-        "explanation": "Model catalogs are served dynamically from platform APIs."
-      },
-      {
-        "id": "d",
-        "text": "By contacting customer support via email before each request",
-        "correct": false,
-        "explanation": "Model listings are programmatically discoverable via public API endpoints."
-      }
-    ]
-  },
-  {
-    "id": "q-pf07b5c6d7e8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/playground",
-    "stem": "What primary workflow function does the Nebius Token Factory Playground UI serve during initial agent prototyping?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Interactive testing of model prompts, parameters, and tool outputs directly in the browser",
-        "correct": true,
-        "explanation": "The Playground UI enables rapid manual experimentation with prompts, parameters, and responses."
-      },
-      {
-        "id": "b",
-        "text": "Compiling binary Linux kernel modules for custom GPU instances",
-        "correct": false,
-        "explanation": "Playground handles model inference testing, not OS compilation."
-      },
-      {
-        "id": "c",
-        "text": "Provisioning physical rack hardware in remote data centers",
-        "correct": false,
-        "explanation": "Hardware provisioning is managed by infrastructure infrastructure teams, not the prompt playground."
-      },
-      {
-        "id": "d",
-        "text": "Generating automated legal compliance tax forms",
-        "correct": false,
-        "explanation": "The playground is a developer interface for LLM prompt testing."
-      }
-    ]
-  },
-  {
-    "id": "q-pf08c6d7e8f9",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/openai-compatibility",
-    "stem": "Which base URL pattern is used to configure standard OpenAI SDK clients to point to Nebius Token Factory inference endpoints?",
-    "options": [
-      {
-        "id": "a",
-        "text": "`https://api.tokenfactory.nebius.com/v1`",
-        "correct": true,
-        "explanation": "The standard base URL path follows `https://api.tokenfactory.nebius.com/v1` for OpenAI client integration."
-      },
-      {
-        "id": "b",
-        "text": "`ftp://legacy.nebius.internal/storage`",
-        "correct": false,
-        "explanation": "FTP protocols are not used for RESTful LLM inference APIs."
-      },
-      {
-        "id": "c",
-        "text": "`ws://localhost:3000/raw-socket`",
-        "correct": false,
-        "explanation": "Local raw WebSockets are not the canonical public API base URL."
-      },
-      {
-        "id": "d",
-        "text": "`https://docs.nebius.com/static/js`",
-        "correct": false,
-        "explanation": "Documentation static assets are not API inference endpoints."
-      }
-    ]
-  },
-  {
-    "id": "q-pf09d8e9f0a1",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/api-authentication",
-    "stem": "What authentication scope is required for API keys to create new dedicated endpoints in a project?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Project administrator or endpoint management write permissions",
-        "correct": true,
-        "explanation": "Creating infrastructure resources requires write permissions scoped to the target project."
-      },
-      {
-        "id": "b",
-        "text": "Read-only guest access across public forum posts",
-        "correct": false,
-        "explanation": "Read-only guest access cannot provision infrastructure endpoints."
-      },
-      {
-        "id": "c",
-        "text": "Anonymous unauthenticated bearer token",
-        "correct": false,
-        "explanation": "Resource creation strictly requires authenticated API keys."
-      },
-      {
-        "id": "d",
-        "text": "Third-party identity provider root certificate private key",
-        "correct": false,
-        "explanation": "Endpoint creation uses project-scoped IAM roles and API keys."
-      }
-    ]
-  },
-  {
-    "id": "q-pf10e9f0a1b2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/model-catalog",
-    "stem": "What happens when a base model version reaches its official deprecation date in Nebius Token Factory?",
-    "options": [
-      {
-        "id": "a",
-        "text": "New request invocations are rejected and developers must migrate to an active model version",
-        "correct": true,
-        "explanation": "Deprecated models are shut down for new inferences after the deprecation date passes."
-      },
-      {
-        "id": "b",
-        "text": "Requests are automatically routed to random third-party web search engines",
-        "correct": false,
-        "explanation": "Deprecation stops inference requests rather than redirecting queries externally."
-      },
-      {
-        "id": "c",
-        "text": "The model automatically doubles its inference speed without cost changes",
-        "correct": false,
-        "explanation": "Deprecation marks model end-of-life, not a performance upgrade."
-      },
-      {
-        "id": "d",
-        "text": "The project API key is permanently revoked",
-        "correct": false,
-        "explanation": "Model deprecation does not invalidate project credentials or API keys."
-      }
-    ]
-  },
-  {
-    "id": "q-pf11f0a1b2c3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/playground",
-    "stem": "Which inference parameter in the Playground UI controls the randomness of generated model completions?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Temperature",
-        "correct": true,
-        "explanation": "Temperature scales the logits before sampling, controlling response randomness and creativity."
-      },
-      {
-        "id": "b",
-        "text": "TCP Window Size",
-        "correct": false,
-        "explanation": "TCP window size is a network transport layer configuration."
-      },
-      {
-        "id": "c",
-        "text": "CPU Core Affinity",
-        "correct": false,
-        "explanation": "CPU affinity controls process execution on physical cores, not LLM sampling."
-      },
-      {
-        "id": "d",
-        "text": "Display Screen Refresh Rate",
-        "correct": false,
-        "explanation": "Monitor refresh rate is a hardware display property."
-      }
-    ]
-  },
-  {
-    "id": "q-pf12a1b2c3d4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/organizations-and-projects",
-    "stem": "Can a single Nebius Token Factory user account belong to multiple organizations simultaneously?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Yes, a user identity can be invited to multiple organizations and switch between them",
-        "correct": true,
-        "explanation": "User identities can hold memberships across multiple independent organizations."
-      },
-      {
-        "id": "b",
-        "text": "No, signing up locks the account to a single organization permanently",
-        "correct": false,
-        "explanation": "Users can belong to multiple organizations and accept invitations."
-      },
-      {
-        "id": "c",
-        "text": "Only if the user registers separate physical credit cards for each organization",
-        "correct": false,
-        "explanation": "Organization membership is managed via IAM roles, not separate credit card registrations."
-      },
-      {
-        "id": "d",
-        "text": "Only during the first 24 hours after account creation",
-        "correct": false,
-        "explanation": "Multi-organization membership is a permanent platform capability."
-      }
-    ]
-  },
-  {
     "id": "q-rl01d7e8f9a0",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "Your traffic has grown steadily for weeks and you have not asked for a quota increase. What happens to your rate limit?",
+    "objectiveTitle": "Rate limits and scaling behaviour",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "Every user is provided with a default rate limit cap. This limit grows automatically when you consistently operate close to your capacity and current limit."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4724,6 +4105,14 @@
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "You want to back off before hitting a limit rather than react to errors. What does the API give you?",
+    "objectiveTitle": "Rate limits and scaling behaviour",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4757,6 +4146,14 @@
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "A request that exceeded your rate limit succeeded anyway, carrying an over-limit response header. Why?",
+    "objectiveTitle": "Rate limits and scaling behaviour",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "This occurs when the system has spare capacity available, and your request can be handled with a lower priority without affecting other users."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4790,6 +4187,14 @@
     "domain": "domain-4",
     "objective": "domain-4/rate-limits",
     "stem": "How does automatic rate limit growth operate when a user consistently operates near their assigned capacity limits?",
+    "objectiveTitle": "Rate limits and scaling behaviour",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "Every user is provided with a default rate limit cap. This limit grows automatically when you consistently operate close to your capacity and current limit."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -4818,209 +4223,19 @@
     ]
   },
   {
-    "id": "q-rl05c7d8e9f0",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/rate-limits",
-    "stem": "What HTTP status code is returned when a client request exceeds rate limits?",
-    "options": [
-      {
-        "id": "a",
-        "text": "HTTP 200 OK",
-        "correct": false,
-        "explanation": "200 OK indicates request success, not rate limiting throttling."
-      },
-      {
-        "id": "b",
-        "text": "HTTP 401 Unauthorized",
-        "correct": false,
-        "explanation": "401 Unauthorized indicates missing or invalid API keys."
-      },
-      {
-        "id": "c",
-        "text": "HTTP 429 Too Many Requests",
-        "correct": true,
-        "explanation": "HTTP 429 Too Many Requests is standard when request rate or token limits are exceeded."
-      },
-      {
-        "id": "d",
-        "text": "HTTP 502 Bad Gateway",
-        "correct": false,
-        "explanation": "502 Bad Gateway indicates upstream server network connectivity failures."
-      }
-    ]
-  },
-  {
-    "id": "q-rp01a5b6c7d8",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/retrieval-pipelines",
-    "stem": "Why is chunk overlap typically applied when splitting documents into passages for a retrieval pipeline?",
-    "options": [
-      {
-        "id": "a",
-        "text": "To prevent splitting semantically important context or entity references across chunk boundaries",
-        "correct": true,
-        "explanation": "Chunk overlap preserves context continuity across boundary cuts so key entities aren't severed."
-      },
-      {
-        "id": "b",
-        "text": "To double the storage efficiency of vector database index nodes",
-        "correct": false,
-        "explanation": "Overlap increases total stored tokens and index size slightly, not efficiency."
-      },
-      {
-        "id": "c",
-        "text": "To ensure all output tokens are generated deterministically",
-        "correct": false,
-        "explanation": "Chunking happens prior to retrieval, whereas generation determinism is set via temperature/seed."
-      },
-      {
-        "id": "d",
-        "text": "To force the embedding model to output 4096-dimensional vectors",
-        "correct": false,
-        "explanation": "Embedding dimension is fixed by the model architecture, unrelated to chunk overlap length."
-      }
-    ]
-  },
-  {
-    "id": "q-rp02b6c7d8e9",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/retrieval-pipelines",
-    "stem": "What is Hybrid Search in a modern retrieval architecture?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Running inference across CPU and GPU hardware simultaneously",
-        "correct": false,
-        "explanation": "Hardware acceleration is compute infrastructure, not search retrieval methodology."
-      },
-      {
-        "id": "b",
-        "text": "Combining dense vector semantic search with sparse keyword search (e.g., BM25)",
-        "correct": true,
-        "explanation": "Hybrid search merges dense semantic embeddings with sparse BM25 keyword matching for optimal recall."
-      },
-      {
-        "id": "c",
-        "text": "Querying two different LLM providers for response verification",
-        "correct": false,
-        "explanation": "Multi-provider LLM querying is model ensemble routing, not hybrid document retrieval."
-      },
-      {
-        "id": "d",
-        "text": "Translating queries into multiple foreign languages before embedding",
-        "correct": false,
-        "explanation": "Multilingual expansion is translation preprocessing, not hybrid dense/sparse search indexing."
-      }
-    ]
-  },
-  {
-    "id": "q-sb01a9b0c1d2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Why is isolated container or microVM execution required when an agent executes code generated at runtime?",
-    "options": [
-      {
-        "id": "a",
-        "text": "To prevent arbitrary untrusted code execution from compromising host system security and network resources",
-        "correct": true,
-        "explanation": "Sandboxing isolates process execution so generated code cannot modify host files or access sensitive networks."
-      },
-      {
-        "id": "b",
-        "text": "To speed up LLM token generation throughput by 10x",
-        "correct": false,
-        "explanation": "Sandboxes run client/code execution environments, not model weight inference."
-      },
-      {
-        "id": "c",
-        "text": "To bypass API key authentication requirements",
-        "correct": false,
-        "explanation": "API key authentication remains required regardless of sandbox isolation."
-      },
-      {
-        "id": "d",
-        "text": "To convert Python code into static HTML pages automatically",
-        "correct": false,
-        "explanation": "Sandboxes execute code safely; HTML conversion is handled by templates or build scripts."
-      }
-    ]
-  },
-  {
-    "id": "q-sb02b0c1d2e3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Which resource control mechanism is typically configured on an agent sandbox to prevent runaway code loops?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Automatic git commit triggers",
-        "correct": false,
-        "explanation": "Git commits record version control history, not execution resource limits."
-      },
-      {
-        "id": "b",
-        "text": "Execution timeouts and CPU/memory quotas",
-        "correct": true,
-        "explanation": "Timeouts terminate infinite loops and resource quotas prevent memory exhaustion."
-      },
-      {
-        "id": "c",
-        "text": "Domain name DNS pre-fetching",
-        "correct": false,
-        "explanation": "DNS pre-fetching speeds up web browser network lookups, not sandbox loop limits."
-      },
-      {
-        "id": "d",
-        "text": "Database table indexing",
-        "correct": false,
-        "explanation": "Database indexes speed up SQL queries, not process execution limits."
-      }
-    ]
-  },
-  {
-    "id": "q-sb03c1d2e3f4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "How should environment variables containing secret API keys be passed to an agent sandbox environment?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Hardcoded as plain text inside generated code scripts",
-        "correct": false,
-        "explanation": "Hardcoding credentials exposes keys in code logs and version control artifacts."
-      },
-      {
-        "id": "b",
-        "text": "Written to a public world-readable file in `/tmp/keys.txt`",
-        "correct": false,
-        "explanation": "World-readable temporary files leak secrets to any local process."
-      },
-      {
-        "id": "c",
-        "text": "Injected securely via ephemeral environment secrets without writing to disk",
-        "correct": true,
-        "explanation": "Secrets should be injected in-memory at process initialization without disk persistence."
-      },
-      {
-        "id": "d",
-        "text": "Encoded as base64 strings in public GitHub issues",
-        "correct": false,
-        "explanation": "Base64 encoding is not encryption; public posting leaks secrets instantly."
-      }
-    ]
-  },
-  {
     "id": "q-so01d5e6f7a8",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "You need a model to return data your code can parse without a post-processing step. Which request parameter controls this?",
+    "objectiveTitle": "Structured output and JSON-constrained generation",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "Use `response_format`parameter to get JSON output."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -5054,6 +4269,14 @@
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "You want valid JSON but do not care about the exact field names. Which `response_format` type fits, and what are you giving up?",
+    "objectiveTitle": "Structured output and JSON-constrained generation",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "Forces arbitrary JSON output, the model will decide on the schema by itself"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -5087,6 +4310,14 @@
     "domain": "domain-2",
     "objective": "domain-2/structured-output",
     "stem": "You already pass a JSON schema in `response_format` but output quality is inconsistent. What does the documentation recommend?",
+    "objectiveTitle": "Structured output and JSON-constrained generation",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "It's always better to provide the instruction to follow JSON output and the schema to your model's system or user prompt"
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -5115,77 +4346,19 @@
     ]
   },
   {
-    "id": "q-so04a3b4c5d6",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/structured-output",
-    "stem": "What is the main advantage of enforcing JSON Schema constraints at the logit level during decoding over prompt engineering?",
-    "options": [
-      {
-        "id": "a",
-        "text": "It guarantees 100% syntactically valid JSON output matching the schema without parsing failures",
-        "correct": true,
-        "explanation": "Grammar/logit-constrained decoding physically prevents invalid tokens, guaranteeing valid JSON syntax."
-      },
-      {
-        "id": "b",
-        "text": "It eliminates the need for an API authentication key",
-        "correct": false,
-        "explanation": "API authentication is required regardless of output constraint settings."
-      },
-      {
-        "id": "c",
-        "text": "It doubles the context window size of the underlying model",
-        "correct": false,
-        "explanation": "Context window length is fixed by architecture, not decoding constraints."
-      },
-      {
-        "id": "d",
-        "text": "It automatically translates output into multiple spoken languages",
-        "correct": false,
-        "explanation": "Structured output enforces data format schemas, not natural language translation."
-      }
-    ]
-  },
-  {
-    "id": "q-ta01d2e3f4a5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/team-access",
-    "stem": "How are projects scoped within an organization hierarchy?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Projects are global namespaces accessible to all internet users by default",
-        "correct": false,
-        "explanation": "Projects are secure internal containers scoped under an organization."
-      },
-      {
-        "id": "b",
-        "text": "Projects exist outside organizations and cannot contain API keys",
-        "correct": false,
-        "explanation": "Projects belong to an organization and scope resources like API keys and fine-tuning jobs."
-      },
-      {
-        "id": "c",
-        "text": "Projects can only be created by external third-party OAuth providers",
-        "correct": false,
-        "explanation": "Organization admins create and manage projects directly in the platform console or API."
-      },
-      {
-        "id": "d",
-        "text": "Projects exist inside an organization and isolate resources, API keys, and access permissions",
-        "correct": true,
-        "explanation": "Projects group and isolate resources like endpoints, API keys, and jobs within an organization."
-      }
-    ]
-  },
-  {
     "id": "q-ta02a3b4c5d6",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
     "objective": "domain-4/team-access",
     "stem": "What organization structure is initialized when a new user signs up for the platform?",
+    "objectiveTitle": "Groups, invitations, and single sign-on",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "When you sign up for Nebius Token Factory, a personal organization is created automatically."
+      }
+    ],
     "options": [
       {
         "id": "a",
@@ -5210,39 +4383,6 @@
         "text": "A temporary 24-hour trial organization that auto-deletes",
         "correct": false,
         "explanation": "The created personal organization is a permanent account container."
-      }
-    ]
-  },
-  {
-    "id": "q-ta03b4c5d6e7",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/team-access",
-    "stem": "Which IAM permission role scope allows creating new API keys within a specific project without granting organization-level administrative access?",
-    "options": [
-      {
-        "id": "a",
-        "text": "Organization Owner",
-        "correct": false,
-        "explanation": "Organization Owner has full admin privileges across all org settings, not project-scoped access."
-      },
-      {
-        "id": "b",
-        "text": "Project Developer or Project Admin",
-        "correct": true,
-        "explanation": "Project-level roles allow managing resources and API keys inside that specific project only."
-      },
-      {
-        "id": "c",
-        "text": "Global Billing Auditor",
-        "correct": false,
-        "explanation": "Billing Auditor grants read-only access to invoices and financial usage reports."
-      },
-      {
-        "id": "d",
-        "text": "Anonymous Guest User",
-        "correct": false,
-        "explanation": "Unauthenticated guests cannot access projects or issue API credentials."
       }
     ]
   }

@@ -180,9 +180,13 @@ test("emits only the fields the client needs, per question and per option", () =
 
   assert.deepEqual(
     Object.keys(q).sort(),
-    ["course_id", "domain", "id", "objective", "options", "stem"].sort(),
+    ["course_id", "domain", "id", "objective", "objectiveTitle", "sources", "options", "stem"].sort(),
   );
   assert.deepEqual(Object.keys(q.options[0]).sort(), ["correct", "explanation", "id", "text"].sort());
+  assert.equal(q.objectiveTitle, "Alpha");
+  assert.deepEqual(q.sources, [
+    { title: "X", url: "https://docs.nebius.com/x", excerpt: "authenticate using an API key" },
+  ]);
 });
 
 test("empty eligible set produces an empty array, not a missing file", () => {
