@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-recovery-chat
+url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md
+title: Chat completion API
+retrieved_at: 2026-09-05T20:44:58Z
+sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
+objectives:
+  - domain-2/chat-completions
+  - domain-4/observability
+snapshot:
+  bucket: academy-source-snapshots
+  key: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
+status: current

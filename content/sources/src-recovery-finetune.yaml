@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-recovery-finetune
+url: https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md
+title: Supervised fine-tuning
+retrieved_at: 2026-09-05T20:44:38Z
+sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+objectives:
+  - domain-3/supervised-fine-tuning
+  - domain-3/files-api
+  - domain-3/fine-tuning-jobs
+snapshot:
+  bucket: academy-source-snapshots
+  key: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+status: current

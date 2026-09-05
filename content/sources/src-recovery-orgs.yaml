@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-recovery-orgs
+url: https://docs.tokenfactory.nebius.com/team-access/org-projects.md
+title: Organizations and projects
+retrieved_at: 2026-09-05T20:44:54Z
+sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+objectives:
+  - domain-1/organizations-and-projects
+  - domain-4/team-access
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+status: current

@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-limits
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md
+title: Rate limits
+retrieved_at: 2026-09-05T20:44:53Z
+sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+objectives:
+  - domain-4/rate-limits
+snapshot:
+  bucket: academy-source-snapshots
+  key: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+status: current
