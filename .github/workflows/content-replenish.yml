@@ -26,8 +26,19 @@ name: Content replenish
 # open as data; none of that text is interpolated into a prompt or a shell
 # line.
 #
-# Every scratch file this workflow writes lives under _run/, and the only place
-# an agent writes outside content/questions is _agent/. That is what lets the
+# The three agents run with the UNSCOPED Write tool, not a path allowlist: on
+# anthropics/claude-code-action every Write(<pattern>) form is denied at call
+# time while the step still reports success, so a scoped grant does not narrow
+# what an agent may write -- it stops the agent writing at all, silently. Four
+# runs on 2026-09-06 established this: `_agent/**`, its absolute
+# `//<workspace>/_agent/**` form and `_run/agent/**` were all refused with
+# "Claude requested permissions to write to <path>, but you haven't granted it
+# yet", and the bare tool was accepted. So the grant is not the boundary. The
+# boundary is deterministic and below: each agent is followed by a prune of its
+# scratch directory, then a boundary check, then guardChanges on the questions.
+#
+# Every scratch file this workflow writes lives under _run/, and the agents'
+# own output goes to _agent/. That is what lets the
 # pre-agent boundary check below be a plain "nothing outside content/questions
 # moved" rule instead of a list that has to be re-derived
 # whenever a step starts writing a new file. The check does not honour
@@ -204,6 +215,33 @@ jobs:
       # make from a URL; the agent chooses, replenish-prepare validates. It
       # may pick only urls the report offered and only objectives the course
       # maps define, and it can write exactly one file.
+      # The agents' grant is the unscoped Write tool, so this is what bounds
+      # them outside content/questions and their own scratch file: a digest of
+      # everything the following steps trust, taken while nothing but this
+      # workflow has run. The digest is kept in the step's OUTPUT, not in a
+      # file: an agent can rewrite any path it can reach, and the runner's
+      # step-output store is not a path.
+      - name: Snapshot what the agent must not touch
+        if: steps.branch.outputs.new_pages != '0'
+        id: selector-guard
+        run: |
+          set -euo pipefail
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
+          # on the next git command), and the per-user files bun, npm and git
+          # read from $HOME, which is outside the workspace entirely.
+          manifest() {
+            {
+              find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
+              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+                if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
+              done
+            }
+          }
+          manifest > "${RUNNER_TEMP}/selector-guard.txt"
+          echo "digest=$(sha256sum < "${RUNNER_TEMP}/selector-guard.txt" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+
       - name: Author agent selects pages to capture
         if: steps.branch.outputs.new_pages != '0'
         uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
@@ -236,7 +274,7 @@ jobs:
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 25
             --tools "Read,Glob,Grep,Write"
-            --allowedTools "Read,Glob,Grep,Write(_agent/**)"
+            --allowedTools "Read,Glob,Grep,Write"
 
       # A missing file here is not "the agent had nothing to say": the first
       # supervised run lost all three agent outputs to a permission rule that
@@ -253,12 +291,57 @@ jobs:
             echo "::error::the selector agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
-          # The grant has to be `_agent/**` -- a rule naming one file is denied,
-          # which is the bug this directory exists to work around -- so the
-          # narrowing happens here instead, in shell, before any repository
-          # code runs: everything the agent left besides its one expected
-          # output is deleted, whatever a later tool might have globbed it into.
+          # The grant is the unscoped Write tool -- every Write(<pattern>) form
+          # is denied at call time, see the header -- so the narrowing happens
+          # here instead, in shell, before any repository code runs: everything
+          # the agent left besides its one expected output is deleted, whatever
+          # a later tool might have globbed it into. What it wrote outside this
+          # directory is the next step's business, not this one's.
           find _agent -mindepth 1 ! -path "$f" -delete
+
+      # Pure shell, before any repository code: recompute the digest and
+      # compare it with the one the snapshot step put in its output. The saved
+      # manifest is used only to print a readable diff -- it is a file, so it
+      # is exactly as untrustworthy as the tree it describes.
+      - name: Nothing the next steps trust moved
+        if: steps.branch.outputs.new_pages != '0'
+        run: |
+          set -euo pipefail
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
+          # on the next git command), and the per-user files bun, npm and git
+          # read from $HOME, which is outside the workspace entirely.
+          manifest() {
+            {
+              find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
+              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+                if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
+              done
+            }
+          }
+          now="${RUNNER_TEMP}/selector-guard-after.txt"
+          manifest > "$now"
+          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "${{ steps.selector-guard.outputs.digest }}" ]; then
+            echo "::error::the agent changed a file the following steps trust"
+            diff "${RUNNER_TEMP}/selector-guard.txt" "$now" || true
+            exit 1
+          fi
+          # $GITHUB_ENV and $GITHUB_PATH are per-step files the runner applies
+          # the moment the agent's step ends, so they cannot be compared here;
+          # what they would have done can be, and this is the standard Actions
+          # escalation an unscoped write reaches.
+          bad=""
+          for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
+            if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
+          done
+          case ":$PATH:" in
+            *":${GITHUB_WORKSPACE}"*|*":${RUNNER_TEMP}"*|*:.:*)
+              echo "::error::PATH gained an entry under the workspace, the runner temp, or the current directory"
+              bad=1
+              ;;
+          esac
+          [ -z "$bad" ] || exit 1
 
       # Same reason as after the other two agents; the step's own comments carry
       # the argument.
@@ -288,10 +371,12 @@ jobs:
           rm -rf node_modules
           bun install --frozen-lockfile
 
-      # The selector agent may write only _agent/select.json, and the very next
-      # step runs repository code with snapshot credentials -- bun and node
-      # both load files this checkout provides. The allowlist is not the only
-      # boundary; this is. Nothing is exempted: the discovery watermark is
+      # The selector agent's grant is the unscoped Write tool -- every
+      # Write(<pattern>) form is silently denied by the action, see the header
+      # -- so this check is not "the allowlist is not the only boundary", it is
+      # the ONLY boundary, together with the prune above it. The very next step
+      # runs repository code with snapshot credentials; bun and node load files
+      # this checkout provides. Nothing is exempted: the discovery watermark is
       # copied in by the capture step below, AFTER this check, so a selector
       # that rewrote it -- hiding pages from every future run, or re-offering
       # ignored ones -- is caught here rather than waved through.
@@ -423,6 +508,32 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      # The agents' grant is the unscoped Write tool, so this is what bounds
+      # them outside content/questions and their own scratch file: a digest of
+      # everything the following steps trust, taken while nothing but this
+      # workflow has run. The digest is kept in the step's OUTPUT, not in a
+      # file: an agent can rewrite any path it can reach, and the runner's
+      # step-output store is not a path.
+      - name: Snapshot what the agent must not touch
+        id: author-guard
+        run: |
+          set -euo pipefail
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
+          # on the next git command), and the per-user files bun, npm and git
+          # read from $HOME, which is outside the workspace entirely.
+          manifest() {
+            {
+              find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
+              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+                if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
+              done
+            }
+          }
+          manifest > "${RUNNER_TEMP}/author-guard.txt"
+          echo "digest=$(sha256sum < "${RUNNER_TEMP}/author-guard.txt" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+
       - name: Author agent writes review_ready questions
         uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
         with:
@@ -473,7 +584,7 @@ jobs:
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 80
             --tools "Read,Glob,Grep,Write,Edit"
-            --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(_agent/**)"
+            --allowedTools "Read,Glob,Grep,Write,Edit"
 
       # The agent's own runs of the checks are advice; these are the gates.
       # A missing file here is not "the agent had nothing to say": the first
@@ -490,20 +601,64 @@ jobs:
             echo "::error::the author agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
-          # The grant has to be `_agent/**` -- a rule naming one file is denied,
-          # which is the bug this directory exists to work around -- so the
-          # narrowing happens here instead, in shell, before any repository
-          # code runs: everything the agent left besides its one expected
-          # output is deleted, whatever a later tool might have globbed it into.
+          # The grant is the unscoped Write tool -- every Write(<pattern>) form
+          # is denied at call time, see the header -- so the narrowing happens
+          # here instead, in shell, before any repository code runs: everything
+          # the agent left besides its one expected output is deleted, whatever
+          # a later tool might have globbed it into. What it wrote outside this
+          # directory is the next step's business, not this one's.
           find _agent -mindepth 1 ! -path "$f" -delete
 
-      # An agent's Write allowlist is a path glob, and node_modules is exempt
-      # from the boundary check because `bun install` leaves tens of thousands
-      # of untracked files there. A write that reached it -- through path
-      # traversal, or any future gap in the allowlist -- would execute as soon
-      # as the next `node` resolves an import, which is the boundary check
-      # itself. So the dependencies are discarded and reinstalled, and the
-      # executable surface is checked, before ANY repository code runs again.
+      # Pure shell, before any repository code: recompute the digest and
+      # compare it with the one the snapshot step put in its output. The saved
+      # manifest is used only to print a readable diff -- it is a file, so it
+      # is exactly as untrustworthy as the tree it describes.
+      - name: Nothing the next steps trust moved
+        run: |
+          set -euo pipefail
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
+          # on the next git command), and the per-user files bun, npm and git
+          # read from $HOME, which is outside the workspace entirely.
+          manifest() {
+            {
+              find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
+              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+                if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
+              done
+            }
+          }
+          now="${RUNNER_TEMP}/author-guard-after.txt"
+          manifest > "$now"
+          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "${{ steps.author-guard.outputs.digest }}" ]; then
+            echo "::error::the agent changed a file the following steps trust"
+            diff "${RUNNER_TEMP}/author-guard.txt" "$now" || true
+            exit 1
+          fi
+          # $GITHUB_ENV and $GITHUB_PATH are per-step files the runner applies
+          # the moment the agent's step ends, so they cannot be compared here;
+          # what they would have done can be, and this is the standard Actions
+          # escalation an unscoped write reaches.
+          bad=""
+          for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
+            if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
+          done
+          case ":$PATH:" in
+            *":${GITHUB_WORKSPACE}"*|*":${RUNNER_TEMP}"*|*:.:*)
+              echo "::error::PATH gained an entry under the workspace, the runner temp, or the current directory"
+              bad=1
+              ;;
+          esac
+          [ -z "$bad" ] || exit 1
+
+      # node_modules is exempt from the boundary check because `bun install`
+      # leaves tens of thousands of untracked files there, and the agents write
+      # under an unscoped grant, so nothing stops a write landing in it. Such a
+      # write would execute as soon as the next `node` resolves an import,
+      # which is the boundary check itself. So the dependencies are discarded
+      # and reinstalled, and the executable surface is checked, before ANY
+      # repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         run: |
           set -euo pipefail
@@ -710,6 +865,33 @@ jobs:
           echo "count=$count" >> "$GITHUB_OUTPUT"
           cat _run/review-ids.txt
 
+      # The agents' grant is the unscoped Write tool, so this is what bounds
+      # them outside content/questions and their own scratch file: a digest of
+      # everything the following steps trust, taken while nothing but this
+      # workflow has run. The digest is kept in the step's OUTPUT, not in a
+      # file: an agent can rewrite any path it can reach, and the runner's
+      # step-output store is not a path.
+      - name: Snapshot what the agent must not touch
+        if: steps.items.outputs.count != '0'
+        id: reviewer-guard
+        run: |
+          set -euo pipefail
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
+          # on the next git command), and the per-user files bun, npm and git
+          # read from $HOME, which is outside the workspace entirely.
+          manifest() {
+            {
+              find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
+              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+                if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
+              done
+            }
+          }
+          manifest > "${RUNNER_TEMP}/reviewer-guard.txt"
+          echo "digest=$(sha256sum < "${RUNNER_TEMP}/reviewer-guard.txt" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+
       - name: Independent reviewer decides per item
         if: steps.items.outputs.count != '0'
         uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
@@ -741,7 +923,7 @@ jobs:
             --model ${{ env.REVIEWER_MODEL }}
             --max-turns 60
             --tools "Read,Glob,Grep,Write"
-            --allowedTools "Read,Glob,Grep,Write(_agent/**)"
+            --allowedTools "Read,Glob,Grep,Write"
 
       # A missing file here is not "the agent had nothing to say": the first
       # supervised run lost all three agent outputs to a permission rule that
@@ -758,20 +940,65 @@ jobs:
             echo "::error::the reviewer agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
-          # The grant has to be `_agent/**` -- a rule naming one file is denied,
-          # which is the bug this directory exists to work around -- so the
-          # narrowing happens here instead, in shell, before any repository
-          # code runs: everything the agent left besides its one expected
-          # output is deleted, whatever a later tool might have globbed it into.
+          # The grant is the unscoped Write tool -- every Write(<pattern>) form
+          # is denied at call time, see the header -- so the narrowing happens
+          # here instead, in shell, before any repository code runs: everything
+          # the agent left besides its one expected output is deleted, whatever
+          # a later tool might have globbed it into. What it wrote outside this
+          # directory is the next step's business, not this one's.
           find _agent -mindepth 1 ! -path "$f" -delete
 
-      # An agent's Write allowlist is a path glob, and node_modules is exempt
-      # from the boundary check because `bun install` leaves tens of thousands
-      # of untracked files there. A write that reached it -- through path
-      # traversal, or any future gap in the allowlist -- would execute as soon
-      # as the next `node` resolves an import, which is the boundary check
-      # itself. So the dependencies are discarded and reinstalled, and the
-      # executable surface is checked, before ANY repository code runs again.
+      # Pure shell, before any repository code: recompute the digest and
+      # compare it with the one the snapshot step put in its output. The saved
+      # manifest is used only to print a readable diff -- it is a file, so it
+      # is exactly as untrustworthy as the tree it describes.
+      - name: Nothing the next steps trust moved
+        if: steps.items.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
+          # on the next git command), and the per-user files bun, npm and git
+          # read from $HOME, which is outside the workspace entirely.
+          manifest() {
+            {
+              find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
+              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+                if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
+              done
+            }
+          }
+          now="${RUNNER_TEMP}/reviewer-guard-after.txt"
+          manifest > "$now"
+          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "${{ steps.reviewer-guard.outputs.digest }}" ]; then
+            echo "::error::the agent changed a file the following steps trust"
+            diff "${RUNNER_TEMP}/reviewer-guard.txt" "$now" || true
+            exit 1
+          fi
+          # $GITHUB_ENV and $GITHUB_PATH are per-step files the runner applies
+          # the moment the agent's step ends, so they cannot be compared here;
+          # what they would have done can be, and this is the standard Actions
+          # escalation an unscoped write reaches.
+          bad=""
+          for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
+            if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
+          done
+          case ":$PATH:" in
+            *":${GITHUB_WORKSPACE}"*|*":${RUNNER_TEMP}"*|*:.:*)
+              echo "::error::PATH gained an entry under the workspace, the runner temp, or the current directory"
+              bad=1
+              ;;
+          esac
+          [ -z "$bad" ] || exit 1
+
+      # node_modules is exempt from the boundary check because `bun install`
+      # leaves tens of thousands of untracked files there, and the agents write
+      # under an unscoped grant, so nothing stops a write landing in it. Such a
+      # write would execute as soon as the next `node` resolves an import,
+      # which is the boundary check itself. So the dependencies are discarded
+      # and reinstalled, and the executable surface is checked, before ANY
+      # repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         if: steps.items.outputs.count != '0'
         run: |
@@ -799,8 +1026,9 @@ jobs:
           rm -rf node_modules
           bun install --frozen-lockfile
 
-      # Same reason as after the selector: the reviewer may write only
-      # _agent/decisions.json, and the next step runs approve-pr-questions,
+      # Same reason as after the selector: the reviewer is asked for exactly
+      # _agent/decisions.json and is bounded by the two steps above rather
+      # than by its grant, and the next step runs approve-pr-questions,
       # verify-evidence and build-content-bundle with snapshot credentials, then
       # commits the bundle those very scripts produced.
       - name: Nothing but the decisions moved
