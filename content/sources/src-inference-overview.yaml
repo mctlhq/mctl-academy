@@ -2,13 +2,13 @@ schema_version: 1
 id: src-inference-overview
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md
 title: Inference Overview
-retrieved_at: 2026-08-19T17:00:20Z
-sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+retrieved_at: 2026-09-06T10:58:05Z
+sha256: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 objectives:
   - domain-1/openai-compatibility
   - domain-1/ai-concepts
   - domain-1/inference-basics
 snapshot:
   bucket: academy-source-snapshots
-  key: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
-status: drifted
+  key: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
+status: current
