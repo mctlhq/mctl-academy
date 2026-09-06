@@ -664,6 +664,66 @@ test("every agent is bracketed by a snapshot and a verification of what the next
   }
 });
 
+test("the shell hooks that run before a guard's first line are emptied where the guard runs", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // BASH_ENV is sourced while bash starts, before the first line of the script
+  // it was given, so a check written inside that script has already lost: the
+  // sourced file can exit 0 on its behalf. LD_PRELOAD is the same story one
+  // level down, at exec. $GITHUB_ENV carries both into the next step, and a
+  // step-level env: is what outranks it.
+  const hooks = ["BASH_ENV", "ENV", "SHELLOPTS", "BASHOPTS", "PS4", "LD_PRELOAD", "LD_LIBRARY_PATH"];
+  const guarded = [
+    // The snapshot too: it is the other side of the environment comparison, and
+    // a name present on one side only is a difference on every run.
+    "Snapshot what the agent must not touch",
+    "The agent produced its output",
+    "Nothing the next steps trust moved",
+    "Guard the executable surface and rebuild dependencies",
+  ];
+  let checked = 0;
+  for (const job of ["author", "review"]) {
+    for (const step of workflow.jobs[job].steps) {
+      if (!guarded.includes(step.name)) continue;
+      for (const v of hooks) {
+        assert.equal(step.env?.[v], "", `${job}: ${step.name} leaves ${v} as the agent left it`);
+      }
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 12);
+});
+
+test("the live drift check treats only its own exit codes as success", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const step = workflow.jobs.author.steps.find(
+    (s) => s.name === "Quarantine live drift, capture pages, re-validate what survives",
+  );
+  assert.ok(step, "the drift step is gone or renamed");
+  const branch = /case "\$code" in[\s\S]*?esac/.exec(step.run);
+  assert.ok(branch, "the exit code is not read as a set of codes");
+  // capture-source: 0 clean, 2 drift found, 1 unreachable. 137 is the OOM
+  // killer, and it used to pass as "not 1".
+  const status = (code) => {
+    try {
+      execFileSync("bash", ["-c", `set -euo pipefail\ncode=${code}\n${branch[0]}`], {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      return 0;
+    } catch (err) {
+      return err.status;
+    }
+  };
+  assert.equal(status(0), 0, "a clean check must continue");
+  assert.equal(status(2), 0, "drift found and marked is the expected path");
+  assert.equal(status(1), 1, "an unreachable source must stop the run");
+  assert.equal(status(137), 1, "the OOM killer must stop the run");
+  assert.equal(status(127), 1, "an interpreter that would not start must stop the run");
+});
+
 test("a silent agent fails the run instead of degrading quietly", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),

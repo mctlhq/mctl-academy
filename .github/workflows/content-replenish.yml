@@ -227,6 +227,20 @@ jobs:
       - name: Snapshot what the agent must not touch
         if: steps.branch.outputs.new_pages != '0'
         id: selector-guard
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
@@ -325,6 +339,20 @@ jobs:
       # broken run, and it says so here.
       - name: The agent produced its output
         if: steps.branch.outputs.new_pages != '0'
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           f=_agent/select.json
@@ -346,8 +374,21 @@ jobs:
       # is exactly as untrustworthy as the tree it describes.
       - name: Nothing the next steps trust moved
         if: steps.branch.outputs.new_pages != '0'
-        # Read as data, not spliced into the script text.
         env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
+          # Read as data, not spliced into the script text.
           EXPECTED_DIGEST: ${{ steps.selector-guard.outputs.digest }}
           EXPECTED_PATH: ${{ steps.selector-guard.outputs.path }}
         run: |
@@ -430,6 +471,20 @@ jobs:
       # Same reason as after the other two agents; the step's own comments carry
       # the argument.
       - name: Guard the executable surface and rebuild dependencies
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           # Pure git: not one line of repository code has run since the agent
@@ -493,7 +548,16 @@ jobs:
           npm run --silent snapshot:capture -- --check --mark-drifted
           code=$?
           set -e
-          [ "$code" -ne 1 ] || { echo "::error::live drift check failed"; exit 1; }
+          # capture-source's check mode: 0 clean, 2 drift found and marked, 1 a
+          # source it could not reach. Everything else is the process dying --
+          # 137 for the OOM killer, 126 or 127 for an interpreter that will not
+          # start -- and treating
+          # "not 1" as success let those through as "no drift".
+          case "$code" in
+            0|2) ;;
+            1) echo "::error::live drift check could not reach a source"; exit 1 ;;
+            *) echo "::error::live drift check exited $code"; exit 1 ;;
+          esac
           node scripts/quarantine-drifted-questions.mjs
 
           # 2. Capture: the author's page selection (validated, nothing appended
@@ -602,6 +666,20 @@ jobs:
       # step-output store is not a path.
       - name: Snapshot what the agent must not touch
         id: author-guard
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
@@ -718,6 +796,20 @@ jobs:
       # three steps later as ENOENT. An agent that produced no output is a
       # broken run, and it says so here.
       - name: The agent produced its output
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           f=_agent/CHANGES.md
@@ -738,8 +830,21 @@ jobs:
       # manifest is used only to print a readable diff -- it is a file, so it
       # is exactly as untrustworthy as the tree it describes.
       - name: Nothing the next steps trust moved
-        # Read as data, not spliced into the script text.
         env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
+          # Read as data, not spliced into the script text.
           EXPECTED_DIGEST: ${{ steps.author-guard.outputs.digest }}
           EXPECTED_PATH: ${{ steps.author-guard.outputs.path }}
         run: |
@@ -827,6 +932,20 @@ jobs:
       # and reinstalled, and the executable surface is checked, before ANY
       # repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           # Pure git: not one line of repository code has run since the agent
@@ -1043,6 +1162,20 @@ jobs:
       - name: Snapshot what the agent must not touch
         if: steps.items.outputs.count != '0'
         id: reviewer-guard
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
@@ -1140,6 +1273,20 @@ jobs:
       # broken run, and it says so here.
       - name: The agent produced its output
         if: steps.items.outputs.count != '0'
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           f=_agent/decisions.json
@@ -1161,8 +1308,21 @@ jobs:
       # is exactly as untrustworthy as the tree it describes.
       - name: Nothing the next steps trust moved
         if: steps.items.outputs.count != '0'
-        # Read as data, not spliced into the script text.
         env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
+          # Read as data, not spliced into the script text.
           EXPECTED_DIGEST: ${{ steps.reviewer-guard.outputs.digest }}
           EXPECTED_PATH: ${{ steps.reviewer-guard.outputs.path }}
         run: |
@@ -1251,6 +1411,20 @@ jobs:
       # repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         if: steps.items.outputs.count != '0'
+        env:
+          # $GITHUB_ENV reaches the next step's environment, and these are read
+          # while the shell or the loader starts -- before the first line of any
+          # script below. A guard that checks them from inside its own shell has
+          # already lost, so they are emptied here, where a step-level env: wins
+          # over what the agent appended. They are emptied on the snapshot step
+          # too, so the environment comparison sees the same names on both sides.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_LIBRARY_PATH: ""
         run: |
           set -euo pipefail
           # Pure git: not one line of repository code has run since the agent
