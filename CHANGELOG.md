@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.1.52](https://github.com/mctlhq/mctl-academy/compare/0.1.51...0.1.52) (2026-09-06)
+
+
+### Features
+
+* **ci:** add the weekly Content replenish workflow ([7f9179d](https://github.com/mctlhq/mctl-academy/commit/7f9179d8ba97ed65f3ada8db9518758fc3a59bee))
+
+
+### Bug Fixes
+
+* **ci:** drop the committed node_modules symlink and split the review handoff ([8989e9e](https://github.com/mctlhq/mctl-academy/commit/8989e9ed6e1581d60265603ba055e9703a29d25c))
+* **ci:** give the agents a scratch directory their Write rule actually grants ([fb5266c](https://github.com/mctlhq/mctl-academy/commit/fb5266c52bcabf858a6acf2b1c0b5856f5376bb1))
+* **ci:** give the replenish agents a scratch directory their Write rule actually grants ([04b053e](https://github.com/mctlhq/mctl-academy/commit/04b053e0e6d45d27c9ef427a29c5e2a823b16952))
+* **ci:** give the replenish run a scratch directory and one boundary check ([61ac552](https://github.com/mctlhq/mctl-academy/commit/61ac5522d6ea334736d7cd6e6060dfdd274110ef))
+* **ci:** guard the executable surface with git before running any of it ([d339477](https://github.com/mctlhq/mctl-academy/commit/d3394770211792c20390da898ff346954667686c))
+* **ci:** hand the author agent the time instead of asking it to guess ([c2d6f83](https://github.com/mctlhq/mctl-academy/commit/c2d6f830538382dd19d6d61e09910da1d9409c86))
+* **ci:** isolate replenish agents from evidence credentials ([2efeebb](https://github.com/mctlhq/mctl-academy/commit/2efeebb9d576af6d1408a1a98cbed3fe632769e1))
+* **ci:** keep repaired items out of the agent's cap and stop erasing versions ([8ace269](https://github.com/mctlhq/mctl-academy/commit/8ace269ab61735de6796de2d676c1c2dc6299b1c))
+* **ci:** let an agent say "nothing", and prune what it may leave behind ([e27dbe3](https://github.com/mctlhq/mctl-academy/commit/e27dbe3bc2cb13218a94423a6000309355c4c090))
+* **ci:** read the handoff artifact at the prefix upload-artifact writes ([4a000a6](https://github.com/mctlhq/mctl-academy/commit/4a000a63ffabb36b1bc4a5dd6c3595d0228aa3a5))
+* **ci:** rebuild dependencies after every agent, read the mode positionally ([ca18e0d](https://github.com/mctlhq/mctl-academy/commit/ca18e0db62058679ce4eef59f82f8cd7b12aa11a))
+* **ci:** refuse a non-question file under content/questions ([5f3563e](https://github.com/mctlhq/mctl-academy/commit/5f3563e6f0d9f3c2d5b23ad3fa20b2c92cc06522))
+* **ci:** take the source title from discovery and guard every agent step ([55346c1](https://github.com/mctlhq/mctl-academy/commit/55346c1cbdd90c01517d6281bee925d6dda30db4))
+* **content:** reject a future authored.at in the lint, before the push ([d386547](https://github.com/mctlhq/mctl-academy/commit/d386547b46b8d8a3b7dc70af3c0e0f0d02aa8c75))
+* read git paths NUL-separated and recompute the promotion scope ([acb6f1c](https://github.com/mctlhq/mctl-academy/commit/acb6f1c798376c29e7483218116072e6c95f3814))
+
 ## [0.1.51](https://github.com/mctlhq/mctl-academy/compare/0.1.50...0.1.51) (2026-09-06)
 
 
