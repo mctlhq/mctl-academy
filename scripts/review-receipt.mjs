@@ -32,7 +32,8 @@ const ID = /^q-[a-z0-9]{12}$/;
  * `${reviewer}|${id}` -> file, for every `*-review.json` in the directory of
  * `out` other than `out` itself. loadReviewReceipts discards BOTH entries when
  * one reviewer names one id in two files, so a re-review into a new file would
- * silently revoke the approval it meant to refresh; buildReceipt refuses that.
+ * silently revoke the approval it meant to refresh; buildReceipt refuses that
+ * unless the caller supersedes the older entries (see supersedeElsewhere).
  */
 export function entriesElsewhere(out) {
   const dir = dirname(out);
@@ -55,7 +56,7 @@ export function entriesElsewhere(out) {
  * @param {string} [args.contentDir]
  * @param {string} args.reviewer
  * @param {{ id: string, approved: boolean, reason: string }[]} args.decisions
- * @param {{ reviewer: string, reviewed_at?: string, questions: any[] } | null} [args.existing] a receipt to merge into (entries replaced by id)
+ * @param {{ reviewer: string, reviewed_at?: string, questions: any[], superseded?: any[] } | null} [args.existing] a receipt to merge into (entries replaced by id)
  * @param {Map<string, string>} [args.elsewhere] from entriesElsewhere()
  * @param {Date} [args.now]
  */
@@ -111,16 +112,63 @@ export function buildReceipt({
   const kept = (existing?.questions ?? [])
     .filter((e) => !seen.has(e.id))
     .map((e) => ({ ...e, reviewed_at: e.reviewed_at ?? existing?.reviewed_at }));
-  return { reviewer, reviewed_at: stamp, questions: [...kept, ...entries] };
+  /** @type {Record<string, any>} */
+  const result = { reviewer, reviewed_at: stamp, questions: [...kept, ...entries] };
+  // supersedeElsewhere writes this list precisely so the earlier approval and
+  // the bytes it was bound to stay on the record. Rebuilding the receipt from
+  // reviewer/questions alone would erase it on the manual append path, where
+  // the loss is a commit rather than a discarded runner.
+  if (Array.isArray(existing?.superseded)) result.superseded = existing.superseded;
+  return result;
+}
+
+/**
+ * A re-review after a later drift (quarantine -> re-validation -> review_ready)
+ * presents an id the reviewer decided on in an earlier run. Remove that
+ * reviewer's older entries for the given ids from the other receipt files so
+ * the new receipt holds the one decision that counts. Returns what was removed.
+ */
+export function supersedeElsewhere({ out, reviewer, ids }) {
+  const removed = [];
+  const dir = dirname(out);
+  if (!existsSync(dir)) return removed;
+  const wanted = new Set(ids);
+  for (const f of readdirSync(dir).filter((n) => n.endsWith("-review.json") && n !== basename(out))) {
+    const file = join(dir, f);
+    let r;
+    try {
+      r = JSON.parse(readFileSync(file, "utf8"));
+    } catch {
+      continue;
+    }
+    if (r?.reviewer !== reviewer || !Array.isArray(r.questions)) continue;
+    const keep = r.questions.filter((e) => !wanted.has(e?.id));
+    if (keep.length === r.questions.length) continue;
+    const moved = r.questions.filter((e) => wanted.has(e?.id));
+    for (const e of moved) removed.push({ id: e.id, file });
+    // The entry leaves `questions` -- loadReviewReceipts keys on
+    // `${reviewer}|${id}` and poisons a duplicate -- but it is kept under
+    // `superseded`, which nothing in the gate reads. The fingerprint that
+    // bound that approval to the bytes reviewed on the day survives as the
+    // audit record CONTENT-POLICY asks for.
+    const stamp = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+    const superseded = [
+      ...(Array.isArray(r.superseded) ? r.superseded : []),
+      ...moved.map((e) => ({ ...e, superseded_at: stamp })),
+    ];
+    writeFileSync(file, JSON.stringify({ ...r, questions: keep, superseded }, null, 2) + "\n");
+  }
+  return removed;
 }
 
 function parseArgs(argv) {
-  const opts = { reviewer: null, decisions: null, out: null };
+  const opts = { reviewer: null, decisions: null, out: null, supersede: false };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === "--reviewer") opts.reviewer = argv[++i];
     else if (a === "--decisions") opts.decisions = argv[++i];
     else if (a === "--out") opts.out = argv[++i];
+    else if (a === "--supersede") opts.supersede = true;
     else throw new Error(`unknown argument ${a}`);
   }
   if (!opts.reviewer || !opts.decisions || !opts.out) {
@@ -137,12 +185,24 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const opts = parseArgs(process.argv.slice(2));
     const decisions = JSON.parse(readFileSync(opts.decisions, "utf8"));
     const existing = existsSync(opts.out) ? JSON.parse(readFileSync(opts.out, "utf8")) : null;
+    // Build and validate BEFORE touching any other receipt: a rejected
+    // decision must not leave an earlier receipt stripped of an approval it
+    // still owns. With --supersede the collision this would report is the
+    // very thing being replaced, so it is not consulted.
     const receipt = buildReceipt({
       reviewer: opts.reviewer,
       decisions,
       existing,
-      elsewhere: entriesElsewhere(opts.out),
+      elsewhere: opts.supersede ? new Map() : entriesElsewhere(opts.out),
     });
+    if (opts.supersede) {
+      const ids = (Array.isArray(decisions) ? decisions : [])
+        .map((d) => d?.id)
+        .filter((id) => typeof id === "string");
+      for (const r of supersedeElsewhere({ out: opts.out, reviewer: opts.reviewer, ids })) {
+        console.log(`superseded earlier decision for ${r.id} in ${r.file}`);
+      }
+    }
     writeFileSync(opts.out, JSON.stringify(receipt, null, 2) + "\n");
     const approved = receipt.questions.filter((q) => q.approved).map((q) => q.id);
     console.log(`wrote ${opts.out}: ${receipt.questions.length} entries, ${approved.length} approved`);

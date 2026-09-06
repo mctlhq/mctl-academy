@@ -39,6 +39,14 @@ export function reviewProblems(question) {
     return ["published without a valid reviewed block — approval is not optional"];
   }
   const reasons = [];
+  // An approval cannot predate the revision it approves. Without this, a
+  // newly authored file could carry a backdated human `reviewed` block and
+  // slip under the fingerprint cutoff below.
+  const authoredAt = Date.parse(question.authored?.at ?? "");
+  const reviewedAt = Date.parse(String(review.at));
+  if (Number.isFinite(authoredAt) && Number.isFinite(reviewedAt) && reviewedAt < authoredAt) {
+    reasons.push("reviewed.at precedes authored.at; an approval cannot predate the revision it approves");
+  }
   if (review.by.startsWith("agent:")) {
     if (!AGENT_ID.test(review.by)) reasons.push("invalid agent reviewer identifier");
     if (review.by === question.authored?.by) reasons.push("agent self-review is not allowed");

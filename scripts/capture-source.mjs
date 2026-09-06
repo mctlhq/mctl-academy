@@ -15,6 +15,7 @@
  */
 import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
@@ -85,17 +86,10 @@ async function capture({ url, id, objectives, title }) {
   const hash = sha256(Buffer.from(text, "utf8"));
   const key = await store.put(text);
 
-  const record = {
-    schema_version: 1,
-    id,
-    url,
-    title: title ?? url.split("/").pop().replace(/\.md$/, ""),
-    retrieved_at: nowUtc(),
-    sha256: hash,
-    objectives,
-    snapshot: { bucket: process.env.R2_BUCKET ?? "academy-source-snapshots", key },
-    status: "current",
-  };
+  const previous = existsSync(join(SOURCES, `${id}.yaml`))
+    ? parseYaml(readFileSync(join(SOURCES, `${id}.yaml`), "utf8"))
+    : null;
+  const record = buildSourceRecord({ id, url, title, objectives, hash, key, previous });
 
   mkdirSync(SOURCES, { recursive: true });
   writeFileSync(join(SOURCES, `${id}.yaml`), stringifyYaml(record));
@@ -146,28 +140,124 @@ async function check({ markDrifted = false } = {}) {
   return drifted ? 2 : 0;
 }
 
-const args = process.argv.slice(2);
+/**
+ * The source record as it will be written. A capture rebuilds it from scratch,
+ * so every field of an existing record that is not reconstructed here is
+ * erased. That was tolerable while `snapshot:capture` was a manual command run
+ * by whoever also wrote those fields; the replenish workflow re-captures every
+ * drifted source unattended each week, and no lint can notice a field that is
+ * simply gone -- so `coverage` and `notes` are carried forward explicitly.
+ *
+ * @param {{ id: string, url: string, title?: string, objectives: string[],
+ *           hash: string, key: string, previous: any }} args
+ */
+export function buildSourceRecord({ id, url, title, objectives, hash, key, previous }) {
+  /** @type {Record<string, any>} */
+  const record = {
+    schema_version: 1,
+    id,
+    url,
+    title: title ?? url.split("/").pop().replace(/\.md$/, ""),
+    retrieved_at: nowUtc(),
+    sha256: hash,
+    objectives,
+    snapshot: { bucket: process.env.R2_BUCKET ?? "academy-source-snapshots", key },
+    status: "current",
+    ...(previous?.coverage ? { coverage: previous.coverage } : {}),
+    ...(previous?.notes ? { notes: previous.notes } : {}),
+  };
+  const versions = mergeVersions(previous, hash);
+  if (versions.length) record.versions = versions;
+  return record;
+}
 
-if (args.includes("--check")) {
+/**
+ * A re-capture of a source already marked `drifted` keeps the earlier hashes
+ * in `versions`: the quarantined items still pinned to an older snapshot stay
+ * verifiable against the store instead of failing "does not belong to
+ * declared source". Only across a recorded drift: re-capturing a `current`
+ * source whose page changed must still fail loudly for every dependent, or the
+ * gate's core claim would be weakened for the convenience of one caller.
+ */
+export function mergeVersions(previous, hash) {
+  if (!previous) return [];
+  // Hashes already registered are carried forward on EVERY re-capture: a
+  // routine refresh of a `current` source must not drop the provenance that
+  // an earlier drift registered, or every item still pinned to one of those
+  // hashes fails the citation check. Only the previous hash itself is a
+  // judgement call, and it joins the list solely across a recorded drift --
+  // re-capturing a `current` source whose page changed must still fail
+  // loudly for its dependents.
+  const kept = Array.isArray(previous.versions) ? previous.versions : [];
+  const all = previous.status === "drifted" ? [...kept, previous.sha256] : kept;
+  return [...new Set(all.filter((v) => typeof v === "string" && v !== hash))];
+}
+
+/**
+ * The mode is the FIRST argument, never a global search: every other argv entry
+ * can carry text this repository did not write -- `--title` receives the page
+ * title scraped from the llms.txt index -- and a page titled `--check` would
+ * otherwise flip a capture into a drift check, exit 0 with no snapshot written,
+ * and fail several steps later as "no such source record".
+ *
+ * @param {string[]} argv
+ * @returns {"check" | "capture"}
+ */
+export function parseMode(argv) {
+  return argv[0] === "--check" ? "check" : "capture";
+}
+
+/**
+ * Positional first, flags after -- and every flag value read as a value, never
+ * found by scanning. Same reason as `parseMode`: `--title` receives the page
+ * title scraped from the llms.txt index, so a page titled `--objective` would
+ * otherwise be reduced into the objective list and write a record that fails
+ * `lint:content` at the end of the capture step, discarding a run whose page
+ * was already fetched, hashed and uploaded.
+ *
+ * @param {string[]} argv
+ * @returns {{ url?: string, id?: string, title?: string, objectives: string[] }}
+ */
+export function parseCaptureArgs(argv) {
+  /** @type {{ url?: string, id?: string, title?: string, objectives: string[] }} */
+  const out = { objectives: [] };
+  if (argv[0] && !argv[0].startsWith("--")) out.url = argv[0];
+  for (let i = out.url ? 1 : 0; i < argv.length; i += 1) {
+    const name = argv[i];
+    if (!name.startsWith("--")) throw new Error(`unexpected argument ${JSON.stringify(name)}`);
+    const value = argv[i + 1];
+    if (value === undefined) throw new Error(`${name} needs a value`);
+    i += 1;
+    if (name === "--id") out.id = value;
+    else if (name === "--title") out.title = value;
+    else if (name === "--objective") out.objectives.push(value);
+    else throw new Error(`unknown option ${name}`);
+  }
+  return out;
+}
+
+const args = process.argv[1] === fileURLToPath(import.meta.url) ? process.argv.slice(2) : null;
+
+if (args && parseMode(args) === "check") {
   const markDrifted = args.includes("--mark-drifted");
   process.exit(await check({ markDrifted }));
 }
 
-const url = args.find((a) => a.startsWith("https://"));
-if (!url) {
-  console.error("usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...]");
-  console.error("       capture-source.mjs --check");
-  process.exit(1);
+if (args) {
+  /** @type {ReturnType<typeof parseCaptureArgs>} */
+  let parsed;
+  try {
+    parsed = parseCaptureArgs(args);
+  } catch (err) {
+    console.error(String(err instanceof Error ? err.message : err));
+    process.exit(1);
+  }
+  if (!parsed.url?.startsWith("https://") || !parsed.id || !parsed.objectives.length) {
+    console.error(
+      "usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...]",
+    );
+    console.error("       capture-source.mjs --check [--mark-drifted]");
+    process.exit(1);
+  }
+  await capture({ url: parsed.url, id: parsed.id, objectives: parsed.objectives, title: parsed.title });
 }
-const flag = (name) => {
-  const i = args.indexOf(`--${name}`);
-  return i === -1 ? undefined : args[i + 1];
-};
-const objectives = args.reduce((acc, a, i) => (a === "--objective" ? [...acc, args[i + 1]] : acc), []);
-
-if (!flag("id") || !objectives.length) {
-  console.error("--id and at least one --objective are required");
-  process.exit(1);
-}
-
-await capture({ url, id: flag("id"), objectives, title: flag("title") });

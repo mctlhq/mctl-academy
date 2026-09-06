@@ -91,6 +91,15 @@ test("fingerprint ignores YAML key order and lifecycle but covers author, eviden
   ])
     assert.notEqual(questionFingerprint({ ...q, ...change }), hash);
   assert.deepEqual(reviewProblems({ ...q, reviewed: { by: "mashkovd", at: "2026-09-05T00:00:00Z" } }), []);
+  // A backdated human approval on a newer revision is not a legacy approval.
+  assert.match(
+    reviewProblems({
+      ...q,
+      authored: { by: "agent:claude-author", at: "2026-09-08T00:00:00Z" },
+      reviewed: { by: "mashkovd", at: "2026-01-15T00:00:00Z" },
+    }).join(),
+    /precedes authored\.at/,
+  );
   assert.match(
     reviewProblems({ ...q, reviewed: { by: "agent:reviewer", at: "2026-09-05T00:00:00Z" } }).join(),
     /requires content_sha256/,
