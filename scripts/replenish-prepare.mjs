@@ -3,14 +3,19 @@
  * Deterministic glue for the Content replenish workflow. Everything an agent
  * must not be trusted to do -- turn its page selection into manifest rows,
  * decide what is re-validated, stage the authoring copies, enforce the caps,
- * demote what the reviewer rejected, write the PR body -- lives here so it is
- * testable and so the agents' allowed tools stay read-mostly.
+ * scope the review, demote what the reviewer rejected, write the PR body --
+ * lives here so it is testable and so the agents' allowed tools stay
+ * read-mostly.
  *
  * Subcommands:
- *   manifest --select select.json --candidates candidates.json
+ *   manifest --select select.json --candidates candidates.json --out selected.json
  *       Validate the author's page selection against the discovery report and
- *       the course maps, append the rows to content/capture-manifest.yaml and
+ *       the course maps; write the valid rows (nothing is appended yet) and
  *       print one tab-separated capture line per row.
+ *   manifest-commit --selected selected.json --captured <id,id,...>
+ *       Append to content/capture-manifest.yaml only the rows whose capture
+ *       succeeded, so a failed capture never leaves an orphan row that would
+ *       hide the page from discovery for good.
  *   capture-args --candidates candidates.json
  *       Print capture lines for the drifted sources, from their own records.
  *   stage [--all | <src-id> ...]
@@ -18,11 +23,17 @@
  *   revalidation-ids --sources <id,id,...>
  *       Print the needs_review question ids citing any of those sources.
  *   guard --base <git ref> --max <n>
- *       Fail when more than <n> question files changed against the base or
- *       when any file that was `published` at the base changed at all.
+ *       Fail when more than <n> question files changed against the base
+ *       (untracked files included) or when any file that was `published` or
+ *       `retired` at the base changed at all.
+ *   review-ids --base <git ref>
+ *       Print the review_ready question ids that differ from the base.
+ *   reconcile-decisions --ids review-ids.txt --decisions decisions.json --out filtered.json
+ *       Fail unless the reviewer decided on exactly the listed ids; write the
+ *       decisions scoped to them.
  *   demote <q-id> ...
  *       status -> needs_review and drop `reviewed` (a rejected re-validation).
- *   pr-body --candidates c.json --receipt r.json [--before b.json --after a.json]
+ *   pr-body --candidates c.json --receipt r.json --captured <id,...> [--before b.json --after a.json] [--max n]
  *       Print the generated section of the pull request body.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -40,6 +51,7 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
 
 const SOURCE_ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
 const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
+const QUESTION_ID = /^q-[a-z0-9]{12}$/;
 
 export function knownObjectives(contentDir = CONTENT) {
   const set = new Set();
@@ -80,6 +92,7 @@ export function validateSelection({ select, candidates, objectives, existingIds 
 }
 
 export function appendManifestRows(manifestFile, rows) {
+  if (!rows.length) return;
   const doc = parseDocument(readFileSync(manifestFile, "utf8"));
   const seq = doc.get("sources");
   if (!isSeq(seq)) throw new Error("capture-manifest.yaml has no sources list");
@@ -88,6 +101,11 @@ export function appendManifestRows(manifestFile, rows) {
 }
 
 const captureLine = (r) => [r.id, r.url, r.title, r.objectives.join(",")].join("\t");
+const splitIds = (text) =>
+  (text ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
 export function revalidationIds({ contentDir = CONTENT, sourceIds }) {
   const wanted = new Set(sourceIds);
@@ -98,6 +116,28 @@ export function revalidationIds({ contentDir = CONTENT, sourceIds }) {
     .sort();
 }
 
+const git = (args, cwd) =>
+  execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+
+/**
+ * Question files that differ from the base: tracked changes AND untracked
+ * files. `git diff` alone never lists a file the author agent just created,
+ * which is its dominant output.
+ */
+export function changedQuestionFiles({ base, cwd = process.cwd() }) {
+  const tracked = git(["diff", "--name-only", base, "--", "content/questions"], cwd);
+  const untracked = git(["ls-files", "--others", "--exclude-standard", "--", "content/questions"], cwd);
+  return [...new Set([...tracked.split("\n"), ...untracked.split("\n")].filter(Boolean))].sort();
+}
+
+export function statusAtRef({ base, file, cwd = process.cwd() }) {
+  try {
+    return parseYaml(git(["show", `${base}:${file}`], cwd))?.status ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * @param {object} args
  * @param {string[]} args.changed  question files changed against the base
@@ -106,7 +146,8 @@ export function revalidationIds({ contentDir = CONTENT, sourceIds }) {
  */
 export function guardChanges({ changed, statusAtBase, max }) {
   const problems = [];
-  if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
+  if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
+  else if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
   for (const file of changed) {
     const status = statusAtBase(file);
     if (status === "published") problems.push(`${file} was published at the base and must not change here`);
@@ -115,8 +156,38 @@ export function guardChanges({ changed, statusAtBase, max }) {
   return problems;
 }
 
+/** review_ready ids among the files that differ from the base, read as YAML. */
+export function reviewIds({ base, cwd = process.cwd(), contentDir = CONTENT }) {
+  const ids = [];
+  for (const file of changedQuestionFiles({ base, cwd })) {
+    const abs = join(contentDir, "..", file);
+    if (!existsSync(abs)) continue;
+    const data = parseYaml(readFileSync(abs, "utf8"));
+    if (data?.status === "review_ready" && typeof data.id === "string") ids.push(data.id);
+  }
+  return ids.sort();
+}
+
+/**
+ * The reviewer decides on exactly the items this run put in front of it:
+ * an id it added would be promoted outside the run's cap and diff, an id it
+ * skipped would ship unreviewed and unmentioned.
+ */
+export function reconcileDecisions({ ids, decisions }) {
+  const wanted = new Set(ids);
+  const list = Array.isArray(decisions) ? decisions : [];
+  const decided = new Set(list.map((d) => d?.id).filter((id) => typeof id === "string"));
+  const extra = [...decided].filter((id) => !wanted.has(id)).sort();
+  const missing = [...wanted].filter((id) => !decided.has(id)).sort();
+  const problems = [];
+  if (extra.length) problems.push(`decisions for ids not under review: ${extra.join(", ")}`);
+  if (missing.length) problems.push(`no decision for: ${missing.join(", ")}`);
+  return { problems, decisions: list.filter((d) => wanted.has(d?.id)) };
+}
+
 export function demote(contentDir, ids) {
   for (const id of ids) {
+    if (!QUESTION_ID.test(id)) throw new Error(`refusing to demote ${JSON.stringify(id)}: not a question id`);
     const file = join(contentDir, "questions", `${id}.yaml`);
     const doc = parseDocument(readFileSync(file, "utf8"));
     doc.set("status", "needs_review");
@@ -125,23 +196,52 @@ export function demote(contentDir, ids) {
   }
 }
 
-export function prBody({ candidates, receipt, before = null, after = null, dropped = [] }) {
+export function prBody({
+  candidates,
+  receipt,
+  captured = [],
+  selected = [],
+  before = null,
+  after = null,
+  dropped = [],
+  max = null,
+}) {
   const approved = receipt.questions.filter((q) => q.approved);
   const rejected = receipt.questions.filter((q) => !q.approved);
+  const capturedSet = new Set(captured);
+  const capturedUrls = new Set(selected.filter((r) => capturedSet.has(r.id)).map((r) => r.url));
   const lines = ["## Replenish run", ""];
   lines.push(
-    `Discovery: ${candidates.newPagesTotal} uncited pages in the indices, ${candidates.newPages.length} offered, ${candidates.drifted.length} drifted sources, ${candidates.gaps.length} gaps.`,
+    `Discovery: ${candidates.newPagesTotal} uncited pages in the indices, ${candidates.newPages.length} offered, ${candidates.drifted.length} drifted sources, ${(candidates.unreachable ?? []).length} unreachable, ${candidates.gaps.length} gaps.`,
     "",
   );
-  lines.push("### Sources", "");
-  for (const p of candidates.newPages) lines.push(`- new: ${p.title} — ${p.url}`);
-  for (const d of candidates.drifted)
-    lines.push(`- re-captured: \`${d.id}\` [${d.classification}] ${d.summary || d.url}`);
-  if (!candidates.newPages.length && !candidates.drifted.length) lines.push("- none");
+  lines.push("### Sources captured in this PR", "");
+  let any = false;
+  for (const id of captured) {
+    const d = candidates.drifted.find((x) => x.id === id);
+    const row = selected.find((r) => r.id === id);
+    if (d) lines.push(`- re-captured \`${id}\` [${d.classification}] ${d.summary || d.url}`);
+    else lines.push(`- new \`${id}\`${row ? ` — ${row.title}: ${row.url}` : ""}`);
+    any = true;
+  }
+  if (!any) lines.push("- none");
+  const offeredNotCaptured = candidates.newPages.filter((p) => !capturedUrls.has(p.url));
+  if (offeredNotCaptured.length) {
+    lines.push("", "### Offered by discovery, not captured this run", "");
+    for (const p of offeredNotCaptured) lines.push(`- ${p.title} — ${p.url}`);
+  }
   for (const d of dropped)
     lines.push(`- dropped selection ${JSON.stringify(d.row?.id ?? d.row)}: ${d.why.join("; ")}`);
+  if (candidates.unreachable?.length) {
+    lines.push("", "### Unreachable sources (not changed here; needs a human decision)", "");
+    for (const u of candidates.unreachable) {
+      lines.push(`- \`${u.id}\`${u.status === 404 ? " page gone (HTTP 404)" : ""}: ${u.message}`);
+    }
+  }
   lines.push("", `### Review by \`${receipt.reviewer}\` (${receipt.reviewed_at})`, "");
-  lines.push(`${approved.length} approved and promoted, ${rejected.length} rejected.`);
+  lines.push(
+    `${approved.length} approved and promoted, ${rejected.length} rejected.${max !== null ? ` Cap for this run: ${max} question files.` : ""}`,
+  );
   for (const q of rejected) lines.push(`- rejected \`${q.id}\`: ${q.reason}`);
   if (before && after) {
     lines.push("", "### Mock shortfall before → after", "");
@@ -162,7 +262,9 @@ export function prBody({ candidates, receipt, before = null, after = null, dropp
 
 function opt(args, name) {
   const i = args.indexOf(`--${name}`);
-  return i !== -1 ? args[i + 1] : undefined;
+  if (i === -1) return undefined;
+  if (i + 1 >= args.length || args[i + 1].startsWith("--")) throw new Error(`--${name} needs a value`);
+  return args[i + 1];
 }
 const readJson = (f) => JSON.parse(readFileSync(f, "utf8"));
 
@@ -171,6 +273,7 @@ async function main(argv) {
   if (cmd === "manifest") {
     const select = readJson(opt(args, "select"));
     const candidates = readJson(opt(args, "candidates"));
+    const out = opt(args, "out") ?? "selected.json";
     const existingIds = new Set(loadSources(CONTENT).keys());
     const manifestFile = join(CONTENT, "capture-manifest.yaml");
     for (const row of parseYaml(readFileSync(manifestFile, "utf8"))?.sources ?? []) existingIds.add(row.id);
@@ -182,9 +285,18 @@ async function main(argv) {
     });
     for (const d of dropped)
       console.error(`::warning::dropped selection ${JSON.stringify(d.row)}: ${d.why.join("; ")}`);
-    if (rows.length) appendManifestRows(manifestFile, rows);
+    writeFileSync(out, JSON.stringify(rows, null, 2));
     writeFileSync("dropped.json", JSON.stringify(dropped, null, 2));
     for (const r of rows) console.log(captureLine(r));
+    return;
+  }
+  if (cmd === "manifest-commit") {
+    const rows = readJson(opt(args, "selected"));
+    const captured = new Set(splitIds(opt(args, "captured")));
+    appendManifestRows(
+      join(CONTENT, "capture-manifest.yaml"),
+      rows.filter((r) => captured.has(r.id)),
+    );
     return;
   }
   if (cmd === "capture-args") {
@@ -192,10 +304,8 @@ async function main(argv) {
     const sources = loadSources(CONTENT);
     for (const d of candidates.drifted) {
       const rec = sources.get(d.id);
-      if (!rec) continue;
-      console.log(
-        captureLine({ id: rec.id, url: rec.url, title: rec.title, objectives: rec.objectives ?? [] }),
-      );
+      if (!rec || !(rec.objectives ?? []).length) continue;
+      console.log(captureLine({ id: rec.id, url: rec.url, title: rec.title, objectives: rec.objectives }));
     }
     return;
   }
@@ -217,35 +327,33 @@ async function main(argv) {
     return;
   }
   if (cmd === "revalidation-ids") {
-    const ids = (opt(args, "sources") ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    console.log(revalidationIds({ sourceIds: ids }).join(" "));
+    console.log(revalidationIds({ sourceIds: splitIds(opt(args, "sources")) }).join(" "));
     return;
   }
   if (cmd === "guard") {
     const base = opt(args, "base");
     const max = Number(opt(args, "max"));
-    const out = execFileSync("git", ["diff", "--name-only", base, "--", "content/questions"], {
-      encoding: "utf8",
-    });
-    const changed = out.split("\n").filter(Boolean);
-    const statusAtBase = (file) => {
-      try {
-        const text = execFileSync("git", ["show", `${base}:${file}`], {
-          encoding: "utf8",
-          stdio: ["ignore", "pipe", "ignore"],
-        });
-        return parseYaml(text)?.status ?? null;
-      } catch {
-        return null;
-      }
-    };
-    const problems = guardChanges({ changed, statusAtBase, max });
+    const changed = changedQuestionFiles({ base });
+    const problems = guardChanges({ changed, statusAtBase: (file) => statusAtRef({ base, file }), max });
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);
     if (problems.length) process.exit(1);
+    return;
+  }
+  if (cmd === "review-ids") {
+    console.log(reviewIds({ base: opt(args, "base") }).join("\n"));
+    return;
+  }
+  if (cmd === "reconcile-decisions") {
+    const ids = readFileSync(opt(args, "ids"), "utf8")
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const { problems, decisions } = reconcileDecisions({ ids, decisions: readJson(opt(args, "decisions")) });
+    for (const p of problems) console.error(`::error::${p}`);
+    if (problems.length) process.exit(1);
+    writeFileSync(opt(args, "out"), JSON.stringify(decisions, null, 2));
+    console.log(`${decisions.length} decision(s) scoped to the items under review`);
     return;
   }
   if (cmd === "demote") {
@@ -253,12 +361,17 @@ async function main(argv) {
     return;
   }
   if (cmd === "pr-body") {
+    const maxArg = opt(args, "max");
     const body = prBody({
       candidates: readJson(opt(args, "candidates")),
       receipt: readJson(opt(args, "receipt")),
+      captured: splitIds(opt(args, "captured")),
+      selected:
+        opt(args, "selected") && existsSync(opt(args, "selected")) ? readJson(opt(args, "selected")) : [],
       before: opt(args, "before") ? readJson(opt(args, "before")) : null,
       after: opt(args, "after") ? readJson(opt(args, "after")) : null,
       dropped: existsSync("dropped.json") ? readJson("dropped.json") : [],
+      max: maxArg === undefined ? null : Number(maxArg),
     });
     console.log(body);
     return;

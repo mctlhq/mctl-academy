@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse as parseYaml, stringify as yaml } from "yaml";
@@ -9,9 +10,14 @@ import {
   appendManifestRows,
   revalidationIds,
   guardChanges,
+  changedQuestionFiles,
+  statusAtRef,
+  reviewIds,
+  reconcileDecisions,
   demote,
   prBody,
 } from "../scripts/replenish-prepare.mjs";
+import { mergeVersions } from "../scripts/capture-source.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -120,6 +126,7 @@ function questionsDir(entries) {
   return dir;
 }
 const q = (id, status, source) => ({
+  schema_version: 1,
   id,
   status,
   evidence: [{ source_id: source, source_sha256: "a".repeat(64), excerpt: "x" }],
@@ -166,10 +173,10 @@ test("guardChanges enforces the cap and protects published and retired files", (
 });
 
 test("demote returns a rejected re-validation to needs_review without a reviewed block", () => {
-  const dir = questionsDir([q("q-a1", "review_ready", "src-quotas")]);
+  const dir = questionsDir([q("q-a1a1a1a1a1a1", "review_ready", "src-quotas")]);
   try {
-    demote(dir, ["q-a1"]);
-    const after = parseYaml(readFileSync(join(dir, "questions", "q-a1.yaml"), "utf8"));
+    demote(dir, ["q-a1a1a1a1a1a1"]);
+    const after = parseYaml(readFileSync(join(dir, "questions", "q-a1a1a1a1a1a1.yaml"), "utf8"));
     assert.equal(after.status, "needs_review");
     assert.equal(after.reviewed, undefined);
     assert.equal(after.evidence[0].source_id, "src-quotas");
@@ -178,9 +185,14 @@ test("demote returns a rejected re-validation to needs_review without a reviewed
   }
 });
 
-test("prBody reports sources, review outcome and Mock shortfall movement", () => {
+test("prBody lists captured sources, offered-but-not-captured pages, review outcome and Mock movement", () => {
   const body = prBody({
-    candidates: CANDIDATES,
+    candidates: {
+      ...CANDIDATES,
+      unreachable: [
+        { id: "src-gone", url: "https://docs.nebius.com/gone.md", status: 404, message: "HTTP 404" },
+      ],
+    },
     receipt: {
       reviewer: "agent:claude-reviewer",
       reviewed_at: "2026-09-07T07:00:00Z",
@@ -189,16 +201,147 @@ test("prBody reports sources, review outcome and Mock shortfall movement", () =>
         { id: "q-no", approved: false, reason: "two options are best" },
       ],
     },
+    captured: ["src-embeddings", "src-quotas"],
+    selected: [
+      {
+        id: "src-embeddings",
+        url: "https://docs.tokenfactory.nebius.com/embeddings.md",
+        title: "Embeddings",
+        objectives: [],
+      },
+    ],
     before: [
       { course: "agentic-ai-builder", published: 69, domains: [{ id: "domain-2", mockShortfall: 3 }] },
     ],
     after: [{ course: "agentic-ai-builder", published: 74, domains: [{ id: "domain-2", mockShortfall: 0 }] }],
     dropped: [{ row: { id: "src-rerank" }, why: ["no objective from the course maps"] }],
+    max: 5,
   });
-  assert.match(body, /re-captured: `src-quotas` \[behavior_changed\]/);
-  assert.match(body, /1 approved and promoted, 1 rejected/);
+  assert.match(
+    body,
+    /- new `src-embeddings` — Embeddings: https:\/\/docs\.tokenfactory\.nebius\.com\/embeddings\.md/,
+  );
+  assert.match(body, /re-captured `src-quotas` \[behavior_changed\]/);
+  assert.match(
+    body,
+    /not captured this run\n\n- Rerank — https:\/\/docs\.tokenfactory\.nebius\.com\/rerank\.md/,
+  );
+  assert.ok(!/not captured this run[\s\S]*embeddings\.md/.test(body));
+  assert.match(body, /`src-gone` page gone \(HTTP 404\)/);
+  assert.match(body, /1 approved and promoted, 1 rejected\. Cap for this run: 5 question files\./);
   assert.match(body, /rejected `q-no`: two options are best/);
   assert.match(body, /domain-2 3→0 \(published 69→74\)/);
   assert.match(body, /dropped selection "src-rerank"/);
   assert.match(body, /Attestation is signed by the human/);
+});
+
+test("guardChanges rejects a non-integer cap instead of silently passing", () => {
+  assert.match(guardChanges({ changed: [], statusAtBase: () => null, max: NaN })[0], /cap must be/);
+});
+
+function gitRepo() {
+  const dir = mkdtempSync(join(tmpdir(), "academy-guard-"));
+  const run = (args) =>
+    execFileSync("git", args, { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+  run(["init", "-q", "-b", "main"]);
+  run(["config", "user.email", "t@example.com"]);
+  run(["config", "user.name", "t"]);
+  mkdirSync(join(dir, "content", "questions"), { recursive: true });
+  return { dir, run };
+}
+
+test("changedQuestionFiles sees untracked files, and the guard caps and protects against a real base", () => {
+  const { dir, run } = gitRepo();
+  try {
+    writeFileSync(
+      join(dir, "content", "questions", "q-pub000000001.yaml"),
+      yaml(q("q-pub000000001", "published", "src-a")),
+    );
+    writeFileSync(
+      join(dir, "content", "questions", "q-nrv000000001.yaml"),
+      yaml(q("q-nrv000000001", "needs_review", "src-a")),
+    );
+    run(["add", "-A"]);
+    run(["commit", "-q", "-m", "base"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+    // The author job's dominant output: brand-new, untracked files.
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000001.yaml"),
+      yaml(q("q-new000000001", "review_ready", "src-a")),
+    );
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000002.yaml"),
+      yaml(q("q-new000000002", "review_ready", "src-a")),
+    );
+    writeFileSync(
+      join(dir, "content", "questions", "q-nrv000000001.yaml"),
+      yaml(q("q-nrv000000001", "review_ready", "src-a")),
+    );
+    const changed = changedQuestionFiles({ base, cwd: dir });
+    assert.deepEqual(changed, [
+      "content/questions/q-new000000001.yaml",
+      "content/questions/q-new000000002.yaml",
+      "content/questions/q-nrv000000001.yaml",
+    ]);
+    const statusAtBase = (file) => statusAtRef({ base, file, cwd: dir });
+    assert.equal(statusAtBase("content/questions/q-new000000001.yaml"), null);
+    assert.equal(statusAtBase("content/questions/q-pub000000001.yaml"), "published");
+    assert.deepEqual(guardChanges({ changed, statusAtBase, max: 3 }), []);
+    assert.match(guardChanges({ changed, statusAtBase, max: 2 })[0], /3 question files changed, cap is 2/);
+    // Touching a published file is caught even when it is the only change.
+    writeFileSync(
+      join(dir, "content", "questions", "q-pub000000001.yaml"),
+      yaml(q("q-pub000000001", "published", "src-b")),
+    );
+    const problems = guardChanges({
+      changed: changedQuestionFiles({ base, cwd: dir }),
+      statusAtBase,
+      max: 10,
+    });
+    assert.ok(problems.some((p) => /q-pub000000001\.yaml was published/.test(p)));
+    assert.deepEqual(reviewIds({ base, cwd: dir, contentDir: join(dir, "content") }), [
+      "q-new000000001",
+      "q-new000000002",
+      "q-nrv000000001",
+    ]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("reconcileDecisions scopes the reviewer's output to the items under review", () => {
+  const ids = ["q-aaa000000001", "q-bbb000000002"];
+  const ok = reconcileDecisions({
+    ids,
+    decisions: [
+      { id: "q-aaa000000001", approved: true, reason: "x" },
+      { id: "q-bbb000000002", approved: false, reason: "y" },
+    ],
+  });
+  assert.deepEqual(ok.problems, []);
+  assert.equal(ok.decisions.length, 2);
+  const bad = reconcileDecisions({
+    ids,
+    decisions: [
+      { id: "q-aaa000000001", approved: true, reason: "x" },
+      { id: "q-zzz000000009", approved: true, reason: "unrelated pre-existing item" },
+    ],
+  });
+  assert.match(bad.problems[0], /not under review: q-zzz000000009/);
+  assert.match(bad.problems[1], /no decision for: q-bbb000000002/);
+  assert.deepEqual(
+    bad.decisions.map((d) => d.id),
+    ["q-aaa000000001"],
+  );
+});
+
+test("mergeVersions keeps every earlier hash of a re-captured source", () => {
+  const A = "a".repeat(64);
+  const B = "b".repeat(64);
+  const C = "c".repeat(64);
+  assert.deepEqual(mergeVersions(null, A), []);
+  assert.deepEqual(mergeVersions({ sha256: A }, B), [A]);
+  assert.deepEqual(mergeVersions({ sha256: B, versions: [A] }, C), [A, B]);
+  // Re-capturing identical bytes adds nothing.
+  assert.deepEqual(mergeVersions({ sha256: B, versions: [A] }, B), [A]);
 });

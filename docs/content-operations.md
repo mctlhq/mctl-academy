@@ -30,22 +30,28 @@ Two workflows in this repository run every Monday:
    stops here when nothing applies, or when a replenish PR is already open.
 2. **author** — an agent (`agent:claude-author`, `claude-sonnet-5`) chooses at
    most `max_new` offered pages and their objectives; `scripts/replenish-prepare.mjs`
-   validates the choice against the course maps and appends the rows to
-   `content/capture-manifest.yaml`. The workflow captures those pages and
-   re-captures drifted sources (`scripts/capture-source.mjs`, R2), stages every
-   snapshot under `captured/`, and runs `revalidate:content` for quarantined
-   items the re-capture repairs. The agent then writes at most `max_questions`
-   `review_ready` items from the captured bytes and may rewrite quarantined
-   items whose concept the new text still documents. It cannot touch
-   `published` or `retired` files, sources, courses or the manifest; the
-   deterministic gates (`lint:content`, `verify:evidence`, the change cap,
-   `test:content`) run after it regardless of what it reports.
+   validates the choice against the course maps. The workflow then, on the
+   branch and before any agent writes: marks live-drifted sources `drifted` and
+   quarantines their published dependents (the same fail-closed step as
+   `Source drift`), captures the chosen pages and re-captures drifted sources
+   (`scripts/capture-source.mjs`, R2; earlier hashes are kept in the record's
+   `versions`), appends manifest rows only for captures that succeeded, stages
+   every snapshot under `captured/`, runs `revalidate:content` for quarantined
+   items the re-capture repairs, and commits all of that as the base the change
+   guard measures the agent against. The agent then writes at most
+   `max_questions` `review_ready` items from the captured bytes and may rewrite
+   quarantined items whose concept the new text still documents. It cannot
+   touch `published` or `retired` files, sources, courses or the manifest; the
+   deterministic gates (`lint:content`, `verify:evidence`, the change cap
+   counting new files, `test:content`) run after it regardless of what it
+   reports.
 3. **review** — a separate job, fresh checkout, different model
    (`agent:claude-reviewer`, `claude-opus-5`). It sees the final YAML and
    `captured/*.md`, judges each item on the two CONTENT-POLICY criteria and
-   writes `decisions.json`. `scripts/review-receipt.mjs` turns that into the
-   committed receipt with fingerprints computed from disk; only approved ids
-   are promoted with `promote:questions`. Rejected new items are dropped from
+   writes `decisions.json`, which must cover exactly the items under review.
+   `scripts/review-receipt.mjs` turns that into the committed receipt with
+   fingerprints computed from disk; only approved ids are promoted with
+   `promote:questions`, and the change guard runs once more afterwards. Rejected new items are dropped from
    the branch; rejected re-validations return to `needs_review`. The bundle is
    rebuilt and the PR is opened with the `mctl-agents` App token so the usual
    `pull_request` checks (CI, Content evidence) run on it.

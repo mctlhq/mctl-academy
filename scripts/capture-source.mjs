@@ -15,6 +15,7 @@
  */
 import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
@@ -85,6 +86,9 @@ async function capture({ url, id, objectives, title }) {
   const hash = sha256(Buffer.from(text, "utf8"));
   const key = await store.put(text);
 
+  const previous = existsSync(join(SOURCES, `${id}.yaml`))
+    ? parseYaml(readFileSync(join(SOURCES, `${id}.yaml`), "utf8"))
+    : null;
   const record = {
     schema_version: 1,
     id,
@@ -96,6 +100,8 @@ async function capture({ url, id, objectives, title }) {
     snapshot: { bucket: process.env.R2_BUCKET ?? "academy-source-snapshots", key },
     status: "current",
   };
+  const versions = mergeVersions(previous, hash);
+  if (versions.length) record.versions = versions;
 
   mkdirSync(SOURCES, { recursive: true });
   writeFileSync(join(SOURCES, `${id}.yaml`), stringifyYaml(record));
@@ -146,15 +152,27 @@ async function check({ markDrifted = false } = {}) {
   return drifted ? 2 : 0;
 }
 
-const args = process.argv.slice(2);
+/**
+ * A re-capture keeps the earlier hashes in `versions`: questions still pinned
+ * to an older snapshot (published dependents until the quarantine lands,
+ * needs_review items the new page no longer supports) stay verifiable against
+ * the store instead of failing "does not belong to declared source".
+ */
+export function mergeVersions(previous, hash) {
+  if (!previous) return [];
+  const all = [...(Array.isArray(previous.versions) ? previous.versions : []), previous.sha256];
+  return [...new Set(all.filter((v) => typeof v === "string" && v !== hash))];
+}
 
-if (args.includes("--check")) {
+const args = process.argv[1] === fileURLToPath(import.meta.url) ? process.argv.slice(2) : null;
+
+if (args && args.includes("--check")) {
   const markDrifted = args.includes("--mark-drifted");
   process.exit(await check({ markDrifted }));
 }
 
-const url = args.find((a) => a.startsWith("https://"));
-if (!url) {
+const url = args?.find((a) => a.startsWith("https://"));
+if (args && !url) {
   console.error("usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...]");
   console.error("       capture-source.mjs --check");
   process.exit(1);
@@ -163,11 +181,14 @@ const flag = (name) => {
   const i = args.indexOf(`--${name}`);
   return i === -1 ? undefined : args[i + 1];
 };
-const objectives = args.reduce((acc, a, i) => (a === "--objective" ? [...acc, args[i + 1]] : acc), []);
+const objectives = (args ?? []).reduce(
+  (acc, a, i) => (a === "--objective" ? [...acc, args[i + 1]] : acc),
+  [],
+);
 
-if (!flag("id") || !objectives.length) {
+if (args && (!flag("id") || !objectives.length)) {
   console.error("--id and at least one --objective are required");
   process.exit(1);
 }
 
-await capture({ url, id: flag("id"), objectives, title: flag("title") });
+if (args) await capture({ url, id: flag("id"), objectives, title: flag("title") });
