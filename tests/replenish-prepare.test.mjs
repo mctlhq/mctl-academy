@@ -13,6 +13,7 @@ import {
   changedQuestionFiles,
   statusAtRef,
   reviewIds,
+  statusOnDisk,
   reconcileDecisions,
   demote,
   prBody,
@@ -91,8 +92,8 @@ test("validateSelection keeps offered urls with mapped objectives and drops the 
     [
       ["src-rerank", ["no objective from the course maps"]],
       ["src-evil", ["url not in the discovery report"]],
-      ["src-quotas", ["id already taken"]],
-      ["Bad Id", ["bad id"]],
+      ["src-quotas", ["id already taken", "url already selected under another id"]],
+      ["Bad Id", ["bad id", "url already selected under another id"]],
     ],
   );
 });
@@ -299,14 +300,64 @@ test("changedQuestionFiles sees untracked files, and the guard caps and protects
       max: 10,
     });
     assert.ok(problems.some((p) => /q-pub000000001\.yaml was published/.test(p)));
-    assert.deepEqual(reviewIds({ base, cwd: dir, contentDir: join(dir, "content") }), [
-      "q-new000000001",
-      "q-new000000002",
-      "q-nrv000000001",
-    ]);
+    assert.deepEqual(reviewIds({ base, cwd: dir }), ["q-new000000001", "q-new000000002", "q-nrv000000001"]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("guardChanges with statusNow refuses a file the agent left published or retired", () => {
+  const { dir, run } = gitRepo();
+  try {
+    run(["commit", "-q", "--allow-empty", "-m", "base"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000001.yaml"),
+      yaml(q("q-new000000001", "published", "src-a")),
+    );
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000002.yaml"),
+      yaml(q("q-new000000002", "review_ready", "src-a")),
+    );
+    const changed = changedQuestionFiles({ base, cwd: dir });
+    const statusAtBase = (file) => statusAtRef({ base, file, cwd: dir });
+    // The post-promotion rule alone would let a self-published new file through.
+    assert.deepEqual(guardChanges({ changed, statusAtBase, max: 5 }), []);
+    const problems = guardChanges({
+      changed,
+      statusAtBase,
+      max: 5,
+      statusNow: (file) => statusOnDisk({ file, cwd: dir }),
+    });
+    assert.equal(problems.length, 1);
+    assert.match(problems[0], /q-new000000001\.yaml is published after authoring/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("validateSelection refuses the same offered url under two ids", () => {
+  const { rows, dropped } = validateSelection({
+    select: [
+      {
+        id: "src-embeddings",
+        url: "https://docs.tokenfactory.nebius.com/embeddings.md",
+        title: "A",
+        objectives: ["domain-2/embeddings-and-rerank"],
+      },
+      {
+        id: "src-embeddings-2",
+        url: "https://docs.tokenfactory.nebius.com/embeddings.md",
+        title: "B",
+        objectives: ["domain-2/embeddings-and-rerank"],
+      },
+    ],
+    candidates: CANDIDATES,
+    objectives: OBJECTIVES,
+    existingIds: new Set(),
+  });
+  assert.equal(rows.length, 1);
+  assert.deepEqual(dropped[0].why, ["url already selected under another id"]);
 });
 
 test("reconcileDecisions scopes the reviewer's output to the items under review", () => {
@@ -340,8 +391,11 @@ test("mergeVersions keeps every earlier hash of a re-captured source", () => {
   const B = "b".repeat(64);
   const C = "c".repeat(64);
   assert.deepEqual(mergeVersions(null, A), []);
-  assert.deepEqual(mergeVersions({ sha256: A }, B), [A]);
-  assert.deepEqual(mergeVersions({ sha256: B, versions: [A] }, C), [A, B]);
+  assert.deepEqual(mergeVersions({ sha256: A, status: "drifted" }, B), [A]);
+  assert.deepEqual(mergeVersions({ sha256: B, status: "drifted", versions: [A] }, C), [A, B]);
   // Re-capturing identical bytes adds nothing.
-  assert.deepEqual(mergeVersions({ sha256: B, versions: [A] }, B), [A]);
+  assert.deepEqual(mergeVersions({ sha256: B, status: "drifted", versions: [A] }, B), [A]);
+  // A source nobody marked drifted gets no carry-over: dependents pinned to
+  // the old hash must fail the evidence check, not pass on a versions entry.
+  assert.deepEqual(mergeVersions({ sha256: A, status: "current" }, B), []);
 });

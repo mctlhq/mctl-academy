@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse as parseYaml, stringify as yaml } from "yaml";
-import { buildReceipt, entriesElsewhere } from "../scripts/review-receipt.mjs";
+import { buildReceipt, entriesElsewhere, supersedeElsewhere } from "../scripts/review-receipt.mjs";
 import { questionFingerprint } from "../scripts/lib/question-review.mjs";
 import { receiptProblems } from "../scripts/lib/content-model.mjs";
 
@@ -183,6 +183,25 @@ test("buildReceipt refuses an id the same reviewer already holds in another rece
     );
     // A different reviewer is not blocked by it.
     assert.ok(buildReceipt({ contentDir: dir, reviewer: "agent:other", decisions, elsewhere, now: NOW }));
+    // Re-review after a later drift: supersede the older entry, then the new
+    // receipt is the only one that names the id for this reviewer.
+    const removed = supersedeElsewhere({
+      out: join(reviews, "newer-review.json"),
+      reviewer: "agent:claude-reviewer",
+      ids: ["q-abc123abc123"],
+    });
+    assert.deepEqual(removed, [{ id: "q-abc123abc123", file: join(reviews, "older-review.json") }]);
+    assert.deepEqual(JSON.parse(readFileSync(join(reviews, "older-review.json"), "utf8")).questions, []);
+    const again = entriesElsewhere(join(reviews, "newer-review.json"));
+    assert.ok(
+      buildReceipt({
+        contentDir: dir,
+        reviewer: "agent:claude-reviewer",
+        decisions,
+        elsewhere: again,
+        now: NOW,
+      }),
+    );
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

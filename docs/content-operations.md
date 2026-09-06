@@ -51,7 +51,11 @@ Two workflows in this repository run every Monday:
    writes `decisions.json`, which must cover exactly the items under review.
    `scripts/review-receipt.mjs` turns that into the committed receipt with
    fingerprints computed from disk; only approved ids are promoted with
-   `promote:questions`, and the change guard runs once more afterwards. Rejected new items are dropped from
+   `promote:questions`, and the change guard runs once more afterwards. An id
+   re-presented after a later drift supersedes the reviewer's earlier receipt
+   entry, so each reviewer holds one decision per id. The author-phase guard
+   also refuses any file the agent left `published` or `retired`: only a
+   receipt-backed promotion publishes, never the author. Rejected new items are dropped from
    the branch; rejected re-validations return to `needs_review`. The bundle is
    rebuilt and the PR is opened with the `mctl-agents` App token so the usual
    `pull_request` checks (CI, Content evidence) run on it.

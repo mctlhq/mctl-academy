@@ -32,7 +32,8 @@ const ID = /^q-[a-z0-9]{12}$/;
  * `${reviewer}|${id}` -> file, for every `*-review.json` in the directory of
  * `out` other than `out` itself. loadReviewReceipts discards BOTH entries when
  * one reviewer names one id in two files, so a re-review into a new file would
- * silently revoke the approval it meant to refresh; buildReceipt refuses that.
+ * silently revoke the approval it meant to refresh; buildReceipt refuses that
+ * unless the caller supersedes the older entries (see supersedeElsewhere).
  */
 export function entriesElsewhere(out) {
   const dir = dirname(out);
@@ -114,13 +115,42 @@ export function buildReceipt({
   return { reviewer, reviewed_at: stamp, questions: [...kept, ...entries] };
 }
 
+/**
+ * A re-review after a later drift (quarantine -> re-validation -> review_ready)
+ * presents an id the reviewer decided on in an earlier run. Remove that
+ * reviewer's older entries for the given ids from the other receipt files so
+ * the new receipt holds the one decision that counts. Returns what was removed.
+ */
+export function supersedeElsewhere({ out, reviewer, ids }) {
+  const removed = [];
+  const dir = dirname(out);
+  if (!existsSync(dir)) return removed;
+  const wanted = new Set(ids);
+  for (const f of readdirSync(dir).filter((n) => n.endsWith("-review.json") && n !== basename(out))) {
+    const file = join(dir, f);
+    let r;
+    try {
+      r = JSON.parse(readFileSync(file, "utf8"));
+    } catch {
+      continue;
+    }
+    if (r?.reviewer !== reviewer || !Array.isArray(r.questions)) continue;
+    const keep = r.questions.filter((e) => !wanted.has(e?.id));
+    if (keep.length === r.questions.length) continue;
+    for (const e of r.questions) if (wanted.has(e?.id)) removed.push({ id: e.id, file });
+    writeFileSync(file, JSON.stringify({ ...r, questions: keep }, null, 2) + "\n");
+  }
+  return removed;
+}
+
 function parseArgs(argv) {
-  const opts = { reviewer: null, decisions: null, out: null };
+  const opts = { reviewer: null, decisions: null, out: null, supersede: false };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === "--reviewer") opts.reviewer = argv[++i];
     else if (a === "--decisions") opts.decisions = argv[++i];
     else if (a === "--out") opts.out = argv[++i];
+    else if (a === "--supersede") opts.supersede = true;
     else throw new Error(`unknown argument ${a}`);
   }
   if (!opts.reviewer || !opts.decisions || !opts.out) {
@@ -137,6 +167,14 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const opts = parseArgs(process.argv.slice(2));
     const decisions = JSON.parse(readFileSync(opts.decisions, "utf8"));
     const existing = existsSync(opts.out) ? JSON.parse(readFileSync(opts.out, "utf8")) : null;
+    if (opts.supersede) {
+      const ids = (Array.isArray(decisions) ? decisions : [])
+        .map((d) => d?.id)
+        .filter((id) => typeof id === "string");
+      for (const r of supersedeElsewhere({ out: opts.out, reviewer: opts.reviewer, ids })) {
+        console.log(`superseded earlier decision for ${r.id} in ${r.file}`);
+      }
+    }
     const receipt = buildReceipt({
       reviewer: opts.reviewer,
       decisions,

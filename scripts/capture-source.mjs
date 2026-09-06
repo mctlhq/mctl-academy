@@ -153,13 +153,15 @@ async function check({ markDrifted = false } = {}) {
 }
 
 /**
- * A re-capture keeps the earlier hashes in `versions`: questions still pinned
- * to an older snapshot (published dependents until the quarantine lands,
- * needs_review items the new page no longer supports) stay verifiable against
- * the store instead of failing "does not belong to declared source".
+ * A re-capture of a source already marked `drifted` keeps the earlier hashes
+ * in `versions`: the quarantined items still pinned to an older snapshot stay
+ * verifiable against the store instead of failing "does not belong to
+ * declared source". Only across a recorded drift: re-capturing a `current`
+ * source whose page changed must still fail loudly for every dependent, or the
+ * gate's core claim would be weakened for the convenience of one caller.
  */
 export function mergeVersions(previous, hash) {
-  if (!previous) return [];
+  if (!previous || previous.status !== "drifted") return [];
   const all = [...(Array.isArray(previous.versions) ? previous.versions : []), previous.sha256];
   return [...new Set(all.filter((v) => typeof v === "string" && v !== hash))];
 }

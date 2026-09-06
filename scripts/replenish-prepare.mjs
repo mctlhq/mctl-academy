@@ -22,10 +22,12 @@
  *       Write captured/<id>.md from the R2 snapshot each record names.
  *   revalidation-ids --sources <id,id,...>
  *       Print the needs_review question ids citing any of those sources.
- *   guard --base <git ref> --max <n>
+ *   guard --base <git ref> --max <n> [--forbid-published-now]
  *       Fail when more than <n> question files changed against the base
  *       (untracked files included) or when any file that was `published` or
- *       `retired` at the base changed at all.
+ *       `retired` at the base changed at all. With --forbid-published-now
+ *       (the author phase) also fail when a changed file is published or
+ *       retired NOW: the agent never publishes anything itself.
  *   review-ids --base <git ref>
  *       Print the review_ready question ids that differ from the base.
  *   reconcile-decisions --ids review-ids.txt --decisions decisions.json --out filtered.json
@@ -76,6 +78,7 @@ export function validateSelection({ select, candidates, objectives, existingIds 
     if (typeof row?.id !== "string" || !SOURCE_ID.test(row.id)) why.push("bad id");
     else if (existingIds.has(row.id) || seen.has(row.id)) why.push("id already taken");
     if (!offered.has(row?.url)) why.push("url not in the discovery report");
+    else if (seen.has(row.url)) why.push("url already selected under another id");
     if (typeof row?.title !== "string" || !row.title.trim() || /[\t\r\n]/.test(row.title))
       why.push("bad title");
     const objs = Array.isArray(row?.objectives) ? row.objectives.filter((o) => typeof o === "string") : [];
@@ -86,6 +89,7 @@ export function validateSelection({ select, candidates, objectives, existingIds 
       continue;
     }
     seen.add(row.id);
+    seen.add(row.url);
     rows.push({ id: row.id, url: row.url, title: row.title.trim(), objectives: [...new Set(valid)] });
   }
   return { rows, dropped };
@@ -143,8 +147,13 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  * @param {string[]} args.changed  question files changed against the base
  * @param {(file: string) => string | null} args.statusAtBase  null when absent at base
  * @param {number} args.max
+ * @param {(file: string) => string | null} [args.statusNow]  current status; when given, a
+ *   changed file that is now `published` or `retired` is rejected too. That is the
+ *   author-phase rule: the agent may only ever leave a file review_ready or needs_review,
+ *   never publish one itself (a backdated human `reviewed` block would otherwise pass
+ *   the lint). The post-promotion guard omits it.
  */
-export function guardChanges({ changed, statusAtBase, max }) {
+export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
   const problems = [];
   if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
   else if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
@@ -152,15 +161,33 @@ export function guardChanges({ changed, statusAtBase, max }) {
     const status = statusAtBase(file);
     if (status === "published") problems.push(`${file} was published at the base and must not change here`);
     if (status === "retired") problems.push(`${file} is retired and must not change here`);
+    if (statusNow) {
+      const now = statusNow(file);
+      if (now === "published" || now === "retired") {
+        problems.push(
+          `${file} is ${now} after authoring; only review_ready or needs_review may leave this step`,
+        );
+      }
+    }
   }
   return problems;
 }
 
+export function statusOnDisk({ file, cwd = process.cwd() }) {
+  const abs = join(cwd, file);
+  if (!existsSync(abs)) return null;
+  try {
+    return parseYaml(readFileSync(abs, "utf8"))?.status ?? null;
+  } catch {
+    return "unparseable";
+  }
+}
+
 /** review_ready ids among the files that differ from the base, read as YAML. */
-export function reviewIds({ base, cwd = process.cwd(), contentDir = CONTENT }) {
+export function reviewIds({ base, cwd = process.cwd() }) {
   const ids = [];
   for (const file of changedQuestionFiles({ base, cwd })) {
-    const abs = join(contentDir, "..", file);
+    const abs = join(cwd, file);
     if (!existsSync(abs)) continue;
     const data = parseYaml(readFileSync(abs, "utf8"));
     if (data?.status === "review_ready" && typeof data.id === "string") ids.push(data.id);
@@ -319,7 +346,11 @@ async function main(argv) {
       const rec = sources.get(id);
       if (!rec) throw new Error(`${id}: no such source record`);
       if (rec.status === "deprecated") continue;
-      const text = await store.get(rec.snapshot?.key ?? rec.sha256);
+      if (!rec.snapshot?.key) {
+        console.warn(`::warning::${id}: no snapshot recorded yet; not staged`);
+        continue;
+      }
+      const text = await store.get(rec.snapshot.key);
       if (text === null) throw new Error(`${id}: snapshot ${rec.sha256} absent from the store`);
       writeFileSync(join("captured", `${id}.md`), text, "utf8");
       console.log(`staged captured/${id}.md`);
@@ -334,7 +365,12 @@ async function main(argv) {
     const base = opt(args, "base");
     const max = Number(opt(args, "max"));
     const changed = changedQuestionFiles({ base });
-    const problems = guardChanges({ changed, statusAtBase: (file) => statusAtRef({ base, file }), max });
+    const problems = guardChanges({
+      changed,
+      statusAtBase: (file) => statusAtRef({ base, file }),
+      max,
+      statusNow: args.includes("--forbid-published-now") ? (file) => statusOnDisk({ file }) : null,
+    });
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);
     if (problems.length) process.exit(1);

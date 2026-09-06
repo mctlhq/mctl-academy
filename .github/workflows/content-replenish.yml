@@ -173,7 +173,8 @@ jobs:
           set -euo pipefail
           git config user.name "$BOT_NAME"
           git config user.email "$BOT_EMAIL"
-          case "$MAX_NEW$MAX_QUESTIONS" in *[!0-9]*) echo "::error::max_new and max_questions must be integers"; exit 1;; esac
+          case "$MAX_NEW" in *[!0-9]*|"") echo "::error::max_new must be an integer"; exit 1;; esac
+          case "$MAX_QUESTIONS" in *[!0-9]*|"") echo "::error::max_questions must be an integer"; exit 1;; esac
           name="content/replenish-$(date -u +%F)-${{ github.run_id }}"
           git checkout -b "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
@@ -285,7 +286,14 @@ jobs:
             ids=$(node scripts/replenish-prepare.mjs revalidation-ids --sources "$captured")
             if [ -n "$ids" ]; then
               # shellcheck disable=SC2086
-              node scripts/revalidate-content.mjs $ids || echo "::notice::some quarantined items could not be repinned; they stay needs_review"
+              node scripts/revalidate-content.mjs $ids > revalidate.json || true
+              # Unmatched excerpts are the expected outcome of real drift; a
+              # store error or an unparseable result is not, and fails here.
+              node -e '
+                const r = JSON.parse(require("fs").readFileSync("revalidate.json", "utf8"));
+                if (r.errors?.length) { console.error("::error::revalidate: " + r.errors.join("; ")); process.exit(1); }
+                if (r.unmatched?.length) console.log("::notice::not repinned, stay needs_review: " + r.unmatched.join(" "));
+              '
             fi
           fi
           bun run lint:content
@@ -368,7 +376,7 @@ jobs:
           git status --short content/ CHANGES.md || true
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
-          node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS"
+          node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now
           bun run lint:content
           node scripts/verify-evidence.mjs
           bun run test:content
@@ -506,7 +514,10 @@ jobs:
           # The reviewer decides on exactly the listed items: nothing outside
           # this run's cap and diff can be promoted through it.
           node scripts/replenish-prepare.mjs reconcile-decisions --ids review-ids.txt --decisions decisions.json --out decisions-scoped.json
-          node scripts/review-receipt.mjs --reviewer "$REVIEWER_ID" --decisions decisions-scoped.json --out "$receipt"
+          # --supersede: an id re-presented after a later drift already has
+          # this reviewer's older entry in an earlier receipt; the new decision
+          # replaces it so the lint sees exactly one.
+          node scripts/review-receipt.mjs --reviewer "$REVIEWER_ID" --decisions decisions-scoped.json --out "$receipt" --supersede
           approved=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));console.log(r.questions.filter(q=>q.approved).map(q=>q.id).join(" "))' "$receipt")
           rejected=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));console.log(r.questions.filter(q=>!q.approved).map(q=>q.id).join(" "))' "$receipt")
           if [ -n "$approved" ]; then
@@ -574,9 +585,12 @@ jobs:
             echo "- [x] Conventional commit subject, under 72 characters"
             echo "- [ ] Merging with a merge commit, not a squash"
           } > body.md
-          pr_url=$(gh pr create --repo "$REPO" --base main --head "$BRANCH" \
+          if ! pr_url=$(gh pr create --repo "$REPO" --base main --head "$BRANCH" \
             --title "content(replenish): ${k} reviewed question(s) from documentation discovery" \
-            --body-file body.md)
+            --body-file body.md); then
+            echo "::error::branch ${BRANCH} is pushed with promoted content but no PR could be opened; open it by hand or delete the branch, the next run will not see it"
+            exit 1
+          fi
           echo "opened $pr_url"
           echo "$pr_url" >> "$GITHUB_STEP_SUMMARY"
           for label in "agents:replenish" "content"; do
