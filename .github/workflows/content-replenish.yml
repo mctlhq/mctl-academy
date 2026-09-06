@@ -522,9 +522,15 @@ jobs:
           mkdir -p _run
           # Exactly the handoff artifact, which carries no file the author
           # agent wrote: its CHANGES.md stays in the run's own artifact.
-          cp -r _run/from-author/_run/captured _run/captured
+          # upload-artifact roots an artifact at the least common ancestor of
+          # its search paths. Every handoff path lives under _run/, so that
+          # prefix is stripped and the entries arrive as captured/,
+          # candidates.json, ... The candidates artifact keeps its _run/ prefix
+          # (read at line 194) only because it also carries a path outside
+          # _run/, which lifts its ancestor to the workspace root.
+          cp -r _run/from-author/captured _run/captured
           for f in candidates.json report-before.json selected.json dropped.json; do
-            [ -f "_run/from-author/_run/$f" ] && cp "_run/from-author/_run/$f" "_run/$f" || true
+            [ -f "_run/from-author/$f" ] && cp "_run/from-author/$f" "_run/$f" || true
           done
           # The items this run put up for review: every review_ready file that
           # differs from main, read as YAML. Against main, not the pre-agent

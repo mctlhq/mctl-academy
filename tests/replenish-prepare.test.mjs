@@ -57,11 +57,47 @@ test("author has no R2 credentials or shell and stages only questions", () => {
   assert.match(author.with.claude_args, /--tools "Read,Glob,Grep,Write,Edit"/);
   assert.doesNotMatch(author.with.claude_args, /Bash/);
   const gates = steps.find((s) => s.name === "Deterministic gates on the authored content");
-  assert.ok(gates.run.indexOf("git diff --exit-code") < gates.run.indexOf("node scripts/"));
+  // The boundary check has to run before anything else in the step, so an
+  // intruding file is reported even when a later gate would fail first.
+  const lines = gates.run.split("\n").map((l) => l.trim());
+  const boundary = lines.findIndex((l) => l.startsWith("node scripts/replenish-prepare.mjs boundary"));
+  const firstOther = lines.findIndex(
+    (l) => /^(node|bun|npm) /.test(l) && !l.startsWith("node scripts/replenish-prepare.mjs boundary"),
+  );
+  assert.notEqual(boundary, -1);
+  assert.notEqual(firstOther, -1);
+  assert.ok(boundary < firstOther);
   assert.ok(gates.env.R2_SECRET_ACCESS_KEY);
   const commit = steps.find((s) => s.name === "Commit and push the authored branch");
   assert.match(commit.run, /git add content\/questions\//);
   assert.doesNotMatch(commit.run, /git add content\/\s/);
+});
+
+test("the review job reads the handoff artifact at the prefix upload-artifact actually writes", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // upload-artifact roots an artifact at the least common ancestor of its
+  // search paths, so a set of paths that all live under _run/ arrives WITHOUT
+  // that prefix, while a set spanning _run/ and content/ keeps it. The reading
+  // side has to agree, and only a real run would otherwise reveal it.
+  const uploadPaths = (job, name) =>
+    workflow.jobs[job].steps
+      .find((s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith(name))
+      .with.path.split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith("!"));
+
+  const handoff = uploadPaths("author", "handoff-");
+  assert.ok(handoff.every((p) => p.startsWith("_run/")));
+  const read = workflow.jobs.review.steps.find((s) => s.name === "List the items under review").run;
+  assert.match(read, /cp -r _run\/from-author\/captured /);
+  assert.doesNotMatch(read, /_run\/from-author\/_run\//);
+
+  const candidates = uploadPaths("discover", "candidates-");
+  assert.ok(candidates.some((p) => !p.startsWith("_run/")));
+  const consume = workflow.jobs.author.steps.find((s) => s.name === "Start the replenish branch").run;
+  assert.match(consume, /cp _run\/from-discover\/_run\/candidates\.json /);
 });
 
 test("validateSelection keeps offered urls with mapped objectives and drops the rest with reasons", () => {

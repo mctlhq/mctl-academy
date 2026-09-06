@@ -146,11 +146,16 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
  * file the agent CREATES -- a source record, a schema, a workflow -- is
  * invisible to it, and that is precisely what this boundary exists to catch.
  *
- * Deliberately NOT --exclude-standard: honouring .gitignore would make that
- * file the exception list, and it covers paths the credentialed step three
- * lines later actually loads (node_modules) or reads as configuration (.env*).
- * The two exclusions here are the run's own scratch directory and the
- * installed dependencies, and nothing else is exempt.
+ * Deliberately NOT --exclude-standard: honouring .gitignore would turn that
+ * file into the exception list, so an ignored .env, *.log, dist/ or a
+ * generated client artefact is reported here like anything else.
+ *
+ * What this does NOT cover is node_modules: `bun install` leaves tens of
+ * thousands of untracked files there before the base commit, so the check
+ * cannot look at it without a different technique (hashing the tree around
+ * the agent, or a node_modules-free worktree). That path stays closed by the
+ * agent's Write/Edit allowlist -- content/questions/** and _run/CHANGES.md --
+ * not by this function.
  */
 export function boundaryProblems({ base, cwd = process.cwd() }) {
   // Long-form magic: `:!_run/**` is parsed as the unknown short magic `_`.
