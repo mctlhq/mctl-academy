@@ -126,7 +126,7 @@ test("no agent-written file reaches the reviewer's filesystem before it decides"
   // agent's prose. None may be on disk while the reviewer runs with
   // unrestricted Read/Glob/Grep: "treat it as data" is a prompt, not a
   // boundary. The handoff is the only artifact fetched before that point.
-  const AGENT_WRITTEN = ["selected.json", "dropped.json", "CHANGES.md", "select.json"];
+  const AGENT_WRITTEN = ["selected.json", "dropped.json", "CHANGES.md", "select.json", "select-agent.json"];
   const handoffPaths = workflow.jobs.author.steps.find(
     (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith("handoff-"),
   ).with.path;
@@ -762,6 +762,28 @@ test("the agent scratch directory is pruned to its one expected file", () => {
   }
 });
 
+test("the selector's raw bytes outlive the prune, for the next investigation", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The prune after the author keeps only CHANGES.md, so select.json is gone
+  // by upload time. selected.json is the validated view and dropped.json the
+  // rejected rows; neither distinguishes "the agent chose nothing" from "the
+  // agent wrote something validateSelection dropped", which is the distinction
+  // that diagnosed the first supervised run.
+  const capture = workflow.jobs.author.steps.find((s) =>
+    (s.name ?? "").startsWith("Quarantine live drift"),
+  ).run;
+  const copy = capture.indexOf("cp _agent/select.json _run/select-agent.json");
+  const use = capture.indexOf("--select _agent/select.json");
+  assert.notEqual(copy, -1, "the selector's raw output is never preserved");
+  assert.ok(copy < use, "the copy must happen before the file is consumed");
+  const authoring = workflow.jobs.author.steps.find(
+    (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith("authoring-"),
+  ).with.path;
+  assert.match(authoring, /_run\//);
+});
+
 test("a review job that finds nothing to review fails instead of going green", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -1145,6 +1167,7 @@ test("boundaryProblems passes over the workflow's own scratch files and catches 
       "revalidate.json",
       "report-before.json",
       "select.json",
+      "select-agent.json",
       "CHANGES.md",
     ]) {
       writeFileSync(join(dir, "_run", f), "x");

@@ -16,7 +16,12 @@ test-results/
 client/src/data/mock-bundle.generated.json
 
 # Scratch space for the Content replenish workflow (candidates, captured
-# snapshots, agent decisions, PR body). Keeping every intermediate file here
-# is what lets that workflow's boundary check be "nothing untracked outside
+# snapshots, PR body). Keeping the workflow's own intermediate files here is
+# what lets its boundary check be "nothing untracked outside
 # content/questions" rather than a list of filenames to keep in sync.
+#
+# What the AGENTS write is not here: it lives in _agent/, which is
+# deliberately NOT ignored, because the only Write allowlist shape the action
+# honours is `dir/**` and a rule naming one gitignored file was denied
+# outright. boundaryProblems excludes both directories by pathspec.
 _run/

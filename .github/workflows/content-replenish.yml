@@ -26,10 +26,10 @@ name: Content replenish
 # open as data; none of that text is interpolated into a prompt or a shell
 # line.
 #
-# Every scratch file this workflow writes lives under _run/, and every file an
-# agent writes lives under _agent/. That is what lets the pre-agent boundary
-# check below be a plain "nothing outside content/questions moved" rule
-# instead of a list that has to be re-derived
+# Every scratch file this workflow writes lives under _run/, and the only place
+# an agent writes outside content/questions is _agent/. That is what lets the
+# pre-agent boundary check below be a plain "nothing outside content/questions
+# moved" rule instead of a list that has to be re-derived
 # whenever a step starts writing a new file. The check does not honour
 # .gitignore: an ignored path is still a path the next step would load.
 
@@ -329,6 +329,14 @@ jobs:
           #    yet) plus every drifted record from its own fields.
           : > _run/capture.tsv
           if [ -f _agent/select.json ]; then
+            # The prune below the author agent keeps only CHANGES.md, so copy
+            # the selector's raw bytes where the artifact will find them. The
+            # validated view (selected.json) and the rejected rows
+            # (dropped.json) cannot tell "the agent chose nothing" from "the
+            # agent wrote something validateSelection dropped for a reason its
+            # `why` does not carry", and that distinction is what diagnosed
+            # this workflow's first supervised run.
+            cp _agent/select.json _run/select-agent.json
             node scripts/replenish-prepare.mjs manifest --select _agent/select.json --candidates _run/candidates.json \
               --out _run/selected.json --dropped _run/dropped.json >> _run/capture.tsv
           else
