@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld3211bef699
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/inference-basics
 stem: Which factors determine the inference performance of an endpoint?

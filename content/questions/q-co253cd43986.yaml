@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co253cd43986
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/network-vpc
 stem: A VM was created in the wrong subnet. The team wants it moved to the
