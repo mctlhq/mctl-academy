@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-3ed9d6aa21de
+status: published
+domain: domain-3
+objective: domain-3/supervised-fine-tuning
+stem: What does the `learning_rate` fine-tuning hyperparameter control, and what
+  range does the guide call typical?
+options:
+  - id: a
+    text: The number of passes over the dataset; typically 1 to 20
+    correct: false
+    explanation: That describes `n_epochs`.
+  - id: b
+    text: The rank of the LoRA matrices; typically 8 to 128
+    correct: false
+    explanation: That describes `lora_r`.
+  - id: c
+    text: The fraction of steps used for warmup; typically 0 to 1
+    correct: false
+    explanation: That describes `warmup_ratio`.
+  - id: d
+    text: The step size for gradient descent; typically `1e-6` to `5e-5`
+    correct: true
+    explanation: "`learning_rate` is documented as the step size for gradient
+      descent, must be at least 0, with typical values between `1e-6` and `5e-5`
+      and a default of `0.00001`."
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: "`learning_rate` (float, optional) Step size for gradient descent. *
+      Must be `>= 0` * Typical values: `1e-6`–`5e-5`"
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+authored:
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: cccb52247b9b9b0320588f7bac1370e7d68e01243e3c167f8c0f9d8b27ed9fe1

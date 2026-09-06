@@ -1,41 +1,39 @@
 schema_version: 1
 id: q-la01c1d2e3f4
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/lora-adapters
-stem: What is the core benefit of Low-Rank Adaptation (LoRA) over full parameter
-  fine-tuning?
+stem: "When a fine-tuning job is created with `lora: true`, which weights are
+  trained?"
 options:
   - id: a
-    text: It converts text data into 3D polygon meshes for graphics rendering
+    text: All base model parameters
     correct: false
-    explanation: LoRA is a parameter-efficient fine-tuning method for neural
-      networks, not a 3D graphics renderer.
+    explanation: "That is full fine-tuning, the `lora: false` behaviour."
   - id: b
-    text: It eliminates the requirement for system prompt instructions
+    text: Only the embedding layer
     correct: false
-    explanation: System prompts remain available and functional regardless of
-      fine-tuning strategy.
+    explanation: Not what the LoRA option does.
   - id: c
-    text: It trains small low-rank adapter matrix parameters while keeping base
-      model weights frozen, drastically reducing memory usage
+    text: Only the LoRA adapter weights, while the base model weights stay frozen
     correct: true
-    explanation: LoRA freezes base model weights and trains rank-decomposition
-      matrices, dramatically lowering compute/VRAM requirements.
+    explanation: The `lora` hyperparameter is documented so that `true` trains only
+      the LoRA adapter weights and keeps the base model weights frozen, whereas
+      `false` applies full fine-tuning.
   - id: d
-    text: It forces all model responses to be formatted as CSV rows
+    text: The base weights, while the adapter weights stay frozen
     correct: false
-    explanation: Output format is controlled by response formatting parameters, not
-      adapter weight factorization.
+    explanation: "Reversed: the adapters are trained and the base is frozen."
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: represents the model after a certain number of training steps (often
-      per epoch).
+    excerpt: "`true`: only LoRA adapter weights are trained; base model weights stay
+      frozen."
     source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: 9629234427502676e5628aeae692686c78ddfd6c69c50857a997d1a6ab1d57df

@@ -1,38 +1,38 @@
 schema_version: 1
 id: q-fa02b2c3d4e5
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/files-api
-stem: Which file `purpose` string must be specified when uploading a JSONL file
-  intended for supervised fine-tuning?
+stem: Which `purpose` value is used when uploading a JSONL dataset for
+  supervised fine-tuning?
 options:
   - id: a
     text: '`purpose: "user_avatar"`'
     correct: false
-    explanation: User avatar is not a valid file purpose for training datasets.
+    explanation: Not a documented purpose for dataset files.
   - id: b
     text: '`purpose: "fine-tune"`'
     correct: true
-    explanation: 'The Files API requires `purpose: "fine-tune"` to validate and
-      register training datasets.'
+    explanation: The walkthrough uploads training and validation files with
+      `purpose="fine-tune"`, and `training_file` must reference a file with that
+      purpose.
   - id: c
     text: '`purpose: "web_search"`'
     correct: false
-    explanation: Web search is a retrieval tool capability, not a fine-tuning file purpose.
+    explanation: Not a documented purpose for dataset files.
   - id: d
     text: '`purpose: "cache_backup"`'
     correct: false
-    explanation: Cache backup is an internal storage term, not a dataset fine-tuning
-      upload purpose.
+    explanation: Not a documented purpose for dataset files.
 evidence:
-  - source_id: src-dataset-formats
-    excerpt: Each training example is a single conversation, represented as one
-      `messages` array.
-    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+  - source_id: src-supervised-fine-tuning
+    excerpt: file=open("training.jsonl", "rb"), purpose="fine-tune",
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: d33431a2a599d5bc0fc31a3e5cb164105b215c377b37d2e13e3f1a4747e36a6f

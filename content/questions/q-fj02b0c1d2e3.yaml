@@ -1,39 +1,43 @@
 schema_version: 1
 id: q-fj02b0c1d2e3
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/fine-tuning-jobs
-stem: How can a developer monitor training progress, loss values, and validation
-  metrics during an active fine-tuning job execution?
+stem: How can a developer inspect what happened during a fine-tuning job, such
+  as file validation, dataset processing, and training progress?
 options:
   - id: a
-    text: By connecting a browser directly to the GPU hardware motherboard serial
-      console
+    text: By connecting to the GPU host's serial console
     correct: false
-    explanation: Direct hardware console access is not exposed in cloud platform APIs.
+    explanation: No hardware console is exposed.
   - id: b
-    text: By polling the Fine-Tuning Job Events API or viewing job event logs
+    text: By listing the job's events, for example with
+      `client.fine_tuning.jobs.list_events(job.id)`
     correct: true
-    explanation: Job events stream progress logs, step counts, training loss, and
-      validation metrics.
+    explanation: "The guide recommends inspecting job events, which help you
+      understand the lifecycle: file validation, dataset processing, and
+      training progress."
   - id: c
-    text: By inspecting DNS CNAME lookup records
+    text: By inspecting DNS records for the API host
     correct: false
-    explanation: DNS records map domain names to IP addresses, not fine-tuning job metrics.
+    explanation: DNS carries no job information.
   - id: d
-    text: By sending HTTP POST requests to external payment gateways
+    text: By polling the `GET /v1/models` endpoint
     correct: false
-    explanation: Payment webhooks handle billing transactions, not training loss
-      metric logs.
+    explanation: The models endpoint lists models; it does not report job progress.
 evidence:
   - source_id: src-supervised-fine-tuning
     excerpt: Events help you understand the lifecycle (file validation, dataset
       processing, training progress).
     source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+  - source_id: src-supervised-fine-tuning
+    excerpt: events = client.fine_tuning.jobs.list_events(job.id)
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: c34946e16fd263ec9a2a586edfcfc7670e07f771108886898e6087667a7351cc

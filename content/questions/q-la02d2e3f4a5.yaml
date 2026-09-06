@@ -1,39 +1,49 @@
 schema_version: 1
 id: q-la02d2e3f4a5
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/lora-adapters
-stem: What operation combines trained LoRA adapter weights directly back into
-  the base model weights for zero-overhead inference deployment?
+stem: What does the documented merge script do so that inference no longer has
+  to load the LoRA adapter separately from the base model?
 options:
   - id: a
-    text: Quantized gradient accumulation
+    text: Quantised gradient accumulation
     correct: false
-    explanation: Gradient accumulation splits micro-batches during training, not
-      weight merging for deployment.
+    explanation: A training technique, not a way to combine weights for inference.
   - id: b
     text: Dataset token deduplication
     correct: false
-    explanation: Token deduplication cleans text datasets prior to training.
+    explanation: A data preparation step unrelated to adapters.
   - id: c
     text: Zero-shot prompt prefixing
     correct: false
-    explanation: Prompt prefixing appends system text at query time, not model
-      weight matrix addition.
+    explanation: Prompting does not change model weights.
   - id: d
-    text: Weight merging (computing $W_{final} = W_{base} + \Delta W$)
+    text: "It merges the adapters into the base weights: for each merged layer's
+      weight tensor it adds the scaled product `B @ A`"
     correct: true
-    explanation: Merging computes matrix addition ($W_{base} + B \cdot A$),
-      integrating adapter weights into base weights for fast serving.
+    explanation: The script bakes the LoRA adapters into the base weights, computing
+      `deltaW = B @ A` and `merged_weight = tensor + scale * deltaW` for the
+      weight tensors of the merged layers (by default only
+      `model.layers.*.self_attn`; other tensors are copied unchanged), and
+      produces a standard checkpoint directory.
 evidence:
-  - source_id: src-supervised-fine-tuning
-    excerpt: represents the model after a certain number of training steps (often
-      per epoch).
-    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+  - source_id: src-recovery-lora
+    excerpt: Here we provide a merge script that bakes the LoRA adapters directly
+      into the base weights and produces a standard checkpoint directory.
+    source_sha256: c3a9c914916d0b77865fbc560d958c8ce99f3c95a76a1d336306ad982f43600a
+  - source_id: src-recovery-lora
+    excerpt: deltaW = B @ A merged_weight = tensor + scale * deltaW
+    source_sha256: c3a9c914916d0b77865fbc560d958c8ce99f3c95a76a1d336306ad982f43600a
+  - source_id: src-recovery-lora
+    excerpt: are merged. If you trained LoRA on other modules (e.g. MLPs), extend
+      `ALLOWED_LORA_LAYERS` accordingly.
+    source_sha256: c3a9c914916d0b77865fbc560d958c8ce99f3c95a76a1d336306ad982f43600a
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: a104b1328f9b41814ba72ac3afc018d184f3bcb1dad2a260fe533559167bf93c

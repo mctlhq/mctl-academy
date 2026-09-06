@@ -1,39 +1,45 @@
 schema_version: 1
 id: q-dl01a3b4c5d6
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/data-lab
-stem: What is the primary function of a Data Lab tool in a dataset curation workflow?
+stem: What is Data Lab in Token Factory?
 options:
   - id: a
-    text: Importing, filtering, cleaning, and formatting raw text datasets prior to
-      model fine-tuning
+    text: "A unified workspace for inference logs and datasets: filter and export
+      chat completion logs, prepare datasets via SQL queries, and reuse them for
+      batch inference and fine-tuning"
     correct: true
-    explanation: Data Lab tools automate dataset ingestion, filtering out
-      low-quality rows and normalizing target formats.
+    explanation: The overview describes Data Lab as the unified workspace for
+      inference logs and datasets, with SQL-based dataset preparation and
+      reusable datasets for batch inference and fine-tuning.
   - id: b
-    text: Managing DNS SSL TLS certificates for custom web domains
+    text: A TLS certificate manager for custom domains
     correct: false
-    explanation: Certificates handle domain HTTPS encryption, not training data processing.
+    explanation: Certificates are unrelated to Data Lab.
   - id: c
-    text: Provisioning Kubernetes worker nodes
+    text: A Kubernetes node provisioning console
     correct: false
-    explanation: Kubernetes cluster node provisioning is cloud infrastructure
-      management, not dataset curation.
+    explanation: Infrastructure provisioning is not part of Data Lab.
   - id: d
-    text: Executing SQL queries against relational production databases
+    text: A SQL client for your production relational databases
     correct: false
-    explanation: Production SQL databases serve application state, whereas Data Lab
-      processes training datasets.
+    explanation: Data Lab's SQL queries run over inference logs and datasets inside
+      Token Factory, not over external production databases.
 evidence:
-  - source_id: src-supervised-fine-tuning
-    excerpt: Events help you understand the lifecycle (file validation, dataset
-      processing, training progress).
-    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+  - source_id: src-recovery-data-lab
+    excerpt: is the unified workspace inside Nebius Token Factory for working with
+      inference logs (chat completions) and datasets.
+    source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
+  - source_id: src-recovery-data-lab
+    excerpt: A unified interface for **preparing datasets via SQL queries.** *
+      Reusable datasets for **batch inference and fine-tuning.**
+    source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: 0dc0d7375be4771149301c8670fa8e82fefe71822d2cf5622b888a00342fea4d

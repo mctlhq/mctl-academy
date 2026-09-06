@@ -179,3 +179,22 @@ has drifted again (live `9f0c64e3…`, pinned `344d6de4…`) together with seven
 `src-co-*` pages; the Source drift workflow will quarantine dependents when it
 runs. Nothing in this PR cites the new revision.
 
+## Recovery outcome, batch 3 (domain-3)
+
+Reviewed by `agent:claude-reviewer` on the batch-3 branch; entries appended to
+[builder-recovery-review.json](builder-recovery-review.json).
+
+- **6 restored under their own IDs:** df04, dl01, fa02, fj02, la01, la02. la02
+  was rejected once for an overstatement ("each base tensor") and re-reviewed
+  after narrowing the merge to the merged layers' weight tensors, as the LoRA
+  merge page's "Notes & constraints" states.
+- **2 replaced by new items:** the reviewer found that q-ds01c3d4e5f6 ("why
+  split train/validation") and q-ft04d8e9f0a1 ("what a too-high learning rate
+  does") have no supporting passage on the fine-tuning page for their original
+  concept, so the rewrites test a different concept and were minted as new
+  questions rather than reusing the IDs: q-1d28809ed6da (the documented
+  80–90 / 10–20 split) and q-3ed9d6aa21de (`learning_rate` definition and typical
+  range). q-ds01c3d4e5f6 and q-ft04d8e9f0a1 stay `needs_review` with their
+  original text; they will need re-authoring against a page that documents the
+  original concepts, or retirement.
+
