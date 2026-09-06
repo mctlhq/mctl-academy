@@ -119,6 +119,7 @@ export function ensureLabels({ repo, labels, gh = runGh }) {
  * @returns {{ id: string, action: "commented" | "created", issue: number | string }[]}
  */
 export function syncDriftIssues({ rows, repo, labels = DEFAULT_LABELS, gh = runGh }) {
+  /** @type {{ id: string, action: "commented" | "created", issue: number | string }[]} */
   const actions = [];
   for (const row of rows) {
     const title = issueTitle(row.id);
