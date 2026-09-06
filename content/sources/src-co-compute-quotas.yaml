@@ -2,11 +2,11 @@ schema_version: 1
 id: src-co-compute-quotas
 url: https://docs.nebius.com/compute/resources/quotas-limits.md
 title: Quotas in Compute
-retrieved_at: 2026-08-16T18:54:33Z
-sha256: 3c9dc77bb8c3eb7f75c3b60c5449ae71a21253ca89dd1d5bf8f752bf700c774e
+retrieved_at: 2026-09-06T10:58:06Z
+sha256: 70984369ccff0d27e5a8c6d709a4738f82eb68265eac7c06f721e6e2d1939d4e
 objectives:
   - domain-3/resource-quotas
 snapshot:
   bucket: academy-source-snapshots
-  key: 3c9dc77bb8c3eb7f75c3b60c5449ae71a21253ca89dd1d5bf8f752bf700c774e
-status: drifted
+  key: 70984369ccff0d27e5a8c6d709a4738f82eb68265eac7c06f721e6e2d1939d4e
+status: current
