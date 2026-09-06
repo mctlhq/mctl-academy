@@ -121,7 +121,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$MAX_NEW" in *[!0-9]*|"") echo "::error::max_new must be an integer"; exit 1;; esac
-          mkdir -p _run
+          mkdir -p _run _agent
           node scripts/discover-docs.mjs --out _run/candidates.json --max-new "$MAX_NEW" --check-live --update-state
           empty=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("_run/candidates.json","utf8")).empty)')
           echo "empty=$empty" >> "$GITHUB_OUTPUT"
@@ -192,7 +192,7 @@ jobs:
           # the author agent has no clock, and asking it to invent the time of
           # day put a coin flip on the fatal path -- a guess later than this
           # 06:30 UTC run is a future authored.at, which the lint refuses.
-          mkdir -p _run
+          mkdir -p _run _agent
           printf '{ "max_new": %s, "max_questions": %s, "now": "%s" }\n' \
             "$MAX_NEW" "$MAX_QUESTIONS" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _run/limits.json
           cp _run/from-discover/_run/candidates.json _run/candidates.json
@@ -221,7 +221,7 @@ jobs:
             Skip pages that are outside every course's scope (marketing, changelogs, pricing,
             tooling unrelated to any objective): write nothing for them.
 
-            Write _run/select.json: a JSON array with one object per chosen page:
+            Write _agent/select.json: a JSON array with one object per chosen page:
               { "id": "src-<slug>", "url": "<url from newPages>",
                 "objectives": ["domain-N/<objective-id>", ...] }
             Do not write a title: it is taken from the discovery report, not from you.
@@ -233,17 +233,26 @@ jobs:
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 25
             --tools "Read,Glob,Grep,Write"
-            --allowedTools "Read,Glob,Grep,Write(_run/select.json)"
+            --allowedTools "Read,Glob,Grep,Write(_agent/**)"
 
-      # Same reason as after the other two agents: discard and reinstall the
-      # dependencies before any repository code runs again, verifying the
-      # install's inputs with git alone. The scan is exactly the files bun
-      # reads from the working directory, at the root and nowhere else: a `**/`
-      # pathspec would walk the still-present node_modules -- git pathspecs are
-      # not FNM_PATHNAME -- and fail the run on a bunfig.toml shipped inside
-      # some dependency's tarball, which bun never loads. --exclude-standard is
-      # safe here, unlike in boundaryProblems: the paths are named explicitly,
-      # so .gitignore cannot hide one of them.
+      # A missing file here is not "the agent had nothing to say": the first
+      # supervised run lost all three agent outputs to a permission rule that
+      # silently denied every Write, and each absence degraded quietly -- an
+      # empty selection captured nothing, and the reviewer's absence surfaced
+      # three steps later as ENOENT. An agent that produced no output is a
+      # broken run, and it says so here.
+      - name: The agent produced its output
+        if: steps.branch.outputs.new_pages != '0'
+        run: |
+          set -euo pipefail
+          f=_agent/select.json
+          if [ ! -s "$f" ]; then
+            echo "::error::the selector agent wrote no $f; the run cannot continue on a silent agent"
+            exit 1
+          fi
+
+      # Same reason as after the other two agents; the step's own comments carry
+      # the argument.
       - name: Guard the executable surface and rebuild dependencies
         run: |
           set -euo pipefail
@@ -310,8 +319,8 @@ jobs:
           # 2. Capture: the author's page selection (validated, nothing appended
           #    yet) plus every drifted record from its own fields.
           : > _run/capture.tsv
-          if [ -f _run/select.json ]; then
-            node scripts/replenish-prepare.mjs manifest --select _run/select.json --candidates _run/candidates.json \
+          if [ -f _agent/select.json ]; then
+            node scripts/replenish-prepare.mjs manifest --select _agent/select.json --candidates _run/candidates.json \
               --out _run/selected.json --dropped _run/dropped.json >> _run/capture.tsv
           else
             echo "[]" > _run/selected.json
@@ -438,25 +447,38 @@ jobs:
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
 
-            Write _run/CHANGES.md: one line per file you added or changed,
+            Write _agent/CHANGES.md: one line per file you added or changed,
             the objective it serves and the source it cites. Do not run commands. Structural
             validation and R2 citation verification run in separate deterministic steps.
           claude_args: >-
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 80
             --tools "Read,Glob,Grep,Write,Edit"
-            --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(_run/CHANGES.md)"
+            --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(_agent/**)"
 
       # The agent's own runs of the checks are advice; these are the gates.
-      # An agent's Write allowlist is a path glob, and node_modules is outside
-      # every check this workflow runs: `bun install` leaves tens of thousands
-      # of untracked files there, so the boundary check has to exempt it. A
-      # write that reached it -- through path traversal, or any future gap in
-      # the allowlist -- would execute as soon as the next `node` resolves an
-      # import, which is the boundary check itself. So the dependencies are
-      # discarded and reinstalled from the lockfile before ANY repository code
-      # runs again. The inputs to that install are verified with git alone,
-      # which loads nothing from node_modules.
+      # A missing file here is not "the agent had nothing to say": the first
+      # supervised run lost all three agent outputs to a permission rule that
+      # silently denied every Write, and each absence degraded quietly -- an
+      # empty selection captured nothing, and the reviewer's absence surfaced
+      # three steps later as ENOENT. An agent that produced no output is a
+      # broken run, and it says so here.
+      - name: The agent produced its output
+        run: |
+          set -euo pipefail
+          f=_agent/CHANGES.md
+          if [ ! -s "$f" ]; then
+            echo "::error::the author agent wrote no $f; the run cannot continue on a silent agent"
+            exit 1
+          fi
+
+      # An agent's Write allowlist is a path glob, and node_modules is exempt
+      # from the boundary check because `bun install` leaves tens of thousands
+      # of untracked files there. A write that reached it -- through path
+      # traversal, or any future gap in the allowlist -- would execute as soon
+      # as the next `node` resolves an import, which is the boundary check
+      # itself. So the dependencies are discarded and reinstalled, and the
+      # executable surface is checked, before ANY repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         run: |
           set -euo pipefail
@@ -554,7 +576,7 @@ jobs:
       # so they are downloaded only after the reviewer has finished, by the step
       # that builds the PR body, their sole consumer.
       #
-      # `authoring` holds _run/CHANGES.md, the author agent's account of what it
+      # `authoring` holds _agent/CHANGES.md, the author agent's account of what it
       # wrote, and is downloaded by no job at all.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
@@ -583,6 +605,7 @@ jobs:
           name: authoring-${{ github.run_id }}
           path: |
             _run/
+            _agent/
             !_run/from-discover/
           retention-days: 14
           if-no-files-found: ignore
@@ -628,7 +651,7 @@ jobs:
           set -euo pipefail
           git config user.name "$BOT_NAME"
           git config user.email "$BOT_EMAIL"
-          mkdir -p _run
+          mkdir -p _run _agent
           # Exactly the handoff artifact, which carries no file any agent
           # wrote: CHANGES.md and the selector's rows are in artifacts this job
           # does not download until after the reviewer has finished.
@@ -685,7 +708,7 @@ jobs:
             captured text. Resemblance to any real exam is not a criterion and must not be
             mentioned.
 
-            Write _run/decisions.json: a JSON array with one object for every id in _run/review-ids.txt:
+            Write _agent/decisions.json: a JSON array with one object for every id in _run/review-ids.txt:
               { "id": "<id>", "approved": true|false, "reason": "<one or two sentences quoting
                 the decisive passage or naming the defect>" }
             Do not edit any question, and do not run any command.
@@ -693,17 +716,31 @@ jobs:
             --model ${{ env.REVIEWER_MODEL }}
             --max-turns 60
             --tools "Read,Glob,Grep,Write"
-            --allowedTools "Read,Glob,Grep,Write(_run/decisions.json)"
+            --allowedTools "Read,Glob,Grep,Write(_agent/**)"
 
-      # An agent's Write allowlist is a path glob, and node_modules is outside
-      # every check this workflow runs: `bun install` leaves tens of thousands
-      # of untracked files there, so the boundary check has to exempt it. A
-      # write that reached it -- through path traversal, or any future gap in
-      # the allowlist -- would execute as soon as the next `node` resolves an
-      # import, which is the boundary check itself. So the dependencies are
-      # discarded and reinstalled from the lockfile before ANY repository code
-      # runs again. The inputs to that install are verified with git alone,
-      # which loads nothing from node_modules.
+      # A missing file here is not "the agent had nothing to say": the first
+      # supervised run lost all three agent outputs to a permission rule that
+      # silently denied every Write, and each absence degraded quietly -- an
+      # empty selection captured nothing, and the reviewer's absence surfaced
+      # three steps later as ENOENT. An agent that produced no output is a
+      # broken run, and it says so here.
+      - name: The agent produced its output
+        if: steps.items.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          f=_agent/decisions.json
+          if [ ! -s "$f" ]; then
+            echo "::error::the reviewer agent wrote no $f; the run cannot continue on a silent agent"
+            exit 1
+          fi
+
+      # An agent's Write allowlist is a path glob, and node_modules is exempt
+      # from the boundary check because `bun install` leaves tens of thousands
+      # of untracked files there. A write that reached it -- through path
+      # traversal, or any future gap in the allowlist -- would execute as soon
+      # as the next `node` resolves an import, which is the boundary check
+      # itself. So the dependencies are discarded and reinstalled, and the
+      # executable surface is checked, before ANY repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         if: steps.items.outputs.count != '0'
         run: |
@@ -758,7 +795,7 @@ jobs:
           # agrees with the diff fails the run instead of being ignored.
           node scripts/replenish-prepare.mjs reconcile-decisions --base origin/main \
             --ids _run/review-ids.txt \
-            --decisions _run/decisions.json --out _run/decisions-scoped.json
+            --decisions _agent/decisions.json --out _run/decisions-scoped.json
           # --supersede: an id re-presented after a later drift already has
           # this reviewer's older entry in an earlier receipt; the new decision
           # replaces it so the lint sees exactly one.

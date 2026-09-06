@@ -116,7 +116,9 @@ export function validateSelection({ select, candidates, objectives, existingIds 
     rows.push({
       id: row.id,
       url: row.url,
-      title: title || row.url.split("/").pop().replace(/\.md$/, ""),
+      // The fallback needs a fallback: source.schema.json also sets
+      // minLength 1, and a url ending in "/" leaves pop() empty.
+      title: title || row.url.split("/").pop().replace(/\.md$/, "") || row.id,
       objectives: [...new Set(valid)],
     });
   }
@@ -201,6 +203,14 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
  * not by this function.
  */
 export function boundaryProblems({ base, cwd = process.cwd(), strict = false, allow = [] }) {
+  // _run/ is the workflow's own scratch space and _agent/ is the one directory
+  // the agents may write to, so neither can be reported here. _agent/ is
+  // deliberately NOT in .gitignore: the only path shape observed to work in an
+  // agent's Write allowlist is `dir/**`, and the run that lost all three agent
+  // outputs had them under a gitignored directory named by literal path, so
+  // this directory changes both variables at once. Nothing in it is trusted --
+  // each file is read by exactly one step, which validates it.
+  //
   // Long-form magic: `:!_run/**` is parsed as the unknown short magic `_`.
   // node_modules is excluded at both levels; `**/` alone does not cover the
   // repository root.
@@ -216,6 +226,7 @@ export function boundaryProblems({ base, cwd = process.cwd(), strict = false, al
     ".",
     ...(strict ? [] : [":(exclude)content/questions/**"]),
     ":(exclude)_run/**",
+    ":(exclude)_agent/**",
     ":(exclude)node_modules/**",
     ":(exclude)**/node_modules/**",
     ...allow.map((p) => `:(exclude)${p}`),
