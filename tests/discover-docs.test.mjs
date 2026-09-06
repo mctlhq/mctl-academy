@@ -4,7 +4,14 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { stringify as yaml } from "yaml";
-import { parseLlmsIndex, newPages, gapsFrom, rankPages, discover } from "../scripts/discover-docs.mjs";
+import {
+  parseLlmsIndex,
+  newPages,
+  gapsFrom,
+  rankPages,
+  discover,
+  DISCOVERY_STATE_HEADER,
+} from "../scripts/discover-docs.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
 
 const OLD = "# Quotas\n\nDefault limit is 10 GPUs per project.\n";
@@ -209,6 +216,8 @@ test("discover: unchanged live bytes are not drift, and the run is empty when no
     assert.deepEqual(result.drifted, []);
     assert.deepEqual(result.gaps, []);
     assert.equal(result.newPages.length, 0);
+    assert.deepEqual(result.unreachable, []);
+    assert.deepEqual(result.indexErrors, []);
     assert.equal(result.empty, true);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -286,6 +295,139 @@ test("discover: a record already marked drifted stays in the report when the liv
     assert.equal(result.drifted[0].recordedStatus, "drifted");
     assert.equal(result.drifted[0].classification, "unknown");
     assert.ok(warnings.some((w) => /reported as drifted, delta not classified/.test(w)));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: a failed index is reported, keeps the run non-empty, and does not prune the watermark", async () => {
+  const dir = fixture();
+  try {
+    writeFileSync(
+      join(dir, "discovery-state.yaml"),
+      yaml({
+        seen: [{ url: "https://docs.nebius.com/gone-from-index.md", first_seen: "2026-08-01" }],
+        ignored: [],
+      }),
+    );
+    const warnings = [];
+    const { result, nextState } = await discover({
+      contentDir: dir,
+      maxNew: 0,
+      minPerObjective: 0,
+      fetch: async (url) => {
+        if (url.includes("docs.nebius.com/llms.txt")) throw new Error("HTTP 503");
+        if (url.endsWith("llms.txt")) return INDEX;
+        return OLD;
+      },
+      store: fakeStore,
+      warn: (m) => warnings.push(m),
+    });
+    assert.deepEqual(result.indexErrors, [
+      { index: "https://docs.nebius.com/llms.txt", message: "HTTP 503" },
+    ]);
+    assert.equal(result.empty, false);
+    assert.match(result.summary, /Index errors \(1\)/);
+    assert.ok(nextState.seen.some((e) => e.url === "https://docs.nebius.com/gone-from-index.md"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: throws when no index at all could be fetched", async () => {
+  const dir = fixture();
+  try {
+    await assert.rejects(
+      discover({
+        contentDir: dir,
+        fetch: async () => {
+          throw new Error("HTTP 503");
+        },
+        store: null,
+        warn: () => {},
+      }),
+      /no llms\.txt index could be fetched/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: a 404 on a current source is reported as unreachable with its status, not dropped", async () => {
+  const dir = fixture();
+  try {
+    const { result } = await discover({
+      contentDir: dir,
+      checkLive: true,
+      maxNew: 0,
+      minPerObjective: 0,
+      fetch: async (url) => {
+        if (url.endsWith("llms.txt")) return "";
+        throw Object.assign(new Error(`fetch ${url}: HTTP 404`), { status: 404 });
+      },
+      store: fakeStore,
+      warn: () => {},
+    });
+    assert.deepEqual(result.drifted, []);
+    assert.equal(result.unreachable.length, 1);
+    assert.equal(result.unreachable[0].id, "src-quotas");
+    assert.equal(result.unreachable[0].status, 404);
+    assert.equal(result.empty, false);
+    assert.match(result.summary, /page gone: HTTP 404/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: a corrupt snapshot costs one classification, not the report", async () => {
+  const dir = fixture();
+  try {
+    const warnings = [];
+    const { result } = await discover({
+      contentDir: dir,
+      checkLive: true,
+      fetch: fakeFetch(NEW),
+      store: {
+        get: async () => {
+          throw new Error("snapshot is corrupt");
+        },
+      },
+      warn: (m) => warnings.push(m),
+    });
+    assert.equal(result.drifted[0].classification, "unknown");
+    assert.ok(warnings.some((w) => /snapshot read failed/.test(w)));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: the watermark drops pages that became cited or ignored, and the header is kept on write", async () => {
+  const dir = fixture();
+  try {
+    writeFileSync(
+      join(dir, "discovery-state.yaml"),
+      yaml({
+        seen: [
+          { url: "https://docs.nebius.com/compute/resources/quotas-limits.md", first_seen: "2026-08-01" },
+          { url: "https://docs.tokenfactory.nebius.com/quickstart.md", first_seen: "2026-08-02" },
+          { url: "https://docs.tokenfactory.nebius.com/removed.md", first_seen: "2026-08-03" },
+        ],
+        ignored: [{ url: "https://docs.tokenfactory.nebius.com/quickstart.md", reason: "marketing" }],
+      }),
+    );
+    const { nextState } = await discover({
+      contentDir: dir,
+      maxNew: 0,
+      minPerObjective: 0,
+      fetch: fakeFetch(OLD),
+      store: fakeStore,
+      warn: () => {},
+    });
+    assert.deepEqual(
+      nextState.seen.map((e) => e.url),
+      ["https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md"],
+    );
+    assert.match(DISCOVERY_STATE_HEADER, /^# Watermark for scripts\/discover-docs\.mjs\./);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

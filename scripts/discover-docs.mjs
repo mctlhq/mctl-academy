@@ -18,6 +18,11 @@
  *   3. Gaps: Mock shortfalls per domain and objectives with fewer published
  *      questions than --min-per-objective, from the content quality report.
  *
+ * Failures are part of the report, never swallowed: an index that could not
+ * be fetched and a source page that did not answer are listed in the output
+ * and keep `empty` false, so a blind run can never read as a quiet week. When
+ * no index at all answers the run fails.
+ *
  * The output is a candidates.json that an authoring run reads as data. This
  * script never writes under content/ except the discovery watermark, and only
  * with --update-state.
@@ -46,6 +51,17 @@ export const LLMS_INDICES = [
 ];
 const FETCH_TIMEOUT_MS = 30_000;
 
+/** Kept on every --update-state write so the committed file stays self-describing. */
+export const DISCOVERY_STATE_HEADER = `# Watermark for scripts/discover-docs.mjs.
+#
+# \`seen\` records when a page in the llms.txt indices was first noticed without
+# being cited by any source record or capture-manifest row; the discovery
+# report proposes older pages before newer ones. \`ignored\` removes a page from
+# every future report (marketing pages, changelogs, pages outside the course
+# scopes in SOURCES.md) and must say why. Both lists are maintained by the
+# Content replenish workflow and reviewed like any other change under content/.
+`;
+
 export async function fetchText(url) {
   const host = new URL(url).host;
   if (!ALLOWED_HOSTS.includes(host))
@@ -57,7 +73,10 @@ export async function fetchText(url) {
       headers: { accept: "text/markdown, text/plain, text/html" },
       signal: controller.signal,
     });
-    if (!res.ok) throw new Error(`fetch ${url}: HTTP ${res.status}`);
+    if (!res.ok) {
+      // The status rides along so a 404 (page gone) can be told from a 5xx.
+      throw Object.assign(new Error(`fetch ${url}: HTTP ${res.status}`), { status: res.status });
+    }
     return await res.text();
   } finally {
     clearTimeout(timer);
@@ -205,17 +224,24 @@ export async function discover({
   warn = (msg) => console.warn(`::warning::${msg}`),
 } = {}) {
   const state = loadDiscoveryState(stateFile);
+  const known = knownUrls(contentDir);
   const pages = [];
+  const indexErrors = [];
   for (const index of indices) {
     try {
       pages.push(...parseLlmsIndex(await fetch(index)));
     } catch (e) {
       warn(`index ${index} unavailable: ${e.message}`);
+      indexErrors.push({ index, message: e.message });
     }
   }
-  const fresh = newPages({ pages, known: knownUrls(contentDir), state, today });
+  if (indices.length && indexErrors.length === indices.length) {
+    throw new Error(`no llms.txt index could be fetched: ${indexErrors.map((e) => e.index).join(", ")}`);
+  }
+  const fresh = newPages({ pages, known, state, today });
 
   const drifted = [];
+  const unreachable = [];
   for (const { data } of loadYamlDir(contentDir, "sources")) {
     if (!data?.id || data.status === "deprecated") continue;
     let live = null;
@@ -227,11 +253,15 @@ export async function discover({
       } catch (e) {
         // A record already marked drifted is drifted whether or not the live
         // page answers today; only the delta classification needs the fetch.
-        // A record marked current is left alone: unreachable is not drift.
+        // A record marked current is not marked drifted on a failed fetch (a
+        // bad minute at the docs site is not drift), but the failure is part
+        // of the report: a 404 in particular means the cited page is gone,
+        // the strongest drift signal there is.
+        unreachable.push({ id: data.id, url: data.url, status: e.status ?? null, message: e.message });
         if (data.status === "drifted") {
           warn(`${data.id}: live fetch failed (${e.message}); reported as drifted, delta not classified`);
         } else {
-          warn(`${data.id}: live fetch failed (${e.message}); treated as unreachable, not drifted`);
+          warn(`${data.id}: live fetch failed (${e.message}); reported as unreachable, not marked drifted`);
           continue;
         }
       }
@@ -250,9 +280,13 @@ export async function discover({
       summary: "",
     };
     if (store && live !== null) {
-      const old = await store.get(data.snapshot?.key ?? data.sha256);
-      if (old === null)
-        warn(`${data.id}: snapshot ${data.sha256} missing from the store; delta not classified`);
+      let old = null;
+      try {
+        old = await store.get(data.snapshot?.key ?? data.sha256);
+      } catch (e) {
+        warn(`${data.id}: snapshot read failed (${e.message}); delta not classified`);
+      }
+      if (old === null) warn(`${data.id}: snapshot ${data.sha256} unavailable; delta not classified`);
       else {
         const delta = detectDocsDelta({
           oldText: old,
@@ -279,30 +313,61 @@ export async function discover({
   const selectedNew = rankPages(fresh, gaps).slice(0, maxNew);
   const result = {
     generated_at: new Date().toISOString(),
-    empty: selectedNew.length === 0 && drifted.length === 0 && gaps.length === 0,
+    empty:
+      selectedNew.length === 0 &&
+      drifted.length === 0 &&
+      gaps.length === 0 &&
+      indexErrors.length === 0 &&
+      unreachable.length === 0,
     newPages: selectedNew,
     newPagesTotal: fresh.length,
     drifted,
+    unreachable,
+    indexErrors,
     gaps,
   };
   result.summary = summarize(result);
+
+  // Prune the watermark to what can still influence a report: pages the
+  // indices still list and nothing cites or ignores. When an index failed its
+  // pages are absent from `listed`, so keep every entry rather than lose real
+  // first-seen dates to an outage.
+  const listed = new Set(pages.map((p) => p.url));
+  const ignoredUrls = new Set(state.ignored.map((e) => e.url));
+  const freshUrls = new Set(fresh.map((p) => p.url));
+  const kept = state.seen.filter(
+    (e) =>
+      !freshUrls.has(e.url) &&
+      !known.has(e.url) &&
+      !ignoredUrls.has(e.url) &&
+      (indexErrors.length > 0 || listed.has(e.url)),
+  );
   const nextState = {
-    seen: [
-      ...state.seen.filter((e) => !fresh.some((p) => p.url === e.url)),
-      ...fresh.map((p) => ({ url: p.url, first_seen: p.first_seen })),
-    ],
+    seen: [...kept, ...fresh.map((p) => ({ url: p.url, first_seen: p.first_seen }))],
     ignored: state.ignored,
   };
   return { result, nextState, stateFile };
 }
 
-export function summarize({ newPages, newPagesTotal, drifted, gaps }) {
+export function summarize({ newPages, newPagesTotal, drifted, gaps, unreachable = [], indexErrors = [] }) {
   const lines = [];
+  if (indexErrors.length) {
+    lines.push(`## Index errors (${indexErrors.length}) — the new-page count below is incomplete`);
+    for (const e of indexErrors) lines.push(`- ${e.index}: ${e.message}`);
+    lines.push("");
+  }
+  if (unreachable.length) {
+    lines.push(`## Unreachable sources (${unreachable.length})`);
+    for (const u of unreachable)
+      lines.push(`- ${u.id}${u.status === 404 ? " [page gone: HTTP 404]" : ""}: ${u.message}`);
+    lines.push("");
+  }
   lines.push(`## New pages (${newPages.length} of ${newPagesTotal} not yet cited)`);
-  for (const p of newPages)
+  for (const p of newPages) {
     lines.push(
       `- ${p.title}: ${p.url}${p.description ? ` — ${p.description}` : ""} (first seen ${p.first_seen})`,
     );
+  }
   if (!newPages.length) lines.push("- none");
   lines.push("", `## Drifted sources (${drifted.length})`);
   for (const d of drifted) lines.push(`- ${d.id} [${d.classification}] ${d.summary || d.url}`);
@@ -323,15 +388,22 @@ function parseArgs(argv) {
   const opts = { out: null, maxNew: 3, checkLive: false, updateState: false, minPerObjective: 3 };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
-    if (a === "--out") opts.out = argv[++i];
-    else if (a === "--max-new") opts.maxNew = Number(argv[++i]);
-    else if (a === "--min-per-objective") opts.minPerObjective = Number(argv[++i]);
+    const value = () => {
+      if (i + 1 >= argv.length || argv[i + 1].startsWith("--")) throw new Error(`${a} needs a value`);
+      return argv[++i];
+    };
+    if (a === "--out") opts.out = value();
+    else if (a === "--max-new") opts.maxNew = Number(value());
+    else if (a === "--min-per-objective") opts.minPerObjective = Number(value());
     else if (a === "--check-live") opts.checkLive = true;
     else if (a === "--update-state") opts.updateState = true;
     else throw new Error(`unknown argument ${a}`);
   }
   if (!Number.isInteger(opts.maxNew) || opts.maxNew < 0)
     throw new Error("--max-new must be a non-negative integer");
+  if (!Number.isInteger(opts.minPerObjective) || opts.minPerObjective < 0) {
+    throw new Error("--min-per-objective must be a non-negative integer");
+  }
   return opts;
 }
 
@@ -340,7 +412,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const opts = parseArgs(process.argv.slice(2));
     const { result, nextState, stateFile } = await discover(opts);
     if (opts.out) writeFileSync(opts.out, JSON.stringify(result, null, 2) + "\n");
-    if (opts.updateState) writeFileSync(stateFile, stringifyYaml(nextState));
+    if (opts.updateState) writeFileSync(stateFile, DISCOVERY_STATE_HEADER + stringifyYaml(nextState));
     console.log(result.summary);
     console.log(`\nempty=${result.empty}`);
   } catch (e) {
