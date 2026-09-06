@@ -9,6 +9,21 @@ const bundle: BundleQuestion[] = JSON.parse(
 const course = "agentic-ai-builder";
 const bank = bundle.filter((q) => q.course_id === course);
 
+interface CatalogCourse {
+  id: string;
+  available: boolean;
+  mock: { domains: { id: string; mockQuestions: number }[] };
+}
+const catalog: CatalogCourse[] = JSON.parse(
+  readFileSync(new URL("../client/src/course-catalog.json", import.meta.url), "utf8"),
+);
+/** Mirrors selectMockQuestions: every domain must have at least its quota published. */
+const mockComplete = (c: CatalogCourse) =>
+  c.available &&
+  c.mock.domains.every(
+    (d) => bundle.filter((q) => q.course_id === c.id && q.domain === d.id).length >= d.mockQuestions,
+  );
+
 test.beforeEach(async ({ page }) => {
   await page.route("**/api/auth/get-session**", (route) => route.fulfill({ json: null }));
 });
@@ -113,10 +128,19 @@ test("progress denominator and recommended domain link agree", async ({ page }) 
   expect(new URL(page.url()).searchParams.get("domain")).toMatch(/^domain-/);
 });
 
-test("Builder explains mock shortfall and a complete bank still starts a mock", async ({ page }) => {
+test("a short bank explains the mock shortfall and a complete bank starts a mock", async ({ page }) => {
+  // Derived from the shipped artefacts, not from a guess about which bank is
+  // short today: the Builder bank was short during its evidence recovery and
+  // is complete again after it, and this spec must hold in both states.
+  const short = catalog.find((c) => !mockComplete(c));
+  const complete = catalog.find((c) => mockComplete(c));
+  expect(complete, "at least one course must be able to fill its Mock").toBeDefined();
   await page.goto("/mock");
-  await expect(page.getByTestId("not-enough-content")).toBeVisible();
-  await page.getByTestId("course-select").selectOption("ai-cloudops-engineer");
+  if (short) {
+    await page.getByTestId("course-select").selectOption(short.id);
+    await expect(page.getByTestId("not-enough-content")).toBeVisible();
+  }
+  await page.getByTestId("course-select").selectOption(complete!.id);
   await page.getByRole("button", { name: "Start mock exam" }).click();
   await expect(page.getByTestId("mock-exam")).toBeVisible();
 });
