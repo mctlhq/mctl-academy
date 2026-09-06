@@ -35,9 +35,12 @@
  *       before any repository code is executed with snapshot credentials.
  *   review-ids --base <git ref>
  *       Print the review_ready question ids that differ from the base.
- *   reconcile-decisions --ids review-ids.txt --decisions decisions.json --out filtered.json
- *       Fail unless the reviewer decided on exactly the listed ids; write the
- *       decisions scoped to them.
+ *   reconcile-decisions [--base <git ref>] [--ids review-ids.txt]
+ *                       --decisions decisions.json --out filtered.json
+ *       Fail unless the reviewer decided on exactly the ids under review; write
+ *       the decisions scoped to them. With --base the scope is recomputed from
+ *       the diff rather than read from a file an agent ran beside; given both,
+ *       a disagreement between them is itself an error.
  *   demote <q-id> ...
  *       status -> needs_review and drop `reviewed` (a rejected re-validation).
  *   pr-body --candidates c.json --receipt r.json --captured <id,...> [--selected s.json]
@@ -103,7 +106,13 @@ export function validateSelection({ select, candidates, objectives, existingIds 
     // Every field the agent contributes is now regex-bounded: a SOURCE_ID, a
     // url from the offered set, objectives from the course maps.
     const page = offered.get(row.url);
-    const title = (page.title || "").replace(/[\t\r\n]/g, " ").trim();
+    // source.schema.json caps `title` at 300 and parseLlmsIndex bounds nothing:
+    // a long index entry would otherwise write a record the schema rejects,
+    // after the page was already fetched, hashed and pushed to R2.
+    const title = (page.title || "")
+      .replace(/[\t\r\n]/g, " ")
+      .trim()
+      .slice(0, 300);
     rows.push({
       id: row.id,
       url: row.url,
@@ -143,14 +152,35 @@ const git = (args, cwd) =>
   execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
 
 /**
+ * Every git command whose output is a LIST OF PATHS must be read this way.
+ * With core.quotePath on (the default) git renders a path holding a quote, a
+ * tab, a newline or a non-ASCII byte as a C-escaped, double-quoted string, and
+ * a newline inside a path splits one entry into two. Either shape makes a real
+ * file unrecognisable to the caller: `statusOnDisk` cannot stat it and returns
+ * null, and `guardChanges` then skips the file entirely. `-z` emits the raw
+ * bytes, NUL-separated, so nothing about the name can hide it.
+ *
+ * @param {string[]} args
+ * @param {string} [cwd]
+ * @returns {string[]}
+ */
+const gitPaths = (args, cwd) => {
+  // Before the `--`: everything after it is a pathspec, and a trailing -z
+  // would be read as the name of a file to look at.
+  const cut = args.indexOf("--");
+  const withZ = cut === -1 ? [...args, "-z"] : [...args.slice(0, cut), "-z", ...args.slice(cut)];
+  return git(withZ, cwd).split("\0").filter(Boolean);
+};
+
+/**
  * Question files that differ from the base: tracked changes AND untracked
  * files. `git diff` alone never lists a file the author agent just created,
  * which is its dominant output.
  */
 export function changedQuestionFiles({ base, cwd = process.cwd() }) {
-  const tracked = git(["diff", "--name-only", base, "--", "content/questions"], cwd);
-  const untracked = git(["ls-files", "--others", "--exclude-standard", "--", "content/questions"], cwd);
-  return [...new Set([...tracked.split("\n"), ...untracked.split("\n")].filter(Boolean))].sort();
+  const tracked = gitPaths(["diff", "--name-only", base, "--", "content/questions"], cwd);
+  const untracked = gitPaths(["ls-files", "--others", "--exclude-standard", "--", "content/questions"], cwd);
+  return [...new Set([...tracked, ...untracked])].sort();
 }
 
 /**
@@ -191,14 +221,10 @@ export function boundaryProblems({ base, cwd = process.cwd(), strict = false, al
     ...allow.map((p) => `:(exclude)${p}`),
   ];
   const problems = [];
-  for (const f of git(["diff", "--name-only", base, ...spec], cwd)
-    .split("\n")
-    .filter(Boolean)) {
+  for (const f of gitPaths(["diff", "--name-only", base, ...spec], cwd)) {
     problems.push(`${f} was changed outside ${area}`);
   }
-  for (const f of git(["ls-files", "--others", ...spec], cwd)
-    .split("\n")
-    .filter(Boolean)) {
+  for (const f of gitPaths(["ls-files", "--others", ...spec], cwd)) {
     problems.push(`${f} was created outside ${area}`);
   }
   return problems;
@@ -273,6 +299,23 @@ export function reviewIds({ base, cwd = process.cwd() }) {
  * an id it added would be promoted outside the run's cap and diff, an id it
  * skipped would ship unreviewed and unmentioned.
  */
+/**
+ * The reading list the reviewer was handed against the set recomputed from the
+ * diff at the point of use. Any disagreement is reported: an id only in the
+ * file would be promoted outside this run's diff, and an id only in the diff
+ * would ship without the reviewer ever having seen it.
+ *
+ * @param {string[]} derived
+ * @param {string[]} handed
+ * @returns {string[]}
+ */
+export function reviewScopeProblems(derived, handed) {
+  return [
+    ...derived.filter((id) => !handed.includes(id)).map((id) => `${id} is reviewable but was not listed`),
+    ...handed.filter((id) => !derived.includes(id)).map((id) => `${id} was listed but is not reviewable`),
+  ];
+}
+
 export function reconcileDecisions({ ids, decisions }) {
   const wanted = new Set(ids);
   const list = Array.isArray(decisions) ? decisions : [];
@@ -482,10 +525,26 @@ async function main(argv) {
     return;
   }
   if (cmd === "reconcile-decisions") {
-    const ids = readFileSync(opt(args, "ids"), "utf8")
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    // --base recomputes the scope here, at the point of use. _run/** is
+    // excluded from every boundary check by construction, so the reading list
+    // handed to the reviewer is the one file in this workflow an agent could
+    // rewrite unseen -- and it is what decides which ids may be promoted.
+    // Deriving the ids from the diff makes that file purely the reviewer's
+    // copy, and comparing the two reports the tampering instead of obeying it.
+    const base = opt(args, "base");
+    const handedFile = opt(args, "ids");
+    const handed = handedFile
+      ? readFileSync(handedFile, "utf8")
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : null;
+    const ids = base ? reviewIds({ base }) : handed;
+    if (base && handed) {
+      const drift = reviewScopeProblems(ids, handed);
+      for (const d of drift) console.error(`::error::the review set moved while the reviewer ran: ${d}`);
+      if (drift.length) process.exit(1);
+    }
     const { problems, decisions } = reconcileDecisions({ ids, decisions: readJson(opt(args, "decisions")) });
     for (const p of problems) console.error(`::error::${p}`);
     if (problems.length) process.exit(1);

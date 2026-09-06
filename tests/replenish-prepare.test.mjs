@@ -16,10 +16,11 @@ import {
   statusOnDisk,
   boundaryProblems,
   reconcileDecisions,
+  reviewScopeProblems,
   demote,
   prBody,
 } from "../scripts/replenish-prepare.mjs";
-import { mergeVersions, buildSourceRecord, parseMode } from "../scripts/capture-source.mjs";
+import { mergeVersions, buildSourceRecord, parseMode, parseCaptureArgs } from "../scripts/capture-source.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -284,7 +285,7 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
   for (const step of rebuilds) {
     // Both halves matter: an edited lockfile and a created bunfig.toml or
     // .npmrc redirect the install just as effectively.
-    assert.match(step.run, /git diff --name-only [^\n]*package\.json bun\.lock bunfig\.toml \.npmrc/);
+    assert.match(step.run, /git diff --name-only [^\n]*package\.json bun\.lock/);
     assert.match(step.run, /git ls-files --others [^\n]*bunfig\.toml/);
     assert.match(step.run, /::error::/);
     assert.match(step.run, /exit 1/);
@@ -299,6 +300,156 @@ test("capture-source reads its mode from the first argument, never from scraped 
   // not write. A page titled "--check" must not turn a capture into a no-op.
   assert.equal(parseMode(["https://docs.nebius.com/x.md", "--id", "src-x", "--title", "--check"]), "capture");
   assert.equal(parseMode([]), "capture");
+});
+
+test("a question file whose name git would quote is still seen by the guard", () => {
+  const { dir, run } = gitRepo();
+  try {
+    writeFileSync(
+      join(dir, "content", "questions", "q-base00000001.yaml"),
+      yaml(q("q-base00000001", "published", "src-a")),
+    );
+    run(["add", "-A"]);
+    run(["commit", "-q", "-m", "pre-agent"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+
+    // core.quotePath is on by default, so git renders this name C-escaped and
+    // double-quoted. Read line-wise, the caller gets a path that does not
+    // exist, statusOnDisk returns null, and guardChanges skips the file --
+    // which is how an agent would publish an item nothing ever reviewed.
+    const sneaky = 'q-sneaky00001"x.yaml';
+    writeFileSync(join(dir, "content", "questions", sneaky), yaml(q("q-sneaky00001", "published", "src-a")));
+
+    const changed = changedQuestionFiles({ base, cwd: dir });
+    assert.deepEqual(changed, [`content/questions/${sneaky}`]);
+    assert.equal(statusOnDisk({ file: changed[0], cwd: dir }), "published");
+    const problems = guardChanges({
+      changed,
+      statusAtBase: (file) => statusAtRef({ base, file, cwd: dir }),
+      max: 20,
+      statusNow: (file) => statusOnDisk({ file, cwd: dir }),
+    });
+    assert.equal(problems.length, 1);
+    assert.match(problems[0], /only review_ready or needs_review may leave this step/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("boundaryProblems reports an intruder whose name git would quote", () => {
+  const { dir, run } = gitRepo();
+  try {
+    writeFileSync(join(dir, ".gitignore"), "node_modules\n_run/\n");
+    writeFileSync(
+      join(dir, "content", "questions", "q-base00000001.yaml"),
+      yaml(q("q-base00000001", "published", "src-a")),
+    );
+    run(["add", "-A"]);
+    run(["commit", "-q", "-m", "pre-agent"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+    writeFileSync(join(dir, 'scripts-hook"x.mjs'), "x");
+    const problems = boundaryProblems({ base, cwd: dir, strict: true });
+    assert.deepEqual(problems, ['scripts-hook"x.mjs was created outside the repository']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the promotion scope is recomputed from the diff, not read from the reviewer's own directory", () => {
+  // _run/** is excluded from every boundary check, so the reading list is the
+  // one file the reviewer could rewrite unseen. Both directions are errors:
+  // an added id would be promoted outside this run's diff, a removed one would
+  // ship without ever having been reviewed.
+  assert.deepEqual(reviewScopeProblems(["q-a", "q-b"], ["q-a", "q-b"]), []);
+  assert.deepEqual(reviewScopeProblems(["q-a"], ["q-a", "q-onmain"]), [
+    "q-onmain was listed but is not reviewable",
+  ]);
+  assert.deepEqual(reviewScopeProblems(["q-a", "q-b"], ["q-a"]), ["q-b is reviewable but was not listed"]);
+});
+
+test("the review job recomputes the scope at the point of use", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const promote = workflow.jobs.review.steps.find((s) => (s.name ?? "").startsWith("Record the receipt")).run;
+  assert.match(promote, /reconcile-decisions --base origin\/main/);
+  assert.match(promote, /--ids _run\/review-ids\.txt/);
+});
+
+test("the boundary checks exempt nothing outside the workflow's own scratch directory", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // An --allow entry is invisible to BOTH halves of the check, so a path
+  // exempted to accommodate step ordering is a hole in the check it belongs to.
+  const runs = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps]
+    .map((s) => s.run ?? "")
+    .filter((r) => r.includes("replenish-prepare.mjs boundary"));
+  assert.equal(runs.length, 3);
+  for (const run of runs) assert.doesNotMatch(run, /--allow/);
+});
+
+test("the dependency guard scans what bun reads, not the tree it is about to delete", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const rebuilds = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
+    (s) => s.name === "Rebuild dependencies from the lockfile",
+  );
+  assert.equal(rebuilds.length, 3);
+  for (const step of rebuilds) {
+    // git pathspecs are not FNM_PATHNAME, so `**/bunfig.toml` matches inside
+    // the still-present node_modules and would fail the run on a config bun
+    // never loads. --exclude-standard is safe here because the paths are named.
+    assert.doesNotMatch(step.run, /\*\*\//);
+    assert.match(step.run, /git ls-files --others --exclude-standard/);
+    // bun reads a binary lockfile too, so a created one redirects the install.
+    assert.match(step.run, /bun\.lockb/);
+  }
+});
+
+test("capture-source resolves the url and every flag by position, never by scanning", () => {
+  assert.deepEqual(
+    parseCaptureArgs(["https://docs.nebius.com/a.md", "--id", "src-a", "--objective", "domain-1/x"]),
+    {
+      url: "https://docs.nebius.com/a.md",
+      id: "src-a",
+      objectives: ["domain-1/x"],
+    },
+  );
+  // The title is scraped from the llms.txt index. A page titled --objective
+  // used to be reduced into the objective list and written to the record,
+  // failing lint:content after the page was fetched, hashed and uploaded.
+  const parsed = parseCaptureArgs([
+    "https://docs.nebius.com/a.md",
+    "--id",
+    "src-a",
+    "--title",
+    "--objective",
+    "--objective",
+    "domain-1/x",
+  ]);
+  assert.equal(parsed.title, "--objective");
+  assert.deepEqual(parsed.objectives, ["domain-1/x"]);
+  assert.throws(() => parseCaptureArgs(["https://x/a.md", "--nope", "v"]), /unknown option --nope/);
+  assert.throws(() => parseCaptureArgs(["https://x/a.md", "--id"]), /--id needs a value/);
+});
+
+test("a scraped title longer than the schema allows is cut, not written whole", () => {
+  const long = "T".repeat(400);
+  const { rows } = validateSelection({
+    select: [
+      { id: "src-long", url: "https://docs.tokenfactory.nebius.com/a.md", objectives: ["domain-1/quotas"] },
+    ],
+    candidates: {
+      newPages: [{ url: "https://docs.tokenfactory.nebius.com/a.md", title: long }],
+    },
+    objectives: new Set(["domain-1/quotas"]),
+    existingIds: new Set(),
+  });
+  // source.schema.json caps title at 300; the record is written before
+  // lint:content runs, and the page has already been uploaded to R2 by then.
+  assert.equal(rows[0].title.length, 300);
 });
 
 test("a review job that finds nothing to review fails instead of going green", () => {

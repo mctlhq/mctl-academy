@@ -56,7 +56,7 @@ export function entriesElsewhere(out) {
  * @param {string} [args.contentDir]
  * @param {string} args.reviewer
  * @param {{ id: string, approved: boolean, reason: string }[]} args.decisions
- * @param {{ reviewer: string, reviewed_at?: string, questions: any[] } | null} [args.existing] a receipt to merge into (entries replaced by id)
+ * @param {{ reviewer: string, reviewed_at?: string, questions: any[], superseded?: any[] } | null} [args.existing] a receipt to merge into (entries replaced by id)
  * @param {Map<string, string>} [args.elsewhere] from entriesElsewhere()
  * @param {Date} [args.now]
  */
@@ -112,7 +112,14 @@ export function buildReceipt({
   const kept = (existing?.questions ?? [])
     .filter((e) => !seen.has(e.id))
     .map((e) => ({ ...e, reviewed_at: e.reviewed_at ?? existing?.reviewed_at }));
-  return { reviewer, reviewed_at: stamp, questions: [...kept, ...entries] };
+  /** @type {Record<string, any>} */
+  const result = { reviewer, reviewed_at: stamp, questions: [...kept, ...entries] };
+  // supersedeElsewhere writes this list precisely so the earlier approval and
+  // the bytes it was bound to stay on the record. Rebuilding the receipt from
+  // reviewer/questions alone would erase it on the manual append path, where
+  // the loss is a commit rather than a discarded runner.
+  if (Array.isArray(existing?.superseded)) result.superseded = existing.superseded;
+  return result;
 }
 
 /**

@@ -162,6 +162,40 @@ test("buildReceipt merges into an existing receipt by replacing entries in place
   }
 });
 
+test("merging into a receipt that was already superseded keeps the audit trail", () => {
+  const dir = fixture({ "q-abc123abc123": question() });
+  try {
+    // supersedeElsewhere wrote this entry on purpose: the fingerprint is what
+    // bound the earlier approval to the bytes reviewed on the day. Rebuilding
+    // the receipt from reviewer/questions alone would erase it on the manual
+    // append path, where the loss is a commit rather than a discarded runner.
+    const superseded = [
+      {
+        id: "q-old111old111",
+        content_sha256: "2".repeat(64),
+        approved: true,
+        reason: "approved before the drift",
+        superseded_at: "2026-09-02T00:00:00Z",
+      },
+    ];
+    const receipt = buildReceipt({
+      contentDir: dir,
+      reviewer: "agent:claude-reviewer",
+      decisions: [{ id: "q-abc123abc123", approved: true, reason: "fine" }],
+      existing: {
+        reviewer: "agent:claude-reviewer",
+        reviewed_at: "2026-09-01T00:00:00Z",
+        questions: [],
+        superseded,
+      },
+      now: NOW,
+    });
+    assert.deepEqual(receipt.superseded, superseded);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("buildReceipt refuses an id the same reviewer already holds in another receipt file", () => {
   const dir = fixture({ "q-abc123abc123": question() });
   const reviews = join(dir, "reviews");

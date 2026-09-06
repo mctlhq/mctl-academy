@@ -207,6 +207,35 @@ export function parseMode(argv) {
   return argv[0] === "--check" ? "check" : "capture";
 }
 
+/**
+ * Positional first, flags after -- and every flag value read as a value, never
+ * found by scanning. Same reason as `parseMode`: `--title` receives the page
+ * title scraped from the llms.txt index, so a page titled `--objective` would
+ * otherwise be reduced into the objective list and write a record that fails
+ * `lint:content` at the end of the capture step, discarding a run whose page
+ * was already fetched, hashed and uploaded.
+ *
+ * @param {string[]} argv
+ * @returns {{ url?: string, id?: string, title?: string, objectives: string[] }}
+ */
+export function parseCaptureArgs(argv) {
+  /** @type {{ url?: string, id?: string, title?: string, objectives: string[] }} */
+  const out = { objectives: [] };
+  if (argv[0] && !argv[0].startsWith("--")) out.url = argv[0];
+  for (let i = out.url ? 1 : 0; i < argv.length; i += 1) {
+    const name = argv[i];
+    if (!name.startsWith("--")) throw new Error(`unexpected argument ${JSON.stringify(name)}`);
+    const value = argv[i + 1];
+    if (value === undefined) throw new Error(`${name} needs a value`);
+    i += 1;
+    if (name === "--id") out.id = value;
+    else if (name === "--title") out.title = value;
+    else if (name === "--objective") out.objectives.push(value);
+    else throw new Error(`unknown option ${name}`);
+  }
+  return out;
+}
+
 const args = process.argv[1] === fileURLToPath(import.meta.url) ? process.argv.slice(2) : null;
 
 if (args && parseMode(args) === "check") {
@@ -214,24 +243,21 @@ if (args && parseMode(args) === "check") {
   process.exit(await check({ markDrifted }));
 }
 
-const url = args?.find((a) => a.startsWith("https://"));
-if (args && !url) {
-  console.error("usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...]");
-  console.error("       capture-source.mjs --check");
-  process.exit(1);
+if (args) {
+  /** @type {ReturnType<typeof parseCaptureArgs>} */
+  let parsed;
+  try {
+    parsed = parseCaptureArgs(args);
+  } catch (err) {
+    console.error(String(err instanceof Error ? err.message : err));
+    process.exit(1);
+  }
+  if (!parsed.url?.startsWith("https://") || !parsed.id || !parsed.objectives.length) {
+    console.error(
+      "usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...]",
+    );
+    console.error("       capture-source.mjs --check [--mark-drifted]");
+    process.exit(1);
+  }
+  await capture({ url: parsed.url, id: parsed.id, objectives: parsed.objectives, title: parsed.title });
 }
-const flag = (name) => {
-  const i = args.indexOf(`--${name}`);
-  return i === -1 ? undefined : args[i + 1];
-};
-const objectives = (args ?? []).reduce(
-  (acc, a, i) => (a === "--objective" ? [...acc, args[i + 1]] : acc),
-  [],
-);
-
-if (args && (!flag("id") || !objectives.length)) {
-  console.error("--id and at least one --objective are required");
-  process.exit(1);
-}
-
-if (args) await capture({ url, id: flag("id"), objectives, title: flag("title") });

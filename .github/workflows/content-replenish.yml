@@ -196,7 +196,6 @@ jobs:
           printf '{ "max_new": %s, "max_questions": %s, "now": "%s" }\n' \
             "$MAX_NEW" "$MAX_QUESTIONS" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _run/limits.json
           cp _run/from-discover/_run/candidates.json _run/candidates.json
-          cp _run/from-discover/content/discovery-state.yaml content/discovery-state.yaml
           node scripts/content-quality-report.mjs --json > _run/report-before.json
           echo "new_pages=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("_run/candidates.json","utf8")).newPages.length)')" >> "$GITHUB_OUTPUT"
 
@@ -238,12 +237,18 @@ jobs:
 
       # Same reason as after the other two agents: discard and reinstall the
       # dependencies before any repository code runs again, verifying the
-      # install's inputs with git alone.
+      # install's inputs with git alone. The scan is exactly the files bun
+      # reads from the working directory, at the root and nowhere else: a `**/`
+      # pathspec would walk the still-present node_modules -- git pathspecs are
+      # not FNM_PATHNAME -- and fail the run on a bunfig.toml shipped inside
+      # some dependency's tarball, which bun never loads. --exclude-standard is
+      # safe here, unlike in boundaryProblems: the paths are named explicitly,
+      # so .gitignore cannot hide one of them.
       - name: Rebuild dependencies from the lockfile
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only HEAD -- package.json bun.lock bunfig.toml .npmrc)
-          created=$(git ls-files --others -- package.json bun.lock bunfig.toml .npmrc '**/bunfig.toml' '**/.npmrc')
+          changed=$(git diff --name-only HEAD -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
+          created=$(git ls-files --others --exclude-standard -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
           if [ -n "$changed$created" ]; then
             echo "::error::dependency inputs moved after the agent ran: $changed $created"
             exit 1
@@ -254,13 +259,14 @@ jobs:
       # The selector agent may write only _run/select.json, and the very next
       # step runs repository code with snapshot credentials -- bun and node
       # both load files this checkout provides. The allowlist is not the only
-      # boundary; this is. discovery-state.yaml was copied in by the
-      # deterministic step above, before any agent ran.
+      # boundary; this is. Nothing is exempted: the discovery watermark is
+      # copied in by the capture step below, AFTER this check, so a selector
+      # that rewrote it -- hiding pages from every future run, or re-offering
+      # ignored ones -- is caught here rather than waved through.
       - name: Nothing but the selection moved
         run: |
           set -euo pipefail
-          node scripts/replenish-prepare.mjs boundary --base HEAD --strict \
-            --allow content/discovery-state.yaml
+          node scripts/replenish-prepare.mjs boundary --base HEAD --strict
 
       - name: Quarantine live drift, capture pages, re-validate what survives
         id: capture
@@ -276,6 +282,10 @@ jobs:
           #    dependents go to needs_review, exactly as Source drift does. Only
           #    then is it re-captured. Without this, re-capturing would leave
           #    published items pinned to a superseded snapshot.
+          # The discovery watermark travels with the run and is committed by
+          # the preparation commit below; it is copied in here, after the
+          # boundary check, so that check has nothing to exempt.
+          cp _run/from-discover/content/discovery-state.yaml content/discovery-state.yaml
           set +e
           npm run --silent snapshot:capture -- --check --mark-drifted
           code=$?
@@ -436,8 +446,8 @@ jobs:
       - name: Rebuild dependencies from the lockfile
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only "${{ steps.base.outputs.sha }}" -- package.json bun.lock bunfig.toml .npmrc)
-          created=$(git ls-files --others -- package.json bun.lock bunfig.toml .npmrc '**/bunfig.toml' '**/.npmrc')
+          changed=$(git diff --name-only "${{ steps.base.outputs.sha }}" -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
+          created=$(git ls-files --others --exclude-standard -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
           if [ -n "$changed$created" ]; then
             echo "::error::dependency inputs moved after the agent ran: $changed $created"
             exit 1
@@ -670,8 +680,8 @@ jobs:
         if: steps.items.outputs.count != '0'
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only HEAD -- package.json bun.lock bunfig.toml .npmrc)
-          created=$(git ls-files --others -- package.json bun.lock bunfig.toml .npmrc '**/bunfig.toml' '**/.npmrc')
+          changed=$(git diff --name-only HEAD -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
+          created=$(git ls-files --others --exclude-standard -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
           if [ -n "$changed$created" ]; then
             echo "::error::dependency inputs moved after the agent ran: $changed $created"
             exit 1
@@ -698,9 +708,14 @@ jobs:
         run: |
           set -euo pipefail
           receipt="docs/content/replenish-$(date -u +%F)-${{ github.run_id }}-review.json"
-          # The reviewer decides on exactly the listed items: nothing outside
-          # this run's cap and diff can be promoted through it.
-          node scripts/replenish-prepare.mjs reconcile-decisions --ids _run/review-ids.txt \
+          # The reviewer decides on exactly the items this run put up: nothing
+          # outside its diff can be promoted through it. --base recomputes that
+          # set here rather than trusting _run/review-ids.txt, which was written
+          # before the reviewer ran and lives in the one directory the boundary
+          # checks cannot see; --ids is still passed so a file that no longer
+          # agrees with the diff fails the run instead of being ignored.
+          node scripts/replenish-prepare.mjs reconcile-decisions --base origin/main \
+            --ids _run/review-ids.txt \
             --decisions _run/decisions.json --out _run/decisions-scoped.json
           # --supersede: an id re-presented after a later drift already has
           # this reviewer's older entry in an earlier receipt; the new decision
