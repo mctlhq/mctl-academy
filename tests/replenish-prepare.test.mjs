@@ -784,6 +784,41 @@ test("the selector's raw bytes outlive the prune, for the next investigation", (
   assert.match(authoring, /_run\//);
 });
 
+test("the guard refuses a file under content/questions that is not a question", () => {
+  // The author's Write allowlist is content/questions/**, and a planted .mjs
+  // is invisible to the status rules: parseYaml reads `process.exit(0)` as an
+  // ordinary string, so statusOnDisk returns null rather than "unparseable"
+  // and `git add content/questions/` would commit it.
+  const problems = guardChanges({
+    changed: ["content/questions/q-ok000000001.yaml", "content/questions/pwn.test.mjs"],
+    statusAtBase: () => null,
+    max: 20,
+    statusNow: () => null,
+  });
+  assert.deepEqual(problems, [
+    "content/questions/pwn.test.mjs is not a .yaml file and has no business in content/questions",
+  ]);
+});
+
+test("both agent outputs reach an artifact, including on the run that failed", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // reconcile-decisions exits before writing decisions-scoped.json, so a
+  // reviewer that decided an id not under review leaves no scoped file and no
+  // receipt -- and its own bytes would then be in no artifact at all. That is
+  // the position the first supervised run was in.
+  for (const [job, name] of [
+    ["author", "authoring-"],
+    ["review", "review-"],
+  ]) {
+    const path = workflow.jobs[job].steps.find(
+      (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith(name),
+    ).with.path;
+    assert.match(path, /_agent\//, `${name} artifact does not carry the agent's own output`);
+  }
+});
+
 test("a review job that finds nothing to review fails instead of going green", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),

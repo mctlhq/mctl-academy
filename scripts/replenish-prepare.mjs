@@ -267,6 +267,17 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
     else if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
   }
   for (const file of changed) {
+    // The agent's Write allowlist is content/questions/**, and this check is
+    // the only thing standing between that glob and `git add content/questions/`.
+    // A planted .mjs is not caught by the status rules below: parseYaml reads
+    // `process.exit(0)` as an ordinary string, so statusOnDisk returns null
+    // rather than "unparseable" and the file is committed. Nothing in this
+    // repository globs that directory for code today; the point is that
+    // nothing later has to keep not doing so.
+    if (!file.endsWith(".yaml")) {
+      problems.push(`${file} is not a .yaml file and has no business in content/questions`);
+      continue;
+    }
     const status = statusAtBase(file);
     if (status === "published") problems.push(`${file} was published at the base and must not change here`);
     if (status === "retired") problems.push(`${file} is retired and must not change here`);
@@ -536,10 +547,10 @@ async function main(argv) {
     return;
   }
   if (cmd === "reconcile-decisions") {
-    // --base recomputes the scope here, at the point of use. _run/** is
-    // excluded from every boundary check by construction, so the reading list
-    // handed to the reviewer is the one file in this workflow an agent could
-    // rewrite unseen -- and it is what decides which ids may be promoted.
+    // --base recomputes the scope here, at the point of use. Neither _run/**
+    // nor _agent/** is visible to any boundary check, by construction, so the
+    // reading list handed to the reviewer is a file that sits beside the
+    // reviewer unseen -- and it is what decides which ids may be promoted.
     // Deriving the ids from the diff makes that file purely the reviewer's
     // copy, and comparing the two reports the tampering instead of obeying it.
     const base = opt(args, "base");

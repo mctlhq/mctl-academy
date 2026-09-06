@@ -932,6 +932,7 @@ jobs:
           name: review-${{ github.run_id }}
           path: |
             _run/
+            _agent/
             !_run/from-author/
             docs/content/replenish-*-review.json
           retention-days: 14
