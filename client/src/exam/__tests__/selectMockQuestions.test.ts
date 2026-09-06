@@ -71,21 +71,26 @@ describe("selectMockQuestions", () => {
     expect(first.questions.map((q) => q.id).sort()).not.toEqual(second.questions.map((q) => q.id).sort());
   });
 
-  it("T2: every available course's real bank satisfies its own mock composition", () => {
+  it("T2: for every available course, the mock fills exactly when every domain has enough questions", () => {
     // Each course carries its own mock configuration in
     // content/courses/<id>.yaml, and a mock draws only from that course's
     // questions — so this has to hold per course, not once globally.
-    const available = courseCatalog.filter(
-      (c) => c.available && questionsForCourse(c.id).length >= c.mock.questionCount,
-    );
+    //
+    // This asserts the selector's behaviour, not the health of the bank: a
+    // fail-closed quarantine (Source drift) may legitimately leave a course
+    // unable to fill its Mock, and the app renders a shortfall panel for
+    // that. A test that demanded every course be fillable would block the
+    // very PR that withdraws unverified content.
+    const available = courseCatalog.filter((c) => c.available);
     expect(available.length).toBeGreaterThan(0);
 
     for (const course of available) {
-      const result = selectMockQuestions(
-        questionsForCourse(course.id) as Question[],
-        course.mock as MockConfig,
+      const bank = questionsForCourse(course.id) as Question[];
+      const fillable = course.mock.domains.every(
+        (d) => bank.filter((q) => q.domain === d.id).length >= d.mockQuestions,
       );
-      expect(result.ok, `course ${course.id} cannot fill its mock`).toBe(true);
+      const result = selectMockQuestions(bank, course.mock as MockConfig);
+      expect(result.ok, `course ${course.id}: fillable=${fillable}`).toBe(fillable);
     }
   });
 

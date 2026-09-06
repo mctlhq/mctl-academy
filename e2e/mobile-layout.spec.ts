@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { mockableCourse } from "./mockable-course";
 
 const routes = ["/", "/practice", "/mock", "/mistakes", "/dashboard"];
 
@@ -150,9 +151,9 @@ test.describe("touch targets", () => {
 
       test("in-progress Mock exam controls meet the 44px touch-target convention", async ({ page }) => {
         await page.goto("/mock");
-        // The Builder bank cannot fill its Mock while recovery is in progress,
-        // so pin the spec to a course whose Mock is available (as mock-exam.spec.ts does).
-        await page.getByTestId("course-select").selectOption("ai-cloudops-engineer");
+        // Whichever course's shipped bank can fill its Mock today; the spec
+        // tests the exam controls, not the bank.
+        await page.getByTestId("course-select").selectOption(mockableCourse());
         await page.getByRole("button", { name: "Start mock exam" }).click();
         await expect(page.getByTestId("mock-exam")).toBeVisible();
 
