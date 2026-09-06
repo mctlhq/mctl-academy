@@ -150,6 +150,9 @@ test.describe("touch targets", () => {
 
       test("in-progress Mock exam controls meet the 44px touch-target convention", async ({ page }) => {
         await page.goto("/mock");
+        // The Builder bank cannot fill its Mock while recovery is in progress,
+        // so pin the spec to a course whose Mock is available (as mock-exam.spec.ts does).
+        await page.getByTestId("course-select").selectOption("ai-cloudops-engineer");
         await page.getByRole("button", { name: "Start mock exam" }).click();
         await expect(page.getByTestId("mock-exam")).toBeVisible();
 
