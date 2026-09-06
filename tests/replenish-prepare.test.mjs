@@ -1,6 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  existsSync,
+} from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -118,7 +126,7 @@ test("no agent-written file reaches the reviewer's filesystem before it decides"
   // agent's prose. None may be on disk while the reviewer runs with
   // unrestricted Read/Glob/Grep: "treat it as data" is a prompt, not a
   // boundary. The handoff is the only artifact fetched before that point.
-  const AGENT_WRITTEN = ["selected.json", "dropped.json", "CHANGES.md", "select.json"];
+  const AGENT_WRITTEN = ["selected.json", "dropped.json", "CHANGES.md", "select.json", "select-agent.json"];
   const handoffPaths = workflow.jobs.author.steps.find(
     (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith("handoff-"),
   ).with.path;
@@ -466,6 +474,30 @@ test("a scraped title longer than the schema allows is cut, not written whole", 
   assert.equal(rows[0].title.length, 300);
 });
 
+test("a page with no index title and a directory url still gets a title", () => {
+  const url = "https://docs.tokenfactory.nebius.com/dedicated-endpoints/";
+  const { rows } = validateSelection({
+    select: [{ id: "src-dir", url, objectives: ["domain-1/quotas"] }],
+    candidates: { newPages: [{ url, title: "" }] },
+    objectives: new Set(["domain-1/quotas"]),
+    existingIds: new Set(),
+  });
+  // The url fallback is empty for a trailing slash, and source.schema.json
+  // sets minLength 1 -- a rejection that lands after the page is in R2.
+  assert.equal(rows[0].title, "src-dir");
+  assert.equal(
+    buildSourceRecord({
+      id: "src-dir",
+      url,
+      objectives: ["domain-1/quotas"],
+      hash: "a",
+      key: "k",
+      previous: null,
+    }).title,
+    "src-dir",
+  );
+});
+
 test("reconcile-decisions refuses a handed list that disagrees with the diff, and writes nothing", () => {
   const { dir, run } = gitRepo();
   try {
@@ -525,6 +557,265 @@ test("reconcile-decisions refuses a handed list that disagrees with the diff, an
     assert.equal(existsSync(out), false);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("every agent writes only into the directory nothing in the workflow trusts", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The first supervised run lost all three agent outputs: every
+  // Write(<literal path under a gitignored directory>) rule was denied, while
+  // Write(content/questions/**) in the same run was honoured. _agent/** is the
+  // shape that worked, in a directory that is not gitignored, so neither
+  // variable is left in play.
+  const agents = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter((s) =>
+    s.uses?.startsWith("anthropics/claude-code-action@"),
+  );
+  assert.equal(agents.length, 3);
+  for (const step of agents) {
+    const grants = [...step.with.claude_args.matchAll(/(Write|Edit)\(([^)]*)\)/g)].map((m) => m[2]);
+    assert.ok(grants.length > 0, `${step.name} grants no write at all`);
+    for (const g of grants) {
+      assert.ok(
+        g === "_agent/**" || g === "content/questions/**",
+        `${step.name} may write ${g}, which is neither the agent scratch directory nor the question bank`,
+      );
+    }
+  }
+});
+
+test("a silent agent fails the run instead of degrading quietly", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // An absent select.json captured nothing and stayed green; an absent
+  // decisions.json surfaced three steps later as ENOENT from a script.
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    steps.forEach((step, i) => {
+      if (!step.uses?.startsWith("anthropics/claude-code-action@")) return;
+      const next = steps[i + 1];
+      assert.equal(next?.name, "The agent produced its output", `nothing checks the output of ${step.name}`);
+      assert.match(next.run, /::error::/);
+      assert.match(next.run, /exit 1/);
+      // The same condition as the agent step, or the check fires on a run
+      // where that agent legitimately never ran.
+      assert.equal(next.if ?? null, step.if ?? null, `${next.name} runs on a different condition`);
+    });
+  }
+});
+
+test("the executable-surface guard, run as bash, catches what it claims to", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // Matching strings in step.run is not evidence: two of this workflow's worst
+  // defects read correctly and were wrong only when executed, and no CI runs
+  // this file. So run the guard itself. Everything up to `rm -rf node_modules`
+  // is the check; the install below it needs a network and is not the subject.
+  // All three copies, not the first: they differ in base ref and `if:`, and
+  // three hand-synchronised copies of a security check is exactly the drift
+  // this test exists to catch.
+  const steps = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
+    (s) => s.name === "Guard the executable surface and rebuild dependencies",
+  );
+  assert.equal(steps.length, 3);
+  const guards = steps.map((step) =>
+    step.run.slice(0, step.run.indexOf("rm -rf node_modules")).replace(/\$\{\{[^}]*\}\}/g, "HEAD"),
+  );
+  // One copy anchors at the pre-agent commit, so the substitution must have
+  // actually replaced something rather than being decorative.
+  assert.ok(
+    steps.some((s) => s.run.includes("${{ steps.base.outputs.sha }}")),
+    "no copy anchors at the pre-agent commit",
+  );
+
+  // A fresh fixture per case: the guard reads the whole tree, so leftovers
+  // from one case would decide the next.
+  const fixture = (plant) => {
+    const { dir, run } = gitRepo();
+    try {
+      mkdirSync(join(dir, "scripts"), { recursive: true });
+      mkdirSync(join(dir, ".github", "workflows"), { recursive: true });
+      writeFileSync(join(dir, "scripts", "a.mjs"), "export const a = 1;\n");
+      writeFileSync(join(dir, ".github", "workflows", "w.yml"), "name: w\n");
+      writeFileSync(join(dir, "package.json"), "{}\n");
+      writeFileSync(join(dir, "bun.lock"), "\n");
+      writeFileSync(join(dir, ".gitignore"), "node_modules\n");
+      run(["add", "-A"]);
+      run(["commit", "-q", "-m", "base"]);
+      // A real install tree: the nested node_modules inside it must not
+      // false-positive, which is what pruning the root buys.
+      mkdirSync(join(dir, "node_modules", "foo", "node_modules", "bar"), { recursive: true });
+      writeFileSync(join(dir, "node_modules", "foo", "node_modules", "bar", "index.js"), "");
+      plant(dir);
+      // Every copy must agree; a disagreement is the drift itself.
+      const statuses = guards.map((guard) => {
+        try {
+          execFileSync("bash", ["-c", guard], {
+            cwd: dir,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+          });
+          return 0;
+        } catch (err) {
+          return err.status;
+        }
+      });
+      assert.deepEqual(
+        [...new Set(statuses)],
+        [statuses[0]],
+        `the three copies of the guard disagree: ${statuses.join(",")}`,
+      );
+      return statuses[0];
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+
+  assert.equal(
+    fixture(() => {}),
+    0,
+    "a clean tree with a real install tree must pass",
+  );
+  assert.equal(
+    fixture((dir) => writeFileSync(join(dir, "scripts", "a.mjs"), "export const a = 2;\n")),
+    1,
+    "an edited script must fail the guard",
+  );
+  assert.equal(
+    fixture((dir) => writeFileSync(join(dir, ".github", "workflows", "x.yml"), "name: x\n")),
+    1,
+    "a created workflow must fail the guard",
+  );
+  assert.equal(
+    fixture((dir) => {
+      mkdirSync(join(dir, "scripts", "node_modules", "yaml"), { recursive: true });
+      writeFileSync(join(dir, "scripts", "node_modules", "yaml", "index.js"), "");
+    }),
+    1,
+    "a planted nested node_modules must fail the guard",
+  );
+  // What dropping --exclude-standard bought: .npmrc can hold a registry token
+  // and is one of the files most likely to be added to .gitignore later.
+  assert.equal(
+    fixture((dir) => {
+      writeFileSync(join(dir, ".gitignore"), "node_modules\n.npmrc\n");
+      writeFileSync(join(dir, ".npmrc"), "registry=https://evil.example\n");
+    }),
+    1,
+    "a gitignored .npmrc must fail the guard",
+  );
+  // An untracked question file is the agent doing its job, not an intruder.
+  assert.equal(
+    fixture((dir) => {
+      mkdirSync(join(dir, "content", "questions"), { recursive: true });
+      writeFileSync(join(dir, "content", "questions", "q-new000000001.yaml"), "id: q-new000000001\n");
+    }),
+    0,
+    "an authored question must not fail the guard",
+  );
+});
+
+test("an agent that legitimately has nothing to say can still say so", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The missing-output check only tells silence from work if "nothing" is
+  // expressible. The selector's prompt anticipates a run where no offered page
+  // is in scope, and the commit step below the author's check prints "the
+  // author wrote nothing" and pushes the mechanically re-validated items --
+  // both legal outcomes the check would otherwise kill.
+  const prompt = (job, name) => workflow.jobs[job].steps.find((s) => s.name === name).with.prompt;
+  assert.match(prompt("author", "Author agent selects pages to capture"), /write the empty array \[\]/);
+  assert.match(prompt("author", "Author agent writes review_ready questions"), /`No files changed\.`/);
+});
+
+test("the agent scratch directory is pruned to its one expected file", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The grant has to be `_agent/**` -- a rule naming one file is denied, which
+  // is the bug this directory works around -- so the narrowing is done here,
+  // in shell, before any repository code or any tool that globs the tree.
+  const checks = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
+    (s) => s.name === "The agent produced its output",
+  );
+  assert.equal(checks.length, 3);
+  for (const step of checks) assert.match(step.run, /find _agent -mindepth 1 ! -path "\$f" -delete/);
+
+  const dir = mkdtempSync(join(tmpdir(), "academy-agentdir-"));
+  try {
+    mkdirSync(join(dir, "_agent", "sub"), { recursive: true });
+    writeFileSync(join(dir, "_agent", "select.json"), "[]");
+    writeFileSync(join(dir, "_agent", "pwn.test.mjs"), "process.exit(0)");
+    writeFileSync(join(dir, "_agent", "sub", "deep.mjs"), "");
+    execFileSync("bash", ["-c", checks[0].run], {
+      cwd: dir,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    assert.deepEqual(readdirSync(join(dir, "_agent")), ["select.json"]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the selector's raw bytes outlive the prune, for the next investigation", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The prune after the author keeps only CHANGES.md, so select.json is gone
+  // by upload time. selected.json is the validated view and dropped.json the
+  // rejected rows; neither distinguishes "the agent chose nothing" from "the
+  // agent wrote something validateSelection dropped", which is the distinction
+  // that diagnosed the first supervised run.
+  const capture = workflow.jobs.author.steps.find((s) =>
+    (s.name ?? "").startsWith("Quarantine live drift"),
+  ).run;
+  const copy = capture.indexOf("cp _agent/select.json _run/select-agent.json");
+  const use = capture.indexOf("--select _agent/select.json");
+  assert.notEqual(copy, -1, "the selector's raw output is never preserved");
+  assert.ok(copy < use, "the copy must happen before the file is consumed");
+  const authoring = workflow.jobs.author.steps.find(
+    (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith("authoring-"),
+  ).with.path;
+  assert.match(authoring, /_run\//);
+});
+
+test("the guard refuses a file under content/questions that is not a question", () => {
+  // The author's Write allowlist is content/questions/**, and a planted .mjs
+  // is invisible to the status rules: parseYaml reads `process.exit(0)` as an
+  // ordinary string, so statusOnDisk returns null rather than "unparseable"
+  // and `git add content/questions/` would commit it.
+  const problems = guardChanges({
+    changed: ["content/questions/q-ok000000001.yaml", "content/questions/pwn.test.mjs"],
+    statusAtBase: () => null,
+    max: 20,
+    statusNow: () => null,
+  });
+  assert.deepEqual(problems, [
+    "content/questions/pwn.test.mjs is not a .yaml file and has no business in content/questions",
+  ]);
+});
+
+test("both agent outputs reach an artifact, including on the run that failed", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // reconcile-decisions exits before writing decisions-scoped.json, so a
+  // reviewer that decided an id not under review leaves no scoped file and no
+  // receipt -- and its own bytes would then be in no artifact at all. That is
+  // the position the first supervised run was in.
+  for (const [job, name] of [
+    ["author", "authoring-"],
+    ["review", "review-"],
+  ]) {
+    const path = workflow.jobs[job].steps.find(
+      (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith(name),
+    ).with.path;
+    assert.match(path, /_agent\//, `${name} artifact does not carry the agent's own output`);
   }
 });
 
@@ -911,11 +1202,18 @@ test("boundaryProblems passes over the workflow's own scratch files and catches 
       "revalidate.json",
       "report-before.json",
       "select.json",
+      "select-agent.json",
       "CHANGES.md",
     ]) {
       writeFileSync(join(dir, "_run", f), "x");
     }
     writeFileSync(join(dir, "_run", "captured", "src-a.md"), "# page");
+    // _agent/ is the agents' own output directory and, unlike _run/, is not in
+    // .gitignore, so only the pathspec keeps it out of this check.
+    mkdirSync(join(dir, "_agent"), { recursive: true });
+    for (const f of ["select.json", "CHANGES.md", "decisions.json"]) {
+      writeFileSync(join(dir, "_agent", f), "x");
+    }
     // And what the agent is allowed to do.
     writeFileSync(
       join(dir, "content", "questions", "q-new000000001.yaml"),

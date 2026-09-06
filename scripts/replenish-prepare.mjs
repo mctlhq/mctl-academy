@@ -116,7 +116,9 @@ export function validateSelection({ select, candidates, objectives, existingIds 
     rows.push({
       id: row.id,
       url: row.url,
-      title: title || row.url.split("/").pop().replace(/\.md$/, ""),
+      // The fallback needs a fallback: source.schema.json also sets
+      // minLength 1, and a url ending in "/" leaves pop() empty.
+      title: title || row.url.split("/").pop().replace(/\.md$/, "") || row.id,
       objectives: [...new Set(valid)],
     });
   }
@@ -197,10 +199,18 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
  * thousands of untracked files there before the base commit, so the check
  * cannot look at it without a different technique (hashing the tree around
  * the agent, or a node_modules-free worktree). That path stays closed by the
- * agent's Write/Edit allowlist -- content/questions/** and _run/CHANGES.md --
+ * agent's Write/Edit allowlist -- content/questions/** and _agent/** --
  * not by this function.
  */
 export function boundaryProblems({ base, cwd = process.cwd(), strict = false, allow = [] }) {
+  // _run/ is the workflow's own scratch space and _agent/ is the one directory
+  // the agents may write to, so neither can be reported here. _agent/ is
+  // deliberately NOT in .gitignore: the only path shape observed to work in an
+  // agent's Write allowlist is `dir/**`, and the run that lost all three agent
+  // outputs had them under a gitignored directory named by literal path, so
+  // this directory changes both variables at once. Nothing in it is trusted --
+  // each file is read by exactly one step, which validates it.
+  //
   // Long-form magic: `:!_run/**` is parsed as the unknown short magic `_`.
   // node_modules is excluded at both levels; `**/` alone does not cover the
   // repository root.
@@ -216,6 +226,7 @@ export function boundaryProblems({ base, cwd = process.cwd(), strict = false, al
     ".",
     ...(strict ? [] : [":(exclude)content/questions/**"]),
     ":(exclude)_run/**",
+    ":(exclude)_agent/**",
     ":(exclude)node_modules/**",
     ":(exclude)**/node_modules/**",
     ...allow.map((p) => `:(exclude)${p}`),
@@ -256,6 +267,17 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
     else if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
   }
   for (const file of changed) {
+    // The agent's Write allowlist is content/questions/**, and this check is
+    // the only thing standing between that glob and `git add content/questions/`.
+    // A planted .mjs is not caught by the status rules below: parseYaml reads
+    // `process.exit(0)` as an ordinary string, so statusOnDisk returns null
+    // rather than "unparseable" and the file is committed. Nothing in this
+    // repository globs that directory for code today; the point is that
+    // nothing later has to keep not doing so.
+    if (!file.endsWith(".yaml")) {
+      problems.push(`${file} is not a .yaml file and has no business in content/questions`);
+      continue;
+    }
     const status = statusAtBase(file);
     if (status === "published") problems.push(`${file} was published at the base and must not change here`);
     if (status === "retired") problems.push(`${file} is retired and must not change here`);
@@ -525,10 +547,10 @@ async function main(argv) {
     return;
   }
   if (cmd === "reconcile-decisions") {
-    // --base recomputes the scope here, at the point of use. _run/** is
-    // excluded from every boundary check by construction, so the reading list
-    // handed to the reviewer is the one file in this workflow an agent could
-    // rewrite unseen -- and it is what decides which ids may be promoted.
+    // --base recomputes the scope here, at the point of use. Neither _run/**
+    // nor _agent/** is visible to any boundary check, by construction, so the
+    // reading list handed to the reviewer is a file that sits beside the
+    // reviewer unseen -- and it is what decides which ids may be promoted.
     // Deriving the ids from the diff makes that file purely the reviewer's
     // copy, and comparing the two reports the tampering instead of obeying it.
     const base = opt(args, "base");

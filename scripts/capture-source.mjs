@@ -157,7 +157,9 @@ export function buildSourceRecord({ id, url, title, objectives, hash, key, previ
     schema_version: 1,
     id,
     url,
-    title: title ?? url.split("/").pop().replace(/\.md$/, ""),
+    // Same reason as validateSelection: minLength 1, and a url ending in
+    // "/" leaves pop() empty. `||` rather than `??` so "" falls through too.
+    title: title || url.split("/").pop().replace(/\.md$/, "") || id,
     retrieved_at: nowUtc(),
     sha256: hash,
     objectives,
