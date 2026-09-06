@@ -240,7 +240,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
@@ -352,7 +355,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           f=_agent/select.json
@@ -387,7 +393,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
           # Read as data, not spliced into the script text.
           EXPECTED_DIGEST: ${{ steps.selector-guard.outputs.digest }}
           EXPECTED_PATH: ${{ steps.selector-guard.outputs.path }}
@@ -484,7 +493,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           # Pure git: not one line of repository code has run since the agent
@@ -679,7 +691,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
@@ -809,7 +824,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           f=_agent/CHANGES.md
@@ -843,7 +861,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
           # Read as data, not spliced into the script text.
           EXPECTED_DIGEST: ${{ steps.author-guard.outputs.digest }}
           EXPECTED_PATH: ${{ steps.author-guard.outputs.path }}
@@ -945,7 +966,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           # Pure git: not one line of repository code has run since the agent
@@ -1175,7 +1199,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
@@ -1286,7 +1313,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           f=_agent/decisions.json
@@ -1321,7 +1351,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
           # Read as data, not spliced into the script text.
           EXPECTED_DIGEST: ${{ steps.reviewer-guard.outputs.digest }}
           EXPECTED_PATH: ${{ steps.reviewer-guard.outputs.path }}
@@ -1424,7 +1457,10 @@ jobs:
           BASHOPTS: ""
           PS4: ""
           LD_PRELOAD: ""
-          LD_LIBRARY_PATH: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset
+          # a variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
         run: |
           set -euo pipefail
           # Pure git: not one line of repository code has run since the agent

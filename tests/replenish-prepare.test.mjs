@@ -673,7 +673,17 @@ test("the shell hooks that run before a guard's first line are emptied where the
   // sourced file can exit 0 on its behalf. LD_PRELOAD is the same story one
   // level down, at exec. $GITHUB_ENV carries both into the next step, and a
   // step-level env: is what outranks it.
-  const hooks = ["BASH_ENV", "ENV", "SHELLOPTS", "BASHOPTS", "PS4", "LD_PRELOAD", "LD_LIBRARY_PATH"];
+  // LD_LIBRARY_PATH is not emptied but pointed nowhere: the loader splits it
+  // like PATH, where an empty entry is the current directory.
+  const hooks = {
+    BASH_ENV: "",
+    ENV: "",
+    SHELLOPTS: "",
+    BASHOPTS: "",
+    PS4: "",
+    LD_PRELOAD: "",
+    LD_LIBRARY_PATH: "/nonexistent",
+  };
   const guarded = [
     // The snapshot too: it is the other side of the environment comparison, and
     // a name present on one side only is a difference on every run.
@@ -686,8 +696,8 @@ test("the shell hooks that run before a guard's first line are emptied where the
   for (const job of ["author", "review"]) {
     for (const step of workflow.jobs[job].steps) {
       if (!guarded.includes(step.name)) continue;
-      for (const v of hooks) {
-        assert.equal(step.env?.[v], "", `${job}: ${step.name} leaves ${v} as the agent left it`);
+      for (const [v, value] of Object.entries(hooks)) {
+        assert.equal(step.env?.[v], value, `${job}: ${step.name} leaves ${v} as the agent left it`);
       }
       checked += 1;
     }
