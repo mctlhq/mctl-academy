@@ -85,8 +85,6 @@ export function validateSelection({ select, candidates, objectives, existingIds 
     else if (existingIds.has(row.id) || seen.has(row.id)) why.push("id already taken");
     if (!offered.has(row?.url)) why.push("url not in the discovery report");
     else if (seen.has(row.url)) why.push("url already selected under another id");
-    if (typeof row?.title !== "string" || !row.title.trim() || /[\t\r\n]/.test(row.title))
-      why.push("bad title");
     const objs = Array.isArray(row?.objectives) ? row.objectives.filter((o) => typeof o === "string") : [];
     const valid = objs.filter((o) => OBJECTIVE.test(o) && objectives.has(o));
     if (!valid.length) why.push("no objective from the course maps");
@@ -96,7 +94,22 @@ export function validateSelection({ select, candidates, objectives, existingIds 
     }
     seen.add(row.id);
     seen.add(row.url);
-    rows.push({ id: row.id, url: row.url, title: row.title.trim(), objectives: [...new Set(valid)] });
+    // The title is scraped from the llms.txt index by discover-docs, never
+    // taken from the agent. It reaches content/sources/<id>.yaml and
+    // content/capture-manifest.yaml, both committed and pushed BEFORE the
+    // review job checks the branch out, so an agent-authored string here would
+    // sit on the reviewer's filesystem under exactly the source_id each item
+    // cites -- a better position for a steering string than any scratch file.
+    // Every field the agent contributes is now regex-bounded: a SOURCE_ID, a
+    // url from the offered set, objectives from the course maps.
+    const page = offered.get(row.url);
+    const title = (page.title || "").replace(/[\t\r\n]/g, " ").trim();
+    rows.push({
+      id: row.id,
+      url: row.url,
+      title: title || row.url.split("/").pop().replace(/\.md$/, ""),
+      objectives: [...new Set(valid)],
+    });
   }
   return { rows, dropped };
 }
@@ -157,28 +170,36 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
  * agent's Write/Edit allowlist -- content/questions/** and _run/CHANGES.md --
  * not by this function.
  */
-export function boundaryProblems({ base, cwd = process.cwd() }) {
+export function boundaryProblems({ base, cwd = process.cwd(), strict = false, allow = [] }) {
   // Long-form magic: `:!_run/**` is parsed as the unknown short magic `_`.
   // node_modules is excluded at both levels; `**/` alone does not cover the
   // repository root.
+  //
+  // `strict` drops the content/questions exemption: only the AUTHOR agent is
+  // allowed to write questions, so the check placed after the selector and
+  // after the reviewer -- neither of which may touch content/ at all -- is the
+  // strict one. `allow` carries the few paths a deterministic step of the
+  // workflow legitimately placed before the check runs.
+  const area = strict ? "the repository" : "content/questions";
   const spec = [
     "--",
     ".",
-    ":(exclude)content/questions/**",
+    ...(strict ? [] : [":(exclude)content/questions/**"]),
     ":(exclude)_run/**",
     ":(exclude)node_modules/**",
     ":(exclude)**/node_modules/**",
+    ...allow.map((p) => `:(exclude)${p}`),
   ];
   const problems = [];
   for (const f of git(["diff", "--name-only", base, ...spec], cwd)
     .split("\n")
     .filter(Boolean)) {
-    problems.push(`${f} was changed outside content/questions`);
+    problems.push(`${f} was changed outside ${area}`);
   }
   for (const f of git(["ls-files", "--others", ...spec], cwd)
     .split("\n")
     .filter(Boolean)) {
-    problems.push(`${f} was created outside content/questions`);
+    problems.push(`${f} was created outside ${area}`);
   }
   return problems;
 }
@@ -446,9 +467,13 @@ async function main(argv) {
     return;
   }
   if (cmd === "boundary") {
-    const problems = boundaryProblems({ base: opt(args, "base") });
+    const strict = args.includes("--strict");
+    const allow = args.flatMap((a, i) => (a === "--allow" ? [args[i + 1]] : [])).filter(Boolean);
+    const problems = boundaryProblems({ base: opt(args, "base"), strict, allow });
     for (const p of problems) console.error(`::error::${p}`);
-    console.log(`${problems.length} path(s) outside content/questions moved since the base`);
+    console.log(
+      `${problems.length} path(s) outside ${strict ? "the repository" : "content/questions"} moved since the base`,
+    );
     if (problems.length) process.exit(1);
     return;
   }

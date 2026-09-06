@@ -141,14 +141,6 @@ async function check({ markDrifted = false } = {}) {
 }
 
 /**
- * A re-capture of a source already marked `drifted` keeps the earlier hashes
- * in `versions`: the quarantined items still pinned to an older snapshot stay
- * verifiable against the store instead of failing "does not belong to
- * declared source". Only across a recorded drift: re-capturing a `current`
- * source whose page changed must still fail loudly for every dependent, or the
- * gate's core claim would be weakened for the convenience of one caller.
- */
-/**
  * The source record as it will be written. A capture rebuilds it from scratch,
  * so every field of an existing record that is not reconstructed here is
  * erased. That was tolerable while `snapshot:capture` was a manual command run
@@ -179,6 +171,14 @@ export function buildSourceRecord({ id, url, title, objectives, hash, key, previ
   return record;
 }
 
+/**
+ * A re-capture of a source already marked `drifted` keeps the earlier hashes
+ * in `versions`: the quarantined items still pinned to an older snapshot stay
+ * verifiable against the store instead of failing "does not belong to
+ * declared source". Only across a recorded drift: re-capturing a `current`
+ * source whose page changed must still fail loudly for every dependent, or the
+ * gate's core claim would be weakened for the convenience of one caller.
+ */
 export function mergeVersions(previous, hash) {
   if (!previous) return [];
   // Hashes already registered are carried forward on EVERY re-capture: a

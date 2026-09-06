@@ -223,8 +223,9 @@ jobs:
             tooling unrelated to any objective): write nothing for them.
 
             Write _run/select.json: a JSON array with one object per chosen page:
-              { "id": "src-<slug>", "url": "<url from newPages>", "title": "<short title>",
+              { "id": "src-<slug>", "url": "<url from newPages>",
                 "objectives": ["domain-N/<objective-id>", ...] }
+            Do not write a title: it is taken from the discovery report, not from you.
             `id` must match ^src-[a-z0-9][a-z0-9-]{2,62}$ and must not already exist under
             content/sources/. Every objective must be an exact `domain-N/<objective-id>` from a
             course map. Choose at most `max_new` pages, the number in _run/limits.json.
@@ -234,6 +235,17 @@ jobs:
             --max-turns 25
             --tools "Read,Glob,Grep,Write"
             --allowedTools "Read,Glob,Grep,Write(_run/select.json)"
+
+      # The selector agent may write only _run/select.json, and the very next
+      # step runs repository code with snapshot credentials -- bun and node
+      # both load files this checkout provides. The allowlist is not the only
+      # boundary; this is. discovery-state.yaml was copied in by the
+      # deterministic step above, before any agent ran.
+      - name: Nothing but the selection moved
+        run: |
+          set -euo pipefail
+          node scripts/replenish-prepare.mjs boundary --base HEAD --strict \
+            --allow content/discovery-state.yaml
 
       - name: Quarantine live drift, capture pages, re-validate what survives
         id: capture
@@ -563,7 +575,17 @@ jobs:
           # commit, so the items the mechanical re-validation repinned are
           # reviewed too, not only what the agent touched.
           node scripts/replenish-prepare.mjs review-ids --base origin/main > _run/review-ids.txt
-          echo "count=$(grep -c . _run/review-ids.txt || true)" >> "$GITHUB_OUTPUT"
+          count=$(grep -c . _run/review-ids.txt || true)
+          # The author job pushed this branch BECAUSE something was reviewable.
+          # Both jobs compute the same predicate, but at different times against
+          # a moving origin/main -- Source drift's quarantine PR merges at the
+          # same hour and touches the same files. An empty set here is an
+          # orphaned branch, not a valid outcome, so it must not be a green run.
+          if [ "${count:-0}" = "0" ]; then
+            echo "::error::the author job pushed ${{ needs.author.outputs.branch }} but nothing is review_ready against main; the branch is orphaned"
+            exit 1
+          fi
+          echo "count=$count" >> "$GITHUB_OUTPUT"
           cat _run/review-ids.txt
 
       - name: Independent reviewer decides per item
@@ -598,6 +620,16 @@ jobs:
             --max-turns 60
             --tools "Read,Glob,Grep,Write"
             --allowedTools "Read,Glob,Grep,Write(_run/decisions.json)"
+
+      # Same reason as after the selector: the reviewer may write only
+      # _run/decisions.json, and the next step runs approve-pr-questions,
+      # verify-evidence and build-content-bundle with snapshot credentials, then
+      # commits the bundle those very scripts produced.
+      - name: Nothing but the decisions moved
+        if: steps.items.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          node scripts/replenish-prepare.mjs boundary --base HEAD --strict
 
       - name: Record the receipt, promote approved items, set aside rejected ones
         if: steps.items.outputs.count != '0'
