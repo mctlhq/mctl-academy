@@ -295,11 +295,6 @@ export function reviewIds({ base, cwd = process.cwd() }) {
 }
 
 /**
- * The reviewer decides on exactly the items this run put in front of it:
- * an id it added would be promoted outside the run's cap and diff, an id it
- * skipped would ship unreviewed and unmentioned.
- */
-/**
  * The reading list the reviewer was handed against the set recomputed from the
  * diff at the point of use. Any disagreement is reported: an id only in the
  * file would be promoted outside this run's diff, and an id only in the diff
@@ -316,6 +311,11 @@ export function reviewScopeProblems(derived, handed) {
   ];
 }
 
+/**
+ * The reviewer decides on exactly the items this run put in front of it:
+ * an id it added would be promoted outside the run's cap and diff, an id it
+ * skipped would ship unreviewed and unmentioned.
+ */
 export function reconcileDecisions({ ids, decisions }) {
   const wanted = new Set(ids);
   const list = Array.isArray(decisions) ? decisions : [];

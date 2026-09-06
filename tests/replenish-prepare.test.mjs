@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -255,7 +255,7 @@ test("every agent step is followed by a dependency rebuild before any repository
   // of thousands of untracked files there -- so a write that reached it would
   // execute on the next import, which is the boundary check itself.
   const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
-  const isRebuild = (s) => s.name === "Rebuild dependencies from the lockfile";
+  const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
   const runsRepoCode = (s) => /(^|\s)(node|bun|npm)\s/m.test(s.run ?? "");
   let checked = 0;
   for (const job of ["author", "review"]) {
@@ -279,14 +279,15 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
   const rebuilds = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
-    (s) => s.name === "Rebuild dependencies from the lockfile",
+    (s) => s.name === "Guard the executable surface and rebuild dependencies",
   );
   assert.equal(rebuilds.length, 3);
   for (const step of rebuilds) {
     // Both halves matter: an edited lockfile and a created bunfig.toml or
     // .npmrc redirect the install just as effectively.
-    assert.match(step.run, /git diff --name-only [^\n]*package\.json bun\.lock/);
-    assert.match(step.run, /git ls-files --others [^\n]*bunfig\.toml/);
+    assert.match(step.run, /surface="[^"]*package\.json bun\.lock[^"]*bunfig\.toml \.npmrc"/);
+    assert.match(step.run, /git diff --name-only -z [^\n]*\$surface/);
+    assert.match(step.run, /git ls-files --others -z -- \$surface/);
     assert.match(step.run, /::error::/);
     assert.match(step.run, /exit 1/);
     assert.match(step.run, /rm -rf node_modules/);
@@ -394,15 +395,28 @@ test("the dependency guard scans what bun reads, not the tree it is about to del
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
   const rebuilds = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
-    (s) => s.name === "Rebuild dependencies from the lockfile",
+    (s) => s.name === "Guard the executable surface and rebuild dependencies",
   );
   assert.equal(rebuilds.length, 3);
   for (const step of rebuilds) {
+    // Commentary is not behaviour: assert against the commands alone.
+    const commands = step.run
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l))
+      .join("\n");
     // git pathspecs are not FNM_PATHNAME, so `**/bunfig.toml` matches inside
     // the still-present node_modules and would fail the run on a config bun
-    // never loads. --exclude-standard is safe here because the paths are named.
-    assert.doesNotMatch(step.run, /\*\*\//);
-    assert.match(step.run, /git ls-files --others --exclude-standard/);
+    // never loads.
+    assert.doesNotMatch(commands, /\*\*\//);
+    // --exclude-standard applies the exclusions whether or not a path was
+    // named, so it would hand .gitignore a veto over what this check sees --
+    // and .npmrc is one of the files most likely to end up in it.
+    assert.doesNotMatch(commands, /--exclude-standard/);
+    assert.match(commands, /git ls-files --others -z/);
+    // The check meant to catch a tampered script is itself `node scripts/...`,
+    // and node resolves imports by walking up from the script's directory.
+    assert.match(commands, /surface="scripts \.github /);
+    assert.match(commands, /-name node_modules -type d -print/);
     // bun reads a binary lockfile too, so a created one redirects the install.
     assert.match(step.run, /bun\.lockb/);
   }
@@ -450,6 +464,68 @@ test("a scraped title longer than the schema allows is cut, not written whole", 
   // source.schema.json caps title at 300; the record is written before
   // lint:content runs, and the page has already been uploaded to R2 by then.
   assert.equal(rows[0].title.length, 300);
+});
+
+test("reconcile-decisions refuses a handed list that disagrees with the diff, and writes nothing", () => {
+  const { dir, run } = gitRepo();
+  try {
+    writeFileSync(
+      join(dir, "content", "questions", "q-base00000001.yaml"),
+      yaml(q("q-base00000001", "published", "src-a")),
+    );
+    run(["add", "-A"]);
+    run(["commit", "-q", "-m", "base"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000001.yaml"),
+      yaml(q("q-new000000001", "review_ready", "src-a")),
+    );
+
+    // _run/** is excluded from every boundary check, so the reading list is
+    // the one file an agent could rewrite unseen. An id it appended -- here
+    // one that is real and review_ready but identical to the base, so the
+    // diff never offers it -- must kill the run, not be promoted.
+    mkdirSync(join(dir, "_run"), { recursive: true });
+    writeFileSync(join(dir, "_run", "ids.txt"), "q-new000000001\nq-base00000001\n");
+    writeFileSync(
+      join(dir, "_run", "decisions.json"),
+      JSON.stringify([
+        { id: "q-new000000001", approved: true, reason: "ok" },
+        { id: "q-base00000001", approved: true, reason: "smuggled" },
+      ]),
+    );
+    const cli = new URL("../scripts/replenish-prepare.mjs", import.meta.url).pathname;
+    const out = join(dir, "_run", "scoped.json");
+    let status = 0;
+    let stderr = "";
+    try {
+      execFileSync(
+        process.execPath,
+        [
+          cli,
+          "reconcile-decisions",
+          "--base",
+          base,
+          "--ids",
+          join(dir, "_run", "ids.txt"),
+          "--decisions",
+          join(dir, "_run", "decisions.json"),
+          "--out",
+          out,
+        ],
+        { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+      );
+    } catch (err) {
+      status = err.status;
+      stderr = err.stderr;
+    }
+    assert.equal(status, 1);
+    assert.match(stderr, /q-base00000001 was listed but is not reviewable/);
+    // review-receipt reads this file on the very next line of the workflow.
+    assert.equal(existsSync(out), false);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("a review job that finds nothing to review fails instead of going green", () => {

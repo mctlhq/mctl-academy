@@ -244,13 +244,27 @@ jobs:
       # some dependency's tarball, which bun never loads. --exclude-standard is
       # safe here, unlike in boundaryProblems: the paths are named explicitly,
       # so .gitignore cannot hide one of them.
-      - name: Rebuild dependencies from the lockfile
+      - name: Guard the executable surface and rebuild dependencies
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only HEAD -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
-          created=$(git ls-files --others --exclude-standard -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
-          if [ -n "$changed$created" ]; then
-            echo "::error::dependency inputs moved after the agent ran: $changed $created"
+          # Pure git: not one line of repository code has run since the agent
+          # stopped, and that is the point. The boundary check below is itself
+          # `node scripts/...`, so an agent that edited a script under scripts/
+          # or a workflow under .github/ would have its own code executed by
+          # the check meant to catch it, with this job's snapshot credentials.
+          # Deliberately no --exclude-standard: `git ls-files --others` applies
+          # the exclusions whether or not a path was named, so the flag would
+          # hand .gitignore a veto over what this check can see -- and .npmrc
+          # is one of the files most likely to be added to it.
+          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc"
+          changed=$(git diff --name-only -z HEAD -- $surface | tr '\0' '\n')
+          created=$(git ls-files --others -z -- $surface | tr '\0' '\n')
+          # Node resolves imports by walking UP from the script's directory, so
+          # scripts/node_modules/yaml would be loaded in preference to the root
+          # one that is about to be reinstalled.
+          nested=$(find . -path ./node_modules -prune -o -name node_modules -type d -print)
+          if [ -n "$changed$created$nested" ]; then
+            echo "::error::the executable surface moved after the agent ran: $changed $created $nested"
             exit 1
           fi
           rm -rf node_modules
@@ -443,13 +457,27 @@ jobs:
       # discarded and reinstalled from the lockfile before ANY repository code
       # runs again. The inputs to that install are verified with git alone,
       # which loads nothing from node_modules.
-      - name: Rebuild dependencies from the lockfile
+      - name: Guard the executable surface and rebuild dependencies
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only "${{ steps.base.outputs.sha }}" -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
-          created=$(git ls-files --others --exclude-standard -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
-          if [ -n "$changed$created" ]; then
-            echo "::error::dependency inputs moved after the agent ran: $changed $created"
+          # Pure git: not one line of repository code has run since the agent
+          # stopped, and that is the point. The boundary check below is itself
+          # `node scripts/...`, so an agent that edited a script under scripts/
+          # or a workflow under .github/ would have its own code executed by
+          # the check meant to catch it, with this job's snapshot credentials.
+          # Deliberately no --exclude-standard: `git ls-files --others` applies
+          # the exclusions whether or not a path was named, so the flag would
+          # hand .gitignore a veto over what this check can see -- and .npmrc
+          # is one of the files most likely to be added to it.
+          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc"
+          changed=$(git diff --name-only -z "${{ steps.base.outputs.sha }}" -- $surface | tr '\0' '\n')
+          created=$(git ls-files --others -z -- $surface | tr '\0' '\n')
+          # Node resolves imports by walking UP from the script's directory, so
+          # scripts/node_modules/yaml would be loaded in preference to the root
+          # one that is about to be reinstalled.
+          nested=$(find . -path ./node_modules -prune -o -name node_modules -type d -print)
+          if [ -n "$changed$created$nested" ]; then
+            echo "::error::the executable surface moved after the agent ran: $changed $created $nested"
             exit 1
           fi
           rm -rf node_modules
@@ -676,14 +704,28 @@ jobs:
       # discarded and reinstalled from the lockfile before ANY repository code
       # runs again. The inputs to that install are verified with git alone,
       # which loads nothing from node_modules.
-      - name: Rebuild dependencies from the lockfile
+      - name: Guard the executable surface and rebuild dependencies
         if: steps.items.outputs.count != '0'
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only HEAD -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
-          created=$(git ls-files --others --exclude-standard -- package.json bun.lock bun.lockb bunfig.toml .npmrc)
-          if [ -n "$changed$created" ]; then
-            echo "::error::dependency inputs moved after the agent ran: $changed $created"
+          # Pure git: not one line of repository code has run since the agent
+          # stopped, and that is the point. The boundary check below is itself
+          # `node scripts/...`, so an agent that edited a script under scripts/
+          # or a workflow under .github/ would have its own code executed by
+          # the check meant to catch it, with this job's snapshot credentials.
+          # Deliberately no --exclude-standard: `git ls-files --others` applies
+          # the exclusions whether or not a path was named, so the flag would
+          # hand .gitignore a veto over what this check can see -- and .npmrc
+          # is one of the files most likely to be added to it.
+          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc"
+          changed=$(git diff --name-only -z HEAD -- $surface | tr '\0' '\n')
+          created=$(git ls-files --others -z -- $surface | tr '\0' '\n')
+          # Node resolves imports by walking UP from the script's directory, so
+          # scripts/node_modules/yaml would be loaded in preference to the root
+          # one that is about to be reinstalled.
+          nested=$(find . -path ./node_modules -prune -o -name node_modules -type d -print)
+          if [ -n "$changed$created$nested" ]; then
+            echo "::error::the executable surface moved after the agent ran: $changed $created $nested"
             exit 1
           fi
           rm -rf node_modules
