@@ -27,6 +27,10 @@ persisted.
 - `content/{questions,lessons,sources}/` — YAML content. Each question names its
   course with `course_id`.
 - `scripts/validate-content.mjs` — the content lint.
+- `scripts/discover-docs.mjs`, `scripts/replenish-prepare.mjs`,
+  `scripts/review-receipt.mjs` — the deterministic parts of the weekly
+  `Content replenish` workflow (discovery, capture glue and caps, reviewer
+  receipt). `docs/content-operations.md` describes the run.
 - `scripts/lib/content-model.mjs` — the shared bundle-eligibility rule, used by
   both the lint and the bundle builder.
 - `scripts/build-content-bundle.mjs` — generates `client/src/content-bundle.json`

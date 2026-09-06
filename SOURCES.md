@@ -35,9 +35,17 @@ Discovery of canonical documentation is driven directly by official Nebius endpo
 
 1. **`https://docs.tokenfactory.nebius.com/llms.txt`**: Canonical index for Token Factory documentation.
 2. **`https://docs.nebius.com/llms.txt`**: Canonical index for AI Cloud documentation.
-3. **`https://docs.nebius.com/changelog`**: High-signal secondary trigger for major feature additions, deprecations, and breaking changes.
+3. **`https://docs.nebius.com/changelog`**: High-signal secondary trigger for major feature additions, deprecations, and breaking changes (read by people; not polled).
 
-Each page discovered in `llms.txt` is fetched in its raw Markdown representation (`.md`). Context7 and external GitHub repositories (e.g. `nebius/api`, `nebius/token-factory-cookbook`) may be used as secondary research tools by agents, but **never** as canonical evidence sources or authoritative change triggers.
+`scripts/discover-docs.mjs` (run weekly by the **Content replenish** workflow, see
+`docs/content-operations.md`) parses the two indices, fetches each page in its raw
+Markdown representation (`.md`) only when it is captured, and proposes pages that no
+source record, manifest row or `ignored` entry in `content/discovery-state.yaml`
+names. A proposed page becomes a source only through the capture path below; the
+discovery report never writes a source record. Context7 and external GitHub
+repositories (e.g. `nebius/api`, `nebius/token-factory-cookbook`) may be used as
+secondary research tools by agents, but **never** as canonical evidence sources or
+authoritative change triggers.
 
 ## Explicitly not sources
 
@@ -88,9 +96,12 @@ CI fetches the snapshot by hash and asserts that each evidence excerpt occurs ve
 
 ## Drift & Fail-Closed Quarantine
 
-When `Nebius Docs Sync` detects a hash mismatch for an approved source:
-1. `source.yaml` status is automatically updated to `drifted`.
+When the weekly **Source drift** workflow detects a hash mismatch for an approved source:
+1. `source.yaml` status is updated to `drifted`.
 2. Dependent published questions transition `published -> needs_review`.
-3. Quarantined questions are immediately excluded from new Practice and Mock selection.
+3. Quarantined questions are excluded from new Practice and Mock selection once the
+   quarantine PR (`chore/quarantine-drift`) is merged and deployed.
 4. Existing completed attempts remain untouched.
+5. The next **Content replenish** run re-captures the page, re-validates the items the
+   new text still supports, and hands the rest to the authoring agent.
 

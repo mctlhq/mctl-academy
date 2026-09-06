@@ -535,10 +535,11 @@ The platform is designed to support the three live Nebius certifications:
 3. **Agentic AI Builder** (`agentic-ai-builder`)
 
 ### Automated Question Authoring & Change Sync (`Nebius Docs Sync`)
-- **Discovery**: Driven by canonical `llms.txt` indices (`docs.tokenfactory.nebius.com/llms.txt` and `docs.nebius.com/llms.txt`) and high-signal `docs.nebius.com/changelog`.
-- **Fail-Closed Drift Quarantine**: Hash mismatches automatically transition `source.yaml` to `drifted` and questions to `needs_review`, immediately excluding them from learner selection.
+Implemented 2026-09 as two weekly workflows in this repository (`Source drift`, `Content replenish`); see `docs/content-operations.md`.
+- **Discovery**: `scripts/discover-docs.mjs` reads the canonical `llms.txt` indices (`docs.tokenfactory.nebius.com/llms.txt` and `docs.nebius.com/llms.txt`); `docs.nebius.com/changelog` stays a human-read signal.
+- **Fail-Closed Drift Quarantine**: Hash mismatches transition `source.yaml` to `drifted` and questions to `needs_review` on the `chore/quarantine-drift` PR; the bundle excludes them once it is merged and deployed.
 - **Evidence Snapshot Pinning**: Question evidence records pin the exact `source_sha256` snapshot hash supporting the claim.
-- **Lifecycle & Promotion**: Agent-created questions enter status `review_ready`, pass Evidence CI, and require maintainer Clean-Room promotion before transitioning to `published`.
+- **Lifecycle & Promotion**: Agent-created questions enter status `review_ready`, pass Evidence CI, are judged by an independent reviewing agent whose receipt is committed with fingerprints, and are promoted only when approved. The content PR is merged by a human CODEOWNER; the workflow never merges.
 
 after the maintainer passes the exam, or after 30 days of stable operation with a
 question-report rate below 3% and median content-PR approval under 7 days — whichever
