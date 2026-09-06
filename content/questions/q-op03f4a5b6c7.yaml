@@ -1,37 +1,41 @@
 schema_version: 1
 id: q-op03f4a5b6c7
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
-stem: Which scope level in Nebius Token Factory directly owns API keys, budget
-  limits, and deployed resources?
+stem: Which level of the Token Factory resource hierarchy directly contains API
+  keys, fine-tuning jobs, dedicated endpoints, and files and datasets?
 options:
   - id: a
     text: Projects
     correct: true
-    explanation: API keys, budgets, and endpoints belong to a specific Project
-      within an Organization.
+    explanation: Within a project you create and manage API keys, fine-tuning jobs,
+      dedicated endpoints, and files and datasets.
   - id: b
-    text: Global user profile
+    text: The user account
     correct: false
-    explanation: User profiles span across organizations but do not own resource
-      quotas directly.
+    explanation: User accounts belong to organizations through groups; they do not
+      own these resources directly.
   - id: c
-    text: Region endpoints
+    text: Regions
     correct: false
-    explanation: Regions dictate data residency, not project isolation or credential scopes.
+    explanation: Regions are where endpoints run; projects can even be multi-region,
+      so a region is not the owning scope.
   - id: d
-    text: Model registry
+    text: The organization, directly
     correct: false
-    explanation: The model registry is a global catalog of available base weights.
+    explanation: The organization contains projects, groups, and user accounts;
+      resources exist inside a project.
 evidence:
   - source_id: src-org-projects
-    excerpt: exist inside a project and inherit its access settings.
+    excerpt: "Within a project, you can create and manage: * **API keys** *
+      **Fine-tuning jobs** * **Dedicated endpoints** * **Files and datasets**"
     source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 4843257c76a26d1d5cc6ec3a3b3c495cbae8964a6605d6c4b125b951c97652b4

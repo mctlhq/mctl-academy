@@ -1,40 +1,48 @@
 schema_version: 1
 id: q-de01a1b2c3d4
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/dedicated-endpoints
-stem: What primary architectural advantage does deploying a dedicated endpoint
-  provide over shared pay-as-you-go inference API pools?
+stem: According to the comparison table, how does capacity differ between
+  dedicated endpoints and public serverless endpoints?
 options:
   - id: a
-    text: Guaranteed reserved GPU compute capacity with predictable response latency
-      and no noisy neighbor interference
+    text: Dedicated endpoints get isolated capacity reserved for your organization
+      while the endpoint runs; serverless uses shared multi-tenant capacity
     correct: true
-    explanation: Dedicated endpoints allocate isolated GPU instances, ensuring
-      consistent latency and reserved capacity.
+    explanation: The table lists isolated capacity reserved for your organization
+      against shared multi-tenant capacity; the capacity page adds that the
+      reservation applies only while the endpoint is running.
   - id: b
-    text: Automatic generation of synthetic training datasets
+    text: Dedicated capacity is a permanent reservation that survives stops and
+      maintenance
     correct: false
-    explanation: Endpoints execute model inference, not dataset synthesis or
-      fine-tuning preprocessing.
+    explanation: "The capacity page states the opposite: it is not a long-term
+      reservation, and stopped endpoints release their GPUs to the shared pool."
   - id: c
-    text: Free unlimited token consumption without billing charges
+    text: Both draw from the same shared pool with identical guarantees
     correct: false
-    explanation: Dedicated instances incur hourly node hosting costs regardless of
-      query volume.
+    explanation: Dedicated endpoints are isolated from the multi-tenant pool that
+      serves public serverless traffic.
   - id: d
-    text: Automatic client-side Javascript code transpilation
+    text: Public serverless endpoints reserve GPUs per organization
     correct: false
-    explanation: Dedicated endpoints handle neural network model inference, not web
-      browser frontend code compilation.
+    explanation: Serverless capacity is shared and multi-tenant; reservation is the
+      dedicated model.
 evidence:
-  - source_id: src-endpoint-lifecycle
-    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+  - source_id: src-recovery-endpoint
+    excerpt: "| Capacity | Isolated capacity reserved for your organization | Shared
+      multi-tenant capacity |"
+    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+  - source_id: src-recovery-capacity
+    excerpt: it is not a long-term reservation, and the minimum replicas guarantee
+      applies only while the endpoint is running.
+    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: fdb9aad3d864946fd19b1425cb294a90b41cee7c320ec1a4e52abd825e726fb0

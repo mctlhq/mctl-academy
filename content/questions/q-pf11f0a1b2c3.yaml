@@ -1,38 +1,39 @@
 schema_version: 1
 id: q-pf11f0a1b2c3
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/playground
-stem: Which inference parameter in the Playground UI controls the randomness of
-  generated model completions?
+stem: Which model parameter makes generated output more random at higher values
+  and more focused at lower values?
 options:
   - id: a
-    text: Temperature
+    text: "`temperature`"
     correct: true
-    explanation: Temperature scales the logits before sampling, controlling response
-      randomness and creativity.
+    explanation: "The API reference describes temperature between 0 and 2: higher
+      values like 0.8 make output more random, lower values like 0.2 more
+      focused and deterministic."
   - id: b
-    text: TCP Window Size
+    text: TCP window size
     correct: false
-    explanation: TCP window size is a network transport layer configuration.
+    explanation: A transport-layer setting with no effect on sampling.
   - id: c
-    text: CPU Core Affinity
+    text: CPU core affinity
     correct: false
-    explanation: CPU affinity controls process execution on physical cores, not LLM
-      sampling.
+    explanation: A process scheduling setting, not a model parameter.
   - id: d
-    text: Display Screen Refresh Rate
+    text: Display refresh rate
     correct: false
-    explanation: Monitor refresh rate is a hardware display property.
+    explanation: A display property, unrelated to generation.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-chat
+    excerpt: Higher values like 0.8 will make the output more random, while lower
+      values like 0.2 will make it more focused and deterministic.
+    source_sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: a4babe3d995d97cf6b691a1cff8d5a5b51a36dfb74e6b48ff742759a4ecfa71c

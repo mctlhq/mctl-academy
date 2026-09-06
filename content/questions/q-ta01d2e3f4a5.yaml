@@ -1,38 +1,45 @@
 schema_version: 1
 id: q-ta01d2e3f4a5
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/team-access
-stem: How are projects scoped within an organization hierarchy?
+stem: How are projects positioned in the Token Factory resource hierarchy?
 options:
   - id: a
-    text: Projects are global namespaces accessible to all internet users by default
+    text: Projects are global namespaces visible to every user by default
     correct: false
-    explanation: Projects are secure internal containers scoped under an organization.
+    explanation: A project is an isolated environment inside an organization, not a
+      public namespace.
   - id: b
-    text: Projects exist outside organizations and cannot contain API keys
+    text: Projects sit outside organizations and cannot hold API keys
     correct: false
-    explanation: Projects belong to an organization and scope resources like API
-      keys and fine-tuning jobs.
+    explanation: Projects belong to an organization, and API keys are one of the
+      resources created inside a project.
   - id: c
-    text: Projects can only be created by external third-party OAuth providers
+    text: Projects can only be created by an external identity provider
     correct: false
-    explanation: Organization admins create and manage projects directly in the
-      platform console or API.
+    explanation: A default project is created automatically on sign-up; no identity
+      provider is involved.
   - id: d
-    text: Projects exist inside an organization and isolate resources, API keys, and
-      access permissions
+    text: Projects live inside an organization as isolated environments whose
+      resources inherit the project's access settings
     correct: true
-    explanation: Projects group and isolate resources like endpoints, API keys, and
-      jobs within an organization.
+    explanation: "The hierarchy is Organization, then Projects, then Resources: each
+      project is an isolated environment, and resources such as API keys,
+      endpoints, files, and datasets inherit its access settings."
 evidence:
+  - source_id: src-org-projects
+    excerpt: Each **Project** within an organization acts as an isolated environment
+      for related resources and teams.
+    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
   - source_id: src-org-projects
     excerpt: exist inside a project and inherit its access settings.
     source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 01e4c7e396fb6a21bb8838219abfd2d126ade59236aec132ecc543f2d8d721bd
