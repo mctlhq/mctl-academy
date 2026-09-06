@@ -353,6 +353,34 @@ test("guardChanges with statusNow refuses a file the agent left published or ret
   }
 });
 
+test("guardChanges skips the cap when max is null and rejects an unparseable file", () => {
+  const changed = ["a.yaml", "b.yaml", "c.yaml"];
+  // The post-promotion call: the set includes items the mechanical
+  // re-validation repaired, which were never the agent's to cap.
+  assert.deepEqual(guardChanges({ changed, statusAtBase: () => null, max: null }), []);
+  assert.match(guardChanges({ changed, statusAtBase: () => null, max: 2 })[0], /cap is 2/);
+  assert.match(
+    guardChanges({
+      changed: ["a.yaml"],
+      statusAtBase: () => null,
+      max: null,
+      statusNow: () => "unparseable",
+    })[0],
+    /not parseable YAML/,
+  );
+});
+
+test("statusOnDisk reports a corrupt file rather than passing it as absent", () => {
+  const { dir } = gitRepo();
+  try {
+    writeFileSync(join(dir, "content", "questions", "q-broken00001.yaml"), "status: [unclosed\n");
+    assert.equal(statusOnDisk({ file: "content/questions/q-broken00001.yaml", cwd: dir }), "unparseable");
+    assert.equal(statusOnDisk({ file: "content/questions/q-absent000001.yaml", cwd: dir }), null);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("validateSelection refuses the same offered url under two ids", () => {
   const { rows, dropped } = validateSelection({
     select: [
@@ -412,7 +440,13 @@ test("mergeVersions keeps every earlier hash of a re-captured source", () => {
   assert.deepEqual(mergeVersions({ sha256: B, status: "drifted", versions: [A] }, C), [A, B]);
   // Re-capturing identical bytes adds nothing.
   assert.deepEqual(mergeVersions({ sha256: B, status: "drifted", versions: [A] }, B), [A]);
-  // A source nobody marked drifted gets no carry-over: dependents pinned to
-  // the old hash must fail the evidence check, not pass on a versions entry.
+  // A source nobody marked drifted gets no carry-over of its CURRENT hash:
+  // dependents pinned to it must fail the evidence check, not pass on a
+  // versions entry.
   assert.deepEqual(mergeVersions({ sha256: A, status: "current" }, B), []);
+  // ...but hashes an earlier drift already registered survive that refresh.
+  // Dropping them would turn Content evidence red for every needs_review item
+  // pinned to one, on an ordinary full re-capture.
+  assert.deepEqual(mergeVersions({ sha256: B, status: "current", versions: [A] }, C), [A]);
+  assert.deepEqual(mergeVersions({ sha256: C, status: "current", versions: [A, B] }, C), [A, B]);
 });

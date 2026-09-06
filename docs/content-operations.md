@@ -66,8 +66,16 @@ in the PR body, allowlisting a new host, and any `ignored` entry in
 
 Dispatch by hand with `gh workflow run content-replenish.yml -f dry_run=true`
 to see the candidates without writing anything, or with `-f max_new=1
--f max_questions=5` for a small supervised run. Caps are hard: the change
-guard fails the run when more question files changed than `max_questions`.
+-f max_questions=5` for a small supervised run. The cap is hard and it is the
+agent's: the author-phase guard fails the run when the agent added or changed
+more question files than `max_questions`, counting files it created. The
+post-promotion guard re-checks that nothing published at the base moved, but
+carries no cap, because that set also holds the items the mechanical
+re-validation repaired before the agent ran.
+
+A run whose agent writes nothing still opens a PR when the mechanical
+re-validation repaired something: those items are real work for the reviewer,
+and dropping the branch would leave them quarantined on `main`.
 
 ## Manual replenishment run
 

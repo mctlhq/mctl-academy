@@ -167,6 +167,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const opts = parseArgs(process.argv.slice(2));
     const decisions = JSON.parse(readFileSync(opts.decisions, "utf8"));
     const existing = existsSync(opts.out) ? JSON.parse(readFileSync(opts.out, "utf8")) : null;
+    // Build and validate BEFORE touching any other receipt: a rejected
+    // decision must not leave an earlier receipt stripped of an approval it
+    // still owns. With --supersede the collision this would report is the
+    // very thing being replaced, so it is not consulted.
+    const receipt = buildReceipt({
+      reviewer: opts.reviewer,
+      decisions,
+      existing,
+      elsewhere: opts.supersede ? new Map() : entriesElsewhere(opts.out),
+    });
     if (opts.supersede) {
       const ids = (Array.isArray(decisions) ? decisions : [])
         .map((d) => d?.id)
@@ -175,12 +185,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         console.log(`superseded earlier decision for ${r.id} in ${r.file}`);
       }
     }
-    const receipt = buildReceipt({
-      reviewer: opts.reviewer,
-      decisions,
-      existing,
-      elsewhere: entriesElsewhere(opts.out),
-    });
     writeFileSync(opts.out, JSON.stringify(receipt, null, 2) + "\n");
     const approved = receipt.questions.filter((q) => q.approved).map((q) => q.id);
     console.log(`wrote ${opts.out}: ${receipt.questions.length} entries, ${approved.length} approved`);

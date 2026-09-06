@@ -161,8 +161,16 @@ async function check({ markDrifted = false } = {}) {
  * gate's core claim would be weakened for the convenience of one caller.
  */
 export function mergeVersions(previous, hash) {
-  if (!previous || previous.status !== "drifted") return [];
-  const all = [...(Array.isArray(previous.versions) ? previous.versions : []), previous.sha256];
+  if (!previous) return [];
+  // Hashes already registered are carried forward on EVERY re-capture: a
+  // routine refresh of a `current` source must not drop the provenance that
+  // an earlier drift registered, or every item still pinned to one of those
+  // hashes fails the citation check. Only the previous hash itself is a
+  // judgement call, and it joins the list solely across a recorded drift --
+  // re-capturing a `current` source whose page changed must still fail
+  // loudly for its dependents.
+  const kept = Array.isArray(previous.versions) ? previous.versions : [];
+  const all = previous.status === "drifted" ? [...kept, previous.sha256] : kept;
   return [...new Set(all.filter((v) => typeof v === "string" && v !== hash))];
 }
 

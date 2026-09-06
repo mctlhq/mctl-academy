@@ -42,7 +42,9 @@ export function reviewProblems(question) {
   // An approval cannot predate the revision it approves. Without this, a
   // newly authored file could carry a backdated human `reviewed` block and
   // slip under the fingerprint cutoff below.
-  if (question.authored?.at && String(review.at) < String(question.authored.at)) {
+  const authoredAt = Date.parse(question.authored?.at ?? "");
+  const reviewedAt = Date.parse(String(review.at));
+  if (Number.isFinite(authoredAt) && Number.isFinite(reviewedAt) && reviewedAt < authoredAt) {
     reasons.push("reviewed.at precedes authored.at; an approval cannot predate the revision it approves");
   }
   if (review.by.startsWith("agent:")) {

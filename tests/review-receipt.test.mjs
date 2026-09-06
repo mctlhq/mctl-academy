@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse as parseYaml, stringify as yaml } from "yaml";
@@ -202,6 +204,56 @@ test("buildReceipt refuses an id the same reviewer already holds in another rece
         now: NOW,
       }),
     );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the CLI validates before superseding: a rejected decision leaves the earlier receipt intact", () => {
+  const dir = fixture({
+    "q-abc123abc123": question(),
+    "q-pub001pub001": question({ id: "q-pub001pub001", status: "published" }),
+  });
+  const reviews = join(dir, "reviews");
+  mkdirSync(reviews);
+  const older = join(reviews, "older-review.json");
+  const olderReceipt = {
+    reviewer: "agent:claude-reviewer",
+    reviewed_at: "2026-09-01T00:00:00Z",
+    questions: [{ id: "q-abc123abc123", content_sha256: "0".repeat(64), approved: true, reason: "old" }],
+  };
+  writeFileSync(older, JSON.stringify(olderReceipt));
+  const decisions = join(dir, "decisions.json");
+  // The second decision is invalid (the item is published, not review_ready),
+  // so buildReceipt throws — after supersedeElsewhere would have run, under
+  // the old ordering.
+  writeFileSync(
+    decisions,
+    JSON.stringify([
+      { id: "q-abc123abc123", approved: true, reason: "re-reviewed" },
+      { id: "q-pub001pub001", approved: true, reason: "not review_ready" },
+    ]),
+  );
+  try {
+    assert.throws(() =>
+      execFileSync(
+        process.execPath,
+        [
+          fileURLToPath(new URL("../scripts/review-receipt.mjs", import.meta.url)),
+          "--reviewer",
+          "agent:claude-reviewer",
+          "--decisions",
+          decisions,
+          "--out",
+          join(reviews, "newer-review.json"),
+          "--supersede",
+        ],
+        { env: { ...process.env, ACADEMY_CONTENT_DIR: dir }, stdio: ["ignore", "pipe", "pipe"] },
+      ),
+    );
+    // The approval it already owned is still there, and no half-written receipt.
+    assert.deepEqual(JSON.parse(readFileSync(older, "utf8")), olderReceipt);
+    assert.equal(existsSync(join(reviews, "newer-review.json")), false);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

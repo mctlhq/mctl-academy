@@ -68,6 +68,7 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: read
     outputs:
       skip: ${{ steps.guard.outputs.skip }}
@@ -288,12 +289,23 @@ jobs:
             if [ -n "$ids" ]; then
               # shellcheck disable=SC2086
               node scripts/revalidate-content.mjs $ids > revalidate.json || true
-              # Unmatched excerpts are the expected outcome of real drift; a
-              # store error or an unparseable result is not, and fails here.
+              # Only a store failure is fatal. Everything else revalidate
+              # reports is an ordinary content state -- an excerpt the new page
+              # no longer contains, or an item co-citing a second source whose
+              # own capture failed and is still drifted -- and leaves that item
+              # in needs_review, which is exactly what the loop above declared
+              # survivable.
               node -e '
-                const r = JSON.parse(require("fs").readFileSync("revalidate.json", "utf8"));
-                if (r.errors?.length) { console.error("::error::revalidate: " + r.errors.join("; ")); process.exit(1); }
-                if (r.unmatched?.length) console.log("::notice::not repinned, stay needs_review: " + r.unmatched.join(" "));
+                const fs = require("fs");
+                let r;
+                try { r = JSON.parse(fs.readFileSync("revalidate.json", "utf8")); }
+                catch { console.error("::error::revalidate produced no readable result; see the step log"); process.exit(1); }
+                const errors = r.errors || [];
+                const hard = errors.filter((e) => /^R2 error/.test(e));
+                const soft = errors.filter((e) => !/^R2 error/.test(e));
+                if (hard.length) { console.error("::error::revalidate: " + hard.join("; ")); process.exit(1); }
+                if (soft.length) console.log("::notice::left in needs_review: " + soft.join("; "));
+                if (r.unmatched && r.unmatched.length) console.log("::notice::not repinned, stay needs_review: " + r.unmatched.join(" "));
               '
             fi
           fi
@@ -373,7 +385,15 @@ jobs:
           git status --short content/ CHANGES.md || true
           # Reject changes to trusted validators, schemas and source records
           # before running any repository code with snapshot credentials.
+          # Two calls, because `git diff` never lists an untracked path: a file
+          # the agent CREATES outside content/questions is invisible to the
+          # first and is exactly what this boundary exists to catch.
           git diff --exit-code "${{ steps.base.outputs.sha }}" -- . ':!content/questions/**' ':!CHANGES.md'
+          intruders=$(git ls-files --others --exclude-standard -- . ':!content/questions/**' ':!CHANGES.md')
+          if [ -n "$intruders" ]; then
+            echo "::error::the author created files outside content/questions: $(echo "$intruders" | tr '\n' ' ')"
+            exit 1
+          fi
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
           node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now
@@ -388,17 +408,27 @@ jobs:
           set -euo pipefail
           git add content/questions/
           n=$(git diff --staged --name-only -- content/questions | wc -l | tr -d ' ')
-          if [ "$n" = "0" ]; then
+          # What the reviewer would be given: the agent's items AND the items
+          # the mechanical re-validation returned to review_ready in the
+          # preparation commit. A run that repaired something but authored
+          # nothing still has work to review, and abandoning the branch would
+          # throw that repair away and leave the items quarantined on main.
+          pending=$(git diff --name-only origin/main -- content/questions | wc -l | tr -d ' ')
+          if [ "$pending" = "0" ]; then
             # Captured sources and the watermark alone are not worth a PR; the
             # branch is not pushed, so nothing accumulates. The next run
             # rediscovers the same pages, which is the honest outcome.
-            echo "The author changed no question file; no review, no PR, branch not pushed."
+            echo "No question file differs from main; no review, no PR, branch not pushed."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           s=$(git diff --name-only origin/main -- content/sources | wc -l | tr -d ' ')
-          git commit -m "content(replenish): author ${n} question file(s) from ${s} captured source(s)" \
-            -m "Authored by ${AUTHOR_ID} (${AUTHOR_MODEL}) from captured documentation; every item is review_ready and awaits the independent review recorded in the next commit."
+          if [ "$n" != "0" ]; then
+            git commit -m "content(replenish): author ${n} question file(s) from ${s} captured source(s)" \
+              -m "Authored by ${AUTHOR_ID} (${AUTHOR_MODEL}) from captured documentation; every item is review_ready and awaits the independent review recorded in the next commit."
+          else
+            echo "::notice::the author wrote nothing; pushing ${pending} mechanically re-validated item(s) for review"
+          fi
           git push origin "HEAD:${{ steps.branch.outputs.name }}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
@@ -535,7 +565,12 @@ jobs:
               git rm -q "$f"
             fi
           done
-          node scripts/replenish-prepare.mjs guard --base "${{ needs.author.outputs.base }}" --max "$MAX_QUESTIONS"
+          # No --max here: this set legitimately includes the items the
+          # mechanical re-validation repaired before the agent ran, which were
+          # never the agent's to cap. The author-phase guard already enforced
+          # it on the agent's own output; what still matters is that nothing
+          # published at the base changed.
+          node scripts/replenish-prepare.mjs guard --base "${{ needs.author.outputs.base }}"
           bun run lint:content
           node scripts/verify-evidence.mjs
           node scripts/build-content-bundle.mjs

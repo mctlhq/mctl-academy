@@ -22,9 +22,10 @@
  *       Write captured/<id>.md from the R2 snapshot each record names.
  *   revalidation-ids --sources <id,id,...>
  *       Print the needs_review question ids citing any of those sources.
- *   guard --base <git ref> --max <n> [--forbid-published-now]
+ *   guard --base <git ref> [--max <n>] [--forbid-published-now]
  *       Fail when more than <n> question files changed against the base
- *       (untracked files included) or when any file that was `published` or
+ *       (untracked files included; --max omitted disables the cap) or when
+ *       any file that was `published` or
  *       `retired` at the base changed at all. With --forbid-published-now
  *       (the author phase) also fail when a changed file is published or
  *       retired NOW: the agent never publishes anything itself.
@@ -146,7 +147,7 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  * @param {object} args
  * @param {string[]} args.changed  question files changed against the base
  * @param {(file: string) => string | null} args.statusAtBase  null when absent at base
- * @param {number} args.max
+ * @param {number | null} args.max  null disables the cap (the post-promotion call)
  * @param {(file: string) => string | null} [args.statusNow]  current status; when given, a
  *   changed file that is now `published` or `retired` is rejected too. That is the
  *   author-phase rule: the agent may only ever leave a file review_ready or needs_review,
@@ -155,8 +156,10 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  */
 export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
   const problems = [];
-  if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
-  else if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
+  if (max !== null) {
+    if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
+    else if (changed.length > max) problems.push(`${changed.length} question files changed, cap is ${max}`);
+  }
   for (const file of changed) {
     const status = statusAtBase(file);
     if (status === "published") problems.push(`${file} was published at the base and must not change here`);
@@ -168,6 +171,7 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
           `${file} is ${now} after authoring; only review_ready or needs_review may leave this step`,
         );
       }
+      if (now === "unparseable") problems.push(`${file} is not parseable YAML after authoring`);
     }
   }
   return problems;
@@ -363,7 +367,11 @@ async function main(argv) {
   }
   if (cmd === "guard") {
     const base = opt(args, "base");
-    const max = Number(opt(args, "max"));
+    // Without --max there is no cap: the post-promotion call re-checks the
+    // base-status rule over a set that legitimately includes the items the
+    // mechanical re-validation repaired, which were never the agent's to cap.
+    const maxArg = opt(args, "max");
+    const max = maxArg === undefined ? null : Number(maxArg);
     const changed = changedQuestionFiles({ base });
     const problems = guardChanges({
       changed,
