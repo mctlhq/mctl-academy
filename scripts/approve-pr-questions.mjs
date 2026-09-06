@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDocument } from "yaml";
+import { AGENT_ID, questionFingerprint, reviewProblems } from "./lib/question-review.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR
@@ -24,12 +25,15 @@ export function parseArgs(args) {
   let by = process.env.MAINTAINER_HANDLE || process.env.GITHUB_USER || process.env.USER || null;
   let allReviewReady = false;
   let courseId = null;
+  let reviewFile = null;
   const idsOrPaths = [];
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === "--by" && i + 1 < args.length) {
       by = args[++i];
+    } else if (arg === "--review-file" && i + 1 < args.length) {
+      reviewFile = args[++i];
     } else if (arg === "--all-review-ready") {
       allReviewReady = true;
     } else if (arg === "--course" && i + 1 < args.length) {
@@ -46,7 +50,7 @@ export function parseArgs(args) {
     );
   }
 
-  return { by, allReviewReady, courseId, idsOrPaths };
+  return { by, allReviewReady, courseId, idsOrPaths, reviewFile };
 }
 
 export function promoteQuestions({
@@ -55,6 +59,7 @@ export function promoteQuestions({
   allReviewReady = false,
   courseId = null,
   idsOrPaths = [],
+  reviewFile = null,
 }) {
   const qDir = join(contentDir, "questions");
   if (!existsSync(qDir)) {
@@ -66,10 +71,20 @@ export function promoteQuestions({
   }
 
   const handle = by.trim();
+  if (handle.startsWith("agent:") && !AGENT_ID.test(handle)) {
+    throw new Error(`Invalid agent reviewer identifier "${handle}".`);
+  }
+
+  if (handle.startsWith("agent:") && (allReviewReady || courseId)) {
+    throw new Error("Agent approval requires explicit reviewed question IDs, not a whole course or bank.");
+  }
+  let receipt = null;
   if (handle.startsWith("agent:")) {
-    throw new Error(
-      `Invalid maintainer handle "${handle}". Humans approve in reviewed.by; agent handles (agent:*) are rejected.`,
-    );
+    if (!reviewFile) throw new Error("Agent approval requires --review-file from the independent reviewer.");
+    receipt = JSON.parse(readFileSync(reviewFile, "utf8"));
+    if (receipt.reviewer !== handle || !Array.isArray(receipt.questions)) {
+      throw new Error("Review file must identify the reviewer and reviewed questions.");
+    }
   }
 
   const modesCount = [allReviewReady, !!courseId, idsOrPaths.length > 0].filter(Boolean).length;
@@ -138,11 +153,25 @@ export function promoteQuestions({
       );
     }
 
-    doc.set("status", "published");
-    doc.set("reviewed", {
+    if (receipt) {
+      const decisions = receipt.questions.filter((item) => item.id === data.id);
+      if (
+        decisions.length !== 1 ||
+        decisions[0].approved !== true ||
+        decisions[0].content_sha256 !== questionFingerprint(data)
+      ) {
+        throw new Error(`${data.id}: missing approval or stale fingerprint in independent review file`);
+      }
+    }
+    const reviewed = {
       by: handle,
       at: now,
-    });
+      ...(handle.startsWith("agent:") ? { content_sha256: questionFingerprint(data) } : {}),
+    };
+    const problems = reviewProblems({ ...data, reviewed });
+    if (problems.length) throw new Error(`${data.id}: ${problems.join("; ")}`);
+    doc.set("status", "published");
+    doc.set("reviewed", reviewed);
 
     preparedMutations.push({
       filePath,

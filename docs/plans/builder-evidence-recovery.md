@@ -31,7 +31,8 @@ requested, must contain no more than 20 questions each.
 
 ## Status
 
-Implementation in progress. The retired question-author/DocsDeltaWorkflow was not
-a working production population job; historic banks were authored in agent-led
-commit/PR batches. See the forthcoming content operations guide for the supported
-replacement process and exact commands.
+Implementation of the review and operations safeguards is complete. The retired
+question-author/DocsDeltaWorkflow was not a working production population job;
+historic banks were authored in agent-led commit/PR batches. Twenty-three source
+pages were captured for recovery. Question rewriting and independent final review
+remain intentionally separate follow-up work; no quarantined item was published.

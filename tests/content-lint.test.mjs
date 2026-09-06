@@ -173,12 +173,12 @@ test("accepts an excerpt of exactly 25 words", () => {
   assert.equal(ok, true, output);
 });
 
-test("rejects publication without human review", () => {
+test("rejects publication without review", () => {
   const q = question();
   delete q.reviewed;
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
-  assert.match(output, /human approval is not optional/);
+  assert.match(output, /approval is not optional/);
 });
 
 test("rejects a human as item author — clean-room separation", () => {

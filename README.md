@@ -72,7 +72,7 @@ produced here is evidence of anything to anyone.
 ## How the content is made
 
 Questions are drafted by agents from allowlisted public documentation, verified
-mechanically, and approved by a human before publication.
+mechanically, and approved by a human or independent agent before publication.
 
 1. A researcher agent retrieves an allowlisted source and records its URL,
    title, retrieval time, and SHA-256.
@@ -80,7 +80,7 @@ mechanically, and approved by a human before publication.
    25 words.
 3. **CI verifies every excerpt occurs verbatim** in the privately stored snapshot
    of that source. A citation that cannot be verified blocks publication.
-4. A human reviews and approves. Only then does the question publish.
+4. A human or independent agent reviews and approves the exact revision. Only then does the question publish.
 
 The mechanical check is the gate. An LLM checking another LLM's work is not.
 

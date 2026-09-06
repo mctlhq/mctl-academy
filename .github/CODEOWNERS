@@ -1,8 +1,8 @@
 # Every content and schema change needs a human owner's approval.
 #
-# This is the enforcement point for the clean-room policy: agents open content
-# pull requests, mechanical CI verifies the citations, and a human owner is the
-# last gate before anything publishes. See CONTENT-POLICY.md.
+# This governs PR merge approval, separately from question-level approval.
+# Question review may be human or independent agent; evidence CI remains
+# mandatory. See CONTENT-POLICY.md.
 
 /content/                @mashkovd
 /content/schemas/        @mashkovd

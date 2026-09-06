@@ -54,6 +54,37 @@ const sampleQuestion = (over = {}) => ({
   ...over,
 });
 
+test("revalidation is explicit, dry-run preserves bytes, selected success clears prior approval", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-revalidate-scope-"));
+  try {
+    mkdirSync(join(dir, "sources"));
+    mkdirSync(join(dir, "questions"));
+    writeFileSync(join(dir, "sources", "src-auth.yaml"), JSON.stringify(sampleSource()));
+    const q = sampleQuestion({ reviewed: { by: "old-reviewer", at: "2026-08-06T10:00:00Z" } });
+    const path = join(dir, "questions", "one.yaml");
+    const otherPath = join(dir, "questions", "other.yaml");
+    const original = JSON.stringify(q);
+    writeFileSync(path, original);
+    const other = JSON.stringify(sampleQuestion({ id: "q-other" }));
+    writeFileSync(otherPath, other);
+    const store = {
+      async get() {
+        return q.evidence[0].excerpt;
+      },
+    };
+    await assert.rejects(revalidateContent({ contentDir: dir, store }), /explicit/);
+    await assert.rejects(revalidateContent({ contentDir: dir, store, ids: ["missing"] }), /expected/);
+    const opts = { contentDir: dir, store, ids: [q.id] };
+    assert.equal((await revalidateContent({ ...opts, dryRun: true })).revalidated.length, 1);
+    assert.equal(readFileSync(path, "utf8"), original);
+    await revalidateContent(opts);
+    assert.equal(parseYaml(readFileSync(path, "utf8")).reviewed, undefined);
+    assert.equal(readFileSync(otherPath, "utf8"), other);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("revalidateContent repins source_sha256 and transitions status to review_ready when excerpt matches BBB", async () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-revalidate-"));
   try {
@@ -73,7 +104,11 @@ test("revalidateContent repins source_sha256 and transitions status to review_re
       },
     };
 
-    const result = await revalidateContent({ contentDir: dir, store });
+    const result = await revalidateContent({
+      contentDir: dir,
+      store,
+      ids: [parseYaml(readFileSync(qPath, "utf8")).id],
+    });
 
     assert.equal(result.totalProcessed, 1);
     assert.equal(result.revalidated.length, 1);
@@ -121,12 +156,16 @@ test("revalidateContent atomic repinning: does NOT repin any hash if second evid
       },
     };
 
-    const result = await revalidateContent({ contentDir: dir, store });
+    const result = await revalidateContent({
+      contentDir: dir,
+      store,
+      ids: [parseYaml(readFileSync(qPath, "utf8")).id],
+    });
 
     assert.equal(result.unmatched.length, 1);
 
     const updated = parseYaml(readFileSync(qPath, "utf8"));
-    assert.equal(updated.status, "review_ready");
+    assert.equal(updated.status, "needs_review");
     // Verify first evidence item was NOT partially repinned (remains HASH_A)
     assert.equal(updated.evidence[0].source_sha256, HASH_A);
     assert.equal(updated.evidence[1].source_sha256, HASH_A);
@@ -135,7 +174,7 @@ test("revalidateContent atomic repinning: does NOT repin any hash if second evid
   }
 });
 
-test("revalidateContent fault-tolerant R2 errors: records error and keeps question in review_ready without crashing batch", async () => {
+test("revalidateContent fault-tolerant R2 errors: records error and keeps question in needs_review without crashing batch", async () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-revalidate-"));
   try {
     mkdirSync(join(dir, "sources"), { recursive: true });
@@ -151,7 +190,11 @@ test("revalidateContent fault-tolerant R2 errors: records error and keeps questi
       },
     };
 
-    const result = await revalidateContent({ contentDir: dir, store });
+    const result = await revalidateContent({
+      contentDir: dir,
+      store,
+      ids: [parseYaml(readFileSync(qPath, "utf8")).id],
+    });
 
     assert.equal(result.totalProcessed, 1);
     assert.equal(result.unmatched.length, 1);
@@ -159,7 +202,7 @@ test("revalidateContent fault-tolerant R2 errors: records error and keeps questi
     assert.match(result.errors[0], /R2 Connection Timeout/);
 
     const updated = parseYaml(readFileSync(qPath, "utf8"));
-    assert.equal(updated.status, "review_ready");
+    assert.equal(updated.status, "needs_review");
     assert.equal(updated.evidence[0].source_sha256, HASH_A);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -212,7 +255,11 @@ test("revalidateContent refuses to claim a repin it could not write into the YAM
       },
     };
 
-    const result = await revalidateContent({ contentDir: dir, store });
+    const result = await revalidateContent({
+      contentDir: dir,
+      store,
+      ids: [parseYaml(readFileSync(qPath, "utf8")).id],
+    });
 
     assert.deepEqual(result.revalidated, [], "a question whose hashes were never written is not revalidated");
     assert.deepEqual(result.unmatched, ["q-alias"]);

@@ -220,13 +220,13 @@ function checkObjective(file, data) {
 
 function checkLifecycle(file, data) {
   if (data.status === "published" && !data.reviewed) {
-    err(file, "published without a `reviewed` block — human approval is not optional");
+    err(file, "published without a `reviewed` block — approval is not optional");
   }
   if (data.authored && !AGENT_AUTHOR.test(data.authored.by)) {
     err(
       file,
       `authored.by "${data.authored.by}" is not an agent identifier (agent:<name>). ` +
-        "CONTENT-POLICY.md: items are authored by agents; humans approve in `reviewed`, not `authored`.",
+        "CONTENT-POLICY.md: items are authored by agents; approval belongs in `reviewed`, not `authored`.",
     );
   }
 }

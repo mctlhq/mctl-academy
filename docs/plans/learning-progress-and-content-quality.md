@@ -57,6 +57,7 @@ Existing unrelated local drafts remain untouched. No production deployment made.
   integration, and private R2 snapshot verification were not exercised here.
 
 Content repair remains a follow-up: see the
-[Builder evidence audit](../content/builder-evidence-audit.md). The 52 quarantined
-items require supporting evidence and human review before republication. Builder
-currently has 28 published questions and cannot fill its existing weighted Mock.
+[Builder evidence audit](../content/builder-evidence-audit.md) and
+[Content operations](../content-operations.md). The 52 quarantined items require
+supporting evidence and independent review before republication. Builder currently
+has 28 published questions and cannot fill its existing weighted Mock.

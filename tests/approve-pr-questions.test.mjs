@@ -5,6 +5,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { promoteQuestions, parseArgs } from "../scripts/approve-pr-questions.mjs";
+import { questionFingerprint, reviewProblems } from "../scripts/lib/question-review.mjs";
+import { checkBundleEligibility } from "../scripts/lib/content-model.mjs";
 
 const HASH = "a".repeat(64);
 
@@ -33,6 +35,64 @@ const sampleQuestion = (over = {}) => ({
   ...over,
 });
 
+test("independent agent promotion requires a matching positive review receipt", () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-agent-review-"));
+  try {
+    mkdirSync(join(dir, "questions"));
+    const q = sampleQuestion();
+    const file = join(dir, "questions", `${q.id}.yaml`);
+    const receiptFile = join(dir, "review.json");
+    writeFileSync(file, JSON.stringify(q));
+    const receipt = {
+      reviewer: "agent:independent-reviewer",
+      questions: [{ id: q.id, content_sha256: questionFingerprint(q), approved: true }],
+    };
+    writeFileSync(receiptFile, JSON.stringify(receipt));
+    const opts = { contentDir: dir, by: receipt.reviewer, reviewFile: receiptFile, idsOrPaths: [q.id] };
+    assert.equal(promoteQuestions(opts).count, 1);
+    const published = parseYaml(readFileSync(file, "utf8"));
+    assert.equal(published.reviewed.content_sha256, questionFingerprint(q));
+    assert.deepEqual(reviewProblems(published), []);
+    assert.equal(published.reviewed.by, receipt.reviewer);
+    const sources = new Map([["src-auth", { id: "src-auth", snapshot: { key: HASH } }]]);
+    assert.equal(checkBundleEligibility(published, sources).eligible, true);
+    published.options[0].explanation += " Changed meaning.";
+    assert.equal(checkBundleEligibility(published, sources).eligible, false);
+    assert.match(reviewProblems(published).join(), /stale/);
+    writeFileSync(file, JSON.stringify({ ...published, status: "review_ready" }));
+    assert.throws(() => promoteQuestions(opts), /stale fingerprint/);
+    writeFileSync(file, JSON.stringify(q));
+    receipt.questions[0].approved = false;
+    writeFileSync(receiptFile, JSON.stringify(receipt));
+    assert.throws(() => promoteQuestions(opts), /missing approval/);
+    receipt.reviewer = q.authored.by;
+    receipt.questions[0].approved = true;
+    writeFileSync(receiptFile, JSON.stringify(receipt));
+    assert.throws(() => promoteQuestions({ ...opts, by: q.authored.by }), /self-review/);
+    assert.throws(() => promoteQuestions({ ...opts, idsOrPaths: [], courseId: q.course_id }), /explicit/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("fingerprint ignores YAML key order and lifecycle but covers author, evidence and all options", () => {
+  const q = sampleQuestion();
+  const hash = questionFingerprint(q);
+  assert.equal(questionFingerprint(Object.fromEntries(Object.entries(q).reverse())), hash);
+  assert.equal(questionFingerprint({ ...q, status: "published", reviewed: { by: "human" } }), hash);
+  for (const change of [
+    { authored: { ...q.authored, by: "agent:new-writer" } },
+    { evidence: [{ ...q.evidence[0], excerpt: "Different evidence" }] },
+    { options: q.options.map((o) => ({ ...o, explanation: o.explanation + " Changed." })) },
+  ])
+    assert.notEqual(questionFingerprint({ ...q, ...change }), hash);
+  assert.deepEqual(reviewProblems({ ...q, reviewed: { by: "mashkovd", at: "2026-09-05T00:00:00Z" } }), []);
+  assert.match(
+    reviewProblems({ ...q, reviewed: { by: "agent:reviewer", at: "2026-09-05T00:00:00Z" } }).join(),
+    /requires content_sha256/,
+  );
+});
+
 test("promotes review_ready question to published and stamps maintainer review", () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
   try {
@@ -58,7 +118,7 @@ test("promotes review_ready question to published and stamps maintainer review",
   }
 });
 
-test("rejects promotion if maintainer handle is missing or agent handle", () => {
+test("rejects promotion if reviewer is missing or an agent has no review receipt", () => {
   const dir = mkdtempSync(join(tmpdir(), "academy-approve-"));
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
@@ -72,7 +132,7 @@ test("rejects promotion if maintainer handle is missing or agent handle", () => 
 
     assert.throws(
       () => promoteQuestions({ contentDir: dir, by: "agent:question-author", idsOrPaths: [filePath] }),
-      /agent handles \(agent:\*\) are rejected/,
+      /requires --review-file/,
     );
   } finally {
     rmSync(dir, { recursive: true, force: true });

@@ -4,7 +4,7 @@
  *
  * Automates state transitions for questions in `status: needs_review`:
  *   needs_review@AAA -> revalidate against BBB -> repin source_sha256=BBB -> review_ready
- *   needs_review@AAA -> excerpt missing in BBB -> review_ready
+ *   needs_review@AAA -> excerpt missing in BBB -> needs_review (unchanged)
  *
  * Usage:
  *   node scripts/revalidate-content.mjs
@@ -13,19 +13,14 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDocument, isSeq, isMap } from "yaml";
+import { storeFromEnv } from "./lib/snapshot-store.mjs";
+import { normalize } from "./verify-evidence.mjs";
+export { normalize } from "./verify-evidence.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR
   ? resolve(process.env.ACADEMY_CONTENT_DIR)
   : join(ROOT, "content");
-
-export const normalize = (str) =>
-  str
-    .normalize("NFC")
-    .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
-    .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
-    .replace(/\s+/g, " ")
-    .trim();
 
 function loadYamlDir(contentDir, dir) {
   const p = join(contentDir, dir);
@@ -42,9 +37,11 @@ function loadYamlDir(contentDir, dir) {
  * @param {object} opts
  * @param {string} [opts.contentDir]
  * @param {{get(key: string): Promise<string|null>}} opts.store
+ * @param {string[]} [opts.ids]
+ * @param {boolean} [opts.dryRun]
  * @returns {Promise<{revalidated: string[], unmatched: string[], errors: string[], totalProcessed: number}>}
  */
-export async function revalidateContent({ contentDir = CONTENT, store }) {
+export async function revalidateContent({ contentDir = CONTENT, store, ids = [], dryRun = false }) {
   if (!store) {
     throw new Error("R2 snapshot store is required for revalidation.");
   }
@@ -57,7 +54,15 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
   }
 
   const questions = loadYamlDir(contentDir, "questions");
-  const needsReview = questions.filter((q) => q.doc.toJS()?.status === "needs_review");
+  if (!ids.length)
+    throw new Error("Select explicit question IDs; revalidation never processes the whole bank implicitly.");
+  const selected = new Set(ids);
+  const needsReview = questions.filter((q) => selected.has(q.doc.toJS()?.id));
+  for (const id of selected) {
+    const item = needsReview.find((q) => q.doc.toJS()?.id === id)?.doc.toJS();
+    if (!item || item.status !== "needs_review")
+      throw new Error(`${id}: expected an existing needs_review question`);
+  }
 
   const revalidated = [];
   const unmatched = [];
@@ -79,7 +84,11 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
 
   for (const { file, doc } of needsReview) {
     const data = doc.toJS();
-    if (!data.evidence || data.evidence.length === 0) continue;
+    if (!data.evidence || data.evidence.length === 0) {
+      unmatched.push(data.id);
+      errors.push(`${data.id}: no evidence`);
+      continue;
+    }
 
     let allExcerptsMatched = true;
     const proposedRepins = [];
@@ -90,6 +99,11 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
       if (!src) {
         allExcerptsMatched = false;
         errors.push(`Question ${data.id || file} cites unknown source ${ev.source_id}`);
+        break;
+      }
+      if (src.status === "drifted" || src.status === "deprecated") {
+        allExcerptsMatched = false;
+        errors.push(`Source ${ev.source_id} is ${src.status}; capture a current source first`);
         break;
       }
 
@@ -136,6 +150,7 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
       if (targets.length === proposedRepins.length) {
         proposedRepins.forEach(({ hash }, i) => targets[i].set("source_sha256", hash));
         doc.set("status", "review_ready");
+        doc.delete("reviewed");
         revalidated.push(data.id);
       } else {
         // The excerpts all matched, but the hashes could not actually be
@@ -148,15 +163,13 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
           `Question ${data.id || file}: evidence matched but its YAML structure cannot be repinned ` +
             `(expected a sequence of mappings; got ${evidenceNode?.constructor?.name ?? typeof evidenceNode})`,
         );
-        doc.set("status", "review_ready");
         unmatched.push(data.id);
       }
     } else {
-      doc.set("status", "review_ready");
       unmatched.push(data.id);
     }
 
-    writeFileSync(file, doc.toString(), "utf8");
+    if (!dryRun && revalidated.includes(data.id)) writeFileSync(file, doc.toString(), "utf8");
   }
 
   return {
@@ -168,5 +181,18 @@ export async function revalidateContent({ contentDir = CONTENT, store }) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  console.log("Revalidation script loaded.");
+  try {
+    const args = process.argv.slice(2);
+    if (args.some((arg) => arg.startsWith("--") && arg !== "--dry-run")) throw new Error("Unknown option");
+    const result = await revalidateContent({
+      store: storeFromEnv(),
+      ids: args.filter((arg) => arg !== "--dry-run"),
+      dryRun: args.includes("--dry-run"),
+    });
+    console.log(JSON.stringify(result, null, 2));
+    if (result.errors.length || result.unmatched.length) process.exitCode = 1;
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 1;
+  }
 }

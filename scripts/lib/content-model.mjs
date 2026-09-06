@@ -17,6 +17,7 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { reviewProblems } from "./question-review.mjs";
 
 /** Source states that permanently disqualify anything citing them. */
 export const UNUSABLE_SOURCE_STATUSES = new Set(["drifted", "deprecated"]);
@@ -80,9 +81,7 @@ export function checkBundleEligibility(question, sourcesById) {
   if (question?.status !== "published") {
     reasons.push(`status is ${question?.status ?? "missing"}, not published`);
   }
-  if (question?.status === "published" && !question?.reviewed) {
-    reasons.push("published without a `reviewed` block — human approval is not optional");
-  }
+  if (question?.status === "published") reasons.push(...reviewProblems(question));
 
   const evidence = Array.isArray(question?.evidence) ? question.evidence : [];
   if (evidence.length === 0) {

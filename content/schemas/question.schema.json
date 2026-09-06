@@ -32,7 +32,7 @@
       "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"
     },
     "status": {
-      "description": "draft: incomplete work. review_ready: agent-authored, verified evidence, awaiting human review. needs_review: was published, a cited source drifted. published: selectable. retired: permanently withdrawn.",
+      "description": "draft: incomplete work. review_ready: awaiting independent review. needs_review: withdrawn for source drift or a content/evidence concern. published: reviewed and selectable. retired: permanently withdrawn.",
       "enum": ["draft", "review_ready", "needs_review", "published", "retired"]
     },
     "domain": {
@@ -134,12 +134,13 @@
       }
     },
     "reviewed": {
-      "description": "Present once a human owner has approved. Required before status may be published — enforced by the lint, since JSON Schema cannot make one field conditional on another's value cleanly enough to be worth it here.",
+      "description": "Approval by a human or independent agent. Agent approvals require a current content fingerprint; legacy human approvals remain compatible.",
       "type": "object",
       "additionalProperties": false,
       "required": ["by", "at"],
       "properties": {
         "by": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
         "at": {
           "type": "string",
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
