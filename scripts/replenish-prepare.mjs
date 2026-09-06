@@ -178,10 +178,16 @@ const gitPaths = (args, cwd) => {
  * Question files that differ from the base: tracked changes AND untracked
  * files. `git diff` alone never lists a file the author agent just created,
  * which is its dominant output.
+ *
+ * Not --exclude-standard, for the same reason as below: the agent can write
+ * content/questions/.gitignore, and every file named there would then fall out
+ * of the cap and out of guardChanges while still sitting in the tree the gates
+ * run over. Without the flag the .gitignore is itself reported, and
+ * guardChanges refuses it for not being a .yaml file.
  */
 export function changedQuestionFiles({ base, cwd = process.cwd() }) {
   const tracked = gitPaths(["diff", "--name-only", base, "--", "content/questions"], cwd);
-  const untracked = gitPaths(["ls-files", "--others", "--exclude-standard", "--", "content/questions"], cwd);
+  const untracked = gitPaths(["ls-files", "--others", "--", "content/questions"], cwd);
   return [...new Set([...tracked, ...untracked])].sort();
 }
 

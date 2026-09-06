@@ -249,6 +249,30 @@ jobs:
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then sha256sum "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              env -0 | LC_ALL=C sort -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  INPUT_*|STATE_*) continue ;;
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | sha256sum | cut -d" " -f1)"
+              done
             }
           }
           manifest > "${RUNNER_TEMP}/selector-guard.txt"
@@ -348,6 +372,30 @@ jobs:
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then sha256sum "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              env -0 | LC_ALL=C sort -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  INPUT_*|STATE_*) continue ;;
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | sha256sum | cut -d" " -f1)"
+              done
             }
           }
           now="${RUNNER_TEMP}/selector-guard-after.txt"
@@ -357,26 +405,19 @@ jobs:
             diff "${RUNNER_TEMP}/selector-guard.txt" "$now" || true
             exit 1
           fi
-          # $GITHUB_ENV and $GITHUB_PATH are per-step files the runner applies
-          # the moment the agent's step ends, so they cannot be compared here;
-          # what they would have done can be, and this is the standard Actions
-          # escalation an unscoped write reaches.
           bad=""
-          for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
-            if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
-          done
           # $GITHUB_PATH *prepends*, so one line appended to it wins every
           # command resolution in every following step. An allowlist, not a
-          # list of bad shapes: the only entry that legitimately appears
-          # between the snapshot and here is the bun directory the action's
-          # own setup-bun step adds. Anything else the agent put there --
-          # $HOME/bin as much as the workspace -- fails the run.
+          # list of bad shapes: nothing may appear on PATH that was not there
+          # before the agent ran. This workflow's own setup-bun step has
+          # already put the bun directory there, so the action's copy of that
+          # step adds nothing new; anything the agent put there -- $HOME/bin as
+          # much as the workspace -- fails the run and is named in the error.
           before="$EXPECTED_PATH"
           old_ifs=$IFS
           IFS=:
           for d in $PATH; do
             case ":$before:" in *":$d:"*) continue ;; esac
-            if [ "$d" = "$HOME/.bun/bin" ]; then continue; fi
             # An empty entry is a real one: bash keeps empty fields when IFS is
             # a non-whitespace character, and to PATH it means the current
             # directory.
@@ -400,7 +441,9 @@ jobs:
           # the exclusions whether or not a path was named, so the flag would
           # hand .gitignore a veto over what this check can see -- and .npmrc
           # is one of the files most likely to be added to it.
-          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc"
+          # bun reads .env by itself, and NODE_OPTIONS set there survives into
+          # every node the install and the gates below start.
+          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc .env .env.*"
           changed=$(git diff --name-only -z HEAD -- $surface | tr '\0' '\n')
           created=$(git ls-files --others -z -- $surface | tr '\0' '\n')
           # Node resolves imports by walking UP from the script's directory, so
@@ -581,6 +624,30 @@ jobs:
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then sha256sum "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              env -0 | LC_ALL=C sort -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  INPUT_*|STATE_*) continue ;;
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | sha256sum | cut -d" " -f1)"
+              done
             }
           }
           manifest > "${RUNNER_TEMP}/author-guard.txt"
@@ -697,6 +764,30 @@ jobs:
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then sha256sum "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              env -0 | LC_ALL=C sort -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  INPUT_*|STATE_*) continue ;;
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | sha256sum | cut -d" " -f1)"
+              done
             }
           }
           now="${RUNNER_TEMP}/author-guard-after.txt"
@@ -706,26 +797,19 @@ jobs:
             diff "${RUNNER_TEMP}/author-guard.txt" "$now" || true
             exit 1
           fi
-          # $GITHUB_ENV and $GITHUB_PATH are per-step files the runner applies
-          # the moment the agent's step ends, so they cannot be compared here;
-          # what they would have done can be, and this is the standard Actions
-          # escalation an unscoped write reaches.
           bad=""
-          for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
-            if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
-          done
           # $GITHUB_PATH *prepends*, so one line appended to it wins every
           # command resolution in every following step. An allowlist, not a
-          # list of bad shapes: the only entry that legitimately appears
-          # between the snapshot and here is the bun directory the action's
-          # own setup-bun step adds. Anything else the agent put there --
-          # $HOME/bin as much as the workspace -- fails the run.
+          # list of bad shapes: nothing may appear on PATH that was not there
+          # before the agent ran. This workflow's own setup-bun step has
+          # already put the bun directory there, so the action's copy of that
+          # step adds nothing new; anything the agent put there -- $HOME/bin as
+          # much as the workspace -- fails the run and is named in the error.
           before="$EXPECTED_PATH"
           old_ifs=$IFS
           IFS=:
           for d in $PATH; do
             case ":$before:" in *":$d:"*) continue ;; esac
-            if [ "$d" = "$HOME/.bun/bin" ]; then continue; fi
             # An empty entry is a real one: bash keeps empty fields when IFS is
             # a non-whitespace character, and to PATH it means the current
             # directory.
@@ -754,7 +838,9 @@ jobs:
           # the exclusions whether or not a path was named, so the flag would
           # hand .gitignore a veto over what this check can see -- and .npmrc
           # is one of the files most likely to be added to it.
-          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc"
+          # bun reads .env by itself, and NODE_OPTIONS set there survives into
+          # every node the install and the gates below start.
+          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc .env .env.*"
           changed=$(git diff --name-only -z "${{ steps.base.outputs.sha }}" -- $surface | tr '\0' '\n')
           created=$(git ls-files --others -z -- $surface | tr '\0' '\n')
           # Node resolves imports by walking UP from the script's directory, so
@@ -979,6 +1065,30 @@ jobs:
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then sha256sum "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              env -0 | LC_ALL=C sort -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  INPUT_*|STATE_*) continue ;;
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | sha256sum | cut -d" " -f1)"
+              done
             }
           }
           manifest > "${RUNNER_TEMP}/reviewer-guard.txt"
@@ -1077,6 +1187,30 @@ jobs:
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then sha256sum "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              env -0 | LC_ALL=C sort -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  INPUT_*|STATE_*) continue ;;
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | sha256sum | cut -d" " -f1)"
+              done
             }
           }
           now="${RUNNER_TEMP}/reviewer-guard-after.txt"
@@ -1086,26 +1220,19 @@ jobs:
             diff "${RUNNER_TEMP}/reviewer-guard.txt" "$now" || true
             exit 1
           fi
-          # $GITHUB_ENV and $GITHUB_PATH are per-step files the runner applies
-          # the moment the agent's step ends, so they cannot be compared here;
-          # what they would have done can be, and this is the standard Actions
-          # escalation an unscoped write reaches.
           bad=""
-          for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
-            if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
-          done
           # $GITHUB_PATH *prepends*, so one line appended to it wins every
           # command resolution in every following step. An allowlist, not a
-          # list of bad shapes: the only entry that legitimately appears
-          # between the snapshot and here is the bun directory the action's
-          # own setup-bun step adds. Anything else the agent put there --
-          # $HOME/bin as much as the workspace -- fails the run.
+          # list of bad shapes: nothing may appear on PATH that was not there
+          # before the agent ran. This workflow's own setup-bun step has
+          # already put the bun directory there, so the action's copy of that
+          # step adds nothing new; anything the agent put there -- $HOME/bin as
+          # much as the workspace -- fails the run and is named in the error.
           before="$EXPECTED_PATH"
           old_ifs=$IFS
           IFS=:
           for d in $PATH; do
             case ":$before:" in *":$d:"*) continue ;; esac
-            if [ "$d" = "$HOME/.bun/bin" ]; then continue; fi
             # An empty entry is a real one: bash keeps empty fields when IFS is
             # a non-whitespace character, and to PATH it means the current
             # directory.
@@ -1135,7 +1262,9 @@ jobs:
           # the exclusions whether or not a path was named, so the flag would
           # hand .gitignore a veto over what this check can see -- and .npmrc
           # is one of the files most likely to be added to it.
-          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc"
+          # bun reads .env by itself, and NODE_OPTIONS set there survives into
+          # every node the install and the gates below start.
+          surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc .env .env.*"
           changed=$(git diff --name-only -z HEAD -- $surface | tr '\0' '\n')
           created=$(git ls-files --others -z -- $surface | tr '\0' '\n')
           # Node resolves imports by walking UP from the script's directory, so

@@ -88,6 +88,18 @@ run accepted `Write(content/questions/**)`; that has never been reproduced and
 nothing depends on it.) The workflow
 therefore deletes everything but the one expected file straight after each
 agent, and the deterministic checks below are the real boundary.
+
+Because the grant reaches the whole filesystem and not just the repository,
+each agent is bracketed. The step before it hashes what the steps after it
+trust — everything under `_run/`, `.git/config` and `.git/hooks/`, git's three
+configuration levels including `$XDG_CONFIG_HOME/git/config`, `~/.npmrc` and
+`~/.bunfig.toml`, the `git`/`node`/`bun`/`gh` binaries as they resolve on
+`PATH`, and every environment variable (values hashed, so a failure names
+variables and prints no secret) — and puts the digest in the step's **output**,
+which is not a path an agent can rewrite. The step after it recomputes the
+digest before any repository code runs, and separately refuses any `PATH` entry
+that was not there before: `$GITHUB_PATH` prepends, so one line appended to it
+from inside the agent's step would win every command resolution that follows.
 That is what lets the pre-agent boundary check (`replenish-prepare.mjs
 boundary`) be a plain "nothing changed or created outside `content/questions`"
 rule rather than a list of filenames that has to be updated whenever a step
