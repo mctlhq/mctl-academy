@@ -537,6 +537,7 @@ jobs:
       - name: Author agent writes review_ready questions
         uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
         with:
+          show_full_output: true
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
           prompt: |
@@ -593,6 +594,32 @@ jobs:
       # empty selection captured nothing, and the reviewer's absence surfaced
       # three steps later as ENOENT. An agent that produced no output is a
       # broken run, and it says so here.
+      # TEMPORARY (chore/diagnose-agent-write): why did the author report
+      # is_error with no denials? Not for main.
+      - name: DIAGNOSTIC -- the author's own account
+        if: always()
+        run: |
+          set +e
+          ls -la _agent _run 2>&1 | head -30
+          git status --porcelain | head -30
+          node -e '
+            const fs = require("fs");
+            const f = process.env.RUNNER_TEMP + "/claude-execution-output.json";
+            if (!fs.existsSync(f)) { console.log("no execution log"); process.exit(0); }
+            const raw = fs.readFileSync(f, "utf8");
+            let ev; try { ev = JSON.parse(raw); } catch { ev = raw.split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); }
+            console.log("events:", ev.length);
+            for (const e of ev) {
+              const bl = e?.message?.content;
+              if (Array.isArray(bl)) for (const b of bl) {
+                if (b.type === "tool_use") console.log("TOOL_USE", b.name, JSON.stringify(b.input).slice(0, 200));
+                if (b.type === "tool_result" && b.is_error) console.log("TOOL_ERROR", (typeof b.content === "string" ? b.content : JSON.stringify(b.content)).slice(0, 400));
+                if (b.type === "text") console.log("TEXT", (b.text || "").slice(0, 400));
+              }
+              if (e?.type === "result") console.log("RESULT", JSON.stringify(e).slice(0, 1200));
+            }
+          '
+
       - name: The agent produced its output
         run: |
           set -euo pipefail
