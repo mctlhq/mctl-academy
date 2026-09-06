@@ -108,6 +108,17 @@ boundary`) be a plain "nothing changed or created outside `content/questions`"
 rule rather than a list of filenames that has to be updated whenever a step
 starts writing a new one.
 
+Both agents run on `CLAUDE_CODE_OAUTH_TOKEN` and retry on
+`CLAUDE_CODE_OAUTH_TOKEN_2`, the same pair `claude-review` uses. This is not
+politeness about quota: an exhausted token comes back as a *green* step whose
+execution output says `is_error` with one turn and no cost, so without the
+retry a spent window reads as "the agent had nothing to say" and the run
+continues on an empty answer. The retry asks the identical question, starting
+from a tree reset to before the interrupted attempt; if neither token can run
+the agent, the job fails rather than promoting a partial result. With no second
+token configured the workflow still runs — and still fails closed, with a
+warning naming the missing secret.
+
 ## Manual replenishment run
 
 Run on a feature branch, in batches of no more than 20 questions:

@@ -224,6 +224,25 @@ test("boundaryProblems --strict admits nothing but the paths explicitly allowed"
   }
 });
 
+// An agent is two steps: the primary and its retry on the second token, which
+// runs only when the first could not. Everything that must happen after an
+// agent must happen after the LAST of them, and everything that must happen
+// before it, before the first.
+const agentRuns = (steps) => {
+  const runs = [];
+  steps.forEach((step, i) => {
+    if (!step.uses?.startsWith("anthropics/claude-code-action@")) return;
+    if (step.id?.endsWith("-2")) {
+      const open = runs[runs.length - 1];
+      assert.equal(open?.step.id, step.id.slice(0, -2), `${step.name} does not retry the step above it`);
+      open.last = i;
+      return;
+    }
+    runs.push({ step, first: i, last: i });
+  });
+  return runs;
+};
+
 test("every agent step is followed by a boundary check before credentialed code runs", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -232,14 +251,12 @@ test("every agent step is followed by a boundary check before credentialed code 
   // load files the checkout provides, so a step carrying R2 credentials must
   // never be the first thing to run after an agent.
   const hasR2 = (s) => JSON.stringify(s.env ?? {}).includes("R2_");
-  const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
   const isBoundary = (s) => (s.run ?? "").includes("replenish-prepare.mjs boundary");
   let checked = 0;
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
-    steps.forEach((step, i) => {
-      if (!isAgent(step)) return;
-      const next = steps.slice(i + 1);
+    for (const { step, last } of agentRuns(steps)) {
+      const next = steps.slice(last + 1);
       const boundary = next.findIndex(isBoundary);
       const credentialed = next.findIndex(hasR2);
       assert.notEqual(boundary, -1, `no boundary check after ${step.name}`);
@@ -250,7 +267,7 @@ test("every agent step is followed by a boundary check before credentialed code 
         assert.ok(boundary <= credentialed, `credentialed step runs before the boundary after ${step.name}`);
       }
       checked += 1;
-    });
+    }
   }
   assert.equal(checked, 3);
 });
@@ -262,7 +279,6 @@ test("every agent step is followed by a dependency rebuild before any repository
   // node_modules is exempt from the boundary check -- bun install leaves tens
   // of thousands of untracked files there -- so a write that reached it would
   // execute on the next import, which is the boundary check itself.
-  const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
   const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
   // Commentary is not behaviour: a comment naming node or bun is not a run of
   // either, and reading it as one has bitten this file before. Neither is
@@ -280,16 +296,15 @@ test("every agent step is followed by a dependency rebuild before any repository
   let checked = 0;
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
-    steps.forEach((step, i) => {
-      if (!isAgent(step)) return;
-      const next = steps.slice(i + 1);
+    for (const { step, last } of agentRuns(steps)) {
+      const next = steps.slice(last + 1);
       const rebuild = next.findIndex(isRebuild);
       assert.notEqual(rebuild, -1, `no dependency rebuild after ${step.name}`);
       const repoCode = next.findIndex(runsRepoCode);
       // The rebuild step itself runs bun, so it is allowed to be the first.
       assert.equal(rebuild, repoCode, `repository code runs before the rebuild after ${step.name}`);
       checked += 1;
-    });
+    }
   }
   assert.equal(checked, 3);
 });
@@ -609,19 +624,36 @@ test("each agent gets exactly the tools it needs, and no scoped grant", () => {
   const agents = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter((s) =>
     s.uses?.startsWith("anthropics/claude-code-action@"),
   );
-  assert.equal(agents.length, 3);
+  // Three agents, each with a retry on the second token.
+  assert.equal(agents.length, 6);
   for (const step of agents) {
     const args = step.with.claude_args;
+    const name = step.name.replace(" (fallback token)", "");
     for (const flag of ["--tools", "--allowedTools"]) {
       const value = new RegExp(`${flag} "([^"]*)"`).exec(args)?.[1];
       assert.ok(value !== undefined, `${step.name} passes no ${flag}`);
       assert.deepEqual(
         value.split(",").map((t) => t.trim()),
-        expected[step.name],
+        expected[name],
         `${step.name} ${flag}`,
       );
     }
     assert.doesNotMatch(args, /--dangerously/, `${step.name} disables permissions wholesale`);
+  }
+  // The retry must ask the identical question: a fallback with a different
+  // prompt, model or tool set makes the two attempts incomparable, and which
+  // one produced the output would depend on a quota window.
+  for (const step of agents.filter((s) => s.id?.endsWith("-2"))) {
+    const primary = agents.find((s) => s.id === step.id.slice(0, -2));
+    assert.ok(primary, `${step.name} retries an agent that does not exist`);
+    assert.deepEqual(
+      { ...step.with, claude_code_oauth_token: null },
+      { ...primary.with, claude_code_oauth_token: null },
+      `${step.name} differs from its primary by more than the token`,
+    );
+    assert.match(step.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN_2/);
+    assert.match(primary.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN }}/);
+    assert.equal(primary["continue-on-error"], true, `${primary.name} fails the job before the retry runs`);
   }
 });
 
@@ -636,9 +668,8 @@ test("every agent is bracketed by a snapshot and a verification of what the next
   // agent could rewrite.
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
-    steps.forEach((step, i) => {
-      if (!step.uses?.startsWith("anthropics/claude-code-action@")) return;
-      const before = steps[i - 1];
+    for (const { step, first, last } of agentRuns(steps)) {
+      const before = steps[first - 1];
       assert.equal(
         before?.name,
         "Snapshot what the agent must not touch",
@@ -647,7 +678,7 @@ test("every agent is bracketed by a snapshot and a verification of what the next
       assert.ok(before.id, "the snapshot step must have an id to be referenced");
       assert.equal(before.if ?? null, step.if ?? null, "the snapshot must run exactly when the agent does");
 
-      const after = steps.slice(i + 1);
+      const after = steps.slice(last + 1);
       const verify = after.find((s) => s.name === "Nothing the next steps trust moved");
       assert.ok(verify, `nothing verifies after ${step.name}`);
       // A snapshot that is skipped is loud -- the verification then has no
@@ -675,7 +706,7 @@ test("every agent is bracketed by a snapshot and a verification of what the next
       );
       assert.notEqual(guard, -1, `nothing rebuilds dependencies after ${step.name}`);
       assert.ok(after.indexOf(verify) < guard, "the verification must precede the dependency rebuild");
-    });
+    }
   }
 });
 
@@ -756,6 +787,116 @@ test("the live drift check treats only its own exit codes as success", () => {
   assert.equal(status(127), 1, "an interpreter that would not start must stop the run");
 });
 
+test("an exhausted token is retried on the second one and never read as an answer", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The action reports a green step for a call that never happened: an
+  // exhausted token comes back is_error with one turn and no cost, and on
+  // 2026-09-06 that stopped the supervised run three times while every step
+  // stayed green. Both jobs must therefore decide "did it run" from the
+  // execution output rather than from the step's outcome alone.
+  //
+  // `result` is what the action writes to $RUNNER_TEMP; passing null means the
+  // file is absent, which is the shape of a run where the action never got far
+  // enough to write one.
+  const stage = (env, result) => {
+    const dir = mkdtempSync(join(tmpdir(), "academy-token-"));
+    if (result) writeFileSync(join(dir, "claude-execution-output.json"), JSON.stringify(result));
+    return { dir, env: { ...process.env, RUNNER_TEMP: dir, GITHUB_OUTPUT: join(dir, "out.txt"), ...env } };
+  };
+  const exits = (run, envs, result) => {
+    const { dir, env } = stage(envs, result);
+    try {
+      execFileSync("bash", ["-c", run], { cwd: dir, env, stdio: ["ignore", "pipe", "pipe"] });
+      return 0;
+    } catch (err) {
+      return err.status;
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  const decides = (run, envs, result) => {
+    const { dir, env } = stage(envs, result);
+    try {
+      execFileSync("bash", ["-c", run], { cwd: dir, env, stdio: ["ignore", "pipe", "pipe"] });
+      return /failed=(\w+)/.exec(readFileSync(env.GITHUB_OUTPUT, "utf8"))?.[1];
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    const token = steps.find((s) => s.id === "fallback-token");
+    assert.ok(token, `${job} never asks whether a second token exists`);
+    // A secret cannot be read from an `if:`, which is why this is a step.
+    assert.match(token.env.FALLBACK, /secrets\.CLAUDE_CODE_OAUTH_TOKEN_2/);
+    assert.match(token.run, /available=true/);
+    assert.match(token.run, /available=false/);
+
+    for (const { step, first, last } of agentRuns(steps)) {
+      assert.notEqual(last, first, `${step.name} has no retry on the second token`);
+      const check = steps[first + 1];
+      assert.equal(check?.id, `${step.id}-check`, `${step.name} is not followed by its own outcome check`);
+      assert.equal(check.env.OUTCOME, `\${{ steps.${step.id}.outcome }}`);
+      assert.equal(check.if ?? null, step.if ?? null, `${check.name} runs on a different condition`);
+      // Run it: matching /is_error/ in the text would pass on a script that
+      // computes the variable and then decides on the outcome alone, which is
+      // exactly the failure this step exists to catch.
+      assert.equal(decides(check.run, { OUTCOME: "success" }, [{ type: "result", is_error: true }]), "true");
+      assert.equal(decides(check.run, { OUTCOME: "failure" }, [{ type: "result", is_error: false }]), "true");
+      assert.equal(
+        decides(check.run, { OUTCOME: "success" }, [{ type: "result", is_error: false }]),
+        "false",
+      );
+      assert.equal(decides(check.run, { OUTCOME: "success" }, null), "false", "no file is not a failure");
+
+      const closed = steps[last + 1];
+      assert.equal(closed.name, "Neither token could run this agent");
+      // Same treatment: the fallback's own result decides, and a run with no
+      // second token at all is a failure rather than a quiet pass.
+      // Everything else says "the retry went fine", so only the HAS_FALLBACK
+      // branch can produce the failure this asserts.
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "false", FALLBACK_OUTCOME: "skipped" }, [
+          { type: "result", is_error: false },
+        ]),
+        1,
+        "a run with no second token must not pass as a successful retry",
+      );
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, [
+          { type: "result", is_error: true },
+        ]),
+        1,
+      );
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "failure" }, [
+          { type: "result", is_error: false },
+        ]),
+        1,
+      );
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, [
+          { type: "result", is_error: false },
+        ]),
+        0,
+      );
+
+      const retry = steps[last];
+      const gate = retry.if;
+      assert.match(gate, new RegExp(`steps\\.${step.id}-check\\.outputs\\.failed == 'true'`));
+      assert.match(gate, /steps\.fallback-token\.outputs\.available == 'true'/);
+      if (step.if) assert.ok(gate.startsWith(step.if), `${retry.name} can run where its primary could not`);
+      // A retry on top of half of the first attempt would author twice.
+      const reset = steps[last - 1];
+      assert.equal(reset.name, "Undo what the interrupted attempt left behind");
+      assert.match(reset.run, /git clean -fd/);
+      assert.equal(reset.if, gate, "the reset and the retry must run together or not at all");
+    }
+  }
+});
+
 test("a silent agent fails the run instead of degrading quietly", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -764,16 +905,27 @@ test("a silent agent fails the run instead of degrading quietly", () => {
   // decisions.json surfaced three steps later as ENOENT from a script.
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
-    steps.forEach((step, i) => {
-      if (!step.uses?.startsWith("anthropics/claude-code-action@")) return;
-      const next = steps[i + 1];
+    for (const { step, last } of agentRuns(steps)) {
+      // An agent that could not run at all is a third case, between "wrote
+      // something" and "wrote nothing", and it is decided first: a spent quota
+      // window leaves a green step and, after a retry that also fails, an
+      // output file from neither attempt.
+      const closed = steps[last + 1];
+      assert.equal(
+        closed?.name,
+        "Neither token could run this agent",
+        `${step.name} has no fail-closed step`,
+      );
+      assert.match(closed.run, /::error::/);
+      assert.match(closed.run, /exit 1/);
+      const next = steps[last + 2];
       assert.equal(next?.name, "The agent produced its output", `nothing checks the output of ${step.name}`);
       assert.match(next.run, /::error::/);
       assert.match(next.run, /exit 1/);
       // The same condition as the agent step, or the check fires on a run
       // where that agent legitimately never ran.
       assert.equal(next.if ?? null, step.if ?? null, `${next.name} runs on a different condition`);
-    });
+    }
   }
 });
 
