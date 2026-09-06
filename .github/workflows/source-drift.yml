@@ -96,26 +96,45 @@ jobs:
         if: steps.check.outputs.drifted == 'true'
         run: node scripts/build-content-bundle.mjs
 
+      # Before the PR and the issues that reference them: a label that does
+      # not exist yet is silently skipped by the tolerant `--add-label` calls
+      # below, and the labels are how the quarantine PR is found (#198).
+      - name: Ensure the workflow's labels exist
+        if: steps.check.outputs.drifted == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: node scripts/drift-intake.mjs --repo "${{ github.repository }}" --ensure-labels-only
+
       - name: Push the quarantine branch and open or update its pull request
         if: steps.check.outputs.drifted == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BOT_EMAIL: mctl-agents[bot]@users.noreply.github.com
         run: |
           set -euo pipefail
           git config user.name "mctl-agents[bot]"
-          git config user.email "mctl-agents[bot]@users.noreply.github.com"
+          git config user.email "$BOT_EMAIL"
           git add content/sources/ content/questions/ client/src/content-bundle.json client/src/course-catalog.json
           if git diff --staged --quiet; then
             echo "No new quarantine changes to commit."
             exit 0
           fi
+          # The branch is rebuilt from main on every run and force-pushed, so
+          # an older quarantine commit (possibly stale against main) is
+          # replaced, not stacked on. The one thing a force-push must never
+          # do is discard a human's fix-in-place on the PR: if the remote tip
+          # was not written by this job, leave the branch alone and say so.
+          if git fetch origin "$QUARANTINE_BRANCH" 2>/dev/null; then
+            remote_author=$(git log -1 --format=%ae FETCH_HEAD)
+            if [ "$remote_author" != "$BOT_EMAIL" ]; then
+              echo "::warning::$QUARANTINE_BRANCH has a commit by $remote_author; not overwriting it. Merge or delete the branch to let the next run rebuild it."
+              exit 0
+            fi
+          fi
           git checkout -B "$QUARANTINE_BRANCH"
           git commit -m "chore(quarantine): auto-quarantine drifted sources and rebuild bundle"
-          # Force: the branch is rebuilt from main on every run, so an older
-          # quarantine commit (possibly stale against main) is replaced, not
-          # stacked on. An open PR on this branch simply updates.
           git push --force origin "HEAD:${QUARANTINE_BRANCH}"
 
           existing=$(gh pr list --repo "$REPO" --state open --head "$QUARANTINE_BRANCH" --json number --jq '.[0].number // empty')

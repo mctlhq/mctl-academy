@@ -84,6 +84,10 @@ export function findExistingIssue({ repo, title, gh = runGh }) {
     `"${title}" in:title`,
     "--json",
     "number,title",
+    // Dedup is the whole point: never let the exact match fall off the
+    // default 30-item page.
+    "--limit",
+    "100",
   ]);
   const issues = out.trim() ? JSON.parse(out) : [];
   // The search is a substring match; the decision is an exact one.
@@ -91,11 +95,23 @@ export function findExistingIssue({ repo, title, gh = runGh }) {
   return hit ? hit.number : null;
 }
 
+export const LABEL_DEFINITIONS = {
+  "content:drift": {
+    description: "Upstream documentation drift detected by the Source drift workflow",
+    color: "D93F0B",
+  },
+  "agents:quarantine": {
+    description: "Fail-closed quarantine of drifted sources, opened by the Source drift workflow",
+    color: "B60205",
+  },
+};
+
 export function ensureLabels({ repo, labels, gh = runGh }) {
   for (const label of labels) {
     // `--force` updates an existing label instead of failing, so this is
     // idempotent; a label that cannot be created must not sink the run, the
-    // issue is still worth opening without it.
+    // issue is still worth opening without it (see addLabels below).
+    const def = LABEL_DEFINITIONS[label] ?? { description: "", color: "EDEDED" };
     try {
       gh([
         "label",
@@ -105,9 +121,9 @@ export function ensureLabels({ repo, labels, gh = runGh }) {
         repo,
         "--force",
         "--description",
-        "Upstream documentation drift detected by the Source drift workflow",
+        def.description,
         "--color",
-        "D93F0B",
+        def.color,
       ]);
     } catch (err) {
       console.warn(`::warning::could not ensure label ${label}: ${err.message}`);
@@ -115,40 +131,66 @@ export function ensureLabels({ repo, labels, gh = runGh }) {
   }
 }
 
+/** Labels are applied after creation, one at a time, each failure tolerated. */
+function addLabels({ repo, issue, labels, gh }) {
+  for (const label of labels) {
+    try {
+      gh(["issue", "edit", String(issue), "--repo", repo, "--add-label", label]);
+    } catch (err) {
+      console.warn(`::warning::could not add label ${label} to ${issue}: ${err.message}`);
+    }
+  }
+}
+
 /**
- * @returns {{ id: string, action: "commented" | "created", issue: number | string }[]}
+ * One row's failure never costs another row its issue: the issues are the
+ * signal a human acts on, and the first dispatch opens several in a burst,
+ * which is exactly where a secondary rate limit bites. Failed rows are
+ * reported in the result and the CLI exits non-zero only after every row
+ * has had its turn.
+ *
+ * @returns {{ id: string, action: "commented" | "created" | "failed", issue: number | string }[]}
  */
 export function syncDriftIssues({ rows, repo, labels = DEFAULT_LABELS, gh = runGh }) {
-  /** @type {{ id: string, action: "commented" | "created", issue: number | string }[]} */
+  /** @type {{ id: string, action: "commented" | "created" | "failed", issue: number | string }[]} */
   const actions = [];
   for (const row of rows) {
     const title = issueTitle(row.id);
     const body = issueBody(row);
-    const existing = findExistingIssue({ repo, title, gh });
-    if (existing !== null) {
-      gh(["issue", "comment", String(existing), "--repo", repo, "--body", body]);
-      actions.push({ id: row.id, action: "commented", issue: existing });
-      continue;
+    try {
+      const existing = findExistingIssue({ repo, title, gh });
+      if (existing !== null) {
+        gh(["issue", "comment", String(existing), "--repo", repo, "--body", body]);
+        actions.push({ id: row.id, action: "commented", issue: existing });
+        continue;
+      }
+      // Create first, label after: `gh issue create --label` fails outright
+      // on a label that does not exist, and the issue matters more than it.
+      const url = gh(["issue", "create", "--repo", repo, "--title", title, "--body", body]).trim();
+      addLabels({ repo, issue: url, labels, gh });
+      actions.push({ id: row.id, action: "created", issue: url });
+    } catch (err) {
+      console.error(`::error::${row.id}: ${err.message}`);
+      actions.push({ id: row.id, action: "failed", issue: "" });
     }
-    const args = ["issue", "create", "--repo", repo, "--title", title, "--body", body];
-    for (const label of labels) args.push("--label", label);
-    const url = gh(args).trim();
-    actions.push({ id: row.id, action: "created", issue: url });
   }
   return actions;
 }
 
 function parseArgs(argv) {
-  const opts = { report: null, repo: null, labels: [] };
+  const opts = { report: null, repo: null, labels: [], ensureLabelsOnly: false };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--report") opts.report = argv[++i];
     else if (arg === "--repo") opts.repo = argv[++i];
     else if (arg === "--label") opts.labels.push(argv[++i]);
+    else if (arg === "--ensure-labels-only") opts.ensureLabelsOnly = true;
     else throw new Error(`unknown argument ${arg}`);
   }
-  if (!opts.report || !opts.repo) {
-    throw new Error("usage: drift-intake.mjs --report <file> --repo <owner/repo> [--label <name>]");
+  if (!opts.repo || (!opts.report && !opts.ensureLabelsOnly)) {
+    throw new Error(
+      "usage: drift-intake.mjs --repo <owner/repo> (--report <file> | --ensure-labels-only) [--label <name>]",
+    );
   }
   if (!opts.labels.length) opts.labels = DEFAULT_LABELS;
   return opts;
@@ -157,15 +199,19 @@ function parseArgs(argv) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {
     const opts = parseArgs(process.argv.slice(2));
+    ensureLabels({
+      repo: opts.repo,
+      labels: opts.ensureLabelsOnly ? Object.keys(LABEL_DEFINITIONS) : opts.labels,
+    });
+    if (opts.ensureLabelsOnly) process.exit(0);
     const rows = parseDriftReport(readFileSync(opts.report, "utf8"));
     if (!rows.length) {
       console.log("no DRIFTED rows in the report; nothing to open");
       process.exit(0);
     }
-    ensureLabels({ repo: opts.repo, labels: opts.labels });
-    for (const a of syncDriftIssues({ rows, repo: opts.repo, labels: opts.labels })) {
-      console.log(`${a.action}\t${a.id}\t${a.issue}`);
-    }
+    const actions = syncDriftIssues({ rows, repo: opts.repo, labels: opts.labels });
+    for (const a of actions) console.log(`${a.action}\t${a.id}\t${a.issue}`);
+    if (actions.some((a) => a.action === "failed")) process.exit(1);
   } catch (err) {
     console.error(`drift-intake: ${err.message}`);
     process.exit(1);
