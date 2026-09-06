@@ -78,7 +78,9 @@ re-validation repaired something: those items are real work for the reviewer,
 and dropping the branch would leave them quarantined on `main`. A run that only
 quarantined does not open one, because `Source drift` already owns that PR.
 
-Every scratch file a run writes lives under `_run/`, which `.gitignore` covers.
+Every scratch file a run writes lives under `_run/`, which `.gitignore` covers,
+and every file an agent writes lives under `_agent/`, which it deliberately does
+not: the only `Write` allowlist shape the action honours is `dir/**`.
 That is what lets the pre-agent boundary check (`replenish-prepare.mjs
 boundary`) be a plain "nothing changed or created outside `content/questions`"
 rule rather than a list of filenames that has to be updated whenever a step

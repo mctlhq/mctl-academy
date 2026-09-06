@@ -1,6 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  existsSync,
+} from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -606,12 +614,22 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
   // defects read correctly and were wrong only when executed, and no CI runs
   // this file. So run the guard itself. Everything up to `rm -rf node_modules`
   // is the check; the install below it needs a network and is not the subject.
-  const step = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].find(
+  // All three copies, not the first: they differ in base ref and `if:`, and
+  // three hand-synchronised copies of a security check is exactly the drift
+  // this test exists to catch.
+  const steps = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
     (s) => s.name === "Guard the executable surface and rebuild dependencies",
   );
-  const guard = step.run
-    .slice(0, step.run.indexOf("rm -rf node_modules"))
-    .replace(/\$\{\{[^}]*\}\}/g, "HEAD");
+  assert.equal(steps.length, 3);
+  const guards = steps.map((step) =>
+    step.run.slice(0, step.run.indexOf("rm -rf node_modules")).replace(/\$\{\{[^}]*\}\}/g, "HEAD"),
+  );
+  // One copy anchors at the pre-agent commit, so the substitution must have
+  // actually replaced something rather than being decorative.
+  assert.ok(
+    steps.some((s) => s.run.includes("${{ steps.base.outputs.sha }}")),
+    "no copy anchors at the pre-agent commit",
+  );
 
   // A fresh fixture per case: the guard reads the whole tree, so leftovers
   // from one case would decide the next.
@@ -632,16 +650,25 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
       mkdirSync(join(dir, "node_modules", "foo", "node_modules", "bar"), { recursive: true });
       writeFileSync(join(dir, "node_modules", "foo", "node_modules", "bar", "index.js"), "");
       plant(dir);
-      try {
-        execFileSync("bash", ["-c", guard], {
-          cwd: dir,
-          encoding: "utf8",
-          stdio: ["ignore", "pipe", "pipe"],
-        });
-        return 0;
-      } catch (err) {
-        return err.status;
-      }
+      // Every copy must agree; a disagreement is the drift itself.
+      const statuses = guards.map((guard) => {
+        try {
+          execFileSync("bash", ["-c", guard], {
+            cwd: dir,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+          });
+          return 0;
+        } catch (err) {
+          return err.status;
+        }
+      });
+      assert.deepEqual(
+        [...new Set(statuses)],
+        [statuses[0]],
+        `the three copies of the guard disagree: ${statuses.join(",")}`,
+      );
+      return statuses[0];
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -689,6 +716,50 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
     0,
     "an authored question must not fail the guard",
   );
+});
+
+test("an agent that legitimately has nothing to say can still say so", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The missing-output check only tells silence from work if "nothing" is
+  // expressible. The selector's prompt anticipates a run where no offered page
+  // is in scope, and the commit step below the author's check prints "the
+  // author wrote nothing" and pushes the mechanically re-validated items --
+  // both legal outcomes the check would otherwise kill.
+  const prompt = (job, name) => workflow.jobs[job].steps.find((s) => s.name === name).with.prompt;
+  assert.match(prompt("author", "Author agent selects pages to capture"), /write the empty array \[\]/);
+  assert.match(prompt("author", "Author agent writes review_ready questions"), /`No files changed\.`/);
+});
+
+test("the agent scratch directory is pruned to its one expected file", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The grant has to be `_agent/**` -- a rule naming one file is denied, which
+  // is the bug this directory works around -- so the narrowing is done here,
+  // in shell, before any repository code or any tool that globs the tree.
+  const checks = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
+    (s) => s.name === "The agent produced its output",
+  );
+  assert.equal(checks.length, 3);
+  for (const step of checks) assert.match(step.run, /find _agent -mindepth 1 ! -path "\$f" -delete/);
+
+  const dir = mkdtempSync(join(tmpdir(), "academy-agentdir-"));
+  try {
+    mkdirSync(join(dir, "_agent", "sub"), { recursive: true });
+    writeFileSync(join(dir, "_agent", "select.json"), "[]");
+    writeFileSync(join(dir, "_agent", "pwn.test.mjs"), "process.exit(0)");
+    writeFileSync(join(dir, "_agent", "sub", "deep.mjs"), "");
+    execFileSync("bash", ["-c", checks[0].run], {
+      cwd: dir,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    assert.deepEqual(readdirSync(join(dir, "_agent")), ["select.json"]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("a review job that finds nothing to review fails instead of going green", () => {

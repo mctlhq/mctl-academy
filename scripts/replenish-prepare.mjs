@@ -199,7 +199,7 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
  * thousands of untracked files there before the base commit, so the check
  * cannot look at it without a different technique (hashing the tree around
  * the agent, or a node_modules-free worktree). That path stays closed by the
- * agent's Write/Edit allowlist -- content/questions/** and _run/CHANGES.md --
+ * agent's Write/Edit allowlist -- content/questions/** and _agent/** --
  * not by this function.
  */
 export function boundaryProblems({ base, cwd = process.cwd(), strict = false, allow = [] }) {

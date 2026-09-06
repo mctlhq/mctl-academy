@@ -26,9 +26,10 @@ name: Content replenish
 # open as data; none of that text is interpolated into a prompt or a shell
 # line.
 #
-# Every scratch file this workflow writes lives under _run/. That is what lets
-# the pre-agent boundary check below be a plain "nothing outside
-# content/questions moved" rule instead of a list that has to be re-derived
+# Every scratch file this workflow writes lives under _run/, and every file an
+# agent writes lives under _agent/. That is what lets the pre-agent boundary
+# check below be a plain "nothing outside content/questions moved" rule
+# instead of a list that has to be re-derived
 # whenever a step starts writing a new file. The check does not honour
 # .gitignore: an ignored path is still a path the next step would load.
 
@@ -225,6 +226,8 @@ jobs:
               { "id": "src-<slug>", "url": "<url from newPages>",
                 "objectives": ["domain-N/<objective-id>", ...] }
             Do not write a title: it is taken from the discovery report, not from you.
+            If no offered page is in scope, write the empty array [] -- that is a real answer
+            and the run continues on the drifted sources; writing no file at all is a failure.
             `id` must match ^src-[a-z0-9][a-z0-9-]{2,62}$ and must not already exist under
             content/sources/. Every objective must be an exact `domain-N/<objective-id>` from a
             course map. Choose at most `max_new` pages, the number in _run/limits.json.
@@ -250,6 +253,12 @@ jobs:
             echo "::error::the selector agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
+          # The grant has to be `_agent/**` -- a rule naming one file is denied,
+          # which is the bug this directory exists to work around -- so the
+          # narrowing happens here instead, in shell, before any repository
+          # code runs: everything the agent left besides its one expected
+          # output is deleted, whatever a later tool might have globbed it into.
+          find _agent -mindepth 1 ! -path "$f" -delete
 
       # Same reason as after the other two agents; the step's own comments carry
       # the argument.
@@ -279,7 +288,7 @@ jobs:
           rm -rf node_modules
           bun install --frozen-lockfile
 
-      # The selector agent may write only _run/select.json, and the very next
+      # The selector agent may write only _agent/select.json, and the very next
       # step runs repository code with snapshot credentials -- bun and node
       # both load files this checkout provides. The allowlist is not the only
       # boundary; this is. Nothing is exempted: the discovery watermark is
@@ -447,7 +456,9 @@ jobs:
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
 
-            Write _agent/CHANGES.md: one line per file you added or changed,
+            Write _agent/CHANGES.md: exactly the line `No files changed.` if you added and
+            changed nothing -- that is a real answer, and the run still pushes whatever the
+            mechanical re-validation repaired. Otherwise one line per file you added or changed,
             the objective it serves and the source it cites. Do not run commands. Structural
             validation and R2 citation verification run in separate deterministic steps.
           claude_args: >-
@@ -471,6 +482,12 @@ jobs:
             echo "::error::the author agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
+          # The grant has to be `_agent/**` -- a rule naming one file is denied,
+          # which is the bug this directory exists to work around -- so the
+          # narrowing happens here instead, in shell, before any repository
+          # code runs: everything the agent left besides its one expected
+          # output is deleted, whatever a later tool might have globbed it into.
+          find _agent -mindepth 1 ! -path "$f" -delete
 
       # An agent's Write allowlist is a path glob, and node_modules is exempt
       # from the boundary check because `bun install` leaves tens of thousands
@@ -516,10 +533,10 @@ jobs:
           # Reject changes to trusted validators, schemas and source records
           # before running any repository code with snapshot credentials.
           # Edited AND created paths, because `git diff` never lists an
-          # untracked file. Every scratch file this workflow writes is under
-          # the gitignored _run/, so this needs no list of exceptions to keep
-          # in sync; tests/replenish-prepare.test.mjs drives it against a real
-          # repository holding both scratch files and an intruder.
+          # untracked file. The two scratch directories, _run/ and _agent/,
+          # are the only exceptions and they live in boundaryProblems itself
+          # rather than in a per-call list; tests/replenish-prepare.test.mjs
+          # drives it against a real repository holding both and an intruder.
           node scripts/replenish-prepare.mjs boundary --base "${{ steps.base.outputs.sha }}"
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
@@ -733,6 +750,12 @@ jobs:
             echo "::error::the reviewer agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
+          # The grant has to be `_agent/**` -- a rule naming one file is denied,
+          # which is the bug this directory exists to work around -- so the
+          # narrowing happens here instead, in shell, before any repository
+          # code runs: everything the agent left besides its one expected
+          # output is deleted, whatever a later tool might have globbed it into.
+          find _agent -mindepth 1 ! -path "$f" -delete
 
       # An agent's Write allowlist is a path glob, and node_modules is exempt
       # from the boundary check because `bun install` leaves tens of thousands
@@ -769,7 +792,7 @@ jobs:
           bun install --frozen-lockfile
 
       # Same reason as after the selector: the reviewer may write only
-      # _run/decisions.json, and the next step runs approve-pr-questions,
+      # _agent/decisions.json, and the next step runs approve-pr-questions,
       # verify-evidence and build-content-bundle with snapshot credentials, then
       # commits the bundle those very scripts produced.
       - name: Nothing but the decisions moved
