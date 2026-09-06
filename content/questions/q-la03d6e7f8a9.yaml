@@ -1,40 +1,39 @@
 schema_version: 1
 id: q-la03d6e7f8a9
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/lora-adapters
-stem: What key hyperparameter in LoRA configuration controls the rank of the
-  low-rank update matrices A and B?
+stem: Which fine-tuning hyperparameter sets the rank of the LoRA matrices?
 options:
   - id: a
-    text: top_p
+    text: "`lora_dropout`"
     correct: false
-    explanation: Top-p (nucleus sampling) controls cumulative probability sampling
-      during generation.
+    explanation: "`lora_dropout` applies dropout to LoRA layers; it does not set the rank."
   - id: b
-    text: presence_penalty
+    text: "`weight_decay`"
     correct: false
-    explanation: Presence penalty penalizes new tokens based on occurrence in
-      generated output.
+    explanation: "`weight_decay` is an L2 regularisation factor applied to weights,
+      unrelated to LoRA rank."
   - id: c
-    text: context_window
+    text: "`context_length`"
     correct: false
-    explanation: Context window specifies total input token capacity of the model
-      architecture.
+    explanation: "`context_length` is the maximum sequence length in tokens, not a
+      LoRA setting."
   - id: d
-    text: r (rank)
+    text: "`lora_r`"
     correct: true
-    explanation: The parameter r defines the rank dimension of decomposition
-      matrices in LoRA adapters.
+    explanation: "`lora_r` is documented as the rank of the LoRA matrices; higher
+      values increase capacity but also overfitting and cost."
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: represents the model after a certain number of training steps (often
-      per epoch).
+    excerpt: "`lora_r` (integer, optional) Rank of LoRA matrices. Higher values
+      increase capacity but also overfitting and cost."
     source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: 63c4a1430ad33799d82a5fe8654d24b9c9d94f1a93b8da92c419432c494e9fb3

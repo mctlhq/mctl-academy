@@ -1,40 +1,41 @@
 schema_version: 1
 id: q-fi01c7d8e9f0
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/framework-integrations
-stem: When configuring OpenAI-compatible client SDKs to connect to an external
-  inference endpoint, what two parameters must be updated?
+stem: In the Quickstart, which two constructor parameters are set on the OpenAI
+  SDK client to point it at Token Factory?
 options:
   - id: a
-    text: model_type and system_prompt
+    text: "`model_type` and `system_prompt`"
     correct: false
-    explanation: Prompt and model selections belong to request calls, not base
-      client URL routing.
+    explanation: Model and prompt belong to individual requests; they do not
+      configure the client.
   - id: b
-    text: storage_bucket and db_url
+    text: "`storage_bucket` and `db_url`"
     correct: false
-    explanation: Storage and database configuration belong to database credentials,
-      not API endpoint setup.
+    explanation: The SDK client has no storage or database settings; these are
+      unrelated to inference.
   - id: c
-    text: base_url and api_key
+    text: "`base_url` and `api_key`"
     correct: true
-    explanation: Overriding base_url points client SDKs to the custom endpoint, and
-      api_key authenticates requests.
+    explanation: The Quickstart constructs the client with `base_url` set to the
+      Token Factory API and `api_key` read from `NEBIUS_API_KEY`.
   - id: d
-    text: tcp_port and dns_server
+    text: "`tcp_port` and `dns_server`"
     correct: false
-    explanation: Network sockets are handled by standard HTTP client transports, not
-      SDK client constructor parameters.
+    explanation: Networking is handled by the HTTP transport; the client is
+      configured with a URL and a key.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-quickstart
+    excerpt: base_url="https://api.tokenfactory.nebius.com/v1/",
+      api_key=os.environ.get("NEBIUS_API_KEY")
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: cd1c11db054a0b30b3fd6502e86c786dc3d1a34ec5d537e61338be93c1168743

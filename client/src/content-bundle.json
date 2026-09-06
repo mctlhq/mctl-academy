@@ -1,5 +1,133 @@
 [
   {
+    "id": "q-bc01b0c1d2e3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/billing-and-consumption",
+    "stem": "How does pricing differ between public serverless endpoints and dedicated endpoints?",
+    "objectiveTitle": "Billing, consumption, and cost controls",
+    "sources": [
+      {
+        "title": "Dedicated endpoints",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "| Pricing | Per GPU/hour, billed with per-minute granularity | Per token |"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Serverless is billed by storage volume; dedicated is billed per SQL query",
+        "correct": false,
+        "explanation": "Neither storage nor queries are the documented pricing basis for inference endpoints."
+      },
+      {
+        "id": "b",
+        "text": "Serverless is billed per token; dedicated is billed per GPU/hour with per-minute granularity",
+        "correct": true,
+        "explanation": "The dedicated versus public comparison table lists pricing as per token for public serverless and per GPU/hour, billed with per-minute granularity, for dedicated."
+      },
+      {
+        "id": "c",
+        "text": "Serverless is free; dedicated carries a fixed annual licence fee",
+        "correct": false,
+        "explanation": "Public serverless usage is billed per token, and dedicated pricing is per GPU/hour, not an annual fee."
+      },
+      {
+        "id": "d",
+        "text": "Both are billed a flat fee per HTTP request",
+        "correct": false,
+        "explanation": "The documented bases are tokens for serverless and GPU-hours for dedicated, not request counts."
+      }
+    ]
+  },
+  {
+    "id": "q-cc01a1b2c3d4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/chat-completions",
+    "stem": "When `stream` is enabled in a Chat Completions request, how does Token Factory deliver the partial message deltas?",
+    "objectiveTitle": "Chat completions: parameters, streaming, and responses",
+    "sources": [
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "Tokens will be sent as data-only [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format)"
+      },
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "as they become available, with the stream terminated by a `data: [DONE]` message."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "As data-only server-sent events, with the stream terminated by a `data: [DONE]` message",
+        "correct": true,
+        "explanation": "The `stream` parameter is documented to send tokens as data-only server-sent events as they become available, and the stream ends with `data: [DONE]`."
+      },
+      {
+        "id": "b",
+        "text": "As binary WebSocket frames on a persistent socket",
+        "correct": false,
+        "explanation": "The Chat Completions API streams over HTTP server-sent events; the documentation does not describe a WebSocket transport."
+      },
+      {
+        "id": "c",
+        "text": "As a multipart/form-data response with one part per token",
+        "correct": false,
+        "explanation": "Multipart encoding is not used for streaming completions; the documented format is server-sent events."
+      },
+      {
+        "id": "d",
+        "text": "As a single JSON array returned only after generation finishes",
+        "correct": false,
+        "explanation": "Waiting for the whole array would defeat streaming; deltas are sent as they become available."
+      }
+    ]
+  },
+  {
+    "id": "q-cc02b2c3d4e5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/chat-completions",
+    "stem": "According to the Chat Completions API reference, what effect does a low `temperature` value such as 0.2 have on sampling?",
+    "objectiveTitle": "Chat completions: parameters, streaming, and responses",
+    "sources": [
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The output becomes more random across the vocabulary",
+        "correct": false,
+        "explanation": "The reference attributes more random output to higher values such as 0.8, not to low values."
+      },
+      {
+        "id": "b",
+        "text": "The output becomes more focused and deterministic than at higher values",
+        "correct": true,
+        "explanation": "The reference states that lower values like 0.2 make the output more focused and deterministic, while higher values like 0.8 make it more random."
+      },
+      {
+        "id": "c",
+        "text": "Nucleus sampling via `top_p` is disabled automatically",
+        "correct": false,
+        "explanation": "`top_p` is a separate parameter; the reference only recommends altering one of the two, it does not say one disables the other."
+      },
+      {
+        "id": "d",
+        "text": "Every repeated request is guaranteed to return byte-identical text",
+        "correct": false,
+        "explanation": "The reference describes the output as more focused and deterministic; it does not promise identical output across requests."
+      }
+    ]
+  },
+  {
     "id": "q-co219916c0e5",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-1",
@@ -1640,6 +1768,231 @@
     ]
   },
   {
+    "id": "q-cs01d4e5f6a7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "A dedicated endpoint is serving traffic, but some replicas are still starting and capacity is below what was expected. Which readiness status does the documentation assign to this state?",
+    "objectiveTitle": "Capacity, availability, and service guarantees",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Endpoint can serve traffic, but below expected capacity."
+      },
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Some replicas are still starting, updating, or unavailable."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Not ready",
+        "correct": false,
+        "explanation": "Not ready means the endpoint cannot reliably serve requests; here it is serving, just below capacity."
+      },
+      {
+        "id": "b",
+        "text": "Ready",
+        "correct": false,
+        "explanation": "Ready means fully provisioned and ready for expected traffic, which is not the case while replicas are still starting."
+      },
+      {
+        "id": "c",
+        "text": "Warning",
+        "correct": false,
+        "explanation": "Warning is a lifecycle status describing a deployment issue, not a readiness status."
+      },
+      {
+        "id": "d",
+        "text": "Partially ready",
+        "correct": true,
+        "explanation": "Partially ready is defined as serving traffic below expected capacity while some replicas are still starting, updating, or unavailable."
+      }
+    ]
+  },
+  {
+    "id": "q-de02b2c3d4e5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/dedicated-endpoints",
+    "stem": "After creating a dedicated endpoint, what do you pass as the model identifier in OpenAI-compatible inference calls to target it?",
+    "objectiveTitle": "Deploying and operating dedicated endpoints",
+    "sources": [
+      {
+        "title": "Control and data plane",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/control-data-plane.md",
+        "excerpt": "| **routing\\_key** | The model identifier you pass to inference calls. Returned when you create an endpoint. |"
+      },
+      {
+        "title": "Control and data plane",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/control-data-plane.md",
+        "excerpt": "| **endpoint\\_id** | Identifier used for update/delete operations."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The `routing_key` returned when the endpoint was created",
+        "correct": true,
+        "explanation": "The control and data plane page defines `routing_key` as the model identifier you pass to inference calls, returned on endpoint creation."
+      },
+      {
+        "id": "b",
+        "text": "The `endpoint_id`",
+        "correct": false,
+        "explanation": "`endpoint_id` is documented as the identifier used for update and delete operations, not for inference."
+      },
+      {
+        "id": "c",
+        "text": "The template's `flavor_name`",
+        "correct": false,
+        "explanation": "A flavor is a template sub-option such as `base` or `fast`; it does not identify your deployment."
+      },
+      {
+        "id": "d",
+        "text": "The control-plane base URL",
+        "correct": false,
+        "explanation": "The control plane manages configuration; inference goes to the regional data-plane base URL with the `routing_key` as model."
+      }
+    ]
+  },
+  {
+    "id": "q-de03c5d6e7f8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/dedicated-endpoints",
+    "stem": "Why would a team deploy a fine-tuned model with custom weights on a dedicated endpoint rather than call a public serverless endpoint?",
+    "objectiveTitle": "Deploying and operating dedicated endpoints",
+    "sources": [
+      {
+        "title": "Dedicated endpoints",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "| Custom weights support | Supported for eligible models | Base models only |"
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Every self-service dedicated endpoint includes a formal SLA",
+        "correct": false,
+        "explanation": "The capacity page states that self-service dedicated endpoints do not include a formal SLA unless covered by contract."
+      },
+      {
+        "id": "b",
+        "text": "Dedicated endpoints support custom weights for eligible models, while public serverless endpoints serve base models only",
+        "correct": true,
+        "explanation": "The comparison table lists custom weights support as supported for eligible models on dedicated endpoints and base models only on public serverless endpoints."
+      },
+      {
+        "id": "c",
+        "text": "Dedicated endpoints are billed per token, which is cheaper for custom weights",
+        "correct": false,
+        "explanation": "Dedicated endpoints are billed per GPU/hour with per-minute granularity; per-token pricing is the public serverless model."
+      },
+      {
+        "id": "d",
+        "text": "Dedicated endpoints let the platform choose the region automatically",
+        "correct": false,
+        "explanation": "For dedicated endpoints the deployment region is fixed and user-selected; it is public serverless where the region may change."
+      }
+    ]
+  },
+  {
+    "id": "q-de08c9d0e1f2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/endpoint-lifecycle",
+    "stem": "Which readiness status means a dedicated endpoint is fully provisioned and ready for its expected traffic?",
+    "objectiveTitle": "Endpoint lifecycle and readiness status",
+    "sources": [
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Endpoint is fully provisioned and ready for expected traffic."
+      },
+      {
+        "title": "Lifecycle & Readiness Status",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md",
+        "excerpt": "Lifecycle is deployment state. Readiness is traffic-serving capability."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Ready",
+        "correct": true,
+        "explanation": "Ready is the readiness status defined as fully provisioned and ready for expected traffic; the docs say to use readiness to decide whether to send traffic."
+      },
+      {
+        "id": "b",
+        "text": "Running",
+        "correct": false,
+        "explanation": "Running is a lifecycle status (deployment state), not a readiness status; a Running endpoint can still be Partially ready or Not ready."
+      },
+      {
+        "id": "c",
+        "text": "Partially ready",
+        "correct": false,
+        "explanation": "Partially ready means the endpoint serves traffic but below expected capacity."
+      },
+      {
+        "id": "d",
+        "text": "Starting",
+        "correct": false,
+        "explanation": "Starting is a lifecycle status for an endpoint being created or started, when traffic may not be available yet."
+      }
+    ]
+  },
+  {
+    "id": "q-de09d0e1f2a3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "Which HTTP status does the API return when a request exceeds the active rate limit on a public serverless endpoint?",
+    "objectiveTitle": "Rate limits and scaling behaviour",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "If you exceed the active limit you will receive **HTTP 429**."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "HTTP 429 Too Many Requests",
+        "correct": true,
+        "explanation": "The rate limits page states that exceeding the active limit returns HTTP 429, and recommends tracking the remaining-requests and remaining-tokens headers to avoid it."
+      },
+      {
+        "id": "b",
+        "text": "HTTP 500 Internal Server Error",
+        "correct": false,
+        "explanation": "500 signals a server failure, not a client exceeding its quota."
+      },
+      {
+        "id": "c",
+        "text": "HTTP 404 Not Found",
+        "correct": false,
+        "explanation": "404 means the resource does not exist; it is unrelated to rate limiting."
+      },
+      {
+        "id": "d",
+        "text": "HTTP 401 Unauthorized",
+        "correct": false,
+        "explanation": "401 indicates a missing or invalid API key, not an exhausted rate limit."
+      }
+    ]
+  },
+  {
     "id": "q-df01f3a4b5c6",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -1718,6 +2071,98 @@
         "text": "A list of example API responses appended after the final turn",
         "correct": false,
         "explanation": "Tool results appear as messages within the conversation, not as a trailing appendix."
+      }
+    ]
+  },
+  {
+    "id": "q-df03a5b6c7d8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/dataset-formats",
+    "stem": "In a conversational fine-tuning dataset, which `role` values appear in the documented `messages` examples?",
+    "objectiveTitle": "Dataset formats required for fine-tuning",
+    "sources": [
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "{ \"role\": \"system\", \"content\": \"You are a friendly dinner planner.\" }, { \"role\": \"user\", \"content\": \"What's for dinner tonight?\" },"
+      },
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "{ \"role\": \"assistant\", \"content\": \"What cuisine do you prefer?\" },"
+      },
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "\"role\": \"tool\", \"tool_call_id\": \"call_1\", \"name\": \"get_weather\","
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`system`, `user`, `assistant`, and `tool` in function-calling conversations",
+        "correct": true,
+        "explanation": "The basic example uses `system`, `user`, and `assistant` messages; the tool-calling example adds `tool` messages carrying a `tool_call_id`."
+      },
+      {
+        "id": "b",
+        "text": "`admin`, `moderator`, and `guest`",
+        "correct": false,
+        "explanation": "These are application permission roles, not message roles in a training conversation."
+      },
+      {
+        "id": "c",
+        "text": "`input` and `output` only",
+        "correct": false,
+        "explanation": "Conversational examples are a `messages` array with roles; `input`/`output` is not the documented shape."
+      },
+      {
+        "id": "d",
+        "text": "`query` and `document`",
+        "correct": false,
+        "explanation": "Query and document are rerank request fields, not roles in a chat dataset."
+      }
+    ]
+  },
+  {
+    "id": "q-ds02d4e5f6a7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/datasets",
+    "stem": "Which file format does Token Factory accept for fine-tuning dataset files?",
+    "objectiveTitle": "Creating and managing datasets",
+    "sources": [
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "Nebius Token Factory supports the [JSON Lines](https://jsonlines.org/) format (`.jsonl`) for dataset files."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "XML documents with nested elements",
+        "correct": false,
+        "explanation": "The documented dataset format is JSON Lines, not XML."
+      },
+      {
+        "id": "b",
+        "text": "Tab-separated CSV rows",
+        "correct": false,
+        "explanation": "Datasets are JSON Lines files; CSV is not a documented format."
+      },
+      {
+        "id": "c",
+        "text": "Binary Protocol Buffer payloads",
+        "correct": false,
+        "explanation": "Datasets are plain-text JSON Lines, not a binary encoding."
+      },
+      {
+        "id": "d",
+        "text": "JSON Lines (`.jsonl`), one JSON object per line",
+        "correct": true,
+        "explanation": "The datasets page states that Token Factory supports the JSON Lines format (`.jsonl`) for dataset files."
       }
     ]
   },
@@ -1841,6 +2286,98 @@
         "text": "Lifecycle applies only to fine-tuning jobs, while readiness applies only to Files API uploads",
         "correct": false,
         "explanation": "Endpoint lifecycle and readiness apply directly to inference model endpoints."
+      }
+    ]
+  },
+  {
+    "id": "q-er01c3d4e5f6",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/embeddings-and-rerank",
+    "stem": "What does the `/v1/rerank` endpoint return for each document you supply together with a query?",
+    "objectiveTitle": "Embeddings and reranking for retrieval",
+    "sources": [
+      {
+        "title": "Reranking API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md",
+        "excerpt": "Reranks documents based on their relevance to a query."
+      },
+      {
+        "title": "Reranking API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md",
+        "excerpt": "relevance_score: type: number title: Relevance Score description: Relevance score of the document"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A dense embedding vector for the document",
+        "correct": false,
+        "explanation": "Embeddings come from the embeddings endpoint; rerank results carry a score, not a vector."
+      },
+      {
+        "id": "b",
+        "text": "A rewritten version of the document optimised for the query",
+        "correct": false,
+        "explanation": "Rerank does not generate or rewrite text; it scores the documents you pass in."
+      },
+      {
+        "id": "c",
+        "text": "The document's `index` and a `relevance_score` with respect to the query",
+        "correct": true,
+        "explanation": "Rerank reorders documents by relevance to a query; each `RerankResult` carries the document index, the document, and a `relevance_score`."
+      },
+      {
+        "id": "d",
+        "text": "A chat completion that answers the query using the document",
+        "correct": false,
+        "explanation": "Answer generation is the job of chat completions; rerank returns relevance scores only."
+      }
+    ]
+  },
+  {
+    "id": "q-fa01a1b2c3d4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "In the fine-tuning walkthrough, how is a training dataset made available to a fine-tuning job?",
+    "objectiveTitle": "Uploading, retrieving, and deleting files",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "training_file = client.files.create( file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\", )"
+      },
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "`training_file` (string, **required**) ID of the file with the training dataset (`purpose = \"fine-tune\"`)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Upload the JSONL file with the Files API using `purpose=\"fine-tune\"` and pass the returned file ID as `training_file`",
+        "correct": true,
+        "explanation": "The walkthrough calls `client.files.create` with the JSONL file and `purpose=\"fine-tune\"`; the required `training_file` parameter is the ID of that file."
+      },
+      {
+        "id": "b",
+        "text": "Stream the JSONL rows inline in the fine-tuning job request body",
+        "correct": false,
+        "explanation": "The job references a file ID; the dataset is not embedded in the job request."
+      },
+      {
+        "id": "c",
+        "text": "Upload the file with `purpose=\"assistants\"` and reference its name",
+        "correct": false,
+        "explanation": "The documented purpose value for fine-tuning datasets is `fine-tune`, and the job takes an ID, not a name."
+      },
+      {
+        "id": "d",
+        "text": "Point the job at a public HTTPS URL of the dataset",
+        "correct": false,
+        "explanation": "The walkthrough uploads the file through the Files API; URLs are not a documented input."
       }
     ]
   },
@@ -2009,6 +2546,93 @@
     ]
   },
   {
+    "id": "q-fc05d2e3f4a5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/function-calling",
+    "stem": "When a model returns a `tool_calls` payload in a Chat Completions response, what must your application do next?",
+    "objectiveTitle": "Function calling and tool use",
+    "sources": [
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "You are responsible for parsing these outputs and executing the corresponding functions on your backend or client side."
+      },
+      {
+        "title": "Function Calling & Tools",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md",
+        "excerpt": "\"role\": \"tool\", \"content\": result, \"tool_call_id\": call.id,"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "End the conversation, because the model has finished",
+        "correct": false,
+        "explanation": "A tool call is a request for your code to act; the conversation continues once the result is passed back."
+      },
+      {
+        "id": "b",
+        "text": "Re-send the same prompt unchanged and wait for a text answer",
+        "correct": false,
+        "explanation": "Re-sending the prompt gives the model nothing new; it asked for a function result it does not have."
+      },
+      {
+        "id": "c",
+        "text": "Remove the tool definition from the request so the model stops calling it",
+        "correct": false,
+        "explanation": "Tool definitions stay in place; the documented flow is to execute the function and return its output."
+      },
+      {
+        "id": "d",
+        "text": "Execute the function yourself and append a `role: tool` message with the result and `tool_call_id`",
+        "correct": true,
+        "explanation": "The model does not execute functions. Your backend or client runs them and appends a `tool` message carrying the result and the matching `tool_call_id`."
+      }
+    ]
+  },
+  {
+    "id": "q-fi01c7d8e9f0",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/framework-integrations",
+    "stem": "In the Quickstart, which two constructor parameters are set on the OpenAI SDK client to point it at Token Factory?",
+    "objectiveTitle": "Third-party framework integrations",
+    "sources": [
+      {
+        "title": "Quickstart",
+        "url": "https://docs.tokenfactory.nebius.com/quickstart.md",
+        "excerpt": "base_url=\"https://api.tokenfactory.nebius.com/v1/\", api_key=os.environ.get(\"NEBIUS_API_KEY\")"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`model_type` and `system_prompt`",
+        "correct": false,
+        "explanation": "Model and prompt belong to individual requests; they do not configure the client."
+      },
+      {
+        "id": "b",
+        "text": "`storage_bucket` and `db_url`",
+        "correct": false,
+        "explanation": "The SDK client has no storage or database settings; these are unrelated to inference."
+      },
+      {
+        "id": "c",
+        "text": "`base_url` and `api_key`",
+        "correct": true,
+        "explanation": "The Quickstart constructs the client with `base_url` set to the Token Factory API and `api_key` read from `NEBIUS_API_KEY`."
+      },
+      {
+        "id": "d",
+        "text": "`tcp_port` and `dns_server`",
+        "correct": false,
+        "explanation": "Networking is handled by the HTTP transport; the client is configured with a URL and a key."
+      }
+    ]
+  },
+  {
     "id": "q-fj01a9b0c1d2",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -2128,6 +2752,88 @@
         "text": "The checkpoint list, which grows as validation succeeds",
         "correct": false,
         "explanation": "Checkpoints tell you what was produced, not whether the input was accepted or where training has got to."
+      }
+    ]
+  },
+  {
+    "id": "q-ft03c7d8e9f0",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/supervised-fine-tuning",
+    "stem": "Which fine-tuning hyperparameter sets how many passes the job makes over the entire training dataset?",
+    "objectiveTitle": "Running supervised fine-tuning",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "`n_epochs` (integer, optional) Number of passes over the entire dataset."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`batch_size`",
+        "correct": false,
+        "explanation": "Batch size controls how many examples are processed per step, not how many times the dataset is traversed."
+      },
+      {
+        "id": "b",
+        "text": "`learning_rate`",
+        "correct": false,
+        "explanation": "The learning rate is the step size for gradient descent, not a count of dataset passes."
+      },
+      {
+        "id": "c",
+        "text": "`n_epochs`",
+        "correct": true,
+        "explanation": "`n_epochs` is documented as the number of passes over the entire dataset, with a default of 3."
+      },
+      {
+        "id": "d",
+        "text": "`temperature`",
+        "correct": false,
+        "explanation": "Temperature is an inference sampling parameter and is not a fine-tuning hyperparameter."
+      }
+    ]
+  },
+  {
+    "id": "q-la03d6e7f8a9",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/lora-adapters",
+    "stem": "Which fine-tuning hyperparameter sets the rank of the LoRA matrices?",
+    "objectiveTitle": "Working with and merging LoRA adapters",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "`lora_r` (integer, optional) Rank of LoRA matrices. Higher values increase capacity but also overfitting and cost."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`lora_dropout`",
+        "correct": false,
+        "explanation": "`lora_dropout` applies dropout to LoRA layers; it does not set the rank."
+      },
+      {
+        "id": "b",
+        "text": "`weight_decay`",
+        "correct": false,
+        "explanation": "`weight_decay` is an L2 regularisation factor applied to weights, unrelated to LoRA rank."
+      },
+      {
+        "id": "c",
+        "text": "`context_length`",
+        "correct": false,
+        "explanation": "`context_length` is the maximum sequence length in tokens, not a LoRA setting."
+      },
+      {
+        "id": "d",
+        "text": "`lora_r`",
+        "correct": true,
+        "explanation": "`lora_r` is documented as the rank of the LoRA matrices; higher values increase capacity but also overfitting and cost."
       }
     ]
   },
@@ -4018,6 +4724,47 @@
     ]
   },
   {
+    "id": "q-pf08c6d7e8f9",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "Which base URL does the Quickstart use to configure an OpenAI SDK client for Token Factory inference?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Quickstart",
+        "url": "https://docs.tokenfactory.nebius.com/quickstart.md",
+        "excerpt": "base_url=\"https://api.tokenfactory.nebius.com/v1/\","
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`https://api.tokenfactory.nebius.com/v1/`",
+        "correct": true,
+        "explanation": "The Quickstart constructs the OpenAI client with `base_url=\"https://api.tokenfactory.nebius.com/v1/\"`."
+      },
+      {
+        "id": "b",
+        "text": "`ftp://legacy.nebius.internal/storage`",
+        "correct": false,
+        "explanation": "FTP is not used for the inference API."
+      },
+      {
+        "id": "c",
+        "text": "`ws://localhost:3000/raw-socket`",
+        "correct": false,
+        "explanation": "A local WebSocket is not the documented API base URL."
+      },
+      {
+        "id": "d",
+        "text": "`https://docs.nebius.com/static/js`",
+        "correct": false,
+        "explanation": "That is a documentation asset path, not an inference endpoint."
+      }
+    ]
+  },
+  {
     "id": "q-rl01d7e8f9a0",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -4182,6 +4929,93 @@
     ]
   },
   {
+    "id": "q-sb01a9b0c1d2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "Why do Sandboxes use VM-level isolation when running code produced by an AI agent?",
+    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
+    "sources": [
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "So that untrusted code cannot escape the sandbox or affect other workloads",
+        "correct": true,
+        "explanation": "The Sandboxes overview lists secure isolation first: VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads."
+      },
+      {
+        "id": "b",
+        "text": "To make model token generation faster",
+        "correct": false,
+        "explanation": "Sandboxes execute code; they do not run model inference or change its throughput."
+      },
+      {
+        "id": "c",
+        "text": "To remove the need for an API key",
+        "correct": false,
+        "explanation": "Isolation is about containing executed code; authentication is unaffected."
+      },
+      {
+        "id": "d",
+        "text": "To convert scripts into static web pages",
+        "correct": false,
+        "explanation": "Sandboxes execute code and capture results; they do not transform code into HTML."
+      }
+    ]
+  },
+  {
+    "id": "q-sb02b0c1d2e3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "Which Sandboxes behaviours does the documentation cite as helping to prevent abuse when students or agents execute code?",
+    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
+    "sources": [
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "Automatic cleanup and resource limits help prevent abuse."
+      },
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "Number of simultaneously running operations is limited to 50."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Automatic git commits after every execution",
+        "correct": false,
+        "explanation": "Sandboxes offer Git-like branching of execution state, not automatic commits, and that feature is not what the docs tie to abuse prevention."
+      },
+      {
+        "id": "b",
+        "text": "Automatic cleanup and resource limits",
+        "correct": true,
+        "explanation": "The educational-platforms use case states that automatic cleanup and resource limits help prevent abuse; the beta also caps simultaneous operations at 50."
+      },
+      {
+        "id": "c",
+        "text": "DNS pre-fetching for faster downloads",
+        "correct": false,
+        "explanation": "DNS behaviour is not mentioned anywhere in the Sandboxes overview."
+      },
+      {
+        "id": "d",
+        "text": "An unlimited number of simultaneously running operations",
+        "correct": false,
+        "explanation": "The opposite is documented: during the beta, simultaneously running operations are limited to 50."
+      }
+    ]
+  },
+  {
     "id": "q-so01d5e6f7a8",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -4301,6 +5135,52 @@
         "text": "Also state the schema and the JSON instruction in the prompt",
         "correct": true,
         "explanation": "Repeating the instruction and schema in the system or user prompt is the documented way to improve quality and consistency."
+      }
+    ]
+  },
+  {
+    "id": "q-so04a3b4c5d6",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/structured-output",
+    "stem": "Your application needs the model's JSON to follow a specific structure. Which `response_format` type does the documentation tell you to use?",
+    "objectiveTitle": "Structured output and JSON-constrained generation",
+    "sources": [
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "Use **JSON schema instead of JSON objects** whenever you need **strict JSON structure**"
+      },
+      {
+        "title": "Structured Output & JSON",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/json.md",
+        "excerpt": "Forces arbitrary JSON output, the model will decide on the schema by itself"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`json_schema`, because `json_object` lets the model decide the schema by itself",
+        "correct": true,
+        "explanation": "The docs say to use JSON schema instead of JSON objects whenever you need strict JSON structure; `json_object` forces arbitrary JSON whose schema the model chooses."
+      },
+      {
+        "id": "b",
+        "text": "`json_object`, because it guarantees the output matches your schema",
+        "correct": false,
+        "explanation": "`json_object` carries no schema at all; the model decides the structure by itself."
+      },
+      {
+        "id": "c",
+        "text": "Plain text with the schema described in the system prompt only",
+        "correct": false,
+        "explanation": "The docs recommend adding the schema to the prompt in addition to, not instead of, the `json_schema` response format."
+      },
+      {
+        "id": "d",
+        "text": "Either type, because both enforce the same structure",
+        "correct": false,
+        "explanation": "The two types differ: `json_schema` follows the schema you provide, `json_object` produces arbitrary JSON."
       }
     ]
   },

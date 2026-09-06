@@ -1,38 +1,44 @@
 schema_version: 1
 id: q-de02b2c3d4e5
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/dedicated-endpoints
-stem: How are dedicated endpoints targeted when making OpenAI-compatible chat
-  completion requests?
+stem: After creating a dedicated endpoint, what do you pass as the model
+  identifier in OpenAI-compatible inference calls to target it?
 options:
   - id: a
-    text: By passing the dedicated endpoint URL or endpoint deployment ID in the
-      request base URL or model identifier
+    text: The `routing_key` returned when the endpoint was created
     correct: true
-    explanation: Requests route to dedicated instances by specifying the deployment
-      endpoint host or deployment ID.
+    explanation: The control and data plane page defines `routing_key` as the model
+      identifier you pass to inference calls, returned on endpoint creation.
   - id: b
-    text: By changing the TCP port to 21 on the client host machine
+    text: The `endpoint_id`
     correct: false
-    explanation: Port 21 is FTP; API endpoints use standard HTTPS (port 443).
+    explanation: "`endpoint_id` is documented as the identifier used for update and
+      delete operations, not for inference."
   - id: c
-    text: By embedding base64 encoded SSH keys in system prompts
+    text: The template's `flavor_name`
     correct: false
-    explanation: SSH keys manage shell access, not API request model routing.
+    explanation: A flavor is a template sub-option such as `base` or `fast`; it does
+      not identify your deployment.
   - id: d
-    text: "By specifying purpose: fine-tune in request headers"
+    text: The control-plane base URL
     correct: false
-    explanation: The purpose header belongs to Files API uploads, not Chat
-      Completion inference calls.
+    explanation: The control plane manages configuration; inference goes to the
+      regional data-plane base URL with the `routing_key` as model.
 evidence:
-  - source_id: src-endpoint-lifecycle
-    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+  - source_id: src-recovery-planes
+    excerpt: "| **routing\\_key** | The model identifier you pass to inference
+      calls. Returned when you create an endpoint. |"
+    source_sha256: ffe11185c76bc0b82535a0d81ea41d972fd3d4316cbbe0252c6dd4907b6c5be7
+  - source_id: src-recovery-planes
+    excerpt: "| **endpoint\\_id** | Identifier used for update/delete operations."
+    source_sha256: ffe11185c76bc0b82535a0d81ea41d972fd3d4316cbbe0252c6dd4907b6c5be7
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: dab34aa6791db4450cdf9c0dc7937ada941bfa387dc2bcda3c5b5ebd398ecc73

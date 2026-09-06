@@ -1,40 +1,41 @@
 schema_version: 1
 id: q-sb01a9b0c1d2
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
-stem: Why is isolated container or microVM execution required when an agent
-  executes code generated at runtime?
+stem: Why do Sandboxes use VM-level isolation when running code produced by an
+  AI agent?
 options:
   - id: a
-    text: To prevent arbitrary untrusted code execution from compromising host
-      system security and network resources
+    text: So that untrusted code cannot escape the sandbox or affect other workloads
     correct: true
-    explanation: Sandboxing isolates process execution so generated code cannot
-      modify host files or access sensitive networks.
+    explanation: "The Sandboxes overview lists secure isolation first: VM-level
+      isolation ensures untrusted code cannot escape the sandbox or affect other
+      workloads."
   - id: b
-    text: To speed up LLM token generation throughput by 10x
+    text: To make model token generation faster
     correct: false
-    explanation: Sandboxes run client/code execution environments, not model weight
-      inference.
+    explanation: Sandboxes execute code; they do not run model inference or change
+      its throughput.
   - id: c
-    text: To bypass API key authentication requirements
+    text: To remove the need for an API key
     correct: false
-    explanation: API key authentication remains required regardless of sandbox isolation.
+    explanation: Isolation is about containing executed code; authentication is unaffected.
   - id: d
-    text: To convert Python code into static HTML pages automatically
+    text: To convert scripts into static web pages
     correct: false
-    explanation: Sandboxes execute code safely; HTML conversion is handled by
-      templates or build scripts.
+    explanation: Sandboxes execute code and capture results; they do not transform
+      code into HTML.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-sandbox
+    excerpt: VM-level isolation ensures untrusted code cannot escape the sandbox or
+      affect other workloads.
+    source_sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: 6c10bae116b51013bcbfd916dda9edae48de98d461fb1e43f306f5dff2589fce

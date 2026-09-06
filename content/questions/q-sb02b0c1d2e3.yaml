@@ -1,38 +1,44 @@
 schema_version: 1
 id: q-sb02b0c1d2e3
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
-stem: Which resource control mechanism is typically configured on an agent
-  sandbox to prevent runaway code loops?
+stem: Which Sandboxes behaviours does the documentation cite as helping to
+  prevent abuse when students or agents execute code?
 options:
   - id: a
-    text: Automatic git commit triggers
+    text: Automatic git commits after every execution
     correct: false
-    explanation: Git commits record version control history, not execution resource limits.
+    explanation: Sandboxes offer Git-like branching of execution state, not
+      automatic commits, and that feature is not what the docs tie to abuse
+      prevention.
   - id: b
-    text: Execution timeouts and CPU/memory quotas
+    text: Automatic cleanup and resource limits
     correct: true
-    explanation: Timeouts terminate infinite loops and resource quotas prevent
-      memory exhaustion.
+    explanation: The educational-platforms use case states that automatic cleanup
+      and resource limits help prevent abuse; the beta also caps simultaneous
+      operations at 50.
   - id: c
-    text: Domain name DNS pre-fetching
+    text: DNS pre-fetching for faster downloads
     correct: false
-    explanation: DNS pre-fetching speeds up web browser network lookups, not sandbox
-      loop limits.
+    explanation: DNS behaviour is not mentioned anywhere in the Sandboxes overview.
   - id: d
-    text: Database table indexing
+    text: An unlimited number of simultaneously running operations
     correct: false
-    explanation: Database indexes speed up SQL queries, not process execution limits.
+    explanation: "The opposite is documented: during the beta, simultaneously
+      running operations are limited to 50."
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-sandbox
+    excerpt: Automatic cleanup and resource limits help prevent abuse.
+    source_sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
+  - source_id: src-recovery-sandbox
+    excerpt: Number of simultaneously running operations is limited to 50.
+    source_sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: 20e149496e86a377f28066a3415102ce9114608b44dcf4b8b179550e335d1cab

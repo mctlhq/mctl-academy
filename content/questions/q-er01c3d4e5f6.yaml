@@ -1,39 +1,45 @@
 schema_version: 1
 id: q-er01c3d4e5f6
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
-stem: In a RAG retrieval system, what primary purpose does a cross-encoder
-  reranking model serve after initial vector search retrieval?
+stem: What does the `/v1/rerank` endpoint return for each document you supply
+  together with a query?
 options:
   - id: a
-    text: To generate synthetic training dataset pairs for fine-tuning
+    text: A dense embedding vector for the document
     correct: false
-    explanation: Rerankers evaluate query-document relevance, not dataset synthesis.
+    explanation: Embeddings come from the embeddings endpoint; rerank results carry
+      a score, not a vector.
   - id: b
-    text: To compress text chunks into 8-bit quantized embeddings
+    text: A rewritten version of the document optimised for the query
     correct: false
-    explanation: Quantization reduces vector memory usage, whereas reranking
-      improves ranking precision.
+    explanation: Rerank does not generate or rewrite text; it scores the documents
+      you pass in.
   - id: c
-    text: To re-score retrieved candidate passages using full joint attention over
-      query and document pairs
+    text: The document's `index` and a `relevance_score` with respect to the query
     correct: true
-    explanation: Reranking models compute joint attention across query-document
-      pairs to produce more accurate relevance scores.
+    explanation: Rerank reorders documents by relevance to a query; each
+      `RerankResult` carries the document index, the document, and a
+      `relevance_score`.
   - id: d
-    text: To execute client-side Javascript code inside an isolated sandbox
+    text: A chat completion that answers the query using the document
     correct: false
-    explanation: Sandboxes run code; rerankers are neural models for search relevance.
+    explanation: Answer generation is the job of chat completions; rerank returns
+      relevance scores only.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-rerank
+    excerpt: Reranks documents based on their relevance to a query.
+    source_sha256: 2280e05e2708647e0001b119c3fcb79c7f4f4a387198e033e1f8131fb4d30423
+  - source_id: src-recovery-rerank
+    excerpt: "relevance_score: type: number title: Relevance Score description:
+      Relevance score of the document"
+    source_sha256: 2280e05e2708647e0001b119c3fcb79c7f4f4a387198e033e1f8131fb4d30423
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: 7960b74f4fefe029a7044834fbff80bef8b0ec02b52fe59c16b28ac960a8b748

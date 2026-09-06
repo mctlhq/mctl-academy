@@ -116,3 +116,66 @@ hashes or reviewed.by to manufacture evidence or approval.
 
 Public source capture and human publication approval remain separate operations.
 Bank expansion and Tavily allowlisting are follow-ups, not accomplished by this audit.
+
+## Recovery outcome, 2026-09-06 (batch 1, PR #221)
+
+Every one of the 52 quarantined items was re-read against the 23 captured
+recovery pages (`content/sources/src-recovery-*.yaml`, snapshots verified by
+SHA-256 against the source records). The old `src-inference-overview` citation
+that 17 items relied on has no snapshot in the recovery set, so none of those
+items keeps that citation. Decisions were made per item, not by revalidating
+excerpt text.
+
+- **20 restored and published** after an independent review by
+  `agent:claude-reviewer`; receipt with fingerprints in
+  [builder-recovery-review.json](builder-recovery-review.json). Each was
+  rewritten by `agent:claude-fable-5-1` against a captured page, keeps its ID and
+  objective, and cites only text that occurs verbatim in the snapshot. IDs:
+  cc01, cc02, er01, fc05, fi01, sb01, sb02, so04 (domain-2); df03, ds02, fa01,
+  ft03, la03 (domain-3); cs01, de08, de03, de02, bc01, de09 (domain-4); pf08
+  (domain-1). Notable corrections: cs01 now tests the real readiness status
+  `Partially ready` (there is no `Degraded` status); de08 uses real lifecycle and
+  readiness names as distractors; de03 drops the SLA claim, which the capacity
+  page contradicts for self-service endpoints; de02 targets endpoints via
+  `routing_key`, with `endpoint_id` documented as update/delete only; cc02 no
+  longer claims greedy decoding, only the documented "more focused and
+  deterministic"; so04 no longer claims logit-level enforcement or a guarantee.
+- **21 repair candidates deferred** to two follow-up PRs of at most 20 items each,
+  because this PR already carries 20: batch 2 (domain-4 and domain-1: cs02,
+  de01, de04, ob02, ta01, ta03, op03, pf10, pf12, pf05, pf06, pf07, pf11) and
+  batch 3 (domain-3: df04, dl01, ds01, fa02, fj02, ft04, la01, la02). They stay
+  `needs_review` until rewritten and independently reviewed on their own branch.
+- **11 remain quarantined with no repair path in the captured set:**
+
+| Question | Why it stays needs_review |
+|---|---|
+| q-er02d4e5f6a7 | No captured page mentions cosine similarity, dot product or any similarity metric. |
+| q-fi02d8e9f0a1 | The MCP page failed capture twice; nothing captured defines MCP or its discovery model. |
+| q-rp01a5b6c7d8 | No retrieval or chunking page was captured; "chunk" only appears for SSE stream chunks. |
+| q-rp02b6c7d8e9 | Hybrid Search, BM25 and sparse retrieval appear nowhere in the captured set. |
+| q-sb03c1d2e3f4 | The Sandboxes overview has no guidance on secrets or disk persistence. |
+| q-dl03c5d6e7f8 | No deduplication guidance in the Data Lab or datasets pages. |
+| q-bc02c1d2e3f4 | Budget alerts and hard caps are not documented; the billing page says a reached threshold triggers a charge, not a stop. |
+| q-dl02b4c5d6e7 | The docs say inputs longer than `context_length` cause errors; the item's "silently clipped" claim is contradicted, and Data Lab has no truncation check. |
+| q-pf09d8e9f0a1 | No role names or write-scope semantics are documented; the Project Groups concept is covered by the ta03 rewrite. |
+| q-de06a7b8c9d0 | Same per-token pricing fact as the restored q-bc01b0c1d2e3; kept out as a duplicate. |
+| q-rl05c7d8e9f0 | Same HTTP 429 fact as the restored q-de09d0e1f2a3; kept out as a duplicate. |
+
+Mock availability after batch 1: Builder has 48 published items and every domain
+meets its Mock quota (domain-1 8/6, domain-2 15/10, domain-3 10/6, domain-4
+15/8), so the 30-question weighted Mock is selectable again. Weights and
+composition were not changed.
+
+Advisory signals from `report:content-quality` after promotion, for later
+editorial work rather than as approval criteria: 32 of 48 correct options are
+strictly the longest; nine items cite a source whose recorded objectives do not
+list the item's objective (the recovery pages were captured with a narrower
+objective list than the items they support); cs01/de08 share the readiness
+passage with the el01–el03 items and fi01/pf08 share one Quickstart line, so
+those pairs should not be drawn into the same Mock.
+
+Separately, `npm run snapshot:capture -- --check` shows `src-inference-overview`
+has drifted again (live `9f0c64e3…`, pinned `344d6de4…`) together with seven
+`src-co-*` pages; the Source drift workflow will quarantine dependents when it
+runs. Nothing in this PR cites the new revision.
+

@@ -1,38 +1,46 @@
 schema_version: 1
 id: q-so04a3b4c5d6
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/structured-output
-stem: What is the main advantage of enforcing JSON Schema constraints at the
-  logit level during decoding over prompt engineering?
+stem: Your application needs the model's JSON to follow a specific structure.
+  Which `response_format` type does the documentation tell you to use?
 options:
   - id: a
-    text: It guarantees 100% syntactically valid JSON output matching the schema
-      without parsing failures
+    text: "`json_schema`, because `json_object` lets the model decide the schema by
+      itself"
     correct: true
-    explanation: Grammar/logit-constrained decoding physically prevents invalid
-      tokens, guaranteeing valid JSON syntax.
+    explanation: The docs say to use JSON schema instead of JSON objects whenever
+      you need strict JSON structure; `json_object` forces arbitrary JSON whose
+      schema the model chooses.
   - id: b
-    text: It eliminates the need for an API authentication key
+    text: "`json_object`, because it guarantees the output matches your schema"
     correct: false
-    explanation: API authentication is required regardless of output constraint settings.
+    explanation: "`json_object` carries no schema at all; the model decides the
+      structure by itself."
   - id: c
-    text: It doubles the context window size of the underlying model
+    text: Plain text with the schema described in the system prompt only
     correct: false
-    explanation: Context window length is fixed by architecture, not decoding constraints.
+    explanation: The docs recommend adding the schema to the prompt in addition to,
+      not instead of, the `json_schema` response format.
   - id: d
-    text: It automatically translates output into multiple spoken languages
+    text: Either type, because both enforce the same structure
     correct: false
-    explanation: Structured output enforces data format schemas, not natural
-      language translation.
+    explanation: "The two types differ: `json_schema` follows the schema you
+      provide, `json_object` produces arbitrary JSON."
 evidence:
+  - source_id: src-structured-output
+    excerpt: Use **JSON schema instead of JSON objects** whenever you need **strict
+      JSON structure**
+    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
   - source_id: src-structured-output
     excerpt: Forces arbitrary JSON output, the model will decide on the schema by itself
     source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: d8c4aaccc6cabd87e5b1cc2029f2c5f750891b514942a377ef11fa23a25e376a

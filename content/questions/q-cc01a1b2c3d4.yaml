@@ -1,39 +1,47 @@
 schema_version: 1
 id: q-cc01a1b2c3d4
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/chat-completions
-stem: When configuring streaming responses in the Chat Completions API, what
-  format are the event stream data chunks delivered in?
+stem: When `stream` is enabled in a Chat Completions request, how does Token
+  Factory deliver the partial message deltas?
 options:
   - id: a
-    text: "Server-Sent Events (SSE) data streams formatted with data: [JSON]"
+    text: "As data-only server-sent events, with the stream terminated by a `data:
+      [DONE]` message"
     correct: true
-    explanation: Streaming chat completions use standard Server-Sent Events (SSE)
-      where each chunk is prefixed with data.
+    explanation: "The `stream` parameter is documented to send tokens as data-only
+      server-sent events as they become available, and the stream ends with
+      `data: [DONE]`."
   - id: b
-    text: Raw binary WebSocket frame packets
+    text: As binary WebSocket frames on a persistent socket
     correct: false
-    explanation: The Chat Completions API uses standard HTTP streaming with SSE, not
-      WebSockets.
+    explanation: The Chat Completions API streams over HTTP server-sent events; the
+      documentation does not describe a WebSocket transport.
   - id: c
-    text: A multipart/form-data MIME payload
+    text: As a multipart/form-data response with one part per token
     correct: false
-    explanation: Multipart encoding is used for file uploads, not streaming LLM tokens.
+    explanation: Multipart encoding is not used for streaming completions; the
+      documented format is server-sent events.
   - id: d
-    text: A single chunked JSON array containing all tokens
+    text: As a single JSON array returned only after generation finishes
     correct: false
-    explanation: JSON arrays cannot be incrementally parsed per token without custom
-      stream parsers; SSE line streams are used.
+    explanation: Waiting for the whole array would defeat streaming; deltas are sent
+      as they become available.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-chat
+    excerpt: Tokens will be sent as data-only [server-sent
+      events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format)
+    source_sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
+  - source_id: src-recovery-chat
+    excerpt: "as they become available, with the stream terminated by a `data:
+      [DONE]` message."
+    source_sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: 6778c87eff16a20f85d8e1f53756f8461f29f887567d9f0c72737e8d53f24c70
