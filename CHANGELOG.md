@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.1.51](https://github.com/mctlhq/mctl-academy/compare/0.1.50...0.1.51) (2026-09-06)
+
+
+### Features
+
+* add independent content review safeguards ([0974236](https://github.com/mctlhq/mctl-academy/commit/0974236d9d5987d7843ac84fc20c93b751e54183))
+* **content:** add docs discovery and review-receipt scripts ([7846d82](https://github.com/mctlhq/mctl-academy/commit/7846d826477b4c7eb45225d070f96df17def01cb))
+* **content:** add docs discovery and review-receipt scripts ([2d988c4](https://github.com/mctlhq/mctl-academy/commit/2d988c4e84a6c522291052722acd6264b03a7166))
+* harden Builder content recovery review ([0ee057b](https://github.com/mctlhq/mctl-academy/commit/0ee057b979facefe8d16b40087bad84bd9eab19f))
+
+
+### Bug Fixes
+
+* **ci:** keep drift intake going per row and label after creation ([45b4e79](https://github.com/mctlhq/mctl-academy/commit/45b4e797b830ec08efdba92e38807547ef676f89))
+* **ci:** let the quarantine guard clear itself and tolerate a bad report line ([7d2d228](https://github.com/mctlhq/mctl-academy/commit/7d2d22885976809b42fa977fe4411fd80ec6f80e))
+* **ci:** make Source drift open its issues and land quarantine through one PR ([9852cf6](https://github.com/mctlhq/mctl-academy/commit/9852cf6eadd74acdd38df3f3fc3cdc5c8628ac98))
+* **ci:** make Source drift open its issues and land quarantine through one PR ([09cb572](https://github.com/mctlhq/mctl-academy/commit/09cb5729b15ec5cce627d8f57c1ba1a9cc3539cc))
+* **ci:** type the drift-intake action list for checkJs ([d6c4c77](https://github.com/mctlhq/mctl-academy/commit/d6c4c770622d214feb25e4c3b353dfe097cec02d))
+* **client:** never leave practice blank, keep the open question on sync ([35ef609](https://github.com/mctlhq/mctl-academy/commit/35ef6090d2bd32844535fe20a16f9af23a49422a))
+* **content:** complete JSDoc parameter types for checkJs ([b01f058](https://github.com/mctlhq/mctl-academy/commit/b01f058c3b959bb37d6a6db36b0893d2afcd0a0f))
+* **content:** keep a known-drifted source in the report when its live fetch fails ([00e59a0](https://github.com/mctlhq/mctl-academy/commit/00e59a0fbbd153223f59d06efebb6b2af4822686))
+* **content:** report fetch failures in discovery and harden the receipt ([d88de2a](https://github.com/mctlhq/mctl-academy/commit/d88de2ac63d637e6a329c9f917151eb872cde27d))
+* **content:** resolve the src-inference-overview drift, one real correction ([07a74e8](https://github.com/mctlhq/mctl-academy/commit/07a74e87a2bb38cac2f32e7bd051d7614eaf8570))
+* **content:** sync a wrong-answer explanation with the new Paged Attention definition ([d3366e1](https://github.com/mctlhq/mctl-academy/commit/d3366e10ae29d146ad9fc9a7f22eeec9513749a8))
+* persist unanswered-first practice and clarify learning progress ([50b2699](https://github.com/mctlhq/mctl-academy/commit/50b26995a9a8c72f954555c23c9f0cec32d62c95))
+* **review:** apply the receipt rule in the bundle builder too ([2eaa0c3](https://github.com/mctlhq/mctl-academy/commit/2eaa0c34a0d660c0c0c797f235ac0d1e31ab640b))
+* **review:** bind approvals to a committed receipt and fingerprint ([a72a7db](https://github.com/mctlhq/mctl-academy/commit/a72a7dbc76500ea00ee5b262579887a557ff902d))
+
 ## [0.1.50](https://github.com/mctlhq/mctl-academy/compare/0.1.49...0.1.50) (2026-08-19)
 
 
