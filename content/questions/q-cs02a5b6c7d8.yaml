@@ -1,42 +1,46 @@
 schema_version: 1
 id: q-cs02a5b6c7d8
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
-stem: How does automatic scaling function when dedicated endpoints experience
-  high request concurrency spikes?
+stem: How does a dedicated endpoint scale its capacity as traffic changes?
 options:
   - id: a
-    text: Additional replica instances are auto-provisioned to handle load according
-      to configured scaling policies
+    text: You set minimum and maximum replicas; scaling above the minimum depends on
+      available burst capacity and is not guaranteed indefinitely
     correct: true
-    explanation: Autoscaling policies dynamically add replica instances as
-      concurrency metrics exceed thresholds.
+    explanation: The overview lists autoscaling between the minimum and maximum
+      replicas you set; the capacity page adds that scaling above the minimum
+      depends on burst capacity and is not guaranteed.
   - id: b
-    text: System memory is wiped to free up GPU cache
+    text: The platform adds replicas without any upper bound whenever traffic grows
     correct: false
-    explanation: Wiping memory would drop active request contexts, causing failures
-      rather than scaling compute.
+    explanation: You set a maximum replica count, and extra replicas depend on
+      available burst capacity.
   - id: c
-    text: Requests are converted to offline fine-tuning datasets automatically
+    text: Excess requests are transparently routed to public serverless endpoints
     correct: false
-    explanation: Inference traffic remains real-time inference and is not converted
-      into fine-tuning datasets.
+    explanation: No such fallback is documented; dedicated capacity is isolated to
+      your deployment.
   - id: d
-    text: All incoming requests are dropped with HTTP 500 server error codes
-      permanently
+    text: Capacity is fixed at creation and cannot change while the endpoint runs
     correct: false
-    explanation: Autoscaling prevents drop errors by expanding instance capacity under load.
+    explanation: Autoscaling between minimum and maximum replicas is one of the
+      controls dedicated endpoints give you.
 evidence:
-  - source_id: src-rate-limits
-    excerpt: This occurs when the system has spare capacity available, and your
-      request can be handled with a lower priority without affecting other
-      users.
-    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+  - source_id: src-recovery-endpoint
+    excerpt: Set minimum and maximum replicas to automatically scale capacity with
+      traffic.
+    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+  - source_id: src-recovery-capacity
+    excerpt: Scaling above minimum replicas depends on available burst capacity and
+      is not guaranteed indefinitely.
+    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 19381934a8dff87a5b627ce5ae39ac30e02e90dad086a6ca952920b13186fb23

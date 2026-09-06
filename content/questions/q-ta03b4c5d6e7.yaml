@@ -1,38 +1,47 @@
 schema_version: 1
 id: q-ta03b4c5d6e7
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/team-access
-stem: Which IAM permission role scope allows creating new API keys within a
-  specific project without granting organization-level administrative access?
+stem: How is access to the resources inside one specific project controlled
+  without granting access across the whole organization?
 options:
   - id: a
-    text: Organization Owner
+    text: Through the organization's Organization Groups, which are the only access
+      mechanism
     correct: false
-    explanation: Organization Owner has full admin privileges across all org
-      settings, not project-scoped access.
+    explanation: Organization Groups grant access to organizational resources;
+      project-level access is controlled by the project's own groups.
   - id: b
-    text: Project Developer or Project Admin
+    text: Through the Project Groups that each project includes
     correct: true
-    explanation: Project-level roles allow managing resources and API keys inside
-      that specific project only.
+    explanation: Each project includes Project Groups that control access to project
+      resources, separate from the Organization Groups at the organization
+      level.
   - id: c
-    text: Global Billing Auditor
+    text: By sharing the project's API key with the user
     correct: false
-    explanation: Billing Auditor grants read-only access to invoices and financial
-      usage reports.
+    explanation: Access is granted through group membership; API keys are resources
+      inside the project, not an access-control mechanism.
   - id: d
-    text: Anonymous Guest User
+    text: By making the project multi-region
     correct: false
-    explanation: Unauthenticated guests cannot access projects or issue API credentials.
+    explanation: Multi-region grouping is about organising resources, not about who
+      can access them.
 evidence:
   - source_id: src-org-projects
-    excerpt: exist inside a project and inherit its access settings.
+    excerpt: Each project includes **Project Groups** that control access to project
+      resources.
+    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+  - source_id: src-org-projects
+    excerpt: To grant a user access to organizational resources, add them to the
+      relevant **Organization Group**.
     source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 73b6d67897eb6feaf7f5ec1a758bbbb1190c3eb7fd2e04b39b10883bd985b9fa

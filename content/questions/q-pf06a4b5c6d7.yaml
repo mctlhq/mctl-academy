@@ -1,37 +1,43 @@
 schema_version: 1
 id: q-pf06a4b5c6d7
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
-stem: Where can developers discover available base models and their specific
-  context window limits in Nebius Token Factory?
+stem: How can a developer retrieve the extended list of model parameters, such
+  as `context_length`, programmatically?
 options:
   - id: a
-    text: Through the `/v1/models` API endpoint and the platform model catalog UI
+    text: Call the List models endpoint (`GET /v1/models`) with the query parameter
+      `verbose=true`
     correct: true
-    explanation: Model capabilities, context windows, and available flavors are
-      listed via `/v1/models` and the catalog.
+    explanation: The UI page says to send a request to the List models endpoint with
+      `verbose=true` for extended parameters; the API reference for `GET
+      /v1/models` includes `context_length` in the model object.
   - id: b
-    text: By querying DNS TXT records for endpoint subdomains
+    text: Query DNS TXT records for the endpoint host
     correct: false
-    explanation: DNS records contain domain routing info, not model catalog metadata.
+    explanation: DNS carries no model metadata.
   - id: c
-    text: By inspecting client-side git repository commit histories
+    text: Inspect the git history of the SDK
     correct: false
-    explanation: Model catalogs are served dynamically from platform APIs.
+    explanation: The catalog is served by the API, not stored in SDK source.
   - id: d
-    text: By contacting customer support via email before each request
+    text: Email support before each request
     correct: false
-    explanation: Model listings are programmatically discoverable via public API endpoints.
+    explanation: Model listings are available programmatically.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-playground
+    excerpt: send a request to the **List models** endpoint with the query parameter
+      `verbose=true`.
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+  - source_id: src-recovery-models
+    excerpt: "context_length: type: integer title: Context Length"
+    source_sha256: 5fa7decba80dd0a117fa5d218eb69fc963ff207856d15cda01c089666b009eae
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: d6007c176c443329466256d82ac6d91b04bcc3efc2a32114f6ad4b46d02fa317

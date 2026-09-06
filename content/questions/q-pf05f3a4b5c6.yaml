@@ -1,37 +1,36 @@
 schema_version: 1
 id: q-pf05f3a4b5c6
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/api-authentication
-stem: How are API requests authenticated when interacting with Nebius Token
-  Factory endpoints using OpenAI client SDKs?
+stem: How is an API request to Token Factory authenticated?
 options:
   - id: a
-    text: By passing a Project API key in the Authorization header as a Bearer token
+    text: By passing the API key as a Bearer token in the `Authorization` header
     correct: true
-    explanation: OpenAI SDK compatibility relies on standard HTTP Bearer token
-      authorization using Project API keys.
+    explanation: "The Quickstart cURL example sends `Authorization: Bearer
+      $NEBIUS_API_KEY`; the SDK examples pass the same key as `api_key`."
   - id: b
-    text: By uploading an mTLS client certificate for every connection
+    text: By presenting an mTLS client certificate on every connection
     correct: false
-    explanation: mTLS is not required; standard HTTP Bearer tokens are used.
+    explanation: No client certificate is involved; a bearer API key is used.
   - id: c
-    text: By sending plain-text user passwords in custom headers
+    text: By sending the account password in a custom header
     correct: false
-    explanation: Passwords are never used for API authorization.
+    explanation: Passwords are never used for API calls; you create an API key.
   - id: d
-    text: By IP address allowlisting without cryptographic keys
+    text: By allowlisting the caller's IP address instead of using keys
     correct: false
-    explanation: Authorization requires valid API keys regardless of source IP.
+    explanation: Authentication is by API key, not by source address.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-quickstart
+    excerpt: '-H "Authorization: Bearer $NEBIUS_API_KEY"'
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 4e30f0885115273ce9e0875044e0a8f2742091d4e235bc2b6735ae7b71954c44

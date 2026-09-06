@@ -15,6 +15,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { questionFingerprint } from "../scripts/lib/question-review.mjs";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -70,7 +71,7 @@ const question = (id, status, over = {}) => ({
   ...over,
 });
 
-function build({ questions = [], sources = [source()], courses = [course()] } = {}) {
+function build({ questions = [], sources = [source()], courses = [course()], receipts = [] } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "academy-bundle-"));
   const out = join(dir, "out", "content-bundle.json");
   const catalogOut = join(dir, "out", "course-catalog.json");
@@ -78,6 +79,8 @@ function build({ questions = [], sources = [source()], courses = [course()] } = 
     mkdirSync(join(dir, "questions"), { recursive: true });
     mkdirSync(join(dir, "sources"), { recursive: true });
     mkdirSync(join(dir, "courses"), { recursive: true });
+    mkdirSync(join(dir, "reviews"), { recursive: true });
+    receipts.forEach((r, i) => writeFileSync(join(dir, "reviews", `r${i}-review.json`), JSON.stringify(r)));
     for (const c of courses) writeFileSync(join(dir, "courses", `${c.id}.yaml`), JSON.stringify(c));
     for (const s of sources) writeFileSync(join(dir, "sources", `${s.id}.yaml`), JSON.stringify(s));
     for (const q of questions) writeFileSync(join(dir, "questions", `${q.id}.yaml`), JSON.stringify(q));
@@ -86,6 +89,7 @@ function build({ questions = [], sources = [source()], courses = [course()] } = 
       env: {
         ...process.env,
         ACADEMY_CONTENT_DIR: dir,
+        ACADEMY_REVIEW_DIR: join(dir, "reviews"),
         ACADEMY_BUNDLE_OUT: out,
         ACADEMY_CATALOG_OUT: catalogOut,
       },
@@ -159,6 +163,28 @@ test("withholds a published question with no human review recorded", () => {
     questions: [question("q-unreviewed001", "published", { reviewed: undefined })],
   });
   assert.deepEqual(bundle, []);
+});
+
+test("withholds an agent-approved question whose receipt is not committed", () => {
+  const q = question("q-agentappr001", "published", {
+    reviewed: { by: "agent:reviewer", at: "2026-09-06T10:00:00Z", content_sha256: HASH },
+  });
+  q.reviewed.content_sha256 = questionFingerprint(q);
+  const entry = { id: q.id, content_sha256: q.reviewed.content_sha256, approved: true };
+  assert.deepEqual(ids(build({ questions: [q] }).bundle), []);
+  assert.deepEqual(
+    ids(build({ questions: [q], receipts: [{ reviewer: "agent:reviewer", questions: [entry] }] }).bundle),
+    [q.id],
+  );
+  assert.deepEqual(
+    ids(
+      build({
+        questions: [q],
+        receipts: [{ reviewer: "agent:reviewer", questions: [{ ...entry, approved: false }] }],
+      }).bundle,
+    ),
+    [],
+  );
 });
 
 test("one unsafe question does not withhold its safe neighbours", () => {

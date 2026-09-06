@@ -338,3 +338,28 @@ test("rejects a snapshot key that does not match the source hash", () => {
   assert.equal(ok, false);
   assert.match(output, /keyed by content hash/);
 });
+
+test("duplicate receipt entries for one question poison the key instead of last-write-wins", () => {
+  const q = question({
+    reviewed: { by: "agent:reviewer", at: "2026-09-06T10:00:00Z", content_sha256: HASH },
+  });
+  q.reviewed.content_sha256 = questionFingerprint(q);
+  const entry = (approved) => ({ id: q.id, content_sha256: q.reviewed.content_sha256, approved });
+  // A rejection followed by an approval must not resolve to the approval,
+  // whether the two entries share a file or sit in two files.
+  const inOneFile = lint({
+    questions: [q],
+    receipts: [{ reviewer: "agent:reviewer", questions: [entry(false), entry(true)] }],
+  });
+  assert.equal(inOneFile.ok, false);
+  assert.match(inOneFile.output, /more than one receipt entry/);
+  const acrossFiles = lint({
+    questions: [q],
+    receipts: [
+      { reviewer: "agent:reviewer", questions: [entry(false)] },
+      { reviewer: "agent:reviewer", questions: [entry(true)] },
+    ],
+  });
+  assert.equal(acrossFiles.ok, false);
+  assert.match(acrossFiles.output, /more than one receipt entry/);
+});

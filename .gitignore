@@ -11,3 +11,6 @@ coverage/
 # Playwright (e2e.yml) output — reports/traces from local or CI runs.
 playwright-report/
 test-results/
+
+# build-mock-bundle.mjs writes this at build time (docker/CI pre-hook).
+client/src/data/mock-bundle.generated.json

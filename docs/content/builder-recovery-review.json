@@ -175,6 +175,84 @@
       "content_sha256": "cccb52247b9b9b0320588f7bac1370e7d68e01243e3c167f8c0f9d8b27ed9fe1",
       "approved": true,
       "reason": "Supervised Fine-Tuning, 'Hyperparameters' section: '`learning_rate` (float, optional) Step size for gradient descent. Must be >= 0. Typical values: 1e-6–5e-5. Default: 0.00001'. Option d matches the definition and range, and every clause of its explanation (>= 0, typical range, default) is on the page. Each distractor is the page's definition of a different hyperparameter (n_epochs 'Number of passes over the entire dataset', range 1–20; lora_r 'Rank of LoRA matrices', range 8–128; warmup_ratio 'Fraction of total training steps used for linear warmup', range 0–1), so none describes learning_rate and d is the single best answer. Reviewed as a fresh item under a new ID; the earlier q-ft04d8e9f0a1 revision about a too-high learning rate has no supporting passage on this page (only max_grad_norm has documented too-high/too-low consequences) and stays needs_review."
+    },
+    {
+      "id": "q-cs02a5b6c7d8",
+      "content_sha256": "19381934a8dff87a5b627ce5ae39ac30e02e90dad086a6ca952920b13186fb23",
+      "approved": true,
+      "reason": "Dedicated endpoints overview, Autoscaling card: 'Set minimum and maximum replicas to automatically scale capacity with traffic', and comparison table row 'Autoscaling | You control minimum and maximum replicas'. Capacity page, section 'Maximum replicas scaling': 'Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely. Additional replicas may be reclaimed after scale-down'. Both halves of option a are supported in context. b is contradicted by the user-set maximum and the burst caveat; d is contradicted by autoscaling and by 'Create, update, stop, and delete deployments'; c has no basis, the overview presents dedicated capacity as 'Isolated capacity reserved for your organization' and no fallback to serverless appears anywhere in either page. a is uniquely best."
+    },
+    {
+      "id": "q-de01a1b2c3d4",
+      "content_sha256": "fdb9aad3d864946fd19b1425cb294a90b41cee7c320ec1a4e52abd825e726fb0",
+      "approved": true,
+      "reason": "Overview comparison table row 'Capacity | Isolated capacity reserved for your organization | Shared multi-tenant capacity' supports the core contrast in option a. The qualifier 'while the endpoint runs' is supported by the capacity page: 'allocated to your endpoint only while it is active — it is not a long-term reservation, and the minimum replicas guarantee applies only while the endpoint is running'. b is directly contradicted by that sentence and by 'When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped' (manual stop, incident, maintenance). c and d invert the table row. a is uniquely best."
+    },
+    {
+      "id": "q-de04e5f6a7b8",
+      "content_sha256": "ba24619763d312ae490115601605d400f9b7e668fe243a47659badfb695c3cd1",
+      "approved": true,
+      "reason": "Rate Limits & Scaling page, section 'Over-the-Limit Processing': 'requests that exceed your rate limit may still be processed. This occurs when the system has spare capacity available, and your request can be handled with a lower priority', the response 'x-ratelimit-over-limit: yes', and 'Treat this as an early warning—subsequent calls may be throttled'; the header table repeats this ('Set to \"yes\" if a request that is over the limit is processed'). Option a is supported in full. b is contradicted: 'If you exceed the active limit you will receive HTTP 429' is the normal case, but the same page documents the spare-capacity exception, and the stem fixes the spare-capacity condition. c has no basis: the 15-minute buckets adjust the limit (x1.2 / /1.5), nothing describes queuing a request. d has no basis on this page or on the dedicated-endpoints pages. a is uniquely best. Objective move: the question as written tests over-the-limit processing of a request against a dynamic rate limit on public serverless endpoints, which is exactly what this rate-limits page covers; it does not test dedicated-endpoint capacity (burst replicas, GPU pool), which is what domain-4/capacity-and-scaling covers per the capacity page. The concept was always 'what happens to a request beyond the nominal limit when spare capacity exists', and domain-4/rate-limits is the honest home for it; the relabel corrects a mismatch rather than disguising a different concept."
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "a22d4676ea0f0d25bf1569236e8dbf1ba8b9d0a18ae6d74332502d29164c4e7d",
+      "approved": true,
+      "reason": "Create chat completion reference, components.schemas.Usage: completion_tokens 'Number of tokens in the generated completion', prompt_tokens 'Number of tokens in the prompt', total_tokens 'Total number of tokens used in the request (prompt + completion)'; ChatCompletionResponse.usage references this schema and is required. The response example shows the same three fields. Option a is supported. The schema also carries prompt_tokens_details and completion_tokens_details (breakdowns, nullable), which the stem does not mention; this makes a slightly under-inclusive but not wrong, and no distractor is affected. b, c, d name hardware, transport and database metrics that appear nowhere in the reference. a is uniquely best."
+    },
+    {
+      "id": "q-ta01d2e3f4a5",
+      "content_sha256": "01e4c7e396fb6a21bb8838219abfd2d126ade59236aec132ecc543f2d8d721bd",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Hierarchy Overview': 'Organization → Projects → Resources'; 'Each Project within an organization acts as an isolated environment for related resources and teams'; 'Resources—such as models, endpoints, files, and datasets—exist inside a project and inherit its access settings'. Option d is supported in full. a is contradicted by 'isolated environment' and by access being granted via groups; b is contradicted by 'within an organization' and by 'Within a project, you can create and manage: API keys'; c is contradicted by 'a default project is created automatically' at sign-up, with no identity provider mentioned on the page. Minor: the d explanation lists API keys among the inheriting resources while the inherit sentence names models, endpoints, files, datasets; API keys are listed as project resources in the next section, so this is not a contradiction. d is uniquely best."
+    },
+    {
+      "id": "q-ta03b4c5d6e7",
+      "content_sha256": "73b6d67897eb6feaf7f5ec1a758bbbb1190c3eb7fd2e04b39b10883bd985b9fa",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Projects' section: 'Each project includes Project Groups that control access to project resources', set against the 'Organization' section: 'To grant a user access to organizational resources, add them to the relevant Organization Group'. The stem asks about access to one project's resources without organization-wide access, which maps to Project Groups; option b is supported. a fails on its own wording ('the only access mechanism') because Project Groups exist and are the documented control for project resources. c has no basis: API keys are listed as resources created within a project, never as a way to grant a user access. d misreads 'Projects can be multi-region, allowing you to group resources by product, team, use case', which is about organising resources, not access. b is uniquely best."
+    },
+    {
+      "id": "q-op03f4a5b6c7",
+      "content_sha256": "4843257c76a26d1d5cc6ec3a3b3c495cbae8964a6605d6c4b125b951c97652b4",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Projects' section: 'Within a project, you can create and manage: API keys, Fine-tuning jobs, Dedicated endpoints, Files and datasets'; the hierarchy diagram draws exactly these four under Project A. Option a is supported. d is contradicted by the hierarchy 'Organization → Projects → Resources' and by the organization being described as containing projects, organization groups and user accounts; b has no basis, user accounts appear only as members with groups and permissions; c is contradicted by 'Projects can be multi-region', so regions are not a containing scope. a is uniquely best."
+    },
+    {
+      "id": "q-pf10e9f0a1b2",
+      "content_sha256": "7f5d4b053f987deecafac0e001cfb0fca18ea01c6cfce5216e7259d7151dc557",
+      "approved": true,
+      "reason": "Model Deprecations: August 2026, 'What to Know': 'After that date, you will not be able to select them in the Playground or send API requests using their model IDs' and 'Token Factory does not automatically reroute requests from deprecated models'. Both clauses of option a are supported. b is directly contradicted by the no-reroute bullet. c is contradicted twice: the Note says 'Dedicated Endpoints for these models will be unaffected by this change' and the bullet says 'This change only affects Serverless usage'. d has no basis; the page talks about model IDs and migration, never credentials. Note the stem says 'published deprecation date' generically while the page is about one specific date; the behaviour described is the same. a is uniquely best."
+    },
+    {
+      "id": "q-pf12a1b2c3d4",
+      "content_sha256": "6a8fa6fbabbebf1312acd10f15577aa60742a9a0a541fd1bf2bcbc0abb4df144",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Organization' section: 'When you sign up for Nebius Token Factory, a personal organization is created automatically. You can also: Be invited to other organizations and collaborate on their projects; Create additional organizations for separate teams or business units'. Option a restates both bullets. b is contradicted by those bullets; c and d add conditions (per-organization payment card, 24-hour window) that appear nowhere on the page. a is uniquely best."
+    },
+    {
+      "id": "q-pf05f3a4b5c6",
+      "content_sha256": "4e30f0885115273ce9e0875044e0a8f2742091d4e235bc2b6735ae7b71954c44",
+      "approved": true,
+      "reason": "Quickstart cURL example: -H \"Authorization: Bearer $NEBIUS_API_KEY\" against https://api.tokenfactory.nebius.com/v1/chat/completions; the Python and JavaScript examples pass the same NEBIUS_API_KEY as api_key / apiKey, and the 'Get API key' accordion says 'For authentication, get an API key'. The chat completion reference on the same host declares security HTTPBearer. Option a is supported. b, c, d (mTLS certificate, password header, IP allowlist) appear nowhere in the quickstart. Single evidence item, but it is the canonical authenticated request and needs no second source. a is uniquely best."
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "d6007c176c443329466256d82ac6d91b04bcc3efc2a32114f6ad4b46d02fa317",
+      "approved": true,
+      "reason": "UI & Playground, 'Model card' section: 'To view an extended list of model parameters via the API, send a request to the List models endpoint with the query parameter verbose=true'. List models reference: OpenAPI path 'get /v1/models' with a query parameter 'verbose' (boolean, default false), and the RichModel schema lists context_length (integer, required). Option a is supported by both sources read together, including the exact path and the example parameter named in the stem. b, c, d are not mechanisms the docs describe. a is uniquely best."
+    },
+    {
+      "id": "q-pf07b5c6d7e8",
+      "content_sha256": "3777458bd86a513c5cf6d5a138eef6c7139086afdba523187a086bdedae87b32",
+      "approved": true,
+      "reason": "UI & Playground: 'The Playground in Nebius Token Factory lets you experiment with available AI models through a web interface — no coding required', and 'Compare setups': 'To work with two model setups side by side, click Compare. This will open two chat windows where you can submit inputs for both setups at the same time'. Option a is supported in full. b, c, d are unrelated to anything on the page. a is uniquely best."
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "a4babe3d995d97cf6b691a1cff8d5a5b51a36dfb74e6b48ff742759a4ecfa71c",
+      "approved": true,
+      "reason": "Create chat completion reference, ChatCompletionRequest.temperature: 'What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic'. Option a is supported. The only other sampling parameter with a related description, top_p (nucleus sampling, probability mass), is not offered as an option, so no distractor is defensible; b, c, d are transport, scheduling and display settings that appear nowhere in the reference. a is uniquely best."
     }
   ]
 }

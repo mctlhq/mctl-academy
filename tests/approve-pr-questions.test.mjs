@@ -55,9 +55,13 @@ test("independent agent promotion requires a matching positive review receipt", 
     assert.deepEqual(reviewProblems(published), []);
     assert.equal(published.reviewed.by, receipt.reviewer);
     const sources = new Map([["src-auth", { id: "src-auth", snapshot: { key: HASH } }]]);
-    assert.equal(checkBundleEligibility(published, sources).eligible, true);
-    published.options[0].explanation += " Changed meaning.";
+    const receipts = new Map([[`${receipt.reviewer}|${q.id}`, receipt.questions[0]]]);
+    assert.equal(checkBundleEligibility(published, sources, receipts).eligible, true);
+    // The bundle applies the receipt rule itself: no loaded receipt, no bundle.
     assert.equal(checkBundleEligibility(published, sources).eligible, false);
+    assert.equal(checkBundleEligibility(published, sources, new Map()).eligible, false);
+    published.options[0].explanation += " Changed meaning.";
+    assert.equal(checkBundleEligibility(published, sources, receipts).eligible, false);
     assert.match(reviewProblems(published).join(), /stale/);
     writeFileSync(file, JSON.stringify({ ...published, status: "review_ready" }));
     assert.throws(() => promoteQuestions(opts), /stale fingerprint/);

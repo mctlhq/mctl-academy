@@ -1896,6 +1896,98 @@
     ]
   },
   {
+    "id": "q-cs02a5b6c7d8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "How does a dedicated endpoint scale its capacity as traffic changes?",
+    "objectiveTitle": "Capacity, availability, and service guarantees",
+    "sources": [
+      {
+        "title": "Dedicated endpoints",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Set minimum and maximum replicas to automatically scale capacity with traffic."
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "You set minimum and maximum replicas; scaling above the minimum depends on available burst capacity and is not guaranteed indefinitely",
+        "correct": true,
+        "explanation": "The overview lists autoscaling between the minimum and maximum replicas you set; the capacity page adds that scaling above the minimum depends on burst capacity and is not guaranteed."
+      },
+      {
+        "id": "b",
+        "text": "The platform adds replicas without any upper bound whenever traffic grows",
+        "correct": false,
+        "explanation": "You set a maximum replica count, and extra replicas depend on available burst capacity."
+      },
+      {
+        "id": "c",
+        "text": "Excess requests are transparently routed to public serverless endpoints",
+        "correct": false,
+        "explanation": "No such fallback is documented; dedicated capacity is isolated to your deployment."
+      },
+      {
+        "id": "d",
+        "text": "Capacity is fixed at creation and cannot change while the endpoint runs",
+        "correct": false,
+        "explanation": "Autoscaling between minimum and maximum replicas is one of the controls dedicated endpoints give you."
+      }
+    ]
+  },
+  {
+    "id": "q-de01a1b2c3d4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/dedicated-endpoints",
+    "stem": "According to the comparison table, how does capacity differ between dedicated endpoints and public serverless endpoints?",
+    "objectiveTitle": "Deploying and operating dedicated endpoints",
+    "sources": [
+      {
+        "title": "Dedicated endpoints",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "| Capacity | Isolated capacity reserved for your organization | Shared multi-tenant capacity |"
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "it is not a long-term reservation, and the minimum replicas guarantee applies only while the endpoint is running."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Dedicated endpoints get isolated capacity reserved for your organization while the endpoint runs; serverless uses shared multi-tenant capacity",
+        "correct": true,
+        "explanation": "The table lists isolated capacity reserved for your organization against shared multi-tenant capacity; the capacity page adds that the reservation applies only while the endpoint is running."
+      },
+      {
+        "id": "b",
+        "text": "Dedicated capacity is a permanent reservation that survives stops and maintenance",
+        "correct": false,
+        "explanation": "The capacity page states the opposite: it is not a long-term reservation, and stopped endpoints release their GPUs to the shared pool."
+      },
+      {
+        "id": "c",
+        "text": "Both draw from the same shared pool with identical guarantees",
+        "correct": false,
+        "explanation": "Dedicated endpoints are isolated from the multi-tenant pool that serves public serverless traffic."
+      },
+      {
+        "id": "d",
+        "text": "Public serverless endpoints reserve GPUs per organization",
+        "correct": false,
+        "explanation": "Serverless capacity is shared and multi-tenant; reservation is the dedicated model."
+      }
+    ]
+  },
+  {
     "id": "q-de02b2c3d4e5",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -1984,6 +2076,52 @@
         "text": "Dedicated endpoints let the platform choose the region automatically",
         "correct": false,
         "explanation": "For dedicated endpoints the deployment region is fixed and user-selected; it is public serverless where the region may change."
+      }
+    ]
+  },
+  {
+    "id": "q-de04e5f6a7b8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limits",
+    "stem": "A request to a public serverless endpoint exceeds your nominal rate limit while the platform has spare capacity. What does the documentation say can happen?",
+    "objectiveTitle": "Rate limits and scaling behaviour",
+    "sources": [
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "In some cases, requests that exceed your rate limit may still be processed. This occurs when the system has spare capacity available,"
+      },
+      {
+        "title": "Rate Limits & Scaling",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
+        "excerpt": "x-ratelimit-over-limit: yes"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The request may still be processed at lower priority, and the response carries `x-ratelimit-over-limit: yes` as an early warning",
+        "correct": true,
+        "explanation": "The rate limits page describes over-the-limit processing: with spare capacity the request is handled at lower priority and flagged with `x-ratelimit-over-limit: yes`; further calls may be throttled."
+      },
+      {
+        "id": "b",
+        "text": "The request is always rejected with HTTP 429 regardless of spare capacity",
+        "correct": false,
+        "explanation": "Exceeding the active limit normally returns HTTP 429, but the page explicitly documents cases where over-limit requests are still processed."
+      },
+      {
+        "id": "c",
+        "text": "The request is queued until the next 15-minute adjustment window",
+        "correct": false,
+        "explanation": "The 15-minute buckets adjust the limit itself; the page does not describe queuing requests."
+      },
+      {
+        "id": "d",
+        "text": "The request is rerouted to a dedicated endpoint",
+        "correct": false,
+        "explanation": "No automatic rerouting between serverless and dedicated endpoints is documented."
       }
     ]
   },
@@ -4831,6 +4969,52 @@
     ]
   },
   {
+    "id": "q-ob02a9b0c1d2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/observability",
+    "stem": "Which token counts does the `usage` object of a Chat Completions response report?",
+    "objectiveTitle": "Inference observability and integrations",
+    "sources": [
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "completion_tokens: type: integer title: Completion Tokens description: Number of tokens in the generated completion. prompt_tokens: type: integer title: Prompt Tokens"
+      },
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "total_tokens: type: integer title: Total Tokens description: Total number of tokens used in the request (prompt + completion)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`prompt_tokens`, `completion_tokens`, and `total_tokens`",
+        "correct": true,
+        "explanation": "The Usage schema defines prompt tokens, completion tokens, and total tokens, where the total is prompt plus completion."
+      },
+      {
+        "id": "b",
+        "text": "`gpu_temperature_celsius` and `fan_speed_rpm`",
+        "correct": false,
+        "explanation": "Hardware telemetry is not part of the chat completion response."
+      },
+      {
+        "id": "c",
+        "text": "`disk_write_mbps` and `network_latency_ms`",
+        "correct": false,
+        "explanation": "Transport metrics are not reported in the usage object."
+      },
+      {
+        "id": "d",
+        "text": "`database_connections_active`",
+        "correct": false,
+        "explanation": "Database counters have nothing to do with inference usage."
+      }
+    ]
+  },
+  {
     "id": "q-op01d1e2f3a4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -4909,6 +5093,47 @@
         "text": "A personal organization, created automatically",
         "correct": true,
         "explanation": "Signup provisions an organization for you, so there is always a workspace to create projects in."
+      }
+    ]
+  },
+  {
+    "id": "q-op03f4a5b6c7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "Which level of the Token Factory resource hierarchy directly contains API keys, fine-tuning jobs, dedicated endpoints, and files and datasets?",
+    "objectiveTitle": "Organizations, projects, and how resources are scoped",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "Within a project, you can create and manage: * **API keys** * **Fine-tuning jobs** * **Dedicated endpoints** * **Files and datasets**"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Projects",
+        "correct": true,
+        "explanation": "Within a project you create and manage API keys, fine-tuning jobs, dedicated endpoints, and files and datasets."
+      },
+      {
+        "id": "b",
+        "text": "The user account",
+        "correct": false,
+        "explanation": "User accounts belong to organizations through groups; they do not own these resources directly."
+      },
+      {
+        "id": "c",
+        "text": "Regions",
+        "correct": false,
+        "explanation": "Regions are where endpoints run; projects can even be multi-region, so a region is not the owning scope."
+      },
+      {
+        "id": "d",
+        "text": "The organization, directly",
+        "correct": false,
+        "explanation": "The organization contains projects, groups, and user accounts; resources exist inside a project."
       }
     ]
   },
@@ -5118,6 +5343,139 @@
     ]
   },
   {
+    "id": "q-pf05f3a4b5c6",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/api-authentication",
+    "stem": "How is an API request to Token Factory authenticated?",
+    "objectiveTitle": "API keys, authentication, and request basics",
+    "sources": [
+      {
+        "title": "Quickstart",
+        "url": "https://docs.tokenfactory.nebius.com/quickstart.md",
+        "excerpt": "-H \"Authorization: Bearer $NEBIUS_API_KEY\""
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "By passing the API key as a Bearer token in the `Authorization` header",
+        "correct": true,
+        "explanation": "The Quickstart cURL example sends `Authorization: Bearer $NEBIUS_API_KEY`; the SDK examples pass the same key as `api_key`."
+      },
+      {
+        "id": "b",
+        "text": "By presenting an mTLS client certificate on every connection",
+        "correct": false,
+        "explanation": "No client certificate is involved; a bearer API key is used."
+      },
+      {
+        "id": "c",
+        "text": "By sending the account password in a custom header",
+        "correct": false,
+        "explanation": "Passwords are never used for API calls; you create an API key."
+      },
+      {
+        "id": "d",
+        "text": "By allowlisting the caller's IP address instead of using keys",
+        "correct": false,
+        "explanation": "Authentication is by API key, not by source address."
+      }
+    ]
+  },
+  {
+    "id": "q-pf06a4b5c6d7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/model-catalog",
+    "stem": "How can a developer retrieve the extended list of model parameters, such as `context_length`, programmatically?",
+    "objectiveTitle": "Listing models, model flavors, and deprecation notices",
+    "sources": [
+      {
+        "title": "Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "send a request to the **List models** endpoint with the query parameter `verbose=true`."
+      },
+      {
+        "title": "List models API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/models/list-models.md",
+        "excerpt": "context_length: type: integer title: Context Length"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Call the List models endpoint (`GET /v1/models`) with the query parameter `verbose=true`",
+        "correct": true,
+        "explanation": "The UI page says to send a request to the List models endpoint with `verbose=true` for extended parameters; the API reference for `GET /v1/models` includes `context_length` in the model object."
+      },
+      {
+        "id": "b",
+        "text": "Query DNS TXT records for the endpoint host",
+        "correct": false,
+        "explanation": "DNS carries no model metadata."
+      },
+      {
+        "id": "c",
+        "text": "Inspect the git history of the SDK",
+        "correct": false,
+        "explanation": "The catalog is served by the API, not stored in SDK source."
+      },
+      {
+        "id": "d",
+        "text": "Email support before each request",
+        "correct": false,
+        "explanation": "Model listings are available programmatically."
+      }
+    ]
+  },
+  {
+    "id": "q-pf07b5c6d7e8",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/playground",
+    "stem": "What does the Token Factory Playground let you do?",
+    "objectiveTitle": "Using the UI and playground to compare models",
+    "sources": [
+      {
+        "title": "Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "lets you experiment with available AI models through a web interface — no coding required."
+      },
+      {
+        "title": "Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "To work with two model setups side by side, click **Compare**."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Experiment with available models through a web interface without coding, including comparing two setups side by side",
+        "correct": true,
+        "explanation": "The Playground lets you experiment with models through a web interface with no coding required, and Compare opens two chat windows to submit inputs to both setups at once."
+      },
+      {
+        "id": "b",
+        "text": "Compile Linux kernel modules for GPU instances",
+        "correct": false,
+        "explanation": "The Playground is a model experimentation UI, not a build environment."
+      },
+      {
+        "id": "c",
+        "text": "Provision rack hardware in data centres",
+        "correct": false,
+        "explanation": "Hardware provisioning is not a Playground function."
+      },
+      {
+        "id": "d",
+        "text": "Generate tax compliance forms",
+        "correct": false,
+        "explanation": "Unrelated to model experimentation."
+      }
+    ]
+  },
+  {
     "id": "q-pf08c6d7e8f9",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -5155,6 +5513,139 @@
         "text": "`https://docs.nebius.com/static/js`",
         "correct": false,
         "explanation": "That is a documentation asset path, not an inference endpoint."
+      }
+    ]
+  },
+  {
+    "id": "q-pf10e9f0a1b2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/model-catalog",
+    "stem": "What happens to a Serverless model after its published deprecation date?",
+    "objectiveTitle": "Listing models, model flavors, and deprecation notices",
+    "sources": [
+      {
+        "title": "Model deprecations August 2026",
+        "url": "https://docs.tokenfactory.nebius.com/august-2026-deprecation-notice.md",
+        "excerpt": "you will not be able to select them in the Playground or send API requests using their model IDs."
+      },
+      {
+        "title": "Model deprecations August 2026",
+        "url": "https://docs.tokenfactory.nebius.com/august-2026-deprecation-notice.md",
+        "excerpt": "Token Factory does not automatically reroute requests from deprecated models."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It can no longer be selected in the Playground or called by its model ID, and requests are not rerouted automatically",
+        "correct": true,
+        "explanation": "The deprecation notice states that after the date you cannot select the model in the Playground or send API requests with its model ID, and Token Factory does not reroute requests automatically."
+      },
+      {
+        "id": "b",
+        "text": "Requests are automatically rerouted to the recommended replacement model",
+        "correct": false,
+        "explanation": "The notice explicitly says Token Factory does not automatically reroute requests from deprecated models."
+      },
+      {
+        "id": "c",
+        "text": "Dedicated endpoints running the model are shut down at the same time",
+        "correct": false,
+        "explanation": "The change only affects Serverless usage; dedicated endpoints for these models are unaffected."
+      },
+      {
+        "id": "d",
+        "text": "The project's API keys are revoked",
+        "correct": false,
+        "explanation": "Deprecation concerns the model ID, not credentials."
+      }
+    ]
+  },
+  {
+    "id": "q-pf11f0a1b2c3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/playground",
+    "stem": "Which model parameter makes generated output more random at higher values and more focused at lower values?",
+    "objectiveTitle": "Using the UI and playground to compare models",
+    "sources": [
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`temperature`",
+        "correct": true,
+        "explanation": "The API reference describes temperature between 0 and 2: higher values like 0.8 make output more random, lower values like 0.2 more focused and deterministic."
+      },
+      {
+        "id": "b",
+        "text": "TCP window size",
+        "correct": false,
+        "explanation": "A transport-layer setting with no effect on sampling."
+      },
+      {
+        "id": "c",
+        "text": "CPU core affinity",
+        "correct": false,
+        "explanation": "A process scheduling setting, not a model parameter."
+      },
+      {
+        "id": "d",
+        "text": "Display refresh rate",
+        "correct": false,
+        "explanation": "A display property, unrelated to generation."
+      }
+    ]
+  },
+  {
+    "id": "q-pf12a1b2c3d4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/organizations-and-projects",
+    "stem": "Can a single Token Factory user account belong to more than one organization?",
+    "objectiveTitle": "Organizations, projects, and how resources are scoped",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "Be invited to other organizations and collaborate on their projects"
+      },
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "Create additional organizations for separate teams or business units"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes: a user can be invited to other organizations and can create additional organizations",
+        "correct": true,
+        "explanation": "Besides the personal organization created at sign-up, the docs say you can be invited to other organizations and create additional ones for separate teams or business units."
+      },
+      {
+        "id": "b",
+        "text": "No: signing up locks the account to its personal organization permanently",
+        "correct": false,
+        "explanation": "The personal organization is created automatically, but invitations to other organizations are explicitly supported."
+      },
+      {
+        "id": "c",
+        "text": "Only if a separate payment card is registered per organization",
+        "correct": false,
+        "explanation": "No such condition is documented for organization membership."
+      },
+      {
+        "id": "d",
+        "text": "Only during the first 24 hours after account creation",
+        "correct": false,
+        "explanation": "No time window is documented."
       }
     ]
   },
@@ -5579,6 +6070,52 @@
     ]
   },
   {
+    "id": "q-ta01d2e3f4a5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/team-access",
+    "stem": "How are projects positioned in the Token Factory resource hierarchy?",
+    "objectiveTitle": "Groups, invitations, and single sign-on",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "Each **Project** within an organization acts as an isolated environment for related resources and teams."
+      },
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "exist inside a project and inherit its access settings."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Projects are global namespaces visible to every user by default",
+        "correct": false,
+        "explanation": "A project is an isolated environment inside an organization, not a public namespace."
+      },
+      {
+        "id": "b",
+        "text": "Projects sit outside organizations and cannot hold API keys",
+        "correct": false,
+        "explanation": "Projects belong to an organization, and API keys are one of the resources created inside a project."
+      },
+      {
+        "id": "c",
+        "text": "Projects can only be created by an external identity provider",
+        "correct": false,
+        "explanation": "A default project is created automatically on sign-up; no identity provider is involved."
+      },
+      {
+        "id": "d",
+        "text": "Projects live inside an organization as isolated environments whose resources inherit the project's access settings",
+        "correct": true,
+        "explanation": "The hierarchy is Organization, then Projects, then Resources: each project is an isolated environment, and resources such as API keys, endpoints, files, and datasets inherit its access settings."
+      }
+    ]
+  },
+  {
     "id": "q-ta02a3b4c5d6",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -5616,6 +6153,52 @@
         "text": "A temporary 24-hour trial organization that auto-deletes",
         "correct": false,
         "explanation": "The created personal organization is a permanent account container."
+      }
+    ]
+  },
+  {
+    "id": "q-ta03b4c5d6e7",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/team-access",
+    "stem": "How is access to the resources inside one specific project controlled without granting access across the whole organization?",
+    "objectiveTitle": "Groups, invitations, and single sign-on",
+    "sources": [
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "Each project includes **Project Groups** that control access to project resources."
+      },
+      {
+        "title": "Organizations and Projects",
+        "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
+        "excerpt": "To grant a user access to organizational resources, add them to the relevant **Organization Group**."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Through the organization's Organization Groups, which are the only access mechanism",
+        "correct": false,
+        "explanation": "Organization Groups grant access to organizational resources; project-level access is controlled by the project's own groups."
+      },
+      {
+        "id": "b",
+        "text": "Through the Project Groups that each project includes",
+        "correct": true,
+        "explanation": "Each project includes Project Groups that control access to project resources, separate from the Organization Groups at the organization level."
+      },
+      {
+        "id": "c",
+        "text": "By sharing the project's API key with the user",
+        "correct": false,
+        "explanation": "Access is granted through group membership; API keys are resources inside the project, not an access-control mechanism."
+      },
+      {
+        "id": "d",
+        "text": "By making the project multi-region",
+        "correct": false,
+        "explanation": "Multi-region grouping is about organising resources, not about who can access them."
       }
     ]
   }

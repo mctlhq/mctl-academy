@@ -1,40 +1,42 @@
 schema_version: 1
 id: q-pf12a1b2c3d4
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
-stem: Can a single Nebius Token Factory user account belong to multiple
-  organizations simultaneously?
+stem: Can a single Token Factory user account belong to more than one organization?
 options:
   - id: a
-    text: Yes, a user identity can be invited to multiple organizations and switch
-      between them
+    text: "Yes: a user can be invited to other organizations and can create
+      additional organizations"
     correct: true
-    explanation: User identities can hold memberships across multiple independent
-      organizations.
+    explanation: Besides the personal organization created at sign-up, the docs say
+      you can be invited to other organizations and create additional ones for
+      separate teams or business units.
   - id: b
-    text: No, signing up locks the account to a single organization permanently
+    text: "No: signing up locks the account to its personal organization permanently"
     correct: false
-    explanation: Users can belong to multiple organizations and accept invitations.
+    explanation: The personal organization is created automatically, but invitations
+      to other organizations are explicitly supported.
   - id: c
-    text: Only if the user registers separate physical credit cards for each
-      organization
+    text: Only if a separate payment card is registered per organization
     correct: false
-    explanation: Organization membership is managed via IAM roles, not separate
-      credit card registrations.
+    explanation: No such condition is documented for organization membership.
   - id: d
     text: Only during the first 24 hours after account creation
     correct: false
-    explanation: Multi-organization membership is a permanent platform capability.
+    explanation: No time window is documented.
 evidence:
   - source_id: src-org-projects
-    excerpt: When you sign up for Nebius Token Factory, a personal organization is
-      created automatically.
+    excerpt: Be invited to other organizations and collaborate on their projects
+    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+  - source_id: src-org-projects
+    excerpt: Create additional organizations for separate teams or business units
     source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 6a8fa6fbabbebf1312acd10f15577aa60742a9a0a541fd1bf2bcbc0abb4df144
