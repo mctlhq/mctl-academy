@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-7f3a9c2e5b81
+status: review_ready
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: You are building a retrieval pipeline and need the vectors returned by
+  `/v1/embeddings` to match the dimensionality your vector index expects.
+  Which request parameter do you set?
+options:
+  - id: a
+    text: "`encoding_format`"
+    correct: false
+    explanation: encoding_format chooses whether values are returned as floats or
+      base64; it does not change how many values the vector has.
+  - id: b
+    text: "`dimensions`"
+    correct: true
+    explanation: "Correct. The `dimensions` field is described as \"the dimensions
+      to use for the request,\" with example values such as 4096 and 8192."
+  - id: c
+    text: "`service_tier`"
+    correct: false
+    explanation: service_tier selects a request priority/rate-limit tier, not the
+      size of the returned vector.
+  - id: d
+    text: "`user`"
+    correct: false
+    explanation: user is an opaque end-user identifier passed through for tracking,
+      unrelated to vector size.
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: The dimensions to use for the request.
+    source_sha256: e5d3ecd618e477f013cd3469df0f51ed8c0c87ea16c4d758e1fe7d0dbe6bb036
+authored:
+  by: agent:claude-author
+  at: 2026-09-06T18:27:23Z
+course_id: agentic-ai-builder

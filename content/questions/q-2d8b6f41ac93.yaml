@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-2d8b6f41ac93
+status: review_ready
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: In the first step of a retrieval pipeline you embed a batch of retrieved
+  document chunks by calling `/v1/embeddings`. What can you supply as the
+  `input` value in that request?
+options:
+  - id: a
+    text: A `relevance_score` threshold used to filter chunks before embedding
+    correct: false
+    explanation: relevance_score is a rerank output field, not something you pass
+      into an embeddings request.
+  - id: b
+    text: A previously computed embedding vector, to be re-normalized
+    correct: false
+    explanation: The embeddings endpoint takes text (or tokens) to embed; it does
+      not accept an existing vector as input.
+  - id: c
+    text: A string, or an array of tokens
+    correct: true
+    explanation: "Correct. `input` is described as \"input text to embed, encoded
+      as a string or array of tokens.\""
+  - id: d
+    text: A JSON Schema describing the desired output shape
+    correct: false
+    explanation: Schema-constrained output is a chat-completions feature
+      (response_format), not a field on the embeddings request.
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: Input text to embed, encoded as a string or array of tokens.
+    source_sha256: e5d3ecd618e477f013cd3469df0f51ed8c0c87ea16c4d758e1fe7d0dbe6bb036
+authored:
+  by: agent:claude-author
+  at: 2026-09-06T18:27:23Z
+course_id: agentic-ai-builder

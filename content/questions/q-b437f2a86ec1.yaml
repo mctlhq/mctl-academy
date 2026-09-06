@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-b437f2a86ec1
+status: review_ready
+domain: domain-1
+objective: domain-1/api-authentication
+stem: Per the Quickstart, which account do you log in with to get started on
+  Nebius Token Factory before obtaining an API key?
+options:
+  - id: a
+    text: Your Google or GitHub account
+    correct: true
+    explanation: "Correct. The Quickstart's \"Get API key\" steps say: \"Log in
+      using your Google or GitHub account,\" then get an API key."
+  - id: b
+    text: A dedicated Nebius username and password created during signup
+    correct: false
+    explanation: The Quickstart does not describe a separate Nebius username and
+      password; it directs you to log in with Google or GitHub.
+  - id: c
+    text: A phone number verified by SMS one-time password
+    correct: false
+    explanation: Phone/SMS verification is not part of the documented sign-in flow.
+  - id: d
+    text: An enterprise SAML single sign-on assertion only
+    correct: false
+    explanation: The Quickstart's sign-in step is Google or GitHub, not a
+      SAML-only enterprise flow.
+evidence:
+  - source_id: src-recovery-quickstart
+    excerpt: Log in using your Google or GitHub account
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+authored:
+  by: agent:claude-author
+  at: 2026-09-06T18:27:23Z
+course_id: agentic-ai-builder

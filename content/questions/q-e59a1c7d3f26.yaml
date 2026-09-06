@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-e59a1c7d3f26
+status: review_ready
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: After reranking retrieved documents with `/v1/rerank`, you need to map
+  each scored result back to the document you originally submitted in the
+  `documents` array. Which field on each result do you use?
+options:
+  - id: a
+    text: "`object`"
+    correct: false
+    explanation: object is a field on embeddings responses (always "list"); the
+      rerank response schema has no such field.
+  - id: b
+    text: "`relevance_score`"
+    correct: false
+    explanation: relevance_score carries the ranking score, not the identity of the
+      original document.
+  - id: c
+    text: The top-level `id` on the rerank response
+    correct: false
+    explanation: The top-level id identifies the whole response, not any single
+      document within it.
+  - id: d
+    text: "`index`"
+    correct: true
+    explanation: "Correct. The schema documents this field as \"index of the
+      document,\" i.e. its position in the request's `documents` array."
+evidence:
+  - source_id: src-recovery-rerank
+    excerpt: Index of the document
+    source_sha256: 2280e05e2708647e0001b119c3fcb79c7f4f4a387198e033e1f8131fb4d30423
+authored:
+  by: agent:claude-author
+  at: 2026-09-06T18:27:23Z
+course_id: agentic-ai-builder

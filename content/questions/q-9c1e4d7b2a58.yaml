@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-9c1e4d7b2a58
+status: review_ready
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: What does the `encoding_format` parameter on an `/v1/embeddings` request
+  control?
+options:
+  - id: a
+    text: The character encoding used to decode the input text
+    correct: false
+    explanation: encoding_format governs the returned embedding values, not how the
+      input text is decoded.
+  - id: b
+    text: Whether the returned embedding values are floats or base64
+    correct: true
+    explanation: "Correct. It is described as \"the format to return the embeddings
+      in. Can be either float or base64.\""
+  - id: c
+    text: The compression codec applied to uploaded datasets
+    correct: false
+    explanation: Dataset uploads are a separate feature; this parameter belongs to
+      the embeddings response format only.
+  - id: d
+    text: The number of dimensions in the returned vector
+    correct: false
+    explanation: Vector size is controlled by the separate `dimensions` parameter,
+      not by encoding_format.
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: The format to return the embeddings in. Can be either float or base64.
+    source_sha256: e5d3ecd618e477f013cd3469df0f51ed8c0c87ea16c4d758e1fe7d0dbe6bb036
+authored:
+  by: agent:claude-author
+  at: 2026-09-06T18:27:23Z
+course_id: agentic-ai-builder
