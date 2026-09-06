@@ -65,6 +65,12 @@ fresh independent review before publication.
 
 Twenty-three official Token Factory documentation pages were captured on the
 recovery branch. One MCP page failed capture and remains unreferenced. The 52
-old Builder questions are not bulk-promoted: the audit found both mismatched
-citations and claims that the source does not establish. Repair candidates must
-be rewritten against the captured text; unsupported candidates remain excluded.
+old Builder questions were not bulk-promoted: each was reassessed against the
+captured text. Batch 1 (PR #221) rewrote and independently reviewed 20 of them,
+restoring the Mock; 21 repair candidates follow in two PRs of at most 20 items;
+11 stay excluded because no captured page establishes them or they duplicate a
+restored item. See the audit for the per-item decisions.
+
+Agent approvals are only valid with a committed receipt: the lint reads
+`docs/content/*-review.json` and rejects a `reviewed.by: agent:<name>` whose
+receipt is missing, negative, or for another fingerprint.

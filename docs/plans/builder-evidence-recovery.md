@@ -31,8 +31,16 @@ requested, must contain no more than 20 questions each.
 
 ## Status
 
-Implementation of the review and operations safeguards is complete. The retired
-question-author/DocsDeltaWorkflow was not a working production population job;
-historic banks were authored in agent-led commit/PR batches. Twenty-three source
-pages were captured for recovery. Question rewriting and independent final review
-remain intentionally separate follow-up work; no quarantined item was published.
+Safeguards are implemented, and the lint now also refuses an agent approval whose
+receipt is not committed under `docs/content/*-review.json` or is for a different
+fingerprint; every approval stamped from 2026-09-06 carries a fingerprint.
+Twenty-three source pages were captured; the MCP page failed capture twice and is
+not used as evidence.
+
+Batch 1 (this PR, 2026-09-06): all 52 quarantined items were reassessed against the
+captured snapshots; 20 were rewritten, independently reviewed by
+`agent:claude-reviewer` and published, restoring the Builder Mock (48 published,
+no domain shortfall). 21 repairable items are deferred to two follow-up PRs of at
+most 20 items (13 domain-4/domain-1, 8 domain-3). 11 items stay `needs_review`
+because no captured page establishes them or they duplicate a restored item. The
+per-item table is in [the audit](../content/builder-evidence-audit.md).
