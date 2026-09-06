@@ -46,6 +46,23 @@ const CANDIDATES = {
 };
 const OBJECTIVES = new Set(["domain-2/embeddings-and-rerank", "domain-1/quotas"]);
 
+test("author has no R2 credentials or shell and stages only questions", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const steps = workflow.jobs.author.steps;
+  const author = steps.find((s) => s.name === "Author agent writes review_ready questions");
+  assert.equal(author.env, undefined);
+  assert.match(author.with.claude_args, /--tools "Read,Glob,Grep,Write,Edit"/);
+  assert.doesNotMatch(author.with.claude_args, /Bash/);
+  const gates = steps.find((s) => s.name === "Deterministic gates on the authored content");
+  assert.ok(gates.run.indexOf("git diff --exit-code") < gates.run.indexOf("node scripts/"));
+  assert.ok(gates.env.R2_SECRET_ACCESS_KEY);
+  const commit = steps.find((s) => s.name === "Commit and push the authored branch");
+  assert.match(commit.run, /git add content\/questions\//);
+  assert.doesNotMatch(commit.run, /git add content\/\s/);
+});
+
 test("validateSelection keeps offered urls with mapped objectives and drops the rest with reasons", () => {
   const { rows, dropped } = validateSelection({
     select: [

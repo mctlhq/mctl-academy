@@ -218,6 +218,7 @@ jobs:
           claude_args: >-
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 25
+            --tools "Read,Glob,Grep,Write"
             --allowedTools "Read,Glob,Grep,Write(select.json)"
 
       - name: Quarantine live drift, capture pages, re-validate what survives
@@ -315,10 +316,6 @@ jobs:
 
       - name: Author agent writes review_ready questions
         uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
-        env:
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -356,14 +353,14 @@ jobs:
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
 
-            After writing, run `node scripts/validate-content.mjs` and
-            `node scripts/verify-evidence.mjs` and fix only what they name until both pass. Then
-            write CHANGES.md at the repository root: one line per file you added or changed, the
-            objective it serves and the source it cites. Do not run git commands.
+            Write CHANGES.md at the repository root: one line per file you added or changed,
+            the objective it serves and the source it cites. Do not run commands. Structural
+            validation and R2 citation verification run in separate deterministic steps.
           claude_args: >-
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 80
-            --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(CHANGES.md),Bash(node scripts/validate-content.mjs),Bash(node scripts/verify-evidence.mjs),Bash(node scripts/content-quality-report.mjs)"
+            --tools "Read,Glob,Grep,Write,Edit"
+            --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(CHANGES.md)"
 
       # The agent's own runs of the checks are advice; these are the gates.
       - name: Deterministic gates on the authored content
@@ -374,6 +371,9 @@ jobs:
         run: |
           set -euo pipefail
           git status --short content/ CHANGES.md || true
+          # Reject changes to trusted validators, schemas and source records
+          # before running any repository code with snapshot credentials.
+          git diff --exit-code "${{ steps.base.outputs.sha }}" -- . ':!content/questions/**' ':!CHANGES.md'
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
           node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now
@@ -386,7 +386,7 @@ jobs:
         id: commit
         run: |
           set -euo pipefail
-          git add content/
+          git add content/questions/
           n=$(git diff --staged --name-only -- content/questions | wc -l | tr -d ' ')
           if [ "$n" = "0" ]; then
             # Captured sources and the watermark alone are not worth a PR; the
@@ -500,6 +500,7 @@ jobs:
           claude_args: >-
             --model ${{ env.REVIEWER_MODEL }}
             --max-turns 60
+            --tools "Read,Glob,Grep,Write"
             --allowedTools "Read,Glob,Grep,Write(decisions.json)"
 
       - name: Record the receipt, promote approved items, set aside rejected ones
@@ -552,7 +553,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
-          git add content/ docs/content/ client/src/content-bundle.json client/src/course-catalog.json
+          git add content/questions/ docs/content/ client/src/content-bundle.json client/src/course-catalog.json
           k=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.env.receipt,"utf8"));console.log(r.questions.filter(q=>q.approved).length)')
           git commit -m "content(replenish): promote ${k} reviewed question(s)" \
             -m "Reviewed by ${REVIEWER_ID} (${REVIEWER_MODEL}) against the two CONTENT-POLICY criteria; receipt with fingerprints committed under docs/content/. Rejected new items are dropped, rejected re-validations return to needs_review."
