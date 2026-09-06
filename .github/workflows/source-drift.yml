@@ -1,10 +1,22 @@
 name: Source drift
 
 # Weekly: re-fetch every allowlisted source and compare hashes. When an
-# upstream document changes, automatically mark the source as `drifted`
-# (fail-closed quarantine), rebuild the client content bundle to immediately
-# exclude unverified questions, commit the quarantine state to main, and
-# open/update an agents:intake issue.
+# upstream document changes, mark the source as `drifted` (fail-closed
+# quarantine), move its published dependents to `needs_review`, rebuild the
+# client content bundle, push all of that to the `chore/quarantine-drift`
+# branch as one pull request, and open or update a `drift: <id>` issue per
+# source.
+#
+# Why a PR and not a push to main: main requires an approving review, so the
+# three direct-push attempts this job used to make never once succeeded (runs
+# of 2026-08-24 and 2026-08-31 both fell through to a fallback PR). The branch
+# name is fixed and force-pushed, so a source that stays drifted for a month
+# keeps updating one PR instead of opening a new one every Monday.
+#
+# Why an App token: the org forbids GITHUB_TOKEN from creating pull requests
+# (`can_approve_pull_request_reviews: false`, see mctl-telegram#498), and a PR
+# opened by an App token raises `pull_request` events, so the quarantine PR
+# gets the same CI and Evidence checks as any other branch.
 
 on:
   schedule:
@@ -13,21 +25,38 @@ on:
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+permissions: {}
+
+# Two overlapping runs would race on the same quarantine branch.
+concurrency:
+  group: source-drift
+  cancel-in-progress: false
+
+env:
+  QUARANTINE_BRANCH: chore/quarantine-drift
 
 jobs:
   drift:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Generate mctl-agents App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.AGENTS_APP_ID }}
+          private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
+          owner: mctlhq
+          repositories: mctl-academy
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
 
-      # Bun, matching ci.yml and content-evidence.yml. This job previously used
-      # setup-node with `cache: npm` plus `npm ci` and had never once succeeded:
-      # the repository ships only bun.lock, so the cache step aborted the run
-      # with "Dependencies lock file is not found" before drift was ever checked.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      # Bun, matching ci.yml and content-evidence.yml: the repository ships
+      # only bun.lock, so setup-node with `cache: npm` aborted every run.
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
@@ -55,112 +84,64 @@ jobs:
           esac
 
       # Second half of the lifecycle SOURCES.md documents ("Dependent published
-      # questions transition published -> needs_review"). Must run before the
-      # bundle rebuild below only in the sense that either order produces a
-      # correct bundle (checkBundleEligibility already excludes anything citing
-      # a drifted source regardless of the question's own status) -- but running
-      # it first keeps content/ itself lint-valid at every intermediate step,
-      # rather than only after the commit lands. Before this step existed, a
-      # question could sit at status: published while citing a drifted source,
-      # which validate-content.mjs correctly rejects as invalid on its own
-      # terms (#199).
+      # questions transition published -> needs_review"). checkBundleEligibility
+      # already excludes anything citing a drifted source, so either order gives
+      # a correct bundle; running this first keeps content/ lint-valid at every
+      # intermediate step (#199).
       - name: Quarantine published questions whose source drifted
         if: steps.check.outputs.drifted == 'true'
-        run: |
-          node scripts/quarantine-drifted-questions.mjs
+        run: node scripts/quarantine-drifted-questions.mjs
 
       - name: Rebuild content bundle to enforce fail-closed quarantine
         if: steps.check.outputs.drifted == 'true'
-        run: |
-          node scripts/build-content-bundle.mjs
+        run: node scripts/build-content-bundle.mjs
 
-      - name: Commit and push quarantine updates
+      - name: Push the quarantine branch and open or update its pull request
         if: steps.check.outputs.drifted == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          set -euo pipefail
+          git config user.name "mctl-agents[bot]"
+          git config user.email "mctl-agents[bot]@users.noreply.github.com"
           git add content/sources/ content/questions/ client/src/content-bundle.json client/src/course-catalog.json
           if git diff --staged --quiet; then
             echo "No new quarantine changes to commit."
-          else
-            git commit -m "chore(quarantine): auto-quarantine drifted sources and rebuild bundle"
-            pushed=false
-            for i in 1 2 3; do
-              if git push origin main; then
-                pushed=true
-                echo "Quarantine state successfully pushed directly to main."
-                break
-              fi
-              echo "Direct push to main failed (attempt $i). Retrying with rebase..."
-              if ! git pull --rebase origin main; then
-                echo "Rebase failed due to conflict. Aborting rebase and creating quarantine PR..."
-                git rebase --abort || true
-                break
-              fi
-            done
-
-            if [ "$pushed" = "false" ]; then
-              echo "Direct push to main unavailable. Creating quarantine PR..."
-              q_branch="chore/quarantine-drift-$(date +%s)"
-              git checkout -b "$q_branch"
-              git push origin "$q_branch"
-              # PR creation is the load-bearing step here -- it is what turns a
-              # quarantine commit sitting on an orphan branch into something a
-              # human will actually see. Labels are not: create the PR without
-              # them first, then apply each with its own failure tolerance, so
-              # a renamed or never-created label (agents:quarantine did not
-              # exist when this ran on 2026-08-18, see #198) degrades to a
-              # missing label instead of silently dropping the whole PR.
-              pr_url=$(gh pr create --repo "${{ github.repository }}" \
-                --title "chore(quarantine): auto-quarantine drifted sources" \
-                --body "Upstream documentation drift detected. Quarantine state committed on branch \`${q_branch}\`. Merge to deploy fail-closed bundle.")
-              echo "opened $pr_url"
-              for label in "agents:intake" "agents:quarantine"; do
-                gh pr edit "$pr_url" --repo "${{ github.repository }}" --add-label "$label" \
-                  || echo "::warning::could not add label '$label' to $pr_url"
-              done
-            fi
+            exit 0
           fi
+          git checkout -B "$QUARANTINE_BRANCH"
+          git commit -m "chore(quarantine): auto-quarantine drifted sources and rebuild bundle"
+          # Force: the branch is rebuilt from main on every run, so an older
+          # quarantine commit (possibly stale against main) is replaced, not
+          # stacked on. An open PR on this branch simply updates.
+          git push --force origin "HEAD:${QUARANTINE_BRANCH}"
 
-      - name: Open or update intake issues
-        if: steps.check.outputs.drifted == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          grep '^DRIFTED' drift.txt | while read -r _ id old _ new url; do
-            # Deterministic dedup key. Searching on the exact title is what
-            # keeps a source that stays drifted for a month from accumulating
-            # four identical issues.
-            title="drift: ${id}"
-            existing=$(gh issue list --repo "${{ github.repository }}" \
-              --state open --search "\"${title}\" in:title" \
-              --json number,title \
-              --jq --arg title "$title" '[.[] | select(.title == $title)] | .[0].number // empty')
+          existing=$(gh pr list --repo "$REPO" --state open --head "$QUARANTINE_BRANCH" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            echo "quarantine PR #${existing} updated"
+            gh pr comment "$existing" --repo "$REPO" --body "Rebuilt from main by run ${RUN_URL}."
+            exit 0
+          fi
+          # PR creation is the load-bearing step: it is what turns a quarantine
+          # commit on a side branch into something a human sees. Labels are
+          # not: apply each with its own failure tolerance (#198, #199).
+          pr_url=$(gh pr create --repo "$REPO" --base main --head "$QUARANTINE_BRANCH" \
+            --title "chore(quarantine): auto-quarantine drifted sources" \
+            --body "Upstream documentation drift detected by ${RUN_URL}.
 
-            body="Upstream source changed. Automatically marked \`status: drifted\` (fail-closed quarantine committed to main).
-
-          - source: \`${id}\`
-          - url: ${url}
-          - recorded hash: \`${old}\`
-          - current hash: \`${new}\`
-
-          Questions citing this source have been excluded from learner selection until re-verified.
-          Re-capture with:
-
-          \`\`\`
-          npm run snapshot:capture -- ${url} --id ${id} --objective <objective>
-          \`\`\`
-
-          See SOURCES.md and CONTENT-POLICY.md."
-
-            if [ -n "$existing" ]; then
-              gh issue comment "$existing" --repo "${{ github.repository }}" --body "$body"
-              echo "updated existing issue #${existing} for ${id}"
-            else
-              gh issue create --repo "${{ github.repository }}" \
-                --title "$title" --body "$body" --label "agents:intake"
-              echo "opened new issue for ${id}"
-            fi
+          Sources marked \`drifted\` and their published questions moved to \`needs_review\`; the client bundle is rebuilt without them. Merge to deploy the fail-closed bundle. This branch is rebuilt from main on every drift run.")
+          echo "opened $pr_url"
+          for label in "agents:quarantine" "content:drift"; do
+            gh pr edit "$pr_url" --repo "$REPO" --add-label "$label" \
+              || echo "::warning::could not add label '$label' to $pr_url"
           done
+
+      # Runs even when the push step failed: the issues are the signal a human
+      # acts on, and losing them because a push raced is the wrong trade.
+      - name: Open or update intake issues
+        if: ${{ !cancelled() && steps.check.outputs.drifted == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: node scripts/drift-intake.mjs --report drift.txt --repo "${{ github.repository }}" --label content:drift
