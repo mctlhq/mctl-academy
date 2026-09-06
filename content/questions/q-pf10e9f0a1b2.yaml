@@ -1,39 +1,45 @@
 schema_version: 1
 id: q-pf10e9f0a1b2
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
-stem: What happens when a base model version reaches its official deprecation
-  date in Nebius Token Factory?
+stem: What happens to a Serverless model after its published deprecation date?
 options:
   - id: a
-    text: New request invocations are rejected and developers must migrate to an
-      active model version
+    text: It can no longer be selected in the Playground or called by its model ID,
+      and requests are not rerouted automatically
     correct: true
-    explanation: Deprecated models are shut down for new inferences after the
-      deprecation date passes.
+    explanation: The deprecation notice states that after the date you cannot select
+      the model in the Playground or send API requests with its model ID, and
+      Token Factory does not reroute requests automatically.
   - id: b
-    text: Requests are automatically routed to random third-party web search engines
+    text: Requests are automatically rerouted to the recommended replacement model
     correct: false
-    explanation: Deprecation stops inference requests rather than redirecting
-      queries externally.
+    explanation: The notice explicitly says Token Factory does not automatically
+      reroute requests from deprecated models.
   - id: c
-    text: The model automatically doubles its inference speed without cost changes
+    text: Dedicated endpoints running the model are shut down at the same time
     correct: false
-    explanation: Deprecation marks model end-of-life, not a performance upgrade.
+    explanation: The change only affects Serverless usage; dedicated endpoints for
+      these models are unaffected.
   - id: d
-    text: The project API key is permanently revoked
+    text: The project's API keys are revoked
     correct: false
-    explanation: Model deprecation does not invalidate project credentials or API keys.
+    explanation: Deprecation concerns the model ID, not credentials.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-deprecation
+    excerpt: you will not be able to select them in the Playground or send API
+      requests using their model IDs.
+    source_sha256: 5d9a56546ae0914f86ca3825363be8f8140bb9acb1f2123eaa862e284f4b5987
+  - source_id: src-recovery-deprecation
+    excerpt: Token Factory does not automatically reroute requests from deprecated
+      models.
+    source_sha256: 5d9a56546ae0914f86ca3825363be8f8140bb9acb1f2123eaa862e284f4b5987
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 7f5d4b053f987deecafac0e001cfb0fca18ea01c6cfce5216e7259d7151dc557

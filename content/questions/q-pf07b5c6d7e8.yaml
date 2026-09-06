@@ -1,39 +1,42 @@
 schema_version: 1
 id: q-pf07b5c6d7e8
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/playground
-stem: What primary workflow function does the Nebius Token Factory Playground UI
-  serve during initial agent prototyping?
+stem: What does the Token Factory Playground let you do?
 options:
   - id: a
-    text: Interactive testing of model prompts, parameters, and tool outputs
-      directly in the browser
+    text: Experiment with available models through a web interface without coding,
+      including comparing two setups side by side
     correct: true
-    explanation: The Playground UI enables rapid manual experimentation with
-      prompts, parameters, and responses.
+    explanation: The Playground lets you experiment with models through a web
+      interface with no coding required, and Compare opens two chat windows to
+      submit inputs to both setups at once.
   - id: b
-    text: Compiling binary Linux kernel modules for custom GPU instances
+    text: Compile Linux kernel modules for GPU instances
     correct: false
-    explanation: Playground handles model inference testing, not OS compilation.
+    explanation: The Playground is a model experimentation UI, not a build environment.
   - id: c
-    text: Provisioning physical rack hardware in remote data centers
+    text: Provision rack hardware in data centres
     correct: false
-    explanation: Hardware provisioning is managed by infrastructure infrastructure
-      teams, not the prompt playground.
+    explanation: Hardware provisioning is not a Playground function.
   - id: d
-    text: Generating automated legal compliance tax forms
+    text: Generate tax compliance forms
     correct: false
-    explanation: The playground is a developer interface for LLM prompt testing.
+    explanation: Unrelated to model experimentation.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: Both deliver identical model outputs. Differences lie in token pricing,
-      latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+  - source_id: src-recovery-playground
+    excerpt: lets you experiment with available AI models through a web interface —
+      no coding required.
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+  - source_id: src-recovery-playground
+    excerpt: To work with two model setups side by side, click **Compare**.
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: 3777458bd86a513c5cf6d5a138eef6c7139086afdba523187a086bdedae87b32

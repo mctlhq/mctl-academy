@@ -1,41 +1,43 @@
 schema_version: 1
 id: q-ob02a9b0c1d2
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/observability
-stem: Which metric token usage counts are returned in standard Chat Completion
-  response payloads under the usage object?
+stem: Which token counts does the `usage` object of a Chat Completions response
+  report?
 options:
   - id: a
-    text: prompt_tokens, completion_tokens, and total_tokens
+    text: "`prompt_tokens`, `completion_tokens`, and `total_tokens`"
     correct: true
-    explanation: The usage object reports exact counts for prompt_tokens,
-      completion_tokens, and total_tokens.
+    explanation: The Usage schema defines prompt tokens, completion tokens, and
+      total tokens, where the total is prompt plus completion.
   - id: b
-    text: gpu_temperature_celsius and fan_speed_rpm
+    text: "`gpu_temperature_celsius` and `fan_speed_rpm`"
     correct: false
-    explanation: Hardware temperature and fan metrics belong to infrastructure
-      monitoring, not model API usage payloads.
+    explanation: Hardware telemetry is not part of the chat completion response.
   - id: c
-    text: disk_write_mbps and network_latency_ms
+    text: "`disk_write_mbps` and `network_latency_ms`"
     correct: false
-    explanation: Disk throughput and network ping latency are transport metrics, not
-      LLM token usage counters.
+    explanation: Transport metrics are not reported in the usage object.
   - id: d
-    text: database_connections_active
+    text: "`database_connections_active`"
     correct: false
-    explanation: Database connections are SQL pool counters, not inference token
-      usage object properties.
+    explanation: Database counters have nothing to do with inference usage.
 evidence:
-  - source_id: src-rate-limits
-    excerpt: track your consumption against your limits using the
-      `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens`
-      response headers.
-    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+  - source_id: src-recovery-chat
+    excerpt: "completion_tokens: type: integer title: Completion Tokens description:
+      Number of tokens in the generated completion. prompt_tokens: type: integer
+      title: Prompt Tokens"
+    source_sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
+  - source_id: src-recovery-chat
+    excerpt: "total_tokens: type: integer title: Total Tokens description: Total
+      number of tokens used in the request (prompt + completion)."
+    source_sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:56:58Z
+  content_sha256: a22d4676ea0f0d25bf1569236e8dbf1ba8b9d0a18ae6d74332502d29164c4e7d
