@@ -26,8 +26,19 @@ name: Content replenish
 # open as data; none of that text is interpolated into a prompt or a shell
 # line.
 #
-# Every scratch file this workflow writes lives under _run/, and the only place
-# an agent writes outside content/questions is _agent/. That is what lets the
+# The three agents run with the UNSCOPED Write tool, not a path allowlist: on
+# anthropics/claude-code-action every Write(<pattern>) form is denied at call
+# time while the step still reports success, so a scoped grant does not narrow
+# what an agent may write -- it stops the agent writing at all, silently. Four
+# runs on 2026-09-06 established this: `_agent/**`, its absolute
+# `//<workspace>/_agent/**` form and `_run/agent/**` were all refused with
+# "Claude requested permissions to write to <path>, but you haven't granted it
+# yet", and the bare tool was accepted. So the grant is not the boundary. The
+# boundary is deterministic and below: each agent is followed by a prune of its
+# scratch directory, then a boundary check, then guardChanges on the questions.
+#
+# Every scratch file this workflow writes lives under _run/, and the agents'
+# own output goes to _agent/. That is what lets the
 # pre-agent boundary check below be a plain "nothing outside content/questions
 # moved" rule instead of a list that has to be re-derived
 # whenever a step starts writing a new file. The check does not honour
@@ -236,7 +247,7 @@ jobs:
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 25
             --tools "Read,Glob,Grep,Write"
-            --allowedTools "Read,Glob,Grep,Write(_agent/**)"
+            --allowedTools "Read,Glob,Grep,Write"
 
       # A missing file here is not "the agent had nothing to say": the first
       # supervised run lost all three agent outputs to a permission rule that
@@ -288,10 +299,12 @@ jobs:
           rm -rf node_modules
           bun install --frozen-lockfile
 
-      # The selector agent may write only _agent/select.json, and the very next
-      # step runs repository code with snapshot credentials -- bun and node
-      # both load files this checkout provides. The allowlist is not the only
-      # boundary; this is. Nothing is exempted: the discovery watermark is
+      # The selector agent's grant is the unscoped Write tool -- every
+      # Write(<pattern>) form is silently denied by the action, see the header
+      # -- so this check is not "the allowlist is not the only boundary", it is
+      # the ONLY boundary, together with the prune above it. The very next step
+      # runs repository code with snapshot credentials; bun and node load files
+      # this checkout provides. Nothing is exempted: the discovery watermark is
       # copied in by the capture step below, AFTER this check, so a selector
       # that rewrote it -- hiding pages from every future run, or re-offering
       # ignored ones -- is caught here rather than waved through.
@@ -473,7 +486,7 @@ jobs:
             --model ${{ env.AUTHOR_MODEL }}
             --max-turns 80
             --tools "Read,Glob,Grep,Write,Edit"
-            --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(_agent/**)"
+            --allowedTools "Read,Glob,Grep,Write,Edit"
 
       # The agent's own runs of the checks are advice; these are the gates.
       # A missing file here is not "the agent had nothing to say": the first
@@ -497,13 +510,13 @@ jobs:
           # output is deleted, whatever a later tool might have globbed it into.
           find _agent -mindepth 1 ! -path "$f" -delete
 
-      # An agent's Write allowlist is a path glob, and node_modules is exempt
-      # from the boundary check because `bun install` leaves tens of thousands
-      # of untracked files there. A write that reached it -- through path
-      # traversal, or any future gap in the allowlist -- would execute as soon
-      # as the next `node` resolves an import, which is the boundary check
-      # itself. So the dependencies are discarded and reinstalled, and the
-      # executable surface is checked, before ANY repository code runs again.
+      # node_modules is exempt from the boundary check because `bun install`
+      # leaves tens of thousands of untracked files there, and the agents write
+      # under an unscoped grant, so nothing stops a write landing in it. Such a
+      # write would execute as soon as the next `node` resolves an import,
+      # which is the boundary check itself. So the dependencies are discarded
+      # and reinstalled, and the executable surface is checked, before ANY
+      # repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         run: |
           set -euo pipefail
@@ -741,7 +754,7 @@ jobs:
             --model ${{ env.REVIEWER_MODEL }}
             --max-turns 60
             --tools "Read,Glob,Grep,Write"
-            --allowedTools "Read,Glob,Grep,Write(_agent/**)"
+            --allowedTools "Read,Glob,Grep,Write"
 
       # A missing file here is not "the agent had nothing to say": the first
       # supervised run lost all three agent outputs to a permission rule that
@@ -765,13 +778,13 @@ jobs:
           # output is deleted, whatever a later tool might have globbed it into.
           find _agent -mindepth 1 ! -path "$f" -delete
 
-      # An agent's Write allowlist is a path glob, and node_modules is exempt
-      # from the boundary check because `bun install` leaves tens of thousands
-      # of untracked files there. A write that reached it -- through path
-      # traversal, or any future gap in the allowlist -- would execute as soon
-      # as the next `node` resolves an import, which is the boundary check
-      # itself. So the dependencies are discarded and reinstalled, and the
-      # executable surface is checked, before ANY repository code runs again.
+      # node_modules is exempt from the boundary check because `bun install`
+      # leaves tens of thousands of untracked files there, and the agents write
+      # under an unscoped grant, so nothing stops a write landing in it. Such a
+      # write would execute as soon as the next `node` resolves an import,
+      # which is the boundary check itself. So the dependencies are discarded
+      # and reinstalled, and the executable surface is checked, before ANY
+      # repository code runs again.
       - name: Guard the executable surface and rebuild dependencies
         if: steps.items.outputs.count != '0'
         run: |

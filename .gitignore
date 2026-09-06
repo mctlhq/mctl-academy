@@ -21,7 +21,7 @@ client/src/data/mock-bundle.generated.json
 # content/questions" rather than a list of filenames to keep in sync.
 #
 # What the AGENTS write is not here: it lives in _agent/, which is
-# deliberately NOT ignored, because the only Write allowlist shape the action
-# honours is `dir/**` and a rule naming one gitignored file was denied
-# outright. boundaryProblems excludes both directories by pathspec.
+# deliberately NOT ignored so that a stray file there is visible to a human
+# reading `git status` after a failed run. boundaryProblems excludes both
+# directories by pathspec.
 _run/

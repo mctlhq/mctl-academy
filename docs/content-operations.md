@@ -79,10 +79,13 @@ and dropping the branch would leave them quarantined on `main`. A run that only
 quarantined does not open one, because `Source drift` already owns that PR.
 
 Every scratch file a run writes lives under `_run/`, which `.gitignore` covers.
-The only place an agent writes outside `content/questions/` is `_agent/`, which
-`.gitignore` deliberately does not cover: the only `Write` allowlist shape the
-action honours is `dir/**`, so the grant is `Write(_agent/**)` and the workflow
-deletes everything but the one expected file straight after each agent.
+The agents' own output goes to `_agent/`, which `.gitignore` deliberately does
+not cover. Their grant is the **unscoped** `Write` tool: on
+`anthropics/claude-code-action` every `Write(<pattern>)` form is denied at call
+time while the step still reports success, so a scoped grant does not narrow
+what an agent may write — it stops it writing at all, silently. The workflow
+therefore deletes everything but the one expected file straight after each
+agent, and the deterministic checks below are the real boundary.
 That is what lets the pre-agent boundary check (`replenish-prepare.mjs
 boundary`) be a plain "nothing changed or created outside `content/questions`"
 rule rather than a list of filenames that has to be updated whenever a step

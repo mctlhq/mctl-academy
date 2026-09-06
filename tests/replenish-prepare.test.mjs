@@ -560,28 +560,34 @@ test("reconcile-decisions refuses a handed list that disagrees with the diff, an
   }
 });
 
-test("every agent writes only into the directory nothing in the workflow trusts", () => {
+test("no agent is given a scoped write grant, because a scoped grant denies every write", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
-  // The first supervised run lost all three agent outputs: every
-  // Write(<literal path under a gitignored directory>) rule was denied, while
-  // Write(content/questions/**) in the same run was honoured. _agent/** is the
-  // shape that worked, in a directory that is not gitignored, so neither
-  // variable is left in play.
+  // Established on 2026-09-06 across four runs: on this action every
+  // Write(<pattern>) form is refused at call time -- "Claude requested
+  // permissions to write to <path>, but you haven't granted it yet" -- while
+  // the step still reports success and permission_denials_count in a log
+  // nobody reads. `_agent/**`, its absolute //<workspace>/_agent/** form and
+  // `_run/agent/**` were all denied; the bare tool was accepted. So a scoped
+  // grant does not narrow what an agent may write, it stops it writing at all.
+  // Tightening this string is therefore a silent outage, not a hardening --
+  // the hardening is the prune, the boundary check and guardChanges, each
+  // pinned by its own test.
   const agents = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter((s) =>
     s.uses?.startsWith("anthropics/claude-code-action@"),
   );
   assert.equal(agents.length, 3);
   for (const step of agents) {
-    const grants = [...step.with.claude_args.matchAll(/(Write|Edit)\(([^)]*)\)/g)].map((m) => m[2]);
-    assert.ok(grants.length > 0, `${step.name} grants no write at all`);
-    for (const g of grants) {
-      assert.ok(
-        g === "_agent/**" || g === "content/questions/**",
-        `${step.name} may write ${g}, which is neither the agent scratch directory nor the question bank`,
-      );
-    }
+    const args = step.with.claude_args;
+    assert.match(args, /--allowedTools "[^"]*\bWrite\b/, `${step.name} grants no write at all`);
+    assert.doesNotMatch(
+      args,
+      /\b(Write|Edit)\(/,
+      `${step.name} carries a scoped grant, which is silently denied`,
+    );
+    // Bash stays off for every agent: the deterministic steps run the commands.
+    assert.doesNotMatch(args, /\bBash\b/, `${step.name} may run commands`);
   }
 });
 
