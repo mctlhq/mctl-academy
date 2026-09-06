@@ -81,9 +81,11 @@ quarantined does not open one, because `Source drift` already owns that PR.
 Every scratch file a run writes lives under `_run/`, which `.gitignore` covers.
 The agents' own output goes to `_agent/`, which `.gitignore` deliberately does
 not cover. Their grant is the **unscoped** `Write` tool: on
-`anthropics/claude-code-action` every `Write(<pattern>)` form is denied at call
-time while the step still reports success, so a scoped grant does not narrow
-what an agent may write — it stops it writing at all, silently. The workflow
+`anthropics/claude-code-action` every scoped form tried here was denied at call
+time while the step still reported success, so a scoped grant does not narrow
+what an agent may write — it stops it writing at all, silently. (One earlier
+run accepted `Write(content/questions/**)`; that has never been reproduced and
+nothing depends on it.) The workflow
 therefore deletes everything but the one expected file straight after each
 agent, and the deterministic checks below are the real boundary.
 That is what lets the pre-agent boundary check (`replenish-prepare.mjs

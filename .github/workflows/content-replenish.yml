@@ -27,13 +27,16 @@ name: Content replenish
 # line.
 #
 # The three agents run with the UNSCOPED Write tool, not a path allowlist: on
-# anthropics/claude-code-action every Write(<pattern>) form is denied at call
-# time while the step still reports success, so a scoped grant does not narrow
+# anthropics/claude-code-action every scoped form tried here was denied at call
+# time while the step still reported success, so a scoped grant does not narrow
 # what an agent may write -- it stops the agent writing at all, silently. Four
 # runs on 2026-09-06 established this: `_agent/**`, its absolute
 # `//<workspace>/_agent/**` form and `_run/agent/**` were all refused with
 # "Claude requested permissions to write to <path>, but you haven't granted it
-# yet", and the bare tool was accepted. So the grant is not the boundary. The
+# yet", and the bare tool was accepted. One earlier run, 34051711495, accepted
+# `Write(content/questions/**)` and wrote five files; that has not been
+# reproduced and nothing here relies on it, so the rule below is written for
+# the behaviour that reproduces. So the grant is not the boundary. The
 # boundary is deterministic and below: each agent is followed by a prune of its
 # scratch directory, then a boundary check, then guardChanges on the questions.
 #
@@ -228,19 +231,33 @@ jobs:
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
-          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
-          # on the next git command), and the per-user files bun, npm and git
-          # read from $HOME, which is outside the workspace entirely.
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
           manifest() {
             {
               find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
-              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
             }
           }
           manifest > "${RUNNER_TEMP}/selector-guard.txt"
           echo "digest=$(sha256sum < "${RUNNER_TEMP}/selector-guard.txt" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+          # PATH cannot go in the manifest: the action installs bun and
+          # prepends its directory through $GITHUB_PATH, so PATH legitimately
+          # differs after the agent step. Carry it in the output instead and
+          # compare entry by entry below.
+          echo "path=$PATH" >> "$GITHUB_OUTPUT"
 
       - name: Author agent selects pages to capture
         if: steps.branch.outputs.new_pages != '0'
@@ -291,8 +308,8 @@ jobs:
             echo "::error::the selector agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
-          # The grant is the unscoped Write tool -- every Write(<pattern>) form
-          # is denied at call time, see the header -- so the narrowing happens
+          # The grant is the unscoped Write tool -- every scoped form tried was
+          # denied at call time, see the header -- so the narrowing happens
           # here instead, in shell, before any repository code runs: everything
           # the agent left besides its one expected output is deleted, whatever
           # a later tool might have globbed it into. What it wrote outside this
@@ -305,24 +322,37 @@ jobs:
       # is exactly as untrustworthy as the tree it describes.
       - name: Nothing the next steps trust moved
         if: steps.branch.outputs.new_pages != '0'
+        # Read as data, not spliced into the script text.
+        env:
+          EXPECTED_DIGEST: ${{ steps.selector-guard.outputs.digest }}
+          EXPECTED_PATH: ${{ steps.selector-guard.outputs.path }}
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
-          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
-          # on the next git command), and the per-user files bun, npm and git
-          # read from $HOME, which is outside the workspace entirely.
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
           manifest() {
             {
               find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
-              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
             }
           }
           now="${RUNNER_TEMP}/selector-guard-after.txt"
           manifest > "$now"
-          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "${{ steps.selector-guard.outputs.digest }}" ]; then
+          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "$EXPECTED_DIGEST" ]; then
             echo "::error::the agent changed a file the following steps trust"
             diff "${RUNNER_TEMP}/selector-guard.txt" "$now" || true
             exit 1
@@ -335,12 +365,25 @@ jobs:
           for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
             if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
           done
-          case ":$PATH:" in
-            *":${GITHUB_WORKSPACE}"*|*":${RUNNER_TEMP}"*|*:.:*)
-              echo "::error::PATH gained an entry under the workspace, the runner temp, or the current directory"
-              bad=1
-              ;;
-          esac
+          # $GITHUB_PATH *prepends*, so one line appended to it wins every
+          # command resolution in every following step. An allowlist, not a
+          # list of bad shapes: the only entry that legitimately appears
+          # between the snapshot and here is the bun directory the action's
+          # own setup-bun step adds. Anything else the agent put there --
+          # $HOME/bin as much as the workspace -- fails the run.
+          before="$EXPECTED_PATH"
+          old_ifs=$IFS
+          IFS=:
+          for d in $PATH; do
+            case ":$before:" in *":$d:"*) continue ;; esac
+            if [ "$d" = "$HOME/.bun/bin" ]; then continue; fi
+            # An empty entry is a real one: bash keeps empty fields when IFS is
+            # a non-whitespace character, and to PATH it means the current
+            # directory.
+            echo "::error::PATH gained '$d' after the agent ran"
+            bad=1
+          done
+          IFS=$old_ifs
           [ -z "$bad" ] || exit 1
 
       # Same reason as after the other two agents; the step's own comments carry
@@ -371,8 +414,8 @@ jobs:
           rm -rf node_modules
           bun install --frozen-lockfile
 
-      # The selector agent's grant is the unscoped Write tool -- every
-      # Write(<pattern>) form is silently denied by the action, see the header
+      # The selector agent's grant is the unscoped Write tool -- every scoped
+      # form tried was silently denied by the action, see the header
       # -- so this check is not "the allowlist is not the only boundary", it is
       # the ONLY boundary, together with the prune above it. The very next step
       # runs repository code with snapshot credentials; bun and node load files
@@ -520,19 +563,33 @@ jobs:
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
-          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
-          # on the next git command), and the per-user files bun, npm and git
-          # read from $HOME, which is outside the workspace entirely.
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
           manifest() {
             {
               find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
-              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
             }
           }
           manifest > "${RUNNER_TEMP}/author-guard.txt"
           echo "digest=$(sha256sum < "${RUNNER_TEMP}/author-guard.txt" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+          # PATH cannot go in the manifest: the action installs bun and
+          # prepends its directory through $GITHUB_PATH, so PATH legitimately
+          # differs after the agent step. Carry it in the output instead and
+          # compare entry by entry below.
+          echo "path=$PATH" >> "$GITHUB_OUTPUT"
 
       - name: Author agent writes review_ready questions
         uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
@@ -601,8 +658,8 @@ jobs:
             echo "::error::the author agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
-          # The grant is the unscoped Write tool -- every Write(<pattern>) form
-          # is denied at call time, see the header -- so the narrowing happens
+          # The grant is the unscoped Write tool -- every scoped form tried was
+          # denied at call time, see the header -- so the narrowing happens
           # here instead, in shell, before any repository code runs: everything
           # the agent left besides its one expected output is deleted, whatever
           # a later tool might have globbed it into. What it wrote outside this
@@ -614,24 +671,37 @@ jobs:
       # manifest is used only to print a readable diff -- it is a file, so it
       # is exactly as untrustworthy as the tree it describes.
       - name: Nothing the next steps trust moved
+        # Read as data, not spliced into the script text.
+        env:
+          EXPECTED_DIGEST: ${{ steps.author-guard.outputs.digest }}
+          EXPECTED_PATH: ${{ steps.author-guard.outputs.path }}
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
-          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
-          # on the next git command), and the per-user files bun, npm and git
-          # read from $HOME, which is outside the workspace entirely.
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
           manifest() {
             {
               find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
-              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
             }
           }
           now="${RUNNER_TEMP}/author-guard-after.txt"
           manifest > "$now"
-          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "${{ steps.author-guard.outputs.digest }}" ]; then
+          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "$EXPECTED_DIGEST" ]; then
             echo "::error::the agent changed a file the following steps trust"
             diff "${RUNNER_TEMP}/author-guard.txt" "$now" || true
             exit 1
@@ -644,12 +714,25 @@ jobs:
           for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
             if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
           done
-          case ":$PATH:" in
-            *":${GITHUB_WORKSPACE}"*|*":${RUNNER_TEMP}"*|*:.:*)
-              echo "::error::PATH gained an entry under the workspace, the runner temp, or the current directory"
-              bad=1
-              ;;
-          esac
+          # $GITHUB_PATH *prepends*, so one line appended to it wins every
+          # command resolution in every following step. An allowlist, not a
+          # list of bad shapes: the only entry that legitimately appears
+          # between the snapshot and here is the bun directory the action's
+          # own setup-bun step adds. Anything else the agent put there --
+          # $HOME/bin as much as the workspace -- fails the run.
+          before="$EXPECTED_PATH"
+          old_ifs=$IFS
+          IFS=:
+          for d in $PATH; do
+            case ":$before:" in *":$d:"*) continue ;; esac
+            if [ "$d" = "$HOME/.bun/bin" ]; then continue; fi
+            # An empty entry is a real one: bash keeps empty fields when IFS is
+            # a non-whitespace character, and to PATH it means the current
+            # directory.
+            echo "::error::PATH gained '$d' after the agent ran"
+            bad=1
+          done
+          IFS=$old_ifs
           [ -z "$bad" ] || exit 1
 
       # node_modules is exempt from the boundary check because `bun install`
@@ -878,19 +961,33 @@ jobs:
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
-          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
-          # on the next git command), and the per-user files bun, npm and git
-          # read from $HOME, which is outside the workspace entirely.
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
           manifest() {
             {
               find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
-              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
             }
           }
           manifest > "${RUNNER_TEMP}/reviewer-guard.txt"
           echo "digest=$(sha256sum < "${RUNNER_TEMP}/reviewer-guard.txt" | cut -d" " -f1)" >> "$GITHUB_OUTPUT"
+          # PATH cannot go in the manifest: the action installs bun and
+          # prepends its directory through $GITHUB_PATH, so PATH legitimately
+          # differs after the agent step. Carry it in the output instead and
+          # compare entry by entry below.
+          echo "path=$PATH" >> "$GITHUB_OUTPUT"
 
       - name: Independent reviewer decides per item
         if: steps.items.outputs.count != '0'
@@ -940,8 +1037,8 @@ jobs:
             echo "::error::the reviewer agent wrote no $f; the run cannot continue on a silent agent"
             exit 1
           fi
-          # The grant is the unscoped Write tool -- every Write(<pattern>) form
-          # is denied at call time, see the header -- so the narrowing happens
+          # The grant is the unscoped Write tool -- every scoped form tried was
+          # denied at call time, see the header -- so the narrowing happens
           # here instead, in shell, before any repository code runs: everything
           # the agent left besides its one expected output is deleted, whatever
           # a later tool might have globbed it into. What it wrote outside this
@@ -954,24 +1051,37 @@ jobs:
       # is exactly as untrustworthy as the tree it describes.
       - name: Nothing the next steps trust moved
         if: steps.items.outputs.count != '0'
+        # Read as data, not spliced into the script text.
+        env:
+          EXPECTED_DIGEST: ${{ steps.reviewer-guard.outputs.digest }}
+          EXPECTED_PATH: ${{ steps.reviewer-guard.outputs.path }}
         run: |
           set -euo pipefail
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
-          # .git/config and .git/hooks (core.hooksPath alone is arbitrary code
-          # on the next git command), and the per-user files bun, npm and git
-          # read from $HOME, which is outside the workspace entirely.
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
           manifest() {
             {
               find _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C sort -z | xargs -0 -r sha256sum
-              for f in .git/config "$HOME/.npmrc" "$HOME/.bunfig.toml" "$HOME/.gitconfig"; do
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then sha256sum "$f"; else echo "absent $f"; fi
               done
             }
           }
           now="${RUNNER_TEMP}/reviewer-guard-after.txt"
           manifest > "$now"
-          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "${{ steps.reviewer-guard.outputs.digest }}" ]; then
+          if [ "$(sha256sum < "$now" | cut -d" " -f1)" != "$EXPECTED_DIGEST" ]; then
             echo "::error::the agent changed a file the following steps trust"
             diff "${RUNNER_TEMP}/reviewer-guard.txt" "$now" || true
             exit 1
@@ -984,12 +1094,25 @@ jobs:
           for v in NODE_OPTIONS NODE_PATH LD_PRELOAD GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM GIT_SSH_COMMAND GIT_EXEC_PATH; do
             if [ -n "${!v:-}" ]; then echo "::error::$v is set after the agent ran"; bad=1; fi
           done
-          case ":$PATH:" in
-            *":${GITHUB_WORKSPACE}"*|*":${RUNNER_TEMP}"*|*:.:*)
-              echo "::error::PATH gained an entry under the workspace, the runner temp, or the current directory"
-              bad=1
-              ;;
-          esac
+          # $GITHUB_PATH *prepends*, so one line appended to it wins every
+          # command resolution in every following step. An allowlist, not a
+          # list of bad shapes: the only entry that legitimately appears
+          # between the snapshot and here is the bun directory the action's
+          # own setup-bun step adds. Anything else the agent put there --
+          # $HOME/bin as much as the workspace -- fails the run.
+          before="$EXPECTED_PATH"
+          old_ifs=$IFS
+          IFS=:
+          for d in $PATH; do
+            case ":$before:" in *":$d:"*) continue ;; esac
+            if [ "$d" = "$HOME/.bun/bin" ]; then continue; fi
+            # An empty entry is a real one: bash keeps empty fields when IFS is
+            # a non-whitespace character, and to PATH it means the current
+            # directory.
+            echo "::error::PATH gained '$d' after the agent ran"
+            bad=1
+          done
+          IFS=$old_ifs
           [ -z "$bad" ] || exit 1
 
       # node_modules is exempt from the boundary check because `bun install`

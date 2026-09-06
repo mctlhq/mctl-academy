@@ -633,16 +633,30 @@ test("every agent is bracketed by a snapshot and a verification of what the next
       const after = steps.slice(i + 1);
       const verify = after.find((s) => s.name === "Nothing the next steps trust moved");
       assert.ok(verify, `nothing verifies after ${step.name}`);
-      // Compared against the step output, never against the saved file.
-      const marker = ["$", "{{ steps.", before.id, ".outputs.digest }}"].join("");
-      assert.ok(
-        verify.run.includes(marker),
-        `the verification after ${step.name} does not compare against ${before.id}'s output`,
+      // A snapshot that is skipped is loud -- the verification then has no
+      // digest to compare against -- but a verification that is skipped is
+      // silent, and the run continues on a tree nothing vouched for.
+      assert.equal(
+        verify.if ?? null,
+        step.if ?? null,
+        `the verification after ${step.name} runs on a different condition`,
       );
+      // Compared against the step output, never against the saved file, and
+      // read as data through env rather than spliced into the script.
+      for (const key of ["EXPECTED_DIGEST", "EXPECTED_PATH"]) {
+        const field = key === "EXPECTED_DIGEST" ? "digest" : "path";
+        assert.equal(
+          verify.env?.[key],
+          ["$", "{{ steps.", before.id, ".outputs.", field, " }}"].join(""),
+          `the verification after ${step.name} does not take ${field} from ${before.id}'s output`,
+        );
+        assert.match(verify.run, new RegExp(`\\$${key}\\b`));
+      }
       // And before anything that reads the tree it just vouched for.
       const guard = after.findIndex(
         (s) => s.name === "Guard the executable surface and rebuild dependencies",
       );
+      assert.notEqual(guard, -1, `nothing rebuilds dependencies after ${step.name}`);
       assert.ok(after.indexOf(verify) < guard, "the verification must precede the dependency rebuild");
     });
   }
@@ -922,18 +936,21 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
         GITHUB_OUTPUT: join(temp, "out.txt"),
       };
       delete env.NODE_OPTIONS;
+      delete env.XDG_CONFIG_HOME;
       writeFileSync(env.GITHUB_OUTPUT, "");
       execFileSync("bash", ["-c", snapText[0].replace(/\bID\b/g, "guard")], {
         cwd: dir,
         env,
         stdio: ["ignore", "pipe", "pipe"],
       });
-      const digest = /digest=(\w+)/.exec(readFileSync(env.GITHUB_OUTPUT, "utf8"))[1];
+      const written = readFileSync(env.GITHUB_OUTPUT, "utf8");
+      const digest = /digest=(\w+)/.exec(written)[1];
+      const path = /^path=(.*)$/m.exec(written)[1];
       const after = plant(dir, home, env) ?? env;
       try {
         execFileSync("bash", ["-c", verText[0].replace(/\bID\b/g, "guard")], {
           cwd: dir,
-          env: { ...after, EXPECTED: digest },
+          env: { ...after, EXPECTED_DIGEST: digest, EXPECTED_PATH: path },
           stdio: ["ignore", "pipe", "pipe"],
         });
         return 0;
@@ -984,6 +1001,38 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     fixture((dir, _home, env) => ({ ...env, PATH: `${dir}:${env.PATH}` })),
     1,
     "a PATH entry under the workspace shadows every command the next steps run",
+  );
+  assert.equal(
+    fixture((dir, _home, env) => ({ ...env, PATH: `${env.HOME}/bin:${env.PATH}` })),
+    1,
+    "$HOME/bin is neither the workspace nor the runner temp, and $GITHUB_PATH prepends",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.HOME}/.bun/bin:${env.PATH}` })),
+    0,
+    "the action's own setup-bun step prepends this on every run",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `:${env.PATH}` })),
+    1,
+    "an empty PATH element is the current directory and survives word splitting",
+  );
+  assert.equal(
+    fixture((_dir, home) => {
+      mkdirSync(join(home, ".config", "git"), { recursive: true });
+      writeFileSync(join(home, ".config", "git", "config"), "[core]\n\thooksPath = /tmp/evil\n");
+    }),
+    1,
+    "git reads the XDG file in addition to ~/.gitconfig",
+  );
+  assert.equal(
+    fixture((dir, _home, env) => {
+      mkdirSync(join(dir, "xdg", "git"), { recursive: true });
+      writeFileSync(join(dir, "xdg", "git", "config"), "[core]\n\thooksPath = /tmp/evil\n");
+      return { ...env, XDG_CONFIG_HOME: join(dir, "xdg") };
+    }),
+    1,
+    "repointing the lookup is as good as editing the file it lands on",
   );
   // The agent's own file is not in the manifest: writing it must not fail.
   assert.equal(
