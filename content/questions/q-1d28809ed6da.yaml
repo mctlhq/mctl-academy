@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-1d28809ed6da
+status: published
+domain: domain-3
+objective: domain-3/datasets
+stem: What split between training and validation examples does the fine-tuning
+  guide describe as typical?
+options:
+  - id: a
+    text: 50% training and 50% validation
+    correct: false
+    explanation: The guide reserves only a small share for validation.
+  - id: b
+    text: 99% training and 1% validation
+    correct: false
+    explanation: The documented validation share is larger than one percent.
+  - id: c
+    text: 80–90% training and 10–20% validation
+    correct: true
+    explanation: The prerequisites list a typical split of 80–90% of examples for
+      training and 10–20% for validation; the validation dataset is optional.
+  - id: d
+    text: Equal-sized files are mandatory
+    correct: false
+    explanation: A validation dataset is optional, and the typical split is unequal.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: "A typical split is: * **80–90%** of examples → training * **10–20%**
+      of examples → validation"
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+authored:
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: 3bfa838eab1169c2b1572586838367ccf19cb649477ee9a190e53a2e4f20bedf

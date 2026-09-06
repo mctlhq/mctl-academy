@@ -1,5 +1,87 @@
 [
   {
+    "id": "q-1d28809ed6da",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/datasets",
+    "stem": "What split between training and validation examples does the fine-tuning guide describe as typical?",
+    "objectiveTitle": "Creating and managing datasets",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "A typical split is: * **80–90%** of examples → training * **10–20%** of examples → validation"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "50% training and 50% validation",
+        "correct": false,
+        "explanation": "The guide reserves only a small share for validation."
+      },
+      {
+        "id": "b",
+        "text": "99% training and 1% validation",
+        "correct": false,
+        "explanation": "The documented validation share is larger than one percent."
+      },
+      {
+        "id": "c",
+        "text": "80–90% training and 10–20% validation",
+        "correct": true,
+        "explanation": "The prerequisites list a typical split of 80–90% of examples for training and 10–20% for validation; the validation dataset is optional."
+      },
+      {
+        "id": "d",
+        "text": "Equal-sized files are mandatory",
+        "correct": false,
+        "explanation": "A validation dataset is optional, and the typical split is unequal."
+      }
+    ]
+  },
+  {
+    "id": "q-3ed9d6aa21de",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/supervised-fine-tuning",
+    "stem": "What does the `learning_rate` fine-tuning hyperparameter control, and what range does the guide call typical?",
+    "objectiveTitle": "Running supervised fine-tuning",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "`learning_rate` (float, optional) Step size for gradient descent. * Must be `>= 0` * Typical values: `1e-6`–`5e-5`"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The number of passes over the dataset; typically 1 to 20",
+        "correct": false,
+        "explanation": "That describes `n_epochs`."
+      },
+      {
+        "id": "b",
+        "text": "The rank of the LoRA matrices; typically 8 to 128",
+        "correct": false,
+        "explanation": "That describes `lora_r`."
+      },
+      {
+        "id": "c",
+        "text": "The fraction of steps used for warmup; typically 0 to 1",
+        "correct": false,
+        "explanation": "That describes `warmup_ratio`."
+      },
+      {
+        "id": "d",
+        "text": "The step size for gradient descent; typically `1e-6` to `5e-5`",
+        "correct": true,
+        "explanation": "`learning_rate` is documented as the step size for gradient descent, must be at least 0, with typical values between `1e-6` and `5e-5` and a default of `0.00001`."
+      }
+    ]
+  },
+  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -2126,6 +2208,98 @@
     ]
   },
   {
+    "id": "q-df04b6c7d8e9",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/dataset-formats",
+    "stem": "When fine-tuning for tool calling, how are the tool definitions supplied for a conversation example?",
+    "objectiveTitle": "Dataset formats required for fine-tuning",
+    "sources": [
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "Each training example can optionally include a `tools` field that defines the tools available in that conversation."
+      },
+      {
+        "title": "Dataset Formats for Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "The schema should match what you plan to use at inference time."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "As a binary blob appended to the JSONL file",
+        "correct": false,
+        "explanation": "Dataset files are plain JSON Lines; tool definitions are JSON inside the example."
+      },
+      {
+        "id": "b",
+        "text": "In an optional `tools` field on the training example, matching the schema you plan to use at inference",
+        "correct": true,
+        "explanation": "Each training example can optionally include a `tools` field defining the tools available in that conversation, and its schema should match inference time."
+      },
+      {
+        "id": "c",
+        "text": "As comments inside the system prompt",
+        "correct": false,
+        "explanation": "The documented mechanism is a structured `tools` field, not prose in the prompt."
+      },
+      {
+        "id": "d",
+        "text": "Through HTTP webhooks called during training",
+        "correct": false,
+        "explanation": "Training reads static dataset files; no webhooks are documented."
+      }
+    ]
+  },
+  {
+    "id": "q-dl01a3b4c5d6",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/data-lab",
+    "stem": "What is Data Lab in Token Factory?",
+    "objectiveTitle": "Data Lab: importing and processing training data",
+    "sources": [
+      {
+        "title": "Data Lab",
+        "url": "https://docs.tokenfactory.nebius.com/data-lab/overview.md",
+        "excerpt": "is the unified workspace inside Nebius Token Factory for working with inference logs (chat completions) and datasets."
+      },
+      {
+        "title": "Data Lab",
+        "url": "https://docs.tokenfactory.nebius.com/data-lab/overview.md",
+        "excerpt": "A unified interface for **preparing datasets via SQL queries.** * Reusable datasets for **batch inference and fine-tuning.**"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A unified workspace for inference logs and datasets: filter and export chat completion logs, prepare datasets via SQL queries, and reuse them for batch inference and fine-tuning",
+        "correct": true,
+        "explanation": "The overview describes Data Lab as the unified workspace for inference logs and datasets, with SQL-based dataset preparation and reusable datasets for batch inference and fine-tuning."
+      },
+      {
+        "id": "b",
+        "text": "A TLS certificate manager for custom domains",
+        "correct": false,
+        "explanation": "Certificates are unrelated to Data Lab."
+      },
+      {
+        "id": "c",
+        "text": "A Kubernetes node provisioning console",
+        "correct": false,
+        "explanation": "Infrastructure provisioning is not part of Data Lab."
+      },
+      {
+        "id": "d",
+        "text": "A SQL client for your production relational databases",
+        "correct": false,
+        "explanation": "Data Lab's SQL queries run over inference logs and datasets inside Token Factory, not over external production databases."
+      }
+    ]
+  },
+  {
     "id": "q-ds02d4e5f6a7",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -2378,6 +2552,47 @@
         "text": "Point the job at a public HTTPS URL of the dataset",
         "correct": false,
         "explanation": "The walkthrough uploads the file through the Files API; URLs are not a documented input."
+      }
+    ]
+  },
+  {
+    "id": "q-fa02b2c3d4e5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "Which `purpose` value is used when uploading a JSONL dataset for supervised fine-tuning?",
+    "objectiveTitle": "Uploading, retrieving, and deleting files",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\","
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`purpose: \"user_avatar\"`",
+        "correct": false,
+        "explanation": "Not a documented purpose for dataset files."
+      },
+      {
+        "id": "b",
+        "text": "`purpose: \"fine-tune\"`",
+        "correct": true,
+        "explanation": "The walkthrough uploads training and validation files with `purpose=\"fine-tune\"`, and `training_file` must reference a file with that purpose."
+      },
+      {
+        "id": "c",
+        "text": "`purpose: \"web_search\"`",
+        "correct": false,
+        "explanation": "Not a documented purpose for dataset files."
+      },
+      {
+        "id": "d",
+        "text": "`purpose: \"cache_backup\"`",
+        "correct": false,
+        "explanation": "Not a documented purpose for dataset files."
       }
     ]
   },
@@ -2674,6 +2889,52 @@
     ]
   },
   {
+    "id": "q-fj02b0c1d2e3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/fine-tuning-jobs",
+    "stem": "How can a developer inspect what happened during a fine-tuning job, such as file validation, dataset processing, and training progress?",
+    "objectiveTitle": "Fine-tuning job lifecycle, events, and checkpoints",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "Events help you understand the lifecycle (file validation, dataset processing, training progress)."
+      },
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "events = client.fine_tuning.jobs.list_events(job.id)"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "By connecting to the GPU host's serial console",
+        "correct": false,
+        "explanation": "No hardware console is exposed."
+      },
+      {
+        "id": "b",
+        "text": "By listing the job's events, for example with `client.fine_tuning.jobs.list_events(job.id)`",
+        "correct": true,
+        "explanation": "The guide recommends inspecting job events, which help you understand the lifecycle: file validation, dataset processing, and training progress."
+      },
+      {
+        "id": "c",
+        "text": "By inspecting DNS records for the API host",
+        "correct": false,
+        "explanation": "DNS carries no job information."
+      },
+      {
+        "id": "d",
+        "text": "By polling the `GET /v1/models` endpoint",
+        "correct": false,
+        "explanation": "The models endpoint lists models; it does not report job progress."
+      }
+    ]
+  },
+  {
     "id": "q-ft01b5c6d7e8",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -2793,6 +3054,98 @@
         "text": "`temperature`",
         "correct": false,
         "explanation": "Temperature is an inference sampling parameter and is not a fine-tuning hyperparameter."
+      }
+    ]
+  },
+  {
+    "id": "q-la01c1d2e3f4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/lora-adapters",
+    "stem": "When a fine-tuning job is created with `lora: true`, which weights are trained?",
+    "objectiveTitle": "Working with and merging LoRA adapters",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "`true`: only LoRA adapter weights are trained; base model weights stay frozen."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "All base model parameters",
+        "correct": false,
+        "explanation": "That is full fine-tuning, the `lora: false` behaviour."
+      },
+      {
+        "id": "b",
+        "text": "Only the embedding layer",
+        "correct": false,
+        "explanation": "Not what the LoRA option does."
+      },
+      {
+        "id": "c",
+        "text": "Only the LoRA adapter weights, while the base model weights stay frozen",
+        "correct": true,
+        "explanation": "The `lora` hyperparameter is documented so that `true` trains only the LoRA adapter weights and keeps the base model weights frozen, whereas `false` applies full fine-tuning."
+      },
+      {
+        "id": "d",
+        "text": "The base weights, while the adapter weights stay frozen",
+        "correct": false,
+        "explanation": "Reversed: the adapters are trained and the base is frozen."
+      }
+    ]
+  },
+  {
+    "id": "q-la02d2e3f4a5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/lora-adapters",
+    "stem": "What does the documented merge script do so that inference no longer has to load the LoRA adapter separately from the base model?",
+    "objectiveTitle": "Working with and merging LoRA adapters",
+    "sources": [
+      {
+        "title": "Merging LoRA adapters",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/merge-moe-lora-weights.md",
+        "excerpt": "Here we provide a merge script that bakes the LoRA adapters directly into the base weights and produces a standard checkpoint directory."
+      },
+      {
+        "title": "Merging LoRA adapters",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/merge-moe-lora-weights.md",
+        "excerpt": "deltaW = B @ A merged_weight = tensor + scale * deltaW"
+      },
+      {
+        "title": "Merging LoRA adapters",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/merge-moe-lora-weights.md",
+        "excerpt": "are merged. If you trained LoRA on other modules (e.g. MLPs), extend `ALLOWED_LORA_LAYERS` accordingly."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Quantised gradient accumulation",
+        "correct": false,
+        "explanation": "A training technique, not a way to combine weights for inference."
+      },
+      {
+        "id": "b",
+        "text": "Dataset token deduplication",
+        "correct": false,
+        "explanation": "A data preparation step unrelated to adapters."
+      },
+      {
+        "id": "c",
+        "text": "Zero-shot prompt prefixing",
+        "correct": false,
+        "explanation": "Prompting does not change model weights."
+      },
+      {
+        "id": "d",
+        "text": "It merges the adapters into the base weights: for each merged layer's weight tensor it adds the scaled product `B @ A`",
+        "correct": true,
+        "explanation": "The script bakes the LoRA adapters into the base weights, computing `deltaW = B @ A` and `merged_weight = tensor + scale * deltaW` for the weight tensors of the merged layers (by default only `model.layers.*.self_attn`; other tensors are copied unchanged), and produces a standard checkpoint directory."
       }
     ]
   },

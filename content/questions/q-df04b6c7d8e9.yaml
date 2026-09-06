@@ -1,41 +1,45 @@
 schema_version: 1
 id: q-df04b6c7d8e9
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/dataset-formats
-stem: When fine-tuning a model to perform tool calling, how are tool definitions
-  provided within a conversation example?
+stem: When fine-tuning for tool calling, how are the tool definitions supplied
+  for a conversation example?
 options:
   - id: a
-    text: As a binary blob appended to the end of the JSONL file
+    text: As a binary blob appended to the JSONL file
     correct: false
-    explanation: Tool definitions must be embedded as JSON objects within the
-      dataset example, not binary attachments.
+    explanation: Dataset files are plain JSON Lines; tool definitions are JSON
+      inside the example.
   - id: b
-    text: In a top-level `tools` array field containing JSON Schema function
-      specifications
+    text: In an optional `tools` field on the training example, matching the schema
+      you plan to use at inference
     correct: true
-    explanation: Tool specifications are included in a `tools` array field within
-      the training example object.
+    explanation: Each training example can optionally include a `tools` field
+      defining the tools available in that conversation, and its schema should
+      match inference time.
   - id: c
-    text: As comments inside the system prompt string
+    text: As comments inside the system prompt
     correct: false
-    explanation: Tool calling models use structured JSON schema definitions in
-      `tools`, not freeform system comments.
+    explanation: The documented mechanism is a structured `tools` field, not prose
+      in the prompt.
   - id: d
-    text: Via external HTTP webhooks during training execution
+    text: Through HTTP webhooks called during training
     correct: false
-    explanation: Fine-tuning processes static dataset files and does not make
-      external HTTP webhook calls during training.
+    explanation: Training reads static dataset files; no webhooks are documented.
 evidence:
   - source_id: src-dataset-formats
     excerpt: Each training example can optionally include a `tools` field that
       defines the tools available in that conversation.
     source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+  - source_id: src-dataset-formats
+    excerpt: The schema should match what you plan to use at inference time.
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T07:03:45Z
+  content_sha256: 10ce40c17af2631fa3925d00bf0ba14689bca0b2b1fef18c914b0966e5f52a2c
