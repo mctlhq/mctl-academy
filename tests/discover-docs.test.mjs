@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { stringify as yaml } from "yaml";
@@ -264,4 +264,29 @@ test("rankPages prefers a path naming a gap objective, then the course's primary
       "https://docs.nebius.com/compute/quotas.md",
     ],
   );
+});
+
+test("discover: a record already marked drifted stays in the report when the live fetch fails", async () => {
+  const dir = fixture();
+  try {
+    const src = join(dir, "sources", "src-quotas.yaml");
+    writeFileSync(src, readFileSync(src, "utf8").replace("status: current", "status: drifted"));
+    const warnings = [];
+    const { result } = await discover({
+      contentDir: dir,
+      fetch: async (url) => {
+        if (url.endsWith("llms.txt")) return "";
+        throw new Error("HTTP 503");
+      },
+      store: fakeStore,
+      warn: (m) => warnings.push(m),
+    });
+    assert.equal(result.drifted.length, 1);
+    assert.equal(result.drifted[0].id, "src-quotas");
+    assert.equal(result.drifted[0].recordedStatus, "drifted");
+    assert.equal(result.drifted[0].classification, "unknown");
+    assert.ok(warnings.some((w) => /reported as drifted, delta not classified/.test(w)));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

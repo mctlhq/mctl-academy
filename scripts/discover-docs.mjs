@@ -225,8 +225,15 @@ export async function discover({
         live = await fetch(data.url);
         liveSha = sha256(Buffer.from(live, "utf8"));
       } catch (e) {
-        warn(`${data.id}: live fetch failed (${e.message}); treated as unreachable, not drifted`);
-        continue;
+        // A record already marked drifted is drifted whether or not the live
+        // page answers today; only the delta classification needs the fetch.
+        // A record marked current is left alone: unreachable is not drift.
+        if (data.status === "drifted") {
+          warn(`${data.id}: live fetch failed (${e.message}); reported as drifted, delta not classified`);
+        } else {
+          warn(`${data.id}: live fetch failed (${e.message}); treated as unreachable, not drifted`);
+          continue;
+        }
       }
     }
     const isDrifted = data.status === "drifted" || (liveSha !== null && liveSha !== data.sha256);
