@@ -180,9 +180,17 @@ export function gapsFrom(report, minPerObjective) {
 }
 
 /**
- * @param {object} deps
- * @param {(url: string) => Promise<string>} deps.fetch
- * @param {{ get(key: string): Promise<string | null> } | null} deps.store
+ * @param {object} [deps]
+ * @param {string} [deps.contentDir]
+ * @param {string} [deps.stateFile]
+ * @param {number} [deps.maxNew]
+ * @param {boolean} [deps.checkLive]
+ * @param {number} [deps.minPerObjective]
+ * @param {string} [deps.today]
+ * @param {(url: string) => Promise<string>} [deps.fetch]
+ * @param {{ get(key: string): Promise<string | null> } | null} [deps.store]
+ * @param {string[]} [deps.indices]
+ * @param {(msg: string) => void} [deps.warn]
  */
 export async function discover({
   contentDir = CONTENT,

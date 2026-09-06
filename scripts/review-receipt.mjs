@@ -28,9 +28,11 @@ const ID = /^q-[a-z0-9]+$/;
 
 /**
  * @param {object} args
+ * @param {string} [args.contentDir]
  * @param {string} args.reviewer
  * @param {{ id: string, approved: boolean, reason: string }[]} args.decisions
- * @param {object | null} [args.existing] a receipt to merge into (entries replaced by id)
+ * @param {{ reviewer: string, questions: any[] } | null} [args.existing] a receipt to merge into (entries replaced by id)
+ * @param {Date} [args.now]
  */
 export function buildReceipt({
   contentDir = CONTENT,
