@@ -308,11 +308,20 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
     assert.match(step.run, /surface="[^"]*package\.json bun\.lock[^"]*bunfig\.toml \.npmrc /);
     // bun loads .env on its own, so NODE_OPTIONS set there needs no $GITHUB_ENV.
     assert.match(step.run, /surface="[^"]*\.env \.env\.\*"/);
-    assert.match(step.run, /git diff --name-only -z [^\n]*\$surface/);
-    assert.match(step.run, /git ls-files --others -z -- \$surface/);
+    assert.match(step.run, /"\$GIT" diff --name-only -z [^\n]*\$surface/);
+    assert.match(step.run, /"\$GIT" ls-files --others -z -- \$surface/);
     assert.match(step.run, /::error::/);
     assert.match(step.run, /exit 1/);
     assert.match(step.run, /rm -rf node_modules/);
+    // The lockfile pins what is installed, not what the cache hands over, and
+    // the cache is a directory the runner user owns.
+    // Lines, not a substring search: the comment above the command names the
+    // cache path too, and a comment is not an emptied cache.
+    const commands = step.run.split("\n").filter((l) => !/^\s*#/.test(l));
+    const purge = commands.findIndex((l) => /^\s*(bun pm cache rm|rm -rf "\$\{HOME\}\/\.bun)/.test(l));
+    const install = commands.findIndex((l) => /^\s*bun install/.test(l));
+    assert.notEqual(purge, -1, "the install trusts whatever is in the bun cache");
+    assert.ok(purge < install, "the cache is emptied after the install that reads it");
   }
 });
 
@@ -434,7 +443,7 @@ test("the dependency guard scans what bun reads, not the tree it is about to del
     // named, so it would hand .gitignore a veto over what this check sees --
     // and .npmrc is one of the files most likely to end up in it.
     assert.doesNotMatch(commands, /--exclude-standard/);
-    assert.match(commands, /git ls-files --others -z/);
+    assert.match(commands, /"\$GIT" ls-files --others -z/);
     // The check meant to catch a tampered script is itself `node scripts/...`,
     // and node resolves imports by walking up from the script's directory.
     assert.match(commands, /surface="scripts \.github /);
@@ -686,27 +695,34 @@ test("the shell hooks that run before a guard's first line are emptied where the
     BASHOPTS: "",
     PS4: "",
     LD_PRELOAD: "",
+    // The loader runs an LD_AUDIT library before bash's first instruction, so
+    // it is the same class as BASH_ENV rather than a variant of LD_PRELOAD.
+    LD_AUDIT: "",
+    LD_DEBUG: "",
     LD_LIBRARY_PATH: "/nonexistent",
   };
-  const guarded = [
-    // The snapshot too: it is the other side of the environment comparison, and
-    // a name present on one side only is a difference on every run.
-    "Snapshot what the agent must not touch",
-    "The agent produced its output",
-    "Nothing the next steps trust moved",
-    "Guard the executable surface and rebuild dependencies",
-  ];
+  // Derived, not listed, and not narrowed to the steps around an agent: once
+  // $GITHUB_ENV has been applied, EVERY later shell step starts a bash under
+  // it -- the boundary check, the capture holding the R2 keys, the pushes
+  // carrying the App token. So the rule is every `run:` step from the first
+  // snapshot onward, and a step added there later cannot escape by not being
+  // on a list. The snapshot itself is in for a second reason: it is the other
+  // side of the environment comparison, and a variable present on one side
+  // only would be a difference on every run.
   let checked = 0;
   for (const job of ["author", "review"]) {
-    for (const step of workflow.jobs[job].steps) {
-      if (!guarded.includes(step.name)) continue;
+    const steps = workflow.jobs[job].steps;
+    const start = steps.findIndex((s) => s.name === "Snapshot what the agent must not touch");
+    assert.notEqual(start, -1, `${job} never snapshots`);
+    for (const step of steps.slice(start)) {
+      if (step.run === undefined) continue;
       for (const [v, value] of Object.entries(hooks)) {
         assert.equal(step.env?.[v], value, `${job}: ${step.name} leaves ${v} as the agent left it`);
       }
       checked += 1;
     }
   }
-  assert.equal(checked, 12);
+  assert.ok(checked >= 12, `only ${checked} shell steps carry the neutralisation`);
 });
 
 test("the live drift check treats only its own exit codes as success", () => {
@@ -904,7 +920,7 @@ test("the agent scratch directory is pruned to its one expected file", () => {
     (s) => s.name === "The agent produced its output",
   );
   assert.equal(checks.length, 3);
-  for (const step of checks) assert.match(step.run, /find _agent -mindepth 1 ! -path "\$f" -delete/);
+  for (const step of checks) assert.match(step.run, /"\$FIND" _agent -mindepth 1 ! -path "\$f" -delete/);
 
   const dir = mkdtempSync(join(tmpdir(), "academy-agentdir-"));
   try {
@@ -977,6 +993,39 @@ test("both agent outputs reach an artifact, including on the run that failed", (
       (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith(name),
     ).with.path;
     assert.match(path, /_agent\//, `${name} artifact does not carry the agent's own output`);
+  }
+});
+
+test("the guards resolve their own tools from a directory the agent cannot write", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // PATH is checked for new entries, but a directory already on it can be
+  // writable -- ~/.bun/bin is, and the runner user owns it. A file named
+  // sha256sum or env placed there is resolved by the guard itself, which is
+  // the one script that must not be.
+  const guards = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter((s) =>
+    [
+      "Snapshot what the agent must not touch",
+      "Nothing the next steps trust moved",
+      "Guard the executable surface and rebuild dependencies",
+      "The agent produced its output",
+    ].includes(s.name),
+  );
+  assert.equal(guards.length, 12);
+  for (const step of guards) {
+    assert.match(step.run, /bin\(\) \{ if \[ -x "\/usr\/bin\/\$1" \]/, `${step.name} resolves through PATH`);
+    // Command position only: `"$GIT" diff` is not a call to diff, and the
+    // `bin` helper names every tool once by construction.
+    const called = step.run
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l) && !/^\s*(bin\(\)|[A-Z]+=\$\(bin )/.test(l.trim()))
+      .flatMap((l) => l.split(/\|\||&&|[|;]|\$\(|\)|`/))
+      .map((fragment) => fragment.trim().split(/\s+/)[0])
+      .filter(Boolean);
+    for (const tool of ["sha256sum", "xargs", "sort", "find", "cut", "env", "diff", "git"]) {
+      assert.ok(!called.includes(tool), `${step.name} calls ${tool} by name, not by path`);
+    }
   }
 });
 
@@ -1099,6 +1148,25 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     fixture((_dir, _home, env) => ({ ...env, PATH: `${env.HOME}/.bun/bin:${env.PATH}` })),
     1,
     "this workflow's own setup-bun step ran before the snapshot, so this entry is new",
+  );
+  assert.equal(
+    fixture(
+      (dir) => {
+        // A file named like one of the guard's own tools, in a directory that
+        // was ALREADY on PATH before the snapshot -- so nothing new appears on
+        // PATH and that check has nothing to say. If the script resolved its
+        // tools through PATH, this sha256sum would answer for every file and
+        // the change below would be invisible.
+        writeFileSync(join(dir, "bin", "sha256sum"), "#!/bin/sh\necho 'd41d8 -'\n", { mode: 0o755 });
+        writeFileSync(join(dir, "_run", "candidates.json"), '{"newPages":[{"url":"x"}]}');
+      },
+      (dir, _home, env) => {
+        mkdirSync(join(dir, "bin"), { recursive: true });
+        return { PATH: `${join(dir, "bin")}:${env.PATH}` };
+      },
+    ),
+    1,
+    "the guard resolves its own tools from PATH, which the agent can populate",
   );
   assert.equal(
     fixture((_dir, _home, env) => ({ ...env, SOMETHING_NEW: "x" })),
