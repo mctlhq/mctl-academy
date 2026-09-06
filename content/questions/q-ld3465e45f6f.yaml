@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld3465e45f6f
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
 stem: An application repeatedly sends requests that share a long common prefix.
@@ -28,11 +28,12 @@ evidence:
   - source_id: src-inference-overview
     excerpt: A caching mechanism that stores the context (i.e., the output of
       previous layers) for each input sequence
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    source_sha256: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:19Z
+  content_sha256: c8cbacc1ae554f65fc84339edae4b6a740a2d21cea375188bcde7a17e6031105

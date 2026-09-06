@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld2298670345
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: An engineering team wants to understand what actually makes the Fast
@@ -30,11 +30,12 @@ evidence:
   - source_id: src-inference-overview
     excerpt: The Fast flavor uses smaller batch sizes, increased compute allocation,
       and techniques such as speculative decoding to reduce latency
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    source_sha256: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:19Z
+  content_sha256: 929817e27e0649dc5c297027a82c9d0de36a4b5b79c888a7d05b61043671de24

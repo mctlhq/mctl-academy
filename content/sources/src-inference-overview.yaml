@@ -12,3 +12,5 @@ snapshot:
   bucket: academy-source-snapshots
   key: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 status: current
+versions:
+  - 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca

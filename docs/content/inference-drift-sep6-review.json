@@ -1,0 +1,77 @@
+{
+  "reviewer": "agent:codex-drift-reviewer",
+  "questions": [
+    {
+      "id": "q-ld217205c155",
+      "content_sha256": "22bf8f2bbb3925e132a50fb4892d107e356f9dac73daf364adfa165cc342b889",
+      "approved": true,
+      "reason": "Model flavors section explicitly states identical outputs between Base and Fast, while naming real infrastructure differences; only b matches this comparison."
+    },
+    {
+      "id": "q-ld2298670345",
+      "content_sha256": "929817e27e0649dc5c297027a82c9d0de36a4b5b79c888a7d05b61043671de24",
+      "approved": true,
+      "reason": "Fast flavor paragraph explicitly names smaller batches, increased compute, and speculative decoding; only c lists those mechanisms."
+    },
+    {
+      "id": "q-ld235c9164e4",
+      "content_sha256": "70da89552336727fe71c300fdbadb5bfc8a074240940ac66f0098bb7aada7479",
+      "approved": true,
+      "reason": "Speculative decoding card describes auxiliary predictions followed by main-model verification and fewer forward passes; only a describes that process."
+    },
+    {
+      "id": "q-ld2443c1b29d",
+      "content_sha256": "23711125e64b5cdf0e1e962f7d0d77b4343bb9ad13e67706a8719ac5fae6002f",
+      "approved": true,
+      "reason": "Quantization card explicitly lowers precision of weights and activations. Other cards describe memory layout, batching, or caching; d is uniquely best."
+    },
+    {
+      "id": "q-ld25f6d73083",
+      "content_sha256": "94263bab8f97ca1da8baa2874420163df03f740eca011436d4394181efd69744",
+      "approved": true,
+      "reason": "Available-models Vision card explicitly maps to image2text, supporting screenshot-to-text capability; other options do not provide an image-input modality."
+    },
+    {
+      "id": "q-ld31ea78838c",
+      "content_sha256": "6ad5b29fc22c972b497197a94ec121f8c988f57554edf4988ca0448690e10e7f",
+      "approved": true,
+      "reason": "Flavor selection paragraph explicitly instructs appending -fast to the model name in the API; c alone follows it."
+    },
+    {
+      "id": "q-ld3211bef699",
+      "content_sha256": "ac87b14dc6574a66d6436641473b953d62d72135ee6747a47dc586691d69433d",
+      "approved": true,
+      "reason": "Final stem limits the question to endpoint configuration; captured four-factor list directly supports d and excludes the request-level prompt-length distractor."
+    },
+    {
+      "id": "q-ld3465e45f6f",
+      "content_sha256": "c8cbacc1ae554f65fc84339edae4b6a740a2d21cea375188bcde7a17e6031105",
+      "approved": true,
+      "reason": "Context Caching card explicitly stores prior-layer context per input sequence, unlike the other named optimizations; d is uniquely best."
+    },
+    {
+      "id": "q-pf01b9c0d1e2",
+      "content_sha256": "336aecb3a35102a63cfd0db3af8ee01e4ace2a52c6e32561f6482fe29379584d",
+      "approved": true,
+      "reason": "Fast selection instruction explicitly uses model-name suffix -fast, rather than a flavor parameter, dedicated deployment, or different base URL; d is best."
+    },
+    {
+      "id": "q-pf02c0d1e2f3",
+      "content_sha256": "8eaa14277ead5643846fd531a34e76cdcabcb26e2207219fb84b166a91692417",
+      "approved": true,
+      "reason": "Base/Fast comparison explicitly preserves outputs and distinguishes pricing, latency, and optimizations; c alone reflects the cited comparison."
+    },
+    {
+      "id": "q-pf03d1e2f3a4",
+      "content_sha256": "0964b73ddaf522633d41198121121a13297c457391f17c9658a5fb82c7d55aa0",
+      "approved": true,
+      "reason": "Model flavors paragraph directly supports pricing, latency, and optimization differences with identical outputs; no source supports truncation or alternate transport, so a is best."
+    },
+    {
+      "id": "q-pf04e2f3a4b5",
+      "content_sha256": "4dc78b560cdda603a8fe255bba677ced2ce5f10e310e919ea3ac739897f53578",
+      "approved": true,
+      "reason": "Explicit append -fast instruction supports a; headers, port selection, and namespace prefixes do not select the flavor."
+    }
+  ]
+}
