@@ -145,18 +145,32 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
  * was edited or newly created. `git diff` never lists an untracked path, so a
  * file the agent CREATES -- a source record, a schema, a workflow -- is
  * invisible to it, and that is precisely what this boundary exists to catch.
- * Scratch files live under the gitignored _run/, which --exclude-standard
- * drops, so no filename ever has to be listed here.
+ *
+ * Deliberately NOT --exclude-standard: honouring .gitignore would make that
+ * file the exception list, and it covers paths the credentialed step three
+ * lines later actually loads (node_modules) or reads as configuration (.env*).
+ * The two exclusions here are the run's own scratch directory and the
+ * installed dependencies, and nothing else is exempt.
  */
 export function boundaryProblems({ base, cwd = process.cwd() }) {
-  const spec = ["--", ".", ":!content/questions/**"];
+  // Long-form magic: `:!_run/**` is parsed as the unknown short magic `_`.
+  // node_modules is excluded at both levels; `**/` alone does not cover the
+  // repository root.
+  const spec = [
+    "--",
+    ".",
+    ":(exclude)content/questions/**",
+    ":(exclude)_run/**",
+    ":(exclude)node_modules/**",
+    ":(exclude)**/node_modules/**",
+  ];
   const problems = [];
   for (const f of git(["diff", "--name-only", base, ...spec], cwd)
     .split("\n")
     .filter(Boolean)) {
     problems.push(`${f} was changed outside content/questions`);
   }
-  for (const f of git(["ls-files", "--others", "--exclude-standard", ...spec], cwd)
+  for (const f of git(["ls-files", "--others", ...spec], cwd)
     .split("\n")
     .filter(Boolean)) {
     problems.push(`${f} was created outside content/questions`);

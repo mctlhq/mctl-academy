@@ -410,7 +410,7 @@ test("boundaryProblems passes over the workflow's own scratch files and catches 
   const { dir, run } = gitRepo();
   try {
     // A repository that looks like the workspace at the pre-agent commit.
-    writeFileSync(join(dir, ".gitignore"), "node_modules/\n_run/\n");
+    writeFileSync(join(dir, ".gitignore"), "node_modules\n_run/\n.env\n*.log\n");
     writeFileSync(
       join(dir, "content", "questions", "q-base00000001.yaml"),
       yaml(q("q-base00000001", "published", "src-a")),
@@ -445,6 +445,20 @@ test("boundaryProblems passes over the workflow's own scratch files and catches 
       yaml(q("q-new000000001", "review_ready", "src-a")),
     );
     assert.deepEqual(boundaryProblems({ base, cwd: dir }), []);
+
+    // An ignored path is still a path the credentialed step would load, so
+    // .gitignore must not exempt anything: only _run/ and node_modules/ are.
+    mkdirSync(join(dir, "node_modules", "yaml"), { recursive: true });
+    writeFileSync(join(dir, "node_modules", "yaml", "index.js"), "module.exports = {};");
+    assert.deepEqual(boundaryProblems({ base, cwd: dir }), []);
+    writeFileSync(join(dir, ".env"), "R2_SECRET_ACCESS_KEY=stolen\n");
+    writeFileSync(join(dir, "run.log"), "x");
+    assert.deepEqual(boundaryProblems({ base, cwd: dir }).sort(), [
+      ".env was created outside content/questions",
+      "run.log was created outside content/questions",
+    ]);
+    rmSync(join(dir, ".env"));
+    rmSync(join(dir, "run.log"));
 
     // A source record the agent created: untracked, so git diff cannot see it.
     writeFileSync(join(dir, "content", "sources", "src-evil.yaml"), yaml({ id: "src-evil" }));
