@@ -193,7 +193,16 @@ test("buildReceipt refuses an id the same reviewer already holds in another rece
       ids: ["q-abc123abc123"],
     });
     assert.deepEqual(removed, [{ id: "q-abc123abc123", file: join(reviews, "older-review.json") }]);
-    assert.deepEqual(JSON.parse(readFileSync(join(reviews, "older-review.json"), "utf8")).questions, []);
+    const older = JSON.parse(readFileSync(join(reviews, "older-review.json"), "utf8"));
+    // Out of `questions`, so the lint sees exactly one decision for the id...
+    assert.deepEqual(older.questions, []);
+    // ...but the fingerprint that bound the original approval to the bytes
+    // reviewed that day is kept as the audit record, not erased.
+    assert.equal(older.superseded.length, 1);
+    assert.equal(older.superseded[0].id, "q-abc123abc123");
+    assert.equal(older.superseded[0].content_sha256, "0".repeat(64));
+    assert.equal(older.superseded[0].reason, "old");
+    assert.match(older.superseded[0].superseded_at, /^\d{4}-\d{2}-\d{2}T/);
     const again = entriesElsewhere(join(reviews, "newer-review.json"));
     assert.ok(
       buildReceipt({

@@ -14,3 +14,9 @@ test-results/
 
 # build-mock-bundle.mjs writes this at build time (docker/CI pre-hook).
 client/src/data/mock-bundle.generated.json
+
+# Scratch space for the Content replenish workflow (candidates, captured
+# snapshots, agent decisions, PR body). Keeping every intermediate file here
+# is what lets that workflow's boundary check be "nothing untracked outside
+# content/questions" rather than a list of filenames to keep in sync.
+_run/

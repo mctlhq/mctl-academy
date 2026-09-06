@@ -14,6 +14,7 @@ import {
   statusAtRef,
   reviewIds,
   statusOnDisk,
+  boundaryProblems,
   reconcileDecisions,
   demote,
   prBody,
@@ -403,6 +404,60 @@ test("validateSelection refuses the same offered url under two ids", () => {
   });
   assert.equal(rows.length, 1);
   assert.deepEqual(dropped[0].why, ["url already selected under another id"]);
+});
+
+test("boundaryProblems passes over the workflow's own scratch files and catches a real intruder", () => {
+  const { dir, run } = gitRepo();
+  try {
+    // A repository that looks like the workspace at the pre-agent commit.
+    writeFileSync(join(dir, ".gitignore"), "node_modules/\n_run/\n");
+    writeFileSync(
+      join(dir, "content", "questions", "q-base00000001.yaml"),
+      yaml(q("q-base00000001", "published", "src-a")),
+    );
+    mkdirSync(join(dir, "content", "sources"), { recursive: true });
+    writeFileSync(join(dir, "content", "sources", "src-a.yaml"), yaml({ id: "src-a" }));
+    run(["add", "-A"]);
+    run(["commit", "-q", "-m", "pre-agent"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+
+    // Everything the workflow itself writes between the base commit and this
+    // check. Before _run/ existed these were untracked at the repository root
+    // and made the boundary check fail on every run, whatever the agent did.
+    mkdirSync(join(dir, "_run", "captured"), { recursive: true });
+    for (const f of [
+      "candidates.json",
+      "limits.json",
+      "capture.tsv",
+      "selected.json",
+      "dropped.json",
+      "revalidate.json",
+      "report-before.json",
+      "select.json",
+      "CHANGES.md",
+    ]) {
+      writeFileSync(join(dir, "_run", f), "x");
+    }
+    writeFileSync(join(dir, "_run", "captured", "src-a.md"), "# page");
+    // And what the agent is allowed to do.
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000001.yaml"),
+      yaml(q("q-new000000001", "review_ready", "src-a")),
+    );
+    assert.deepEqual(boundaryProblems({ base, cwd: dir }), []);
+
+    // A source record the agent created: untracked, so git diff cannot see it.
+    writeFileSync(join(dir, "content", "sources", "src-evil.yaml"), yaml({ id: "src-evil" }));
+    // A validator the agent edited: tracked, so git diff can.
+    writeFileSync(join(dir, "content", "sources", "src-a.yaml"), yaml({ id: "src-a", tampered: true }));
+    const problems = boundaryProblems({ base, cwd: dir });
+    assert.deepEqual(problems.sort(), [
+      "content/sources/src-a.yaml was changed outside content/questions",
+      "content/sources/src-evil.yaml was created outside content/questions",
+    ]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("reconcileDecisions scopes the reviewer's output to the items under review", () => {

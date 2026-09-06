@@ -26,7 +26,7 @@ Two workflows in this repository run every Monday:
    and each course's primary host), re-checks recorded sources against their
    live bytes, classifies each drifted one with `scripts/detect-docs-delta.mjs`
    against the R2 snapshot, and reports Mock shortfalls and objectives with
-   fewer than three published questions. Output: `candidates.json`. The run
+   fewer than three published questions. Output: `_run/candidates.json`. The run
    stops here when nothing applies, or when a replenish PR is already open.
 2. **author** — an agent (`agent:claude-author`, `claude-sonnet-5`) chooses at
    most `max_new` offered pages and their objectives; `scripts/replenish-prepare.mjs`
@@ -36,7 +36,7 @@ Two workflows in this repository run every Monday:
    `Source drift`), captures the chosen pages and re-captures drifted sources
    (`scripts/capture-source.mjs`, R2; earlier hashes are kept in the record's
    `versions`), appends manifest rows only for captures that succeeded, stages
-   every snapshot under `captured/`, runs `revalidate:content` for quarantined
+   every snapshot under `_run/captured/`, runs `revalidate:content` for quarantined
    items the re-capture repairs, and commits all of that as the base the change
    guard measures the agent against. The agent then writes at most
    `max_questions` `review_ready` items from the captured bytes and may rewrite
@@ -47,7 +47,7 @@ Two workflows in this repository run every Monday:
    reports.
 3. **review** — a separate job, fresh checkout, different model
    (`agent:claude-reviewer`, `claude-opus-5`). It sees the final YAML and
-   `captured/*.md`, judges each item on the two CONTENT-POLICY criteria and
+   `_run/captured/*.md`, judges each item on the two CONTENT-POLICY criteria and
    writes `decisions.json`, which must cover exactly the items under review.
    `scripts/review-receipt.mjs` turns that into the committed receipt with
    fingerprints computed from disk; only approved ids are promoted with
@@ -75,7 +75,14 @@ re-validation repaired before the agent ran.
 
 A run whose agent writes nothing still opens a PR when the mechanical
 re-validation repaired something: those items are real work for the reviewer,
-and dropping the branch would leave them quarantined on `main`.
+and dropping the branch would leave them quarantined on `main`. A run that only
+quarantined does not open one, because `Source drift` already owns that PR.
+
+Every scratch file a run writes lives under `_run/`, which `.gitignore` covers.
+That is what lets the pre-agent boundary check (`replenish-prepare.mjs
+boundary`) be a plain "nothing changed or created outside `content/questions`"
+rule rather than a list of filenames that has to be updated whenever a step
+starts writing a new one.
 
 ## Manual replenishment run
 

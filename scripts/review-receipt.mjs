@@ -137,8 +137,19 @@ export function supersedeElsewhere({ out, reviewer, ids }) {
     if (r?.reviewer !== reviewer || !Array.isArray(r.questions)) continue;
     const keep = r.questions.filter((e) => !wanted.has(e?.id));
     if (keep.length === r.questions.length) continue;
-    for (const e of r.questions) if (wanted.has(e?.id)) removed.push({ id: e.id, file });
-    writeFileSync(file, JSON.stringify({ ...r, questions: keep }, null, 2) + "\n");
+    const moved = r.questions.filter((e) => wanted.has(e?.id));
+    for (const e of moved) removed.push({ id: e.id, file });
+    // The entry leaves `questions` -- loadReviewReceipts keys on
+    // `${reviewer}|${id}` and poisons a duplicate -- but it is kept under
+    // `superseded`, which nothing in the gate reads. The fingerprint that
+    // bound that approval to the bytes reviewed on the day survives as the
+    // audit record CONTENT-POLICY asks for.
+    const stamp = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+    const superseded = [
+      ...(Array.isArray(r.superseded) ? r.superseded : []),
+      ...moved.map((e) => ({ ...e, superseded_at: stamp })),
+    ];
+    writeFileSync(file, JSON.stringify({ ...r, questions: keep, superseded }, null, 2) + "\n");
   }
   return removed;
 }

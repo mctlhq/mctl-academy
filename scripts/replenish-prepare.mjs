@@ -18,8 +18,8 @@
  *       hide the page from discovery for good.
  *   capture-args --candidates candidates.json
  *       Print capture lines for the drifted sources, from their own records.
- *   stage [--all | <src-id> ...]
- *       Write captured/<id>.md from the R2 snapshot each record names.
+ *   stage [--dir <path>] [--all | <src-id> ...]
+ *       Write <dir>/<id>.md from the R2 snapshot each record names.
  *   revalidation-ids --sources <id,id,...>
  *       Print the needs_review question ids citing any of those sources.
  *   guard --base <git ref> [--max <n>] [--forbid-published-now]
@@ -29,6 +29,10 @@
  *       `retired` at the base changed at all. With --forbid-published-now
  *       (the author phase) also fail when a changed file is published or
  *       retired NOW: the agent never publishes anything itself.
+ *   boundary --base <git ref>
+ *       Fail when anything outside content/questions was changed OR created
+ *       since the base. The author agent may touch nothing else; this runs
+ *       before any repository code is executed with snapshot credentials.
  *   review-ids --base <git ref>
  *       Print the review_ready question ids that differ from the base.
  *   reconcile-decisions --ids review-ids.txt --decisions decisions.json --out filtered.json
@@ -36,7 +40,8 @@
  *       decisions scoped to them.
  *   demote <q-id> ...
  *       status -> needs_review and drop `reviewed` (a rejected re-validation).
- *   pr-body --candidates c.json --receipt r.json --captured <id,...> [--before b.json --after a.json] [--max n]
+ *   pr-body --candidates c.json --receipt r.json --captured <id,...> [--selected s.json]
+ *           [--dropped d.json] [--before b.json --after a.json] [--max n]
  *       Print the generated section of the pull request body.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -133,6 +138,30 @@ export function changedQuestionFiles({ base, cwd = process.cwd() }) {
   const tracked = git(["diff", "--name-only", base, "--", "content/questions"], cwd);
   const untracked = git(["ls-files", "--others", "--exclude-standard", "--", "content/questions"], cwd);
   return [...new Set([...tracked.split("\n"), ...untracked.split("\n")].filter(Boolean))].sort();
+}
+
+/**
+ * Everything outside content/questions that moved since the base, whether it
+ * was edited or newly created. `git diff` never lists an untracked path, so a
+ * file the agent CREATES -- a source record, a schema, a workflow -- is
+ * invisible to it, and that is precisely what this boundary exists to catch.
+ * Scratch files live under the gitignored _run/, which --exclude-standard
+ * drops, so no filename ever has to be listed here.
+ */
+export function boundaryProblems({ base, cwd = process.cwd() }) {
+  const spec = ["--", ".", ":!content/questions/**"];
+  const problems = [];
+  for (const f of git(["diff", "--name-only", base, ...spec], cwd)
+    .split("\n")
+    .filter(Boolean)) {
+    problems.push(`${f} was changed outside content/questions`);
+  }
+  for (const f of git(["ls-files", "--others", "--exclude-standard", ...spec], cwd)
+    .split("\n")
+    .filter(Boolean)) {
+    problems.push(`${f} was created outside content/questions`);
+  }
+  return problems;
 }
 
 export function statusAtRef({ base, file, cwd = process.cwd() }) {
@@ -317,7 +346,7 @@ async function main(argv) {
     for (const d of dropped)
       console.error(`::warning::dropped selection ${JSON.stringify(d.row)}: ${d.why.join("; ")}`);
     writeFileSync(out, JSON.stringify(rows, null, 2));
-    writeFileSync("dropped.json", JSON.stringify(dropped, null, 2));
+    writeFileSync(opt(args, "dropped") ?? "dropped.json", JSON.stringify(dropped, null, 2));
     for (const r of rows) console.log(captureLine(r));
     return;
   }
@@ -344,8 +373,10 @@ async function main(argv) {
     const store = storeFromEnv();
     if (!store) throw new Error("snapshot store is not configured");
     const sources = loadSources(CONTENT);
-    const ids = args.includes("--all") ? [...sources.keys()] : args;
-    mkdirSync("captured", { recursive: true });
+    const dir = opt(args, "dir") ?? "captured";
+    const flags = new Set(["--all", "--dir", dir]);
+    const ids = args.includes("--all") ? [...sources.keys()] : args.filter((a) => !flags.has(a));
+    mkdirSync(dir, { recursive: true });
     for (const id of ids) {
       const rec = sources.get(id);
       if (!rec) throw new Error(`${id}: no such source record`);
@@ -356,8 +387,8 @@ async function main(argv) {
       }
       const text = await store.get(rec.snapshot.key);
       if (text === null) throw new Error(`${id}: snapshot ${rec.sha256} absent from the store`);
-      writeFileSync(join("captured", `${id}.md`), text, "utf8");
-      console.log(`staged captured/${id}.md`);
+      writeFileSync(join(dir, `${id}.md`), text, "utf8");
+      console.log(`staged ${join(dir, `${id}.md`)}`);
     }
     return;
   }
@@ -381,6 +412,13 @@ async function main(argv) {
     });
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);
+    if (problems.length) process.exit(1);
+    return;
+  }
+  if (cmd === "boundary") {
+    const problems = boundaryProblems({ base: opt(args, "base") });
+    for (const p of problems) console.error(`::error::${p}`);
+    console.log(`${problems.length} path(s) outside content/questions moved since the base`);
     if (problems.length) process.exit(1);
     return;
   }
@@ -414,7 +452,10 @@ async function main(argv) {
         opt(args, "selected") && existsSync(opt(args, "selected")) ? readJson(opt(args, "selected")) : [],
       before: opt(args, "before") ? readJson(opt(args, "before")) : null,
       after: opt(args, "after") ? readJson(opt(args, "after")) : null,
-      dropped: existsSync("dropped.json") ? readJson("dropped.json") : [],
+      dropped: (() => {
+        const f = opt(args, "dropped") ?? "dropped.json";
+        return existsSync(f) ? readJson(f) : [];
+      })(),
       max: maxArg === undefined ? null : Number(maxArg),
     });
     console.log(body);
