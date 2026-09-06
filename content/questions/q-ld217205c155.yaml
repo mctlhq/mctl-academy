@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld217205c155
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A product lead asks whether choosing the Fast flavor of a model will
@@ -23,17 +23,18 @@ options:
   - id: d
     text: No, because Fast is only a billing label with no runtime difference
     correct: false
-    explanation: 'There is a real runtime difference: smaller batch sizes, more
-      compute and techniques such as speculative decoding.'
+    explanation: "There is a real runtime difference: smaller batch sizes, more
+      compute and techniques such as speculative decoding."
 evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    source_sha256: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:19Z
+  content_sha256: 22bf8f2bbb3925e132a50fb4892d107e356f9dac73daf364adfa165cc342b889

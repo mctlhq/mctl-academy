@@ -1,9 +1,10 @@
 schema_version: 1
 id: q-ld3211bef699
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
-stem: Which factors determine the inference performance of an endpoint?
+stem: Which set of endpoint configuration factors does the inference overview
+  identify as determining performance?
 options:
   - id: a
     text: Only the number of parameters in the chosen model
@@ -26,13 +27,14 @@ options:
     explanation: Correct. Performance follows from how the endpoint balances these four.
 evidence:
   - source_id: src-inference-overview
-    excerpt: 'Inference performance is determined by how the endpoint is configured
-      - balancing:'
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    excerpt: "* Batch size * GPU type (L40, H100, H200, B200) * GPU count *
+      Inference-time optimizations (e.g., speculative decoding)"
+    source_sha256: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:19Z
+  content_sha256: ac87b14dc6574a66d6436641473b953d62d72135ee6747a47dc586691d69433d

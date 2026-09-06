@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf02c0d1e2f3
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: A colleague argues you should not use the Fast flavor because it will
@@ -28,11 +28,12 @@ evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    source_sha256: 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340
 authored:
-  by: agent:claude
-  at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:19Z
+  content_sha256: 8eaa14277ead5643846fd531a34e76cdcabcb26e2207219fb84b166a91692417

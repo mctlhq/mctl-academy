@@ -2919,6 +2919,211 @@
     ]
   },
   {
+    "id": "q-ld217205c155",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A product lead asks whether choosing the Fast flavor of a model will change the answers users receive. What is the accurate response?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, Fast trades some answer quality for lower latency",
+        "correct": false,
+        "explanation": "The flavors differ in pricing, latency and optimization level, not in the answers produced."
+      },
+      {
+        "id": "b",
+        "text": "No, both flavors deliver identical model outputs",
+        "correct": true,
+        "explanation": "Correct. The difference is in token pricing, latency and applied optimizations, not in what the model returns."
+      },
+      {
+        "id": "c",
+        "text": "Yes, Fast truncates long responses to keep latency down",
+        "correct": false,
+        "explanation": "Nothing about the flavor shortens responses."
+      },
+      {
+        "id": "d",
+        "text": "No, because Fast is only a billing label with no runtime difference",
+        "correct": false,
+        "explanation": "There is a real runtime difference: smaller batch sizes, more compute and techniques such as speculative decoding."
+      }
+    ]
+  },
+  {
+    "id": "q-ld2298670345",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "An engineering team wants to understand what actually makes the Fast flavor faster. Which description matches?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "The Fast flavor uses smaller batch sizes, increased compute allocation, and techniques such as speculative decoding to reduce latency"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It routes requests to a geographically closer region",
+        "correct": false,
+        "explanation": "Region choice is a dedicated endpoint concern, not what defines this flavor."
+      },
+      {
+        "id": "b",
+        "text": "It reduces the model's parameter count to shorten computation",
+        "correct": false,
+        "explanation": "The model is unchanged; a smaller model would not deliver identical outputs."
+      },
+      {
+        "id": "c",
+        "text": "It uses smaller batch sizes, more compute, and techniques such as speculative decoding",
+        "correct": true,
+        "explanation": "Correct. Those are the levers the Fast flavor pulls to reduce latency and improve responsiveness."
+      },
+      {
+        "id": "d",
+        "text": "It caps the number of output tokens the model may generate",
+        "correct": false,
+        "explanation": "No output cap is part of the flavor."
+      }
+    ]
+  },
+  {
+    "id": "q-ld235c9164e4",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "How does speculative decoding raise throughput without degrading output quality?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "uses auxiliary models to pre-generate likely next tokens. The main model verifies these predictions"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "An auxiliary model pre-generates likely tokens that the main model then verifies",
+        "correct": true,
+        "explanation": "Correct. Verification by the main model is what preserves quality while cutting the number of forward passes."
+      },
+      {
+        "id": "b",
+        "text": "Low-confidence tokens are dropped from the response before it is returned",
+        "correct": false,
+        "explanation": "Dropping tokens would change the output, which is exactly what this technique avoids."
+      },
+      {
+        "id": "c",
+        "text": "The prompt is truncated so fewer tokens need to be processed",
+        "correct": false,
+        "explanation": "Truncating input is not part of the technique and would change results."
+      },
+      {
+        "id": "d",
+        "text": "Several user requests are merged into a single forward pass",
+        "correct": false,
+        "explanation": "Batching multiple sequences together describes continuous batching instead."
+      }
+    ]
+  },
+  {
+    "id": "q-ld2443c1b29d",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A stakeholder asks which optimization reduces memory usage by lowering the numeric precision of the model itself. Which one is it?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "A technique that reduces the precision of model weights and activations, decreasing memory usage and computation."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Paged Attention",
+        "correct": false,
+        "explanation": "That partitions a request's KV cache into fixed-size memory blocks, which is a memory layout change rather than a precision change."
+      },
+      {
+        "id": "b",
+        "text": "Continuous Batching",
+        "correct": false,
+        "explanation": "That groups multiple input sequences to raise throughput; precision is untouched."
+      },
+      {
+        "id": "c",
+        "text": "KV Cache",
+        "correct": false,
+        "explanation": "That stores frequently accessed key-value pairs to avoid recomputation."
+      },
+      {
+        "id": "d",
+        "text": "Quantization",
+        "correct": true,
+        "explanation": "Correct. It reduces the precision of model weights and activations, lowering memory use and computation."
+      }
+    ]
+  },
+  {
+    "id": "q-ld25f6d73083",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A team plans an application that must read screenshots and answer questions about them. Which model type do they need?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "<Card title=\"Vision\" icon=\"eye\" href=\"https://tokenfactory.nebius.com/endpoints?modality=image2text\" />"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Embedding",
+        "correct": false,
+        "explanation": "Embedding models turn inputs into vectors for search and similarity, not into answers about an image."
+      },
+      {
+        "id": "b",
+        "text": "Vision",
+        "correct": true,
+        "explanation": "Correct. Vision is the supported modality for turning image input into text."
+      },
+      {
+        "id": "c",
+        "text": "Text-to-text",
+        "correct": false,
+        "explanation": "Text-to-text covers generative language tasks and does not accept image input."
+      },
+      {
+        "id": "d",
+        "text": "Any text-to-text model configured with a longer context window",
+        "correct": false,
+        "explanation": "Context length governs how much text fits, not whether images can be interpreted."
+      }
+    ]
+  },
+  {
     "id": "q-ld26959cd0bd",
     "course_id": "ai-leader",
     "domain": "domain-1",
@@ -3120,6 +3325,129 @@
         "text": "Enable comparison mode and read both panels",
         "correct": false,
         "explanation": "Comparison shows two setups side by side in the UI rather than returning data."
+      }
+    ]
+  },
+  {
+    "id": "q-ld31ea78838c",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "A developer asks how to send traffic to the Fast flavor of a model from their application. What is required?",
+    "objectiveTitle": "How inference is served and consumed through an API",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "To use the Fast flavor, append `-fast` to the model name in the"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Set a flavor field in the request body",
+        "correct": false,
+        "explanation": "The flavor is selected through the model name rather than a separate field."
+      },
+      {
+        "id": "b",
+        "text": "Call a different base URL reserved for Fast endpoints",
+        "correct": false,
+        "explanation": "The endpoint stays the same; only the model name changes."
+      },
+      {
+        "id": "c",
+        "text": "Append `-fast` to the model name in the API",
+        "correct": true,
+        "explanation": "Correct. The suffix on the model name is what selects the Fast flavor."
+      },
+      {
+        "id": "d",
+        "text": "Request access from support before the flavor becomes callable",
+        "correct": false,
+        "explanation": "Both flavors are available without a request; one is chosen per call."
+      }
+    ]
+  },
+  {
+    "id": "q-ld3211bef699",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "Which set of endpoint configuration factors does the inference overview identify as determining performance?",
+    "objectiveTitle": "How inference is served and consumed through an API",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "* Batch size * GPU type (L40, H100, H200, B200) * GPU count * Inference-time optimizations (e.g., speculative decoding)"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Only the number of parameters in the chosen model",
+        "correct": false,
+        "explanation": "Model size matters, but the endpoint's configuration is what this list describes."
+      },
+      {
+        "id": "b",
+        "text": "Only the region the caller sends requests from",
+        "correct": false,
+        "explanation": "Region affects latency for a dedicated deployment but is not this set of factors."
+      },
+      {
+        "id": "c",
+        "text": "The length of the system prompt supplied by the application",
+        "correct": false,
+        "explanation": "Prompt length affects individual requests, not how the endpoint itself is configured."
+      },
+      {
+        "id": "d",
+        "text": "Batch size, GPU type, GPU count, and inference-time optimizations",
+        "correct": true,
+        "explanation": "Correct. Performance follows from how the endpoint balances these four."
+      }
+    ]
+  },
+  {
+    "id": "q-ld3465e45f6f",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/inference-basics",
+    "stem": "An application repeatedly sends requests that share a long common prefix. Which optimization is described as storing the output of previous layers for each input sequence?",
+    "objectiveTitle": "How inference is served and consumed through an API",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "A caching mechanism that stores the context (i.e., the output of previous layers) for each input sequence"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Continuous Batching",
+        "correct": false,
+        "explanation": "That batches multiple sequences together to reduce per-request overhead."
+      },
+      {
+        "id": "b",
+        "text": "Speculative decoding",
+        "correct": false,
+        "explanation": "That predicts likely next tokens with an auxiliary model and verifies them."
+      },
+      {
+        "id": "c",
+        "text": "Flash Attention",
+        "correct": false,
+        "explanation": "That reduces the computations needed for attention calculations."
+      },
+      {
+        "id": "d",
+        "text": "Context Caching",
+        "correct": true,
+        "explanation": "Correct. It caches the context — the output of previous layers — for each input sequence, cutting recomputation."
       }
     ]
   },
@@ -4437,6 +4765,170 @@
         "text": "Access is restricted until an enterprise agreement is uploaded",
         "correct": false,
         "explanation": "Self-service signup creates a personal organization immediately."
+      }
+    ]
+  },
+  {
+    "id": "q-pf01b9c0d1e2",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "Latency matters more than token cost for your chat feature. How do you request the Fast flavor of a model?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "To use the Fast flavor, append `-fast` to the model name in the"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Set a `flavor` parameter to `fast` in the request body",
+        "correct": false,
+        "explanation": "There is no flavor parameter. The suffix on the model name is the whole mechanism."
+      },
+      {
+        "id": "b",
+        "text": "Deploy a dedicated endpoint configured for low latency",
+        "correct": false,
+        "explanation": "A dedicated endpoint is a different product decision. The Fast flavor is available without one."
+      },
+      {
+        "id": "c",
+        "text": "Request a different base URL reserved for latency-sensitive traffic",
+        "correct": false,
+        "explanation": "The base URL is unchanged. Only the model name differs."
+      },
+      {
+        "id": "d",
+        "text": "Append `-fast` to the model name in the API request",
+        "correct": true,
+        "explanation": "Flavor selection travels with the model identifier, so no separate parameter or endpoint is involved."
+      }
+    ]
+  },
+  {
+    "id": "q-pf02c0d1e2f3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "A colleague argues you should not use the Fast flavor because it will change what the model answers. Are they right?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes — speculative decoding trades some accuracy for speed",
+        "correct": false,
+        "explanation": "Speculative decoding is a latency optimization that preserves the output; it does not degrade quality."
+      },
+      {
+        "id": "b",
+        "text": "Only for vision models, where the flavors use different weights",
+        "correct": false,
+        "explanation": "Flavors do not swap weights for any modality. The model is the same."
+      },
+      {
+        "id": "c",
+        "text": "No — outputs are identical; only pricing, latency and optimizations differ",
+        "correct": true,
+        "explanation": "Flavors are an infrastructure choice. Since outputs match, the decision is purely about cost and responsiveness."
+      },
+      {
+        "id": "d",
+        "text": "Yes — smaller batch sizes change the sampling distribution",
+        "correct": false,
+        "explanation": "Batch size affects throughput and latency, not the content of the response."
+      }
+    ]
+  },
+  {
+    "id": "q-pf03d1e2f3a4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "How do Fast model flavors differ from standard model flavors in Nebius Token Factory when invoked via OpenAI-compatible APIs?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Differences lie in token pricing, latency, and applied optimization levels while outputs remain identical",
+        "correct": true,
+        "explanation": "Fast flavors optimize latency and pricing while generating identical model outputs."
+      },
+      {
+        "id": "b",
+        "text": "Fast flavors return truncated response text to minimize network payload size",
+        "correct": false,
+        "explanation": "Fast flavors do not truncate output text or alter generation semantics."
+      },
+      {
+        "id": "c",
+        "text": "Fast flavors require specialized custom SDKs and cannot use OpenAI client libraries",
+        "correct": false,
+        "explanation": "Fast flavors use standard OpenAI client endpoints and request formats."
+      },
+      {
+        "id": "d",
+        "text": "Fast flavors only accept binary payload inputs instead of JSON",
+        "correct": false,
+        "explanation": "Standard JSON request bodies apply to both Fast and standard flavors."
+      }
+    ]
+  },
+  {
+    "id": "q-pf04e2f3a4b5",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/openai-compatibility",
+    "stem": "What is the model naming convention when selecting the Fast flavor of an inference model?",
+    "objectiveTitle": "OpenAI-compatible API surface and client setup",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "To use the Fast flavor, append `-fast` to the model name in the"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Append `-fast` to the model name string in the request payload",
+        "correct": true,
+        "explanation": "Fast flavors are specified by appending `-fast` to the model identifier."
+      },
+      {
+        "id": "b",
+        "text": "Set `flavor: \"fast\"` in the HTTP headers",
+        "correct": false,
+        "explanation": "Flavor selection is specified in the model parameter, not custom HTTP headers."
+      },
+      {
+        "id": "c",
+        "text": "Use port `8443` instead of standard HTTP endpoints",
+        "correct": false,
+        "explanation": "Port routing does not determine model flavor."
+      },
+      {
+        "id": "d",
+        "text": "Prepend `fast/` before the organization namespace",
+        "correct": false,
+        "explanation": "Fast suffix is appended to the model name, not prepended to namespace."
       }
     ]
   },
