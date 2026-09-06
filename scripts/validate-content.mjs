@@ -228,6 +228,19 @@ function checkLifecycle(file, data) {
     err(file, "published without a `reviewed` block — approval is not optional");
   }
   for (const problem of receiptProblems(data, reviewReceipts)) err(file, problem);
+  // The author agent has no clock: it is told the date and invents the time of
+  // day. reviewProblems refuses an approval that predates what it approves, so
+  // a guessed timestamp a few hours forward would make approve-pr-questions
+  // throw for the WHOLE batch -- in its phase-1 validation, after the author
+  // job already pushed the branch, leaving an orphan branch and no PR. Catch it
+  // here, in the gate that runs before the push. The tolerance absorbs clock
+  // skew between the runner and whatever stamped the file.
+  if (data.authored?.at) {
+    const at = Date.parse(data.authored.at);
+    if (Number.isFinite(at) && at > Date.now() + 60_000) {
+      err(file, `authored.at ${data.authored.at} is in the future`);
+    }
+  }
   if (data.authored && !AGENT_AUTHOR.test(data.authored.by)) {
     err(
       file,

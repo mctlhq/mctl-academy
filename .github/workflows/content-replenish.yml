@@ -449,12 +449,22 @@ jobs:
           git push origin "HEAD:${{ steps.branch.outputs.name }}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      # Two artifacts, and the split is the point. `handoff` is what the
-      # review job downloads: the captured pages, the discovery report and the
-      # two files the PR body needs. `authoring` is for people reading the run
-      # afterwards and is downloaded by no job -- it holds _run/CHANGES.md, the
-      # author agent's own account of what it wrote, which must never reach the
-      # reviewer's filesystem. "Treat it as data" is a prompt, not a boundary.
+      # Three artifacts, and the split is the point: nothing an agent wrote may
+      # be on the reviewer's filesystem while it judges, and "treat it as data"
+      # is a prompt, not a boundary.
+      #
+      # `handoff` is the only one the review job downloads before reviewing:
+      # captured pages (verbatim source text), the discovery report and the
+      # quality report, none of them agent-written.
+      #
+      # `pr-inputs` carries selected.json/dropped.json. Those come from the
+      # SELECTOR agent's own select.json -- validateSelection carries its title
+      # strings through, and a dropped row is the unvalidated object verbatim --
+      # so they are downloaded only after the reviewer has finished, by the step
+      # that builds the PR body, their sole consumer.
+      #
+      # `authoring` holds _run/CHANGES.md, the author agent's account of what it
+      # wrote, and is downloaded by no job at all.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -463,6 +473,14 @@ jobs:
             _run/captured/
             _run/candidates.json
             _run/report-before.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: pr-inputs-${{ github.run_id }}
+          path: |
             _run/selected.json
             _run/dropped.json
           retention-days: 14
@@ -520,16 +538,19 @@ jobs:
           git config user.name "$BOT_NAME"
           git config user.email "$BOT_EMAIL"
           mkdir -p _run
-          # Exactly the handoff artifact, which carries no file the author
-          # agent wrote: its CHANGES.md stays in the run's own artifact.
+          # Exactly the handoff artifact, which carries no file any agent
+          # wrote: CHANGES.md and the selector's rows are in artifacts this job
+          # does not download until after the reviewer has finished.
           # upload-artifact roots an artifact at the least common ancestor of
-          # its search paths. Every handoff path lives under _run/, so that
-          # prefix is stripped and the entries arrive as captured/,
-          # candidates.json, ... The candidates artifact keeps its _run/ prefix
-          # (read at line 194) only because it also carries a path outside
-          # _run/, which lifts its ancestor to the workspace root.
+          # the files it MATCHED, so a set of paths that all sit under _run/
+          # arrives without that prefix -- entries captured/, candidates.json.
+          # The candidates artifact keeps its _run/ prefix (read at line 194)
+          # only because it also carries a path outside _run/, which lifts its
+          # ancestor to the workspace root. Keeping at least one file directly
+          # under _run/ here is what holds this read path; a handoff of
+          # _run/captured/ alone would root at _run/captured and break it.
           cp -r _run/from-author/captured _run/captured
-          for f in candidates.json report-before.json selected.json dropped.json; do
+          for f in candidates.json report-before.json; do
             [ -f "_run/from-author/$f" ] && cp "_run/from-author/$f" "_run/$f" || true
           done
           # The items this run put up for review: every review_ready file that
@@ -619,6 +640,14 @@ jobs:
           node scripts/content-quality-report.mjs --json > _run/report-after.json
           echo "receipt=$receipt" >> "$GITHUB_ENV"
 
+      # After the reviewer, never before: these two files carry the selector
+      # agent's own strings, and the PR body is their only consumer.
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        if: steps.items.outputs.count != '0'
+        with:
+          name: pr-inputs-${{ github.run_id }}
+          path: _run/from-prbody
+
       - name: Commit the review and open the pull request
         if: steps.items.outputs.count != '0'
         env:
@@ -636,7 +665,8 @@ jobs:
           git push origin "HEAD:${BRANCH}"
 
           node scripts/replenish-prepare.mjs pr-body --candidates _run/candidates.json --receipt "$receipt" \
-            --captured "$CAPTURED" --selected _run/selected.json --dropped _run/dropped.json \
+            --captured "$CAPTURED" --selected _run/from-prbody/selected.json \
+            --dropped _run/from-prbody/dropped.json \
             --max "$MAX_QUESTIONS" \
             --before _run/report-before.json --after _run/report-after.json > _run/body-generated.md
           changed_files=$(git diff --name-only origin/main -- content/questions | wc -l | tr -d ' ')

@@ -88,16 +88,64 @@ test("the review job reads the handoff artifact at the prefix upload-artifact ac
       .map((l) => l.trim())
       .filter((l) => l && !l.startsWith("!"));
 
+  // The prefix is stripped when the ancestor is _run itself, which requires a
+  // matched file sitting DIRECTLY under _run/ -- not merely paths that all
+  // start with it. `_run/captured/` alone would root at _run/captured and the
+  // read below would fail again, so assert the property that actually holds.
   const handoff = uploadPaths("author", "handoff-");
   assert.ok(handoff.every((p) => p.startsWith("_run/")));
+  assert.ok(handoff.some((p) => /^_run\/[^/]+$/.test(p)));
   const read = workflow.jobs.review.steps.find((s) => s.name === "List the items under review").run;
   assert.match(read, /cp -r _run\/from-author\/captured /);
   assert.doesNotMatch(read, /_run\/from-author\/_run\//);
 
+  // The candidates artifact spans _run/ and content/, so its ancestor is the
+  // workspace root and the prefix survives. Opposite shape, opposite read.
   const candidates = uploadPaths("discover", "candidates-");
   assert.ok(candidates.some((p) => !p.startsWith("_run/")));
   const consume = workflow.jobs.author.steps.find((s) => s.name === "Start the replenish branch").run;
   assert.match(consume, /cp _run\/from-discover\/_run\/candidates\.json /);
+});
+
+test("no agent-written file reaches the reviewer's filesystem before it decides", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // selected.json and dropped.json are built from the selector agent's own
+  // select.json -- validateSelection passes its title strings through, and a
+  // dropped row is the unvalidated object verbatim. CHANGES.md is the author
+  // agent's prose. None may be on disk while the reviewer runs with
+  // unrestricted Read/Glob/Grep: "treat it as data" is a prompt, not a
+  // boundary. The handoff is the only artifact fetched before that point.
+  const AGENT_WRITTEN = ["selected.json", "dropped.json", "CHANGES.md", "select.json"];
+  const handoffPaths = workflow.jobs.author.steps.find(
+    (s) => s.uses?.startsWith("actions/upload-artifact@") && s.with?.name?.startsWith("handoff-"),
+  ).with.path;
+  for (const name of AGENT_WRITTEN) assert.ok(!handoffPaths.includes(name), `${name} in handoff`);
+
+  const steps = workflow.jobs.review.steps;
+  const reviewer = steps.findIndex((s) => s.name === "Independent reviewer decides per item");
+  assert.notEqual(reviewer, -1);
+  const before = steps.slice(0, reviewer);
+  for (const s of before) {
+    if (s.uses?.startsWith("actions/download-artifact@")) {
+      assert.ok(s.with.name.includes("handoff-"), `unexpected artifact before the reviewer: ${s.with.name}`);
+    }
+    // Executable lines only: a shell comment naming the file is documentation.
+    const code = (s.run ?? "")
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l))
+      .join("\n");
+    for (const name of AGENT_WRITTEN) {
+      assert.ok(!code.includes(name), `${name} copied before the reviewer`);
+    }
+  }
+  // ... and the PR body still gets them, from a download placed after it.
+  const after = steps.slice(reviewer);
+  assert.ok(
+    after.some((s) => s.uses?.startsWith("actions/download-artifact@") && s.with.name.includes("pr-inputs-")),
+  );
+  assert.ok(after.some((s) => (s.run ?? "").includes("_run/from-prbody/selected.json")));
 });
 
 test("validateSelection keeps offered urls with mapped objectives and drops the rest with reasons", () => {

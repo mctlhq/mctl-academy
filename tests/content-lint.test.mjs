@@ -221,6 +221,29 @@ test("a human approval stamped from 2026-09-06 must carry the content fingerprin
   assert.equal(lint({ questions: [legacy] }).ok, true);
 });
 
+test("rejects an authored.at in the future, before the batch promotion can throw on it", () => {
+  // The author agent guesses the time of day. reviewProblems refuses an
+  // approval that predates what it approves, so a forward timestamp would kill
+  // the entire promotion batch after the branch was already pushed. The lint
+  // runs before that push, so this is where it has to be caught.
+  const ahead = new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString().replace(/\.\d{3}Z$/, "Z");
+  const q = question({ authored: { by: "agent:writer", at: ahead } });
+  const { ok, output } = lint({ questions: [q] });
+  assert.equal(ok, false);
+  assert.match(output, /is in the future/);
+
+  // A timestamp half a minute ahead is clock skew, not a guess, and stays
+  // accepted. Reviewed as review_ready: a published fixture carries an August
+  // approval, which the ordering rule would refuse against a today timestamp.
+  const skew = new Date(Date.now() + 30_000).toISOString().replace(/\.\d{3}Z$/, "Z");
+  const fresh = question({
+    status: "review_ready",
+    reviewed: undefined,
+    authored: { by: "agent:writer", at: skew },
+  });
+  assert.equal(lint({ questions: [fresh] }).ok, true);
+});
+
 test("rejects a human as item author — clean-room separation", () => {
   const q = question({ authored: { by: "mashkovd", at: "2026-08-06T10:00:00Z" } });
   const { ok, output } = lint({ questions: [q] });
