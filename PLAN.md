@@ -225,7 +225,7 @@ gate, a second LLM pass adds cost and a false sense of verification without addi
 check the gate does not already make. Revisit only if the audit finds a defect class CI
 cannot catch.
 
-- Content-only PRs are capped at 10 questions. At ≥80 questions that is ≥8 review cycles
+- Content-only PRs are capped at 20 questions. At ≥80 questions that is ≥8 review cycles
   by a solo maintainer — the cap is a ceiling on review load, not an optimum, and content
   throughput is the expected Phase 1 bottleneck.
 - Automated code review (`claude-review.yml`) applies to PRs touching application code,

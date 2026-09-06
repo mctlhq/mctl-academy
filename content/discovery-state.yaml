@@ -1,0 +1,10 @@
+# Watermark for scripts/discover-docs.mjs.
+#
+# `seen` records when a page in the llms.txt indices was first noticed without
+# being cited by any source record or capture-manifest row; the discovery
+# report proposes older pages before newer ones. `ignored` removes a page from
+# every future report (marketing pages, changelogs, pages outside the course
+# scopes in SOURCES.md) and must say why. Both lists are maintained by the
+# Content replenish workflow and reviewed like any other change under content/.
+seen: []
+ignored: []
