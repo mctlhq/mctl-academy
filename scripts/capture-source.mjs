@@ -193,9 +193,23 @@ export function mergeVersions(previous, hash) {
   return [...new Set(all.filter((v) => typeof v === "string" && v !== hash))];
 }
 
+/**
+ * The mode is the FIRST argument, never a global search: every other argv entry
+ * can carry text this repository did not write -- `--title` receives the page
+ * title scraped from the llms.txt index -- and a page titled `--check` would
+ * otherwise flip a capture into a drift check, exit 0 with no snapshot written,
+ * and fail several steps later as "no such source record".
+ *
+ * @param {string[]} argv
+ * @returns {"check" | "capture"}
+ */
+export function parseMode(argv) {
+  return argv[0] === "--check" ? "check" : "capture";
+}
+
 const args = process.argv[1] === fileURLToPath(import.meta.url) ? process.argv.slice(2) : null;
 
-if (args && args.includes("--check")) {
+if (args && parseMode(args) === "check") {
   const markDrifted = args.includes("--mark-drifted");
   process.exit(await check({ markDrifted }));
 }

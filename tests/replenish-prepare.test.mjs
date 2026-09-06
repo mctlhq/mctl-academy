@@ -19,7 +19,7 @@ import {
   demote,
   prBody,
 } from "../scripts/replenish-prepare.mjs";
-import { mergeVersions, buildSourceRecord } from "../scripts/capture-source.mjs";
+import { mergeVersions, buildSourceRecord, parseMode } from "../scripts/capture-source.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -244,6 +244,61 @@ test("every agent step is followed by a boundary check before credentialed code 
     });
   }
   assert.equal(checked, 3);
+});
+
+test("every agent step is followed by a dependency rebuild before any repository code runs", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // node_modules is exempt from the boundary check -- bun install leaves tens
+  // of thousands of untracked files there -- so a write that reached it would
+  // execute on the next import, which is the boundary check itself.
+  const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
+  const isRebuild = (s) => s.name === "Rebuild dependencies from the lockfile";
+  const runsRepoCode = (s) => /(^|\s)(node|bun|npm)\s/m.test(s.run ?? "");
+  let checked = 0;
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    steps.forEach((step, i) => {
+      if (!isAgent(step)) return;
+      const next = steps.slice(i + 1);
+      const rebuild = next.findIndex(isRebuild);
+      assert.notEqual(rebuild, -1, `no dependency rebuild after ${step.name}`);
+      const repoCode = next.findIndex(runsRepoCode);
+      // The rebuild step itself runs bun, so it is allowed to be the first.
+      assert.equal(rebuild, repoCode, `repository code runs before the rebuild after ${step.name}`);
+      checked += 1;
+    });
+  }
+  assert.equal(checked, 3);
+});
+
+test("the dependency rebuild verifies its own inputs with git, not with the tree it is about to trust", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const rebuilds = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
+    (s) => s.name === "Rebuild dependencies from the lockfile",
+  );
+  assert.equal(rebuilds.length, 3);
+  for (const step of rebuilds) {
+    // Both halves matter: an edited lockfile and a created bunfig.toml or
+    // .npmrc redirect the install just as effectively.
+    assert.match(step.run, /git diff --name-only [^\n]*package\.json bun\.lock bunfig\.toml \.npmrc/);
+    assert.match(step.run, /git ls-files --others [^\n]*bunfig\.toml/);
+    assert.match(step.run, /::error::/);
+    assert.match(step.run, /exit 1/);
+    assert.match(step.run, /rm -rf node_modules/);
+  }
+});
+
+test("capture-source reads its mode from the first argument, never from scraped text", () => {
+  assert.equal(parseMode(["--check"]), "check");
+  assert.equal(parseMode(["--check", "--mark-drifted"]), "check");
+  // The title comes from the llms.txt index, so it is text this repository did
+  // not write. A page titled "--check" must not turn a capture into a no-op.
+  assert.equal(parseMode(["https://docs.nebius.com/x.md", "--id", "src-x", "--title", "--check"]), "capture");
+  assert.equal(parseMode([]), "capture");
 });
 
 test("a review job that finds nothing to review fails instead of going green", () => {

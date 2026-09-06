@@ -236,6 +236,21 @@ jobs:
             --tools "Read,Glob,Grep,Write"
             --allowedTools "Read,Glob,Grep,Write(_run/select.json)"
 
+      # Same reason as after the other two agents: discard and reinstall the
+      # dependencies before any repository code runs again, verifying the
+      # install's inputs with git alone.
+      - name: Rebuild dependencies from the lockfile
+        run: |
+          set -euo pipefail
+          changed=$(git diff --name-only HEAD -- package.json bun.lock bunfig.toml .npmrc)
+          created=$(git ls-files --others -- package.json bun.lock bunfig.toml .npmrc '**/bunfig.toml' '**/.npmrc')
+          if [ -n "$changed$created" ]; then
+            echo "::error::dependency inputs moved after the agent ran: $changed $created"
+            exit 1
+          fi
+          rm -rf node_modules
+          bun install --frozen-lockfile
+
       # The selector agent may write only _run/select.json, and the very next
       # step runs repository code with snapshot credentials -- bun and node
       # both load files this checkout provides. The allowlist is not the only
@@ -409,6 +424,27 @@ jobs:
             --allowedTools "Read,Glob,Grep,Write(content/questions/**),Edit(content/questions/**),Write(_run/CHANGES.md)"
 
       # The agent's own runs of the checks are advice; these are the gates.
+      # An agent's Write allowlist is a path glob, and node_modules is outside
+      # every check this workflow runs: `bun install` leaves tens of thousands
+      # of untracked files there, so the boundary check has to exempt it. A
+      # write that reached it -- through path traversal, or any future gap in
+      # the allowlist -- would execute as soon as the next `node` resolves an
+      # import, which is the boundary check itself. So the dependencies are
+      # discarded and reinstalled from the lockfile before ANY repository code
+      # runs again. The inputs to that install are verified with git alone,
+      # which loads nothing from node_modules.
+      - name: Rebuild dependencies from the lockfile
+        run: |
+          set -euo pipefail
+          changed=$(git diff --name-only "${{ steps.base.outputs.sha }}" -- package.json bun.lock bunfig.toml .npmrc)
+          created=$(git ls-files --others -- package.json bun.lock bunfig.toml .npmrc '**/bunfig.toml' '**/.npmrc')
+          if [ -n "$changed$created" ]; then
+            echo "::error::dependency inputs moved after the agent ran: $changed $created"
+            exit 1
+          fi
+          rm -rf node_modules
+          bun install --frozen-lockfile
+
       - name: Deterministic gates on the authored content
         env:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
@@ -620,6 +656,28 @@ jobs:
             --max-turns 60
             --tools "Read,Glob,Grep,Write"
             --allowedTools "Read,Glob,Grep,Write(_run/decisions.json)"
+
+      # An agent's Write allowlist is a path glob, and node_modules is outside
+      # every check this workflow runs: `bun install` leaves tens of thousands
+      # of untracked files there, so the boundary check has to exempt it. A
+      # write that reached it -- through path traversal, or any future gap in
+      # the allowlist -- would execute as soon as the next `node` resolves an
+      # import, which is the boundary check itself. So the dependencies are
+      # discarded and reinstalled from the lockfile before ANY repository code
+      # runs again. The inputs to that install are verified with git alone,
+      # which loads nothing from node_modules.
+      - name: Rebuild dependencies from the lockfile
+        if: steps.items.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          changed=$(git diff --name-only HEAD -- package.json bun.lock bunfig.toml .npmrc)
+          created=$(git ls-files --others -- package.json bun.lock bunfig.toml .npmrc '**/bunfig.toml' '**/.npmrc')
+          if [ -n "$changed$created" ]; then
+            echo "::error::dependency inputs moved after the agent ran: $changed $created"
+            exit 1
+          fi
+          rm -rf node_modules
+          bun install --frozen-lockfile
 
       # Same reason as after the selector: the reviewer may write only
       # _run/decisions.json, and the next step runs approve-pr-questions,
