@@ -3,37 +3,44 @@ id: q-fc05d2e3f4a5
 status: published
 domain: domain-2
 objective: domain-2/function-calling
-stem: When a model returns a tool_calls payload in a Chat Completion response,
-  what must the application client do next?
+stem: When a model returns a `tool_calls` payload in a Chat Completions
+  response, what must your application do next?
 options:
   - id: a
-    text: Terminate the conversation session immediately
+    text: End the conversation, because the model has finished
     correct: false
-    explanation: Tool calls require executing the specified function and returning
-      results to continue.
+    explanation: A tool call is a request for your code to act; the conversation
+      continues once the result is passed back.
   - id: b
-    text: Re-send the exact prompt without modification
+    text: Re-send the same prompt unchanged and wait for a text answer
     correct: false
-    explanation: Resending without tool execution causes infinite loops.
+    explanation: Re-sending the prompt gives the model nothing new; it asked for a
+      function result it does not have.
   - id: c
-    text: Delete the tool definition from the client registry
+    text: Remove the tool definition from the request so the model stops calling it
     correct: false
-    explanation: Tool definitions remain registered for future turns in the conversation.
+    explanation: Tool definitions stay in place; the documented flow is to execute
+      the function and return its output.
   - id: d
-    text: Execute the requested function locally and return a message with role tool
-      containing the result
+    text: "Execute the function yourself and append a `role: tool` message with the
+      result and `tool_call_id`"
     correct: true
-    explanation: The client executes the tool and appends a tool role message with
-      tool_call_id and output string.
+    explanation: The model does not execute functions. Your backend or client runs
+      them and appends a `tool` message carrying the result and the matching
+      `tool_call_id`.
 evidence:
   - source_id: src-function-calling
     excerpt: You are responsible for parsing these outputs and executing the
       corresponding functions on your backend or client side.
     source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+  - source_id: src-function-calling
+    excerpt: '"role": "tool", "content": result, "tool_call_id": call.id,'
+    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: d7b78bec3295f45ce344973efae21d46be47bedbe943560143b022a8650f8de2

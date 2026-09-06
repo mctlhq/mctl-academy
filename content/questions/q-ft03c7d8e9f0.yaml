@@ -3,38 +3,38 @@ id: q-ft03c7d8e9f0
 status: published
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
-stem: What primary parameter determines how many times the model iterates over
-  the entire training dataset during supervised fine-tuning?
+stem: Which fine-tuning hyperparameter sets how many passes the job makes over
+  the entire training dataset?
 options:
   - id: a
-    text: batch_size
+    text: "`batch_size`"
     correct: false
-    explanation: Batch size specifies how many training examples are processed per
-      gradient update step.
+    explanation: Batch size controls how many examples are processed per step, not
+      how many times the dataset is traversed.
   - id: b
-    text: learning_rate_multiplier
+    text: "`learning_rate`"
     correct: false
-    explanation: Learning rate multiplier scales the step size taken during
-      optimizer weight updates.
+    explanation: The learning rate is the step size for gradient descent, not a
+      count of dataset passes.
   - id: c
-    text: n_epochs
+    text: "`n_epochs`"
     correct: true
-    explanation: The n_epochs parameter specifies the total number of full passes
-      over the dataset.
+    explanation: "`n_epochs` is documented as the number of passes over the entire
+      dataset, with a default of 3."
   - id: d
-    text: temperature
+    text: "`temperature`"
     correct: false
-    explanation: Temperature is an inference sampling parameter, not a fine-tuning
-      training hyperparameter.
+    explanation: Temperature is an inference sampling parameter and is not a
+      fine-tuning hyperparameter.
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: represents the model after a certain number of training steps (often
-      per epoch).
+    excerpt: "`n_epochs` (integer, optional) Number of passes over the entire dataset."
     source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: ddfbb12f11e9fcb65c8e8e8740feb71065ddccca15a8ac414893998d92adb7dc

@@ -36,6 +36,8 @@ const question = (over = {}) => ({
   domain: "domain-1",
   objective: "domain-1/alpha",
   stem: "A stem",
+  objectiveTitle: "Alpha",
+  sources: [{ title: "Docs", url: "https://docs.nebius.com/x", excerpt: "A supported claim" }],
   options: [option("a", true), option("b"), option("c"), option("d")],
   ...over,
 });
@@ -59,6 +61,35 @@ const course = (over = {}) => ({
 
 /** A minimal, internally consistent artefact pair — the baseline every case mutates. */
 const valid = () => ({ bundle: [question()], catalog: [course()] });
+
+test("objectiveTitle and sources are required — a builder that drops them fails the contract", () => {
+  const { bundle, catalog } = valid();
+  const { objectiveTitle: _title, sources: _sources, ...bare } = bundle[0];
+  const errors = validateGeneratedArtifacts([bare], catalog);
+  assert.ok(errors.some((error) => error.includes("objectiveTitle")));
+  assert.ok(errors.some((error) => error.includes("sources")));
+  assert.ok(
+    validateGeneratedArtifacts([{ ...bundle[0], sources: [] }], catalog).some((e) => e.includes("sources")),
+  );
+});
+
+test("public evidence rejects executable or unapproved URLs and oversized excerpts", () => {
+  for (const url of ["javascript:alert(1)", "http://docs.nebius.com/x", "https://evil.example/x"]) {
+    const { bundle, catalog } = valid();
+    const withSources = [{ ...bundle[0], sources: [{ title: "Docs", url, excerpt: "A supported claim" }] }];
+    assert.ok(validateGeneratedArtifacts(withSources, catalog).some((error) => error.includes("sources")));
+  }
+  const { bundle, catalog } = valid();
+  const withSources = [
+    {
+      ...bundle[0],
+      sources: [
+        { title: "Docs", url: "https://docs.nebius.com/x", excerpt: Array(26).fill("word").join(" ") },
+      ],
+    },
+  ];
+  assert.ok(validateGeneratedArtifacts(withSources, catalog).some((error) => error.includes("25 words")));
+});
 
 function assertRejects(bundle, catalog, expectedFragment) {
   const errors = validateGeneratedArtifacts(bundle, catalog);

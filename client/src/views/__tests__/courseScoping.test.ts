@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mount } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { enableAutoUnmount, mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import type { BundleQuestion } from "../../services/contentBundle";
 
@@ -55,14 +55,13 @@ vi.mock("../../services/contentBundle", () => ({
     new Set((courseId ? fixtures.all.filter((q) => q.course_id === courseId) : []).map((q) => q.id)),
 }));
 
-vi.mock("../../services/progressStore", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../../services/progressStore")>();
-  return { ...actual, getMistakeQuestionIds: () => fixtures.mistakeIds };
-});
+vi.mock("vue-router", () => ({ useRoute: () => ({ query: {} }) }));
 
 import { ref } from "vue";
 import PracticeView from "../PracticeView.vue";
 import MistakesView from "../MistakesView.vue";
+import { recordAttempt, resetMemoryFallback, setSyncEnabled } from "../../services/progressStore";
+enableAutoUnmount(afterEach);
 
 // A real ref, so the views react to a course change exactly as they do in the app.
 const currentCourseId = ref<string | null>("course-alpha");
@@ -76,6 +75,8 @@ const BETA = fixtures.beta as unknown as BundleQuestion[];
 
 describe("course scoping", () => {
   beforeEach(() => {
+    resetMemoryFallback();
+    setSyncEnabled(false);
     currentCourseId.value = "course-alpha";
     fixtures.mistakeIds = [];
   });
@@ -105,7 +106,7 @@ describe("course scoping", () => {
   });
 
   it("Review Mistakes intersects mistakes with the active course's question ids", async () => {
-    fixtures.mistakeIds = ["a-1", "b-1", "b-2"];
+    ["a-1", "b-1", "b-2"].forEach((id) => recordAttempt(id, "domain-1", false));
 
     const wrapper = mount(MistakesView);
     expect(wrapper.text()).toMatch(/Question 1 of 1/);
@@ -119,7 +120,7 @@ describe("course scoping", () => {
   });
 
   it("Review Mistakes shows its empty state when the mistakes belong to another course", () => {
-    fixtures.mistakeIds = ["b-1"];
+    recordAttempt("b-1", "domain-1", false);
     const wrapper = mount(MistakesView);
     expect(wrapper.text()).toMatch(/no recorded mistakes in this course/i);
   });

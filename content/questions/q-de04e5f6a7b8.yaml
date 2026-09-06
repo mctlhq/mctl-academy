@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de04e5f6a7b8
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: How does automatic endpoint scaling behave when incoming request

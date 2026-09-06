@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-consumption
+url: https://docs.tokenfactory.nebius.com/other-capabilities/billing-new.md
+title: Billing and consumption
+retrieved_at: 2026-09-05T20:45:05Z
+sha256: 4c7e391a50f276908d8fd240edf85dd94c8705c93d80a2de50f43eea6b240b74
+objectives:
+  - domain-4/billing-and-consumption
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4c7e391a50f276908d8fd240edf85dd94c8705c93d80a2de50f43eea6b240b74
+status: current

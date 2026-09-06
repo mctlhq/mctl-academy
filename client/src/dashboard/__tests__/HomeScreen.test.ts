@@ -40,6 +40,6 @@ describe("HomeScreen", () => {
     await nextTick();
 
     expect(wrapper.text()).toMatch(/Continue practice/);
-    expect(wrapper.text()).toMatch(/1 of 2 questions attempted/);
+    expect(wrapper.text()).toMatch(/1 of 2 questions solved/);
   });
 });

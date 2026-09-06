@@ -29,7 +29,7 @@ options:
 evidence:
   - source_id: src-inference-overview
     excerpt: 'Nebius Token Factory supports the following model types:'
-    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z

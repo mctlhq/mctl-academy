@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-sandbox
+url: https://docs.tokenfactory.nebius.com/sandboxes/overview.md
+title: Sandboxes
+retrieved_at: 2026-09-05T20:44:57Z
+sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
+objectives:
+  - domain-2/agent-sandboxes
+snapshot:
+  bucket: academy-source-snapshots
+  key: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
+status: current

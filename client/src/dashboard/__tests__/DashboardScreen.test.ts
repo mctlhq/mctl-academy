@@ -15,6 +15,7 @@ vi.mock("../../services/contentBundle", () => ({
 
 vi.mock("../../services/courseCatalog", () => ({
   domainTitlesFor: () => ({ "domain-1": "Domain 1" }),
+  findCourse: () => ({ mock: { domains: [{ id: "domain-1", weight: 100 }] } }),
 }));
 
 import DashboardScreen from "../DashboardScreen.vue";

@@ -3,37 +3,45 @@ id: q-fa01a1b2c3d4
 status: published
 domain: domain-3
 objective: domain-3/files-api
-stem: What is the purpose of the Files API when preparing datasets for model
-  fine-tuning?
+stem: In the fine-tuning walkthrough, how is a training dataset made available
+  to a fine-tuning job?
 options:
   - id: a
-    text: To upload, store, and manage JSONL dataset files required for fine-tuning
-      jobs
+    text: Upload the JSONL file with the Files API using `purpose="fine-tune"` and
+      pass the returned file ID as `training_file`
     correct: true
-    explanation: The Files API manages training and validation JSONL files prior to
-      job submission.
+    explanation: The walkthrough calls `client.files.create` with the JSONL file and
+      `purpose="fine-tune"`; the required `training_file` parameter is the ID of
+      that file.
   - id: b
-    text: To stream real-time GPU hardware telemetry logs
+    text: Stream the JSONL rows inline in the fine-tuning job request body
     correct: false
-    explanation: GPU telemetry is handled by system monitoring endpoints, not the Files API.
+    explanation: The job references a file ID; the dataset is not embedded in the
+      job request.
   - id: c
-    text: To dynamically resize image dimensions during inference
+    text: Upload the file with `purpose="assistants"` and reference its name
     correct: false
-    explanation: Image resizing is a vision pre-processing task, not a dataset Files
-      API operation.
+    explanation: The documented purpose value for fine-tuning datasets is
+      `fine-tune`, and the job takes an ID, not a name.
   - id: d
-    text: To host static website HTML files
+    text: Point the job at a public HTTPS URL of the dataset
     correct: false
-    explanation: The Files API stores training data, not static web host assets.
+    explanation: The walkthrough uploads the file through the Files API; URLs are
+      not a documented input.
 evidence:
-  - source_id: src-dataset-formats
-    excerpt: Each training example is a single conversation, represented as one
-      `messages` array.
-    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+  - source_id: src-supervised-fine-tuning
+    excerpt: training_file = client.files.create( file=open("training.jsonl", "rb"),
+      purpose="fine-tune", )
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+  - source_id: src-supervised-fine-tuning
+    excerpt: '`training_file` (string, **required**) ID of the file with the
+      training dataset (`purpose = "fine-tune"`).'
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: ff90cba29a392c75eec5b603c12a192f88fb0a3c21acae51c15023dd0c72689c

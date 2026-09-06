@@ -4,12 +4,12 @@ import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, clearProgress } from "../services/progressStore";
 import { questionsForCourse } from "../services/contentBundle";
-import { domainTitlesFor } from "../services/courseCatalog";
+import { domainTitlesFor, findCourse } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 
 defineProps<{
   onReviewMistakes: () => void;
-  onStartPractice: () => void;
+  onStartPractice: (domain?: string) => void;
 }>();
 
 // Scoped to the selected course: the denominator, the attempts and the open
@@ -32,9 +32,18 @@ const stats = computed(() => {
   void clearedAt.value;
   return calculateProgressStats(courseBundle, undefined, domainTitles);
 });
-const weakestDomain = computed(() => {
-  const attempted = stats.value.domainProgress.filter((domain) => domain.attemptedQuestions > 0);
-  return attempted.sort((a, b) => a.accuracy - b.accuracy)[0] ?? null;
+const recommendedDomain = computed(() => {
+  const weights = new Map(findCourse(currentCourseId.value)?.mock.domains.map((d) => [d.id, d.weight]));
+  return (
+    stats.value.domainProgress
+      .filter((d) => d.correctQuestions < d.totalQuestions)
+      .sort(
+        (a, b) =>
+          a.correctQuestions / a.totalQuestions - b.correctQuestions / b.totalQuestions ||
+          (weights.get(b.domainId) ?? 0) - (weights.get(a.domainId) ?? 0) ||
+          a.domainId.localeCompare(b.domainId),
+      )[0] ?? null
+  );
 });
 
 async function handleClearHistory() {
@@ -67,23 +76,23 @@ async function handleClearHistory() {
     <div class="progress-grid">
       <div>
         <div class="readiness-heading">
-          <strong>{{ stats.overallAccuracy }}%</strong>
+          <strong>{{ stats.solvedPercent }}%</strong>
           <span>{{
             stats.totalAttempted > 0
-              ? "Based on attempted questions"
-              : "Start practicing to build your baseline"
+              ? `${stats.totalCorrect}/${stats.totalBankQuestions} questions solved correctly`
+              : "Start practicing to solve your first question"
           }}</span>
         </div>
-        <p class="section-marker">Overall readiness</p>
+        <p class="section-marker">Questions solved</p>
 
-        <h1>Domain readiness</h1>
+        <h1>Progress by domain</h1>
         <div class="domain-bars">
           <DomainBar
             v-for="domain in stats.domainProgress"
             :key="domain.domainId"
             :label="domain.domainTitle"
-            :value="domain.accuracy"
-            :detail="`${domain.attemptedQuestions}/${domain.totalQuestions}`"
+            :value="domain.solvedPercent"
+            :detail="`${domain.correctQuestions}/${domain.totalQuestions} solved`"
           />
         </div>
       </div>
@@ -91,11 +100,11 @@ async function handleClearHistory() {
       <aside class="progress-summary" aria-label="Progress details">
         <dl>
           <div>
-            <dt>Attempted</dt>
-            <dd>{{ stats.totalAttempted }}/{{ stats.totalBankQuestions }}</dd>
+            <dt>Not answered</dt>
+            <dd>{{ stats.totalUnseen }}</dd>
           </div>
           <div>
-            <dt>Correct</dt>
+            <dt>Solved</dt>
             <dd>{{ stats.totalCorrect }}</dd>
           </div>
           <div>
@@ -103,17 +112,29 @@ async function handleClearHistory() {
             <dd>{{ stats.totalMistakes }}</dd>
           </div>
         </dl>
+        <p class="accuracy-detail">
+          Accuracy on latest attempts:
+          {{
+            stats.totalAttempted
+              ? `${stats.overallAccuracy}% (${stats.totalCorrect}/${stats.totalAttempted})`
+              : "—"
+          }}
+        </p>
+        <p class="accuracy-detail">Progress tracks this question bank, not exam readiness.</p>
 
-        <div v-if="weakestDomain" class="weakest-card">
-          <span>Weakest domain</span>
-          <strong>{{ weakestDomain.domainTitle }}</strong>
-          <button v-if="stats.totalMistakes > 0" type="button" @click="onReviewMistakes">
-            Review {{ stats.totalMistakes }} mistakes <span aria-hidden="true">→</span>
-          </button>
-          <button v-else type="button" @click="onStartPractice">
+        <div v-if="recommendedDomain" class="weakest-card">
+          <span>Recommended next</span>
+          <strong>{{ recommendedDomain.domainTitle }}</strong>
+          <button type="button" @click="onStartPractice(recommendedDomain.domainId)">
             Continue practice <span aria-hidden="true">→</span>
           </button>
         </div>
+        <button v-if="stats.totalMistakes > 0" type="button" @click="onReviewMistakes">
+          Review {{ stats.totalMistakes }} {{ stats.totalMistakes === 1 ? "mistake" : "mistakes" }}
+        </button>
+        <p v-if="stats.totalBankQuestions > 0 && stats.totalCorrect === stats.totalBankQuestions">
+          All published questions solved. Open Practice to repeat the bank or take a mock exam.
+        </p>
 
         <MButton type="button" variant="ghost" size="sm" class="reset-progress" @click="handleClearHistory">
           Reset progress history
@@ -124,6 +145,10 @@ async function handleClearHistory() {
 </template>
 
 <style scoped>
+.accuracy-detail {
+  color: var(--surface-fg-muted);
+  font-size: 0.8rem;
+}
 .progress-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 18.75rem;

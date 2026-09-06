@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-json
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/json.md
+title: Structured output
+retrieved_at: 2026-09-05T20:44:41Z
+sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+objectives:
+  - domain-2/structured-output
+snapshot:
+  bucket: academy-source-snapshots
+  key: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+status: current

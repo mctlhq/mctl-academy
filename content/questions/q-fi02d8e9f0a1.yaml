@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fi02d8e9f0a1
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/framework-integrations
 stem: What standard protocol enables AI agents to dynamically discover and
@@ -30,7 +30,7 @@ evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z

@@ -1,0 +1,132 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-09-06T06:41:52Z",
+  "questions": [
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "6778c87eff16a20f85d8e1f53756f8461f29f887567d9f0c72737e8d53f24c70",
+      "approved": true,
+      "reason": "Chat Completions `stream` description: 'partial message deltas will be sent ... Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a `data: [DONE]` message' supports option a. No WebSocket, multipart or post-hoc array transport appears in the reference; a is the single best answer."
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "0654bccb3404bdf0658a4e43f1f72503c60fc55ffe4f32a4e66042ad2526224e",
+      "approved": true,
+      "reason": "`temperature` description: 'Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic' supports option b. The passage only 'recommends altering this or top_p but not both', so c (auto-disabling top_p) is unsupported; d over-claims byte-identical output; a inverts the source. b is uniquely best."
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "7960b74f4fefe029a7044834fbff80bef8b0ec02b52fe59c16b28ac960a8b748",
+      "approved": true,
+      "reason": "Rerank page summary 'Reranks documents based on their relevance to a query' and the RerankResult schema (required fields index, document, relevance_score; 'Relevance score of the document') support option c. No vector, rewrite, or completion is returned per the schema; c is uniquely best."
+    },
+    {
+      "id": "q-fc05d2e3f4a5",
+      "content_sha256": "d7b78bec3295f45ce344973efae21d46be47bedbe943560143b022a8650f8de2",
+      "approved": true,
+      "reason": "Function-calling Note: 'The model does not execute the functions itself ... You are responsible for parsing these outputs and executing the corresponding functions on your backend or client side', plus the Python example appending {role: tool, content: result, tool_call_id: call.id} after executing, support option d. The 'Execute and Iterate' step contradicts a, b and c. d is uniquely best."
+    },
+    {
+      "id": "q-fi01c7d8e9f0",
+      "content_sha256": "cd1c11db054a0b30b3fd6502e86c786dc3d1a34ec5d537e61338be93c1168743",
+      "approved": true,
+      "reason": "Quickstart Python snippet constructs OpenAI(base_url=\"https://api.tokenfactory.nebius.com/v1/\", api_key=os.environ.get(\"NEBIUS_API_KEY\")); the JS variant uses the same pair as baseURL/apiKey. Option c is the only pair present in the source; the other three name parameters that do not exist on the client."
+    },
+    {
+      "id": "q-sb01a9b0c1d2",
+      "content_sha256": "6c10bae116b51013bcbfd916dda9edae48de98d461fb1e43f306f5dff2589fce",
+      "approved": true,
+      "reason": "Sandboxes overview 'Secure isolation' card: 'VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads' directly supports option a. Nothing in the page ties isolation to inference speed, API keys or HTML conversion; a is uniquely best."
+    },
+    {
+      "id": "q-sb02b0c1d2e3",
+      "content_sha256": "20e149496e86a377f28066a3415102ce9114608b44dcf4b8b179550e335d1cab",
+      "approved": true,
+      "reason": "'Educational platforms' use-case card: 'Provide students with safe code execution environments. Automatic cleanup and resource limits help prevent abuse' supports option b. Beta limitations state 'Number of simultaneously running operations is limited to 50', which contradicts d; the page describes Git-like branching/checkpoints, not automatic git commits (a); DNS is absent (c). b is uniquely best."
+    },
+    {
+      "id": "q-so04a3b4c5d6",
+      "content_sha256": "d8c4aaccc6cabd87e5b1cc2029f2c5f750891b514942a377ef11fa23a25e376a",
+      "approved": true,
+      "reason": "JSON page: 'JSON schema following. Follows the specific schema you provide - {type: json_schema}' vs 'Arbitrary JSON object. Forces arbitrary JSON output, the model will decide on the schema by itself {type: json_object}', and the Tip 'Use JSON schema instead of JSON objects whenever you need strict JSON structure' support option a. b and d contradict the distinction; c ignores the response_format the page prescribes (prompt instruction is described as additional). a is uniquely best."
+    },
+    {
+      "id": "q-df03a5b6c7d8",
+      "content_sha256": "cc4365db00df99ccefe5746da7d80e61dc04c079692f4f436e4cebd95bdad934",
+      "approved": true,
+      "reason": "Datasets page basic conversational example uses roles system, user, assistant; the 'Tool-augmented conversations' example adds {role: tool, tool_call_id: call_1, name: get_weather}. Option a matches exactly. b, c and d name roles/fields absent from the messages examples (query/document are rerank fields). a is uniquely best."
+    },
+    {
+      "id": "q-ds02d4e5f6a7",
+      "content_sha256": "13eb9ff9efcdc040aac09ac1dae31228bf98b220089f944c2a18e5d5831708bf",
+      "approved": true,
+      "reason": "Datasets page opening: 'Nebius Token Factory supports the JSON Lines format (.jsonl) for dataset files', and all four dataset types (conversational, instruction, text, pretokenized) are shown as JSON objects per line. Option d is the only documented format; XML, CSV and protobuf are absent. d is uniquely best."
+    },
+    {
+      "id": "q-fa01a1b2c3d4",
+      "content_sha256": "ff90cba29a392c75eec5b603c12a192f88fb0a3c21acae51c15023dd0c72689c",
+      "approved": true,
+      "reason": "Fine-tuning walkthrough step 2: 'training_file = client.files.create(file=open(\"training.jsonl\",\"rb\"), purpose=\"fine-tune\")' and 'You only need the id fields from these responses to create a fine-tuning job'; API spec: 'training_file (string, required) ID of the file with the training dataset (purpose = \"fine-tune\")'. Option a matches; inline rows, purpose=assistants/name reference, and URLs are not documented inputs. a is uniquely best."
+    },
+    {
+      "id": "q-ft03c7d8e9f0",
+      "content_sha256": "ddfbb12f11e9fcb65c8e8e8740feb71065ddccca15a8ac414893998d92adb7dc",
+      "approved": true,
+      "reason": "Hyperparameters section: 'n_epochs (integer, optional) Number of passes over the entire dataset. Range 1–20. Default 3' supports option c. batch_size and learning_rate are documented with different meanings (learning_rate: 'Step size for gradient descent'); temperature is not a fine-tuning hyperparameter on the page. c is uniquely best."
+    },
+    {
+      "id": "q-la03d6e7f8a9",
+      "content_sha256": "63c4a1430ad33799d82a5fe8654d24b9c9d94f1a93b8da92c419432c494e9fb3",
+      "approved": true,
+      "reason": "Hyperparameters section: 'lora_r (integer, optional) Rank of LoRA matrices. Higher values increase capacity but also overfitting and cost' supports option d. lora_dropout ('Dropout applied to LoRA layers'), weight_decay ('L2 regularization factor'), context_length are each documented with a different meaning. d is uniquely best."
+    },
+    {
+      "id": "q-cs01d4e5f6a7",
+      "content_sha256": "ad869328f2c5fd553b69c38b7bbbcad3e61e193f96523b13c365b2fe5931210d",
+      "approved": true,
+      "reason": "Lifecycle page, Readiness Status: 'Partially ready — Endpoint can serve traffic, but below expected capacity. Some replicas are still starting, updating, or unavailable' matches the stem scenario exactly, supporting option d. 'Not ready' = cannot reliably serve; 'Ready' = fully provisioned; 'Warning' is listed under Lifecycle Status, not Readiness. d is uniquely best."
+    },
+    {
+      "id": "q-de08c9d0e1f2",
+      "content_sha256": "f197ce316dcd46a46c377f539064a27226cd7253316cb888b44e4fd4ba80a2b5",
+      "approved": true,
+      "reason": "Readiness Status: 'Ready — Endpoint is fully provisioned and ready for expected traffic' supports option a. Key Principle note 'Lifecycle is deployment state. Readiness is traffic-serving capability' and the examples table (Running paired with Partially ready / Not ready) rule out b and d as readiness statuses; c is defined as below expected capacity. a is uniquely best."
+    },
+    {
+      "id": "q-de03c5d6e7f8",
+      "content_sha256": "f5567937001c59d7c32e07a40182a445e65daa19c20aba889dbcd17dc6ee0c98",
+      "approved": true,
+      "reason": "Dedicated vs Public comparison row '| Custom weights support | Supported for eligible models | Base models only |' supports option b. Same table gives 'Per GPU/hour' pricing (contradicts c) and 'Deployment region is fixed and user-selected' (contradicts d); capacity page states 'Self-service dedicated endpoints do not include a formal SLA unless covered by contract' (contradicts a). b is uniquely best."
+    },
+    {
+      "id": "q-de02b2c3d4e5",
+      "content_sha256": "dab34aa6791db4450cdf9c0dc7937ada941bfa387dc2bcda3c5b5ebd398ecc73",
+      "approved": true,
+      "reason": "Control & Data Plane terminology table: 'routing_key — The model identifier you pass to inference calls. Returned when you create an endpoint' supports option a; 'endpoint_id — Identifier used for update/delete operations' rules out b; Flavor is defined as a template sub-option (c); the control plane 'has common base URL API' for management, not inference (d). a is uniquely best."
+    },
+    {
+      "id": "q-bc01b0c1d2e3",
+      "content_sha256": "7a10a38ea67741b4785dab18600f4760116462b09b59d441860994fef756da51",
+      "approved": true,
+      "reason": "Comparison row '| Pricing | Per GPU/hour, billed with per-minute granularity | Per token |' (dedicated vs public serverless columns) supports option b exactly. No storage, query, licence or per-request basis appears in the source. b is uniquely best."
+    },
+    {
+      "id": "q-de09d0e1f2a3",
+      "content_sha256": "cf178a279482fc4b8f7d22e1c9e99f7fdd735ba295199c74e5415bd8a8cc86ee",
+      "approved": true,
+      "reason": "Rate Limits & Scaling page, 'Monitoring your headroom and handling 429s': 'If you exceed the active limit you will receive HTTP 429' supports option a; the page describes the dynamic limits of the shared inference tier, consistent with the comparison table's 'Dynamic rate limits apply' for public serverless. 500/404/401 are not mentioned as rate-limit responses. a is uniquely best."
+    },
+    {
+      "id": "q-pf08c6d7e8f9",
+      "content_sha256": "2385a7ec1a355540733c9e976f17de0bf0d8f5c5e0d4175a1873c6e71711f390",
+      "approved": true,
+      "reason": "Quickstart: 'client = OpenAI(base_url=\"https://api.tokenfactory.nebius.com/v1/\", ...)' (and baseURL in the JS variant) supports option a. The three distractors are URLs that appear nowhere in the source. a is uniquely best."
+    },
+    {
+      "id": "q-ld2443c1b29d",
+      "content_sha256": "b420e9909d60497e2175cded4ad2d82ec8b95d40bccd4c9e3028b9cbc7b74fea",
+      "approved": true,
+      "reason": "Reviewed 2026-09-06 after the option-a explanation edit (commit d3366e1). EVIDENCE CAVEAT: the evidence pins src-inference-overview sha 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca; no local snapshot with that hash exists (R2 only; Evidence CI verified the excerpt against it). Context was read from the LIVE revision captured at scratchpad inference-overview-live.md (sha 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340), not from the pinned bytes. In the live page the Quantization card reads exactly \"A technique that reduces the precision of model weights and activations, decreasing memory usage and computation\", which supports the stem (lower numeric precision of the model to reduce memory) and option d. The sibling cards define KV Cache (stores frequently accessed key-value pairs, reducing computations), Paged Attention (memory-management technique that partitions each request KV cache into fixed-size blocks, stored non-contiguously, reducing fragmentation) and Continuous Batching (batches multiple input sequences together, increasing throughput); none mentions precision, so a, b and c are ruled out and d is uniquely best. The rewritten option-a explanation matches the Paged Attention wording that commit 07a74e8 records for the pinned 344d6de4 revision and that the live page still carries; the other three explanations do not contradict the live definitions. Residual risk: the pinned bytes were not inspected directly; the approval rests on CI verbatim verification of the excerpt plus the commit-recorded pinned wording of the Paged Attention card."
+    }
+  ]
+}

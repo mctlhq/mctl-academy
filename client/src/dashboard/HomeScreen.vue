@@ -31,11 +31,15 @@ const streak = computed(() => {
   return calculateStudyStreak();
 });
 const practiceLabel = computed(() =>
-  stats.value.totalAttempted > 0 ? "Continue practice" : "Start practice",
+  stats.value.totalBankQuestions > 0 && stats.value.totalCorrect === stats.value.totalBankQuestions
+    ? "All questions solved"
+    : stats.value.totalAttempted > 0
+      ? "Continue practice"
+      : "Start practice",
 );
 const practiceDescription = computed(() => {
   if (stats.value.totalAttempted === 0) return "Build your baseline with evidence-backed practice questions.";
-  return `${stats.value.totalAttempted} of ${stats.value.totalBankQuestions} questions attempted.`;
+  return `${stats.value.totalCorrect} of ${stats.value.totalBankQuestions} questions solved. ${stats.value.totalUnseen} not answered; ${stats.value.totalMistakes} to review.`;
 });
 </script>
 
@@ -54,14 +58,14 @@ const practiceDescription = computed(() => {
 
     <div class="home-grid">
       <section aria-labelledby="domain-readiness-title">
-        <h2 id="domain-readiness-title" class="section-heading">Domain readiness</h2>
+        <h2 id="domain-readiness-title" class="section-heading">Progress by domain</h2>
         <div class="domain-bars">
           <DomainBar
             v-for="domain in stats.domainProgress"
             :key="domain.domainId"
             :label="domain.domainTitle"
-            :value="domain.accuracy"
-            :detail="`${domain.attemptedQuestions}/${domain.totalQuestions}`"
+            :value="domain.solvedPercent"
+            :detail="`${domain.correctQuestions}/${domain.totalQuestions} solved`"
           />
         </div>
       </section>
@@ -69,12 +73,12 @@ const practiceDescription = computed(() => {
       <aside class="home-summary" aria-label="Learning summary">
         <dl class="stat-list">
           <div>
-            <dt>Accuracy</dt>
-            <dd>{{ stats.overallAccuracy }}%</dd>
+            <dt>Questions solved</dt>
+            <dd>{{ stats.solvedPercent }}%</dd>
           </div>
           <div>
-            <dt>Attempted</dt>
-            <dd>{{ stats.totalAttempted }}/{{ stats.totalBankQuestions }}</dd>
+            <dt>Not answered</dt>
+            <dd>{{ stats.totalUnseen }}</dd>
           </div>
           <div>
             <dt>Streak</dt>

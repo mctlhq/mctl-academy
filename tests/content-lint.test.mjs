@@ -12,6 +12,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { questionFingerprint } from "../scripts/lib/question-review.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const LINT = join(ROOT, "scripts", "validate-content.mjs");
@@ -99,19 +100,21 @@ const question = (over = {}) => ({
 });
 
 /** Runs the lint against a fixture tree. Returns { ok, output }. */
-function lint({ sources = [source()], questions = [question()] }) {
+function lint({ sources = [source()], questions = [question()], receipts = [] }) {
   const dir = mkdtempSync(join(tmpdir(), "academy-lint-"));
   try {
     mkdirSync(join(dir, "courses"), { recursive: true });
     mkdirSync(join(dir, "sources"), { recursive: true });
     mkdirSync(join(dir, "questions"), { recursive: true });
+    mkdirSync(join(dir, "reviews"), { recursive: true });
+    receipts.forEach((r, i) => writeFileSync(join(dir, "reviews", `r${i}-review.json`), JSON.stringify(r)));
     writeFileSync(join(dir, "courses", "agentic-ai-builder.yaml"), JSON.stringify(COURSE_DEF));
     sources.forEach((s, i) => writeFileSync(join(dir, "sources", `s${i}.yaml`), JSON.stringify(s)));
     questions.forEach((q, i) => writeFileSync(join(dir, "questions", `q${i}.yaml`), JSON.stringify(q)));
 
     try {
       const out = execFileSync("node", [LINT], {
-        env: { ...process.env, ACADEMY_CONTENT_DIR: dir },
+        env: { ...process.env, ACADEMY_CONTENT_DIR: dir, ACADEMY_REVIEW_DIR: join(dir, "reviews") },
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],
       });
@@ -173,12 +176,49 @@ test("accepts an excerpt of exactly 25 words", () => {
   assert.equal(ok, true, output);
 });
 
-test("rejects publication without human review", () => {
+test("rejects publication without review", () => {
   const q = question();
   delete q.reviewed;
   const { ok, output } = lint({ questions: [q] });
   assert.equal(ok, false);
-  assert.match(output, /human approval is not optional/);
+  assert.match(output, /approval is not optional/);
+});
+
+test("an agent approval needs a committed receipt for that exact revision", () => {
+  const q = question({
+    reviewed: { by: "agent:reviewer", at: "2026-09-06T10:00:00Z", content_sha256: HASH },
+  });
+  // The fingerprint is checked by reviewProblems (stale => bundle-ineligible);
+  // here the receipt binding is what is under test, so stamp the real one.
+  q.reviewed.content_sha256 = questionFingerprint(q);
+  const receipt = (over = {}) => ({
+    reviewer: "agent:reviewer",
+    questions: [{ id: q.id, content_sha256: q.reviewed.content_sha256, approved: true, ...over }],
+  });
+  assert.equal(lint({ questions: [q], receipts: [receipt()] }).ok, true);
+  const missing = lint({ questions: [q] });
+  assert.equal(missing.ok, false);
+  assert.match(missing.output, /without a committed review receipt/);
+  const rejected = lint({ questions: [q], receipts: [receipt({ approved: false })] });
+  assert.equal(rejected.ok, false);
+  assert.match(rejected.output, /not an approval/);
+  const otherRevision = lint({ questions: [q], receipts: [receipt({ content_sha256: "b".repeat(64) })] });
+  assert.equal(otherRevision.ok, false);
+  assert.match(otherRevision.output, /different revision/);
+  const otherReviewer = lint({
+    questions: [q],
+    receipts: [{ ...receipt(), reviewer: "agent:someone-else" }],
+  });
+  assert.equal(otherReviewer.ok, false);
+});
+
+test("a human approval stamped from 2026-09-06 must carry the content fingerprint", () => {
+  const stale = question({ reviewed: { by: "mashkovd", at: "2026-09-06T10:00:00Z" } });
+  const result = lint({ questions: [stale] });
+  assert.equal(result.ok, false);
+  assert.match(result.output, /require content_sha256/);
+  const legacy = question({ reviewed: { by: "mashkovd", at: "2026-09-05T23:59:59Z" } });
+  assert.equal(lint({ questions: [legacy] }).ok, true);
 });
 
 test("rejects a human as item author — clean-room separation", () => {
@@ -297,4 +337,29 @@ test("rejects a snapshot key that does not match the source hash", () => {
   const { ok, output } = lint({ sources: [s] });
   assert.equal(ok, false);
   assert.match(output, /keyed by content hash/);
+});
+
+test("duplicate receipt entries for one question poison the key instead of last-write-wins", () => {
+  const q = question({
+    reviewed: { by: "agent:reviewer", at: "2026-09-06T10:00:00Z", content_sha256: HASH },
+  });
+  q.reviewed.content_sha256 = questionFingerprint(q);
+  const entry = (approved) => ({ id: q.id, content_sha256: q.reviewed.content_sha256, approved });
+  // A rejection followed by an approval must not resolve to the approval,
+  // whether the two entries share a file or sit in two files.
+  const inOneFile = lint({
+    questions: [q],
+    receipts: [{ reviewer: "agent:reviewer", questions: [entry(false), entry(true)] }],
+  });
+  assert.equal(inOneFile.ok, false);
+  assert.match(inOneFile.output, /more than one receipt entry/);
+  const acrossFiles = lint({
+    questions: [q],
+    receipts: [
+      { reviewer: "agent:reviewer", questions: [entry(false)] },
+      { reviewer: "agent:reviewer", questions: [entry(true)] },
+    ],
+  });
+  assert.equal(acrossFiles.ok, false);
+  assert.match(acrossFiles.output, /more than one receipt entry/);
 });

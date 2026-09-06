@@ -33,6 +33,8 @@ export interface BundleQuestion {
   domain: string;
   objective: string;
   stem: string;
+  objectiveTitle?: string;
+  sources?: Array<{ title: string; url: string; excerpt: string }>;
   options: BundleOption[];
 }
 

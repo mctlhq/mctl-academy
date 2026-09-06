@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
-const props = defineProps<{
+defineProps<{
   label: string;
   value: number;
   detail?: string;
 }>();
-
-const tone = computed(() => {
-  if (props.value >= 80) return "var(--status-ok)";
-  if (props.value >= 55) return "var(--status-warn)";
-  return "var(--status-bad)";
-});
 </script>
 
 <template>
@@ -25,12 +17,12 @@ const tone = computed(() => {
     <div
       class="domain-bar-track"
       role="progressbar"
-      :aria-label="`${label} readiness`"
+      :aria-label="`${label}: questions solved`"
       aria-valuemin="0"
       aria-valuemax="100"
       :aria-valuenow="value"
     >
-      <div class="domain-bar-fill" :style="{ width: `${value}%`, backgroundColor: tone }" />
+      <div class="domain-bar-fill" :style="{ width: `${value}%` }" />
     </div>
   </div>
 </template>
@@ -69,7 +61,7 @@ const tone = computed(() => {
 
 .domain-bar-fill {
   height: 100%;
-  min-width: 2px;
+  background: var(--status-ok);
   border-radius: inherit;
   transition: width var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
 }

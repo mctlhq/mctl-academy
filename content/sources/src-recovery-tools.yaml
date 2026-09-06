@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-tools
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling.md
+title: Function calling
+retrieved_at: 2026-09-05T20:44:40Z
+sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+objectives:
+  - domain-2/function-calling
+snapshot:
+  bucket: academy-source-snapshots
+  key: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+status: current

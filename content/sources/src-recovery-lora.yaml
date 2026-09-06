@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-lora
+url: https://docs.tokenfactory.nebius.com/post-training/merge-moe-lora-weights.md
+title: Merging LoRA adapters
+retrieved_at: 2026-09-05T20:44:45Z
+sha256: c3a9c914916d0b77865fbc560d958c8ce99f3c95a76a1d336306ad982f43600a
+objectives:
+  - domain-3/lora-adapters
+snapshot:
+  bucket: academy-source-snapshots
+  key: c3a9c914916d0b77865fbc560d958c8ce99f3c95a76a1d336306ad982f43600a
+status: current

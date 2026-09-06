@@ -23,8 +23,13 @@ Live at [academy.mctl.ai](https://academy.mctl.ai). Sign in with GitHub, then
 Practice or take a Mock exam — progress, mistakes, and per-question votes are
 saved to your account.
 
-All three courses have a published question bank: **Agentic AI Builder** (80
-items), **AI CloudOps Engineer** (40) and **AI Leader** (40). The CloudOps and
+All three courses have a published question bank: **Agentic AI Builder** (28
+items), **AI CloudOps Engineer** (40) and **AI Leader** (39). A September evidence
+audit quarantined 52 Builder items whose excerpts did not establish their answers;
+see the [per-question audit](docs/content/builder-evidence-audit.md). Builder Practice
+remains available, but its full Mock is unavailable until the domain shortfalls
+are repaired and reviewed. Current counts and shortfalls can be inspected with
+`npm run report:content-quality`. The CloudOps and
 Leader banks were re-authored from scratch in August 2026 after their original
 source citations turned out to be fabricated
 ([#140](https://github.com/mctlhq/mctl-academy/issues/140),
@@ -40,10 +45,17 @@ see [Contributing](#contributing) if you want to help.
 
 | Mode | What it does |
 |---|---|
-| **Practice** | Questions with immediate per-option feedback; signed in additionally unlocks per-question voting and persisted progress |
+| **Practice** | Resume a saved queue: unanswered questions first, then mistakes; first-answer feedback and cited sources; account sync for results |
 | **Mock** | 30 questions in 60 minutes, drawn per domain according to the selected course's own weighting in `content/courses/<id>.yaml` |
 | **Review mistakes** | Every question you've gotten wrong, from Practice or a Mock exam |
 | **Learn** | Lessons per objective, built from cited documentation — not yet built |
+
+Progress is the fraction of published questions answered correctly on the latest
+attempt, with unanswered questions, mistakes and accuracy shown separately. It is
+not an estimate of exam readiness. Exploring a correct option after a wrong first
+answer does not clear the mistake: solve it on the first try in a new pass.
+Practice position is saved on this device per account, course and mode; Repeat all
+is available without resetting history. Signed-out progress remains device-local.
 
 See [`client/README.md`](client/README.md) for local client development, and
 [`PLAN.md`](PLAN.md#7-application) section 7 for the application design.
@@ -60,7 +72,7 @@ produced here is evidence of anything to anyone.
 ## How the content is made
 
 Questions are drafted by agents from allowlisted public documentation, verified
-mechanically, and approved by a human before publication.
+mechanically, and approved by a human or independent agent before publication.
 
 1. A researcher agent retrieves an allowlisted source and records its URL,
    title, retrieval time, and SHA-256.
@@ -68,7 +80,7 @@ mechanically, and approved by a human before publication.
    25 words.
 3. **CI verifies every excerpt occurs verbatim** in the privately stored snapshot
    of that source. A citation that cannot be verified blocks publication.
-4. A human reviews and approves. Only then does the question publish.
+4. A human or independent agent reviews and approves the exact revision. Only then does the question publish.
 
 The mechanical check is the gate. An LLM checking another LLM's work is not.
 

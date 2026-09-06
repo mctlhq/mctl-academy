@@ -3,38 +3,46 @@ id: q-df03a5b6c7d8
 status: published
 domain: domain-3
 objective: domain-3/dataset-formats
-stem: In a multi-turn conversation training example, which message `role` values
-  are valid in the `messages` array?
+stem: In a conversational fine-tuning dataset, which `role` values appear in the
+  documented `messages` examples?
 options:
   - id: a
-    text: "`system`, `user`, `assistant`, and optionally `tool`"
+    text: "`system`, `user`, `assistant`, and `tool` in function-calling
+      conversations"
     correct: true
-    explanation: "Fine-tuning conversation examples support standard message roles:
-      system, user, assistant, and tool."
+    explanation: The basic example uses `system`, `user`, and `assistant` messages;
+      the tool-calling example adds `tool` messages carrying a `tool_call_id`.
   - id: b
     text: "`admin`, `moderator`, and `guest`"
     correct: false
-    explanation: RBAC user permissions are application roles, not Chat Completion
-      message roles.
+    explanation: These are application permission roles, not message roles in a
+      training conversation.
   - id: c
     text: "`input` and `output` only"
     correct: false
-    explanation: Instruct dataset format uses prompt/completion, whereas
-      conversational format uses messages array with roles.
+    explanation: Conversational examples are a `messages` array with roles;
+      `input`/`output` is not the documented shape.
   - id: d
     text: "`query` and `document`"
     correct: false
-    explanation: Query/document pairs belong to retrieval reranker inputs, not chat
-      dataset message objects.
+    explanation: Query and document are rerank request fields, not roles in a chat dataset.
 evidence:
   - source_id: src-dataset-formats
-    excerpt: Each training example is a single conversation, represented as one
-      `messages` array.
+    excerpt: "{ \"role\": \"system\", \"content\": \"You are a friendly dinner
+      planner.\" }, { \"role\": \"user\", \"content\": \"What's for dinner
+      tonight?\" },"
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+  - source_id: src-dataset-formats
+    excerpt: '{ "role": "assistant", "content": "What cuisine do you prefer?" },'
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+  - source_id: src-dataset-formats
+    excerpt: '"role": "tool", "tool_call_id": "call_1", "name": "get_weather",'
     source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: cc4365db00df99ccefe5746da7d80e61dc04c079692f4f436e4cebd95bdad934

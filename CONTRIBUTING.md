@@ -1,5 +1,29 @@
 # Contributing
 
+## Writing evidence-backed practice
+
+Start with a course objective, one claim to test, and a captured documentation
+excerpt supporting that claim. Write the scenario and four plausible options
+from that material. Keep options comparable in specificity and length; use
+documented misconceptions rather than obviously unrelated or absurd distractors.
+Prefer a different decision or failure scenario over paraphrasing an existing fact.
+
+Before human approval, have an independent reader inspect the claim, correct
+answer, and explanations against the cited passage in context. Record unresolved
+support gaps for the human reviewer. An independent agent may approve under CONTENT-POLICY.md with a revision-bound
+review receipt; the author/editor cannot approve their own revision.
+The existing human checklist in CONTENT-POLICY.md remains authoritative.
+
+Run `npm run report:content-quality` (or append `-- --json`) to inspect coverage,
+repeated citations, similar questions, source/objective mappings, answer-length
+bias, and mock shortfalls. These are review signals, not evidence of correctness.
+Verbatim citation CI cannot prove that a real quotation supports an unrelated claim.
+Do not edit a source's objective mappings merely to silence a report.
+
+Unsupported published items move to `needs_review`, without altering historical
+attempts. Re-author from captured evidence, return as `review_ready`, and obtain
+human or independent agent approval before publication. See the [Builder audit](docs/content/builder-evidence-audit.md).
+
 Thanks for looking. Here is what is open, what is closed, and why.
 
 ## Open to everyone
@@ -52,7 +76,7 @@ Standard for this organization:
 | Change | Gate |
 |---|---|
 | Application code, schemas, CI, deployment config | Automated review, no unaddressed P1/P2, plus green CI |
-| Content | Schema lint, verbatim citation verification, and human approval from a `CODEOWNERS` owner |
+| Content | Schema lint, verbatim citation verification, and question approval by a human or independent agent; PR merge approval remains with `CODEOWNERS` |
 
 Content pull requests are capped at **20 questions**. With a single human
 reviewer this is a ceiling on review load rather than an ideal batch size, and

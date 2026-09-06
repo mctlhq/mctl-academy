@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-recovery-data-lab
+url: https://docs.tokenfactory.nebius.com/data-lab/overview.md
+title: Data Lab
+retrieved_at: 2026-09-05T20:44:43Z
+sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
+objectives:
+  - domain-3/data-lab
+snapshot:
+  bucket: academy-source-snapshots
+  key: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
+status: current

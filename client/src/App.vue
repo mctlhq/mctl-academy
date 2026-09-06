@@ -12,6 +12,29 @@ const sessionState = authClient.useSession();
 const route = useRoute();
 const focusedPractice = computed(() => route.name === "practice" || route.name === "mistakes");
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
+// Practice and Mistakes wait for the session so the per-account storage key is
+// known before a persisted session is restored. That wait must not become a
+// blank screen: if the session request hangs (API restart, proxy timeout), the
+// learning surfaces render for a guest after this many milliseconds and remount
+// under the account key once the session settles — the same remount a normal
+// sign-in triggers via the RouterView key below.
+const AUTH_SETTLE_FALLBACK_MS = 3000;
+const authSettled = ref(!authLoading.value);
+let settleTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  authLoading,
+  (loading) => {
+    if (settleTimer !== undefined) clearTimeout(settleTimer);
+    if (!loading) {
+      authSettled.value = true;
+      return;
+    }
+    settleTimer = setTimeout(() => {
+      authSettled.value = true;
+    }, AUTH_SETTLE_FALLBACK_MS);
+  },
+  { immediate: true },
+);
 const user = computed<UserProfile | null>(
   () => (sessionState.value?.data?.user as UserProfile | undefined) ?? null,
 );
@@ -25,16 +48,14 @@ provide("currentUser", user);
 // Bumped after a successful syncFromServer() so views that inject it (see
 // AppNav.vue, DashboardScreen.vue, HomeScreen.vue, MistakesView.vue) can
 // reactively refresh their progress/mistake data. Deliberately NOT part of
-// the RouterView remount key below: an in-progress Practice/Mock session
-// lives only in memory, and a background sync completing mid-session must
-// never force-unmount it and silently discard the learner's answers so far.
+// the RouterView remount key below: background sync must not interrupt an
+// open question or a running Mock. Local writes also notify progressVersion.
 const syncVersion = ref(0);
 provide("syncVersion", syncVersion);
 
 // The course-switch remount boundary. Every learning surface is scoped to the
-// selected course, and a half-answered practice or mock session belongs to the
-// course it started in — so switching course discards the routed view outright
-// rather than re-filtering a running session in place.
+// selected course and account. Remount to restore that scope's own persisted
+// session rather than re-filtering a running session in place.
 const { currentCourseId } = useCourseStore();
 
 watch(
@@ -79,7 +100,12 @@ watch(
 
     <main class="app-main">
       <RouterView v-slot="{ Component, route: currentRoute }">
-        <component :is="Component" :key="`${currentRoute.fullPath}-${currentCourseId}`" />
+        <component
+          v-if="!focusedPractice || authSettled"
+          :is="Component"
+          :key="`${currentRoute.fullPath}-${currentCourseId}-${user?.id ?? 'guest'}`"
+        />
+        <p v-else class="app-main-pending" role="status" aria-live="polite">Loading your session…</p>
       </RouterView>
     </main>
 

@@ -89,12 +89,17 @@ function handleStart() {
 
     <MButton v-if="loaded.selection.ok" type="button" @click="handleStart"> Start mock exam </MButton>
     <div v-else class="mock-start-shortfall" data-testid="not-enough-content" role="alert">
-      <p>Not enough published questions to start a mock exam yet.</p>
+      <p>
+        Not enough published questions to start a full mock exam. You can continue practicing while the bank
+        is reviewed and expanded.
+      </p>
       <ul>
         <li v-for="s in loaded.selection.shortfall" :key="s.domain">
-          {{ s.domain }}: needs {{ s.needed }}, has {{ s.available }}
+          {{ loaded.config.domains.find((d) => d.id === s.domain)?.title ?? s.domain }}:
+          {{ s.available }} available, {{ s.needed }} needed
         </li>
       </ul>
+      <a href="/practice">Continue practice</a>
     </div>
   </section>
 </template>

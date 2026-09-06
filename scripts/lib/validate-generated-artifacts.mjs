@@ -25,6 +25,8 @@
  * without touching the filesystem or shelling out to a build.
  */
 
+import { ALLOWED_HOSTS } from "./content-model.mjs";
+
 const OPTION_IDS = ["a", "b", "c", "d"];
 
 function isNonEmptyString(value) {
@@ -46,6 +48,40 @@ function validateBundleQuestion(question, index, errors) {
   for (const field of ["id", "course_id", "domain", "objective", "stem"]) {
     if (!isNonEmptyString(question[field])) {
       errors.push(`${at}.${field}: expected a non-empty string, got ${JSON.stringify(question[field])}`);
+    }
+  }
+
+  // Both fields are emitted unconditionally by the builder and are what the
+  // learner sees as answer feedback. Optional validation here would let a
+  // builder regression that drops them pass silently — the regeneration diff
+  // in CI compares committed bytes against a fresh build, so both sides would
+  // agree and nothing would fail.
+  if (!isNonEmptyString(question.objectiveTitle)) {
+    errors.push(`${at}.objectiveTitle: expected a non-empty string`);
+  }
+  if (!Array.isArray(question.sources) || question.sources.length === 0) {
+    errors.push(`${at}.sources: expected a non-empty array`);
+  } else {
+    for (const source of question.sources) {
+      if (!source || !isNonEmptyString(source.title) || !isNonEmptyString(source.excerpt)) {
+        errors.push(`${at}.sources: title and excerpt are required`);
+      }
+      try {
+        const url = new URL(source?.url);
+        if (
+          url.protocol !== "https:" ||
+          !ALLOWED_HOSTS.includes(url.hostname) ||
+          url.username ||
+          url.password
+        ) {
+          errors.push(`${at}.sources: expected an allowlisted HTTPS documentation URL`);
+        }
+      } catch {
+        errors.push(`${at}.sources: invalid URL`);
+      }
+      if (typeof source?.excerpt === "string" && source.excerpt.trim().split(/\s+/).length > 25) {
+        errors.push(`${at}.sources: excerpt exceeds 25 words`);
+      }
     }
   }
 

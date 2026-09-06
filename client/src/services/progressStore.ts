@@ -1,4 +1,9 @@
+import { ref } from "vue";
 import { getItem, removeItem, resetStorage, setItem } from "./storage";
+
+/** Shared invalidation for every learning surface, including the navigation badge. */
+export const progressVersion = ref(0);
+export const progressEpoch = ref(getItem("academy.progress.epoch") ?? "0");
 
 export interface QuestionAttempt {
   questionId: string;
@@ -24,7 +29,7 @@ export interface QuestionAttempt {
  * read-time view for progress/mistake computation, mirroring what the server
  * already does with `DISTINCT ON (question_id) ... ORDER BY attempted_at DESC`.
  */
-function latestPerQuestion(attempts: QuestionAttempt[]): QuestionAttempt[] {
+export function latestPerQuestion(attempts: QuestionAttempt[]): QuestionAttempt[] {
   const latest = new Map<string, QuestionAttempt>();
   for (const a of attempts) {
     const existing = latest.get(a.questionId);
@@ -42,6 +47,8 @@ export interface DomainProgress {
   attemptedQuestions: number;
   correctQuestions: number;
   accuracy: number; // percentage 0 - 100
+  solvedPercent: number;
+  unseenQuestions: number;
 }
 
 export interface OverallProgress {
@@ -50,6 +57,8 @@ export interface OverallProgress {
   totalCorrect: number;
   overallAccuracy: number; // percentage 0 - 100
   totalMistakes: number;
+  totalUnseen: number;
+  solvedPercent: number;
   domainProgress: DomainProgress[];
 }
 
@@ -95,6 +104,7 @@ function trackWrite<T>(promise: Promise<T>): Promise<T> {
 
 export function saveRawAttempts(attempts: QuestionAttempt[]): void {
   setItem(STORAGE_KEY, JSON.stringify(attempts));
+  progressVersion.value += 1;
 }
 
 /** Clears stored progress, any memory fallback, and in-memory state. Tests own this. */
@@ -103,9 +113,12 @@ export function resetMemoryFallback(): void {
   clearGeneration = 0;
   clearInFlight = null;
   pendingWrites.clear();
+  progressVersion.value += 1;
+  progressEpoch.value = "0";
 }
 
 export function getStoredAttempts(): QuestionAttempt[] {
+  void progressVersion.value;
   try {
     const raw = getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -205,6 +218,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
     const attempts = getStoredAttempts();
     attempts.push({ questionId, domain, correct, attemptedAt });
     setItem(STORAGE_KEY, JSON.stringify(attempts));
+    progressVersion.value += 1;
   } catch {
     // Ignore storage errors
   }
@@ -273,6 +287,7 @@ export async function syncFromServer(): Promise<void> {
     try {
       const withServerRows = [...local, ...newFromServer.map((a) => ({ ...a, synced: true }))];
       setItem(STORAGE_KEY, JSON.stringify(withServerRows));
+      progressVersion.value += 1;
     } catch {
       // Ignore storage errors; fall through so backfill still gets attempted.
     }
@@ -321,6 +336,9 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
   clearGeneration += 1;
   try {
     removeItem(STORAGE_KEY);
+    progressVersion.value += 1;
+    progressEpoch.value = String(Date.now());
+    setItem("academy.progress.epoch", progressEpoch.value);
   } catch {
     // Ignore
   }
@@ -419,6 +437,8 @@ export function calculateProgressStats(
       attemptedQuestions: stats.attempted,
       correctQuestions: stats.correct,
       accuracy,
+      solvedPercent: stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0,
+      unseenQuestions: stats.total - stats.attempted,
     });
   }
 
@@ -439,6 +459,8 @@ export function calculateProgressStats(
     totalCorrect,
     overallAccuracy,
     totalMistakes,
+    totalUnseen: bundle.length - totalAttempted,
+    solvedPercent: bundle.length > 0 ? Math.round((totalCorrect / bundle.length) * 100) : 0,
     domainProgress: domainProgress.sort((a, b) => a.domainId.localeCompare(b.domainId)),
   };
 }

@@ -63,6 +63,12 @@ jobs:
       - name: Content lint
         run: bun run lint:content
 
+      - name: Advisory content quality report
+        run: bun run report:content-quality
+
+      - name: Content quality report tests
+        run: node --test tests/content-quality-report.test.mjs
+
       # Proves the bytes committed in client/src/content-bundle.json and
       # client/src/course-catalog.json are what content/ actually generates.
       # No secrets, no network: same fork-PR-safe property as the rest of

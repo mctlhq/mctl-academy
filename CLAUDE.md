@@ -10,7 +10,7 @@ persisted.
 
 - `CONTENT-POLICY.md` — **binding.** The maintainer has sat this exam, so
   authorship and approval are separated mechanically: agents write items from
-  allowlisted documentation, humans only approve. `authored.by` must be
+  allowlisted documentation; humans or independent agents approve. `authored.by` must be
   `agent:<name>`; the lint enforces it.
 - `SOURCES.md` — the source allowlist and the snapshot/evidence rules.
 - `LEGAL.md` — naming rules. Certification naming lives only in each course's
@@ -59,8 +59,8 @@ Verbatim citation verification against the private R2 snapshot is a further,
 separate step. It needs secrets, so it cannot run on a fork PR — which is why
 content PRs from forks are not accepted.
 
-**An LLM is never the gate.** The mechanical check is. A model reviewing another
-model's questions is a second layer at best.
+**An LLM cannot replace evidence CI.** Independent semantic review and mechanical
+snapshot verification are complementary requirements.
 
 ## Commands
 
@@ -80,9 +80,9 @@ npm run test:content     # lint + bundle-safety tests, each violating one rule
 
 ## Review gates
 
-Content-only PRs are **not** LLM-reviewed — evidence CI plus human CODEOWNER
-approval is the gate, and a model judging another model's questions is the loop
-this pipeline exists to avoid. Everything else (code, schemas, CI, deployment)
+Question content is reviewed against evidence by a human or independent agent
+under CONTENT-POLICY.md; agent approval is pinned to the exact revision. Evidence
+CI remains mandatory. Human CODEOWNER approval governs PR merging separately. Everything else (code, schemas, CI, deployment)
 goes through `claude-review.yml`; merge needs no unaddressed P1/P2.
 
 ## Attempt immutability

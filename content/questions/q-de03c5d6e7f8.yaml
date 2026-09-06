@@ -3,37 +3,46 @@ id: q-de03c5d6e7f8
 status: published
 domain: domain-4
 objective: domain-4/dedicated-endpoints
-stem: Why might an enterprise choose to host a fine-tuned LoRA adapter on a
-  dedicated endpoint instead of a shared server pool?
+stem: Why would a team deploy a fine-tuned model with custom weights on a
+  dedicated endpoint rather than call a public serverless endpoint?
 options:
   - id: a
-    text: Dedicated endpoints automatically rewrite Python code into Rust binaries
+    text: Every self-service dedicated endpoint includes a formal SLA
     correct: false
-    explanation: Endpoints execute inference models, not programming language translation.
+    explanation: The capacity page states that self-service dedicated endpoints do
+      not include a formal SLA unless covered by contract.
   - id: b
-    text: Shared pools do not support any fine-tuning adapters
-    correct: false
-    explanation: Shared pools can support popular public models, but dedicated
-      instances allow custom private adapter loading.
-  - id: c
-    text: Dedicated endpoints allow loading custom private adapter weights on
-      dedicated hardware with strict SLA guarantees
+    text: Dedicated endpoints support custom weights for eligible models, while
+      public serverless endpoints serve base models only
     correct: true
-    explanation: Private custom LoRA weights and strict SLAs require dedicated
-      hardware resources.
-  - id: d
-    text: Dedicated endpoints eliminate network latency completely (0 ms ping)
+    explanation: The comparison table lists custom weights support as supported for
+      eligible models on dedicated endpoints and base models only on public
+      serverless endpoints.
+  - id: c
+    text: Dedicated endpoints are billed per token, which is cheaper for custom
+      weights
     correct: false
-    explanation: Physical network transport latency always exists regardless of
-      hosting choice.
+    explanation: Dedicated endpoints are billed per GPU/hour with per-minute
+      granularity; per-token pricing is the public serverless model.
+  - id: d
+    text: Dedicated endpoints let the platform choose the region automatically
+    correct: false
+    explanation: For dedicated endpoints the deployment region is fixed and
+      user-selected; it is public serverless where the region may change.
 evidence:
-  - source_id: src-endpoint-lifecycle
-    excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+  - source_id: src-recovery-endpoint
+    excerpt: "| Custom weights support | Supported for eligible models | Base models
+      only |"
+    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+  - source_id: src-recovery-capacity
+    excerpt: Self-service dedicated endpoints do not include a formal SLA unless
+      covered by contract.
+    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: f5567937001c59d7c32e07a40182a445e65daa19c20aba889dbcd17dc6ee0c98

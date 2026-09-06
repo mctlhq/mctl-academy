@@ -3,35 +3,42 @@ id: q-de08c9d0e1f2
 status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
-stem: What status indicates that a dedicated endpoint has completed node
-  allocation and model weight loading, and is actively ready for inference
-  requests?
+stem: Which readiness status means a dedicated endpoint is fully provisioned and
+  ready for its expected traffic?
 options:
   - id: a
-    text: READY
+    text: Ready
     correct: true
-    explanation: The READY state confirms node provisioning, model loading, and
-      traffic capability.
+    explanation: Ready is the readiness status defined as fully provisioned and
+      ready for expected traffic; the docs say to use readiness to decide
+      whether to send traffic.
   - id: b
-    text: CREATING
+    text: Running
     correct: false
-    explanation: CREATING signifies ongoing provision of underlying compute nodes.
+    explanation: Running is a lifecycle status (deployment state), not a readiness
+      status; a Running endpoint can still be Partially ready or Not ready.
   - id: c
-    text: DELETING
+    text: Partially ready
     correct: false
-    explanation: DELETING indicates endpoint de-provisioning and resource teardown.
+    explanation: Partially ready means the endpoint serves traffic but below
+      expected capacity.
   - id: d
-    text: PAUSED
+    text: Starting
     correct: false
-    explanation: PAUSED indicates an inactive endpoint that is not serving live traffic.
+    explanation: Starting is a lifecycle status for an endpoint being created or
+      started, when traffic may not be available yet.
 evidence:
+  - source_id: src-endpoint-lifecycle
+    excerpt: Endpoint is fully provisioned and ready for expected traffic.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
   - source_id: src-endpoint-lifecycle
     excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
     source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: f197ce316dcd46a46c377f539064a27226cd7253316cb888b44e4fd4ba80a2b5

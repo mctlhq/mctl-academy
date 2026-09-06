@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
-import { calculateStudyStreak, getMistakeQuestionIds } from "../services/progressStore";
+import { calculateStudyStreak, getMistakeQuestionIds, progressVersion } from "../services/progressStore";
 import { useCourseStore } from "../services/courseStore";
 import { questionIdsForCourse } from "../services/contentBundle";
 import { currentTheme, setTheme } from "../theme";
@@ -51,6 +51,7 @@ function refreshLearningSummary() {
 }
 router.afterEach(refreshLearningSummary);
 watch(currentCourseId, refreshLearningSummary);
+watch(progressVersion, refreshLearningSummary);
 const syncVersion = inject<Ref<number>>("syncVersion");
 if (syncVersion) {
   watch(syncVersion, refreshLearningSummary);

@@ -23,7 +23,14 @@ import { join, basename, resolve } from "node:path";
 import Ajv from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { parse as parseYaml } from "yaml";
-import { checkBundleEligibility, UNUSABLE_SOURCE_STATUSES } from "./lib/content-model.mjs";
+import {
+  ALLOWED_HOSTS,
+  checkBundleEligibility,
+  defaultReviewDir,
+  loadReviewReceipts,
+  receiptProblems,
+  UNUSABLE_SOURCE_STATUSES,
+} from "./lib/content-model.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 // Overridable so the test suite can point the linter at fixture trees and
@@ -34,21 +41,17 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
   ? resolve(process.env.ACADEMY_CONTENT_DIR)
   : join(ROOT, "content");
 const SCHEMAS = join(ROOT, "content", "schemas");
+// Independent review receipts (docs/content/*-review.json). An agent approval
+// is only as good as the committed record of the separate review that granted
+// it; the loader and the rule live in content-model.mjs so the bundle builder
+// applies exactly the same check at write time.
+const REVIEWS = resolve(defaultReviewDir(CONTENT));
 
 const errors = [];
 const warnings = [];
 
 const err = (file, msg) => errors.push(`${file}: ${msg}`);
 const warn = (file, msg) => warnings.push(`${file}: ${msg}`);
-
-/**
- * Hosts content may cite. Mirrors the SOURCES.md allowlist.
- *
- * Token Factory first: it documents the product the course is actually about.
- * docs.nebius.com is the infrastructure cloud and is secondary — see SOURCES.md
- * for why that distinction matters.
- */
-const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
 
 /**
  * Item authors must be agents. CONTENT-POLICY.md separates authorship from
@@ -58,6 +61,8 @@ const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
  * name is exactly what belongs.
  */
 const AGENT_AUTHOR = /^agent:[a-z0-9][a-z0-9-]*$/;
+
+const reviewReceipts = loadReviewReceipts(REVIEWS, err);
 
 function loadYamlDir(dir) {
   const path = join(CONTENT, dir);
@@ -200,7 +205,7 @@ function checkEvidence(file, data) {
  */
 function checkBundleAgreement(file, data) {
   if (data.status !== "published") return;
-  const { eligible, reasons } = checkBundleEligibility(data, sourcesById);
+  const { eligible, reasons } = checkBundleEligibility(data, sourcesById, reviewReceipts);
   if (!eligible) {
     err(file, `is published but would be withheld from the client bundle: ${reasons.join("; ")}`);
   }
@@ -220,13 +225,14 @@ function checkObjective(file, data) {
 
 function checkLifecycle(file, data) {
   if (data.status === "published" && !data.reviewed) {
-    err(file, "published without a `reviewed` block — human approval is not optional");
+    err(file, "published without a `reviewed` block — approval is not optional");
   }
+  for (const problem of receiptProblems(data, reviewReceipts)) err(file, problem);
   if (data.authored && !AGENT_AUTHOR.test(data.authored.by)) {
     err(
       file,
       `authored.by "${data.authored.by}" is not an agent identifier (agent:<name>). ` +
-        "CONTENT-POLICY.md: items are authored by agents; humans approve in `reviewed`, not `authored`.",
+        "CONTENT-POLICY.md: items are authored by agents; approval belongs in `reviewed`, not `authored`.",
     );
   }
 }
@@ -265,7 +271,8 @@ for (const { file, data } of questions) {
 // an author to discover it in the UI.
 for (const [courseId] of courses) {
   const publishable = questions.filter(
-    ({ data }) => data.course_id === courseId && checkBundleEligibility(data, sourcesById).eligible,
+    ({ data }) =>
+      data.course_id === courseId && checkBundleEligibility(data, sourcesById, reviewReceipts).eligible,
   ).length;
   if (publishable === 0) {
     warn(`content/courses/${courseId}.yaml`, "no publishable questions — course will show as unavailable");

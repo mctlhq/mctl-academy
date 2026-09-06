@@ -3,34 +3,35 @@ id: q-pf08c6d7e8f9
 status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
-stem: Which base URL pattern is used to configure standard OpenAI SDK clients to
-  point to Nebius Token Factory inference endpoints?
+stem: Which base URL does the Quickstart use to configure an OpenAI SDK client
+  for Token Factory inference?
 options:
   - id: a
-    text: "`https://api.tokenfactory.nebius.com/v1`"
+    text: "`https://api.tokenfactory.nebius.com/v1/`"
     correct: true
-    explanation: The standard base URL path follows
-      `https://api.tokenfactory.nebius.com/v1` for OpenAI client integration.
+    explanation: The Quickstart constructs the OpenAI client with
+      `base_url="https://api.tokenfactory.nebius.com/v1/"`.
   - id: b
     text: "`ftp://legacy.nebius.internal/storage`"
     correct: false
-    explanation: FTP protocols are not used for RESTful LLM inference APIs.
+    explanation: FTP is not used for the inference API.
   - id: c
     text: "`ws://localhost:3000/raw-socket`"
     correct: false
-    explanation: Local raw WebSockets are not the canonical public API base URL.
+    explanation: A local WebSocket is not the documented API base URL.
   - id: d
     text: "`https://docs.nebius.com/static/js`"
     correct: false
-    explanation: Documentation static assets are not API inference endpoints.
+    explanation: That is a documentation asset path, not an inference endpoint.
 evidence:
-  - source_id: src-inference-overview
-    excerpt: To use the Fast flavor, append `-fast` to the model name in the
-    source_sha256: 8bfd4850210d38e60a9685ea0810bbbebc3d959340b265da3ab08698408e099c
+  - source_id: src-recovery-quickstart
+    excerpt: base_url="https://api.tokenfactory.nebius.com/v1/",
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
 authored:
-  by: agent:claude
-  at: 2026-08-07T19:30:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T19:31:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: 2385a7ec1a355540733c9e976f17de0bf0d8f5c5e0d4175a1873c6e71711f390

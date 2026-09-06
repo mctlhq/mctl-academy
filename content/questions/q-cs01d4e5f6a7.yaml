@@ -3,36 +3,42 @@ id: q-cs01d4e5f6a7
 status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
-stem: What status indicates that a dedicated endpoint is currently operational
-  but serving at reduced capacity during instance scaling or node recovery?
+stem: A dedicated endpoint is serving traffic, but some replicas are still
+  starting and capacity is below what was expected. Which readiness status does
+  the documentation assign to this state?
 options:
   - id: a
-    text: "`Status: Terminated`"
+    text: Not ready
     correct: false
-    explanation: Terminated means the endpoint has been destroyed and cannot process
-      requests.
+    explanation: Not ready means the endpoint cannot reliably serve requests; here
+      it is serving, just below capacity.
   - id: b
-    text: "`Status: Failed`"
+    text: Ready
     correct: false
-    explanation: Failed indicates a critical unrecoverable deployment error.
+    explanation: Ready means fully provisioned and ready for expected traffic, which
+      is not the case while replicas are still starting.
   - id: c
-    text: "`Status: Creating`"
+    text: Warning
     correct: false
-    explanation: Creating is the initial provisioning phase before any traffic can
-      be served.
+    explanation: Warning is a lifecycle status describing a deployment issue, not a
+      readiness status.
   - id: d
-    text: "`Status: Degraded` (or serving below expected capacity)"
+    text: Partially ready
     correct: true
-    explanation: Degraded status indicates the endpoint is online and serving
-      requests, but with reduced instance capacity.
+    explanation: Partially ready is defined as serving traffic below expected
+      capacity while some replicas are still starting, updating, or unavailable.
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Endpoint can serve traffic, but below expected capacity.
     source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+  - source_id: src-endpoint-lifecycle
+    excerpt: Some replicas are still starting, updating, or unavailable.
+    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
 authored:
-  by: agent:claude
-  at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
+  by: agent:claude-fable-5-1
+  at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:49:34Z
+  content_sha256: ad869328f2c5fd553b69c38b7bbbcad3e61e193f96523b13c365b2fe5931210d
