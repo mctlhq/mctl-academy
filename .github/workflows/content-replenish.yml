@@ -188,9 +188,13 @@ jobs:
           git checkout -b "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
           # The agents have no shell, so the caps reach them as a file, not
-          # as environment or prompt text.
+          # as environment or prompt text. `now` is there for the same reason:
+          # the author agent has no clock, and asking it to invent the time of
+          # day put a coin flip on the fatal path -- a guess later than this
+          # 06:30 UTC run is a future authored.at, which the lint refuses.
           mkdir -p _run
-          printf '{ "max_new": %s, "max_questions": %s }\n' "$MAX_NEW" "$MAX_QUESTIONS" > _run/limits.json
+          printf '{ "max_new": %s, "max_questions": %s, "now": "%s" }\n' \
+            "$MAX_NEW" "$MAX_QUESTIONS" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _run/limits.json
           cp _run/from-discover/_run/candidates.json _run/candidates.json
           cp _run/from-discover/content/discovery-state.yaml content/discovery-state.yaml
           node scripts/content-quality-report.mjs --json > _run/report-before.json
@@ -363,7 +367,8 @@ jobs:
             - one file content/questions/<id>.yaml, id = "q-" plus 12 random lowercase hex
               characters that no existing file uses; preserve the key order of existing files
             - `course_id`, `domain`, `objective` from the course maps; `status: review_ready`;
-              `authored: { by: "agent:claude-author", at: <now, ISO 8601 UTC> }`; no `reviewed` block
+              `authored: { by: "agent:claude-author", at: <the "now" value from _run/limits.json,
+              copied exactly> }`; no `reviewed` block
             - the stem tests one documented fact or behaviour; exactly one option is correct and
               the three distractors are alternatives the same page or the product documents
               elsewhere, never invented features; every option has an explanation that matches

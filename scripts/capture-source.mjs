@@ -89,19 +89,7 @@ async function capture({ url, id, objectives, title }) {
   const previous = existsSync(join(SOURCES, `${id}.yaml`))
     ? parseYaml(readFileSync(join(SOURCES, `${id}.yaml`), "utf8"))
     : null;
-  const record = {
-    schema_version: 1,
-    id,
-    url,
-    title: title ?? url.split("/").pop().replace(/\.md$/, ""),
-    retrieved_at: nowUtc(),
-    sha256: hash,
-    objectives,
-    snapshot: { bucket: process.env.R2_BUCKET ?? "academy-source-snapshots", key },
-    status: "current",
-  };
-  const versions = mergeVersions(previous, hash);
-  if (versions.length) record.versions = versions;
+  const record = buildSourceRecord({ id, url, title, objectives, hash, key, previous });
 
   mkdirSync(SOURCES, { recursive: true });
   writeFileSync(join(SOURCES, `${id}.yaml`), stringifyYaml(record));
@@ -160,6 +148,37 @@ async function check({ markDrifted = false } = {}) {
  * source whose page changed must still fail loudly for every dependent, or the
  * gate's core claim would be weakened for the convenience of one caller.
  */
+/**
+ * The source record as it will be written. A capture rebuilds it from scratch,
+ * so every field of an existing record that is not reconstructed here is
+ * erased. That was tolerable while `snapshot:capture` was a manual command run
+ * by whoever also wrote those fields; the replenish workflow re-captures every
+ * drifted source unattended each week, and no lint can notice a field that is
+ * simply gone -- so `coverage` and `notes` are carried forward explicitly.
+ *
+ * @param {{ id: string, url: string, title?: string, objectives: string[],
+ *           hash: string, key: string, previous: any }} args
+ */
+export function buildSourceRecord({ id, url, title, objectives, hash, key, previous }) {
+  /** @type {Record<string, any>} */
+  const record = {
+    schema_version: 1,
+    id,
+    url,
+    title: title ?? url.split("/").pop().replace(/\.md$/, ""),
+    retrieved_at: nowUtc(),
+    sha256: hash,
+    objectives,
+    snapshot: { bucket: process.env.R2_BUCKET ?? "academy-source-snapshots", key },
+    status: "current",
+    ...(previous?.coverage ? { coverage: previous.coverage } : {}),
+    ...(previous?.notes ? { notes: previous.notes } : {}),
+  };
+  const versions = mergeVersions(previous, hash);
+  if (versions.length) record.versions = versions;
+  return record;
+}
+
 export function mergeVersions(previous, hash) {
   if (!previous) return [];
   // Hashes already registered are carried forward on EVERY re-capture: a

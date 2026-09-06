@@ -309,8 +309,19 @@ export function prBody({
     lines.push("", "### Offered by discovery, not captured this run", "");
     for (const p of offeredNotCaptured) lines.push(`- ${p.title} — ${p.url}`);
   }
-  for (const d of dropped)
-    lines.push(`- dropped selection ${JSON.stringify(d.row?.id ?? d.row)}: ${d.why.join("; ")}`);
+  if (dropped.length) {
+    // Its own heading: without one these lines were appended to whichever
+    // section ran last, so a dropped selection could read as an entry under
+    // "Sources captured in this PR" -- the list a human reads to tick the
+    // attestation. The row is the selector agent's unvalidated object, and a
+    // PR body read by a human is the right destination for it, but it is
+    // capped so a pathological row cannot bury the sections below.
+    lines.push("", "### Selections dropped by validation", "");
+    for (const d of dropped) {
+      const row = JSON.stringify(d.row?.id ?? d.row) ?? "";
+      lines.push(`- ${row.length > 200 ? `${row.slice(0, 200)}...` : row}: ${d.why.join("; ")}`);
+    }
+  }
   if (candidates.unreachable?.length) {
     lines.push("", "### Unreachable sources (not changed here; needs a human decision)", "");
     for (const u of candidates.unreachable) {

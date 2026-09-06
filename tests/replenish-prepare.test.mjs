@@ -19,7 +19,7 @@ import {
   demote,
   prBody,
 } from "../scripts/replenish-prepare.mjs";
-import { mergeVersions } from "../scripts/capture-source.mjs";
+import { mergeVersions, buildSourceRecord } from "../scripts/capture-source.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -334,7 +334,8 @@ test("prBody lists captured sources, offered-but-not-captured pages, review outc
   assert.match(body, /1 approved and promoted, 1 rejected\. Cap for this run: 5 question files\./);
   assert.match(body, /rejected `q-no`: two options are best/);
   assert.match(body, /domain-2 3→0 \(published 69→74\)/);
-  assert.match(body, /dropped selection "src-rerank"/);
+  assert.match(body, /### Selections dropped by validation/);
+  assert.match(body, /- "src-rerank": /);
   assert.match(body, /Attestation is signed by the human/);
 });
 
@@ -582,6 +583,80 @@ test("reconcileDecisions scopes the reviewer's output to the items under review"
     bad.decisions.map((d) => d.id),
     ["q-aaa000000001"],
   );
+});
+
+test("the author agent is handed the time instead of guessing it", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The agent has no clock and no Bash. Asking it to invent "now" put a coin
+  // flip on the fatal path: a guessed time later than this 06:30 UTC run is a
+  // future authored.at, which the lint refuses, failing the whole run.
+  const start = workflow.jobs.author.steps.find((s) => s.name === "Start the replenish branch").run;
+  assert.match(start, /"now": "%s"/);
+  assert.match(start, /date -u \+%Y-%m-%dT%H:%M:%SZ/);
+  const author = workflow.jobs.author.steps.find(
+    (s) => s.name === "Author agent writes review_ready questions",
+  );
+  assert.match(author.with.prompt, /"now" value from _run\/limits\.json/);
+  assert.doesNotMatch(author.with.prompt, /at: <now, ISO 8601 UTC>/);
+});
+
+test("a dropped selection gets its own heading and cannot bury the sections below", () => {
+  const body = prBody({
+    candidates: { ...CANDIDATES, newPages: [] },
+    receipt: { reviewer: "agent:claude-reviewer", reviewed_at: "2026-09-07T07:00:00Z", questions: [] },
+    captured: ["src-quotas"],
+    selected: [],
+    dropped: [{ row: { id: "src-bad", title: "x".repeat(4000) }, why: ["url not in the discovery report"] }],
+    max: 20,
+  });
+  const heading = body.indexOf("### Selections dropped by validation");
+  assert.ok(heading !== -1);
+  // It must not land under the captured list, which is what a human reads to
+  // tick the attestation.
+  assert.ok(body.indexOf("### Sources captured") < heading);
+  assert.ok(body.indexOf("dropped") > heading);
+  assert.ok(!body.includes("x".repeat(400)));
+});
+
+test("an unattended re-capture keeps the human-written fields of the record", () => {
+  const A = "a".repeat(64);
+  const B = "b".repeat(64);
+  const previous = {
+    schema_version: 1,
+    id: "src-quotas",
+    sha256: A,
+    status: "drifted",
+    coverage: [{ course_id: "agentic-ai-builder", objectives: ["domain-1/quotas"] }],
+    notes: "Section 3 is the normative one; the table above it is illustrative.",
+  };
+  const record = buildSourceRecord({
+    id: "src-quotas",
+    url: "https://docs.nebius.com/q.md",
+    title: "Quotas",
+    objectives: ["domain-1/quotas"],
+    hash: B,
+    key: "sha256/bb",
+    previous,
+  });
+  // The workflow re-captures every drifted source weekly with no human in the
+  // loop, and nothing downstream can notice a field that is simply gone.
+  assert.deepEqual(record.coverage, previous.coverage);
+  assert.equal(record.notes, previous.notes);
+  assert.equal(record.status, "current");
+  assert.deepEqual(record.versions, [A]);
+  // A first capture invents neither.
+  const fresh = buildSourceRecord({
+    id: "src-new",
+    url: "https://docs.nebius.com/n.md",
+    objectives: [],
+    hash: A,
+    key: "sha256/aa",
+    previous: null,
+  });
+  assert.ok(!("coverage" in fresh));
+  assert.ok(!("notes" in fresh));
 });
 
 test("mergeVersions keeps every earlier hash of a re-captured source", () => {
