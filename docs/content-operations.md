@@ -89,8 +89,11 @@ nothing depends on it.) The workflow
 therefore deletes everything but the one expected file straight after each
 agent, and the deterministic checks below are the real boundary.
 
-Because the grant reaches the whole filesystem and not just the repository,
-each agent is bracketed. The step before it hashes what the steps after it
+Because the grant reaches every file in the workspace and the deterministic
+steps read that same tree, each agent is bracketed. (The CLI confines a bare
+`Write` to the working directory — probed in PR #245: `/tmp` was refused with
+the same message a rejected pattern produces — so the entries outside the
+workspace below are defence in depth against that confinement failing.) The step before it hashes what the steps after it
 trust — everything under `_run/`, `.git/config` and `.git/hooks/`, git's three
 configuration levels including `$XDG_CONFIG_HOME/git/config`, `~/.npmrc` and
 `~/.bunfig.toml`, the `git`/`node`/`bun`/`gh` binaries as they resolve on
