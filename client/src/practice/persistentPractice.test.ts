@@ -114,6 +114,16 @@ describe("persistent remaining-question practice", () => {
     s.next();
     expect(s.current.value?.id).toBe("wrong");
   });
+  it("keeps an unanswered current question pinned when a background sync marks it correct", () => {
+    start([q("one"), q("two")]);
+    // Synced from another device while this tab was away: "one" is no longer
+    // eligible for a remaining-questions pass, but it is what the learner left open.
+    recordAttempt("one", "domain-1", true);
+    const s = start([q("one"), q("two")]);
+    expect(s.current.value?.id).toBe("one");
+    s.next();
+    expect(s.current.value?.id).toBe("two");
+  });
   it("prioritizes newly added unseen questions at the next boundary", () => {
     const bundle = ref([q("one"), q("wrong")]);
     recordAttempt("wrong", "domain-1", false);

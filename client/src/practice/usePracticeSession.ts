@@ -143,11 +143,11 @@ export function usePracticeSession(
     const completed = entries.value.slice(0, index.value);
     const future = entries.value
       .slice(index.value)
-      .filter(
-        (e, offset) =>
-          questions.has(e.id) &&
-          (eligible.has(e.id) || (preserveCurrent && offset === 0 && e.revealed.length > 0)),
-      )
+      // The current showing is kept whether or not it has been answered: a
+      // background sync that marks it correct from another device must not
+      // yank the question the learner is looking at. Withdrawn questions
+      // (absent from the bundle) still go, answered or not.
+      .filter((e, offset) => questions.has(e.id) && (eligible.has(e.id) || (preserveCurrent && offset === 0)))
       .map((e) => {
         const q = questions.get(e.id)!;
         return e.signature === signature(q) ? e : makeEntries([q])[0];

@@ -12,6 +12,29 @@ const sessionState = authClient.useSession();
 const route = useRoute();
 const focusedPractice = computed(() => route.name === "practice" || route.name === "mistakes");
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
+// Practice and Mistakes wait for the session so the per-account storage key is
+// known before a persisted session is restored. That wait must not become a
+// blank screen: if the session request hangs (API restart, proxy timeout), the
+// learning surfaces render for a guest after this many milliseconds and remount
+// under the account key once the session settles — the same remount a normal
+// sign-in triggers via the RouterView key below.
+const AUTH_SETTLE_FALLBACK_MS = 3000;
+const authSettled = ref(!authLoading.value);
+let settleTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  authLoading,
+  (loading) => {
+    if (settleTimer !== undefined) clearTimeout(settleTimer);
+    if (!loading) {
+      authSettled.value = true;
+      return;
+    }
+    settleTimer = setTimeout(() => {
+      authSettled.value = true;
+    }, AUTH_SETTLE_FALLBACK_MS);
+  },
+  { immediate: true },
+);
 const user = computed<UserProfile | null>(
   () => (sessionState.value?.data?.user as UserProfile | undefined) ?? null,
 );
@@ -78,10 +101,11 @@ watch(
     <main class="app-main">
       <RouterView v-slot="{ Component, route: currentRoute }">
         <component
-          v-if="!focusedPractice || !authLoading"
+          v-if="!focusedPractice || authSettled"
           :is="Component"
           :key="`${currentRoute.fullPath}-${currentCourseId}-${user?.id ?? 'guest'}`"
         />
+        <p v-else class="app-main-pending" role="status" aria-live="polite">Loading your session…</p>
       </RouterView>
     </main>
 

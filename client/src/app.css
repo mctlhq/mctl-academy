@@ -119,6 +119,14 @@ input:focus-visible {
   padding-left: calc(var(--mctl-layout-page-padding) + env(safe-area-inset-left));
 }
 
+/* Shown on /practice and /mistakes only while the session request is still
+   pending (App.vue); a hung request falls back to a guest render after 3s. */
+.app-main-pending {
+  margin: auto;
+  color: var(--surface-fg-muted);
+  text-align: center;
+}
+
 .page-shell {
   width: min(100%, 60rem);
   margin: 0 auto;
