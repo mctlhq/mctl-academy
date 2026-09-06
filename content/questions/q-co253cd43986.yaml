@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co253cd43986
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/network-vpc
 stem: A VM was created in the wrong subnet. The team wants it moved to the
@@ -30,11 +30,12 @@ options:
 evidence:
   - source_id: src-co-vpc-isolation
     excerpt: You cannot move a resource to another network or subnet after creation.
-    source_sha256: 300245e387a72a3aac25eb26e8bdd047169342c42829f5bded0b5f4de9ad617b
+    source_sha256: a39078c527bc184ebbf0dc22b7c37c33de55fd047b500697e2215ce8185bdb49
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:18Z
+  content_sha256: 670b065711c5378b586195c9d793d28df6f633e413e90cb867821878b0215fa1
