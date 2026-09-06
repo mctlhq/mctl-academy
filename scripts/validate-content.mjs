@@ -23,7 +23,14 @@ import { join, basename, resolve } from "node:path";
 import Ajv from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { parse as parseYaml } from "yaml";
-import { checkBundleEligibility, UNUSABLE_SOURCE_STATUSES } from "./lib/content-model.mjs";
+import {
+  ALLOWED_HOSTS,
+  checkBundleEligibility,
+  defaultReviewDir,
+  loadReviewReceipts,
+  receiptProblems,
+  UNUSABLE_SOURCE_STATUSES,
+} from "./lib/content-model.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 // Overridable so the test suite can point the linter at fixture trees and
@@ -36,25 +43,15 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
 const SCHEMAS = join(ROOT, "content", "schemas");
 // Independent review receipts (docs/content/*-review.json). An agent approval
 // is only as good as the committed record of the separate review that granted
-// it, so the lint refuses an `agent:` reviewer whose receipt is not in the tree.
-const REVIEWS = process.env.ACADEMY_REVIEW_DIR
-  ? resolve(process.env.ACADEMY_REVIEW_DIR)
-  : join(ROOT, "docs", "content");
+// it; the loader and the rule live in content-model.mjs so the bundle builder
+// applies exactly the same check at write time.
+const REVIEWS = resolve(defaultReviewDir(CONTENT));
 
 const errors = [];
 const warnings = [];
 
 const err = (file, msg) => errors.push(`${file}: ${msg}`);
 const warn = (file, msg) => warnings.push(`${file}: ${msg}`);
-
-/**
- * Hosts content may cite. Mirrors the SOURCES.md allowlist.
- *
- * Token Factory first: it documents the product the course is actually about.
- * docs.nebius.com is the infrastructure cloud and is secondary — see SOURCES.md
- * for why that distinction matters.
- */
-const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
 
 /**
  * Item authors must be agents. CONTENT-POLICY.md separates authorship from
@@ -65,40 +62,7 @@ const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
  */
 const AGENT_AUTHOR = /^agent:[a-z0-9][a-z0-9-]*$/;
 
-/**
- * Committed review receipts, keyed by `${reviewer}|${question id}`.
- *
- * CONTENT-POLICY.md requires item-level decisions and the reviewed fingerprint
- * to be recorded in a committed audit. The promotion CLI checks the receipt at
- * promotion time, but nothing would stop a PR from writing `reviewed.by:
- * agent:<name>` plus a locally computed fingerprint straight into the YAML.
- * Loading the receipts here makes the committed record the thing that counts:
- * an agent approval with no matching positive receipt fails the lint.
- */
-function loadReviewReceipts() {
-  const receipts = new Map();
-  if (!existsSync(REVIEWS)) return receipts;
-  for (const f of readdirSync(REVIEWS).filter((name) => name.endsWith("-review.json"))) {
-    const file = join(REVIEWS, f);
-    let receipt;
-    try {
-      receipt = JSON.parse(readFileSync(file, "utf8"));
-    } catch (e) {
-      err(file, `unreadable review receipt: ${e.message}`);
-      continue;
-    }
-    if (typeof receipt?.reviewer !== "string" || !Array.isArray(receipt.questions)) {
-      err(file, "review receipt must name a reviewer and list reviewed questions");
-      continue;
-    }
-    for (const entry of receipt.questions) {
-      if (typeof entry?.id !== "string") continue;
-      receipts.set(`${receipt.reviewer}|${entry.id}`, entry);
-    }
-  }
-  return receipts;
-}
-const reviewReceipts = loadReviewReceipts();
+const reviewReceipts = loadReviewReceipts(REVIEWS, err);
 
 function loadYamlDir(dir) {
   const path = join(CONTENT, dir);
@@ -241,7 +205,7 @@ function checkEvidence(file, data) {
  */
 function checkBundleAgreement(file, data) {
   if (data.status !== "published") return;
-  const { eligible, reasons } = checkBundleEligibility(data, sourcesById);
+  const { eligible, reasons } = checkBundleEligibility(data, sourcesById, reviewReceipts);
   if (!eligible) {
     err(file, `is published but would be withheld from the client bundle: ${reasons.join("; ")}`);
   }
@@ -263,22 +227,7 @@ function checkLifecycle(file, data) {
   if (data.status === "published" && !data.reviewed) {
     err(file, "published without a `reviewed` block — approval is not optional");
   }
-  if (data.reviewed?.by?.startsWith("agent:")) {
-    const receipt = reviewReceipts.get(`${data.reviewed.by}|${data.id}`);
-    if (!receipt) {
-      err(
-        file,
-        `approved by ${data.reviewed.by} without a committed review receipt for ${data.id} — ` +
-          "the independent reviewer's decision must be recorded under docs/content/*-review.json",
-      );
-    } else if (receipt.approved !== true || receipt.content_sha256 !== data.reviewed.content_sha256) {
-      err(
-        file,
-        `approved by ${data.reviewed.by}, but the committed receipt for ${data.id} is ` +
-          `${receipt.approved === true ? "for a different revision" : "not an approval"}`,
-      );
-    }
-  }
+  for (const problem of receiptProblems(data, reviewReceipts)) err(file, problem);
   if (data.authored && !AGENT_AUTHOR.test(data.authored.by)) {
     err(
       file,
@@ -322,7 +271,8 @@ for (const { file, data } of questions) {
 // an author to discover it in the UI.
 for (const [courseId] of courses) {
   const publishable = questions.filter(
-    ({ data }) => data.course_id === courseId && checkBundleEligibility(data, sourcesById).eligible,
+    ({ data }) =>
+      data.course_id === courseId && checkBundleEligibility(data, sourcesById, reviewReceipts).eligible,
   ).length;
   if (publishable === 0) {
     warn(`content/courses/${courseId}.yaml`, "no publishable questions — course will show as unavailable");

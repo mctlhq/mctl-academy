@@ -25,6 +25,8 @@
  * without touching the filesystem or shelling out to a build.
  */
 
+import { ALLOWED_HOSTS } from "./content-model.mjs";
+
 const OPTION_IDS = ["a", "b", "c", "d"];
 
 function isNonEmptyString(value) {
@@ -68,7 +70,7 @@ function validateBundleQuestion(question, index, errors) {
         const url = new URL(source?.url);
         if (
           url.protocol !== "https:" ||
-          !["docs.nebius.com", "docs.tokenfactory.nebius.com"].includes(url.hostname) ||
+          !ALLOWED_HOSTS.includes(url.hostname) ||
           url.username ||
           url.password
         ) {
