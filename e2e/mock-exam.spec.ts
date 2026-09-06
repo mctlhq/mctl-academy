@@ -1,8 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { mockableCourse } from "./mockable-course";
 
 test("mock exam: start, answer one, submit early, see results", async ({ page }) => {
   await page.goto("/mock");
-  await page.getByTestId("course-select").selectOption("ai-cloudops-engineer");
+  await page.getByTestId("course-select").selectOption(mockableCourse());
 
   const startButton = page.getByRole("button", { name: "Start mock exam" });
   await expect(startButton).toBeVisible();
