@@ -30,20 +30,27 @@ export function issueTitle(id) {
   return `drift: ${id}`;
 }
 
-/** @returns {{ id: string, oldHash: string, newHash: string, url: string }[]} */
+/**
+ * One unreadable line costs that line, not the other rows' issues; the
+ * caller reports `errors` and exits non-zero after every good row is handled.
+ *
+ * @returns {{ rows: { id: string, oldHash: string, newHash: string, url: string }[], errors: string[] }}
+ */
 export function parseDriftReport(text) {
   const rows = [];
+  const errors = [];
   for (const raw of String(text).split(/\r?\n/)) {
     const line = raw.trim();
     if (!line.startsWith("DRIFTED")) continue;
     const parts = line.split(/\s+/);
     // DRIFTED <id> <old> -> <new> <url>
     if (parts.length < 6 || parts[3] !== "->") {
-      throw new Error(`unparseable DRIFTED line: ${JSON.stringify(raw)}`);
+      errors.push(`unparseable DRIFTED line: ${JSON.stringify(raw)}`);
+      continue;
     }
     rows.push({ id: parts[1], oldHash: parts[2], newHash: parts[4], url: parts[5] });
   }
-  return rows;
+  return { rows, errors };
 }
 
 export function issueBody({ id, url, oldHash, newHash }) {
@@ -204,14 +211,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       labels: opts.ensureLabelsOnly ? Object.keys(LABEL_DEFINITIONS) : opts.labels,
     });
     if (opts.ensureLabelsOnly) process.exit(0);
-    const rows = parseDriftReport(readFileSync(opts.report, "utf8"));
+    const { rows, errors } = parseDriftReport(readFileSync(opts.report, "utf8"));
+    for (const e of errors) console.error(`::error::${e}`);
     if (!rows.length) {
       console.log("no DRIFTED rows in the report; nothing to open");
-      process.exit(0);
+      process.exit(errors.length ? 1 : 0);
     }
     const actions = syncDriftIssues({ rows, repo: opts.repo, labels: opts.labels });
     for (const a of actions) console.log(`${a.action}\t${a.id}\t${a.issue}`);
-    if (actions.some((a) => a.action === "failed")) process.exit(1);
+    if (errors.length || actions.some((a) => a.action === "failed")) process.exit(1);
   } catch (err) {
     console.error(`drift-intake: ${err.message}`);
     process.exit(1);

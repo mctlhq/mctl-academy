@@ -29,7 +29,8 @@ function fakeGh(openIssues) {
 }
 
 test("parseDriftReport keeps only DRIFTED rows, with both hashes and the url", () => {
-  const rows = parseDriftReport(REPORT);
+  const { rows, errors } = parseDriftReport(REPORT);
+  assert.deepEqual(errors, []);
   assert.deepEqual(rows, [
     {
       id: "src-co-compute-quotas",
@@ -46,8 +47,11 @@ test("parseDriftReport keeps only DRIFTED rows, with both hashes and the url", (
   ]);
 });
 
-test("parseDriftReport rejects a DRIFTED line it cannot read rather than guessing", () => {
-  assert.throws(() => parseDriftReport("DRIFTED  src-x  abc  def"), /unparseable DRIFTED line/);
+test("parseDriftReport reports a line it cannot read and keeps the rows around it", () => {
+  const { rows, errors } = parseDriftReport(`DRIFTED  src-x  abc  def\n${REPORT}`);
+  assert.equal(rows.length, 2);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /unparseable DRIFTED line/);
 });
 
 test("findExistingIssue matches the exact title, not a substring hit", () => {
@@ -69,7 +73,7 @@ test("findExistingIssue returns null when only a substring match exists", () => 
 });
 
 test("syncDriftIssues comments on an open issue and creates one otherwise", () => {
-  const rows = parseDriftReport(REPORT);
+  const { rows } = parseDriftReport(REPORT);
   const { gh, calls } = fakeGh([{ number: 7, title: "drift: src-co-compute-quotas" }]);
   const actions = syncDriftIssues({ rows, repo: "o/r", labels: ["content:drift"], gh });
 
@@ -98,7 +102,7 @@ test("syncDriftIssues comments on an open issue and creates one otherwise", () =
 });
 
 test("syncDriftIssues keeps going after one row's gh failure and reports it", () => {
-  const rows = parseDriftReport(REPORT);
+  const { rows } = parseDriftReport(REPORT);
   const calls = [];
   const gh = (args) => {
     calls.push(args);
@@ -127,7 +131,7 @@ test("findExistingIssue asks for a full page so the exact match cannot fall off 
 });
 
 test("issueBody carries the recapture command and the quarantine branch", () => {
-  const body = issueBody(parseDriftReport(REPORT)[0]);
+  const body = issueBody(parseDriftReport(REPORT).rows[0]);
   assert.match(
     body,
     /npm run snapshot:capture -- https:\/\/docs\.nebius\.com\/compute\/resources\/quotas-limits\.md --id src-co-compute-quotas/,

@@ -124,13 +124,20 @@ jobs:
           # The branch is rebuilt from main on every run and force-pushed, so
           # an older quarantine commit (possibly stale against main) is
           # replaced, not stacked on. The one thing a force-push must never
-          # do is discard a human's fix-in-place on the PR: if the remote tip
-          # was not written by this job, leave the branch alone and say so.
-          if git fetch origin "$QUARANTINE_BRANCH" 2>/dev/null; then
+          # do is discard a human's fix-in-place on the OPEN pull request: if
+          # that PR's tip was not written by this job, leave the branch alone
+          # and fail loudly. With no open PR the branch is merged or
+          # abandoned and rebuilding it is exactly right, so the guard clears
+          # itself after a merge. ls-remote first: a branch that does not
+          # exist yet and a fetch that failed are different cases, and only
+          # the first one may fall through to the push.
+          if git ls-remote --exit-code --heads origin "$QUARANTINE_BRANCH" >/dev/null; then
+            git fetch origin "$QUARANTINE_BRANCH"
             remote_author=$(git log -1 --format=%ae FETCH_HEAD)
-            if [ "$remote_author" != "$BOT_EMAIL" ]; then
-              echo "::warning::$QUARANTINE_BRANCH has a commit by $remote_author; not overwriting it. Merge or delete the branch to let the next run rebuild it."
-              exit 0
+            open_pr=$(gh pr list --repo "$REPO" --state open --head "$QUARANTINE_BRANCH" --json number --jq '.[0].number // empty')
+            if [ -n "$open_pr" ] && [ "$remote_author" != "$BOT_EMAIL" ]; then
+              echo "::error::PR #${open_pr} on $QUARANTINE_BRANCH has a commit by $remote_author; not overwriting it. Merge or close that PR to let the next run rebuild the branch."
+              exit 1
             fi
           fi
           git checkout -B "$QUARANTINE_BRANCH"
