@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld2443c1b29d
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A stakeholder asks which optimization reduces memory usage by lowering the
@@ -9,8 +9,8 @@ options:
   - id: a
     text: Paged Attention
     correct: false
-    explanation: That partitions a request's KV cache into fixed-size memory
-      blocks, which is a memory layout change rather than a precision change.
+    explanation: That partitions a request's KV cache into fixed-size memory blocks,
+      which is a memory layout change rather than a precision change.
   - id: b
     text: Continuous Batching
     correct: false
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-09-06T06:51:16Z
+  content_sha256: b420e9909d60497e2175cded4ad2d82ec8b95d40bccd4c9e3028b9cbc7b74fea
