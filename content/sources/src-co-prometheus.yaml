@@ -2,11 +2,13 @@ schema_version: 1
 id: src-co-prometheus
 url: https://docs.nebius.com/observability/metrics/prometheus.md
 title: How to view metrics in Prometheus
-retrieved_at: 2026-08-16T18:54:26Z
-sha256: f2132974200888352ab6906fa166b19714eba361775de8aca4a9d126eae815dd
+retrieved_at: 2026-09-06T10:58:02Z
+sha256: 801a10b28c8e58b0951464edc6d2280ee708436a7780c30b75a5c2d3e832b598
 objectives:
   - domain-3/node-monitoring
 snapshot:
   bucket: academy-source-snapshots
-  key: f2132974200888352ab6906fa166b19714eba361775de8aca4a9d126eae815dd
-status: drifted
+  key: 801a10b28c8e58b0951464edc6d2280ee708436a7780c30b75a5c2d3e832b598
+status: current
+versions:
+  - f2132974200888352ab6906fa166b19714eba361775de8aca4a9d126eae815dd

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co220dde0756
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: A training job on a GPU cluster is bottlenecked moving tensors between
@@ -31,11 +31,12 @@ evidence:
   - source_id: src-co-gpu-clusters
     excerpt: allows data to flow directly between each GPU and its NIC, avoiding
       CPU, thus boosting the data exchange speed
-    source_sha256: 105f1b6a145bbdf8a3c52e7a0c77803091c9996fcfc291cf7b40723891ee7ec6
+    source_sha256: c0a5525d7571cd10f4daf0e98b0e15fe9fd9799f59408c4faeebe77fa112f653
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:18Z
+  content_sha256: d55d2b4b739ebede2a268519cae8c2f3e13eb4056124be8323dbe0c14d4f5dba

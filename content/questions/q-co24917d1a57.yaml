@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co24917d1a57
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: A colleague creating their first Managed Service for Kubernetes cluster
@@ -35,11 +35,12 @@ evidence:
   - source_id: src-co-k8s-quickstart
     excerpt: Keep the public endpoint enabled. As a result, the cluster is available
       from the internet, and you can connect to it from any machine.
-    source_sha256: ac878d2716a05e81e04a04be7c932c09fb75ab3b0c812a76686571361fc3a287
+    source_sha256: 032195b1291e136f76ae258fa239de7bf2f7308f48cceff83ff61e6781e8935b
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:codex-drift-author
+  at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-18T21:49:42Z
+  by: agent:codex-drift-reviewer
+  at: 2026-09-06T11:02:18Z
+  content_sha256: 486e3ccaf355d91b196787e6545bdd3aeaebd8f05c9bd28161ff326c6cba5e5c

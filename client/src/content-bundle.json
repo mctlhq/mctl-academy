@@ -210,6 +210,257 @@
     ]
   },
   {
+    "id": "q-co219916c0e5",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "Two teams run separate GPU clusters that were placed in the same InfiniBand fabric. A security review asks whether one cluster's nodes could reach the other's over InfiniBand. What is the answer?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, because sharing a fabric means sharing one InfiniBand address space",
+        "correct": false,
+        "explanation": "Sharing a fabric is exactly the case the partition key mechanism exists to handle, so a shared fabric does not imply reachability."
+      },
+      {
+        "id": "b",
+        "text": "No, because each cluster gets a unique partition key that isolates its traffic",
+        "correct": true,
+        "explanation": "Correct. Per-cluster P-Keys isolate traffic inside a shared physical fabric, so this isolation holds without giving each cluster its own hardware."
+      },
+      {
+        "id": "c",
+        "text": "Yes, unless a security group is attached to each node's network interface",
+        "correct": false,
+        "explanation": "Security groups filter VPC traffic on network interfaces; the InfiniBand fabric is a separate network whose isolation is not configured that way."
+      },
+      {
+        "id": "d",
+        "text": "No, because two clusters can never be created in the same fabric",
+        "correct": false,
+        "explanation": "Multiple clusters do share a fabric — that is the normal arrangement, and why an isolation mechanism is needed at all."
+      }
+    ]
+  },
+  {
+    "id": "q-co220dde0756",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "A training job on a GPU cluster is bottlenecked moving tensors between GPUs on different nodes. Which property of the cluster's networking is intended to address this?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Each node's traffic is serialized through a single shared host NIC",
+        "correct": false,
+        "explanation": "Serializing through one shared NIC would create a bottleneck rather than relieve one; each GPU has its own NIC."
+      },
+      {
+        "id": "b",
+        "text": "Transfers are staged through object storage to decouple the endpoints",
+        "correct": false,
+        "explanation": "Staging through object storage adds a slower hop; it is not the mechanism that accelerates GPU-to-GPU exchange."
+      },
+      {
+        "id": "c",
+        "text": "Data moves directly between each GPU and its NIC without passing through the CPU",
+        "correct": true,
+        "explanation": "Correct. GPUDirect RDMA takes the CPU out of the transfer path, which is what raises data exchange speed for this pattern."
+      },
+      {
+        "id": "d",
+        "text": "The CPU copies each buffer into host memory before the NIC transmits it",
+        "correct": false,
+        "explanation": "That host-memory bounce is precisely the step the technology removes."
+      }
+    ]
+  },
+  {
+    "id": "q-co2331c8572e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "You are creating a GPU cluster and must pick an InfiniBand fabric. Why does the choice constrain the cluster later?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids GPUs to this cluster"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The fabric fixes how many nodes the cluster may ever contain",
+        "correct": false,
+        "explanation": "Fabric capacity is finite, but the documented consequence of the choice is which GPU platform can be added, not a fixed node count."
+      },
+      {
+        "id": "b",
+        "text": "The fabric determines which project the cluster's resources belong to",
+        "correct": false,
+        "explanation": "Project membership is an IAM concern and is unrelated to the physical fabric a cluster sits in."
+      },
+      {
+        "id": "c",
+        "text": "The fabric sets the partition key that other tenants use to reach the cluster",
+        "correct": false,
+        "explanation": "A partition key isolates a cluster rather than granting anyone access, and it is assigned per cluster."
+      },
+      {
+        "id": "d",
+        "text": "The fabric limits which GPU platform can be added to that cluster",
+        "correct": true,
+        "explanation": "Correct. Each fabric serves particular GPU platforms, so the fabric must be chosen against the GPU type you intend to run."
+      }
+    ]
+  },
+  {
+    "id": "q-co24917d1a57",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "A colleague creating their first Managed Service for Kubernetes cluster asks what leaving the public endpoint enabled will mean in practice. What should you tell them?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "How to get started with Managed Service for Kubernetes: Create your first cluster",
+        "url": "https://docs.nebius.com/kubernetes/quickstart.md",
+        "excerpt": "Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The cluster becomes reachable from the internet, so they can connect from any machine",
+        "correct": true,
+        "explanation": "Correct. That is what the public endpoint provides, and it is why the quickstart path can connect with kubectl from anywhere."
+      },
+      {
+        "id": "b",
+        "text": "The cluster's nodes are moved onto public IP addresses in the default subnet",
+        "correct": false,
+        "explanation": "The endpoint concerns how the control plane is reached; the cluster's control plane and nodes still use private addresses from the subnet."
+      },
+      {
+        "id": "c",
+        "text": "Every workload scheduled on the cluster is exposed on the internet automatically",
+        "correct": false,
+        "explanation": "Exposing workloads is done per service; enabling the cluster endpoint does not publish what runs inside."
+      },
+      {
+        "id": "d",
+        "text": "The cluster can only be reached from inside the same node group",
+        "correct": false,
+        "explanation": "That describes no available option, and it is the opposite of what a public endpoint does."
+      }
+    ]
+  },
+  {
+    "id": "q-co253cd43986",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "A VM was created in the wrong subnet. The team wants it moved to the correct subnet without rebuilding it. What is the outcome?",
+    "objectiveTitle": "VPC networking, subnets, and security group configuration",
+    "sources": [
+      {
+        "title": "Isolating Nebius AI Cloud resources in separate networks",
+        "url": "https://docs.nebius.com/vpc/networking/isolation.md",
+        "excerpt": "You cannot move a resource to another network or subnet after creation."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It can be moved once the VM is stopped, then restarted in the new subnet",
+        "correct": false,
+        "explanation": "Stopping the VM does not unlock the change; the assignment is fixed at creation regardless of power state."
+      },
+      {
+        "id": "b",
+        "text": "It cannot be moved; the VM has to be recreated in the correct subnet",
+        "correct": true,
+        "explanation": "Correct. Network and subnet are set at creation and cannot be changed afterwards, so recreating the resource is the only route."
+      },
+      {
+        "id": "c",
+        "text": "It can be moved by attaching a second network interface in the target subnet",
+        "correct": false,
+        "explanation": "Adding an interface does not relocate the resource, and the documented rule admits no such workaround."
+      },
+      {
+        "id": "d",
+        "text": "It can be moved by editing the security group assigned to its interface",
+        "correct": false,
+        "explanation": "Security groups filter traffic; they do not determine which subnet a resource lives in."
+      }
+    ]
+  },
+  {
+    "id": "q-co26744a9769",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/network-vpc",
+    "stem": "A team wants two test environments in the same region that use identical private IP addressing and must not be able to reach each other. What arrangement achieves this?",
+    "objectiveTitle": "VPC networking, subnets, and security group configuration",
+    "sources": [
+      {
+        "title": "Isolating Nebius AI Cloud resources in separate networks",
+        "url": "https://docs.nebius.com/vpc/networking/isolation.md",
+        "excerpt": "If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources"
+      },
+      {
+        "title": "Isolating Nebius AI Cloud resources in separate networks",
+        "url": "https://docs.nebius.com/vpc/networking/isolation.md",
+        "excerpt": "create separate networks for them."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Put both in one network and rely on distinct subnet CIDR ranges",
+        "correct": false,
+        "explanation": "One network gives direct private connectivity between resources, and duplicate addressing is not possible within it."
+      },
+      {
+        "id": "b",
+        "text": "Put both in one network and deny all traffic with security rules",
+        "correct": false,
+        "explanation": "Rules could block traffic, but they cannot let the same private IP address be assigned to resources in both environments."
+      },
+      {
+        "id": "c",
+        "text": "Create a separate network for each environment",
+        "correct": true,
+        "explanation": "Correct. Separate networks are the documented answer both for disabling connectivity and for reusing the same private addresses."
+      },
+      {
+        "id": "d",
+        "text": "Create one network per region and place the environments in different regions",
+        "correct": false,
+        "explanation": "This places the environments in different regions, violating the requirement that both environments run in the same region."
+      }
+    ]
+  },
+  {
     "id": "q-co2738f2a8fd",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-1",
@@ -1108,6 +1359,170 @@
         "text": "An operator must have drained and deleted it manually",
         "correct": false,
         "explanation": "No manual action is needed; the service performs this recovery itself."
+      }
+    ]
+  },
+  {
+    "id": "q-co49d3cee498",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-recovery",
+    "stem": "A team plans to scale a node group from six nodes to ten and worries the running workloads will be disrupted by node replacement. What should you tell them?",
+    "objectiveTitle": "Handling failed GPU nodes, node restarts, and health checks",
+    "sources": [
+      {
+        "title": "Creating and modifying Managed Service for Kubernetes node groups",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/manage.md",
+        "excerpt": "scales a node group up or down, Managed Kubernetes does not recreate any nodes"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Scaling does not recreate nodes, so existing nodes are left in place",
+        "correct": true,
+        "explanation": "Correct. Scaling a node group up or down does not recreate any nodes; replacement comes from template changes instead."
+      },
+      {
+        "id": "b",
+        "text": "Every node is replaced on any change to the node group's size",
+        "correct": false,
+        "explanation": "Replacement is triggered by modifying the node group template, not by changing its size."
+      },
+      {
+        "id": "c",
+        "text": "Scaling always drains and recreates one node at a time",
+        "correct": false,
+        "explanation": "That describes the rolling update that follows a template change."
+      },
+      {
+        "id": "d",
+        "text": "Scaling is only safe when the group is first cordoned entirely",
+        "correct": false,
+        "explanation": "No such precaution is required for scaling."
+      }
+    ]
+  },
+  {
+    "id": "q-co502cd7b152",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "A team stops several GPU VMs overnight and expects the freed quota to let them launch a new cluster. Does it?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, stopped VMs release their quota until they are started again",
+        "correct": false,
+        "explanation": "Stopping does not release quota; the reservation persists while the VM exists."
+      },
+      {
+        "id": "b",
+        "text": "Yes, but only for GPU quotas, not for storage quotas",
+        "correct": false,
+        "explanation": "The rule does not distinguish stopped from running for either category."
+      },
+      {
+        "id": "c",
+        "text": "No, quota is only released once the region's capacity is rebalanced",
+        "correct": false,
+        "explanation": "Quota accounting is not tied to capacity rebalancing."
+      },
+      {
+        "id": "d",
+        "text": "No, a VM counts toward quota from creation to deletion regardless of power state",
+        "correct": true,
+        "explanation": "Correct. Only deleting the VM releases what it counts against."
+      }
+    ]
+  },
+  {
+    "id": "q-co51437baad6",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "A Managed Kubernetes node group fails to grow because of a quota limit, though no standalone VMs were created. Why is a Compute quota involved?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Node groups consume a separate Kubernetes quota that mirrors Compute limits",
+        "correct": false,
+        "explanation": "There is no mirrored quota; the nodes count against the Compute quotas themselves."
+      },
+      {
+        "id": "b",
+        "text": "Managed Kubernetes nodes are based on Compute VMs and count against the same quotas",
+        "correct": true,
+        "explanation": "Correct. The quotas cover Compute VMs and equally the Kubernetes and Soperator nodes built on them."
+      },
+      {
+        "id": "c",
+        "text": "The cluster's control plane counts as a virtual machine in the quota",
+        "correct": false,
+        "explanation": "The nodes are what consume the quota here, not the managed control plane."
+      },
+      {
+        "id": "d",
+        "text": "Compute quota is only consulted when a node group uses a GPU cluster",
+        "correct": false,
+        "explanation": "The accounting does not depend on whether the node group is attached to a GPU cluster."
+      }
+    ]
+  },
+  {
+    "id": "q-co524dc191c3",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "Planning capacity, an engineer assumes one VM quota governs every machine type. What correction is needed?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "Compute has different quotas for GPU and non-GPU virtual machines."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Quotas are per project and identical across all machine types within it",
+        "correct": false,
+        "explanation": "Quotas do vary by scope, but the distinction being missed here is between GPU and non-GPU machines."
+      },
+      {
+        "id": "b",
+        "text": "Quotas apply only to GPU virtual machines; other machines are unlimited",
+        "correct": false,
+        "explanation": "Non-GPU virtual machines are also subject to quotas."
+      },
+      {
+        "id": "c",
+        "text": "Compute has different quotas for GPU and non-GPU virtual machines",
+        "correct": true,
+        "explanation": "Correct. The two categories are governed separately, so one number does not describe both."
+      },
+      {
+        "id": "d",
+        "text": "Quotas apply to storage only, since compute is billed rather than capped",
+        "correct": false,
+        "explanation": "Compute has quotas on virtual machines as well as on storage and InfiniBand usage."
       }
     ]
   },

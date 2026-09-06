@@ -1,0 +1,65 @@
+{
+  "reviewer": "agent:codex-drift-reviewer",
+  "questions": [
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "127c5a2b374c5907826482db651906560a0c97ef22968262a0dc662c62ead650",
+      "approved": true,
+      "reason": "Captured GPU cluster documentation explicitly assigns unique P-Keys and isolates clusters on shared fabrics; only option b gives that mechanism."
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "d55d2b4b739ebede2a268519cae8c2f3e13eb4056124be8323dbe0c14d4f5dba",
+      "approved": true,
+      "reason": "GPUDirect RDMA passage directly supports GPU-to-NIC transfers avoiding CPU; only option c describes it."
+    },
+    {
+      "id": "q-co2331c8572e",
+      "content_sha256": "6980b1dc268da8e726f1ba3f24a13014042f5f29c601ae63737ba69f5f02e3c0",
+      "approved": true,
+      "reason": "Fabric selection passage and platform table support the GPU-platform constraint; option d alone matches rather than inventing fixed capacity or tenant access."
+    },
+    {
+      "id": "q-co24917d1a57",
+      "content_sha256": "486e3ccaf355d91b196787e6545bdd3aeaebd8f05c9bd28161ff326c6cba5e5c",
+      "approved": true,
+      "reason": "Quickstart describes internet reachability through the public control-plane endpoint, while node addressing and workload publication remain distinct; option a is best."
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "670b065711c5378b586195c9d793d28df6f633e413e90cb867821878b0215fa1",
+      "approved": true,
+      "reason": "Captured network warning prohibits moving a resource after creation; only recreating the VM in the desired subnet satisfies it."
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "1eef039cf55c597486cb0cfc58d2cfb1a7aa3551e92fbba38add443ac2a3ff07",
+      "approved": true,
+      "reason": "Both excerpts together support isolated networks and address reuse. Final same-region constraint excludes the formerly competing different-region option, leaving c uniquely best."
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "b68477ff091dd2b50f81a30f4a8136e30490f1cfea4c6909f8a70cc028b12b15",
+      "approved": true,
+      "reason": "Node-group scaling section explicitly says scaling does not recreate nodes; for the specified scale-up, option a is uniquely supported."
+    },
+    {
+      "id": "q-co502cd7b152",
+      "content_sha256": "b651f39d47da96a4c1853ff993669ca899ecef912d75ef35076cb55fa0c86ea9",
+      "approved": true,
+      "reason": "Compute quota lifecycle statement covers stopped and running VMs until deletion; option d alone reflects that accounting."
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "b172a89cb3e8ae8cf5bc5ef516ef490da8b9c395f673c32eb301a01844fe89ea",
+      "approved": true,
+      "reason": "Compute quotas explicitly include Kubernetes nodes based on Compute VMs; option b alone matches the documented reason."
+    },
+    {
+      "id": "q-co524dc191c3",
+      "content_sha256": "a9cb2fa90ab631c1f2d8aa4f0c3d4a6cce4f75743fe0ccf0ab9c3022cbdfeecd",
+      "approved": true,
+      "reason": "Compute documentation explicitly separates GPU and non-GPU VM quotas; only option c states this distinction."
+    }
+  ]
+}
