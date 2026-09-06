@@ -62,11 +62,13 @@ const bundle = eligible.map(({ data: q }) => ({
   objective: q.objective,
   stem: q.stem,
   objectiveTitle: objectiveTitles.get(`${q.course_id}/${q.objective}`) ?? q.objective,
-  sources: q.evidence.map((ev) => ({
-    title: sourcesById.get(ev.source_id).title,
-    url: sourcesById.get(ev.source_id).url,
-    excerpt: ev.excerpt,
-  })),
+  sources: q.evidence.map((ev) => {
+    const src = sourcesById.get(ev.source_id);
+    // Eligibility already guarantees this resolves; the throw names the id so
+    // a future loosening of that rule fails loudly instead of as a TypeError.
+    if (!src) throw new Error(`${q.id}: eligible question cites unknown source ${ev.source_id}`);
+    return { title: src.title, url: src.url, excerpt: ev.excerpt };
+  }),
   options: q.options.map((o) => ({
     id: o.id,
     text: o.text,

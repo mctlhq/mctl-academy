@@ -2255,47 +2255,6 @@
     ]
   },
   {
-    "id": "q-ld2443c1b29d",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/ai-concepts",
-    "stem": "A stakeholder asks which optimization reduces memory usage by lowering the numeric precision of the model itself. Which one is it?",
-    "objectiveTitle": "Generative model families, capabilities, and where each fits",
-    "sources": [
-      {
-        "title": "Inference Overview",
-        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
-        "excerpt": "A technique that reduces the precision of model weights and activations, decreasing memory usage and computation."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Paged Attention",
-        "correct": false,
-        "explanation": "That partitions a request's KV cache into fixed-size memory blocks, which is a memory layout change rather than a precision change."
-      },
-      {
-        "id": "b",
-        "text": "Continuous Batching",
-        "correct": false,
-        "explanation": "That groups multiple input sequences to raise throughput; precision is untouched."
-      },
-      {
-        "id": "c",
-        "text": "KV Cache",
-        "correct": false,
-        "explanation": "That stores frequently accessed key-value pairs to avoid recomputation."
-      },
-      {
-        "id": "d",
-        "text": "Quantization",
-        "correct": true,
-        "explanation": "Correct. It reduces the precision of model weights and activations, lowering memory use and computation."
-      }
-    ]
-  },
-  {
     "id": "q-ld25f6d73083",
     "course_id": "ai-leader",
     "domain": "domain-1",

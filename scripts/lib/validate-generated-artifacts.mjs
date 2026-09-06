@@ -49,33 +49,36 @@ function validateBundleQuestion(question, index, errors) {
     }
   }
 
-  if (question.objectiveTitle !== undefined && !isNonEmptyString(question.objectiveTitle)) {
+  // Both fields are emitted unconditionally by the builder and are what the
+  // learner sees as answer feedback. Optional validation here would let a
+  // builder regression that drops them pass silently — the regeneration diff
+  // in CI compares committed bytes against a fresh build, so both sides would
+  // agree and nothing would fail.
+  if (!isNonEmptyString(question.objectiveTitle)) {
     errors.push(`${at}.objectiveTitle: expected a non-empty string`);
   }
-  if (question.sources !== undefined) {
-    if (!Array.isArray(question.sources) || question.sources.length === 0) {
-      errors.push(`${at}.sources: expected a non-empty array`);
-    } else {
-      for (const source of question.sources) {
-        if (!source || !isNonEmptyString(source.title) || !isNonEmptyString(source.excerpt)) {
-          errors.push(`${at}.sources: title and excerpt are required`);
+  if (!Array.isArray(question.sources) || question.sources.length === 0) {
+    errors.push(`${at}.sources: expected a non-empty array`);
+  } else {
+    for (const source of question.sources) {
+      if (!source || !isNonEmptyString(source.title) || !isNonEmptyString(source.excerpt)) {
+        errors.push(`${at}.sources: title and excerpt are required`);
+      }
+      try {
+        const url = new URL(source?.url);
+        if (
+          url.protocol !== "https:" ||
+          !["docs.nebius.com", "docs.tokenfactory.nebius.com"].includes(url.hostname) ||
+          url.username ||
+          url.password
+        ) {
+          errors.push(`${at}.sources: expected an allowlisted HTTPS documentation URL`);
         }
-        try {
-          const url = new URL(source?.url);
-          if (
-            url.protocol !== "https:" ||
-            !["docs.nebius.com", "docs.tokenfactory.nebius.com"].includes(url.hostname) ||
-            url.username ||
-            url.password
-          ) {
-            errors.push(`${at}.sources: expected an allowlisted HTTPS documentation URL`);
-          }
-        } catch {
-          errors.push(`${at}.sources: invalid URL`);
-        }
-        if (typeof source?.excerpt === "string" && source.excerpt.trim().split(/\s+/).length > 25) {
-          errors.push(`${at}.sources: excerpt exceeds 25 words`);
-        }
+      } catch {
+        errors.push(`${at}.sources: invalid URL`);
+      }
+      if (typeof source?.excerpt === "string" && source.excerpt.trim().split(/\s+/).length > 25) {
+        errors.push(`${at}.sources: excerpt exceeds 25 words`);
       }
     }
   }

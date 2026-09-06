@@ -34,6 +34,12 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
   ? resolve(process.env.ACADEMY_CONTENT_DIR)
   : join(ROOT, "content");
 const SCHEMAS = join(ROOT, "content", "schemas");
+// Independent review receipts (docs/content/*-review.json). An agent approval
+// is only as good as the committed record of the separate review that granted
+// it, so the lint refuses an `agent:` reviewer whose receipt is not in the tree.
+const REVIEWS = process.env.ACADEMY_REVIEW_DIR
+  ? resolve(process.env.ACADEMY_REVIEW_DIR)
+  : join(ROOT, "docs", "content");
 
 const errors = [];
 const warnings = [];
@@ -58,6 +64,41 @@ const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
  * name is exactly what belongs.
  */
 const AGENT_AUTHOR = /^agent:[a-z0-9][a-z0-9-]*$/;
+
+/**
+ * Committed review receipts, keyed by `${reviewer}|${question id}`.
+ *
+ * CONTENT-POLICY.md requires item-level decisions and the reviewed fingerprint
+ * to be recorded in a committed audit. The promotion CLI checks the receipt at
+ * promotion time, but nothing would stop a PR from writing `reviewed.by:
+ * agent:<name>` plus a locally computed fingerprint straight into the YAML.
+ * Loading the receipts here makes the committed record the thing that counts:
+ * an agent approval with no matching positive receipt fails the lint.
+ */
+function loadReviewReceipts() {
+  const receipts = new Map();
+  if (!existsSync(REVIEWS)) return receipts;
+  for (const f of readdirSync(REVIEWS).filter((name) => name.endsWith("-review.json"))) {
+    const file = join(REVIEWS, f);
+    let receipt;
+    try {
+      receipt = JSON.parse(readFileSync(file, "utf8"));
+    } catch (e) {
+      err(file, `unreadable review receipt: ${e.message}`);
+      continue;
+    }
+    if (typeof receipt?.reviewer !== "string" || !Array.isArray(receipt.questions)) {
+      err(file, "review receipt must name a reviewer and list reviewed questions");
+      continue;
+    }
+    for (const entry of receipt.questions) {
+      if (typeof entry?.id !== "string") continue;
+      receipts.set(`${receipt.reviewer}|${entry.id}`, entry);
+    }
+  }
+  return receipts;
+}
+const reviewReceipts = loadReviewReceipts();
 
 function loadYamlDir(dir) {
   const path = join(CONTENT, dir);
@@ -221,6 +262,22 @@ function checkObjective(file, data) {
 function checkLifecycle(file, data) {
   if (data.status === "published" && !data.reviewed) {
     err(file, "published without a `reviewed` block — approval is not optional");
+  }
+  if (data.reviewed?.by?.startsWith("agent:")) {
+    const receipt = reviewReceipts.get(`${data.reviewed.by}|${data.id}`);
+    if (!receipt) {
+      err(
+        file,
+        `approved by ${data.reviewed.by} without a committed review receipt for ${data.id} — ` +
+          "the independent reviewer's decision must be recorded under docs/content/*-review.json",
+      );
+    } else if (receipt.approved !== true || receipt.content_sha256 !== data.reviewed.content_sha256) {
+      err(
+        file,
+        `approved by ${data.reviewed.by}, but the committed receipt for ${data.id} is ` +
+          `${receipt.approved === true ? "for a different revision" : "not an approval"}`,
+      );
+    }
   }
   if (data.authored && !AGENT_AUTHOR.test(data.authored.by)) {
     err(

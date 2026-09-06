@@ -163,11 +163,10 @@ export function promoteQuestions({
         throw new Error(`${data.id}: missing approval or stale fingerprint in independent review file`);
       }
     }
-    const reviewed = {
-      by: handle,
-      at: now,
-      ...(handle.startsWith("agent:") ? { content_sha256: questionFingerprint(data) } : {}),
-    };
+    // Every approval binds to the exact revision it was granted for, human or
+    // agent: a later edit to any question material makes the fingerprint stale
+    // and withdraws the item from the bundle until it is reviewed again.
+    const reviewed = { by: handle, at: now, content_sha256: questionFingerprint(data) };
     const problems = reviewProblems({ ...data, reviewed });
     if (problems.length) throw new Error(`${data.id}: ${problems.join("; ")}`);
     doc.set("status", "published");
