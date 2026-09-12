@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-4b6e9c102fa3
+status: review_ready
+domain: domain-1
+objective: domain-1/api-authentication
+stem: Deploying a dedicated endpoint through the control-plane API requires an
+  API key. How is that key supplied on the `POST /v0/dedicated_endpoints`
+  request?
+options:
+  - id: a
+    text: As a Bearer token in the `Authorization` header
+    correct: true
+    explanation: 'Correct. The example request sends `-H "Authorization: Bearer
+      $API_TOKEN"` with the create-endpoint call.'
+  - id: b
+    text: As a signed value in a request body field named `api_key`
+    correct: false
+    explanation: The key travels in the `Authorization` header, not as a body
+      field.
+  - id: c
+    text: As a client TLS certificate presented when the connection opens
+    correct: false
+    explanation: No client certificate is used; authentication is a bearer token
+      in the header.
+  - id: d
+    text: As a cookie set by a prior login request to the console
+    correct: false
+    explanation: The control-plane API authenticates each request via the Bearer
+      header, not a session cookie.
+evidence:
+  - source_id: src-dedicated-deploy-api
+    excerpt: '-H "Authorization: Bearer $API_TOKEN"'
+    source_sha256: 231283c8cef3bbe57a1b2b19c5b2870542893df970c9c8498ab93437f6beb845
+authored:
+  by: agent:claude-author
+  at: 2026-09-12T15:45:31Z
+course_id: agentic-ai-builder

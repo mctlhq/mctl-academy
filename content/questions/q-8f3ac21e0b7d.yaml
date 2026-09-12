@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-8f3ac21e0b7d
+status: review_ready
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: How does the Token Factory Embeddings API reference describe the `input`
+  field of an embedding request?
+options:
+  - id: a
+    text: Text to embed, encoded as a string or an array of tokens
+    correct: true
+    explanation: Correct. The `input` field description states it is text to embed,
+      encoded as a string or array of tokens.
+  - id: b
+    text: A base64-encoded audio file to transcribe before embedding
+    correct: false
+    explanation: The endpoint embeds text you supply; it does not accept or
+      transcribe audio.
+  - id: c
+    text: A JSON object containing pre-computed embedding vectors to store
+    correct: false
+    explanation: "`input` is the text to embed, not a vector the caller has
+      already computed."
+  - id: d
+    text: A URL pointing to a document the API should fetch and embed
+    correct: false
+    explanation: The API embeds the text you send in the request; it does not
+      fetch documents from a URL.
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: Input text to embed, encoded as a string or array of tokens.
+    source_sha256: b916c7f9ea8e38049b873ba445620ad4a55ea1eb2e2df62027c38fb137c985db
+authored:
+  by: agent:claude-author
+  at: 2026-09-12T15:45:31Z
+course_id: agentic-ai-builder

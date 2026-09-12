@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-e21ac9740fb6
+status: review_ready
+domain: domain-3
+objective: domain-3/data-lab
+stem: Where does Data Lab perform its data processing activities, such as
+  handling logs, datasets, batch outputs, and training data?
+options:
+  - id: a
+    text: Exclusively in the EU-North1 (Finland) data center
+    correct: true
+    explanation: Correct. Data Lab processing is performed exclusively in the
+      EU-North1 (Finland) data center.
+  - id: b
+    text: Wherever spare GPU capacity is available at the time
+    correct: false
+    explanation: Processing location is fixed, not dynamically chosen by
+      available capacity.
+  - id: c
+    text: On the customer's own infrastructure through a local agent
+    correct: false
+    explanation: Processing happens in Nebius's own data center, not on customer
+      infrastructure.
+  - id: d
+    text: In whichever region the caller sets with the `region` parameter
+    correct: false
+    explanation: Data Lab processing location is fixed to one data center; it is
+      not selected per request.
+evidence:
+  - source_id: src-recovery-processing
+    excerpt: All Data Lab processing activities, including handling of logs,
+      datasets, batch outputs, and training data, are performed exclusively in
+      the EU-North1 (Finland) data center.
+    source_sha256: c5082a3189d02631cf236362bb986f324ea20d8fd95e8536ca0b4c93caed623c
+authored:
+  by: agent:claude-author
+  at: 2026-09-12T15:45:31Z
+course_id: agentic-ai-builder
