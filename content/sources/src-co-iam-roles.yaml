@@ -2,11 +2,13 @@ schema_version: 1
 id: src-co-iam-roles
 url: https://docs.nebius.com/iam/authorization/roles.md
 title: Roles for Nebius AI Cloud groups
-retrieved_at: 2026-08-19T12:51:55Z
-sha256: 7891fa6b12a6a85716a2b7805580924c99c803a4c8b704ee73b4a0dcd94235f7
+retrieved_at: 2026-09-12T15:47:45Z
+sha256: fb98d03ee47d91815e13066f7e3bb0c84d6e1b5b20c650c888a3cfe27297d183
 objectives:
   - domain-2/iam-roles
 snapshot:
   bucket: academy-source-snapshots
-  key: 7891fa6b12a6a85716a2b7805580924c99c803a4c8b704ee73b4a0dcd94235f7
+  key: fb98d03ee47d91815e13066f7e3bb0c84d6e1b5b20c650c888a3cfe27297d183
 status: current
+versions:
+  - 7891fa6b12a6a85716a2b7805580924c99c803a4c8b704ee73b4a0dcd94235f7

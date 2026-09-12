@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rp01a5b6c7d8
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: Why is chunk overlap typically applied when splitting documents into
@@ -35,7 +35,4 @@ evidence:
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
 course_id: agentic-ai-builder

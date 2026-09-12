@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sb02b0c1d2e3
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: Which Sandboxes behaviours does the documentation cite as helping to
@@ -30,15 +30,11 @@ options:
 evidence:
   - source_id: src-recovery-sandbox
     excerpt: Automatic cleanup and resource limits help prevent abuse.
-    source_sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
+    source_sha256: 70237e9cedd07349efe63d6c9b560b99989cc42cb78c771fa78be99f68f38cf9
   - source_id: src-recovery-sandbox
     excerpt: Number of simultaneously running operations is limited to 50.
-    source_sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
+    source_sha256: 70237e9cedd07349efe63d6c9b560b99989cc42cb78c771fa78be99f68f38cf9
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: 20e149496e86a377f28066a3415102ce9114608b44dcf4b8b179550e335d1cab

@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-dedicated-best-practices
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md
+title: Best Practices
+retrieved_at: 2026-09-12T15:47:41Z
+sha256: b4f09c4433e8b3690ddf0024c6c37ed5a64e65766301a0e17fccd09f5e0a5982
+objectives:
+  - domain-4/billing-and-consumption
+  - domain-4/capacity-and-scaling
+snapshot:
+  bucket: academy-source-snapshots
+  key: b4f09c4433e8b3690ddf0024c6c37ed5a64e65766301a0e17fccd09f5e0a5982
+status: current

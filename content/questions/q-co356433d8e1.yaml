@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co356433d8e1
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/iam-roles
 stem: An on-call rotation must be able to stop and start VMs during incidents,
@@ -30,11 +30,8 @@ evidence:
   - source_id: src-co-iam-roles
     excerpt: '`compute.instance-power-operator`: perform power operations on virtual
       machines without broader Compute permissions'
-    source_sha256: 7891fa6b12a6a85716a2b7805580924c99c803a4c8b704ee73b4a0dcd94235f7
+    source_sha256: fb98d03ee47d91815e13066f7e3bb0c84d6e1b5b20c650c888a3cfe27297d183
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
