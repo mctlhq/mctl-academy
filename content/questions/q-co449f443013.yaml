@@ -9,8 +9,8 @@ options:
   - id: a
     text: The data refreshes every 15 seconds, and the interval can be changed
     correct: true
-    explanation: Correct. Fifteen seconds is the default refresh, configurable next
-      to the time filters.
+    explanation: Correct. Fifteen seconds is the default refresh, and the interval
+      is configurable next to the time filters.
   - id: b
     text: The data refreshes only when the page is reloaded manually
     correct: false
@@ -28,12 +28,13 @@ options:
 evidence:
   - source_id: src-co-vm-monitoring
     excerpt: By default, the data is refreshed every 15 seconds. You can configure
-      this interval to the right of the time filters.
-    source_sha256: 6e90ceb68709954382c0bd6df8868cb0698ac552e7fb6c0161ddafe829066f49
+      this interval next to the time filters.
+    source_sha256: dff4682651e98af3256f100a456e8cdeea47f13472996329654f5f172114af5c
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:claude-author
+  at: 2026-09-12T22:44:56Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 0419c69c965d5d7de89034fb48f379406dfbc6e90124e8921171575a3ac96f49

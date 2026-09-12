@@ -28,12 +28,12 @@ evidence:
   - source_id: src-co-compute-quotas
     excerpt: count towards the quotas throughout the VM's lifecycle, from its
       creation to deletion, regardless of whether it is running or stopped
-    source_sha256: 70984369ccff0d27e5a8c6d709a4738f82eb68265eac7c06f721e6e2d1939d4e
+    source_sha256: 89c1003f8e3a218e76a6c7207b467f62be048b6b481ed03874e734b6b500a9b0
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:codex-drift-reviewer
-  at: 2026-09-06T11:02:18Z
-  content_sha256: b651f39d47da96a4c1853ff993669ca899ecef912d75ef35076cb55fa0c86ea9
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: dcfa12ae5002ea36e2083248545a964d37427cc2c648a37d5a67436bddb6aa4c

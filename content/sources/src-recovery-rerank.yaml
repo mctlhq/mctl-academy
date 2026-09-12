@@ -2,11 +2,13 @@ schema_version: 1
 id: src-recovery-rerank
 url: https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md
 title: Reranking API
-retrieved_at: 2026-09-05T20:45:02Z
-sha256: 2280e05e2708647e0001b119c3fcb79c7f4f4a387198e033e1f8131fb4d30423
+retrieved_at: 2026-09-12T22:50:49Z
+sha256: b5ea87b47f4124fe86076d019dafd4958b56fd43c31f7cd9149d2a9de9c8c401
 objectives:
   - domain-2/embeddings-and-rerank
 snapshot:
   bucket: academy-source-snapshots
-  key: 2280e05e2708647e0001b119c3fcb79c7f4f4a387198e033e1f8131fb4d30423
+  key: b5ea87b47f4124fe86076d019dafd4958b56fd43c31f7cd9149d2a9de9c8c401
 status: current
+versions:
+  - 2280e05e2708647e0001b119c3fcb79c7f4f4a387198e033e1f8131fb4d30423

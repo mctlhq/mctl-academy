@@ -31,11 +31,12 @@ evidence:
   - source_id: src-co-iam-federations
     excerpt: that has the `admin` role within your tenant or project; for example,
       the default `admins` group.
-    source_sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
+    source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 07ac03c1405b9295b5ea2fefd957ce0ea626df342ed7c1541ed9642248a696c6

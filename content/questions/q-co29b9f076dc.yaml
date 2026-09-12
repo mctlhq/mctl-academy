@@ -29,11 +29,12 @@ evidence:
   - source_id: src-co-storage-types
     excerpt: 'Local SSD disks are ephemeral, meaning temporary: their data is erased
       when the VM is stopped or deleted.'
-    source_sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
+    source_sha256: 41ef16f0c6c8d0713bf3b19c3e135ec8c26e21e208943bd7f58ae26a50114c98
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 0e163a2e3c48a8a10c75af462c69a7cc20c6db3dc7c097011feece3879fa7366

@@ -30,12 +30,12 @@ evidence:
   - source_id: src-recovery-sandbox
     excerpt: VM-level isolation ensures untrusted code cannot escape the sandbox or
       affect other workloads.
-    source_sha256: 612593c6bf8f691636e08541c30a71e472eae25961b393ad015328c3c2dd7b6e
+    source_sha256: 70237e9cedd07349efe63d6c9b560b99989cc42cb78c771fa78be99f68f38cf9
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
 reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: 6c10bae116b51013bcbfd916dda9edae48de98d461fb1e43f306f5dff2589fce
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: c8b02653743921e2f5b70e4dadf4e63f42df0525daf1254a91dc937c0b31d9b4
