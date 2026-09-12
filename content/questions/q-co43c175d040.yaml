@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co43c175d040
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: A VM was created two minutes ago and its Metrics tab is empty. What is the
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: cbb09f1c169f4e28c6024a93afdf2bc10018ed681e9443a36b75a7dbaf9e580a

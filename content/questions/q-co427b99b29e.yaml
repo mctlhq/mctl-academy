@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co427b99b29e
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/security-policies
 stem: You are preparing to create a federation and want to gather everything
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 9d958cdad19330b140789b8793b618440db16b24f765c7d5d4f8a4c0110d504c

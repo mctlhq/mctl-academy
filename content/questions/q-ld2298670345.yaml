@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld2298670345
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: An engineering team wants to understand what actually makes the Fast
@@ -35,3 +35,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 5f3dbc556e5f29cad7d896862bed46c30f55a4c568d7c3cade1892cc0253006d

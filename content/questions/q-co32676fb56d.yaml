@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co32676fb56d
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: Two teams keep their VMs in separate projects in the same region and want
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 68185276f5902b8c42819a1c4f6e003809407aae3eeffdbd9b0c93ff1415a8b4

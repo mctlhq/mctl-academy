@@ -1,13 +1,13 @@
 schema_version: 1
 id: q-a51f8c3e07d2
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: With a bank card as the payment method, when is the card automatically charged?
 options:
   - id: a
-    text: At the start of the month if the balance is negative, or when the configured
-      billing threshold is reached
+    text: At the start of the month if the balance is negative, or when the
+      configured billing threshold is reached
     correct: true
     explanation: The automatic charging section lists exactly these two cases; the
       charge amount brings the balance back to zero.
@@ -19,8 +19,8 @@ options:
   - id: c
     text: Whenever the balance falls below the trial credit amount
     correct: false
-    explanation: Trial credit is a sign-up bonus with its own 30-day validity; it
-      is not the trigger for automatic charging.
+    explanation: Trial credit is a sign-up bonus with its own 30-day validity; it is
+      not the trigger for automatic charging.
   - id: d
     text: Only when a promo code is applied to the account
     correct: false
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-author
   at: 2026-09-12T22:44:56Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: ea5f15a7304339758f10921db10c37c0d50bac3533398e39f94df6b061836002

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7b4e0d92c5a8
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: When creating an embedding, which request parameters must be supplied?
@@ -23,8 +23,7 @@ options:
   - id: d
     text: The model, the input text, and an encoding_format
     correct: false
-    explanation: encoding_format is optional with a default of float, not a required
-      field.
+    explanation: encoding_format is optional with a default of float, not a required field.
 evidence:
   - source_id: src-recovery-embedding
     excerpt: "required: - model - input title: EmbeddingRequest"
@@ -33,3 +32,7 @@ authored:
   by: agent:claude-author
   at: 2026-09-12T22:44:56Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 5dc1f70a877a50a652fba9eddcbda3cd871bb118e453a20f7788a3751b3721bd

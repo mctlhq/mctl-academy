@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld235c9164e4
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: How does speculative decoding raise throughput without degrading output
@@ -34,3 +34,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 622f3375973f619433cd836106892df66d50ac3d50216621251ee476752a1de5

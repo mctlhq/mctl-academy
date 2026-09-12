@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sb01a9b0c1d2
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: Why do Sandboxes use VM-level isolation when running code produced by an
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: c8b02653743921e2f5b70e4dadf4e63f42df0525daf1254a91dc937c0b31d9b4

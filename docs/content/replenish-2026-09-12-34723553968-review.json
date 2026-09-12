@@ -1,0 +1,314 @@
+{
+  "reviewer": "agent:deepseek-reviewer",
+  "reviewed_at": "2026-09-12T23:15:06Z",
+  "questions": [
+    {
+      "id": "q-3f9c2a8e61d7",
+      "content_sha256": "c03205481c06e192f267c64399564fb9474f8a3ad7e779b87f22346ffe67df60",
+      "approved": true,
+      "reason": "The captured text states inference logs are 'automatically collected chat completions generated via API or Playground (unless Zero Data Retention is enabled)', directly supporting the correct option. No other option is defensible from the page.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-7b4e0d92c5a8",
+      "content_sha256": "5dc1f70a877a50a652fba9eddcbda3cd871bb118e453a20f7788a3751b3721bd",
+      "approved": true,
+      "reason": "The EmbeddingRequest schema in the captured text marks `required: [model, input]`, which matches 'the model and the input text'. The other options each omit at least one required field.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-a51f8c3e07d2",
+      "content_sha256": "ea5f15a7304339758f10921db10c37c0d50bac3533398e39f94df6b061836002",
+      "approved": true,
+      "reason": "The captured page lists both triggers verbatim: 'At the start of the month, if your balance is negative' and 'When the configured billing threshold is reached'. The correct option combines them faithfully; the distractors describe triggers the page does not mention.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "b3dfa80fb157321b30dfd96536b843662be0f2cf7721880994f259297694f02e",
+      "approved": true,
+      "reason": "The captured text describes streaming as 'data-only server-sent events' terminated by 'data: [DONE]', exactly matching the correct option. WebSocket, multipart, and single-array delivery are not described.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "eeb53fdbe3bb66af63dd550b33845f1d2576a6ba2484572538b37fe776211456",
+      "approved": true,
+      "reason": "The captured text says 'lower values like 0.2 will make it more focused and deterministic', directly supporting the correct option. The distractors over-claim (guaranteed identical output, auto-disable of top_p) or invert the direction.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "0e163a2e3c48a8a10c75af462c69a7cc20c6db3dc7c097011feece3879fa7366",
+      "approved": true,
+      "reason": "The captured text states 'Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted', which directly supports the correct option. None of the other options match the page.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "f3320d4711517c5e1f29a4e8eaa65f7ef355e9b6e705d928d7c534280e713de7",
+      "approved": true,
+      "reason": "The captured text states 'One shared filesystem can be attached to multiple VMs at once', directly supporting the correct option. Network SSD disks are limited to one VM at a time, and the other options are not concurrent-share mechanisms.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "b860bed160e1e9ef33e249da3d742bef63003e8c0f7cef1263acf6c6d5edfda1",
+      "approved": true,
+      "reason": "The captured text states 'The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB.' Since 100 is not a multiple of 93, the rejection is explained.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "68185276f5902b8c42819a1c4f6e003809407aae3eeffdbd9b0c93ff1415a8b4",
+      "approved": true,
+      "reason": "The captured text states 'Sharing a filesystem across projects is not supported, even if the projects are in the same region', directly supporting the correct option. Tenant scope, virtiofs, and encryption are not the binding constraint.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co356433d8e1",
+      "content_sha256": "6ca3f8a0dcf98060f8211cc8f17025bde717bec29c5906bd97ac1752a417ee6c",
+      "approved": true,
+      "reason": "The captured text defines `compute.instance-power-operator` as 'perform power operations on virtual machines without broader Compute permissions', exactly matching the scenario. The other roles are either too broad or for different tasks.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co36b9e8169f",
+      "content_sha256": "91e38b75ee8cf25b3bfb1d720fcb1bbed6d4a595276225e31b2bd061a36f526a",
+      "approved": true,
+      "reason": "The captured text defines `storage.uploader` as 'view buckets, upload objects but not list or download them', which exactly matches the write-only-drop requirement. The other roles either grant reading, listing, or broader access.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co37d7aa468e",
+      "content_sha256": "7966541c6d0d13603c5c389bc9e013ab42226c9bedef848bc50e088290ca874d",
+      "approved": true,
+      "reason": "The captured text states 'For an existing project, you can only edit the name. You cannot move a project to another region or tenant.' Only option d is consistent with this; all others claim a change the page forbids.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co3981dd0ddc",
+      "content_sha256": "4c3608176ffb91822798bfecce62cc20e5b371c8f6a404527fd724783f973620",
+      "approved": true,
+      "reason": "The captured text warns under the CLI tab: 'If you try to create a project in a private region, you receive an error.' The question specifies CLI use, so the warning applies directly. The other explanations are not what the page says.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co40c9898d9e",
+      "content_sha256": "a060713aeb9375c66fd0e3b20fc12169589039a342c236c24656e3b4d4118b99",
+      "approved": true,
+      "reason": "The captured text states 'you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates.' Uploading the new cert and deleting the old one on the existing federation is what the page describes.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co41d66f720d",
+      "content_sha256": "07ac03c1405b9295b5ea2fefd957ce0ea626df342ed7c1541ed9642248a696c6",
+      "approved": true,
+      "reason": "The captured text's prerequisites require being in a group 'that has the `admin` role within your tenant or project', so an editor without admin cannot manage federations. The correct option captures this restriction.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co427b99b29e",
+      "content_sha256": "9d958cdad19330b140789b8793b618440db16b24f765c7d5d4f8a4c0110d504c",
+      "approved": true,
+      "reason": "The captured text lists as a prerequisite that you can get 'the SAML application metadata (login URL, identifier, certificate)' from the IdP portal, directly supporting the correct option. The distractors describe things never handed over or irrelevant to federation setup.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co43c175d040",
+      "content_sha256": "cbb09f1c169f4e28c6024a93afdf2bc10018ed681e9443a36b75a7dbaf9e580a",
+      "approved": true,
+      "reason": "The captured text states 'The VM usage data becomes available 5–10 minutes after the VM is created.' Two minutes is within that window, so waiting is the appropriate response. Reinstalling or escalating would be premature.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co449f443013",
+      "content_sha256": "0419c69c965d5d7de89034fb48f379406dfbc6e90124e8921171575a3ac96f49",
+      "approved": true,
+      "reason": "The captured text states 'By default, the data is refreshed every 15 seconds. You can configure this interval next to the time filters.', directly supporting the correct option.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co502cd7b152",
+      "content_sha256": "dcfa12ae5002ea36e2083248545a964d37427cc2c648a37d5a67436bddb6aa4c",
+      "approved": true,
+      "reason": "The captured text states VMs 'count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped.' Stopping does not release quota; only deletion does.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "62b4a07bcb10f97187f0939051fd30f966ba2cc2b928fa6895784c97ca9b2437",
+      "approved": true,
+      "reason": "The captured text states 'These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs.' K8s nodes count against the same Compute quotas.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-co524dc191c3",
+      "content_sha256": "2a855f8018ada3a36424b499f520d874cef9680ec766ec436ad2a2ee76c84f85",
+      "approved": true,
+      "reason": "The captured text states 'Compute has different quotas for GPU and non-GPU virtual machines.' The correct option is the necessary correction to the single-quota assumption.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "347d316ce3199d287fab18c0eb61893200987f7f92e29828b15ce2327fe6c4fa",
+      "approved": true,
+      "reason": "The captured text describes rerank as reordering documents 'based on their relevance to a query', and the RerankResult schema includes `index`, `document`, and `relevance_score` as required fields. The correct option names the result fields accurately.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-er02d4e5f6a7",
+      "content_sha256": "e91c2c1ac96df920dfafc506c2ae8ada12a9ce80147e389f14e23bb3f4c7c117",
+      "approved": false,
+      "reason": "The cited evidence ('Both deliver identical model outputs...') is about model flavors, not about vector distance metrics for normalized embeddings. The excerpt does not establish cosine similarity or inner dot product as the standard metric; it is unrelated to the question.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-fi02d8e9f0a1",
+      "content_sha256": "b7be4315e5c8f5c94d130ab84f7a925a4df487abcfe7a8826080013983f467fd",
+      "approved": false,
+      "reason": "The cited evidence ('Both deliver identical model outputs...') is about model flavors, not about MCP or agent tool discovery protocols. The excerpt nowhere mentions the Model Context Protocol; the answer is unsupported by the captured text.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld217205c155",
+      "content_sha256": "c8080e419349eca2febd1ee038448ac2b35ce8f1b7f1953f03a58d20bda64611",
+      "approved": true,
+      "reason": "The captured text states 'Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.' The correct option faithfully reflects this; the distractors claim output changes the page denies.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld2298670345",
+      "content_sha256": "5f3dbc556e5f29cad7d896862bed46c30f55a4c568d7c3cade1892cc0253006d",
+      "approved": true,
+      "reason": "The captured text states 'The Fast flavor uses smaller batch sizes, increased compute allocation, and techniques such as speculative decoding to reduce latency', directly supporting the correct option.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld235c9164e4",
+      "content_sha256": "622f3375973f619433cd836106892df66d50ac3d50216621251ee476752a1de5",
+      "approved": true,
+      "reason": "The captured text describes speculative decoding as using 'auxiliary models to pre-generate likely next tokens. The main model verifies these predictions', directly supporting the correct option.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld2443c1b29d",
+      "content_sha256": "4f2462e5eb053c91966a3e7f6d044b3a4dcd89d8a5833d6a1d222d459896b4d8",
+      "approved": true,
+      "reason": "The captured text defines quantization as 'A technique that reduces the precision of model weights and activations, decreasing memory usage and computation.', directly matching the question's description of lowering numeric precision.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld25f6d73083",
+      "content_sha256": "920a88ee5d0540fa7565f1beb8169f54c68a5543c9e4cda99b7a73c600d16d69",
+      "approved": true,
+      "reason": "The captured text lists Vision as a supported model type with an image2text modality link. Reading screenshots requires vision capability; text-to-text and embedding models do not accept image input.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld31ea78838c",
+      "content_sha256": "208b8fa71b5e1634da3a8ba092b2ffe5c006b71da927d3724d81ae1d24def2cb",
+      "approved": true,
+      "reason": "The captured text states 'To use the Fast flavor, append `-fast` to the model name in the API', directly supporting the correct option. There is no separate flavor field, different URL, or access request.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld3211bef699",
+      "content_sha256": "ad9933e7ffb095cae7450e3f6b1ef30fba14da2b2a1836d044452b5aa7c77d58",
+      "approved": true,
+      "reason": "The captured text lists the four factors: 'Batch size * GPU type (L40, H100, H200, B200) * GPU count * Inference-time optimizations (e.g., speculative decoding)', directly supporting the correct option.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ld3465e45f6f",
+      "content_sha256": "03b0a440280140e3af09faa51fc8d7200314c895182913eb14db9e5d1307b9bb",
+      "approved": true,
+      "reason": "The captured text defines Context Caching as 'A caching mechanism that stores the context (i.e., the output of previous layers) for each input sequence', exactly matching the question's description.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "f410e9bac1d4a7a20ed858a0405fdf19814daa2b8bede0d01b57254ab8c31668",
+      "approved": true,
+      "reason": "The captured Usage schema includes `prompt_tokens`, `completion_tokens`, and `total_tokens` as required fields. The correct option lists these three fields; the distractors name metrics not present in the usage object.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-pf01b9c0d1e2",
+      "content_sha256": "65f23a65ae294ec1e76b5fc515480128293f1734df21889920642c405c7882c9",
+      "approved": true,
+      "reason": "The captured text states 'To use the Fast flavor, append `-fast` to the model name in the API.' The correct option describes this mechanism; the distractors invent non-existent parameters, endpoints, or deployment requirements.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-pf02c0d1e2f3",
+      "content_sha256": "d1a8d5857ccb8693593a63e89ebcfb5e02a27a2cf23382715e7649699e2e120b",
+      "approved": true,
+      "reason": "The captured text states 'Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.' The correct option says outputs are identical; the distractors claim the Fast flavor changes output.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-pf03d1e2f3a4",
+      "content_sha256": "9341e3c90cac700248126e612aacc69103bb6965ab7f032c0f1fd8fef234ffa8",
+      "approved": true,
+      "reason": "The captured text states both flavors 'deliver identical model outputs' while differences lie in 'token pricing, latency, and the level of applied optimizations.' The correct option restates this faithfully.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-pf04e2f3a4b5",
+      "content_sha256": "8d3b7d1e3a2a73c508012d59961499613d6df1db6c0c2fc0b18b18a9517f3321",
+      "approved": true,
+      "reason": "The captured text states 'To use the Fast flavor, append `-fast` to the model name in the [API]', directly supporting the correct naming convention. The distractors describe mechanisms not in the page.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "b21666eb778f381b27ea47dcf4ea568775ddb17c7098f1c4f11f79f28da41eec",
+      "approved": true,
+      "reason": "The playground page says to send a request to the List models endpoint with 'verbose=true' for extended parameters; the models API schema confirms `context_length` is among them. Both excerpts together support the correct option.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "4a804ef602db7a5a17f2e592eb59c63d16328c5294ab3e021962097983f068b3",
+      "approved": true,
+      "reason": "The captured text states 'Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic' in the temperature description. The correct option names `temperature` as the parameter governing this behaviour.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-rp01a5b6c7d8",
+      "content_sha256": "d9dc781190c69d2d9265ce0cf57302f8de63cc528895d08efa1637763609b153",
+      "approved": false,
+      "reason": "The cited evidence ('Both deliver identical model outputs...') is about model flavors, not about chunk overlap in retrieval pipelines. The excerpt does not mention chunking, overlap, or semantic context preservation; it is unrelated to the question.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-rp02b6c7d8e9",
+      "content_sha256": "6d7e192f99369403abac9f8776dbf00775a5a72e8c8dd4ebaefd27acf0c7e3c3",
+      "approved": false,
+      "reason": "The cited evidence ('Both deliver identical model outputs...') is about model flavors, not about hybrid search. The excerpt does not define or describe combining dense vector search with sparse BM25 keyword search; it is unrelated to the question.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-sb01a9b0c1d2",
+      "content_sha256": "c8b02653743921e2f5b70e4dadf4e63f42df0525daf1254a91dc937c0b31d9b4",
+      "approved": true,
+      "reason": "The captured text states 'VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads', directly supporting the correct option. The distractors describe effects the page does not attribute to VM-level isolation.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-sb02b0c1d2e3",
+      "content_sha256": "4b426fcbfce0e1d8903a7edb7f2ba2e3fb9491f2034b9a82cb49e4eeeb786b93",
+      "approved": true,
+      "reason": "The captured text states 'Automatic cleanup and resource limits help prevent abuse' (under educational platforms) and 'Number of simultaneously running operations is limited to 50' (under beta limitations). Both together support the correct option.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-sb03c1d2e3f4",
+      "content_sha256": "a6c25bee7b90b35b2319d567d172596039ce25d551675e4953435bac22f7014f",
+      "approved": false,
+      "reason": "The cited evidence ('Both deliver identical model outputs...') is about model flavors, not about how to pass secret API keys to a sandbox environment. The excerpt does not mention environment variables, secrets, or ephemeral injection; it is unrelated to the question.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    }
+  ]
+}

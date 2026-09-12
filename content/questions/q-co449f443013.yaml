@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co449f443013
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: An engineer watching a dashboard during an incident asks how current the
@@ -34,3 +34,7 @@ authored:
   by: agent:claude-author
   at: 2026-09-12T22:44:56Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: 0419c69c965d5d7de89034fb48f379406dfbc6e90124e8921171575a3ac96f49

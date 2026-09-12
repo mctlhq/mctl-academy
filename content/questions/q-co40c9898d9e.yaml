@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co40c9898d9e
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/security-policies
 stem: Your organization's IdP has rotated the signing certificate used for
@@ -31,9 +31,14 @@ options:
 evidence:
   - source_id: src-co-iam-federations
     excerpt: In Nebius AI Cloud, you can create, activate, deactivate and delete
-      federations, change their settings, and upload or delete attached certificates.
+      federations, change their settings, and upload or delete attached
+      certificates.
     source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
 authored:
   by: agent:claude-author
   at: 2026-09-12T22:44:56Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-12T23:15:06Z
+  content_sha256: a060713aeb9375c66fd0e3b20fc12169589039a342c236c24656e3b4d4118b99
