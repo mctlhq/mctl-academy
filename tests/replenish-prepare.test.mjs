@@ -744,6 +744,90 @@ test("the shared execution-output path is cleared before every agent", () => {
   assert.equal(cleared, 6);
 });
 
+test("every commit takes its identity from the command line, not from .git/config", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // user.name and user.email are skipped by the manifest, and have to be: the
+  // agent action rewrites both on every run. That makes .git/config the one
+  // place an agent could put a value the later steps would publish -- a commit
+  // author name reaches a branch on a public repository. `git -c` outranks the
+  // file, so the identity the commit uses is the one this workflow supplies
+  // and never the one it finds.
+  const runs = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps]
+    .map((s) => s.run)
+    .filter(Boolean);
+  const commits = runs.flatMap((r) => r.split("\n").filter((l) => /(^|\s)git\b[^\n]*\bcommit\b/.test(l)));
+  assert.equal(commits.length, 3, `expected three commit invocations, found ${commits.length}`);
+  for (const line of commits) {
+    assert.match(line, /git -c user\.name="\$BOT_NAME" -c user\.email="\$BOT_EMAIL" commit/, line.trim());
+  }
+});
+
+test("bun is pinned to the version the agent action installs under it", () => {
+  const text = readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8");
+  // claude-code-action embeds its own oven-sh/setup-bun. With `latest` here the
+  // two disagree, that copy downloads inside the agent step, and ~/.bun/bin/bun
+  // changes under the manifest the snapshot took -- which failed the guard on
+  // run 34696477988 with no agent involvement. Excluding the binary from the
+  // manifest would have dropped the one out-of-workspace binary an agent can
+  // plausibly reach, so the version is matched instead. The two pins have to
+  // move together, and this is what makes a one-sided bump fail here rather
+  // than in the next replenish run.
+  const pinned = [...text.matchAll(/^\s*bun-version:\s*(\S+)$/gm)].map((m) => m[1]);
+  assert.equal(pinned.length, 3, "not every setup-bun step names a version");
+  assert.ok(!pinned.includes("latest"), "a setup-bun step still tracks `latest`");
+  assert.equal(new Set(pinned).size, 1, `the setup-bun steps disagree: ${pinned.join(", ")}`);
+  const embedded = [...text.matchAll(/claude-code-action@\S+ # [^\n]*\bbun (\S+?)\)/g)].map((m) => m[1]);
+  assert.equal(embedded.length, 6, "an agent step's pin does not record the bun version it installs");
+  assert.equal(new Set(embedded).size, 1, "the action pins disagree about the bun version they install");
+  assert.equal(
+    pinned[0],
+    embedded[0],
+    `setup-bun installs ${pinned[0]} and the action installs ${embedded[0]}`,
+  );
+});
+
+test("the manifest normalises the git config keys the agent action rewrites", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const snapshots = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter(
+    (s) => s.name === "Snapshot what the agent must not touch",
+  );
+  assert.equal(snapshots.length, 3);
+  for (const step of snapshots) {
+    // .git/config must not be hashed as bytes: the action rewrites four of its
+    // keys every run (git-config.ts at the pin -- user.name, user.email,
+    // `git remote set-url origin` with the token, and --unset-all of the
+    // extraheader actions/checkout left).
+    assert.doesNotMatch(step.run, /"\$SHA" "\.git\/config"|^\s*for f in \.git\/config/m);
+    assert.match(step.run, /"\$GIT" config --list --local -z/);
+    // Exactly two keys are skipped outright, and by name: a third appearing
+    // there is the action changing what it writes, and it must fail the
+    // comparison rather than be waved through.
+    const skipped = /case "\$key" in\n\s*([^\n]*)\n\s*(http[^\n]*)\n/.exec(step.run);
+    assert.ok(skipped, "the excluded-key case is not in the shape this test reads");
+    assert.equal(skipped[1].trim(), "user.name|user.email) continue ;;");
+    assert.equal(skipped[2].trim(), "http.*.extraheader) continue ;;");
+    // remote.origin.url is normalised, never skipped: it is where the
+    // credentialed push goes, and a local-path remote runs that repository's
+    // receive-pack hooks with the App token in the environment.
+    assert.match(step.run, /remote\.origin\.url\)/);
+    assert.doesNotMatch(step.run, /remote\.origin\.url\) continue/);
+    assert.match(step.run, /url=\$\{url%\.git\}/, "the trailing .git is not normalised away");
+    assert.match(step.run, /rest=\$\{rest#\*@\}/, "the credential is not normalised away");
+    // And the execution surface is carried by shape, not by bytes.
+    assert.match(step.run, /gitexec \$key/);
+    for (const key of ["filter.*.smudge", "core.hookspath", "include.path", "core.fsmonitor"]) {
+      assert.ok(
+        step.run.includes(key),
+        `${key} is not among the git config keys the manifest treats as executable`,
+      );
+    }
+  }
+});
+
 test("the reset that precedes a retry is itself preceded by the verification", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -1405,6 +1489,84 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     fixture(() => {}),
     0,
     "an untouched tree must pass",
+  );
+  // The three writes claude-code-action makes to .git/config on every run
+  // (src/github/operations/git-config.ts at the pin in the workflow). Byte
+  // equality on that file is unattainable across an agent step, and requiring
+  // it is what failed run 34696477988 with no agent involvement.
+  assert.equal(
+    fixture(
+      (dir) => {
+        const git = (...a) => execFileSync("git", a, { cwd: dir, stdio: "ignore" });
+        git("config", "user.name", "claude[bot]");
+        git("config", "user.email", "1+claude[bot]@users.noreply.github.com");
+        git("remote", "set-url", "origin", "https://x-access-token:TOKEN@github.com/o/r.git");
+        git("config", "--unset-all", "http.https://github.com/.extraheader");
+      },
+      // The remote and the header exist before the agent runs, as
+      // actions/checkout leaves them: the action rewrites them, it does not
+      // create them, and `git remote add` would also add remote.origin.fetch,
+      // which is a key it never touches.
+      (dir) => {
+        const git = (...a) => execFileSync("git", a, { cwd: dir, stdio: "ignore" });
+        git("remote", "add", "origin", "https://github.com/o/r.git");
+        git("config", "http.https://github.com/.extraheader", "AUTHORIZATION: basic x");
+        return {};
+      },
+    ),
+    0,
+    "the git identity and origin url the action rewrites must not fail the guard",
+  );
+  // And what the normalisation must not cost: a smudge filter is a shell
+  // command that needs no execute bit, which is the path dee48d2 closed, and
+  // core.hooksPath is arbitrary code on the next git command. Both are in the
+  // same file the churn above lives in.
+  assert.equal(
+    fixture((dir) =>
+      execFileSync("git", ["config", "filter.x.smudge", "touch /tmp/pwned"], {
+        cwd: dir,
+        stdio: "ignore",
+      }),
+    ),
+    1,
+    "a planted smudge filter must fail the guard",
+  );
+  assert.equal(
+    fixture((dir) =>
+      execFileSync("git", ["config", "core.hooksPath", "/tmp/hooks"], { cwd: dir, stdio: "ignore" }),
+    ),
+    1,
+    "a planted core.hooksPath must fail the guard",
+  );
+  assert.equal(
+    fixture((dir) =>
+      execFileSync("git", ["config", "include.path", "/tmp/more.config"], { cwd: dir, stdio: "ignore" }),
+    ),
+    1,
+    "a planted include.path must fail the guard",
+  );
+  // The origin url is normalised, not skipped. A local-path remote is served by
+  // that repository's `git receive-pack`, which runs ITS pre-receive hook -- so
+  // repointing origin is code execution in the step that carries the App token,
+  // and it changes no other key, no hook of this repository, no file and no
+  // environment variable.
+  assert.equal(
+    fixture(
+      (dir) =>
+        execFileSync("git", ["remote", "set-url", "origin", join(dir, "elsewhere.git")], {
+          cwd: dir,
+          stdio: "ignore",
+        }),
+      (dir) => {
+        execFileSync("git", ["remote", "add", "origin", "https://github.com/o/r"], {
+          cwd: dir,
+          stdio: "ignore",
+        });
+        return {};
+      },
+    ),
+    1,
+    "repointing origin at a local repository must fail the guard",
   );
   assert.equal(
     fixture((dir) =>

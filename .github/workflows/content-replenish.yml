@@ -128,7 +128,16 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         if: steps.guard.outputs.skip != 'true'
         with:
-          bun-version: latest
+          # Pinned, not `latest`, and pinned to this exact version on purpose:
+          # claude-code-action embeds its own oven-sh/setup-bun at
+          # `bun-version: 1.3.14`, which runs inside the agent step. With
+          # `latest` here the two disagree, that copy downloads, and
+          # ~/.bun/bin/bun changes under the manifest the snapshot just hashed
+          # -- which failed the guard on run 34696477988 with no agent
+          # involvement. Matching the version makes the action's copy find what
+          # it wants already installed. The two pins must move together;
+          # tests/replenish-prepare.test.mjs asserts they agree.
+          bun-version: 1.3.14
 
       - run: bun install --frozen-lockfile
         if: steps.guard.outputs.skip != 'true'
@@ -204,7 +213,16 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: latest
+          # Pinned, not `latest`, and pinned to this exact version on purpose:
+          # claude-code-action embeds its own oven-sh/setup-bun at
+          # `bun-version: 1.3.14`, which runs inside the agent step. With
+          # `latest` here the two disagree, that copy downloads, and
+          # ~/.bun/bin/bun changes under the manifest the snapshot just hashed
+          # -- which failed the guard on run 34696477988 with no agent
+          # involvement. Matching the version makes the action's copy find what
+          # it wants already installed. The two pins must move together;
+          # tests/replenish-prepare.test.mjs asserts they agree.
+          bun-version: 1.3.14
 
       - run: bun install --frozen-lockfile
 
@@ -331,10 +349,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -354,6 +449,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -387,7 +486,7 @@ jobs:
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
         if: steps.branch.outputs.new_pages != '0'
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
+        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -550,10 +649,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -573,6 +749,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -668,7 +848,7 @@ jobs:
         id: selector-agent-2
         if: steps.branch.outputs.new_pages != '0' && steps.selector-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
+        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN_2 }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -880,10 +1060,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -903,6 +1160,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -1253,7 +1514,7 @@ jobs:
           set -euo pipefail
           git add content/
           if ! git diff --staged --quiet; then
-            git commit -m "chore(replenish): capture sources, quarantine live drift, re-validate" \
+            git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "chore(replenish): capture sources, quarantine live drift, re-validate" \
               -m "Deterministic preparation for run ${{ github.run_id }}: no agent has run yet."
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -1325,10 +1586,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -1348,6 +1686,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -1380,7 +1722,7 @@ jobs:
         id: author-agent
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
+        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -1561,10 +1903,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -1584,6 +2003,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -1684,7 +2107,7 @@ jobs:
         id: author-agent-2
         if: steps.author-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
+        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN_2 }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -1914,10 +2337,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -1937,6 +2437,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -2174,7 +2678,7 @@ jobs:
           fi
           s=$(git diff --name-only origin/main -- content/sources | wc -l | tr -d ' ')
           if [ "$n" != "0" ]; then
-            git commit -m "content(replenish): author ${n} question file(s) from ${s} captured source(s)" \
+            git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "content(replenish): author ${n} question file(s) from ${s} captured source(s)" \
               -m "Authored by ${AUTHOR_ID} (${AUTHOR_MODEL}) from captured documentation; every item is review_ready and awaits the independent review recorded in the next commit."
           else
             echo "::notice::the author wrote nothing; pushing ${pending} mechanically re-validated item(s) for review"
@@ -2271,7 +2775,16 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: latest
+          # Pinned, not `latest`, and pinned to this exact version on purpose:
+          # claude-code-action embeds its own oven-sh/setup-bun at
+          # `bun-version: 1.3.14`, which runs inside the agent step. With
+          # `latest` here the two disagree, that copy downloads, and
+          # ~/.bun/bin/bun changes under the manifest the snapshot just hashed
+          # -- which failed the guard on run 34696477988 with no agent
+          # involvement. Matching the version makes the action's copy find what
+          # it wants already installed. The two pins must move together;
+          # tests/replenish-prepare.test.mjs asserts they agree.
+          bun-version: 1.3.14
 
       - run: bun install --frozen-lockfile
 
@@ -2411,10 +2924,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -2434,6 +3024,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -2467,7 +3061,7 @@ jobs:
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
         if: steps.items.outputs.count != '0'
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
+        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -2629,10 +3223,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -2652,6 +3323,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -2752,7 +3427,7 @@ jobs:
         id: reviewer-agent-2
         if: steps.items.outputs.count != '0' && steps.reviewer-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226)
+        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN_2 }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -2963,10 +3638,87 @@ jobs:
           manifest() {
             {
               "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
-              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+              for f in "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
                        /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
                 if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
               done
+              # .git/config is NOT hashed as bytes, and it is the one file here
+              # that cannot be: claude-code-action rewrites four of its keys on
+              # every run, from src/github/operations/git-config.ts at the pin
+              # in this file -- `git config user.name`, `git config user.email`,
+              # `git remote set-url origin` with the token embedded, and
+              # `git config --unset-all http.<server>/.extraheader`, which
+              # removes what actions/checkout put there. Byte equality across an
+              # agent step is therefore unattainable, and the guard failed on it
+              # on run 34696477988 with no agent involvement.
+              #
+              # Every OTHER key is compared, value by value and hashed (the
+              # origin url holds a token, so nothing here prints a value). A key
+              # the action starts writing that is not on this list fails the
+              # comparison rather than passing quietly, which is the direction
+              # this has to fail in. The separate invariant below is what covers
+              # the execution surface -- a filter.*.smudge planted here is what
+              # dee48d2 is about, and it is caught by shape, not by diff.
+              "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
+                key=${kv%%$'\n'*}
+                case "$key" in
+                  user.name|user.email) continue ;;
+                  http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
+                esac
+                printf 'gitconfig %s %s\n' "$key" \
+                  "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
+              done | LC_ALL=C "$SORT"
+              # And the execution surface, by SHAPE rather than by diff: the
+              # names of every git configuration key that can run a command,
+              # from every level git reads, includes followed. A planted
+              # `filter.x.smudge` -- the reachable path dee48d2 closed, since a
+              # smudge filter is a shell command and needs no execute bit --
+              # appears here as a new line and fails the comparison, whatever
+              # the file it was written into. Names only: values can hold a
+              # token, and the name alone is the finding. A key the runner image
+              # already carries sits on both sides and raises nothing, which is
+              # why this is in the manifest instead of an assertion that the set
+              # is empty. Keys are lowercased by `git config --list`, so the
+              # patterns are too -- `core.hooksPath` is `core.hookspath` here.
+              "$GIT" config --list --name-only -z 2>/dev/null | while IFS= read -r -d '' key; do
+                case "$key" in
+                  filter.*.smudge|filter.*.clean|filter.*.process| \
+                  core.hookspath|core.fsmonitor|core.sshcommand|core.askpass| \
+                  core.pager|core.editor|core.attributesfile| \
+                  include.path|includeif.*.path|alias.*| \
+                  credential.helper|credential.*.helper| \
+                  diff.*.command|diff.*.textconv|merge.*.driver| \
+                  gpg.program|gpg.*.program|init.templatedir|ssh.variant| \
+                  pager.*|trailer.*.command)
+                    echo "gitexec $key" ;;
+                esac
+              done | LC_ALL=C "$SORT"
               # The binaries themselves, resolved the way the following steps
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
@@ -2986,6 +3738,10 @@ jobs:
                 case "${kv%%=*}" in
                   PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
                   GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  # Set by the runner per step, like the three above, and seen
+                  # to change across an agent step on run 34696477988 with no
+                  # agent involvement.
+                  GITHUB_ARTIFACTS|GITHUB_ARTIFACTS_LIST) continue ;;
                   GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
                   # No arm for INPUT_* or STATE_*: the runner sets those when it
                   # invokes an action, never for a `run:` step like this one, so
@@ -3279,7 +4035,7 @@ jobs:
           set -euo pipefail
           git add content/questions/ docs/content/ client/src/content-bundle.json client/src/course-catalog.json
           k=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.env.receipt,"utf8"));console.log(r.questions.filter(q=>q.approved).length)')
-          git commit -m "content(replenish): promote ${k} reviewed question(s)" \
+          git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "content(replenish): promote ${k} reviewed question(s)" \
             -m "Reviewed by ${REVIEWER_ID} (${REVIEWER_MODEL}) against the two CONTENT-POLICY criteria; receipt with fingerprints committed under docs/content/. Rejected new items are dropped, rejected re-validations return to needs_review."
           git push origin "HEAD:${BRANCH}"
 
