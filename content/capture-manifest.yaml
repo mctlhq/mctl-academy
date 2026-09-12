@@ -47,7 +47,8 @@ sources:
 
   - id: src-co-k8s-quickstart
     url: https://docs.nebius.com/kubernetes/quickstart.md
-    title: "How to get started with Managed Service for Kubernetes: Create your first cluster"
+    title: "How to get started with Managed Service for Kubernetes: Create your
+      first cluster"
     objectives:
       - domain-1/environment-deployment
 
@@ -128,7 +129,8 @@ sources:
 
   - id: src-co-k8s-health-checks
     url: https://docs.nebius.com/kubernetes/maintenance/health-checks.md
-    title: "Health checks and automatic recovery of Managed Service for Kubernetes nodes"
+    title: "Health checks and automatic recovery of Managed Service for Kubernetes
+      nodes"
     objectives:
       - domain-3/node-recovery
 
@@ -205,3 +207,11 @@ sources:
     title: "Dedicated endpoint billing policy"
     objectives:
       - domain-4/cost-and-billing
+  - id: src-dedicated-endpoint-best-practices
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md
+    title: Best Practices
+    objectives:
+      - domain-4/billing-and-consumption
+      - domain-4/capacity-and-scaling
+      - domain-4/observability
+      - domain-4/dedicated-endpoints

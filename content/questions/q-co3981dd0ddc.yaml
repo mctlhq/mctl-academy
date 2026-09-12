@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3981dd0ddc
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/organization-hierarchy
 stem: An automation script uses the Nebius AI Cloud CLI to create a project in a
@@ -28,11 +28,8 @@ options:
 evidence:
   - source_id: src-co-manage-projects
     excerpt: If you try to create a project in a private region, you receive an error.
-    source_sha256: 13279ab9827971fd76d921ad32f657caccef4f47379291b005bdd6d394aaece6
+    source_sha256: 8164ebc1567338a0e5e3fcf322266253b34002dd58d9570fe2c9b7aa11115108
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
