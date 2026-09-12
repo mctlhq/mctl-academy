@@ -373,8 +373,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -647,8 +673,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -1032,8 +1084,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -1532,8 +1610,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -1823,8 +1927,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -2231,8 +2361,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -2792,8 +2948,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -3065,8 +3247,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"
@@ -3454,8 +3662,34 @@ jobs:
               "$GIT" config --list --local -z 2>/dev/null | while IFS= read -r -d '' kv; do
                 key=${kv%%$'\n'*}
                 case "$key" in
-                  user.name|user.email|remote.origin.url) continue ;;
+                  user.name|user.email) continue ;;
                   http.*.extraheader) continue ;;
+                  remote.origin.url)
+                    # NOT skipped. This is where the credentialed `git push` in
+                    # a later step goes, and a repoint to a local bare repo is
+                    # served by that repo's `git receive-pack`, which runs ITS
+                    # pre-receive hook -- arbitrary code in the step carrying
+                    # the App token, routing around the .git/hooks hash by
+                    # changing whose hooks run. Only the credential is
+                    # normalised away, because actions/checkout leaves none and
+                    # the action embeds the App token while both name the same
+                    # repository, together with a trailing .git, which the
+                    # action adds and checkout does not. Scheme, host and path
+                    # all still have to match.
+                    url=${kv#*$'\n'}
+                    case "$url" in
+                      *://*)
+                        scheme=${url%%://*}
+                        rest=${url#*://}
+                        case "${rest%%/*}" in *@*) rest=${rest#*@} ;; esac
+                        url="$scheme://$rest"
+                        ;;
+                    esac
+                    url=${url%.git}
+                    printf 'gitconfig %s %s\n' "$key" \
+                      "$(printf '%s' "$url" | "$SHA" | "$CUT" -d" " -f1)"
+                    continue
+                    ;;
                 esac
                 printf 'gitconfig %s %s\n' "$key" \
                   "$(printf '%s' "${kv#*$'\n'}" | "$SHA" | "$CUT" -d" " -f1)"

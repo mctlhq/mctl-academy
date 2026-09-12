@@ -783,13 +783,20 @@ test("the manifest normalises the git config keys the agent action rewrites", ()
     // extraheader actions/checkout left).
     assert.doesNotMatch(step.run, /"\$SHA" "\.git\/config"|^\s*for f in \.git\/config/m);
     assert.match(step.run, /"\$GIT" config --list --local -z/);
-    // Exactly those four are skipped, and by name: a fifth key appearing in
-    // this list is the action changing what it writes, and it must fail the
-    // comparison rather than be waved through here.
-    const skipped = /case "\$key" in\n\s*([^\n]*)\n\s*(http[^\n]*)\n\s*esac/.exec(step.run);
+    // Exactly two keys are skipped outright, and by name: a third appearing
+    // there is the action changing what it writes, and it must fail the
+    // comparison rather than be waved through.
+    const skipped = /case "\$key" in\n\s*([^\n]*)\n\s*(http[^\n]*)\n/.exec(step.run);
     assert.ok(skipped, "the excluded-key case is not in the shape this test reads");
-    assert.equal(skipped[1].trim(), "user.name|user.email|remote.origin.url) continue ;;");
+    assert.equal(skipped[1].trim(), "user.name|user.email) continue ;;");
     assert.equal(skipped[2].trim(), "http.*.extraheader) continue ;;");
+    // remote.origin.url is normalised, never skipped: it is where the
+    // credentialed push goes, and a local-path remote runs that repository's
+    // receive-pack hooks with the App token in the environment.
+    assert.match(step.run, /remote\.origin\.url\)/);
+    assert.doesNotMatch(step.run, /remote\.origin\.url\) continue/);
+    assert.match(step.run, /url=\$\{url%\.git\}/, "the trailing .git is not normalised away");
+    assert.match(step.run, /rest=\$\{rest#\*@\}/, "the credential is not normalised away");
     // And the execution surface is carried by shape, not by bytes.
     assert.match(step.run, /gitexec \$key/);
     for (const key of ["filter.*.smudge", "core.hookspath", "include.path", "core.fsmonitor"]) {
@@ -1517,6 +1524,29 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     ),
     1,
     "a planted include.path must fail the guard",
+  );
+  // The origin url is normalised, not skipped. A local-path remote is served by
+  // that repository's `git receive-pack`, which runs ITS pre-receive hook -- so
+  // repointing origin is code execution in the step that carries the App token,
+  // and it changes no other key, no hook of this repository, no file and no
+  // environment variable.
+  assert.equal(
+    fixture(
+      (dir) =>
+        execFileSync("git", ["remote", "set-url", "origin", join(dir, "elsewhere.git")], {
+          cwd: dir,
+          stdio: "ignore",
+        }),
+      (dir) => {
+        execFileSync("git", ["remote", "add", "origin", "https://github.com/o/r"], {
+          cwd: dir,
+          stdio: "ignore",
+        });
+        return {};
+      },
+    ),
+    1,
+    "repointing origin at a local repository must fail the guard",
   );
   assert.equal(
     fixture((dir) =>
