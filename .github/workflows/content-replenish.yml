@@ -582,9 +582,16 @@ jobs:
           # interior, and the loop drops it BY POSITION, one iteration behind:
           # skipping it by value would have made its own name the single string
           # this guard waves through, which is the opposite of an allowlist.
+          # The sentinel is appended in an assignment, not written next to the
+          # expansion: splitting applies to what an expansion produces, not to
+          # literal text beside it, so `$PATH:__pathguard__` gives a last field
+          # of ":__pathguard__" on bash 5 and the empty entry is never formed.
+          # bash 3.2 splits it the other way, which is why this passed on a Mac
+          # and failed on the runner.
+          padded="$PATH:__pathguard__"
           prev=
           seen=
-          for d in $PATH:__pathguard__; do
+          for d in $padded; do
             if [ -n "$seen" ]; then
               case ":$before:" in *":$prev:"*) ;; *)
                 echo "::error::PATH gained '$prev' after the agent ran"
@@ -1242,9 +1249,16 @@ jobs:
           # interior, and the loop drops it BY POSITION, one iteration behind:
           # skipping it by value would have made its own name the single string
           # this guard waves through, which is the opposite of an allowlist.
+          # The sentinel is appended in an assignment, not written next to the
+          # expansion: splitting applies to what an expansion produces, not to
+          # literal text beside it, so `$PATH:__pathguard__` gives a last field
+          # of ":__pathguard__" on bash 5 and the empty entry is never formed.
+          # bash 3.2 splits it the other way, which is why this passed on a Mac
+          # and failed on the runner.
+          padded="$PATH:__pathguard__"
           prev=
           seen=
-          for d in $PATH:__pathguard__; do
+          for d in $padded; do
             if [ -n "$seen" ]; then
               case ":$before:" in *":$prev:"*) ;; *)
                 echo "::error::PATH gained '$prev' after the agent ran"
@@ -1921,9 +1935,16 @@ jobs:
           # interior, and the loop drops it BY POSITION, one iteration behind:
           # skipping it by value would have made its own name the single string
           # this guard waves through, which is the opposite of an allowlist.
+          # The sentinel is appended in an assignment, not written next to the
+          # expansion: splitting applies to what an expansion produces, not to
+          # literal text beside it, so `$PATH:__pathguard__` gives a last field
+          # of ":__pathguard__" on bash 5 and the empty entry is never formed.
+          # bash 3.2 splits it the other way, which is why this passed on a Mac
+          # and failed on the runner.
+          padded="$PATH:__pathguard__"
           prev=
           seen=
-          for d in $PATH:__pathguard__; do
+          for d in $padded; do
             if [ -n "$seen" ]; then
               case ":$before:" in *":$prev:"*) ;; *)
                 echo "::error::PATH gained '$prev' after the agent ran"
