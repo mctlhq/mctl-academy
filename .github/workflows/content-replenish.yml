@@ -226,7 +226,7 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: candidates-${{ github.run_id }}
           path: _run/from-discover
@@ -486,7 +486,7 @@ jobs:
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
         if: steps.branch.outputs.new_pages != '0'
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
+        uses: anthropics/claude-code-action@19dda84776b3518d98b8798e591daee763049ed3 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -848,7 +848,7 @@ jobs:
         id: selector-agent-2
         if: steps.branch.outputs.new_pages != '0' && steps.selector-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
+        uses: anthropics/claude-code-action@19dda84776b3518d98b8798e591daee763049ed3 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN_2 }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -1722,7 +1722,7 @@ jobs:
         id: author-agent
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
+        uses: anthropics/claude-code-action@19dda84776b3518d98b8798e591daee763049ed3 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -2107,7 +2107,7 @@ jobs:
         id: author-agent-2
         if: steps.author-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
+        uses: anthropics/claude-code-action@19dda84776b3518d98b8798e591daee763049ed3 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN_2 }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -2788,7 +2788,7 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: handoff-${{ github.run_id }}
           path: _run/from-author
@@ -3061,7 +3061,7 @@ jobs:
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
         if: steps.items.outputs.count != '0'
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
+        uses: anthropics/claude-code-action@19dda84776b3518d98b8798e591daee763049ed3 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -3427,7 +3427,7 @@ jobs:
         id: reviewer-agent-2
         if: steps.items.outputs.count != '0' && steps.reviewer-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6b082c41935b4c8a3b8b0ef85ba4ba4d9eeb8975 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
+        uses: anthropics/claude-code-action@19dda84776b3518d98b8798e591daee763049ed3 # v1.0.189 (CLI 2.1.226, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN_2 }}
           github_token: ${{ steps.app-token.outputs.token }}
@@ -3995,7 +3995,7 @@ jobs:
 
       # After the reviewer, never before: these two files carry the selector
       # agent's own strings, and the PR body is their only consumer.
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         if: steps.items.outputs.count != '0'
         with:
           name: pr-inputs-${{ github.run_id }}
