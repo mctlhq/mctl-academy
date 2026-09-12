@@ -1219,6 +1219,15 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     1,
     "an empty PATH element is the current directory and survives word splitting",
   );
+  // The leading case above survives word splitting on its own; the trailing one
+  // does not -- bash drops a trailing empty field even when IFS is a
+  // non-whitespace character -- so it is the cheaper half of the same trick and
+  // needs the sentinel to be seen at all.
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.PATH}:` })),
+    1,
+    "a trailing colon adds the current directory to PATH and must not be dropped",
+  );
   assert.equal(
     fixture((_dir, home) => {
       mkdirSync(join(home, ".config", "git"), { recursive: true });

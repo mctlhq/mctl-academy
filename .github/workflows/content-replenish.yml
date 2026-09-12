@@ -574,11 +574,16 @@ jobs:
           before="$EXPECTED_PATH"
           old_ifs=$IFS
           IFS=:
-          for d in $PATH; do
+          # An empty entry is a real one: to PATH it means the current
+          # directory. Bash keeps leading and interior empty fields when IFS is
+          # a non-whitespace character and drops a TRAILING one -- and a
+          # trailing colon is the cheapest way to add the working directory to
+          # PATH without naming it. The sentinel makes that last field interior
+          # so the loop sees it; it is skipped by value, and it is not a path
+          # anything could resolve through.
+          for d in $PATH:__pathguard__; do
+            if [ "$d" = "__pathguard__" ]; then continue; fi
             case ":$before:" in *":$d:"*) continue ;; esac
-            # An empty entry is a real one: bash keeps empty fields when IFS is
-            # a non-whitespace character, and to PATH it means the current
-            # directory.
             echo "::error::PATH gained '$d' after the agent ran"
             bad=1
           done
@@ -1222,11 +1227,16 @@ jobs:
           before="$EXPECTED_PATH"
           old_ifs=$IFS
           IFS=:
-          for d in $PATH; do
+          # An empty entry is a real one: to PATH it means the current
+          # directory. Bash keeps leading and interior empty fields when IFS is
+          # a non-whitespace character and drops a TRAILING one -- and a
+          # trailing colon is the cheapest way to add the working directory to
+          # PATH without naming it. The sentinel makes that last field interior
+          # so the loop sees it; it is skipped by value, and it is not a path
+          # anything could resolve through.
+          for d in $PATH:__pathguard__; do
+            if [ "$d" = "__pathguard__" ]; then continue; fi
             case ":$before:" in *":$d:"*) continue ;; esac
-            # An empty entry is a real one: bash keeps empty fields when IFS is
-            # a non-whitespace character, and to PATH it means the current
-            # directory.
             echo "::error::PATH gained '$d' after the agent ran"
             bad=1
           done
@@ -1889,11 +1899,16 @@ jobs:
           before="$EXPECTED_PATH"
           old_ifs=$IFS
           IFS=:
-          for d in $PATH; do
+          # An empty entry is a real one: to PATH it means the current
+          # directory. Bash keeps leading and interior empty fields when IFS is
+          # a non-whitespace character and drops a TRAILING one -- and a
+          # trailing colon is the cheapest way to add the working directory to
+          # PATH without naming it. The sentinel makes that last field interior
+          # so the loop sees it; it is skipped by value, and it is not a path
+          # anything could resolve through.
+          for d in $PATH:__pathguard__; do
+            if [ "$d" = "__pathguard__" ]; then continue; fi
             case ":$before:" in *":$d:"*) continue ;; esac
-            # An empty entry is a real one: bash keeps empty fields when IFS is
-            # a non-whitespace character, and to PATH it means the current
-            # directory.
             echo "::error::PATH gained '$d' after the agent ran"
             bad=1
           done
