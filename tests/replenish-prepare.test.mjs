@@ -764,6 +764,31 @@ test("every commit takes its identity from the command line, not from .git/confi
   }
 });
 
+test("the artifacts that survive a failure carry the evidence and the authored bank", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // A run that fails at the agent uploads nothing else: the commit and push
+  // steps are skipped. These two are the only record of what happened, so they
+  // carry both the decision evidence and the questions the agent wrote --
+  // readable afterwards rather than promotable, which the review job still
+  // gates.
+  for (const [job, name] of [
+    ["author", "authoring-${{ github.run_id }}"],
+    ["review", "review-${{ github.run_id }}"],
+  ]) {
+    const step = workflow.jobs[job].steps.find((x) => x.with?.name === name);
+    assert.ok(step, `${job} has no ${name} artifact`);
+    assert.equal(step.if, "always()", `${name} is not uploaded when the job fails`);
+    const paths = step.with.path
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+    assert.ok(paths.includes("${{ runner.temp }}/exec/"), `${name} does not carry the execution evidence`);
+    assert.ok(paths.includes("content/questions/"), `${name} does not carry the authored questions`);
+  }
+});
+
 test("bun is pinned to the version the agent action installs under it", () => {
   const text = readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8");
   // claude-code-action embeds its own oven-sh/setup-bun. With `latest` here the
@@ -979,7 +1004,19 @@ test("an exhausted token is retried on the second one and never read as an answe
         join(dir, "claude-execution-output.json"),
         typeof result === "string" ? result : JSON.stringify(result),
       );
-    return { dir, env: { ...process.env, RUNNER_TEMP: dir, GITHUB_OUTPUT: join(dir, "out.txt"), ...env } };
+    // EXEC_TAG names the file each decision writes its evidence to. The
+    // workflow sets it on all six steps; supplying it here keeps the fixture a
+    // model of the workflow rather than of a step run without its env.
+    return {
+      dir,
+      env: {
+        ...process.env,
+        RUNNER_TEMP: dir,
+        GITHUB_OUTPUT: join(dir, "out.txt"),
+        EXEC_TAG: "fixture",
+        ...env,
+      },
+    };
   };
   const exits = (run, envs, result) => {
     const { dir, env } = stage(envs, result);
@@ -997,6 +1034,22 @@ test("an exhausted token is retried on the second one and never read as an answe
     try {
       execFileSync("bash", ["-c", run], { cwd: dir, env, stdio: ["ignore", "pipe", "pipe"] });
       return /failed=(\w+)/.exec(readFileSync(env.GITHUB_OUTPUT, "utf8"))?.[1];
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  // What the decision wrote down about itself. The step may exit non-zero --
+  // the evidence has to survive that, since a failing run is the one worth
+  // reading afterwards.
+  const evidence = (run, envs, result) => {
+    const { dir, env } = stage(envs, result);
+    try {
+      try {
+        execFileSync("bash", ["-c", run], { cwd: dir, env, stdio: ["ignore", "pipe", "pipe"] });
+      } catch {
+        /* the step failing is one of the cases under test */
+      }
+      return JSON.parse(readFileSync(join(dir, "exec", "fixture.json"), "utf8"));
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -1045,6 +1098,37 @@ test("an exhausted token is retried on the second one and never read as an answe
         decides(check.run, { OUTCOME: "success" }, []),
         "true",
         "an execution output with no result entry must retry, not pass",
+      );
+
+      // Every decision leaves behind what it decided from. The file this
+      // reads is cleared before each agent and overwritten by the next, and
+      // was never uploaded, so "why is_error" had to be guessed from step
+      // durations. Non-content fields only: the action hides the execution
+      // output deliberately, and a turn count and a cost answer the question
+      // without republishing what it hid.
+      assert.deepEqual(
+        evidence(check.run, { OUTCOME: "success" }, [
+          { type: "result", subtype: "success", is_error: false, num_turns: 7, total_cost_usd: 0.4 },
+        ]),
+        {
+          type: "result",
+          subtype: "success",
+          is_error: false,
+          num_turns: 7,
+          duration_ms: null,
+          duration_api_ms: null,
+          total_cost_usd: 0.4,
+        },
+      );
+      assert.match(
+        evidence(check.run, { OUTCOME: "success" }, null).note,
+        /wrote no execution output/,
+        "an absent execution output leaves no explanation behind",
+      );
+      assert.match(
+        evidence(check.run, { OUTCOME: "success" }, "{ truncated").note,
+        /unparseable/,
+        "an unparseable execution output leaves no explanation behind",
       );
 
       const closed = steps[last + 1];
