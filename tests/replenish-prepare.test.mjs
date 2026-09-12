@@ -312,7 +312,7 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
     assert.match(step.run, /"\$GIT" ls-files --others -z -- \$surface/);
     assert.match(step.run, /::error::/);
     assert.match(step.run, /exit 1/);
-    assert.match(step.run, /rm -rf node_modules/);
+    assert.match(step.run, /"\$RM" -rf node_modules/);
     // The lockfile pins what is installed, not what the cache hands over, and
     // the cache is a directory the runner user owns.
     // Lines, not a substring search: the comment above the command names the
@@ -781,7 +781,7 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
   );
   // Matching strings in step.run is not evidence: two of this workflow's worst
   // defects read correctly and were wrong only when executed, and no CI runs
-  // this file. So run the guard itself. Everything up to `rm -rf node_modules`
+  // this file. So run the guard itself. Everything up to the node_modules wipe
   // is the check; the install below it needs a network and is not the subject.
   // All three copies, not the first: they differ in base ref and `if:`, and
   // three hand-synchronised copies of a security check is exactly the drift
@@ -790,9 +790,15 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
     (s) => s.name === "Guard the executable surface and rebuild dependencies",
   );
   assert.equal(steps.length, 3);
-  const guards = steps.map((step) =>
-    step.run.slice(0, step.run.indexOf("rm -rf node_modules")).replace(/\$\{\{[^}]*\}\}/g, "HEAD"),
-  );
+  const guards = steps.map((step) => {
+    // Anchored on the wipe that ends the check. indexOf returning -1 here
+    // would slice to the last character instead, and the test would then run
+    // the install it exists to stop short of -- a green-looking rewrite of
+    // what is being tested. Fail on the anchor, not on its consequences.
+    const end = step.run.indexOf(String.raw`"$RM" -rf node_modules`);
+    assert.notEqual(end, -1, `${step.name} no longer ends its check at the node_modules wipe`);
+    return step.run.slice(0, end).replace(/\$\{\{[^}]*\}\}/g, "HEAD");
+  });
   // One copy anchors at the pre-agent commit, so the substitution must have
   // actually replaced something rather than being decorative.
   assert.ok(
@@ -1023,7 +1029,7 @@ test("the guards resolve their own tools from a directory the agent cannot write
       .flatMap((l) => l.split(/\|\||&&|[|;]|\$\(|\)|`/))
       .map((fragment) => fragment.trim().split(/\s+/)[0])
       .filter(Boolean);
-    for (const tool of ["sha256sum", "xargs", "sort", "find", "cut", "env", "diff", "git"]) {
+    for (const tool of ["sha256sum", "xargs", "sort", "find", "cut", "env", "diff", "git", "tr", "rm"]) {
       assert.ok(!called.includes(tool), `${step.name} calls ${tool} by name, not by path`);
     }
   }

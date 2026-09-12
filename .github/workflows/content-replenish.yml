@@ -630,6 +630,8 @@ jobs:
           ENVX=$(bin env)
           DIFF=$(bin diff)
           GIT=$(bin git)
+          TR=$(bin tr)
+          RM=$(bin rm)
           # Pure git: not one line of repository code has run since the agent
           # stopped, and that is the point. The boundary check below is itself
           # `node scripts/...`, so an agent that edited a script under scripts/
@@ -642,8 +644,8 @@ jobs:
           # bun reads .env by itself, and NODE_OPTIONS set there survives into
           # every node the install and the gates below start.
           surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc .env .env.*"
-          changed=$("$GIT" diff --name-only -z HEAD -- $surface | tr '\0' '\n')
-          created=$("$GIT" ls-files --others -z -- $surface | tr '\0' '\n')
+          changed=$("$GIT" diff --name-only -z HEAD -- $surface | "$TR" '\0' '\n')
+          created=$("$GIT" ls-files --others -z -- $surface | "$TR" '\0' '\n')
           # Node resolves imports by walking UP from the script's directory, so
           # scripts/node_modules/yaml would be loaded in preference to the root
           # one that is about to be reinstalled.
@@ -652,13 +654,13 @@ jobs:
             echo "::error::the executable surface moved after the agent ran: $changed $created $nested"
             exit 1
           fi
-          rm -rf node_modules
+          "$RM" -rf node_modules
           # The lockfile pins what is installed, not what the cache hands over:
           # bun copies packages out of ~/.bun/install/cache, which the runner
           # user owns, so a poisoned entry there would be installed under a
           # verified name. Emptying it costs a cold download on a job that runs
           # once a week.
-          bun pm cache rm || rm -rf "${HOME}/.bun/install/cache"
+          bun pm cache rm || "$RM" -rf "${HOME}/.bun/install/cache"
           bun install --frozen-lockfile
 
       # The selector agent's grant is the unscoped Write tool -- every scoped
@@ -1278,6 +1280,8 @@ jobs:
           ENVX=$(bin env)
           DIFF=$(bin diff)
           GIT=$(bin git)
+          TR=$(bin tr)
+          RM=$(bin rm)
           # Pure git: not one line of repository code has run since the agent
           # stopped, and that is the point. The boundary check below is itself
           # `node scripts/...`, so an agent that edited a script under scripts/
@@ -1290,8 +1294,8 @@ jobs:
           # bun reads .env by itself, and NODE_OPTIONS set there survives into
           # every node the install and the gates below start.
           surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc .env .env.*"
-          changed=$("$GIT" diff --name-only -z "${{ steps.base.outputs.sha }}" -- $surface | tr '\0' '\n')
-          created=$("$GIT" ls-files --others -z -- $surface | tr '\0' '\n')
+          changed=$("$GIT" diff --name-only -z "${{ steps.base.outputs.sha }}" -- $surface | "$TR" '\0' '\n')
+          created=$("$GIT" ls-files --others -z -- $surface | "$TR" '\0' '\n')
           # Node resolves imports by walking UP from the script's directory, so
           # scripts/node_modules/yaml would be loaded in preference to the root
           # one that is about to be reinstalled.
@@ -1300,13 +1304,13 @@ jobs:
             echo "::error::the executable surface moved after the agent ran: $changed $created $nested"
             exit 1
           fi
-          rm -rf node_modules
+          "$RM" -rf node_modules
           # The lockfile pins what is installed, not what the cache hands over:
           # bun copies packages out of ~/.bun/install/cache, which the runner
           # user owns, so a poisoned entry there would be installed under a
           # verified name. Emptying it costs a cold download on a job that runs
           # once a week.
-          bun pm cache rm || rm -rf "${HOME}/.bun/install/cache"
+          bun pm cache rm || "$RM" -rf "${HOME}/.bun/install/cache"
           bun install --frozen-lockfile
 
       - name: Deterministic gates on the authored content
@@ -1944,6 +1948,8 @@ jobs:
           ENVX=$(bin env)
           DIFF=$(bin diff)
           GIT=$(bin git)
+          TR=$(bin tr)
+          RM=$(bin rm)
           # Pure git: not one line of repository code has run since the agent
           # stopped, and that is the point. The boundary check below is itself
           # `node scripts/...`, so an agent that edited a script under scripts/
@@ -1956,8 +1962,8 @@ jobs:
           # bun reads .env by itself, and NODE_OPTIONS set there survives into
           # every node the install and the gates below start.
           surface="scripts .github package.json bun.lock bun.lockb bunfig.toml .npmrc .env .env.*"
-          changed=$("$GIT" diff --name-only -z HEAD -- $surface | tr '\0' '\n')
-          created=$("$GIT" ls-files --others -z -- $surface | tr '\0' '\n')
+          changed=$("$GIT" diff --name-only -z HEAD -- $surface | "$TR" '\0' '\n')
+          created=$("$GIT" ls-files --others -z -- $surface | "$TR" '\0' '\n')
           # Node resolves imports by walking UP from the script's directory, so
           # scripts/node_modules/yaml would be loaded in preference to the root
           # one that is about to be reinstalled.
@@ -1966,13 +1972,13 @@ jobs:
             echo "::error::the executable surface moved after the agent ran: $changed $created $nested"
             exit 1
           fi
-          rm -rf node_modules
+          "$RM" -rf node_modules
           # The lockfile pins what is installed, not what the cache hands over:
           # bun copies packages out of ~/.bun/install/cache, which the runner
           # user owns, so a poisoned entry there would be installed under a
           # verified name. Emptying it costs a cold download on a job that runs
           # once a week.
-          bun pm cache rm || rm -rf "${HOME}/.bun/install/cache"
+          bun pm cache rm || "$RM" -rf "${HOME}/.bun/install/cache"
           bun install --frozen-lockfile
 
       # Same reason as after the selector: the reviewer is asked for exactly
