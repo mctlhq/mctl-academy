@@ -1228,6 +1228,15 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     1,
     "a trailing colon adds the current directory to PATH and must not be dropped",
   );
+  // The sentinel that makes the trailing field interior is dropped by
+  // position. Were it dropped by value, its own name -- a literal string in a
+  // public workflow file -- would be the one entry this allowlist waves
+  // through.
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `__pathguard__:${env.PATH}` })),
+    1,
+    "the sentinel's name is not a way onto PATH",
+  );
   assert.equal(
     fixture((_dir, home) => {
       mkdirSync(join(home, ".config", "git"), { recursive: true });

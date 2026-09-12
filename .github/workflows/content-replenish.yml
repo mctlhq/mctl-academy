@@ -578,14 +578,21 @@ jobs:
           # directory. Bash keeps leading and interior empty fields when IFS is
           # a non-whitespace character and drops a TRAILING one -- and a
           # trailing colon is the cheapest way to add the working directory to
-          # PATH without naming it. The sentinel makes that last field interior
-          # so the loop sees it; it is skipped by value, and it is not a path
-          # anything could resolve through.
+          # PATH without naming it. A sentinel field makes that last one
+          # interior, and the loop drops it BY POSITION, one iteration behind:
+          # skipping it by value would have made its own name the single string
+          # this guard waves through, which is the opposite of an allowlist.
+          prev=
+          seen=
           for d in $PATH:__pathguard__; do
-            if [ "$d" = "__pathguard__" ]; then continue; fi
-            case ":$before:" in *":$d:"*) continue ;; esac
-            echo "::error::PATH gained '$d' after the agent ran"
-            bad=1
+            if [ -n "$seen" ]; then
+              case ":$before:" in *":$prev:"*) ;; *)
+                echo "::error::PATH gained '$prev' after the agent ran"
+                bad=1
+              ;; esac
+            fi
+            seen=1
+            prev=$d
           done
           IFS=$old_ifs
           [ -z "$bad" ] || exit 1
@@ -1231,14 +1238,21 @@ jobs:
           # directory. Bash keeps leading and interior empty fields when IFS is
           # a non-whitespace character and drops a TRAILING one -- and a
           # trailing colon is the cheapest way to add the working directory to
-          # PATH without naming it. The sentinel makes that last field interior
-          # so the loop sees it; it is skipped by value, and it is not a path
-          # anything could resolve through.
+          # PATH without naming it. A sentinel field makes that last one
+          # interior, and the loop drops it BY POSITION, one iteration behind:
+          # skipping it by value would have made its own name the single string
+          # this guard waves through, which is the opposite of an allowlist.
+          prev=
+          seen=
           for d in $PATH:__pathguard__; do
-            if [ "$d" = "__pathguard__" ]; then continue; fi
-            case ":$before:" in *":$d:"*) continue ;; esac
-            echo "::error::PATH gained '$d' after the agent ran"
-            bad=1
+            if [ -n "$seen" ]; then
+              case ":$before:" in *":$prev:"*) ;; *)
+                echo "::error::PATH gained '$prev' after the agent ran"
+                bad=1
+              ;; esac
+            fi
+            seen=1
+            prev=$d
           done
           IFS=$old_ifs
           [ -z "$bad" ] || exit 1
@@ -1903,14 +1917,21 @@ jobs:
           # directory. Bash keeps leading and interior empty fields when IFS is
           # a non-whitespace character and drops a TRAILING one -- and a
           # trailing colon is the cheapest way to add the working directory to
-          # PATH without naming it. The sentinel makes that last field interior
-          # so the loop sees it; it is skipped by value, and it is not a path
-          # anything could resolve through.
+          # PATH without naming it. A sentinel field makes that last one
+          # interior, and the loop drops it BY POSITION, one iteration behind:
+          # skipping it by value would have made its own name the single string
+          # this guard waves through, which is the opposite of an allowlist.
+          prev=
+          seen=
           for d in $PATH:__pathguard__; do
-            if [ "$d" = "__pathguard__" ]; then continue; fi
-            case ":$before:" in *":$d:"*) continue ;; esac
-            echo "::error::PATH gained '$d' after the agent ran"
-            bad=1
+            if [ -n "$seen" ]; then
+              case ":$before:" in *":$prev:"*) ;; *)
+                echo "::error::PATH gained '$prev' after the agent ran"
+                bad=1
+              ;; esac
+            fi
+            seen=1
+            prev=$d
           done
           IFS=$old_ifs
           [ -z "$bad" ] || exit 1
