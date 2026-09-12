@@ -266,7 +266,7 @@ test("every agent step is followed by a dependency rebuild before any repository
   const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
   // Commentary is not behaviour: a comment naming node or bun is not a run of
   // either, and reading it as one has bitten this file before. Neither is
-  // naming one in a word list -- `for c in git node bun gh` asks where they
+  // naming one in a word list -- `for c in git node bun gh npm` asks where they
   // are, it does not run them. Everything else counts: `then node ...`,
   // `do bun ...` and `env FOO=1 node ...` are all runs, and a test whose job is
   // to prove nothing runs before the rebuild must not be the thing that misses
@@ -318,7 +318,9 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
     // Lines, not a substring search: the comment above the command names the
     // cache path too, and a comment is not an emptied cache.
     const commands = step.run.split("\n").filter((l) => !/^\s*#/.test(l));
-    const purge = commands.findIndex((l) => /^\s*(bun pm cache rm|rm -rf "\$\{HOME\}\/\.bun)/.test(l));
+    const purge = commands.findIndex((l) =>
+      /^\s*(bun pm cache rm|"\$RM" -rf "\$\{HOME\}\/\.bun|rm -rf "\$\{HOME\}\/\.bun)/.test(l),
+    );
     const install = commands.findIndex((l) => /^\s*bun install/.test(l));
     assert.notEqual(purge, -1, "the install trusts whatever is in the bun cache");
     assert.ok(purge < install, "the cache is emptied after the install that reads it");
@@ -1027,7 +1029,17 @@ test("the guards resolve their own tools from a directory the agent cannot write
       .split("\n")
       .filter((l) => !/^\s*#/.test(l) && !/^\s*(bin\(\)|[A-Z]+=\$\(bin )/.test(l.trim()))
       .flatMap((l) => l.split(/\|\||&&|[|;]|\$\(|\)|`/))
-      .map((fragment) => fragment.trim().split(/\s+/)[0])
+      // The first word of a fragment is not always the command: a leading
+      // `VAR=value` run is an assignment prefix, and `then`/`else`/`do`/`!`
+      // are keywords. Taking [0] meant `LC_ALL=C "$SORT" -z` read as
+      // `LC_ALL=C`, so `sort` in the list below matched nothing that can ever
+      // appear and reverting it to the bare name kept the test green.
+      .map((fragment) =>
+        fragment
+          .trim()
+          .split(/\s+/)
+          .find((w) => !/^([A-Za-z_]\w*=|then$|else$|do$|!$)/.test(w)),
+      )
       .filter(Boolean);
     for (const tool of ["sha256sum", "xargs", "sort", "find", "cut", "env", "diff", "git", "tr", "rm"]) {
       assert.ok(!called.includes(tool), `${step.name} calls ${tool} by name, not by path`);

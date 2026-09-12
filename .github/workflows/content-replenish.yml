@@ -323,7 +323,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh; do
+              for c in git node bun gh npm; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -529,7 +529,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh; do
+              for c in git node bun gh npm; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -951,7 +951,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh; do
+              for c in git node bun gh npm; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -1174,7 +1174,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh; do
+              for c in git node bun gh npm; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -1636,7 +1636,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh; do
+              for c in git node bun gh npm; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -1841,7 +1841,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh; do
+              for c in git node bun gh npm; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
