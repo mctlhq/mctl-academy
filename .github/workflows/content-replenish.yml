@@ -323,7 +323,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh npm; do
+              for c in git node bun gh; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -529,7 +529,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh npm; do
+              for c in git node bun gh; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -741,14 +741,17 @@ jobs:
           # boundary check, so that check has nothing to exempt.
           cp _run/from-discover/content/discovery-state.yaml content/discovery-state.yaml
           set +e
-          npm run --silent snapshot:capture -- --check --mark-drifted
+          node scripts/capture-source.mjs --check --mark-drifted
           code=$?
           set -e
           # capture-source's check mode: 0 clean, 2 drift found and marked, 1 a
-          # source it could not reach. Everything else is the process dying --
-          # 137 for the OOM killer, 126 or 127 for an interpreter that will not
-          # start -- and treating
-          # "not 1" as success let those through as "no drift".
+          # source it could not reach. Called directly rather than through
+          # `npm run`, so the code is check()'s and nothing else's: npm exits 1
+          # for its own failures too -- a missing script entry, an unparseable
+          # package.json -- which this case would have reported as an
+          # unreachable source. Everything else is the process dying -- 137 for
+          # the OOM killer, 126 or 127 for an interpreter that will not start --
+          # and treating "not 1" as success let those through as "no drift".
           case "$code" in
             0|2) ;;
             1) echo "::error::live drift check could not reach a source"; exit 1 ;;
@@ -951,7 +954,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh npm; do
+              for c in git node bun gh; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -1174,7 +1177,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh npm; do
+              for c in git node bun gh; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -1636,7 +1639,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh npm; do
+              for c in git node bun gh; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done
@@ -1841,7 +1844,7 @@ jobs:
               # will resolve them. The runner user owns the directories some of
               # these live in -- ~/.bun/bin above all -- so "the agent cannot
               # write them" is false, and the next step runs `bun install`.
-              for c in git node bun gh npm; do
+              for c in git node bun gh; do
                 p=$(command -v "$c" 2>/dev/null || true)
                 if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
               done

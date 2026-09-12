@@ -266,7 +266,7 @@ test("every agent step is followed by a dependency rebuild before any repository
   const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
   // Commentary is not behaviour: a comment naming node or bun is not a run of
   // either, and reading it as one has bitten this file before. Neither is
-  // naming one in a word list -- `for c in git node bun gh npm` asks where they
+  // naming one in a word list -- `for c in git node bun gh` asks where they
   // are, it does not run them. Everything else counts: `then node ...`,
   // `do bun ...` and `env FOO=1 node ...` are all runs, and a test whose job is
   // to prove nothing runs before the rebuild must not be the thing that misses
