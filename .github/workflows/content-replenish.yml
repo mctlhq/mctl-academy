@@ -1514,7 +1514,7 @@ jobs:
           set -euo pipefail
           git add content/
           if ! git diff --staged --quiet; then
-            git commit -m "chore(replenish): capture sources, quarantine live drift, re-validate" \
+            git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "chore(replenish): capture sources, quarantine live drift, re-validate" \
               -m "Deterministic preparation for run ${{ github.run_id }}: no agent has run yet."
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -2678,7 +2678,7 @@ jobs:
           fi
           s=$(git diff --name-only origin/main -- content/sources | wc -l | tr -d ' ')
           if [ "$n" != "0" ]; then
-            git commit -m "content(replenish): author ${n} question file(s) from ${s} captured source(s)" \
+            git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "content(replenish): author ${n} question file(s) from ${s} captured source(s)" \
               -m "Authored by ${AUTHOR_ID} (${AUTHOR_MODEL}) from captured documentation; every item is review_ready and awaits the independent review recorded in the next commit."
           else
             echo "::notice::the author wrote nothing; pushing ${pending} mechanically re-validated item(s) for review"
@@ -4035,7 +4035,7 @@ jobs:
           set -euo pipefail
           git add content/questions/ docs/content/ client/src/content-bundle.json client/src/course-catalog.json
           k=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.env.receipt,"utf8"));console.log(r.questions.filter(q=>q.approved).length)')
-          git commit -m "content(replenish): promote ${k} reviewed question(s)" \
+          git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "content(replenish): promote ${k} reviewed question(s)" \
             -m "Reviewed by ${REVIEWER_ID} (${REVIEWER_MODEL}) against the two CONTENT-POLICY criteria; receipt with fingerprints committed under docs/content/. Rejected new items are dropped, rejected re-validations return to needs_review."
           git push origin "HEAD:${BRANCH}"
 

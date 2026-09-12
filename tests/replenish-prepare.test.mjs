@@ -744,6 +744,26 @@ test("the shared execution-output path is cleared before every agent", () => {
   assert.equal(cleared, 6);
 });
 
+test("every commit takes its identity from the command line, not from .git/config", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // user.name and user.email are skipped by the manifest, and have to be: the
+  // agent action rewrites both on every run. That makes .git/config the one
+  // place an agent could put a value the later steps would publish -- a commit
+  // author name reaches a branch on a public repository. `git -c` outranks the
+  // file, so the identity the commit uses is the one this workflow supplies
+  // and never the one it finds.
+  const runs = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps]
+    .map((s) => s.run)
+    .filter(Boolean);
+  const commits = runs.flatMap((r) => r.split("\n").filter((l) => /(^|\s)git\b[^\n]*\bcommit\b/.test(l)));
+  assert.equal(commits.length, 3, `expected three commit invocations, found ${commits.length}`);
+  for (const line of commits) {
+    assert.match(line, /git -c user\.name="\$BOT_NAME" -c user\.email="\$BOT_EMAIL" commit/, line.trim());
+  }
+});
+
 test("bun is pinned to the version the agent action installs under it", () => {
   const text = readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8");
   // claude-code-action embeds its own oven-sh/setup-bun. With `latest` here the
