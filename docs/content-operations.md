@@ -119,6 +119,28 @@ the agent, the job fails rather than promoting a partial result. With no second
 token configured the workflow still runs — and still fails closed, with a
 warning naming the missing secret.
 
+### Running the agents on Nebius Token Factory
+
+`workflow_dispatch` takes a `provider` input. The default, `anthropic`, is what
+the Monday cron runs, unchanged. With `provider: nebius` both jobs first start
+`scripts/nebius-relay.py` on loopback -- Token Factory speaks OpenAI
+chat-completions and the CLI speaks the Anthropic Messages API, so something has
+to translate -- point `ANTHROPIC_BASE_URL` at it, and run the author on
+`zai-org/GLM-5.3` and the reviewer on `deepseek-ai/DeepSeek-V4-Pro`. It needs one
+secret, `NEBIUS_API_KEY`; the step fails loudly rather than falling back when it
+is missing.
+
+The agent identifiers move with the models (`agent:glm-author`,
+`agent:deepseek-reviewer`). That is not cosmetic: `review-receipt.mjs` stamps the
+reviewer id into every approval it records, and a receipt naming a model that did
+not do the judging is a false provenance claim, not a label.
+
+Two things this path does not get. Token Factory has no prompt caching, so the
+system prompt is paid for in full on every turn -- the dominant cost, well above
+the per-token price. And the OAuth token is deliberately withheld from the agent
+steps: it is an Anthropic credential with no business reaching a third-party
+endpoint, so a placeholder key stands in, which the relay ignores.
+
 ## Manual replenishment run
 
 Run on a feature branch, in batches of no more than 20 questions:
