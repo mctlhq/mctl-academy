@@ -314,6 +314,7 @@ jobs:
           ENVX=$(bin env)
           DIFF=$(bin diff)
           GIT=$(bin git)
+          RM=$(bin rm)
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
           # .git/hooks, and every configuration file the tools the later steps
@@ -372,6 +373,14 @@ jobs:
           # differs after the agent step. Carry it in the output instead and
           # compare entry by entry below.
           echo "path=$PATH" >> "$GITHUB_OUTPUT"
+          # Every agent in this job writes $RUNNER_TEMP/claude-execution-output.json,
+          # and the check that decides whether THIS one ran reads that one path.
+          # Clearing it here -- the step immediately before the agent -- is what
+          # lets an absent file mean "this attempt reported nothing" rather than
+          # "the previous agent's answer". It is outside the manifest by
+          # construction: nothing above hashes $RUNNER_TEMP, so the digest this
+          # step just published is unaffected.
+          "$RM" -f "$RUNNER_TEMP/claude-execution-output.json"
 
       - name: Author agent selects pages to capture
         id: selector-agent
@@ -437,12 +446,23 @@ jobs:
           LD_DEBUG: ""
         run: |
           set -euo pipefail
+          # Resolved from root-owned /usr/bin like every other tool in this
+          # window: ~/.bun/bin is already on PATH and the runner user owns it.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          JQ=$(bin jq)
           out="$RUNNER_TEMP/claude-execution-output.json"
-          is_error=false
+          # Every agent in this job writes that one path, so the step before
+          # each agent removes it. Absent therefore means "this attempt
+          # reported nothing" -- not "the previous agent's answer" -- and it
+          # reads as failure, as does a file jq cannot parse. All three
+          # unknowns resolve to the value that RETRIES rather than the one that
+          # skips the retry, which is the whole point of deciding from the
+          # execution output instead of the step outcome.
+          is_error=true
           if [ -f "$out" ]; then
-            is_error=$(jq -r 'if type != "array" then "false"
-              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "false" end)
-              end' "$out" 2>/dev/null || echo false)
+            is_error=$("$JQ" -r 'if type != "array" then "true"
+              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
+              end' "$out" 2>/dev/null || echo true)
           fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
@@ -638,6 +658,9 @@ jobs:
           set -euo pipefail
           git checkout .
           git clean -fd
+          # The interrupted attempt's execution output is one of the things it
+          # left behind, and the retry's own check reads that same path.
+          rm -f "$RUNNER_TEMP/claude-execution-output.json"
 
       # Byte for byte the step above, with the other token: a retry that asked
       # a different question would make the two runs incomparable.
@@ -1275,6 +1298,7 @@ jobs:
           ENVX=$(bin env)
           DIFF=$(bin diff)
           GIT=$(bin git)
+          RM=$(bin rm)
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
           # .git/hooks, and every configuration file the tools the later steps
@@ -1333,6 +1357,14 @@ jobs:
           # differs after the agent step. Carry it in the output instead and
           # compare entry by entry below.
           echo "path=$PATH" >> "$GITHUB_OUTPUT"
+          # Every agent in this job writes $RUNNER_TEMP/claude-execution-output.json,
+          # and the check that decides whether THIS one ran reads that one path.
+          # Clearing it here -- the step immediately before the agent -- is what
+          # lets an absent file mean "this attempt reported nothing" rather than
+          # "the previous agent's answer". It is outside the manifest by
+          # construction: nothing above hashes $RUNNER_TEMP, so the digest this
+          # step just published is unaffected.
+          "$RM" -f "$RUNNER_TEMP/claude-execution-output.json"
 
       - name: Author agent writes review_ready questions
         id: author-agent
@@ -1415,12 +1447,23 @@ jobs:
           LD_DEBUG: ""
         run: |
           set -euo pipefail
+          # Resolved from root-owned /usr/bin like every other tool in this
+          # window: ~/.bun/bin is already on PATH and the runner user owns it.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          JQ=$(bin jq)
           out="$RUNNER_TEMP/claude-execution-output.json"
-          is_error=false
+          # Every agent in this job writes that one path, so the step before
+          # each agent removes it. Absent therefore means "this attempt
+          # reported nothing" -- not "the previous agent's answer" -- and it
+          # reads as failure, as does a file jq cannot parse. All three
+          # unknowns resolve to the value that RETRIES rather than the one that
+          # skips the retry, which is the whole point of deciding from the
+          # execution output instead of the step outcome.
+          is_error=true
           if [ -f "$out" ]; then
-            is_error=$(jq -r 'if type != "array" then "false"
-              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "false" end)
-              end' "$out" 2>/dev/null || echo false)
+            is_error=$("$JQ" -r 'if type != "array" then "true"
+              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
+              end' "$out" 2>/dev/null || echo true)
           fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
@@ -1621,6 +1664,9 @@ jobs:
           set -euo pipefail
           git checkout .
           git clean -fd
+          # The interrupted attempt's execution output is one of the things it
+          # left behind, and the retry's own check reads that same path.
+          rm -f "$RUNNER_TEMP/claude-execution-output.json"
 
       # Byte for byte the step above, with the other token: a retry that asked
       # a different question would make the two runs incomparable.
@@ -2328,6 +2374,7 @@ jobs:
           ENVX=$(bin env)
           DIFF=$(bin diff)
           GIT=$(bin git)
+          RM=$(bin rm)
           # Everything a later step trusts and no agent is told to write:
           # _run/ (which the boundary check excludes and .gitignore hides),
           # .git/hooks, and every configuration file the tools the later steps
@@ -2386,6 +2433,14 @@ jobs:
           # differs after the agent step. Carry it in the output instead and
           # compare entry by entry below.
           echo "path=$PATH" >> "$GITHUB_OUTPUT"
+          # Every agent in this job writes $RUNNER_TEMP/claude-execution-output.json,
+          # and the check that decides whether THIS one ran reads that one path.
+          # Clearing it here -- the step immediately before the agent -- is what
+          # lets an absent file mean "this attempt reported nothing" rather than
+          # "the previous agent's answer". It is outside the manifest by
+          # construction: nothing above hashes $RUNNER_TEMP, so the digest this
+          # step just published is unaffected.
+          "$RM" -f "$RUNNER_TEMP/claude-execution-output.json"
 
       - name: Independent reviewer decides per item
         id: reviewer-agent
@@ -2450,12 +2505,23 @@ jobs:
           LD_DEBUG: ""
         run: |
           set -euo pipefail
+          # Resolved from root-owned /usr/bin like every other tool in this
+          # window: ~/.bun/bin is already on PATH and the runner user owns it.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          JQ=$(bin jq)
           out="$RUNNER_TEMP/claude-execution-output.json"
-          is_error=false
+          # Every agent in this job writes that one path, so the step before
+          # each agent removes it. Absent therefore means "this attempt
+          # reported nothing" -- not "the previous agent's answer" -- and it
+          # reads as failure, as does a file jq cannot parse. All three
+          # unknowns resolve to the value that RETRIES rather than the one that
+          # skips the retry, which is the whole point of deciding from the
+          # execution output instead of the step outcome.
+          is_error=true
           if [ -f "$out" ]; then
-            is_error=$(jq -r 'if type != "array" then "false"
-              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "false" end)
-              end' "$out" 2>/dev/null || echo false)
+            is_error=$("$JQ" -r 'if type != "array" then "true"
+              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
+              end' "$out" 2>/dev/null || echo true)
           fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
@@ -2656,6 +2722,9 @@ jobs:
           set -euo pipefail
           git checkout .
           git clean -fd
+          # The interrupted attempt's execution output is one of the things it
+          # left behind, and the retry's own check reads that same path.
+          rm -f "$RUNNER_TEMP/claude-execution-output.json"
 
       # Byte for byte the step above, with the other token: a retry that asked
       # a different question would make the two runs incomparable.

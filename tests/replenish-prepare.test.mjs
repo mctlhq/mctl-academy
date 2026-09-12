@@ -710,6 +710,40 @@ test("every agent is bracketed by a snapshot and a verification of what the next
   }
 });
 
+test("the shared execution-output path is cleared before every agent", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // Every agent in a job writes $RUNNER_TEMP/claude-execution-output.json and
+  // every `-- did it run at all` check reads it. Without a clear immediately
+  // before each agent, an agent that comes back green without writing one is
+  // judged on the PREVIOUS agent's result -- and the check reads an absent
+  // file as failure, so a leftover is the only way it can wrongly pass.
+  const PATH_RE = /RUNNER_TEMP.*claude-execution-output\.json/;
+  let cleared = 0;
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    steps.forEach((step, i) => {
+      if (!step.uses?.startsWith("anthropics/claude-code-action@")) return;
+      const before = steps[i - 1];
+      assert.ok(before?.run, `${job}: ${step.name} is not preceded by a shell step`);
+      const rm = before.run
+        .split("\n")
+        .filter((l) => !/^\s*#/.test(l))
+        .some((l) => /\brm\b|"\$RM"/.test(l) && PATH_RE.test(l));
+      assert.ok(rm, `${job}: ${before.name} does not clear the execution output before ${step.name}`);
+      assert.equal(
+        before.if ?? null,
+        step.if ?? null,
+        `${job}: ${before.name} clears on a different condition than ${step.name} runs on`,
+      );
+      cleared += 1;
+    });
+  }
+  // Three agents, each with a primary and a retry.
+  assert.equal(cleared, 6);
+});
+
 test("the reset that precedes a retry is itself preceded by the verification", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -854,7 +888,13 @@ test("an exhausted token is retried on the second one and never read as an answe
   // enough to write one.
   const stage = (env, result) => {
     const dir = mkdtempSync(join(tmpdir(), "academy-token-"));
-    if (result) writeFileSync(join(dir, "claude-execution-output.json"), JSON.stringify(result));
+    // A string is written raw, so a case can stage bytes jq cannot parse --
+    // a run killed mid-write. Anything else is serialised as JSON.
+    if (result !== null && result !== undefined)
+      writeFileSync(
+        join(dir, "claude-execution-output.json"),
+        typeof result === "string" ? result : JSON.stringify(result),
+      );
     return { dir, env: { ...process.env, RUNNER_TEMP: dir, GITHUB_OUTPUT: join(dir, "out.txt"), ...env } };
   };
   const exits = (run, envs, result) => {
@@ -901,7 +941,27 @@ test("an exhausted token is retried on the second one and never read as an answe
         decides(check.run, { OUTCOME: "success" }, [{ type: "result", is_error: false }]),
         "false",
       );
-      assert.equal(decides(check.run, { OUTCOME: "success" }, null), "false", "no file is not a failure");
+      // Fail closed on every "we could not tell" state. Each agent in a job
+      // writes one shared $RUNNER_TEMP path, so absent means this attempt
+      // reported nothing -- the step before each agent clears it -- and an
+      // unparseable file means the same. Both must reach the value that
+      // RETRIES; reading either as success is how the check silently degrades
+      // back to trusting the step outcome, which is what it exists not to do.
+      assert.equal(
+        decides(check.run, { OUTCOME: "success" }, null),
+        "true",
+        "an absent execution output must retry, not pass",
+      );
+      assert.equal(
+        decides(check.run, { OUTCOME: "success" }, "{ truncated"),
+        "true",
+        "an unparseable execution output must retry, not pass",
+      );
+      assert.equal(
+        decides(check.run, { OUTCOME: "success" }, []),
+        "true",
+        "an execution output with no result entry must retry, not pass",
+      );
 
       const closed = steps[last + 1];
       assert.equal(closed.name, "Neither token could run this agent");
