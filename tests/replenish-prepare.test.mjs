@@ -1219,12 +1219,18 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     1,
     "an empty PATH element is the current directory and survives word splitting",
   );
+  // Both remaining cases are about the SHAPE of PATH, so neither may depend on
+  // the shape the runner happens to hand the job: an ambient empty field makes
+  // another one legitimate -- correctly, it was there before the agent -- and
+  // the case would then prove nothing. `pinned` removes empty fields before
+  // the snapshot, so the planted one is the only one.
+  const pinned = (_dir, _home, env) => ({ PATH: env.PATH.split(":").filter(Boolean).join(":") });
   // The leading case above survives word splitting on its own; the trailing one
   // does not -- bash drops a trailing empty field even when IFS is a
   // non-whitespace character -- so it is the cheaper half of the same trick and
   // needs the sentinel to be seen at all.
   assert.equal(
-    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.PATH}:` })),
+    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.PATH}:` }), pinned),
     1,
     "a trailing colon adds the current directory to PATH and must not be dropped",
   );
@@ -1233,7 +1239,7 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
   // public workflow file -- would be the one entry this allowlist waves
   // through.
   assert.equal(
-    fixture((_dir, _home, env) => ({ ...env, PATH: `__pathguard__:${env.PATH}` })),
+    fixture((_dir, _home, env) => ({ ...env, PATH: `__pathguard__:${env.PATH}` }), pinned),
     1,
     "the sentinel's name is not a way onto PATH",
   );
