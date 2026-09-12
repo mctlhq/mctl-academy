@@ -1,0 +1,35 @@
+schema_version: 1
+id: q-7b4e0d92c5a8
+status: review_ready
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: When creating an embedding, which request parameters must be supplied?
+options:
+  - id: a
+    text: Only the model
+    correct: false
+    explanation: The model is required, but it is not sufficient on its own; the
+      text to embed must also be supplied.
+  - id: b
+    text: Only the input text
+    correct: false
+    explanation: The input is required, but the request must also name the model
+      that produces the embedding.
+  - id: c
+    text: The model and the input text
+    correct: true
+    explanation: The EmbeddingRequest schema marks exactly `model` and `input` as
+      the required fields.
+  - id: d
+    text: The model, the input text, and an encoding_format
+    correct: false
+    explanation: encoding_format is optional with a default of float, not a required
+      field.
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: "required: - model - input title: EmbeddingRequest"
+    source_sha256: b916c7f9ea8e38049b873ba445620ad4a55ea1eb2e2df62027c38fb137c985db
+authored:
+  by: agent:claude-author
+  at: 2026-09-12T22:44:56Z
+course_id: agentic-ai-builder
