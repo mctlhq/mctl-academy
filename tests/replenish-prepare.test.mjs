@@ -988,6 +988,25 @@ test("an exhausted token is retried on the second one and never read as an answe
         ]),
         1,
       );
+      // The same three unknowns as its sibling check, and for the same reason:
+      // the reset before every retry clears this path, so an absent file here
+      // is the retry reporting nothing -- the green-step-that-never-ran shape
+      // this step is named for -- not a silent pass.
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, null),
+        1,
+        "a retry that wrote no execution output must fail the job here",
+      );
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, "{ truncated"),
+        1,
+        "an unparseable execution output must fail the job here",
+      );
+      assert.equal(
+        exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, []),
+        1,
+        "an execution output with no result entry must fail the job here",
+      );
       assert.equal(
         exits(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, [
           { type: "result", is_error: false },

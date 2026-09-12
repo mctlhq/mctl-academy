@@ -729,12 +729,22 @@ jobs:
             echo "::error::the primary token could not run the agent and no fallback token is configured"
             exit 1
           fi
+          # Resolved from root-owned /usr/bin, like its sibling check and every
+          # other tool in this window.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          JQ=$(bin jq)
           out="$RUNNER_TEMP/claude-execution-output.json"
-          is_error=false
+          # Same default as the `-- did it run at all` check, and it has to be:
+          # the reset before every retry now clears this path, so an absent file
+          # here means the retry reported nothing -- the green-step-that-never-
+          # ran shape this step exists to catch -- where before the clear it
+          # still held the primary's is_error and this step failed closed by
+          # accident. Absent, unparseable and result-less are all failures.
+          is_error=true
           if [ -f "$out" ]; then
-            is_error=$(jq -r 'if type != "array" then "false"
-              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "false" end)
-              end' "$out" 2>/dev/null || echo false)
+            is_error=$("$JQ" -r 'if type != "array" then "true"
+              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
+              end' "$out" 2>/dev/null || echo true)
           fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::error::neither token could run the agent"
@@ -1754,12 +1764,22 @@ jobs:
             echo "::error::the primary token could not run the agent and no fallback token is configured"
             exit 1
           fi
+          # Resolved from root-owned /usr/bin, like its sibling check and every
+          # other tool in this window.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          JQ=$(bin jq)
           out="$RUNNER_TEMP/claude-execution-output.json"
-          is_error=false
+          # Same default as the `-- did it run at all` check, and it has to be:
+          # the reset before every retry now clears this path, so an absent file
+          # here means the retry reported nothing -- the green-step-that-never-
+          # ran shape this step exists to catch -- where before the clear it
+          # still held the primary's is_error and this step failed closed by
+          # accident. Absent, unparseable and result-less are all failures.
+          is_error=true
           if [ -f "$out" ]; then
-            is_error=$(jq -r 'if type != "array" then "false"
-              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "false" end)
-              end' "$out" 2>/dev/null || echo false)
+            is_error=$("$JQ" -r 'if type != "array" then "true"
+              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
+              end' "$out" 2>/dev/null || echo true)
           fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::error::neither token could run the agent"
@@ -2792,12 +2812,22 @@ jobs:
             echo "::error::the primary token could not run the agent and no fallback token is configured"
             exit 1
           fi
+          # Resolved from root-owned /usr/bin, like its sibling check and every
+          # other tool in this window.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          JQ=$(bin jq)
           out="$RUNNER_TEMP/claude-execution-output.json"
-          is_error=false
+          # Same default as the `-- did it run at all` check, and it has to be:
+          # the reset before every retry now clears this path, so an absent file
+          # here means the retry reported nothing -- the green-step-that-never-
+          # ran shape this step exists to catch -- where before the clear it
+          # still held the primary's is_error and this step failed closed by
+          # accident. Absent, unparseable and result-less are all failures.
+          is_error=true
           if [ -f "$out" ]; then
-            is_error=$(jq -r 'if type != "array" then "false"
-              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "false" end)
-              end' "$out" 2>/dev/null || echo false)
+            is_error=$("$JQ" -r 'if type != "array" then "true"
+              else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
+              end' "$out" 2>/dev/null || echo true)
           fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::error::neither token could run the agent"
