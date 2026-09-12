@@ -299,9 +299,7 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null, pro
         // guardChanges stays pure: the caller that reads from disk is also the
         // one that can say WHY the parser refused the file.
         const why = problemNow?.(file);
-        problems.push(
-          `${file} is not parseable YAML after authoring${why ? `: ${why}` : ""}`,
-        );
+        problems.push(`${file} is not parseable YAML after authoring${why ? `: ${why}` : ""}`);
       }
     }
   }

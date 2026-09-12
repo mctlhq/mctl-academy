@@ -1789,7 +1789,7 @@ jobs:
             - one file content/questions/<id>.yaml, id = "q-" plus 12 random lowercase hex
               characters that no existing file uses; preserve the key order of existing files
             - `course_id`, `domain`, `objective` from the course maps; `status: review_ready`;
-              `authored: { by: "agent:claude-author", at: <the "now" value from _run/limits.json,
+              `authored: { by: "${{ env.AUTHOR_ID }}", at: <the "now" value from _run/limits.json,
               copied exactly> }`; no `reviewed` block
             - the stem tests one documented fact or behaviour; exactly one option is correct and
               the three distractors are alternatives the same page or the product documents
@@ -2175,7 +2175,7 @@ jobs:
             - one file content/questions/<id>.yaml, id = "q-" plus 12 random lowercase hex
               characters that no existing file uses; preserve the key order of existing files
             - `course_id`, `domain`, `objective` from the course maps; `status: review_ready`;
-              `authored: { by: "agent:claude-author", at: <the "now" value from _run/limits.json,
+              `authored: { by: "${{ env.AUTHOR_ID }}", at: <the "now" value from _run/limits.json,
               copied exactly> }`; no `reviewed` block
             - the stem tests one documented fact or behaviour; exactly one option is correct and
               the three distractors are alternatives the same page or the product documents
