@@ -454,6 +454,168 @@ jobs:
       # A retry must not start on top of half of the first attempt. _run/ and
       # node_modules/ are gitignored and survive; _agent/ is deliberately not,
       # so whatever the interrupted attempt left there goes.
+      # The reset below is the first `git` after an agent, and `git checkout .`
+      # materialises paths through any smudge filter named in .git/config -- a
+      # shell command, needing none of the execute bit the Write tool cannot
+      # set -- and fires .git/hooks. Those are exactly the surfaces the snapshot
+      # covers, and until this step the comparison ran AFTER the reset had
+      # already executed them: a primary attempt that tampered and then burned
+      # its turn budget reached its own payload through the cleanup meant to
+      # contain it, and `git clean -fd` erased the evidence the later boundary
+      # check exists to report. The same verification now runs first, on the
+      # same condition, so a tampered tree fails the job here and the retry
+      # starts from a tree this guard has vouched for. Byte for byte the copy
+      # that follows the fallback agent; the drift assertion in
+      # tests/replenish-prepare.test.mjs keeps every copy identical, which is
+      # what makes one executed fixture evidence about all of them.
+      - name: Nothing the next steps trust moved (before the reset)
+        if: steps.branch.outputs.new_pages != '0' && steps.selector-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
+        env:
+          # Read while the shell or the loader starts, before the first line of
+          # this script: a check written inside the script has already lost.
+          # $GITHUB_ENV carries them from the agent's step into every step that
+          # follows, and a step-level env: is what outranks that. On every
+          # shell step of these jobs, not only the ones around an agent -- the
+          # boundary check, the capture holding the R2 keys and the pushes
+          # carrying the App token all start a bash too. Setting them here also
+          # means the environment comparison sees the same names on both sides,
+          # which is the point: they are neutral there because they are neutral
+          # everywhere.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_AUDIT: ""
+          LD_DEBUG: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset a
+          # variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
+          EXPECTED_DIGEST: ${{ steps.selector-guard.outputs.digest }}
+          EXPECTED_PATH: ${{ steps.selector-guard.outputs.path }}
+        run: |
+          set -euo pipefail
+          # Every utility below is resolved from /usr/bin, which is root-owned,
+          # rather than from PATH. A file named sha256sum or env dropped into a
+          # directory that is ALREADY on PATH -- ~/.bun/bin is on it and the
+          # runner user owns it -- would be resolved by this very script, and a
+          # sha256sum that prints the expected digest, or an env that filters a
+          # variable out of its own output, defeats the check from inside. The
+          # fallback keeps the block runnable off a runner, where these live
+          # elsewhere.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          SHA=$(bin sha256sum)
+          FIND=$(bin find)
+          SORT=$(bin sort)
+          XARGS=$(bin xargs)
+          CUT=$(bin cut)
+          ENVX=$(bin env)
+          DIFF=$(bin diff)
+          GIT=$(bin git)
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
+          manifest() {
+            {
+              "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
+                if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
+              done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              "$ENVX" -0 | LC_ALL=C "$SORT" -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  # No arm for INPUT_* or STATE_*: the runner sets those when it
+                  # invokes an action, never for a `run:` step like this one, so
+                  # excluding them would hide the one namespace whose only
+                  # possible origin here is $GITHUB_ENV -- and download-artifact
+                  # below reads INPUT_GITHUB-TOKEN, INPUT_REPOSITORY and
+                  # INPUT_RUN-ID from exactly there.
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | "$SHA" | "$CUT" -d" " -f1)"
+              done
+            }
+          }
+          now="${RUNNER_TEMP}/selector-guard-after.txt"
+          manifest > "$now"
+          if [ "$("$SHA" < "$now" | "$CUT" -d" " -f1)" != "$EXPECTED_DIGEST" ]; then
+            echo "::error::the agent changed a file the following steps trust"
+            "$DIFF" "${RUNNER_TEMP}/selector-guard.txt" "$now" || true
+            exit 1
+          fi
+          bad=""
+          # $GITHUB_PATH *prepends*, so one line appended to it wins every
+          # command resolution in every following step. An allowlist, not a
+          # list of bad shapes: nothing may appear on PATH that was not there
+          # before the agent ran. This workflow's own setup-bun step has
+          # already put the bun directory there, so the action's copy of that
+          # step adds nothing new; anything the agent put there -- $HOME/bin as
+          # much as the workspace -- fails the run and is named in the error.
+          before="$EXPECTED_PATH"
+          old_ifs=$IFS
+          IFS=:
+          # An empty entry is a real one: to PATH it means the current
+          # directory. Bash keeps leading and interior empty fields when IFS is
+          # a non-whitespace character and drops a TRAILING one -- and a
+          # trailing colon is the cheapest way to add the working directory to
+          # PATH without naming it. A sentinel field makes that last one
+          # interior, and the loop drops it BY POSITION, one iteration behind:
+          # skipping it by value would have made its own name the single string
+          # this guard waves through, which is the opposite of an allowlist.
+          # The sentinel is appended in an assignment, not written next to the
+          # expansion: splitting applies to what an expansion produces, not to
+          # literal text beside it, so `$PATH:__pathguard__` gives a last field
+          # of ":__pathguard__" on bash 5 and the empty entry is never formed.
+          # bash 3.2 splits it the other way, which is why this passed on a Mac
+          # and failed on the runner.
+          padded="$PATH:__pathguard__"
+          prev=
+          seen=
+          for d in $padded; do
+            if [ -n "$seen" ]; then
+              case ":$before:" in *":$prev:"*) ;; *)
+                echo "::error::PATH gained '$prev' after the agent ran"
+                bad=1
+              ;; esac
+            fi
+            seen=1
+            prev=$d
+          done
+          IFS=$old_ifs
+          [ -z "$bad" ] || exit 1
+
+      # Same reason as after the other two agents; the step's own comments carry
+      # the argument.
+
       - name: Undo what the interrupted attempt left behind
         if: steps.branch.outputs.new_pages != '0' && steps.selector-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         env:
@@ -1270,6 +1432,173 @@ jobs:
       # A retry must not start on top of half of the first attempt. _run/ and
       # node_modules/ are gitignored and survive; _agent/ is deliberately not,
       # so whatever the interrupted attempt left there goes.
+      # The reset below is the first `git` after an agent, and `git checkout .`
+      # materialises paths through any smudge filter named in .git/config -- a
+      # shell command, needing none of the execute bit the Write tool cannot
+      # set -- and fires .git/hooks. Those are exactly the surfaces the snapshot
+      # covers, and until this step the comparison ran AFTER the reset had
+      # already executed them: a primary attempt that tampered and then burned
+      # its turn budget reached its own payload through the cleanup meant to
+      # contain it, and `git clean -fd` erased the evidence the later boundary
+      # check exists to report. The same verification now runs first, on the
+      # same condition, so a tampered tree fails the job here and the retry
+      # starts from a tree this guard has vouched for. Byte for byte the copy
+      # that follows the fallback agent; the drift assertion in
+      # tests/replenish-prepare.test.mjs keeps every copy identical, which is
+      # what makes one executed fixture evidence about all of them.
+      - name: Nothing the next steps trust moved (before the reset)
+        if: steps.author-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
+        env:
+          # Read while the shell or the loader starts, before the first line of
+          # this script: a check written inside the script has already lost.
+          # $GITHUB_ENV carries them from the agent's step into every step that
+          # follows, and a step-level env: is what outranks that. On every
+          # shell step of these jobs, not only the ones around an agent -- the
+          # boundary check, the capture holding the R2 keys and the pushes
+          # carrying the App token all start a bash too. Setting them here also
+          # means the environment comparison sees the same names on both sides,
+          # which is the point: they are neutral there because they are neutral
+          # everywhere.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_AUDIT: ""
+          LD_DEBUG: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset a
+          # variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
+          EXPECTED_DIGEST: ${{ steps.author-guard.outputs.digest }}
+          EXPECTED_PATH: ${{ steps.author-guard.outputs.path }}
+        run: |
+          set -euo pipefail
+          # Every utility below is resolved from /usr/bin, which is root-owned,
+          # rather than from PATH. A file named sha256sum or env dropped into a
+          # directory that is ALREADY on PATH -- ~/.bun/bin is on it and the
+          # runner user owns it -- would be resolved by this very script, and a
+          # sha256sum that prints the expected digest, or an env that filters a
+          # variable out of its own output, defeats the check from inside. The
+          # fallback keeps the block runnable off a runner, where these live
+          # elsewhere.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          SHA=$(bin sha256sum)
+          FIND=$(bin find)
+          SORT=$(bin sort)
+          XARGS=$(bin xargs)
+          CUT=$(bin cut)
+          ENVX=$(bin env)
+          DIFF=$(bin diff)
+          GIT=$(bin git)
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
+          manifest() {
+            {
+              "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
+                if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
+              done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              "$ENVX" -0 | LC_ALL=C "$SORT" -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  # No arm for INPUT_* or STATE_*: the runner sets those when it
+                  # invokes an action, never for a `run:` step like this one, so
+                  # excluding them would hide the one namespace whose only
+                  # possible origin here is $GITHUB_ENV -- and download-artifact
+                  # below reads INPUT_GITHUB-TOKEN, INPUT_REPOSITORY and
+                  # INPUT_RUN-ID from exactly there.
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | "$SHA" | "$CUT" -d" " -f1)"
+              done
+            }
+          }
+          now="${RUNNER_TEMP}/author-guard-after.txt"
+          manifest > "$now"
+          if [ "$("$SHA" < "$now" | "$CUT" -d" " -f1)" != "$EXPECTED_DIGEST" ]; then
+            echo "::error::the agent changed a file the following steps trust"
+            "$DIFF" "${RUNNER_TEMP}/author-guard.txt" "$now" || true
+            exit 1
+          fi
+          bad=""
+          # $GITHUB_PATH *prepends*, so one line appended to it wins every
+          # command resolution in every following step. An allowlist, not a
+          # list of bad shapes: nothing may appear on PATH that was not there
+          # before the agent ran. This workflow's own setup-bun step has
+          # already put the bun directory there, so the action's copy of that
+          # step adds nothing new; anything the agent put there -- $HOME/bin as
+          # much as the workspace -- fails the run and is named in the error.
+          before="$EXPECTED_PATH"
+          old_ifs=$IFS
+          IFS=:
+          # An empty entry is a real one: to PATH it means the current
+          # directory. Bash keeps leading and interior empty fields when IFS is
+          # a non-whitespace character and drops a TRAILING one -- and a
+          # trailing colon is the cheapest way to add the working directory to
+          # PATH without naming it. A sentinel field makes that last one
+          # interior, and the loop drops it BY POSITION, one iteration behind:
+          # skipping it by value would have made its own name the single string
+          # this guard waves through, which is the opposite of an allowlist.
+          # The sentinel is appended in an assignment, not written next to the
+          # expansion: splitting applies to what an expansion produces, not to
+          # literal text beside it, so `$PATH:__pathguard__` gives a last field
+          # of ":__pathguard__" on bash 5 and the empty entry is never formed.
+          # bash 3.2 splits it the other way, which is why this passed on a Mac
+          # and failed on the runner.
+          padded="$PATH:__pathguard__"
+          prev=
+          seen=
+          for d in $padded; do
+            if [ -n "$seen" ]; then
+              case ":$before:" in *":$prev:"*) ;; *)
+                echo "::error::PATH gained '$prev' after the agent ran"
+                bad=1
+              ;; esac
+            fi
+            seen=1
+            prev=$d
+          done
+          IFS=$old_ifs
+          [ -z "$bad" ] || exit 1
+
+      # node_modules is exempt from the boundary check because `bun install`
+      # leaves tens of thousands of untracked files there, and the agents write
+      # under an unscoped grant, so nothing stops a write landing in it. Such a
+      # write would execute as soon as the next `node` resolves an import,
+      # which is the boundary check itself. So the dependencies are discarded
+      # and reinstalled, and the executable surface is checked, before ANY
+      # repository code runs again.
+
       - name: Undo what the interrupted attempt left behind
         if: steps.author-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         env:
@@ -2138,6 +2467,173 @@ jobs:
       # A retry must not start on top of half of the first attempt. _run/ and
       # node_modules/ are gitignored and survive; _agent/ is deliberately not,
       # so whatever the interrupted attempt left there goes.
+      # The reset below is the first `git` after an agent, and `git checkout .`
+      # materialises paths through any smudge filter named in .git/config -- a
+      # shell command, needing none of the execute bit the Write tool cannot
+      # set -- and fires .git/hooks. Those are exactly the surfaces the snapshot
+      # covers, and until this step the comparison ran AFTER the reset had
+      # already executed them: a primary attempt that tampered and then burned
+      # its turn budget reached its own payload through the cleanup meant to
+      # contain it, and `git clean -fd` erased the evidence the later boundary
+      # check exists to report. The same verification now runs first, on the
+      # same condition, so a tampered tree fails the job here and the retry
+      # starts from a tree this guard has vouched for. Byte for byte the copy
+      # that follows the fallback agent; the drift assertion in
+      # tests/replenish-prepare.test.mjs keeps every copy identical, which is
+      # what makes one executed fixture evidence about all of them.
+      - name: Nothing the next steps trust moved (before the reset)
+        if: steps.items.outputs.count != '0' && steps.reviewer-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
+        env:
+          # Read while the shell or the loader starts, before the first line of
+          # this script: a check written inside the script has already lost.
+          # $GITHUB_ENV carries them from the agent's step into every step that
+          # follows, and a step-level env: is what outranks that. On every
+          # shell step of these jobs, not only the ones around an agent -- the
+          # boundary check, the capture holding the R2 keys and the pushes
+          # carrying the App token all start a bash too. Setting them here also
+          # means the environment comparison sees the same names on both sides,
+          # which is the point: they are neutral there because they are neutral
+          # everywhere.
+          BASH_ENV: ""
+          ENV: ""
+          SHELLOPTS: ""
+          BASHOPTS: ""
+          PS4: ""
+          LD_PRELOAD: ""
+          LD_AUDIT: ""
+          LD_DEBUG: ""
+          # Not "": the loader splits this like PATH, where an empty entry
+          # means the current directory, and Actions offers no way to unset a
+          # variable the agent may have set.
+          LD_LIBRARY_PATH: /nonexistent
+          EXPECTED_DIGEST: ${{ steps.reviewer-guard.outputs.digest }}
+          EXPECTED_PATH: ${{ steps.reviewer-guard.outputs.path }}
+        run: |
+          set -euo pipefail
+          # Every utility below is resolved from /usr/bin, which is root-owned,
+          # rather than from PATH. A file named sha256sum or env dropped into a
+          # directory that is ALREADY on PATH -- ~/.bun/bin is on it and the
+          # runner user owns it -- would be resolved by this very script, and a
+          # sha256sum that prints the expected digest, or an env that filters a
+          # variable out of its own output, defeats the check from inside. The
+          # fallback keeps the block runnable off a runner, where these live
+          # elsewhere.
+          bin() { if [ -x "/usr/bin/$1" ]; then printf %s "/usr/bin/$1"; else command -v "$1"; fi; }
+          SHA=$(bin sha256sum)
+          FIND=$(bin find)
+          SORT=$(bin sort)
+          XARGS=$(bin xargs)
+          CUT=$(bin cut)
+          ENVX=$(bin env)
+          DIFF=$(bin diff)
+          GIT=$(bin git)
+          # Everything a later step trusts and no agent is told to write:
+          # _run/ (which the boundary check excludes and .gitignore hides),
+          # .git/hooks, and every configuration file the tools the later steps
+          # run will read. This is deliberately not a snapshot of the machine
+          # -- node_modules, the bun cache and the action's own temp churn on
+          # every run -- but of what those steps execute or read as config:
+          # git's three config levels (system, XDG or $HOME, repository; git
+          # reads the XDG file *in addition to* ~/.gitconfig, and one
+          # core.hooksPath there is arbitrary code on the next git command),
+          # npm's and bun's per-user files, and the resolution of PATH itself.
+          # The lines carry absolute paths, so repointing $HOME or
+          # $XDG_CONFIG_HOME through $GITHUB_ENV changes the manifest as surely
+          # as editing the file it lands on.
+          manifest() {
+            {
+              "$FIND" _run .git/hooks -type f -print0 2>/dev/null | LC_ALL=C "$SORT" -z | "$XARGS" -0 -r "$SHA"
+              for f in .git/config "$HOME/.gitconfig" "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+                       /etc/gitconfig "$HOME/.npmrc" "$HOME/.bunfig.toml"; do
+                if [ -f "$f" ]; then "$SHA" "$f"; else echo "absent $f"; fi
+              done
+              # The binaries themselves, resolved the way the following steps
+              # will resolve them. The runner user owns the directories some of
+              # these live in -- ~/.bun/bin above all -- so "the agent cannot
+              # write them" is false, and the next step runs `bun install`.
+              for c in git node bun gh; do
+                p=$(command -v "$c" 2>/dev/null || true)
+                if [ -n "$p" ]; then "$SHA" "$p"; else echo "absent $c"; fi
+              done
+              # Every environment variable, not a list of the dangerous ones:
+              # $GITHUB_ENV is a per-step file, so the agent's copy is gone by
+              # the time this runs, but what it did is visible here. Values are
+              # hashed, so the diff this feeds names variables and never prints
+              # a secret. Excluded are the ones the runner legitimately changes
+              # between two steps, plus PATH, which is compared entry by entry
+              # below because the action's own setup-bun step touches it.
+              "$ENVX" -0 | LC_ALL=C "$SORT" -z | while IFS= read -r -d '' kv; do
+                case "${kv%%=*}" in
+                  PATH|EXPECTED_DIGEST|EXPECTED_PATH) continue ;;
+                  GITHUB_ACTION|GITHUB_ACTION_PATH|GITHUB_ACTION_REPOSITORY) continue ;;
+                  GITHUB_ENV|GITHUB_PATH|GITHUB_OUTPUT|GITHUB_STATE|GITHUB_STEP_SUMMARY) continue ;;
+                  # No arm for INPUT_* or STATE_*: the runner sets those when it
+                  # invokes an action, never for a `run:` step like this one, so
+                  # excluding them would hide the one namespace whose only
+                  # possible origin here is $GITHUB_ENV -- and download-artifact
+                  # below reads INPUT_GITHUB-TOKEN, INPUT_REPOSITORY and
+                  # INPUT_RUN-ID from exactly there.
+                esac
+                printf '%s %s\n' "${kv%%=*}" "$(printf '%s' "${kv#*=}" | "$SHA" | "$CUT" -d" " -f1)"
+              done
+            }
+          }
+          now="${RUNNER_TEMP}/reviewer-guard-after.txt"
+          manifest > "$now"
+          if [ "$("$SHA" < "$now" | "$CUT" -d" " -f1)" != "$EXPECTED_DIGEST" ]; then
+            echo "::error::the agent changed a file the following steps trust"
+            "$DIFF" "${RUNNER_TEMP}/reviewer-guard.txt" "$now" || true
+            exit 1
+          fi
+          bad=""
+          # $GITHUB_PATH *prepends*, so one line appended to it wins every
+          # command resolution in every following step. An allowlist, not a
+          # list of bad shapes: nothing may appear on PATH that was not there
+          # before the agent ran. This workflow's own setup-bun step has
+          # already put the bun directory there, so the action's copy of that
+          # step adds nothing new; anything the agent put there -- $HOME/bin as
+          # much as the workspace -- fails the run and is named in the error.
+          before="$EXPECTED_PATH"
+          old_ifs=$IFS
+          IFS=:
+          # An empty entry is a real one: to PATH it means the current
+          # directory. Bash keeps leading and interior empty fields when IFS is
+          # a non-whitespace character and drops a TRAILING one -- and a
+          # trailing colon is the cheapest way to add the working directory to
+          # PATH without naming it. A sentinel field makes that last one
+          # interior, and the loop drops it BY POSITION, one iteration behind:
+          # skipping it by value would have made its own name the single string
+          # this guard waves through, which is the opposite of an allowlist.
+          # The sentinel is appended in an assignment, not written next to the
+          # expansion: splitting applies to what an expansion produces, not to
+          # literal text beside it, so `$PATH:__pathguard__` gives a last field
+          # of ":__pathguard__" on bash 5 and the empty entry is never formed.
+          # bash 3.2 splits it the other way, which is why this passed on a Mac
+          # and failed on the runner.
+          padded="$PATH:__pathguard__"
+          prev=
+          seen=
+          for d in $padded; do
+            if [ -n "$seen" ]; then
+              case ":$before:" in *":$prev:"*) ;; *)
+                echo "::error::PATH gained '$prev' after the agent ran"
+                bad=1
+              ;; esac
+            fi
+            seen=1
+            prev=$d
+          done
+          IFS=$old_ifs
+          [ -z "$bad" ] || exit 1
+
+      # node_modules is exempt from the boundary check because `bun install`
+      # leaves tens of thousands of untracked files there, and the agents write
+      # under an unscoped grant, so nothing stops a write landing in it. Such a
+      # write would execute as soon as the next `node` resolves an import,
+      # which is the boundary check itself. So the dependencies are discarded
+      # and reinstalled, and the executable surface is checked, before ANY
+      # repository code runs again.
+
       - name: Undo what the interrupted attempt left behind
         if: steps.items.outputs.count != '0' && steps.reviewer-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         env:

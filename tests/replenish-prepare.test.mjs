@@ -710,6 +710,58 @@ test("every agent is bracketed by a snapshot and a verification of what the next
   }
 });
 
+test("the reset that precedes a retry is itself preceded by the verification", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // `git checkout .` runs smudge filters named in .git/config as shell commands
+  // and fires .git/hooks -- the surfaces the snapshot hashes. Run it before the
+  // digest comparison and the cleanup executes the payload it exists to remove,
+  // and `git clean -fd` then deletes what the later boundary check would have
+  // reported. So the comparison has to happen first, under the same condition:
+  // a reset that runs when the verification did not is the whole bug.
+  const RESET = "Undo what the interrupted attempt left behind";
+  const PRE = "Nothing the next steps trust moved (before the reset)";
+  let checked = 0;
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    steps.forEach((step, i) => {
+      if (step.name !== RESET) return;
+      const before = steps[i - 1];
+      assert.equal(before?.name, PRE, `${job}: nothing verifies before the reset at step ${i}`);
+      assert.equal(
+        before.if ?? null,
+        step.if ?? null,
+        `${job}: the verification before the reset runs on a different condition`,
+      );
+      // Byte for byte the copy that follows the fallback agent, so the executed
+      // fixture over one copy is evidence about this one too. A weakened
+      // duplicate would pass a name check and prove nothing.
+      const post = steps.slice(i).find((s) => s.name === "Nothing the next steps trust moved");
+      assert.ok(post, `${job}: no post-agent verification after the reset at step ${i}`);
+      assert.equal(before.run, post.run, `${job}: the pre-reset verification has drifted from the post one`);
+      assert.deepEqual(before.env, post.env, `${job}: the pre-reset verification reads a different digest`);
+      // And it is the FIRST git of the window: nothing between the agent and
+      // this step may run one.
+      const agent = steps
+        .slice(0, i)
+        .reverse()
+        .find((s) => s.uses?.startsWith("anthropics/claude-code-action@"));
+      assert.ok(agent, `${job}: the reset at step ${i} follows no agent`);
+      const between = steps.slice(steps.indexOf(agent) + 1, i - 1);
+      for (const s of between) {
+        assert.doesNotMatch(
+          s.run ?? "",
+          /(^|[;&|(\s])git\s/m,
+          `${job}: ${s.name} runs git before the digest is compared`,
+        );
+      }
+      checked += 1;
+    });
+  }
+  assert.equal(checked, 3);
+});
+
 test("the shell hooks that run before a guard's first line are emptied where the guard runs", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -1168,11 +1220,12 @@ test("the guards resolve their own tools from a directory the agent cannot write
     [
       "Snapshot what the agent must not touch",
       "Nothing the next steps trust moved",
+      "Nothing the next steps trust moved (before the reset)",
       "Guard the executable surface and rebuild dependencies",
       "The agent produced its output",
     ].includes(s.name),
   );
-  assert.equal(guards.length, 12);
+  assert.equal(guards.length, 15);
   for (const step of guards) {
     assert.match(step.run, /bin\(\) \{ if \[ -x "\/usr\/bin\/\$1" \]/, `${step.name} resolves through PATH`);
     // Command position only: `"$GIT" diff` is not a call to diff, and the
