@@ -1,5 +1,55 @@
 # Changelog
 
+## [0.1.52](https://github.com/mctlhq/mctl-academy/compare/0.1.51...0.1.52) (2026-09-12)
+
+
+### Features
+
+* **ci:** add the weekly Content replenish workflow ([7f9179d](https://github.com/mctlhq/mctl-academy/commit/7f9179d8ba97ed65f3ada8db9518758fc3a59bee))
+* **ci:** retry each agent on the second token when the first is out ([d62f802](https://github.com/mctlhq/mctl-academy/commit/d62f80203b8b34579d5245e7fd40c37f69021f90))
+* **ci:** retry each replenish agent on the second OAuth token ([3eb3fd4](https://github.com/mctlhq/mctl-academy/commit/3eb3fd4d5af00694ab4ad437aa3f60df632fa6e0))
+
+
+### Bug Fixes
+
+* **ci:** append the PATH sentinel inside the expansion, not beside it ([4441e2a](https://github.com/mctlhq/mctl-academy/commit/4441e2a59070a6cf5dd05f4ae1afca2aadd39515))
+* **ci:** bracket every agent with a digest of what the next steps trust ([7870fe6](https://github.com/mctlhq/mctl-academy/commit/7870fe61fada85600a61410e919a164bd9af0c7b))
+* **ci:** call capture-source directly so npm stops being an exception ([891d39e](https://github.com/mctlhq/mctl-academy/commit/891d39ef2dac02d18d58be5a3cdd0f1868118aba))
+* **ci:** close the two ways past the agent guard that were still open ([ff9c388](https://github.com/mctlhq/mctl-academy/commit/ff9c388f18db9315c3ebb489da87f3c1677f9a2b))
+* **ci:** drop the committed node_modules symlink and split the review handoff ([8989e9e](https://github.com/mctlhq/mctl-academy/commit/8989e9ed6e1581d60265603ba055e9703a29d25c))
+* **ci:** drop the PATH sentinel by position, not by its name ([109ebf9](https://github.com/mctlhq/mctl-academy/commit/109ebf99806aded7fb0bbc476d8e5c0688525483))
+* **ci:** empty the shell startup hooks where the guard itself runs ([bdd0789](https://github.com/mctlhq/mctl-academy/commit/bdd0789d43d1b656974f11e68b83be7b1b4dfde5))
+* **ci:** give the agents a scratch directory their Write rule actually grants ([fb5266c](https://github.com/mctlhq/mctl-academy/commit/fb5266c52bcabf858a6acf2b1c0b5856f5376bb1))
+* **ci:** give the replenish agents a scratch directory their Write rule actually grants ([04b053e](https://github.com/mctlhq/mctl-academy/commit/04b053e0e6d45d27c9ef427a29c5e2a823b16952))
+* **ci:** give the replenish run a scratch directory and one boundary check ([61ac552](https://github.com/mctlhq/mctl-academy/commit/61ac5522d6ea334736d7cd6e6060dfdd274110ef))
+* **ci:** grant the agents the unscoped Write tool, which is the only one that works ([8f361bb](https://github.com/mctlhq/mctl-academy/commit/8f361bb3f76a8b7e6d713f57718aa7b1942d93bb))
+* **ci:** grant the replenish agents the unscoped Write tool, the only form that works ([c6caff8](https://github.com/mctlhq/mctl-academy/commit/c6caff885322ac3148bcdb4711a8c22be58c6ece))
+* **ci:** guard the binaries, the environment and .env, not a list of names ([6fb4ee7](https://github.com/mctlhq/mctl-academy/commit/6fb4ee7cb9f9e6349c32efea1424fe9d980d5bbc))
+* **ci:** guard the executable surface with git before running any of it ([d339477](https://github.com/mctlhq/mctl-academy/commit/d3394770211792c20390da898ff346954667686c))
+* **ci:** hand the author agent the time instead of asking it to guess ([c2d6f83](https://github.com/mctlhq/mctl-academy/commit/c2d6f830538382dd19d6d61e09910da1d9409c86))
+* **ci:** hash npm too, and make the tool test able to see what it lists ([2125a50](https://github.com/mctlhq/mctl-academy/commit/2125a505a5cf241f803080821fb4850465cc09e8))
+* **ci:** isolate replenish agents from evidence credentials ([2efeebb](https://github.com/mctlhq/mctl-academy/commit/2efeebb9d576af6d1408a1a98cbed3fe632769e1))
+* **ci:** keep repaired items out of the agent's cap and stop erasing versions ([8ace269](https://github.com/mctlhq/mctl-academy/commit/8ace269ab61735de6796de2d676c1c2dc6299b1c))
+* **ci:** let an agent say "nothing", and prune what it may leave behind ([e27dbe3](https://github.com/mctlhq/mctl-academy/commit/e27dbe3bc2cb13218a94423a6000309355c4c090))
+* **ci:** make the fallback's own guard fail closed, as its sibling now does ([cf9687a](https://github.com/mctlhq/mctl-academy/commit/cf9687abb5191acd44d1630ea391cfaeecb21dbb))
+* **ci:** normalise the origin url instead of skipping it ([7a4f583](https://github.com/mctlhq/mctl-academy/commit/7a4f583d52ee88f1553754296548afca24240fe9))
+* **ci:** point LD_LIBRARY_PATH nowhere rather than emptying it ([71e34fe](https://github.com/mctlhq/mctl-academy/commit/71e34feca35b0357b2b4bab078c9aba30a9eaa1d))
+* **ci:** read the handoff artifact at the prefix upload-artifact writes ([4a000a6](https://github.com/mctlhq/mctl-academy/commit/4a000a63ffabb36b1bc4a5dd6c3595d0228aa3a5))
+* **ci:** rebuild dependencies after every agent, read the mode positionally ([ca18e0d](https://github.com/mctlhq/mctl-academy/commit/ca18e0db62058679ce4eef59f82f8cd7b12aa11a))
+* **ci:** refuse a non-question file under content/questions ([5f3563e](https://github.com/mctlhq/mctl-academy/commit/5f3563e6f0d9f3c2d5b23ad3fa20b2c92cc06522))
+* **ci:** stop excluding the one namespace only an agent can set ([143c4df](https://github.com/mctlhq/mctl-academy/commit/143c4df1d8fd9de4ab73790322b974c21ddf666d))
+* **ci:** stop the agent guard failing on the action's own churn ([cb70f11](https://github.com/mctlhq/mctl-academy/commit/cb70f11fcd48239ad863a455c1db793711fcf960))
+* **ci:** stop the agent guard failing on the action's own churn ([ea536f0](https://github.com/mctlhq/mctl-academy/commit/ea536f00b983f70ea3a45e55c1d0493ce38885cb))
+* **ci:** stop the did-it-run check reading another agent's answer ([a262608](https://github.com/mctlhq/mctl-academy/commit/a2626080cf01096cb8da3d21475312e4e167cb99))
+* **ci:** stop the PATH guard dropping the one entry that needs no name ([a9a724e](https://github.com/mctlhq/mctl-academy/commit/a9a724e76920012de8bf723d0af26cb6b2893178))
+* **ci:** take the commit identity from the command line, not from .git/config ([67e2a1e](https://github.com/mctlhq/mctl-academy/commit/67e2a1e4c4a1651d329c4efb9b54e511ff6e4b03))
+* **ci:** take the source title from discovery and guard every agent step ([55346c1](https://github.com/mctlhq/mctl-academy/commit/55346c1cbdd90c01517d6281bee925d6dda30db4))
+* **ci:** the guard's own shell, loader and tools stop being the way past it ([22c506b](https://github.com/mctlhq/mctl-academy/commit/22c506ba7b45c2fdd8c47c167604a0d446cec071))
+* **ci:** the guard's verdict stops depending on tools it does not resolve ([2463d19](https://github.com/mctlhq/mctl-academy/commit/2463d1979a15f965b679c4a767cf151b8a05838c))
+* **ci:** verify the tree before the reset that cleans up after a failed agent ([dee48d2](https://github.com/mctlhq/mctl-academy/commit/dee48d25500be411a58b1fd759eeb83666a0370a))
+* **content:** reject a future authored.at in the lint, before the push ([d386547](https://github.com/mctlhq/mctl-academy/commit/d386547b46b8d8a3b7dc70af3c0e0f0d02aa8c75))
+* read git paths NUL-separated and recompute the promotion scope ([acb6f1c](https://github.com/mctlhq/mctl-academy/commit/acb6f1c798376c29e7483218116072e6c95f3814))
+
 ## [0.1.51](https://github.com/mctlhq/mctl-academy/compare/0.1.50...0.1.51) (2026-09-06)
 
 
