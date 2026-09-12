@@ -79,10 +79,30 @@ and dropping the branch would leave them quarantined on `main`. A run that only
 quarantined does not open one, because `Source drift` already owns that PR.
 
 Every scratch file a run writes lives under `_run/`, which `.gitignore` covers.
-The only place an agent writes outside `content/questions/` is `_agent/`, which
-`.gitignore` deliberately does not cover: the only `Write` allowlist shape the
-action honours is `dir/**`, so the grant is `Write(_agent/**)` and the workflow
-deletes everything but the one expected file straight after each agent.
+The agents' own output goes to `_agent/`, which `.gitignore` deliberately does
+not cover. Their grant is the **unscoped** `Write` tool: on
+`anthropics/claude-code-action` every scoped form tried here was denied at call
+time while the step still reported success, so a scoped grant does not narrow
+what an agent may write — it stops it writing at all, silently. (One earlier
+run accepted `Write(content/questions/**)`; that has never been reproduced and
+nothing depends on it.) The workflow
+therefore deletes everything but the one expected file straight after each
+agent, and the deterministic checks below are the real boundary.
+
+Because the grant reaches every file in the workspace and the deterministic
+steps read that same tree, each agent is bracketed. (The CLI confines a bare
+`Write` to the working directory — probed in PR #245: `/tmp` was refused with
+the same message a rejected pattern produces — so the entries outside the
+workspace below are defence in depth against that confinement failing.) The step before it hashes what the steps after it
+trust — everything under `_run/`, `.git/config` and `.git/hooks/`, git's three
+configuration levels including `$XDG_CONFIG_HOME/git/config`, `~/.npmrc` and
+`~/.bunfig.toml`, the `git`/`node`/`bun`/`gh` binaries as they resolve on
+`PATH`, and every environment variable (values hashed, so a failure names
+variables and prints no secret) — and puts the digest in the step's **output**,
+which is not a path an agent can rewrite. The step after it recomputes the
+digest before any repository code runs, and separately refuses any `PATH` entry
+that was not there before: `$GITHUB_PATH` prepends, so one line appended to it
+from inside the agent's step would win every command resolution that follows.
 That is what lets the pre-agent boundary check (`replenish-prepare.mjs
 boundary`) be a plain "nothing changed or created outside `content/questions`"
 rule rather than a list of filenames that has to be updated whenever a step

