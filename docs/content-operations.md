@@ -159,11 +159,12 @@ is 160 on this path. Cost therefore scales with the turn budget rather than with
 the questions produced -- five questions cost roughly thirty dollars, where the
 reviewer judged fifty items for six.
 
-Two levers, before the per-token price is worth looking at: fewer turns, and a
-smaller tool set in `claude_args` (each tool is described in full, every turn).
-Neither has been tried. The budgets were raised to stop a run dying at its
-ceiling, which is the opposite pressure, so they want measuring rather than
-guessing.
+The obvious lever is fewer turns, and it pulls against the reason the budgets
+were raised in the first place -- a run that finishes over its ceiling is failed,
+not truncated -- so it wants measuring rather than guessing. The other lever is
+not available at this level: the agent steps already pass four or five tools in
+`--allowedTools`, and the relay still logged 253 to 255 tool definitions on every
+request, so restricting the grant does not shrink what is sent.
 
 ## Manual replenishment run
 

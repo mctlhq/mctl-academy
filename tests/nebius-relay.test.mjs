@@ -13,6 +13,11 @@ import { fileURLToPath } from "node:url";
 
 const RELAY = fileURLToPath(new URL("../scripts/nebius-relay.py", import.meta.url));
 const havePython = spawnSync("python3", ["--version"]).status === 0;
+// Skipping is a local convenience. In CI it would answer the "415 lines with no
+// test" finding by not running, which is the one outcome that must not be green.
+if (!havePython && process.env.CI) {
+  throw new Error("python3 is required to test the relay, and this is CI");
+}
 
 let upstream; // the stub
 let relay; // the process under test
@@ -139,6 +144,53 @@ test(
     assert.equal(body.stop_reason, "tool_use");
     assert.equal(body.content[0].type, "tool_use");
     assert.deepEqual(body.content[0].input, { p: 1 });
+  },
+);
+
+test(
+  "a tool call cut at max_tokens is reported as truncation, not as a tool call",
+  { skip: !havePython },
+  async () => {
+    const call = {
+      id: "c1",
+      type: "function",
+      function: { name: "Write", arguments: '{"content":"id: q-' },
+    };
+    reply = {
+      payload: { choices: [{ message: { content: "", tool_calls: [call] }, finish_reason: "length" }] },
+    };
+    const body = await (
+      await ask({ model: "claude-sonnet-5", messages: [{ role: "user", content: "x" }] })
+    ).json();
+    // The author writes whole YAML files through Write, so a generation cut at
+    // the ceiling is cut INSIDE function.arguments. Calling that tool_use hands
+    // the client truncated JSON with nothing naming truncation as the cause.
+    assert.equal(body.stop_reason, "max_tokens");
+
+    reply = {
+      stream: true,
+      payload: [
+        {
+          choices: [
+            {
+              delta: {
+                tool_calls: [{ index: 0, id: "c1", function: { name: "Write", arguments: '{"a' } }],
+              },
+            },
+          ],
+        },
+        { choices: [{ delta: {}, finish_reason: "length" }] },
+      ],
+    };
+    const text = await (
+      await ask({ model: "claude-sonnet-5", stream: true, messages: [{ role: "user", content: "x" }] })
+    ).text();
+    const delta = text
+      .split("\n")
+      .filter((l) => l.startsWith("data: "))
+      .map((l) => JSON.parse(l.slice(6)))
+      .find((e) => e.type === "message_delta");
+    assert.equal(delta.delta.stop_reason, "max_tokens");
   },
 );
 

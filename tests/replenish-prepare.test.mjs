@@ -2069,6 +2069,43 @@ test("guardChanges skips the cap when max is null and rejects an unparseable fil
   );
 });
 
+test("the workflow wires the authorship gate and agrees with itself on the port", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const gates = workflow.jobs.author.steps.find(
+    (s) => s.name === "Deterministic gates on the authored content",
+  );
+  const guard = gates.run.split("\n").find((l) => l.includes("replenish-prepare.mjs guard"));
+  // Dropping this flag leaves the suite green and removes the only mechanical
+  // link between AUTHOR_ID and what lands in content/questions.
+  assert.match(guard, /--forbid-published-now/);
+  assert.match(guard, /--author "\$AUTHOR_ID"/);
+
+  // The prompt has to name the id on BOTH paths: "a fresh authored block" sits
+  // next to "preserve the key order of existing files", and the file it points
+  // at already carries someone else's id.
+  const authorAgents = workflow.jobs.author.steps.filter(
+    (s) => s.uses?.startsWith("anthropics/claude-code-action@") && s.id?.startsWith("author-agent"),
+  );
+  assert.equal(authorAgents.length, 2, "the author agent and its retry");
+  for (const step of authorAgents) {
+    assert.match(step.with.prompt, /authored: \{ by: "\$\{\{ env\.AUTHOR_ID \}\}"/);
+    assert.match(step.with.prompt, /fresh `authored` block naming `\$\{\{ env\.AUTHOR_ID \}\}`/);
+  }
+
+  // RELAY_PORT and the URL the CLI is pointed at are two literals that have to
+  // agree; nothing at workflow level can derive one from the other.
+  const port = String(workflow.env.RELAY_PORT);
+  assert.match(workflow.env.ANTHROPIC_BASE_URL, new RegExp(`127\\.0\\.0\\.1:${port}'`));
+  for (const job of ["author", "review"]) {
+    const relay = workflow.jobs[job].steps.find((s) => s.name === "Start the Nebius relay");
+    assert.ok(relay, `${job} starts no relay`);
+    assert.equal(relay.env.RELAY_PORT, "${{ env.RELAY_PORT }}");
+    assert.ok(relay.env.NEBIUS_MODEL, `${job} lets the relay fall back to its own default model`);
+  }
+});
+
 test("the unparseable message carries the parser's own complaint", () => {
   const dir = mkdtempSync(join(tmpdir(), "yaml-"));
   try {

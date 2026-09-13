@@ -595,7 +595,15 @@ async function main(argv) {
       statusNow: args.includes("--forbid-published-now") ? (file) => statusOnDisk({ file }) : null,
       problemNow: (file) => yamlProblem({ file }),
     });
+    // The author phase must name the run's author: an omitted --author used to
+    // be indistinguishable from a pass, which makes the only mechanical link
+    // between AUTHOR_ID and content/questions a flag someone can drop.
     const expected = opt(args, "author");
+    const authorPhase = args.includes("--forbid-published-now");
+    if (authorPhase && !expected) {
+      console.error("::error::guard --author <id> is required on the author phase");
+      process.exit(1);
+    }
     if (expected) {
       problems.push(
         ...authorshipProblems({

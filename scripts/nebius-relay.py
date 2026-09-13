@@ -55,6 +55,22 @@ STOP_REASON = {
 }
 
 
+def stop_reason_for(finish, had_tool_calls):
+    """Anthropic stop_reason from an OpenAI finish_reason.
+
+    Some endpoints answer "stop" on a turn that also emitted tool_calls, and
+    end_turn tells the client to stop instead of running them. But the override
+    is a fallback, not a replacement: "length" means the generation was cut --
+    inside function.arguments, on the agent that writes whole YAML files -- and
+    reporting that as a complete tool call hands the client truncated JSON with
+    nothing naming truncation as the cause. Same for content_filter.
+    """
+    stop = STOP_REASON.get(finish, "end_turn")
+    if had_tool_calls and stop == "end_turn":
+        return "tool_use"
+    return stop
+
+
 def log(*a):
     print(*a, file=sys.stderr, flush=True)
 
@@ -307,11 +323,8 @@ class Handler(BaseHTTPRequestHandler):
             "role": "assistant",
             "model": data.get("model", MODEL),
             "content": blocks,
-            # finish_reason alone is not enough: some endpoints answer "stop"
-            # on a turn that also emitted tool_calls, and end_turn tells the
-            # client to stop instead of running the tools.
-            "stop_reason": ("tool_use" if msg.get("tool_calls")
-                            else STOP_REASON.get(choice.get("finish_reason"), "end_turn")),
+            "stop_reason": stop_reason_for(choice.get("finish_reason"),
+                                           bool(msg.get("tool_calls"))),
             "stop_sequence": None,
             "usage": {
                 "input_tokens": usage.get("prompt_tokens", 0),
@@ -413,7 +426,7 @@ class Handler(BaseHTTPRequestHandler):
                             "delta": {"type": "input_json_delta", "partial_json": args}})
 
             close_block()
-            stop = "tool_use" if tool_slot else STOP_REASON.get(finish, "end_turn")
+            stop = stop_reason_for(finish, bool(tool_slot))
             self._sse("message_delta", {
                 "type": "message_delta",
                 "delta": {"stop_reason": stop, "stop_sequence": None},
