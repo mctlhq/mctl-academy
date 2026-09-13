@@ -267,7 +267,7 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  *   never publish one itself (a backdated human `reviewed` block would otherwise pass
  *   the lint). The post-promotion guard omits it.
  */
-export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
+export function guardChanges({ changed, statusAtBase, max, statusNow = null, problemNow = null }) {
   const problems = [];
   if (max !== null) {
     if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
@@ -295,10 +295,30 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
           `${file} is ${now} after authoring; only review_ready or needs_review may leave this step`,
         );
       }
-      if (now === "unparseable") problems.push(`${file} is not parseable YAML after authoring`);
+      if (now === "unparseable") {
+        // guardChanges stays pure: the caller that reads from disk is also the
+        // one that can say WHY the parser refused the file.
+        const why = problemNow?.(file);
+        problems.push(`${file} is not parseable YAML after authoring${why ? `: ${why}` : ""}`);
+      }
     }
   }
   return problems;
+}
+
+/**
+ * The parser's own complaint about a file, for the boundary error. statusOnDisk
+ * swallows it to answer a yes/no question; naming the file without saying what
+ * is wrong with it leaves whoever reads the failed run with nothing to act on,
+ * and the authored file never reaches a branch they could open.
+ */
+export function yamlProblem({ file, cwd = process.cwd() }) {
+  try {
+    parseYaml(readFileSync(join(cwd, file), "utf8"));
+    return "it parses now";
+  } catch (e) {
+    return String(e?.message ?? e).split("\n")[0];
+  }
 }
 
 export function statusOnDisk({ file, cwd = process.cwd() }) {
@@ -532,6 +552,7 @@ async function main(argv) {
       statusAtBase: (file) => statusAtRef({ base, file }),
       max,
       statusNow: args.includes("--forbid-published-now") ? (file) => statusOnDisk({ file }) : null,
+      problemNow: (file) => yamlProblem({ file }),
     });
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);

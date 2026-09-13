@@ -651,8 +651,9 @@ test("each agent gets exactly the tools it needs, and no scoped grant", () => {
       { ...primary.with, claude_code_oauth_token: null },
       `${step.name} differs from its primary by more than the token`,
     );
-    assert.match(step.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN_2/);
-    assert.match(primary.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN }}/);
+    assert.match(step.with.claude_code_oauth_token, /secrets\.CLAUDE_CODE_OAUTH_TOKEN_2\b/);
+    // \b stops this matching CLAUDE_CODE_OAUTH_TOKEN_2.
+    assert.match(primary.with.claude_code_oauth_token, /secrets\.CLAUDE_CODE_OAUTH_TOKEN\b/);
     assert.equal(primary["continue-on-error"], true, `${primary.name} fails the job before the retry runs`);
   }
 });
