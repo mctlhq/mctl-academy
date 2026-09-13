@@ -18,6 +18,8 @@ import {
   appendManifestRows,
   revalidationIds,
   guardChanges,
+  authorshipProblems,
+  yamlProblem,
   changedQuestionFiles,
   statusAtRef,
   reviewIds,
@@ -651,8 +653,21 @@ test("each agent gets exactly the tools it needs, and no scoped grant", () => {
       { ...primary.with, claude_code_oauth_token: null },
       `${step.name} differs from its primary by more than the token`,
     );
-    assert.match(step.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN_2/);
-    assert.match(primary.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN }}/);
+    assert.match(step.with.claude_code_oauth_token, /secrets\.CLAUDE_CODE_OAUTH_TOKEN_2\b/);
+    // Both agent steps must put the SECRET in the truthy branch. `cond && '' ||
+    // secret` reads like a ternary and is not one: '' is falsy in a GitHub
+    // expression, so `||` falls through and the Anthropic token is handed to a
+    // step pointed at a third-party endpoint. That shipped once.
+    for (const s2 of [step, primary]) {
+      assert.doesNotMatch(
+        s2.with.claude_code_oauth_token,
+        /&&\s*''\s*\|\|/,
+        `${s2.name}: an empty string in the truthy branch never survives ||`,
+      );
+      assert.match(s2.with.claude_code_oauth_token, /!=\s*'nebius'\s*&&\s*secrets\./, s2.name);
+    }
+    // \b stops this matching CLAUDE_CODE_OAUTH_TOKEN_2.
+    assert.match(primary.with.claude_code_oauth_token, /secrets\.CLAUDE_CODE_OAUTH_TOKEN\b/);
     assert.equal(primary["continue-on-error"], true, `${primary.name} fails the job before the retry runs`);
   }
 });
@@ -2051,6 +2066,102 @@ test("guardChanges skips the cap when max is null and rejects an unparseable fil
       statusNow: () => "unparseable",
     })[0],
     /not parseable YAML/,
+  );
+});
+
+test("the workflow wires the authorship gate and agrees with itself on the port", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const gates = workflow.jobs.author.steps.find(
+    (s) => s.name === "Deterministic gates on the authored content",
+  );
+  const guard = gates.run.split("\n").find((l) => l.includes("replenish-prepare.mjs guard"));
+  // Dropping this flag leaves the suite green and removes the only mechanical
+  // link between AUTHOR_ID and what lands in content/questions.
+  assert.match(guard, /--forbid-published-now/);
+  assert.match(guard, /--author "\$AUTHOR_ID"/);
+
+  // The prompt has to name the id on BOTH paths: "a fresh authored block" sits
+  // next to "preserve the key order of existing files", and the file it points
+  // at already carries someone else's id.
+  const authorAgents = workflow.jobs.author.steps.filter(
+    (s) => s.uses?.startsWith("anthropics/claude-code-action@") && s.id?.startsWith("author-agent"),
+  );
+  assert.equal(authorAgents.length, 2, "the author agent and its retry");
+  for (const step of authorAgents) {
+    assert.match(step.with.prompt, /authored: \{ by: "\$\{\{ env\.AUTHOR_ID \}\}"/);
+    assert.match(step.with.prompt, /fresh `authored` block naming `\$\{\{ env\.AUTHOR_ID \}\}`/);
+  }
+
+  // RELAY_PORT and the URL the CLI is pointed at are two literals that have to
+  // agree; nothing at workflow level can derive one from the other.
+  const port = String(workflow.env.RELAY_PORT);
+  assert.match(workflow.env.ANTHROPIC_BASE_URL, new RegExp(`127\\.0\\.0\\.1:${port}'`));
+  for (const job of ["author", "review"]) {
+    const relay = workflow.jobs[job].steps.find((s) => s.name === "Start the Nebius relay");
+    assert.ok(relay, `${job} starts no relay`);
+    assert.equal(relay.env.RELAY_PORT, "${{ env.RELAY_PORT }}");
+    assert.ok(relay.env.NEBIUS_MODEL, `${job} lets the relay fall back to its own default model`);
+  }
+});
+
+test("the unparseable message carries the parser's own complaint", () => {
+  const dir = mkdtempSync(join(tmpdir(), "yaml-"));
+  try {
+    writeFileSync(join(dir, "bad.yaml"), 'stem: "unterminated\noptions: [\n');
+    const why = yamlProblem({ file: "bad.yaml", cwd: dir });
+    // Naming the file without saying what is wrong with it left a failed run
+    // with nothing to act on: the authored file never reaches a branch.
+    assert.match(why, /quote|unexpected|flow|Missing/i);
+    assert.doesNotMatch(why, /\n/);
+    // And the guard composes it, rather than dropping it on the floor.
+    const problem = guardChanges({
+      changed: ["bad.yaml"],
+      statusAtBase: () => null,
+      max: null,
+      statusNow: () => "unparseable",
+      problemNow: () => why,
+    })[0];
+    assert.ok(problem.includes(why), problem);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("a question the run did not author is rejected, whoever signed it", () => {
+  const signed = { "new.yaml": "agent:glm-author", "borrowed.yaml": "agent:claude-author" };
+  const problems = authorshipProblems({
+    changed: ["new.yaml", "borrowed.yaml"],
+    expected: "agent:glm-author",
+    authoredBy: (f) => signed[f] ?? null,
+  });
+  // The first Nebius run wrote files GLM authored and claude-author signed,
+  // because the id lived in the prompt and a prompt is not a guarantee.
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /borrowed\.yaml is authored by agent:claude-author/);
+  assert.match(problems[0], /this run's author is agent:glm-author/);
+
+  // A file that was already published before this run belongs to whoever wrote
+  // it then; re-signing it would be the false claim, not the honest one.
+  assert.deepEqual(
+    authorshipProblems({
+      changed: ["borrowed.yaml"],
+      expected: "agent:glm-author",
+      authoredBy: (f) => signed[f] ?? null,
+      statusAtBase: () => "published",
+    }),
+    [],
+  );
+  // But one the agent rewrote out of needs_review is this run's work.
+  assert.equal(
+    authorshipProblems({
+      changed: ["borrowed.yaml"],
+      expected: "agent:glm-author",
+      authoredBy: (f) => signed[f] ?? null,
+      statusAtBase: () => "needs_review",
+    }).length,
+    1,
   );
 });
 

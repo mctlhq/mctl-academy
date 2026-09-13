@@ -257,6 +257,34 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
 }
 
 /**
+ * Every question the agent added or rewrote must carry the run's own author id.
+ * AUTHOR_ID already drives the commit message, the PR body and the agent's
+ * prompt, but a prompt is an instruction, not a guarantee: the first Nebius run
+ * produced files GLM wrote and `agent:claude-author` signed, because the id had
+ * been spelled literally in the prompt. Under CONTENT-POLICY authorship and
+ * approval are separated mechanically, so this is checked mechanically too.
+ *
+ * @param {object} args
+ * @param {string[]} args.changed  question files changed against the base
+ * @param {string} args.expected  the run's author id, e.g. "agent:glm-author"
+ * @param {(file: string) => string | null} args.authoredBy  as written on disk
+ * @param {(file: string) => string | null} [args.statusAtBase]  files already
+ *   published at the base are other agents' work and are not re-signed here.
+ */
+export function authorshipProblems({ changed, expected, authoredBy, statusAtBase = null }) {
+  const problems = [];
+  for (const file of changed) {
+    if (statusAtBase && statusAtBase(file) !== null && statusAtBase(file) !== "needs_review") continue;
+    const by = authoredBy(file);
+    if (by === null) continue;
+    if (by !== expected) {
+      problems.push(`${file} is authored by ${by}, but this run's author is ${expected}`);
+    }
+  }
+  return problems;
+}
+
+/**
  * @param {object} args
  * @param {string[]} args.changed  question files changed against the base
  * @param {(file: string) => string | null} args.statusAtBase  null when absent at base
@@ -266,8 +294,11 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  *   author-phase rule: the agent may only ever leave a file review_ready or needs_review,
  *   never publish one itself (a backdated human `reviewed` block would otherwise pass
  *   the lint). The post-promotion guard omits it.
+ * @param {(file: string) => string | null} [args.problemNow]  why the parser refused a
+ *   file, for the unparseable case. Injected for the same reason as statusNow: this
+ *   function never reads the disk itself.
  */
-export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
+export function guardChanges({ changed, statusAtBase, max, statusNow = null, problemNow = null }) {
   const problems = [];
   if (max !== null) {
     if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
@@ -295,10 +326,40 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
           `${file} is ${now} after authoring; only review_ready or needs_review may leave this step`,
         );
       }
-      if (now === "unparseable") problems.push(`${file} is not parseable YAML after authoring`);
+      if (now === "unparseable") {
+        // guardChanges stays pure: the caller that reads from disk is also the
+        // one that can say WHY the parser refused the file.
+        const why = problemNow?.(file);
+        problems.push(`${file} is not parseable YAML after authoring${why ? `: ${why}` : ""}`);
+      }
     }
   }
   return problems;
+}
+
+/**
+ * The parser's own complaint about a file, for the boundary error. statusOnDisk
+ * swallows it to answer a yes/no question; naming the file without saying what
+ * is wrong with it leaves whoever reads the failed run with nothing to act on,
+ * and the authored file never reaches a branch they could open.
+ */
+export function yamlProblem({ file, cwd = process.cwd() }) {
+  try {
+    parseYaml(readFileSync(join(cwd, file), "utf8"));
+    return "the file parses on re-read; it changed under the gate";
+  } catch (e) {
+    return String(e?.message ?? e).split("\n")[0];
+  }
+}
+
+export function authoredOnDisk({ file, cwd = process.cwd() }) {
+  const abs = join(cwd, file);
+  if (!existsSync(abs)) return null;
+  try {
+    return parseYaml(readFileSync(abs, "utf8"))?.authored?.by ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function statusOnDisk({ file, cwd = process.cwd() }) {
@@ -532,7 +593,27 @@ async function main(argv) {
       statusAtBase: (file) => statusAtRef({ base, file }),
       max,
       statusNow: args.includes("--forbid-published-now") ? (file) => statusOnDisk({ file }) : null,
+      problemNow: (file) => yamlProblem({ file }),
     });
+    // The author phase must name the run's author: an omitted --author used to
+    // be indistinguishable from a pass, which makes the only mechanical link
+    // between AUTHOR_ID and content/questions a flag someone can drop.
+    const expected = opt(args, "author");
+    const authorPhase = args.includes("--forbid-published-now");
+    if (authorPhase && !expected) {
+      console.error("::error::guard --author <id> is required on the author phase");
+      process.exit(1);
+    }
+    if (expected) {
+      problems.push(
+        ...authorshipProblems({
+          changed,
+          expected,
+          authoredBy: (file) => authoredOnDisk({ file }),
+          statusAtBase: (file) => statusAtRef({ base, file }),
+        }),
+      );
+    }
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);
     if (problems.length) process.exit(1);
