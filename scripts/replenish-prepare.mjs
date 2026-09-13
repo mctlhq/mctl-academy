@@ -269,13 +269,17 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  * @param {string} args.expected  the run's author id, e.g. "agent:glm-author"
  * @param {(file: string) => string | null} args.authoredBy  as written on disk;
  *   "" when the file parses but carries no id, null when there is nothing to read
- * @param {(file: string) => string | null} [args.statusAtBase]  files already
- *   published at the base are other agents' work and are not re-signed here.
+ * @param {(file: string) => string | null} [args.statusAtBase]  only `published`
+ *   and `retired` are exempt: they are other agents' work, and guardChanges
+ *   rejects a change to them anyway, so naming them here would report one fault
+ *   twice. Everything else the agent touched -- a new file, a needs_review
+ *   rewrite, a review_ready item left on the branch by an earlier run -- is this
+ *   run's work and carries this run's id.
  */
 export function authorshipProblems({ changed, expected, authoredBy, statusAtBase = null }) {
   const problems = [];
   for (const file of changed) {
-    if (statusAtBase && statusAtBase(file) !== null && statusAtBase(file) !== "needs_review") continue;
+    if (statusAtBase && ["published", "retired"].includes(statusAtBase(file))) continue;
     const by = authoredBy(file);
     // null is "no file, or one that does not parse" -- both already reported.
     if (by === null) continue;

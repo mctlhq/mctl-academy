@@ -2170,15 +2170,31 @@ test("a question the run did not author is rejected, whoever signed it", () => {
     }),
     [],
   );
-  // But one the agent rewrote out of needs_review is this run's work.
-  assert.equal(
+  // Everything else the agent touched is this run's work: a needs_review
+  // rewrite, and equally a review_ready item an earlier run left on the branch
+  // -- which is not hypothetical, the replenish branches carry dozens.
+  for (const at of ["needs_review", "review_ready", "draft"]) {
+    assert.equal(
+      authorshipProblems({
+        changed: ["borrowed.yaml"],
+        expected: "agent:glm-author",
+        authoredBy: (f) => signed[f] ?? null,
+        statusAtBase: () => at,
+      }).length,
+      1,
+      `a ${at} file rewritten by this run must carry this run's id`,
+    );
+  }
+  // retired is exempt for the same reason as published: guardChanges rejects
+  // the change itself, and one fault should not be reported twice.
+  assert.deepEqual(
     authorshipProblems({
       changed: ["borrowed.yaml"],
       expected: "agent:glm-author",
       authoredBy: (f) => signed[f] ?? null,
-      statusAtBase: () => "needs_review",
-    }).length,
-    1,
+      statusAtBase: () => "retired",
+    }),
+    [],
   );
 });
 
