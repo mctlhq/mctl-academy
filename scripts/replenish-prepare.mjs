@@ -267,7 +267,8 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  * @param {object} args
  * @param {string[]} args.changed  question files changed against the base
  * @param {string} args.expected  the run's author id, e.g. "agent:glm-author"
- * @param {(file: string) => string | null} args.authoredBy  as written on disk
+ * @param {(file: string) => string | null} args.authoredBy  as written on disk;
+ *   "" when the file parses but carries no id, null when there is nothing to read
  * @param {(file: string) => string | null} [args.statusAtBase]  files already
  *   published at the base are other agents' work and are not re-signed here.
  */
@@ -276,7 +277,15 @@ export function authorshipProblems({ changed, expected, authoredBy, statusAtBase
   for (const file of changed) {
     if (statusAtBase && statusAtBase(file) !== null && statusAtBase(file) !== "needs_review") continue;
     const by = authoredBy(file);
+    // null is "no file, or one that does not parse" -- both already reported.
     if (by === null) continue;
+    if (by === "") {
+      // The schema requires `authored` and lint:content runs in the same gate,
+      // but a rule that holds only because of what another gate happens to do
+      // first is one reordering away from not holding at all.
+      problems.push(`${file} carries no authored id, and this run's author is ${expected}`);
+      continue;
+    }
     if (by !== expected) {
       problems.push(`${file} is authored by ${by}, but this run's author is ${expected}`);
     }
@@ -356,8 +365,10 @@ export function authoredOnDisk({ file, cwd = process.cwd() }) {
   const abs = join(cwd, file);
   if (!existsSync(abs)) return null;
   try {
-    return parseYaml(readFileSync(abs, "utf8"))?.authored?.by ?? null;
+    return parseYaml(readFileSync(abs, "utf8"))?.authored?.by ?? "";
   } catch {
+    // "unparseable", which the guard reports on its own; returning "" here
+    // instead would report the same file twice under two different faults.
     return null;
   }
 }

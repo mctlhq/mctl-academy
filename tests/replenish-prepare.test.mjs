@@ -2142,6 +2142,23 @@ test("a question the run did not author is rejected, whoever signed it", () => {
   assert.match(problems[0], /borrowed\.yaml is authored by agent:claude-author/);
   assert.match(problems[0], /this run's author is agent:glm-author/);
 
+  // An unsigned file is a violation, not a skip: the schema requires the block
+  // and lint rejects it, but this rule must not depend on another gate's order.
+  assert.match(
+    authorshipProblems({
+      changed: ["unsigned.yaml"],
+      expected: "agent:glm-author",
+      authoredBy: () => "",
+    })[0],
+    /unsigned\.yaml carries no authored id/,
+  );
+  // Nothing to read stays a skip -- the guard reports an unparseable file
+  // itself, and one fault should not be named twice.
+  assert.deepEqual(
+    authorshipProblems({ changed: ["gone.yaml"], expected: "agent:glm-author", authoredBy: () => null }),
+    [],
+  );
+
   // A file that was already published before this run belongs to whoever wrote
   // it then; re-signing it would be the false claim, not the honest one.
   assert.deepEqual(
