@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf04e2f3a4b5
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: What is the model naming convention when selecting the Fast flavor of an
@@ -31,3 +31,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 8d3b7d1e3a2a73c508012d59961499613d6df1db6c0c2fc0b18b18a9517f3321

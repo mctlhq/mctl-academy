@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3086b69871
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: Four running VMs must read and write one common dataset at the same time.
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: f3320d4711517c5e1f29a4e8eaa65f7ef355e9b6e705d928d7c534280e713de7

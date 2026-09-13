@@ -82,6 +82,159 @@
     ]
   },
   {
+    "id": "q-3f7e821d6b04",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/data-lab",
+    "stem": "A team wants to build a training dataset from the chat completions their application has already generated through the API. According to the Data Lab overview, how does that data become available for dataset preparation?",
+    "objectiveTitle": "Data Lab: importing and processing training data",
+    "sources": [
+      {
+        "title": "Data Lab",
+        "url": "https://docs.tokenfactory.nebius.com/data-lab/overview.md",
+        "excerpt": "**Inference Logs:** automatically collected chat completions generated via API or Playground"
+      },
+      {
+        "title": "Data Lab",
+        "url": "https://docs.tokenfactory.nebius.com/data-lab/overview.md",
+        "excerpt": "**Filtered Datasets:** datasets created from inference logs using sql queries."
+      },
+      {
+        "title": "Data Lab",
+        "url": "https://docs.tokenfactory.nebius.com/data-lab/overview.md",
+        "excerpt": "You can upload your own data, connect data from S3-compatible storage, or create datasets from inference logs"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Each completion must be re-sent to a dedicated dataset-building endpoint right after it is generated",
+        "correct": false,
+        "explanation": "The collection of inference logs is automatic; the overview describes no per-completion dataset-building call the application must make."
+      },
+      {
+        "id": "b",
+        "text": "Inference logs of chat completions are automatically collected into Data Lab, and filtered datasets can be created from them using SQL queries",
+        "correct": true,
+        "explanation": "Data Lab stores automatically collected inference logs generated via API or Playground, and filtered datasets are created from inference logs using SQL queries."
+      },
+      {
+        "id": "c",
+        "text": "The completions are exported nightly to an S3-compatible bucket that the team then queries externally",
+        "correct": false,
+        "explanation": "S3-compatible storage is mentioned as a way to connect data into Data Lab datasets, not as the automatic destination of inference logs."
+      },
+      {
+        "id": "d",
+        "text": "The team must pre-upload a structured dataset manually for any dataset to exist in Data Lab",
+        "correct": false,
+        "explanation": "Manually uploaded datasets are one type of data Data Lab manages; they are not required, because filtered datasets can be created from collected inference logs."
+      }
+    ]
+  },
+  {
+    "id": "q-6b9e2f4a17c3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/retrieval-pipelines",
+    "stem": "You are composing a retrieval pipeline. Candidate passages have already been retrieved from the corpus, and you now need them ordered by how relevant each one is to the user's query before the best few are passed to the model. Which documented API operation performs this ranking step?",
+    "objectiveTitle": "Composing retrieval-augmented pipelines",
+    "sources": [
+      {
+        "title": "Reranking API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md",
+        "excerpt": "Reranks documents based on their relevance to a query."
+      },
+      {
+        "title": "Embeddings API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-embeddings.md",
+        "excerpt": "Input text to embed, encoded as a string or array of tokens."
+      },
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "Creates a model response for the given chat conversation."
+      },
+      {
+        "title": "List models API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/models/list-models.md",
+        "excerpt": "Lists the currently available models, and provides basic information about each one such as the owner and availability."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Create embeddings for the query and each candidate passage",
+        "correct": false,
+        "explanation": "The embeddings endpoint takes input text to embed and returns embedding vectors; it does not compare your documents against the query or return an ordering of them."
+      },
+      {
+        "id": "b",
+        "text": "Create a chat completion for the query",
+        "correct": false,
+        "explanation": "The chat completion endpoint creates a model response for the given chat conversation; generating an answer is a later pipeline stage than ranking the retrieved passages."
+      },
+      {
+        "id": "c",
+        "text": "Rerank the candidate documents against the query",
+        "correct": true,
+        "explanation": "The rerank operation reranks documents based on their relevance to a query; each result carries the document's index and a relevance score, so the pipeline can keep the most relevant passages."
+      },
+      {
+        "id": "d",
+        "text": "List the currently available models",
+        "correct": false,
+        "explanation": "The List models operation lists the currently available models and basic information such as the owner and availability; it takes no documents and returns no ranking."
+      }
+    ]
+  },
+  {
+    "id": "q-9d47f02ce5a1",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/billing-and-consumption",
+    "stem": "A team's dedicated endpoint keeps its baseline capacity on minimum replicas. During a long period with no traffic they want to stop paying for that guaranteed capacity without deleting the endpoint. What does the Best Practices page say happens to the reserved capacity if they stop the endpoint?",
+    "objectiveTitle": "Billing, consumption, and cost controls",
+    "sources": [
+      {
+        "title": "Best Practices",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md",
+        "excerpt": "Min replicas are guaranteed while active. If you stop the endpoint the reservation will be freed up."
+      },
+      {
+        "title": "Best Practices",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md",
+        "excerpt": "Minimum replicas are always allocated while the endpoint is active."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The reservation is still billed until the endpoint is deleted",
+        "correct": false,
+        "explanation": "The page ties the reservation to the endpoint being active, not to its existence; deletion is not the documented way to release it."
+      },
+      {
+        "id": "b",
+        "text": "The reservation is converted into burst-scaling headroom",
+        "correct": false,
+        "explanation": "Maximum replicas define how far autoscaling can expand; the page does not describe converting a stopped endpoint's reservation into such headroom."
+      },
+      {
+        "id": "c",
+        "text": "Nothing changes; minimum replicas are allocated whether or not the endpoint is active",
+        "correct": false,
+        "explanation": "The page says minimum replicas are always allocated while the endpoint is active, and that stopping it frees the reservation."
+      },
+      {
+        "id": "d",
+        "text": "The reservation is freed up, and the minimum replicas are guaranteed again once the endpoint is active",
+        "correct": true,
+        "explanation": "Minimum replicas are always allocated while the endpoint is active; stopping the endpoint frees the reservation, so the guarantee applies only while it runs."
+      }
+    ]
+  },
+  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -1004,7 +1157,12 @@
       {
         "title": "How to manage federations in Nebius AI Cloud",
         "url": "https://docs.nebius.com/iam/federations.md",
-        "excerpt": "In Nebius AI Cloud, you can create, activate and deactivate federations, change their settings, and upload or delete attached certificates."
+        "excerpt": "you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates."
+      },
+      {
+        "title": "How to manage federations in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/federations.md",
+        "excerpt": "A federation cannot function correctly without at least one valid certificate."
       }
     ],
     "options": [
@@ -1012,25 +1170,25 @@
         "id": "a",
         "text": "Nothing; the federation must be deleted and created again",
         "correct": false,
-        "explanation": "Certificates are managed on an existing federation, so a rebuild is not required."
+        "explanation": "Certificates are managed on an existing federation, so a rebuild is not required. Deleting a federation cannot even be reversed, so it would be the destructive option."
       },
       {
         "id": "b",
         "text": "Only deactivate the federation until the IdP is rolled back",
         "correct": false,
-        "explanation": "Deactivation is available, but it is not the mechanism for handling a rotated certificate."
+        "explanation": "Deactivation is available, but while a federation is inactive its users cannot sign in until it is reactivated; it is not the mechanism for handling a rotated certificate."
       },
       {
         "id": "c",
         "text": "Rotate it automatically, since certificates are synced from the IdP",
         "correct": false,
-        "explanation": "Certificates are uploaded and managed deliberately rather than synchronized on their own."
+        "explanation": "Certificates are uploaded and managed deliberately rather than synchronized on their own; the page describes uploading or deleting attached certificates, not automatic rotation."
       },
       {
         "id": "d",
         "text": "Upload the new certificate and delete the old one on the existing federation",
         "correct": true,
-        "explanation": "Correct. Attached certificates can be uploaded or deleted as part of managing a federation."
+        "explanation": "Correct. You can upload or delete attached certificates as part of managing a federation, so the rotated certificate replaces the old one in place."
       }
     ]
   },
@@ -1162,13 +1320,13 @@
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-3",
     "objective": "domain-3/node-monitoring",
-    "stem": "An engineer watching a dashboard during an incident asks how current the numbers are. What is true by default?",
+    "stem": "An engineer watching a VM dashboard during an incident asks how current the numbers are. What is true by default?",
     "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
     "sources": [
       {
         "title": "Monitoring virtual machines in Nebius AI Cloud",
         "url": "https://docs.nebius.com/compute/monitoring/virtual-machines.md",
-        "excerpt": "By default, the data is refreshed every 15 seconds. You can configure this interval to the right of the time filters."
+        "excerpt": "By default, the data is refreshed every 15 seconds. You can configure this interval next to the time filters."
       }
     ],
     "options": [
@@ -1176,7 +1334,7 @@
         "id": "a",
         "text": "The data refreshes every 15 seconds, and the interval can be changed",
         "correct": true,
-        "explanation": "Correct. Fifteen seconds is the default refresh, configurable next to the time filters."
+        "explanation": "Correct. Fifteen seconds is the default refresh, and the interval can be configured next to the time filters."
       },
       {
         "id": "b",

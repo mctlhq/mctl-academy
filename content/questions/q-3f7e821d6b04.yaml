@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-3f7e821d6b04
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/data-lab
 stem: A team wants to build a training dataset from the chat completions their
@@ -8,48 +8,50 @@ stem: A team wants to build a training dataset from the chat completions their
   overview, how does that data become available for dataset preparation?
 options:
   - id: a
-    text: Each completion must be re-sent to a dedicated dataset-building
-      endpoint right after it is generated
+    text: Each completion must be re-sent to a dedicated dataset-building endpoint
+      right after it is generated
     correct: false
     explanation: The collection of inference logs is automatic; the overview
       describes no per-completion dataset-building call the application must
       make.
   - id: b
-    text: Inference logs of chat completions are automatically collected into
-      Data Lab, and filtered datasets can be created from them using SQL
-      queries
+    text: Inference logs of chat completions are automatically collected into Data
+      Lab, and filtered datasets can be created from them using SQL queries
     correct: true
-    explanation: Data Lab stores automatically collected inference logs
-      generated via API or Playground, and filtered datasets are created from
-      inference logs using SQL queries.
+    explanation: Data Lab stores automatically collected inference logs generated
+      via API or Playground, and filtered datasets are created from inference
+      logs using SQL queries.
   - id: c
-    text: The completions are exported nightly to an S3-compatible bucket that
-      the team then queries externally
+    text: The completions are exported nightly to an S3-compatible bucket that the
+      team then queries externally
     correct: false
-    explanation: S3-compatible storage is mentioned as a way to connect data
-      into Data Lab datasets, not as the automatic destination of inference
-      logs.
+    explanation: S3-compatible storage is mentioned as a way to connect data into
+      Data Lab datasets, not as the automatic destination of inference logs.
   - id: d
-    text: The team must pre-upload a structured dataset manually for any
-      dataset to exist in Data Lab
+    text: The team must pre-upload a structured dataset manually for any dataset to
+      exist in Data Lab
     correct: false
-    explanation: Manually uploaded datasets are one type of data Data Lab
-      manages; they are not required, because filtered datasets can be created
-      from collected inference logs.
+    explanation: Manually uploaded datasets are one type of data Data Lab manages;
+      they are not required, because filtered datasets can be created from
+      collected inference logs.
 evidence:
   - source_id: src-recovery-data-lab
-    excerpt: "**Inference Logs:** automatically collected chat completions
-      generated via API or Playground"
+    excerpt: "**Inference Logs:** automatically collected chat completions generated
+      via API or Playground"
     source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
   - source_id: src-recovery-data-lab
-    excerpt: "**Filtered Datasets:** datasets created from inference logs using
-      sql queries."
+    excerpt: "**Filtered Datasets:** datasets created from inference logs using sql
+      queries."
     source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
   - source_id: src-recovery-data-lab
-    excerpt: You can upload your own data, connect data from S3-compatible
-      storage, or create datasets from inference logs
+    excerpt: You can upload your own data, connect data from S3-compatible storage,
+      or create datasets from inference logs
     source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 4f6ee0f06de800d6816ca89c47c99f53da2475f6e4e257cccd6945dbe81a6f4c

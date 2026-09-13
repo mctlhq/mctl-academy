@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co524dc191c3
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: Planning capacity, an engineer assumes one VM quota governs every machine
@@ -33,3 +33,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 2a855f8018ada3a36424b499f520d874cef9680ec766ec436ad2a2ee76c84f85

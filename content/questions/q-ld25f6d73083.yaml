@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld25f6d73083
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A team plans an application that must read screenshots and answer
@@ -35,3 +35,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 920a88ee5d0540fa7565f1beb8169f54c68a5543c9e4cda99b7a73c600d16d69

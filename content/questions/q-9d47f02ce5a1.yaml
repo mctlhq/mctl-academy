@@ -1,25 +1,24 @@
 schema_version: 1
 id: q-9d47f02ce5a1
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: A team's dedicated endpoint keeps its baseline capacity on minimum
   replicas. During a long period with no traffic they want to stop paying for
   that guaranteed capacity without deleting the endpoint. What does the Best
-  Practices page say happens to the reserved capacity if they stop the
-  endpoint?
+  Practices page say happens to the reserved capacity if they stop the endpoint?
 options:
   - id: a
     text: The reservation is still billed until the endpoint is deleted
     correct: false
-    explanation: The page ties the reservation to the endpoint being active,
-      not to its existence; deletion is not the documented way to release it.
+    explanation: The page ties the reservation to the endpoint being active, not to
+      its existence; deletion is not the documented way to release it.
   - id: b
     text: The reservation is converted into burst-scaling headroom
     correct: false
-    explanation: Maximum replicas define how far autoscaling can expand; the
-      page does not describe converting a stopped endpoint's reservation into
-      such headroom.
+    explanation: Maximum replicas define how far autoscaling can expand; the page
+      does not describe converting a stopped endpoint's reservation into such
+      headroom.
   - id: c
     text: Nothing changes; minimum replicas are allocated whether or not the
       endpoint is active
@@ -27,16 +26,16 @@ options:
     explanation: The page says minimum replicas are always allocated while the
       endpoint is active, and that stopping it frees the reservation.
   - id: d
-    text: The reservation is freed up, and the minimum replicas are guaranteed
-      again once the endpoint is active
+    text: The reservation is freed up, and the minimum replicas are guaranteed again
+      once the endpoint is active
     correct: true
-    explanation: Minimum replicas are always allocated while the endpoint is
-      active; stopping the endpoint frees the reservation, so the guarantee
-      applies only while it runs.
+    explanation: Minimum replicas are always allocated while the endpoint is active;
+      stopping the endpoint frees the reservation, so the guarantee applies only
+      while it runs.
 evidence:
   - source_id: src-recovery-best-practice
-    excerpt: Min replicas are guaranteed while active. If you stop the endpoint
-      the reservation will be freed up.
+    excerpt: Min replicas are guaranteed while active. If you stop the endpoint the
+      reservation will be freed up.
     source_sha256: b4f09c4433e8b3690ddf0024c6c37ed5a64e65766301a0e17fccd09f5e0a5982
   - source_id: src-recovery-best-practice
     excerpt: Minimum replicas are always allocated while the endpoint is active.
@@ -45,3 +44,7 @@ authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 4154a8039d7d285bb45b07855252ab94bf281736407b34763d77227c25e27b1c
