@@ -30,11 +30,12 @@ evidence:
   - source_id: src-co-iam-roles
     excerpt: '`storage.uploader`: view buckets, upload objects but not list or
       download them'
-    source_sha256: 7891fa6b12a6a85716a2b7805580924c99c803a4c8b704ee73b4a0dcd94235f7
+    source_sha256: fb98d03ee47d91815e13066f7e3bb0c84d6e1b5b20c650c888a3cfe27297d183
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 91e38b75ee8cf25b3bfb1d720fcb1bbed6d4a595276225e31b2bd061a36f526a

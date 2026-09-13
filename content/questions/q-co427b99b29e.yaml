@@ -30,11 +30,12 @@ evidence:
   - source_id: src-co-iam-federations
     excerpt: you have access to your IdP admin portal and can get the SAML
       application metadata (login URL, identifier, certificate)
-    source_sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
+    source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 9d958cdad19330b140789b8793b618440db16b24f765c7d5d4f8a4c0110d504c
