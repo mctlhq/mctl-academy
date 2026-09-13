@@ -136,10 +136,35 @@ reviewer id into every approval it records, and a receipt naming a model that di
 not do the judging is a false provenance claim, not a label.
 
 Two things this path does not get. Token Factory has no prompt caching, so the
-system prompt is paid for in full on every turn -- the dominant cost, well above
-the per-token price. And the OAuth token is deliberately withheld from the agent
-steps: it is an Anthropic credential with no business reaching a third-party
-endpoint, so a placeholder key stands in, which the relay ignores.
+system prompt is paid for in full on every turn. And the OAuth token is
+deliberately withheld from the agent steps: it is an Anthropic credential with
+no business reaching a third-party endpoint, so a placeholder key stands in,
+which the relay ignores.
+
+#### What it costs, measured
+
+One day of this work -- three CI runs plus a local end-to-end run and the model
+comparison behind the choice -- billed $37.63 on Token Factory, 2026-09-12:
+
+| Model | Role | Input | Output | Total |
+| --- | --- | --- | --- | --- |
+| GLM-5.3 | author | $24.63 | $4.72 | **$29.35** |
+| DeepSeek-V4-Pro | reviewer | $5.89 | $0.09 | $5.98 |
+| others | one-off comparison runs | $2.27 | $0.03 | $2.30 |
+
+The author alone is 78% of it, and five sixths of the author's bill is INPUT.
+That is the absence of prompt caching, not the price of the model: Claude Code
+re-sends a system prompt describing 255 tools on every turn, and `AUTHOR_TURNS`
+is 160 on this path. Cost therefore scales with the turn budget rather than with
+the questions produced -- five questions cost roughly thirty dollars, where the
+reviewer judged fifty items for six.
+
+The obvious lever is fewer turns, and it pulls against the reason the budgets
+were raised in the first place -- a run that finishes over its ceiling is failed,
+not truncated -- so it wants measuring rather than guessing. The other lever is
+not available at this level: the agent steps already pass four or five tools in
+`--allowedTools`, and the relay still logged 253 to 255 tool definitions on every
+request, so restricting the grant does not shrink what is sent.
 
 ## Manual replenishment run
 
