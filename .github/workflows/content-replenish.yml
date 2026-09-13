@@ -105,6 +105,7 @@ env:
   REVIEWER_MODEL: ${{ inputs.provider == 'nebius' && 'deepseek-ai/DeepSeek-V4-Pro' || 'claude-opus-5' }}
   # claude-code-action forwards this to the CLI from the CALLING workflow's env
   # (its own `env:` block shadows a step-level one), and empty means Anthropic.
+  RELAY_PORT: "8787"
   ANTHROPIC_BASE_URL: ${{ inputs.provider == 'nebius' && 'http://127.0.0.1:8787' || '' }}
   # Turn budgets are per-provider: GLM-5.3 spent 33 turns on the selector task
   # that Sonnet fits in well under 25, and the action FAILS a run that finishes
@@ -307,6 +308,8 @@ jobs:
         if: env.PROVIDER == 'nebius'
         env:
           NEBIUS_API_KEY: ${{ secrets.NEBIUS_API_KEY }}
+          NEBIUS_MODEL: ${{ env.AUTHOR_MODEL }}
+          RELAY_PORT: ${{ env.RELAY_PORT }}
         run: |
           set -euo pipefail
           if [ -z "${NEBIUS_API_KEY:-}" ]; then
@@ -315,10 +318,10 @@ jobs:
           fi
           nohup python3 scripts/nebius-relay.py > "$RUNNER_TEMP/relay.log" 2>&1 &
           for _ in $(seq 1 30); do
-            curl -sf http://127.0.0.1:8787/health && break
+            curl -sf "http://127.0.0.1:${RELAY_PORT}/health" && break
             sleep 1
           done
-          curl -sf http://127.0.0.1:8787/health > /dev/null || {
+          curl -sf "http://127.0.0.1:${RELAY_PORT}/health" > /dev/null || {
             echo "::error::the relay did not come up"; cat "$RUNNER_TEMP/relay.log"; exit 1; }
 
       # Objective mapping is a judgement call the deterministic step cannot
@@ -2672,7 +2675,7 @@ jobs:
           node scripts/replenish-prepare.mjs boundary --base "${{ steps.base.outputs.sha }}"
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
-          node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now
+          node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now --author "$AUTHOR_ID"
           bun run lint:content
           node scripts/verify-evidence.mjs
           bun run test:content
@@ -2912,6 +2915,8 @@ jobs:
         if: env.PROVIDER == 'nebius'
         env:
           NEBIUS_API_KEY: ${{ secrets.NEBIUS_API_KEY }}
+          NEBIUS_MODEL: ${{ env.REVIEWER_MODEL }}
+          RELAY_PORT: ${{ env.RELAY_PORT }}
         run: |
           set -euo pipefail
           if [ -z "${NEBIUS_API_KEY:-}" ]; then
@@ -2920,10 +2925,10 @@ jobs:
           fi
           nohup python3 scripts/nebius-relay.py > "$RUNNER_TEMP/relay.log" 2>&1 &
           for _ in $(seq 1 30); do
-            curl -sf http://127.0.0.1:8787/health && break
+            curl -sf "http://127.0.0.1:${RELAY_PORT}/health" && break
             sleep 1
           done
-          curl -sf http://127.0.0.1:8787/health > /dev/null || {
+          curl -sf "http://127.0.0.1:${RELAY_PORT}/health" > /dev/null || {
             echo "::error::the relay did not come up"; cat "$RUNNER_TEMP/relay.log"; exit 1; }
 
       # The agents' grant is the unscoped Write tool, so this is what bounds

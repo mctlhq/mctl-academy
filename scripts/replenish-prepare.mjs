@@ -257,6 +257,34 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
 }
 
 /**
+ * Every question the agent added or rewrote must carry the run's own author id.
+ * AUTHOR_ID already drives the commit message, the PR body and the agent's
+ * prompt, but a prompt is an instruction, not a guarantee: the first Nebius run
+ * produced files GLM wrote and `agent:claude-author` signed, because the id had
+ * been spelled literally in the prompt. Under CONTENT-POLICY authorship and
+ * approval are separated mechanically, so this is checked mechanically too.
+ *
+ * @param {object} args
+ * @param {string[]} args.changed  question files changed against the base
+ * @param {string} args.expected  the run's author id, e.g. "agent:glm-author"
+ * @param {(file: string) => string | null} args.authoredBy  as written on disk
+ * @param {(file: string) => string | null} [args.statusAtBase]  files already
+ *   published at the base are other agents' work and are not re-signed here.
+ */
+export function authorshipProblems({ changed, expected, authoredBy, statusAtBase = null }) {
+  const problems = [];
+  for (const file of changed) {
+    if (statusAtBase && statusAtBase(file) !== null && statusAtBase(file) !== "needs_review") continue;
+    const by = authoredBy(file);
+    if (by === null) continue;
+    if (by !== expected) {
+      problems.push(`${file} is authored by ${by}, but this run's author is ${expected}`);
+    }
+  }
+  return problems;
+}
+
+/**
  * @param {object} args
  * @param {string[]} args.changed  question files changed against the base
  * @param {(file: string) => string | null} args.statusAtBase  null when absent at base
@@ -318,9 +346,19 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null, pro
 export function yamlProblem({ file, cwd = process.cwd() }) {
   try {
     parseYaml(readFileSync(join(cwd, file), "utf8"));
-    return "it parses now";
+    return "the file parses on re-read; it changed under the gate";
   } catch (e) {
     return String(e?.message ?? e).split("\n")[0];
+  }
+}
+
+export function authoredOnDisk({ file, cwd = process.cwd() }) {
+  const abs = join(cwd, file);
+  if (!existsSync(abs)) return null;
+  try {
+    return parseYaml(readFileSync(abs, "utf8"))?.authored?.by ?? null;
+  } catch {
+    return null;
   }
 }
 
@@ -557,6 +595,17 @@ async function main(argv) {
       statusNow: args.includes("--forbid-published-now") ? (file) => statusOnDisk({ file }) : null,
       problemNow: (file) => yamlProblem({ file }),
     });
+    const expected = opt(args, "author");
+    if (expected) {
+      problems.push(
+        ...authorshipProblems({
+          changed,
+          expected,
+          authoredBy: (file) => authoredOnDisk({ file }),
+          statusAtBase: (file) => statusAtRef({ base, file }),
+        }),
+      );
+    }
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);
     if (problems.length) process.exit(1);

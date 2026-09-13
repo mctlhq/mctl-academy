@@ -24,7 +24,8 @@ API_KEY = os.environ.get("NEBIUS_API_KEY", "")
 BASE_URL = os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1").rstrip("/")
 # GLM-5.3 over the cookbook's Kimi-K2.7-Code: both cite verbatim and both refuse
 # to invent a question when no source covers the objective, but GLM answers in a
-# third of the time. See bench/ and bench2/ for the runs behind this.
+# third of the time. The comparison is recorded in the pull request that added
+# this file; nothing in the repository reproduces it.
 MODEL = os.environ.get("NEBIUS_MODEL", "zai-org/GLM-5.3")
 PORT = int(os.environ.get("RELAY_PORT", "8787"))
 
@@ -102,10 +103,16 @@ def to_openai(req):
                 if t == "text":
                     texts.append(b.get("text", ""))
                 elif t == "tool_result":
+                    # OpenAI has no is_error field, and a denied Write replayed
+                    # as an ordinary result makes the model reason from a
+                    # success that never happened.
+                    body = text_of(b.get("content")) or ""
+                    if b.get("is_error"):
+                        body = f"Error: {body}" if body else "Error: the tool call failed."
                     tools_out.append({
                         "role": "tool",
                         "tool_call_id": b.get("tool_use_id", ""),
-                        "content": text_of(b.get("content")) or "",
+                        "content": body,
                     })
                 elif t == "image":
                     texts.append("[image omitted: upstream model is text-only]")
@@ -276,7 +283,10 @@ class Handler(BaseHTTPRequestHandler):
 
     # --- non-streaming ---------------------------------------------------
     def _once(self, resp):
-        data = json.loads(resp.read())
+        try:
+            data = json.loads(resp.read())
+        except Exception as e:
+            return self._err(502, f"upstream returned an unreadable body: {e}")
         choice = (data.get("choices") or [{}])[0]
         msg = choice.get("message") or {}
         blocks = []
@@ -297,7 +307,11 @@ class Handler(BaseHTTPRequestHandler):
             "role": "assistant",
             "model": data.get("model", MODEL),
             "content": blocks,
-            "stop_reason": STOP_REASON.get(choice.get("finish_reason"), "end_turn"),
+            # finish_reason alone is not enough: some endpoints answer "stop"
+            # on a turn that also emitted tool_calls, and end_turn tells the
+            # client to stop instead of running the tools.
+            "stop_reason": ("tool_use" if msg.get("tool_calls")
+                            else STOP_REASON.get(choice.get("finish_reason"), "end_turn")),
             "stop_sequence": None,
             "usage": {
                 "input_tokens": usage.get("prompt_tokens", 0),
@@ -332,6 +346,7 @@ class Handler(BaseHTTPRequestHandler):
         tool_slot = {}      # upstream tool_calls index -> our block index
         finish = "stop"
         out_tokens = 0
+        in_tokens = 0
 
         def close_block():
             nonlocal open_kind
@@ -356,6 +371,8 @@ class Handler(BaseHTTPRequestHandler):
                 usage = ev.get("usage") or {}
                 if usage.get("completion_tokens"):
                     out_tokens = usage["completion_tokens"]
+                if usage.get("prompt_tokens"):
+                    in_tokens = usage["prompt_tokens"]
 
                 choice = (ev.get("choices") or [{}])[0]
                 if choice.get("finish_reason"):
@@ -396,14 +413,18 @@ class Handler(BaseHTTPRequestHandler):
                             "delta": {"type": "input_json_delta", "partial_json": args}})
 
             close_block()
+            stop = "tool_use" if tool_slot else STOP_REASON.get(finish, "end_turn")
             self._sse("message_delta", {
                 "type": "message_delta",
-                "delta": {"stop_reason": STOP_REASON.get(finish, "end_turn"),
-                          "stop_sequence": None},
-                "usage": {"output_tokens": out_tokens}})
+                "delta": {"stop_reason": stop, "stop_sequence": None},
+                # input_tokens too: the client tracks how full its context is
+                # from what the stream reports, and a hardcoded zero every turn
+                # hides that entirely.
+                "usage": {"input_tokens": in_tokens, "output_tokens": out_tokens}})
             self._sse("message_stop", {"type": "message_stop"})
-            log(f"[relay] stream done finish={finish} blocks={index + 1} "
-                f"out_tokens={out_tokens} chars={len(''.join(seen_text))}")
+            log(f"[relay] stream done finish={finish} stop={stop} blocks={index + 1} "
+                f"in_tokens={in_tokens} out_tokens={out_tokens} "
+                f"chars={len(''.join(seen_text))}")
         except Exception as e:
             log(f"[relay] stream aborted: {e}")
 
