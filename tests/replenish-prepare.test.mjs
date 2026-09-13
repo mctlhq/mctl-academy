@@ -9,8 +9,9 @@ import {
   rmSync,
   existsSync,
 } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
+import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { parse as parseYaml, stringify as yaml } from "yaml";
 import {
@@ -2069,6 +2070,24 @@ test("guardChanges skips the cap when max is null and rejects an unparseable fil
   );
 });
 
+test("the author phase refuses to run without being told whose work it is", () => {
+  const script = fileURLToPath(new URL("../scripts/replenish-prepare.mjs", import.meta.url));
+  const { dir, run: git } = gitRepo();
+  try {
+    git(["commit", "-q", "--allow-empty", "-m", "base"]);
+    const base = git(["rev-parse", "HEAD"]).trim();
+    const run = (args) => spawnSync(process.execPath, [script, ...args], { cwd: dir, encoding: "utf8" });
+    // An omitted flag used to be indistinguishable from a pass.
+    const missing = run(["guard", "--base", base, "--max", "5", "--forbid-published-now"]);
+    assert.equal(missing.status, 1);
+    assert.match(missing.stderr, /--author <id> is required on the author phase/);
+    // The post-promotion guard has no author to name and must still run.
+    assert.equal(run(["guard", "--base", base]).status, 0);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("the workflow wires the authorship gate and agrees with itself on the port", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -2091,7 +2110,14 @@ test("the workflow wires the authorship gate and agrees with itself on the port"
   assert.equal(authorAgents.length, 2, "the author agent and its retry");
   for (const step of authorAgents) {
     assert.match(step.with.prompt, /authored: \{ by: "\$\{\{ env\.AUTHOR_ID \}\}"/);
-    assert.match(step.with.prompt, /fresh `authored` block naming `\$\{\{ env\.AUTHOR_ID \}\}`/);
+    assert.match(step.with.prompt, /fresh `authored` block naming\s+`\$\{\{ env\.AUTHOR_ID \}\}`/);
+    // The gate demands this run's id on every file the agent touched, draft and
+    // review_ready included. Three such files sit on main carrying agent:claude,
+    // so an instruction that covers only the two paths above turns a permitted
+    // move -- finishing a half-written item on the objective it was sent to
+    // fill -- into a failed run that pushes nothing.
+    assert.match(step.with.prompt, /Any file you add or change is yours/);
+    assert.match(step.with.prompt, /`draft` or `review_ready`\s+item you decide to finish/);
   }
 
   // RELAY_PORT and the URL the CLI is pointed at are two literals that have to

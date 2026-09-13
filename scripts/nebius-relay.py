@@ -66,7 +66,7 @@ def stop_reason_for(finish, had_tool_calls):
     nothing naming truncation as the cause. Same for content_filter.
     """
     stop = STOP_REASON.get(finish, "end_turn")
-    if had_tool_calls and stop == "end_turn":
+    if had_tool_calls and stop == "end_turn" and finish != "content_filter":
         return "tool_use"
     return stop
 

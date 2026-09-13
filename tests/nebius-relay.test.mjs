@@ -147,6 +147,21 @@ test(
   },
 );
 
+test("content_filter is not upgraded to tool_use either", { skip: !havePython }, async () => {
+  const call = { id: "c1", type: "function", function: { name: "Write", arguments: "{}" } };
+  reply = {
+    payload: {
+      choices: [{ message: { content: "", tool_calls: [call] }, finish_reason: "content_filter" }],
+    },
+  };
+  const body = await (
+    await ask({ model: "claude-sonnet-5", messages: [{ role: "user", content: "x" }] })
+  ).json();
+  // end_turn is the only answer a tool call makes wrong; a refused generation
+  // is not a complete tool call any more than a truncated one is.
+  assert.equal(body.stop_reason, "end_turn");
+});
+
 test(
   "a tool call cut at max_tokens is reported as truncation, not as a tool call",
   { skip: !havePython },

@@ -1807,11 +1807,16 @@ jobs:
             For items under content/questions/ with `status: needs_review` whose source is listed
             in `drifted`: read the new captured text. If the same concept is still documented,
             rewrite the item against the new text (new excerpts, corrected options and
-            explanations, `status: review_ready`, a fresh `authored` block naming `${{ env.AUTHOR_ID }}`,
-              delete `reviewed`).
+            explanations, `status: review_ready`, a fresh `authored` block naming
+            `${{ env.AUTHOR_ID }}`, delete `reviewed`).
             If the concept is gone or changed, leave the file untouched. Never change a file whose
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
+
+            Any file you add or change is yours: set `authored: { by: "${{ env.AUTHOR_ID }}" }`
+            on it, whatever id it carried before. That includes a `draft` or `review_ready`
+            item you decide to finish rather than write a new one. A deterministic gate
+            rejects the run when a file you touched still names someone else.
 
             Write _agent/CHANGES.md: exactly the line `No files changed.` if you added and
             changed nothing -- that is a real answer, and the run still pushes whatever the
@@ -2194,11 +2199,16 @@ jobs:
             For items under content/questions/ with `status: needs_review` whose source is listed
             in `drifted`: read the new captured text. If the same concept is still documented,
             rewrite the item against the new text (new excerpts, corrected options and
-            explanations, `status: review_ready`, a fresh `authored` block naming `${{ env.AUTHOR_ID }}`,
-              delete `reviewed`).
+            explanations, `status: review_ready`, a fresh `authored` block naming
+            `${{ env.AUTHOR_ID }}`, delete `reviewed`).
             If the concept is gone or changed, leave the file untouched. Never change a file whose
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
+
+            Any file you add or change is yours: set `authored: { by: "${{ env.AUTHOR_ID }}" }`
+            on it, whatever id it carried before. That includes a `draft` or `review_ready`
+            item you decide to finish rather than write a new one. A deterministic gate
+            rejects the run when a file you touched still names someone else.
 
             Write _agent/CHANGES.md: exactly the line `No files changed.` if you added and
             changed nothing -- that is a real answer, and the run still pushes whatever the
