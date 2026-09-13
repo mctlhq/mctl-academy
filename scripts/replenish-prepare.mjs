@@ -266,6 +266,9 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  *   author-phase rule: the agent may only ever leave a file review_ready or needs_review,
  *   never publish one itself (a backdated human `reviewed` block would otherwise pass
  *   the lint). The post-promotion guard omits it.
+ * @param {(file: string) => string | null} [args.problemNow]  why the parser refused a
+ *   file, for the unparseable case. Injected for the same reason as statusNow: this
+ *   function never reads the disk itself.
  */
 export function guardChanges({ changed, statusAtBase, max, statusNow = null, problemNow = null }) {
   const problems = [];
