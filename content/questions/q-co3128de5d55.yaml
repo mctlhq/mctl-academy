@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3128de5d55
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: An engineer tries to create a 100 GiB Network SSD Non-replicated disk and

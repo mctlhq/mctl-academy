@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co47ac4ebcf8
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/node-recovery
 stem: A node has been reporting the `NodeReady` condition as `False` for eight
