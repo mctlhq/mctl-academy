@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co29b9f076dc
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: A workload writes intermediate shards to a local SSD disk. The VM is
