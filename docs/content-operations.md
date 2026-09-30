@@ -28,7 +28,7 @@ Two workflows in this repository run every Monday:
    against the R2 snapshot, and reports Mock shortfalls and objectives with
    fewer than three published questions. Output: `_run/candidates.json`. The run
    stops here when nothing applies, or when a replenish PR is already open.
-2. **author** — an agent (`agent:claude-author`, `claude-sonnet-5`) chooses at
+2. **author** — an agent (`agent:claude-author`, `claude-sonnet-5-5`) chooses at
    most `max_new` offered pages and their objectives; `scripts/replenish-prepare.mjs`
    validates the choice against the course maps. The workflow then, on the
    branch and before any agent writes: marks live-drifted sources `drifted` and

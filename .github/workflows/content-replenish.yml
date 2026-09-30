@@ -101,7 +101,7 @@ env:
   PROVIDER: ${{ inputs.provider || 'anthropic' }}
   AUTHOR_ID: ${{ inputs.provider == 'nebius' && 'agent:glm-author' || 'agent:claude-author' }}
   REVIEWER_ID: ${{ inputs.provider == 'nebius' && 'agent:deepseek-reviewer' || 'agent:claude-reviewer' }}
-  AUTHOR_MODEL: ${{ inputs.provider == 'nebius' && 'zai-org/GLM-5.3' || 'claude-sonnet-5' }}
+  AUTHOR_MODEL: ${{ inputs.provider == 'nebius' && 'zai-org/GLM-5.3' || 'claude-sonnet-5-5' }}
   REVIEWER_MODEL: ${{ inputs.provider == 'nebius' && 'deepseek-ai/DeepSeek-V4-Pro' || 'claude-opus-5' }}
   # claude-code-action forwards this to the CLI from the CALLING workflow's env
   # (its own `env:` block shadows a step-level one), and empty means Anthropic.
