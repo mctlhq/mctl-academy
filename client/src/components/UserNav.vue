@@ -29,8 +29,14 @@ onMounted(async () => {
   }
 });
 
-function signInWithZitadel() {
-  if (zitadel.value) authClient.signIn.oauth2({ providerId: zitadel.value.providerId, callbackURL: "/" });
+async function signInWithZitadel() {
+  if (!zitadel.value) return;
+  try {
+    const res = await authClient.signIn.oauth2({ providerId: zitadel.value.providerId, callbackURL: "/" });
+    if (res?.error) console.error("ZITADEL sign-in could not start:", res.error);
+  } catch (err) {
+    console.error("ZITADEL sign-in could not start:", err);
+  }
 }
 
 async function handleLogout() {

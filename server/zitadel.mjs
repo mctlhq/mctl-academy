@@ -161,10 +161,15 @@ export function createZitadelUserInfo(config, deps = {}) {
         if (profile?.sub !== claims.sub) throw new Error("userinfo describes another subject");
       }
       if (typeof profile.email !== "string" || profile.email === "") return null;
+      // An unverified address is refused, not just recorded: "user".email is
+      // unique and refuseZitadelCrossLink keeps GitHub/Google off a ZITADEL
+      // user, so a self-registered ZITADEL account on someone else's address
+      // would lock that person out of their first GitHub/Google sign-in here.
+      if (profile.email_verified !== true) throw new Error("ZITADEL e-mail is not verified");
       return {
         id: claims.sub,
         email: profile.email,
-        emailVerified: profile.email_verified === true,
+        emailVerified: true,
         name: zitadelDisplayName(profile),
         image: undefined,
       };
@@ -174,6 +179,9 @@ export function createZitadelUserInfo(config, deps = {}) {
     }
   };
 }
+
+/** Anything with an address-shaped word in it, e.g. "a@b.co" or "Zed <a@b.co>". */
+const LOOKS_LIKE_EMAIL = /[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+/;
 
 /** Shown when a ZITADEL profile has no name that is not an e-mail address. */
 export const ZITADEL_FALLBACK_NAME = "Learner";
@@ -189,7 +197,7 @@ export function zitadelDisplayName(profile) {
   for (const candidate of [profile.name, profile.given_name, profile.preferred_username]) {
     if (typeof candidate !== "string") continue;
     const value = candidate.trim();
-    if (value !== "" && !value.includes("@")) return value;
+    if (value !== "" && !LOOKS_LIKE_EMAIL.test(value)) return value;
   }
   return ZITADEL_FALLBACK_NAME;
 }

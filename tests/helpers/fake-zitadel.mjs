@@ -39,6 +39,9 @@ export class FakeZitadel {
       azp: this.clientId,
       iat: now,
       exp: now + 3600,
+      // What ZITADEL sends for an address the user has confirmed; a test
+      // passes email_verified: undefined (or false) to drop it.
+      email_verified: true,
       ...claims,
     };
     for (const name of Object.keys(payload)) if (payload[name] === undefined) delete payload[name];
@@ -95,7 +98,7 @@ export class FakeZitadel {
           sub: pending.sub,
           email: pending.email,
           name: pending.name,
-          email_verified: true,
+          email_verified: pending.email_verified ?? true,
         }),
       });
     }

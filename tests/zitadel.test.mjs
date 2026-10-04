@@ -88,17 +88,29 @@ describe("ZITADEL ID token verification (getUserInfo)", () => {
     assert.equal((await getUserInfo({ idToken, accessToken: "at" })).name, ZITADEL_FALLBACK_NAME);
   });
 
+  test("refuses an e-mail the issuer has not verified", async () => {
+    for (const email_verified of [false, undefined, "true"]) {
+      const idToken = await issuer.idToken({ sub: "1", email: "a@example.com", email_verified });
+      assert.equal(await getUserInfo({ idToken }), null, `email_verified=${email_verified}`);
+    }
+  });
+
   test("refuses an ID token without an expiry", async () => {
     const idToken = await issuer.idToken({ sub: "1", email: "a@example.com", exp: undefined });
     assert.equal(await getUserInfo({ idToken }), null);
   });
 
   test("falls back to userinfo for the e-mail, for the same subject only", async () => {
-    issuer.userinfo.set("at", { sub: "290001", email: "a@example.com", preferred_username: "a" });
+    issuer.userinfo.set("at", {
+      sub: "290001",
+      email: "a@example.com",
+      email_verified: true,
+      preferred_username: "a",
+    });
     const idToken = await issuer.idToken({ sub: "290001" });
     assert.equal((await getUserInfo({ idToken, accessToken: "at" })).email, "a@example.com");
 
-    issuer.userinfo.set("other", { sub: "290002", email: "b@example.com" });
+    issuer.userinfo.set("other", { sub: "290002", email: "b@example.com", email_verified: true });
     assert.equal(await getUserInfo({ idToken, accessToken: "other" }), null);
   });
 
@@ -238,6 +250,9 @@ describe("zitadelDisplayName", () => {
     );
     assert.equal(zitadelDisplayName({ given_name: "Zed", preferred_username: "zed" }), "Zed");
     assert.equal(zitadelDisplayName({ preferred_username: "zed" }), "zed");
+    // An "@" alone is not an address.
+    assert.equal(zitadelDisplayName({ name: "Zed @ MCTL" }), "Zed @ MCTL");
+    assert.equal(zitadelDisplayName({ name: "@zed" }), "@zed");
   });
 
   test("never uses anything that looks like an e-mail address", () => {

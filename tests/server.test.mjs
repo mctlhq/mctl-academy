@@ -17,6 +17,14 @@ describe("Hono server & Report API", () => {
     assert.ok(body.runtime === "node" || body.runtime === "bun");
   });
 
+  test("GET /api/sign-in-options offers no ZITADEL button when ZITADEL_* is unset", async () => {
+    // Every environment before the variables are set: nothing changes.
+    assert.equal(process.env.ZITADEL_ISSUER, undefined);
+    const res = await app.request("/api/sign-in-options");
+    assert.equal(res.status, 200);
+    assert.deepEqual(await res.json(), { zitadel: null });
+  });
+
   test("GET /livez matches /healthz and carries no dependency check", async () => {
     const res = await app.request("/livez");
     assert.equal(res.status, 200);

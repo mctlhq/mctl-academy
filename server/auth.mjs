@@ -189,6 +189,9 @@ export const auth = betterAuth({
               });
               return rows.map((row) => row.providerId);
             }
+            // Reached only when the hook runs outside any endpoint context,
+            // which better-auth's own sign-in paths never do; kept so such a
+            // caller still gets an answer rather than a crash.
             const { rows } = await authPool.query(`SELECT "providerId" FROM "account" WHERE "userId" = $1`, [
               userId,
             ]);

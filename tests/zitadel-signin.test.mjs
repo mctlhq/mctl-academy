@@ -148,6 +148,21 @@ describe("ZITADEL sign-in, end to end", () => {
     ]);
   });
 
+  test("refuses an e-mail the issuer has not verified, so it cannot squat a GitHub learner's address", async () => {
+    const squatted = `unverified-${sub}@example.com`;
+    const response = await signIn({
+      sub: `${sub}6`,
+      email: squatted,
+      name: "Squatter",
+      email_verified: false,
+    });
+    assert.equal(response.status, 302);
+    assert.match(response.headers.get("location") ?? "", /error=/);
+    assert.doesNotMatch(cookiesOf(response), /better-auth\.session_token=[^;]/);
+    const { rows } = await authPool.query(`SELECT 1 FROM "user" WHERE email = $1`, [squatted]);
+    assert.equal(rows.length, 0, "no user row may hold the unverified address");
+  });
+
   test("refuses a callback whose ID token was not signed by the issuer", async () => {
     const original = issuer.idToken.bind(issuer);
     const stranger = new FakeZitadel();
