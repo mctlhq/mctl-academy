@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { authClient } from "../authClient";
 import type { UserProfile } from "../types/user";
@@ -9,6 +10,28 @@ defineProps<{
   /** True until that session lookup resolves. */
   loading: boolean;
 }>();
+
+/**
+ * The optional ZITADEL sign-in, shown only when the server reports it
+ * configured (GET /api/sign-in-options). Any failure to ask leaves the
+ * GitHub button alone, exactly as before ZITADEL existed.
+ */
+const zitadel = ref<{ providerId: string; label: string } | null>(null);
+
+onMounted(async () => {
+  try {
+    const res = await fetch("/api/sign-in-options");
+    if (!res.ok) return;
+    const body = (await res.json()) as { zitadel?: { providerId: string; label: string } | null };
+    zitadel.value = body.zitadel ?? null;
+  } catch {
+    zitadel.value = null;
+  }
+});
+
+function signInWithZitadel() {
+  if (zitadel.value) authClient.signIn.oauth2({ providerId: zitadel.value.providerId, callbackURL: "/" });
+}
 
 async function handleLogout() {
   await authClient.signOut();
@@ -68,6 +91,16 @@ async function handleDeleteAccount() {
         />
       </svg>
       <span class="signin-label">Log in</span>
+    </MButton>
+    <MButton
+      v-if="zitadel"
+      type="button"
+      variant="ghost"
+      class="signin-zitadel"
+      :aria-label="`Log in with ${zitadel.label}`"
+      @click="signInWithZitadel"
+    >
+      <span class="signin-label">Log in with {{ zitadel.label }}</span>
     </MButton>
     <!--
       Google sign-in is temporarily hidden — the launch flow isn't ready yet.

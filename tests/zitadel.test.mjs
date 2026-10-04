@@ -1,0 +1,246 @@
+import { test, describe, beforeEach } from "node:test";
+import assert from "node:assert/strict";
+import { createZitadelUserInfo, readZitadelConfig, refuseZitadelCrossLink } from "../server/zitadel.mjs";
+import { parseAllowlist, isAllowlisted } from "../server/allowlist.mjs";
+import { FakeZitadel } from "./helpers/fake-zitadel.mjs";
+
+const silent = { error: () => {} };
+
+describe("readZitadelConfig", () => {
+  const full = {
+    ZITADEL_ISSUER: "https://auth.mctl.ai/",
+    ZITADEL_CLIENT_ID: " zid ",
+    ZITADEL_CLIENT_SECRET: " zsecret ",
+  };
+
+  test("is off, with no problem, when none of its variables are set", () => {
+    assert.deepEqual(readZitadelConfig({}), {});
+  });
+
+  test("normalises a complete configuration", () => {
+    assert.deepEqual(readZitadelConfig(full), {
+      config: {
+        issuer: "https://auth.mctl.ai",
+        clientId: "zid",
+        clientSecret: "zsecret",
+        displayName: "ZITADEL",
+      },
+    });
+    assert.equal(
+      readZitadelConfig({ ...full, ZITADEL_DISPLAY_NAME: "MCTL account" }).config.displayName,
+      "MCTL account",
+    );
+  });
+
+  test("reports a half-set configuration instead of silently dropping it", () => {
+    assert.match(readZitadelConfig({ ZITADEL_CLIENT_ID: "zid" }).problem, /partly configured/);
+    assert.match(readZitadelConfig({ ...full, ZITADEL_CLIENT_SECRET: "" }).problem, /partly configured/);
+  });
+
+  test("reports an issuer that is not https", () => {
+    assert.match(readZitadelConfig({ ...full, ZITADEL_ISSUER: "http://auth.mctl.ai" }).problem, /https URL/);
+    assert.match(readZitadelConfig({ ...full, ZITADEL_ISSUER: "auth.mctl.ai" }).problem, /https URL/);
+  });
+});
+
+describe("ZITADEL ID token verification (getUserInfo)", () => {
+  /** @type {FakeZitadel} */
+  let issuer;
+  /** @type {(tokens: any) => Promise<any>} */
+  let getUserInfo;
+
+  beforeEach(() => {
+    issuer = new FakeZitadel();
+    getUserInfo = createZitadelUserInfo(
+      { issuer: issuer.issuer, clientId: issuer.clientId },
+      { fetch: /** @type {any} */ (issuer.fetch), logger: silent },
+    );
+  });
+
+  test("returns the verified sub as the account id, with the e-mail and name", async () => {
+    const idToken = await issuer.idToken({
+      sub: "290001",
+      email: "a@example.com",
+      email_verified: true,
+      name: "A",
+    });
+    assert.deepEqual(await getUserInfo({ idToken, accessToken: "at" }), {
+      id: "290001",
+      email: "a@example.com",
+      emailVerified: true,
+      name: "A",
+      image: undefined,
+    });
+  });
+
+  test("falls back to userinfo for the e-mail, for the same subject only", async () => {
+    issuer.userinfo.set("at", { sub: "290001", email: "a@example.com", preferred_username: "a" });
+    const idToken = await issuer.idToken({ sub: "290001" });
+    assert.equal((await getUserInfo({ idToken, accessToken: "at" })).email, "a@example.com");
+
+    issuer.userinfo.set("other", { sub: "290002", email: "b@example.com" });
+    assert.equal(await getUserInfo({ idToken, accessToken: "other" }), null);
+  });
+
+  test("refuses a token response without an ID token", async () => {
+    assert.equal(await getUserInfo({ accessToken: "at" }), null);
+  });
+
+  test("refuses another issuer, another audience, or another authorized party", async () => {
+    const claims = { sub: "1", email: "a@example.com" };
+    assert.equal(
+      await getUserInfo({ idToken: await issuer.idToken({ ...claims, iss: "https://evil.example.com" }) }),
+      null,
+    );
+    assert.equal(
+      await getUserInfo({ idToken: await issuer.idToken({ ...claims, aud: "other", azp: undefined }) }),
+      null,
+    );
+    assert.equal(
+      await getUserInfo({ idToken: await issuer.idToken({ ...claims, azp: "project-id" }) }),
+      null,
+    );
+    assert.notEqual(
+      await getUserInfo({
+        idToken: await issuer.idToken({ ...claims, aud: issuer.clientId, azp: undefined }),
+      }),
+      null,
+    );
+  });
+
+  test("refuses an expired token", async () => {
+    const past = Math.floor(Date.now() / 1000) - 7200;
+    assert.equal(
+      await getUserInfo({
+        idToken: await issuer.idToken({ sub: "1", email: "a@x", iat: past, exp: past + 60 }),
+      }),
+      null,
+    );
+  });
+
+  test("refuses a token signed by a key the issuer does not publish", async () => {
+    const stranger = new FakeZitadel();
+    const idToken = await stranger.idToken(
+      { sub: "1", email: "a@example.com" },
+      { key: { ...stranger.key, kid: "kid-1" } },
+    );
+    assert.equal(await getUserInfo({ idToken }), null);
+  });
+
+  test("refuses a token whose payload was edited after signing", async () => {
+    const idToken = await issuer.idToken({ sub: "1", email: "a@example.com" });
+    const [header, payload, signature] = idToken.split(".");
+    const edited = JSON.parse(Buffer.from(payload, "base64url").toString());
+    edited.sub = "2";
+    const forged = `${header}.${Buffer.from(JSON.stringify(edited)).toString("base64url")}.${signature}`;
+    assert.equal(await getUserInfo({ idToken: forged }), null);
+  });
+
+  test("refuses alg none, whatever the header says", async () => {
+    const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+    const now = Math.floor(Date.now() / 1000);
+    const unsigned = `${encode({ alg: "none" })}.${encode({
+      iss: issuer.issuer,
+      aud: issuer.clientId,
+      sub: "1",
+      email: "a@example.com",
+      iat: now,
+      exp: now + 60,
+    })}.`;
+    assert.equal(await getUserInfo({ idToken: unsigned }), null);
+  });
+
+  test("re-fetches the key set once when the issuer has rotated its key", async () => {
+    await getUserInfo({ idToken: await issuer.idToken({ sub: "1", email: "a@example.com" }) });
+    assert.equal(issuer.hits.jwks, 1);
+    issuer.rotateKey("kid-2");
+    const after = await getUserInfo({ idToken: await issuer.idToken({ sub: "1", email: "a@example.com" }) });
+    assert.equal(after?.id, "1");
+    assert.equal(issuer.hits.jwks, 2);
+  });
+
+  test("refuses a discovery document naming another issuer, or endpoints off its origin", async () => {
+    const idToken = await issuer.idToken({ sub: "1", email: "a@example.com" });
+    issuer.discovery = { issuer: "https://evil.example.com" };
+    assert.equal(await getUserInfo({ idToken }), null);
+    issuer.discovery = { jwks_uri: "https://evil.example.com/keys" };
+    assert.equal(await getUserInfo({ idToken }), null);
+    // Nothing was cached from the refused documents.
+    issuer.discovery = {};
+    assert.equal((await getUserInfo({ idToken }))?.id, "1");
+  });
+});
+
+describe("refuseZitadelCrossLink", () => {
+  const poolWith = (providers) => ({
+    query: async () => ({ rows: providers.map((providerId) => ({ providerId })) }),
+  });
+
+  test("allows the first account of a new user, whatever the provider", async () => {
+    await refuseZitadelCrossLink(poolWith([]), { userId: "u", providerId: "zitadel" });
+    await refuseZitadelCrossLink(poolWith([]), { userId: "u", providerId: "github" });
+  });
+
+  test("leaves GitHub <-> Google linking as it was", async () => {
+    await refuseZitadelCrossLink(poolWith(["github"]), { userId: "u", providerId: "google" });
+  });
+
+  test("refuses a ZITADEL account on a GitHub/Google user, and the reverse", async () => {
+    await assert.rejects(
+      refuseZitadelCrossLink(poolWith(["github"]), { userId: "u", providerId: "zitadel" }),
+      /cannot be linked/,
+    );
+    await assert.rejects(
+      refuseZitadelCrossLink(poolWith(["zitadel"]), { userId: "u", providerId: "github" }),
+      /cannot be linked/,
+    );
+  });
+
+  test("refuses when the user's accounts cannot be read", async () => {
+    const broken = { query: async () => Promise.reject(new Error("connection refused")) };
+    await assert.rejects(
+      refuseZitadelCrossLink(broken, { userId: "u", providerId: "zitadel" }),
+      /connection refused/,
+    );
+  });
+});
+
+describe("allowlist entries", () => {
+  test("plain entries are GitHub logins; zitadel:<sub> entries are ZITADEL users; other prefixes are ignored", () => {
+    const { githubLogins, zitadelSubs } = parseAllowlist(
+      " MashkovD , zitadel:290001 ,okta:x, ZITADEL:290002,zitadel:",
+    );
+    assert.deepEqual([...githubLogins], ["mashkovd"]);
+    assert.deepEqual([...zitadelSubs], ["290001", "290002"]);
+  });
+
+  test("a ZITADEL user is listed only through its own zitadel account row, never by name or e-mail", async () => {
+    const queries = [];
+    const pool = {
+      query: async (sql, params) => {
+        queries.push(params);
+        return { rows: params[0] === "zuser" && params[2].includes("290001") ? [{}] : [] };
+      },
+    };
+    const zitadelUser = {
+      user: { id: "zuser", githubLogin: null, name: "mashkovd", email: "mashkovd@example.com" },
+    };
+    assert.equal(await isAllowlisted(zitadelUser, "mashkovd", pool), false);
+    assert.equal(queries.length, 0, "no zitadel entries, no lookup");
+    assert.equal(await isAllowlisted(zitadelUser, "mashkovd,zitadel:290001", pool), true);
+    assert.equal(await isAllowlisted(zitadelUser, "zitadel:290002", pool), false);
+    assert.deepEqual(queries.at(-1), ["zuser", "zitadel", ["290002"]]);
+  });
+
+  test("GitHub entries keep matching as before, and no session is never listed", async () => {
+    const pool = { query: async () => ({ rows: [] }) };
+    assert.equal(await isAllowlisted({ user: { id: "g", githubLogin: "MashkovD" } }, "mashkovd", pool), true);
+    assert.equal(await isAllowlisted(null, "mashkovd", pool), false);
+    assert.equal(await isAllowlisted({ user: { id: "g", githubLogin: "other" } }, "", pool), false);
+  });
+
+  test("a failed lookup throws rather than answering either way", async () => {
+    const broken = { query: async () => Promise.reject(new Error("db down")) };
+    await assert.rejects(isAllowlisted({ user: { id: "z" } }, "zitadel:1", broken), /db down/);
+  });
+});

@@ -1,6 +1,13 @@
 import { betterAuth } from "better-auth";
+import { genericOAuth } from "better-auth/plugins";
 import pg from "pg";
 import { dbSslConfig } from "./db-ssl.mjs";
+import {
+  ZITADEL_PROVIDER_ID,
+  createZitadelUserInfo,
+  readZitadelConfig,
+  refuseZitadelCrossLink,
+} from "./zitadel.mjs";
 
 const { Pool } = pg;
 
@@ -46,6 +53,23 @@ export function assertAuthSecretConfigured() {
         "secret, letting anyone forge a valid session for any user.",
     );
   }
+}
+
+/**
+ * ZITADEL is optional: registered only when all three of its variables are
+ * set. A half-set configuration registers nothing here and fails the boot in
+ * assertZitadelConfigValid (called from app.mjs next to the secret check) —
+ * not at module load, for the same hoisting reason as above.
+ */
+const zitadel = readZitadelConfig(process.env);
+
+export function assertZitadelConfigValid() {
+  if (zitadel.problem) throw new Error(zitadel.problem);
+}
+
+/** What the client needs to decide which sign-in buttons to show. */
+export function zitadelSignIn() {
+  return zitadel.config ? { providerId: ZITADEL_PROVIDER_ID, label: zitadel.config.displayName } : null;
 }
 
 /**
@@ -146,6 +170,15 @@ export const auth = betterAuth({
         after: backfillGithubLogin,
       },
     },
+    // See server/zitadel.mjs: no implicit e-mail linking across the ZITADEL
+    // boundary, in either direction. GitHub <-> Google linking is unchanged.
+    account: {
+      create: {
+        before: async (account) => {
+          await refuseZitadelCrossLink(authPool, account);
+        },
+      },
+    },
   },
   // Only registering a provider when both its id and secret are actually
   // set — rather than defaulting missing values to "" — so an unconfigured
@@ -178,4 +211,26 @@ export const auth = betterAuth({
         }
       : {}),
   },
+  plugins: zitadel.config
+    ? [
+        genericOAuth({
+          config: [
+            {
+              providerId: ZITADEL_PROVIDER_ID,
+              discoveryUrl: `${zitadel.config.issuer}/.well-known/openid-configuration`,
+              issuer: zitadel.config.issuer,
+              clientId: zitadel.config.clientId,
+              clientSecret: zitadel.config.clientSecret,
+              authentication: "basic",
+              scopes: ["openid", "email", "profile"],
+              pkce: true,
+              getUserInfo: createZitadelUserInfo(zitadel.config),
+              // Never a githubLogin: the allowlists name a ZITADEL user only
+              // as zitadel:<sub> (server/allowlist.mjs).
+              mapProfileToUser: () => ({}),
+            },
+          ],
+        }),
+      ]
+    : [],
 });
