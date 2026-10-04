@@ -7,7 +7,7 @@ import {
   assertZitadelConfigValid,
   zitadelSignIn,
 } from "./auth.mjs";
-import { isAllowlisted } from "./allowlist.mjs";
+import { isAllowlisted, warnIgnoredAllowlistEntries } from "./allowlist.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
 import { votesRouter } from "./routes/votes.mjs";
@@ -80,6 +80,8 @@ try {
   console.error("[boot] Fatal:", err.message);
   process.exit(1);
 }
+// Not fatal (see the function): only makes an allowlist typo visible.
+warnIgnoredAllowlistEntries(process.env);
 
 // better-auth owns /api/auth/* wholesale — origin validation, CSRF/Fetch
 // Metadata checks and secure production cookies are its concern, not a

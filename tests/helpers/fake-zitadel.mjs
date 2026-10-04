@@ -24,6 +24,8 @@ export class FakeZitadel {
     /** What the userinfo endpoint answers, keyed by access token. */
     this.userinfo = new Map();
     this.hits = { discovery: 0, jwks: 0, token: 0, userinfo: 0 };
+    /** Every key-set URL fetched, in order (the query string may vary). */
+    this.jwksUrls = [];
   }
 
   rotateKey(kid) {
@@ -69,8 +71,9 @@ export class FakeZitadel {
         ...this.discovery,
       });
     }
-    if (url === `${this.issuer}/oauth/v2/keys`) {
+    if (url.split("?")[0] === `${this.issuer}/oauth/v2/keys`) {
       this.hits.jwks++;
+      this.jwksUrls.push(url);
       const jwk = this.key.publicKey.export({ format: "jwk" });
       return Response.json({ keys: [{ ...jwk, kid: this.key.kid, use: "sig", alg: "RS256" }] });
     }

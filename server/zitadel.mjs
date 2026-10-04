@@ -94,7 +94,7 @@ export function createZitadelUserInfo(config, deps = {}) {
   const logger = deps.logger ?? console;
   /** @type {{ value: any, at: number } | undefined} */
   let discovery;
-  /** @type {{ value: any, at: number } | undefined} */
+  /** @type {{ uri: string, value: any, at: number } | undefined} */
   let jwks;
 
   async function discover() {
@@ -115,9 +115,11 @@ export function createZitadelUserInfo(config, deps = {}) {
   }
 
   async function keySet(jwksUri, refresh) {
-    if (!refresh && jwks && Date.now() - jwks.at < CACHE_TTL_MS) return jwks.value;
+    // Keyed by the URI too: a discovery refresh that moves jwks_uri must not
+    // keep serving the old location's keys until their own TTL runs out.
+    if (!refresh && jwks?.uri === jwksUri && Date.now() - jwks.at < CACHE_TTL_MS) return jwks.value;
     const value = createLocalJWKSet(await fetchJson(fetchImpl, jwksUri));
-    jwks = { value, at: Date.now() };
+    jwks = { uri: jwksUri, value, at: Date.now() };
     return value;
   }
 
@@ -152,9 +154,14 @@ export function createZitadelUserInfo(config, deps = {}) {
       if (typeof claims.sub !== "string" || claims.sub === "") throw new Error("ID token has no sub");
 
       let profile = claims;
-      if (typeof claims.email !== "string" || claims.email === "") {
-        // The application may not put user info in the ID token; the
-        // userinfo endpoint must then describe the same subject.
+      if (
+        typeof claims.email !== "string" ||
+        claims.email === "" ||
+        typeof claims.email_verified !== "boolean"
+      ) {
+        // The application may not put user info (or only part of it) in the
+        // ID token; the userinfo endpoint must then describe the same
+        // subject, and its e-mail and email_verified are taken together.
         profile = await fetchJson(fetchImpl, userinfoEndpoint, {
           headers: { authorization: `Bearer ${tokens.accessToken}` },
         });

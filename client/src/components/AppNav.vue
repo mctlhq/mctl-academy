@@ -392,6 +392,14 @@ const links = [
     padding: 0;
   }
 
+  /* The ZITADEL button has no icon to fall back on, so it swaps its long
+     label for the short one (just the provider name) rather than going
+     blank. Two classes inside :deep() so this outranks UserNav's own scoped
+     `display: none` regardless of stylesheet order. */
+  .user-nav-signin :deep(.signin-zitadel .signin-label-short) {
+    display: inline;
+  }
+
   .app-nav-links {
     gap: 0.85rem;
   }

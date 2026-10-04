@@ -107,6 +107,12 @@ async function handleDeleteAccount() {
       @click="signInWithZitadel"
     >
       <span class="signin-label">Log in with {{ zitadel.label }}</span>
+      <!--
+        Below 560px AppNav.vue hides every .signin-label. GitHub keeps its
+        icon; this button has none, so it shows the provider name alone
+        instead of turning into an empty ghost button.
+      -->
+      <span class="signin-label-short" aria-hidden="true">{{ zitadel.label }}</span>
     </MButton>
     <!--
       Google sign-in is temporarily hidden — the launch flow isn't ready yet.
@@ -153,6 +159,10 @@ async function handleDeleteAccount() {
 .signin-github svg,
 .signin-google svg {
   display: inline-block;
+}
+
+.signin-label-short {
+  display: none;
 }
 
 .user-nav-avatar {

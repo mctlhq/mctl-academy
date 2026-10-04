@@ -7,7 +7,7 @@ import {
   zitadelDisplayName,
   ZITADEL_FALLBACK_NAME,
 } from "../server/zitadel.mjs";
-import { parseAllowlist, isAllowlisted } from "../server/allowlist.mjs";
+import { parseAllowlist, isAllowlisted, warnIgnoredAllowlistEntries } from "../server/allowlist.mjs";
 import { FakeZitadel } from "./helpers/fake-zitadel.mjs";
 
 const silent = { error: () => {} };
@@ -93,6 +93,18 @@ describe("ZITADEL ID token verification (getUserInfo)", () => {
       const idToken = await issuer.idToken({ sub: "1", email: "a@example.com", email_verified });
       assert.equal(await getUserInfo({ idToken }), null, `email_verified=${email_verified}`);
     }
+  });
+
+  test("reads email_verified from userinfo when the ID token has the e-mail without it", async () => {
+    const idToken = await issuer.idToken({ sub: "1", email: "a@example.com", email_verified: undefined });
+    issuer.userinfo.set("verified", { sub: "1", email: "a@example.com", email_verified: true });
+    assert.equal((await getUserInfo({ idToken, accessToken: "verified" }))?.emailVerified, true);
+    issuer.userinfo.set("unverified", { sub: "1", email: "a@example.com", email_verified: false });
+    assert.equal(await getUserInfo({ idToken, accessToken: "unverified" }), null);
+    // A token that does say email_verified is believed without the extra call.
+    const hits = issuer.hits.userinfo;
+    await getUserInfo({ idToken: await issuer.idToken({ sub: "1", email: "a@example.com" }) });
+    assert.equal(issuer.hits.userinfo, hits);
   });
 
   test("refuses an ID token without an expiry", async () => {
@@ -191,6 +203,31 @@ describe("ZITADEL ID token verification (getUserInfo)", () => {
     assert.equal(issuer.hits.jwks, 2);
   });
 
+  test("fetches the key set again when discovery moves jwks_uri", async () => {
+    let now = Date.now();
+    const realNow = Date.now;
+    Date.now = () => now;
+    try {
+      await getUserInfo({ idToken: await issuer.idToken({ sub: "1", email: "a@example.com" }) });
+      // Half an hour later a key rotation refreshes the key set, so it is
+      // still fresh when the discovery document expires below.
+      now += 30 * 60 * 1000;
+      issuer.rotateKey("kid-2");
+      await getUserInfo({ idToken: await issuer.idToken({ sub: "1", email: "a@example.com" }) });
+      assert.equal(issuer.hits.jwks, 2);
+      // Past the discovery TTL only: discovery is re-read and names a new URI.
+      now += 31 * 60 * 1000;
+      const moved = `${issuer.issuer}/oauth/v2/keys?moved=1`;
+      issuer.discovery = { jwks_uri: moved };
+      const idToken = await issuer.idToken({ sub: "1", email: "a@example.com" });
+      assert.equal((await getUserInfo({ idToken }))?.id, "1");
+      assert.equal(issuer.jwksUrls.at(-1), moved);
+      assert.equal(issuer.hits.jwks, 3);
+    } finally {
+      Date.now = realNow;
+    }
+  });
+
   test("refuses a discovery document naming another issuer, or endpoints off its origin", async () => {
     const idToken = await issuer.idToken({ sub: "1", email: "a@example.com" });
     issuer.discovery = { issuer: "https://evil.example.com" };
@@ -274,11 +311,26 @@ describe("zitadelDisplayName", () => {
 
 describe("allowlist entries", () => {
   test("plain entries are GitHub logins; zitadel:<sub> entries are ZITADEL users; other prefixes are ignored", () => {
-    const { githubLogins, zitadelSubs } = parseAllowlist(
+    const { githubLogins, zitadelSubs, ignored } = parseAllowlist(
       " MashkovD , zitadel:290001 ,okta:x, ZITADEL:290002,zitadel:",
     );
     assert.deepEqual([...githubLogins], ["mashkovd"]);
     assert.deepEqual([...zitadelSubs], ["290001", "290002"]);
+    assert.deepEqual(ignored, ["okta:x", "zitadel:"]);
+  });
+
+  test("the boot names every ignored entry, and stays quiet when there is none", () => {
+    const warnings = [];
+    const logger = { warn: (message) => warnings.push(message) };
+    warnIgnoredAllowlistEntries(
+      { MCTL_ACADEMY_MODERATORS: "mashkovd,github:octocat", MCTL_ACADEMY_STATS_ADMINS: "zitadel:1" },
+      logger,
+    );
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /MCTL_ACADEMY_MODERATORS: ignoring "github:octocat"/);
+    warnIgnoredAllowlistEntries({ MCTL_ACADEMY_MODERATORS: "mashkovd" }, logger);
+    warnIgnoredAllowlistEntries({}, logger);
+    assert.equal(warnings.length, 1);
   });
 
   test("a ZITADEL user is listed only through its own zitadel account row, never by name or e-mail", async () => {

@@ -13,26 +13,55 @@ import { ZITADEL_PROVIDER_ID } from "./zitadel.mjs";
  *   anyone register their way onto the list.
  *
  * Any other `provider:` prefix is ignored rather than guessed at, so a typo
- * fails shut.
+ * fails shut. Ignored entries are returned so the boot can name them
+ * (warnIgnoredAllowlistEntries) instead of failing shut silently.
  *
  * @param {string | undefined} raw
  */
 export function parseAllowlist(raw) {
   const githubLogins = new Set();
   const zitadelSubs = new Set();
+  /** @type {string[]} */
+  const ignored = [];
   for (const entry of (raw || "")
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean)) {
     const separator = entry.indexOf(":");
+    const sub = entry.slice(separator + 1).trim();
     if (separator === -1) {
       githubLogins.add(entry.toLowerCase());
-    } else if (entry.slice(0, separator).toLowerCase() === ZITADEL_PROVIDER_ID) {
-      const sub = entry.slice(separator + 1).trim();
-      if (sub) zitadelSubs.add(sub);
+    } else if (entry.slice(0, separator).toLowerCase() === ZITADEL_PROVIDER_ID && sub) {
+      zitadelSubs.add(sub);
+    } else {
+      ignored.push(entry);
     }
   }
-  return { githubLogins, zitadelSubs };
+  return { githubLogins, zitadelSubs, ignored };
+}
+
+/** The allowlist variables, by name, that take parseAllowlist entries. */
+export const ALLOWLIST_VARIABLES = ["MCTL_ACADEMY_MODERATORS", "MCTL_ACADEMY_STATS_ADMINS"];
+
+/**
+ * Log, once at boot, every allowlist entry parseAllowlist will ignore
+ * (`github:octocat`, `zitadel:` with no id). Not fatal: the entry already
+ * fails shut, and refusing to start over a moderator typo would take the
+ * whole site down. The point is that the mistake is visible in the log.
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {Pick<Console, "warn">} [logger]
+ */
+export function warnIgnoredAllowlistEntries(env, logger = console) {
+  for (const name of ALLOWLIST_VARIABLES) {
+    const { ignored } = parseAllowlist(env[name]);
+    if (ignored.length > 0) {
+      logger.warn(
+        `[boot] ${name}: ignoring ${ignored.map((entry) => JSON.stringify(entry)).join(", ")} ` +
+          "(entries are a GitHub login or zitadel:<user id>)",
+      );
+    }
+  }
 }
 
 /**

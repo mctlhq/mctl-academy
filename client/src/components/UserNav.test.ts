@@ -47,6 +47,18 @@ describe("UserNav", () => {
     expect(wrapper.get(".signin-github").attributes("aria-label")).toBe("Log in with GitHub");
   });
 
+  it("gives the iconless ZITADEL button a short label for narrow screens", async () => {
+    stubSignInOptions({ zitadel: { providerId: "zitadel", label: "MCTL account" } });
+    const wrapper = mount(UserNav, { props: { user: null, loading: false } });
+    await flushPromises();
+    // AppNav.vue hides .signin-label below 560px and shows this one instead;
+    // without it the button would be empty on a phone.
+    const short = wrapper.get(".signin-zitadel .signin-label-short");
+    expect(short.text()).toBe("MCTL account");
+    expect(short.attributes("aria-hidden")).toBe("true");
+    expect(wrapper.get(".signin-zitadel").attributes("aria-label")).toBe("Log in with MCTL account");
+  });
+
   it("keeps the GitHub login alone when the options cannot be read", async () => {
     stubSignInOptions({}, false);
     const wrapper = mount(UserNav, { props: { user: null, loading: false } });
