@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, getCurrentAdapter } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
 import pg from "pg";
 import { dbSslConfig } from "./db-ssl.mjs";
@@ -174,8 +174,26 @@ export const auth = betterAuth({
     // boundary, in either direction. GitHub <-> Google linking is unchanged.
     account: {
       create: {
-        before: async (account) => {
-          await refuseZitadelCrossLink(authPool, account);
+        before: async (account, ctx) => {
+          await refuseZitadelCrossLink(async (userId) => {
+            // A first sign-in creates the user and the account in one
+            // better-auth transaction. Asking through that transaction's
+            // adapter keeps the lookup on the connection already held,
+            // rather than waiting on a second pool client per sign-up.
+            const fallback = ctx?.context?.adapter;
+            const adapter = fallback ? await getCurrentAdapter(fallback) : undefined;
+            if (adapter) {
+              const rows = await adapter.findMany({
+                model: "account",
+                where: [{ field: "userId", value: userId }],
+              });
+              return rows.map((row) => row.providerId);
+            }
+            const { rows } = await authPool.query(`SELECT "providerId" FROM "account" WHERE "userId" = $1`, [
+              userId,
+            ]);
+            return rows.map((row) => row.providerId);
+          }, account);
         },
       },
     },

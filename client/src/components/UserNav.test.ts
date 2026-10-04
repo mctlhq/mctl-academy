@@ -34,6 +34,7 @@ describe("UserNav", () => {
     await flushPromises();
     expect(wrapper.findAll("button")).toHaveLength(1);
     expect(wrapper.find(".signin-zitadel").exists()).toBe(false);
+    expect(wrapper.get(".signin-github").attributes("aria-label")).toBe("Log in");
   });
 
   it("adds the ZITADEL login, with the server's label, when the server offers it", async () => {
@@ -41,7 +42,9 @@ describe("UserNav", () => {
     const wrapper = mount(UserNav, { props: { user: null, loading: false } });
     await flushPromises();
     expect(wrapper.get(".signin-zitadel").text()).toContain("Log in with MCTL account");
-    expect(wrapper.get(".signin-github").text()).toContain("Log in");
+    // Two buttons side by side: the GitHub one names its provider too.
+    expect(wrapper.get(".signin-github").text()).toBe("Log in with GitHub");
+    expect(wrapper.get(".signin-github").attributes("aria-label")).toBe("Log in with GitHub");
   });
 
   it("keeps the GitHub login alone when the options cannot be read", async () => {

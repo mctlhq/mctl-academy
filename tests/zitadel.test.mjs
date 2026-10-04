@@ -1,6 +1,12 @@
 import { test, describe, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { createZitadelUserInfo, readZitadelConfig, refuseZitadelCrossLink } from "../server/zitadel.mjs";
+import {
+  createZitadelUserInfo,
+  readZitadelConfig,
+  refuseZitadelCrossLink,
+  zitadelDisplayName,
+  ZITADEL_FALLBACK_NAME,
+} from "../server/zitadel.mjs";
 import { parseAllowlist, isAllowlisted } from "../server/allowlist.mjs";
 import { FakeZitadel } from "./helpers/fake-zitadel.mjs";
 
@@ -71,6 +77,20 @@ describe("ZITADEL ID token verification (getUserInfo)", () => {
       name: "A",
       image: undefined,
     });
+  });
+
+  test("never passes the e-mail through as the name", async () => {
+    const idToken = await issuer.idToken({
+      sub: "290001",
+      email: "a@example.com",
+      preferred_username: "a@example.com",
+    });
+    assert.equal((await getUserInfo({ idToken, accessToken: "at" })).name, ZITADEL_FALLBACK_NAME);
+  });
+
+  test("refuses an ID token without an expiry", async () => {
+    const idToken = await issuer.idToken({ sub: "1", email: "a@example.com", exp: undefined });
+    assert.equal(await getUserInfo({ idToken }), null);
   });
 
   test("falls back to userinfo for the e-mail, for the same subject only", async () => {
@@ -172,35 +192,67 @@ describe("ZITADEL ID token verification (getUserInfo)", () => {
 });
 
 describe("refuseZitadelCrossLink", () => {
-  const poolWith = (providers) => ({
-    query: async () => ({ rows: providers.map((providerId) => ({ providerId })) }),
-  });
+  const listing = (providers) => async () => providers;
 
   test("allows the first account of a new user, whatever the provider", async () => {
-    await refuseZitadelCrossLink(poolWith([]), { userId: "u", providerId: "zitadel" });
-    await refuseZitadelCrossLink(poolWith([]), { userId: "u", providerId: "github" });
+    await refuseZitadelCrossLink(listing([]), { userId: "u", providerId: "zitadel" });
+    await refuseZitadelCrossLink(listing([]), { userId: "u", providerId: "github" });
   });
 
   test("leaves GitHub <-> Google linking as it was", async () => {
-    await refuseZitadelCrossLink(poolWith(["github"]), { userId: "u", providerId: "google" });
+    await refuseZitadelCrossLink(listing(["github"]), { userId: "u", providerId: "google" });
   });
 
   test("refuses a ZITADEL account on a GitHub/Google user, and the reverse", async () => {
     await assert.rejects(
-      refuseZitadelCrossLink(poolWith(["github"]), { userId: "u", providerId: "zitadel" }),
+      refuseZitadelCrossLink(listing(["github"]), { userId: "u", providerId: "zitadel" }),
       /cannot be linked/,
     );
     await assert.rejects(
-      refuseZitadelCrossLink(poolWith(["zitadel"]), { userId: "u", providerId: "github" }),
+      refuseZitadelCrossLink(listing(["zitadel"]), { userId: "u", providerId: "github" }),
+      /cannot be linked/,
+    );
+  });
+
+  test("refuses a second ZITADEL account on a ZITADEL user (same e-mail, another sub)", async () => {
+    await assert.rejects(
+      refuseZitadelCrossLink(listing(["zitadel"]), { userId: "u", providerId: "zitadel" }),
       /cannot be linked/,
     );
   });
 
   test("refuses when the user's accounts cannot be read", async () => {
-    const broken = { query: async () => Promise.reject(new Error("connection refused")) };
+    const broken = async () => Promise.reject(new Error("connection refused"));
     await assert.rejects(
       refuseZitadelCrossLink(broken, { userId: "u", providerId: "zitadel" }),
       /connection refused/,
+    );
+  });
+});
+
+describe("zitadelDisplayName", () => {
+  test("uses the name, then the given name, then the login name", () => {
+    assert.equal(
+      zitadelDisplayName({ name: "Zed Z", given_name: "Zed", preferred_username: "zed" }),
+      "Zed Z",
+    );
+    assert.equal(zitadelDisplayName({ given_name: "Zed", preferred_username: "zed" }), "Zed");
+    assert.equal(zitadelDisplayName({ preferred_username: "zed" }), "zed");
+  });
+
+  test("never uses anything that looks like an e-mail address", () => {
+    assert.equal(
+      zitadelDisplayName({
+        name: "a@example.com",
+        preferred_username: "a@example.com",
+        email: "a@example.com",
+      }),
+      ZITADEL_FALLBACK_NAME,
+    );
+    assert.equal(zitadelDisplayName({ email: "a@example.com" }), ZITADEL_FALLBACK_NAME);
+    assert.equal(
+      zitadelDisplayName({ name: "  ", preferred_username: "a@example.com", given_name: "A" }),
+      "A",
     );
   });
 });

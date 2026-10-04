@@ -136,6 +136,18 @@ describe("ZITADEL sign-in, end to end", () => {
     ]);
   });
 
+  test("is never merged into an existing ZITADEL user with the same e-mail", async () => {
+    // Self-registered ZITADEL users choose their own e-mail: another sub
+    // presenting this user's address must not get this user's session.
+    const response = await signIn({ sub: `${sub}7`, email, name: "Lookalike" });
+    assert.equal(response.status, 302);
+    assert.match(response.headers.get("location") ?? "", /error=/);
+    assert.doesNotMatch(cookiesOf(response), /better-auth\.session_token=[^;]/);
+    assert.deepEqual(await accountsFor(email), [
+      { providerId: "zitadel", accountId: sub, githubLogin: null },
+    ]);
+  });
+
   test("refuses a callback whose ID token was not signed by the issuer", async () => {
     const original = issuer.idToken.bind(issuer);
     const stranger = new FakeZitadel();

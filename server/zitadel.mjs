@@ -17,15 +17,20 @@ import { createLocalJWKSet, jwtVerify } from "jose";
  *    verified against the issuer's published keys (RS256 only), along with
  *    iss, aud/azp and expiry, before its `sub` is believed.
  *
- * 3. No account linking across the ZITADEL boundary. better-auth links a new
+ * 3. No account linking by e-mail for ZITADEL. better-auth links a new
  *    provider account to an existing user whose e-mail matches. For
- *    ZITADEL that would hand a ZITADEL sign-in the GitHub user's session —
- *    including the githubLogin the moderator and stats-admin allowlists
- *    key on. refuseZitadelCrossLink makes that impossible in both
- *    directions: a ZITADEL account is only ever created for a user with no
- *    other account, and a GitHub/Google account never joins a ZITADEL user.
- *    A ZITADEL sign-in whose e-mail already belongs to a GitHub/Google user
- *    is therefore refused ("account not linked"), not merged.
+ *    ZITADEL that would hand a ZITADEL sign-in someone else's session —
+ *    a GitHub user's, with the githubLogin the moderator and stats-admin
+ *    allowlists key on, or another ZITADEL user's, since self-registered
+ *    ZITADEL users choose their own e-mail. refuseZitadelCrossLink makes
+ *    that impossible: a ZITADEL account is only ever created for a user
+ *    with no other account at all, and a GitHub/Google account never joins
+ *    a ZITADEL user. A ZITADEL sign-in whose e-mail already belongs to any
+ *    academy user is therefore refused ("account not linked"), not merged.
+ *
+ * 4. The e-mail is never the display name. PRIVACY.md promises the address
+ *    is not displayed, and ZITADEL's login name defaults to the e-mail, so
+ *    a name that looks like an address is skipped (zitadelDisplayName).
  */
 
 export const ZITADEL_PROVIDER_ID = "zitadel";
@@ -117,7 +122,13 @@ export function createZitadelUserInfo(config, deps = {}) {
   }
 
   async function verify(idToken, jwksUri) {
-    const options = { issuer: config.issuer, audience: config.clientId, algorithms: ["RS256"] };
+    const options = {
+      issuer: config.issuer,
+      audience: config.clientId,
+      algorithms: ["RS256"],
+      // jose checks exp only when it is present; an ID token must carry it.
+      requiredClaims: ["exp", "iat", "sub"],
+    };
     try {
       return (await jwtVerify(idToken, await keySet(jwksUri, false), options)).payload;
     } catch (err) {
@@ -150,15 +161,11 @@ export function createZitadelUserInfo(config, deps = {}) {
         if (profile?.sub !== claims.sub) throw new Error("userinfo describes another subject");
       }
       if (typeof profile.email !== "string" || profile.email === "") return null;
-      const name =
-        (typeof profile.name === "string" && profile.name) ||
-        (typeof profile.preferred_username === "string" && profile.preferred_username) ||
-        profile.email;
       return {
         id: claims.sub,
         email: profile.email,
         emailVerified: profile.email_verified === true,
-        name,
+        name: zitadelDisplayName(profile),
         image: undefined,
       };
     } catch (err) {
@@ -168,27 +175,49 @@ export function createZitadelUserInfo(config, deps = {}) {
   };
 }
 
+/** Shown when a ZITADEL profile has no name that is not an e-mail address. */
+export const ZITADEL_FALLBACK_NAME = "Learner";
+
 /**
- * databaseHooks.account.create.before: refuse any account row that would put
- * a ZITADEL account and a GitHub/Google account on the same user. Throwing
- * (not returning false) is what stops the sign-in: better-auth's implicit
- * link ignores a null result and would sign the caller in as the existing
- * user anyway, but turns a thrown error into "unable to link account".
+ * The name to show for a ZITADEL user: its display name, else its login
+ * name, but never anything that looks like an e-mail address (ZITADEL's
+ * login name is the e-mail by default), else a neutral placeholder.
+ *
+ * @param {Record<string, unknown>} profile
+ */
+export function zitadelDisplayName(profile) {
+  for (const candidate of [profile.name, profile.given_name, profile.preferred_username]) {
+    if (typeof candidate !== "string") continue;
+    const value = candidate.trim();
+    if (value !== "" && !value.includes("@")) return value;
+  }
+  return ZITADEL_FALLBACK_NAME;
+}
+
+/**
+ * databaseHooks.account.create.before: refuse any account row that would
+ * attach a ZITADEL account to an existing user (of any provider, ZITADEL
+ * included), or a GitHub/Google account to a ZITADEL user. Throwing (not
+ * returning false) is what stops the sign-in: better-auth's implicit link
+ * ignores a null result and would sign the caller in as the existing user
+ * anyway, but turns a thrown error into "unable to link account".
+ *
+ * A returning ZITADEL user is not affected: better-auth finds its account by
+ * (providerId, accountId) and creates nothing.
  *
  * A failed lookup throws too: not being able to see the user's accounts is
  * not evidence that there are none.
  *
- * @param {{ query: (sql: string, params: unknown[]) => Promise<{ rows: Array<{ providerId: string }> }> }} pool
+ * @param {(userId: string) => Promise<string[]>} listProviderIds the providers of the user's existing accounts
  * @param {{ userId: string, providerId: string }} account
  */
-export async function refuseZitadelCrossLink(pool, account) {
-  const { rows } = await pool.query(`SELECT "providerId" FROM "account" WHERE "userId" = $1`, [
-    account.userId,
-  ]);
-  const incomingIsZitadel = account.providerId === ZITADEL_PROVIDER_ID;
-  if (rows.some((row) => (row.providerId === ZITADEL_PROVIDER_ID) !== incomingIsZitadel)) {
+export async function refuseZitadelCrossLink(listProviderIds, account) {
+  const existing = await listProviderIds(account.userId);
+  const refused =
+    account.providerId === ZITADEL_PROVIDER_ID ? existing.length > 0 : existing.includes(ZITADEL_PROVIDER_ID);
+  if (refused) {
     throw new APIError("FORBIDDEN", {
-      message: "A ZITADEL sign-in cannot be linked to a GitHub or Google account, or the reverse.",
+      message: "A ZITADEL sign-in cannot be linked to an existing account, or the reverse.",
     });
   }
 }

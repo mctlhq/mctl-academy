@@ -9,7 +9,8 @@ your progress, and nothing else.
 |---|---|---|
 | Your email address | Required by the account system (better-auth); this application itself never emails you or displays it | GitHub or Google OAuth, or MCTL's ZITADEL sign-in where offered |
 | GitHub login (username), if you sign in with GitHub | Shown in the interface so you know who you are signed in as | GitHub OAuth |
-| Your name and profile image, as provided by the sign-in provider | Shown in the interface | GitHub or Google OAuth, or MCTL's ZITADEL sign-in where offered |
+| Your name and profile image, as provided by the sign-in provider | Shown in the interface | GitHub or Google OAuth |
+| Your name, if you sign in with ZITADEL (no profile image; a name that is an e-mail address is replaced by "Learner") | Shown in the interface | MCTL's ZITADEL sign-in, where offered |
 | Your ZITADEL user id, if you sign in with ZITADEL | Identifies your account; the e-mail address is never used for that | ZITADEL (OpenID Connect) |
 | Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app |
 | Question reports you file | So a reported question can be fixed | Your use of the app |
