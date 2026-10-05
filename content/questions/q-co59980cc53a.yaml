@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co59980cc53a
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/escalation-workflows
 stem: You need the serial logs of a Compute virtual machine to escalate a boot

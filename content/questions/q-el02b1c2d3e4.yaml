@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el02b1c2d3e4
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: An endpoint reports readiness "Partially ready". What does that tell you?

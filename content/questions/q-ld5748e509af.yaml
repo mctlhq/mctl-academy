@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld5748e509af
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/cost-and-billing
 stem: A finance lead asks when a dedicated endpoint incurs charges. What is the rule?

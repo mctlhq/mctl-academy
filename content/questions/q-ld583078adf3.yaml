@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld583078adf3
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/cost-and-billing
 stem: An endpoint has been scaled to zero replicas. What is the billing and

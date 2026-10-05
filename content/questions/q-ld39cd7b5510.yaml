@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld39cd7b5510
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/workflow-design
 stem: How is a dedicated endpoint deployment managed versus how inference

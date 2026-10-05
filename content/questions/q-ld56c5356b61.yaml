@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld56c5356b61
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: Why do dedicated endpoints report two separate status types rather than one?
