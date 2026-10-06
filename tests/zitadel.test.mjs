@@ -107,6 +107,24 @@ describe("ZITADEL ID token verification (getUserInfo)", () => {
     assert.equal(issuer.hits.userinfo, hits);
   });
 
+  test("keeps the ID token's name when userinfo is asked only for email_verified", async () => {
+    const idToken = await issuer.idToken({
+      sub: "1",
+      email: "a@example.com",
+      email_verified: undefined,
+      name: "Zed",
+    });
+    issuer.userinfo.set("no-name", { sub: "1", email: "a@example.com", email_verified: true });
+    assert.equal((await getUserInfo({ idToken, accessToken: "no-name" }))?.name, "Zed");
+    // Userinfo wins where both carry a name.
+    issuer.userinfo.set("named", { sub: "1", email: "a@example.com", email_verified: true, name: "Zed Two" });
+    assert.equal((await getUserInfo({ idToken, accessToken: "named" }))?.name, "Zed Two");
+    // The e-mail pair comes from userinfo alone: an ID-token address that
+    // userinfo does not repeat is not paired with userinfo's email_verified.
+    issuer.userinfo.set("no-email", { sub: "1", email_verified: true });
+    assert.equal(await getUserInfo({ idToken, accessToken: "no-email" }), null);
+  });
+
   test("refuses an ID token without an expiry", async () => {
     const idToken = await issuer.idToken({ sub: "1", email: "a@example.com", exp: undefined });
     assert.equal(await getUserInfo({ idToken }), null);
@@ -327,10 +345,21 @@ describe("allowlist entries", () => {
       logger,
     );
     assert.equal(warnings.length, 1);
-    assert.match(warnings[0], /MCTL_ACADEMY_MODERATORS: ignoring "github:octocat"/);
+    assert.match(warnings[0], /MCTL_ACADEMY_MODERATORS: ignoring 1 entry with prefix "github:"/);
     warnIgnoredAllowlistEntries({ MCTL_ACADEMY_MODERATORS: "mashkovd" }, logger);
     warnIgnoredAllowlistEntries({}, logger);
     assert.equal(warnings.length, 1);
+  });
+
+  test("the boot warning names the prefix of an ignored entry, never the rest of it", () => {
+    const warnings = [];
+    warnIgnoredAllowlistEntries(
+      { MCTL_ACADEMY_MODERATORS: "email:someone@example.com, EMAIL:other@example.com,zitadel:,:x" },
+      { warn: (message) => warnings.push(message) },
+    );
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /ignoring 4 entries with prefix "email:", "EMAIL:", "zitadel:", "\(none\):"/);
+    assert.doesNotMatch(warnings[0], /someone|other@|example\.com/);
   });
 
   test("a ZITADEL user is listed only through its own zitadel account row, never by name or e-mail", async () => {

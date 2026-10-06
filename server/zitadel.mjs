@@ -162,10 +162,14 @@ export function createZitadelUserInfo(config, deps = {}) {
         // The application may not put user info (or only part of it) in the
         // ID token; the userinfo endpoint must then describe the same
         // subject, and its e-mail and email_verified are taken together.
-        profile = await fetchJson(fetchImpl, userinfoEndpoint, {
+        const userinfo = await fetchJson(fetchImpl, userinfoEndpoint, {
           headers: { authorization: `Bearer ${tokens.accessToken}` },
         });
-        if (profile?.sub !== claims.sub) throw new Error("userinfo describes another subject");
+        if (userinfo?.sub !== claims.sub) throw new Error("userinfo describes another subject");
+        // Userinfo wins where both speak; what only the ID token carries (a
+        // name, when just email_verified was missing) is kept. The pair
+        // e-mail + email_verified is never mixed across the two sources.
+        profile = { ...claims, email: undefined, email_verified: undefined, ...userinfo };
       }
       if (typeof profile.email !== "string" || profile.email === "") return null;
       // An unverified address is refused, not just recorded: "user".email is

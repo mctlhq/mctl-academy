@@ -44,8 +44,9 @@ export function parseAllowlist(raw) {
 export const ALLOWLIST_VARIABLES = ["MCTL_ACADEMY_MODERATORS", "MCTL_ACADEMY_STATS_ADMINS"];
 
 /**
- * Log, once at boot, every allowlist entry parseAllowlist will ignore
- * (`github:octocat`, `zitadel:` with no id). Not fatal: the entry already
+ * Log, once at boot, how many allowlist entries parseAllowlist will ignore
+ * and under which prefixes (`github:octocat`, `zitadel:` with no id) — the
+ * prefix only, never the rest of the entry. Not fatal: the entry already
  * fails shut, and refusing to start over a moderator typo would take the
  * whole site down. The point is that the mistake is visible in the log.
  *
@@ -56,8 +57,14 @@ export function warnIgnoredAllowlistEntries(env, logger = console) {
   for (const name of ALLOWLIST_VARIABLES) {
     const { ignored } = parseAllowlist(env[name]);
     if (ignored.length > 0) {
+      // The prefix alone: the entry most likely to land here is an identity
+      // (`email:someone@example.com`), which has no place in a service log.
+      const prefixes = [
+        ...new Set(ignored.map((entry) => entry.slice(0, entry.indexOf(":")).trim() || "(none)")),
+      ];
       logger.warn(
-        `[boot] ${name}: ignoring ${ignored.map((entry) => JSON.stringify(entry)).join(", ")} ` +
+        `[boot] ${name}: ignoring ${ignored.length} ${ignored.length === 1 ? "entry" : "entries"} ` +
+          `with prefix ${prefixes.map((prefix) => JSON.stringify(`${prefix}:`)).join(", ")} ` +
           "(entries are a GitHub login or zitadel:<user id>)",
       );
     }

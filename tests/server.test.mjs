@@ -25,6 +25,19 @@ describe("Hono server & Report API", () => {
     assert.deepEqual(await res.json(), { zitadel: null });
   });
 
+  test("the ZITADEL sign-in routes do not exist when ZITADEL_* is unset", async () => {
+    // Off means absent, not merely hidden: nothing to start, nothing to call back.
+    assert.equal(process.env.ZITADEL_ISSUER, undefined);
+    const start = await app.request("/api/auth/sign-in/oauth2", {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://localhost" },
+      body: JSON.stringify({ providerId: "zitadel", callbackURL: "/" }),
+    });
+    assert.equal(start.status, 404);
+    const callback = await app.request("/api/auth/oauth2/callback/zitadel?code=c&state=s");
+    assert.equal(callback.status, 404);
+  });
+
   test("GET /livez matches /healthz and carries no dependency check", async () => {
     const res = await app.request("/livez");
     assert.equal(res.status, 200);

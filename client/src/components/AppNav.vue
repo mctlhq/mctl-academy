@@ -339,11 +339,13 @@ const links = [
      .signin-github (UserNav.vue's signed-out control) joins this list for
      the same reason: it sits in `.app-nav-actions` next to course-select and
      theme-toggle, and was one of the auto-sized items that squeezed
-     `.app-brand`'s minmax(0, 1fr) column down to the overlap fixed above. */
+     `.app-brand`'s minmax(0, 1fr) column down to the overlap fixed above.
+     .signin-zitadel is the second signed-out control in the same place. */
   .theme-toggle,
   .course-select,
   .user-nav-signed-in :deep(summary),
-  .user-nav-signin :deep(.signin-github) {
+  .user-nav-signin :deep(.signin-github),
+  .user-nav-signin :deep(.signin-zitadel) {
     min-width: 2.75rem;
     min-height: 2.75rem;
   }
@@ -395,9 +397,17 @@ const links = [
   /* The ZITADEL button has no icon to fall back on, so it swaps its long
      label for the short one (just the provider name) rather than going
      blank. Two classes inside :deep() so this outranks UserNav's own scoped
-     `display: none` regardless of stylesheet order. */
+     `display: none` regardless of stylesheet order. The name is operator
+     text (ZITADEL_DISPLAY_NAME) of any length, so it is bounded like
+     .course-select above: a long one ends in an ellipsis instead of
+     squeezing .app-brand out of its column. */
   .user-nav-signin :deep(.signin-zitadel .signin-label-short) {
-    display: inline;
+    display: inline-block;
+    max-width: 8rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
   }
 
   .app-nav-links {
