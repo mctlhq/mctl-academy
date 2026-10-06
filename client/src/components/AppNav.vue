@@ -361,6 +361,24 @@ const links = [
   }
 }
 
+/* From 561px up to the width where the two-column grid above ends, the
+   ZITADEL button still shows its long label ("Log in with <name>"), and the
+   name is operator text (ZITADEL_DISPLAY_NAME) of any length. Unbounded, it
+   widens the auto column until `.app-brand` is squeezed to nothing, so it
+   ends in an ellipsis instead. Its own band, not the 980px block: a `display`
+   set there would outrank the `display: none` that hides every .signin-label
+   below 560px. */
+@media (min-width: 561px) and (max-width: 980px) {
+  .user-nav-signin :deep(.signin-zitadel .signin-label) {
+    display: inline-block;
+    max-width: 14rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+}
+
 @media (max-width: 560px) {
   .app-nav {
     padding-right: calc(1rem + env(safe-area-inset-right));

@@ -358,8 +358,22 @@ describe("allowlist entries", () => {
       { warn: (message) => warnings.push(message) },
     );
     assert.equal(warnings.length, 1);
-    assert.match(warnings[0], /ignoring 4 entries with prefix "email:", "EMAIL:", "zitadel:", "\(none\):"/);
+    assert.match(warnings[0], /ignoring 4 entries with prefix "email:", "zitadel:", \(none\) \(entries/);
     assert.doesNotMatch(warnings[0], /someone|other@|example\.com/);
+  });
+
+  test("the boot warning does not print a prefix that is not a provider name", () => {
+    // The mirror of the test above: the identity sits before the colon.
+    const warnings = [];
+    warnIgnoredAllowlistEntries(
+      {
+        MCTL_ACADEMY_MODERATORS: "someone@example.com:zitadel, octocat:github, okta:7, GitHub:octocat",
+      },
+      { warn: (message) => warnings.push(message) },
+    );
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /ignoring 4 entries with prefix \(other\), "github:" \(entries/);
+    assert.doesNotMatch(warnings[0], /someone|example\.com|octocat|okta/);
   });
 
   test("a ZITADEL user is listed only through its own zitadel account row, never by name or e-mail", async () => {

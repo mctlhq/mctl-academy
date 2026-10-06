@@ -44,9 +44,18 @@ export function parseAllowlist(raw) {
 export const ALLOWLIST_VARIABLES = ["MCTL_ACADEMY_MODERATORS", "MCTL_ACADEMY_STATS_ADMINS"];
 
 /**
+ * The prefixes the boot warning may print: provider names and the usual wrong
+ * guesses at one. A closed set, because the prefix is operator text like the
+ * rest of the entry and can be an identity itself
+ * (`someone@example.com:zitadel`).
+ */
+const NAMEABLE_PREFIXES = new Set(["email", "github", "google", "zitadel"]);
+
+/**
  * Log, once at boot, how many allowlist entries parseAllowlist will ignore
- * and under which prefixes (`github:octocat`, `zitadel:` with no id) — the
- * prefix only, never the rest of the entry. Not fatal: the entry already
+ * and under which prefixes (`github:octocat`, `zitadel:` with no id). Nothing
+ * an operator typed is printed: a prefix is named only when it is one of
+ * NAMEABLE_PREFIXES, and stands as `(other)` when it is not. Not fatal: the entry already
  * fails shut, and refusing to start over a moderator typo would take the
  * whole site down. The point is that the mistake is visible in the log.
  *
@@ -57,14 +66,20 @@ export function warnIgnoredAllowlistEntries(env, logger = console) {
   for (const name of ALLOWLIST_VARIABLES) {
     const { ignored } = parseAllowlist(env[name]);
     if (ignored.length > 0) {
-      // The prefix alone: the entry most likely to land here is an identity
-      // (`email:someone@example.com`), which has no place in a service log.
+      // The entry most likely to land here is an identity, on either side of
+      // the colon, and an identity has no place in a service log.
       const prefixes = [
-        ...new Set(ignored.map((entry) => entry.slice(0, entry.indexOf(":")).trim() || "(none)")),
+        ...new Set(
+          ignored.map((entry) => {
+            const prefix = entry.slice(0, entry.indexOf(":")).trim().toLowerCase();
+            if (!prefix) return "(none)";
+            return NAMEABLE_PREFIXES.has(prefix) ? `"${prefix}:"` : "(other)";
+          }),
+        ),
       ];
       logger.warn(
         `[boot] ${name}: ignoring ${ignored.length} ${ignored.length === 1 ? "entry" : "entries"} ` +
-          `with prefix ${prefixes.map((prefix) => JSON.stringify(`${prefix}:`)).join(", ")} ` +
+          `with prefix ${prefixes.join(", ")} ` +
           "(entries are a GitHub login or zitadel:<user id>)",
       );
     }
