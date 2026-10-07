@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.53](https://github.com/mctlhq/mctl-academy/compare/0.1.52...0.1.53) (2026-10-07)
+
+
+### Features
+
+* **auth:** add ZITADEL as an optional sign-in provider ([9415454](https://github.com/mctlhq/mctl-academy/commit/941545489d4d17a45905be65c1b4eed8c3d6cc18))
+* **auth:** add ZITADEL as an optional sign-in provider ([971a358](https://github.com/mctlhq/mctl-academy/commit/971a358e2315a7e40b8b7a2e980766e9b65463c3))
+
+
+### Bug Fixes
+
+* **auth:** accept a ZITADEL sign-in only with a verified e-mail ([1593912](https://github.com/mctlhq/mctl-academy/commit/1593912c4e39c91503f227b9395d429349e55ebc))
+* **auth:** keep the ID token name, bound the label, log prefixes only ([295d7bf](https://github.com/mctlhq/mctl-academy/commit/295d7bf2d87ebb827ebfd0ab10dd23133ed481d4))
+* **auth:** label the ZITADEL button on phones; tighten provider edges ([65b6793](https://github.com/mctlhq/mctl-academy/commit/65b67932ba70038e3712ab1b768d4254a8e6bc72))
+* **auth:** name only known allowlist prefixes, bound the long label ([f3cb079](https://github.com/mctlhq/mctl-academy/commit/f3cb0796ba82d4076a29ea3697db545bcf5ffaea))
+* **auth:** refuse ZITADEL e-mail links and never show the e-mail ([af4236b](https://github.com/mctlhq/mctl-academy/commit/af4236be15b1828f7ded59f4903876480d5e21da))
+
 ## [0.1.52](https://github.com/mctlhq/mctl-academy/compare/0.1.51...0.1.52) (2026-09-17)
 
 
