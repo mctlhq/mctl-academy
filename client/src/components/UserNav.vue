@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { authClient } from "../authClient";
 import type { UserProfile } from "../types/user";
@@ -9,6 +10,34 @@ defineProps<{
   /** True until that session lookup resolves. */
   loading: boolean;
 }>();
+
+/**
+ * The optional ZITADEL sign-in, shown only when the server reports it
+ * configured (GET /api/sign-in-options). Any failure to ask leaves the
+ * GitHub button alone, exactly as before ZITADEL existed.
+ */
+const zitadel = ref<{ providerId: string; label: string } | null>(null);
+
+onMounted(async () => {
+  try {
+    const res = await fetch("/api/sign-in-options");
+    if (!res.ok) return;
+    const body = (await res.json()) as { zitadel?: { providerId: string; label: string } | null };
+    zitadel.value = body.zitadel ?? null;
+  } catch {
+    zitadel.value = null;
+  }
+});
+
+async function signInWithZitadel() {
+  if (!zitadel.value) return;
+  try {
+    const res = await authClient.signIn.oauth2({ providerId: zitadel.value.providerId, callbackURL: "/" });
+    if (res?.error) console.error("ZITADEL sign-in could not start:", res.error);
+  } catch (err) {
+    console.error("ZITADEL sign-in could not start:", err);
+  }
+}
 
 async function handleLogout() {
   await authClient.signOut();
@@ -59,7 +88,7 @@ async function handleDeleteAccount() {
       type="button"
       variant="ghost"
       class="signin-github"
-      aria-label="Log in"
+      :aria-label="zitadel ? 'Log in with GitHub' : 'Log in'"
       @click="authClient.signIn.social({ provider: 'github', callbackURL: '/' })"
     >
       <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -67,7 +96,23 @@ async function handleDeleteAccount() {
           d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
         />
       </svg>
-      <span class="signin-label">Log in</span>
+      <span class="signin-label">{{ zitadel ? "Log in with GitHub" : "Log in" }}</span>
+    </MButton>
+    <MButton
+      v-if="zitadel"
+      type="button"
+      variant="ghost"
+      class="signin-zitadel"
+      :aria-label="`Log in with ${zitadel.label}`"
+      @click="signInWithZitadel"
+    >
+      <span class="signin-label">Log in with {{ zitadel.label }}</span>
+      <!--
+        Below 560px AppNav.vue hides every .signin-label. GitHub keeps its
+        icon; this button has none, so it shows the provider name alone
+        instead of turning into an empty ghost button.
+      -->
+      <span class="signin-label-short" aria-hidden="true">{{ zitadel.label }}</span>
     </MButton>
     <!--
       Google sign-in is temporarily hidden — the launch flow isn't ready yet.
@@ -114,6 +159,10 @@ async function handleDeleteAccount() {
 .signin-github svg,
 .signin-google svg {
   display: inline-block;
+}
+
+.signin-label-short {
+  display: none;
 }
 
 .user-nav-avatar {

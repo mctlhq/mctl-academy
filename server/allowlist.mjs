@@ -1,0 +1,109 @@
+import { ZITADEL_PROVIDER_ID } from "./zitadel.mjs";
+
+/**
+ * The privileged-role allowlists (MCTL_ACADEMY_MODERATORS,
+ * MCTL_ACADEMY_STATS_ADMINS): comma-separated, one entry per person.
+ *
+ * - `login` (no prefix) is a GitHub login, compared case-insensitively with
+ *   the session user's githubLogin — exactly the old behaviour, so existing
+ *   values keep working unchanged.
+ * - `zitadel:<sub>` is a ZITADEL user, matched by the immutable ZITADEL user
+ *   id on the user's linked `zitadel` account row. Never by e-mail or name:
+ *   either can be chosen at self-registration, so matching on them would let
+ *   anyone register their way onto the list.
+ *
+ * Any other `provider:` prefix is ignored rather than guessed at, so a typo
+ * fails shut. Ignored entries are returned so the boot can name them
+ * (warnIgnoredAllowlistEntries) instead of failing shut silently.
+ *
+ * @param {string | undefined} raw
+ */
+export function parseAllowlist(raw) {
+  const githubLogins = new Set();
+  const zitadelSubs = new Set();
+  /** @type {string[]} */
+  const ignored = [];
+  for (const entry of (raw || "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean)) {
+    const separator = entry.indexOf(":");
+    const sub = entry.slice(separator + 1).trim();
+    if (separator === -1) {
+      githubLogins.add(entry.toLowerCase());
+    } else if (entry.slice(0, separator).toLowerCase() === ZITADEL_PROVIDER_ID && sub) {
+      zitadelSubs.add(sub);
+    } else {
+      ignored.push(entry);
+    }
+  }
+  return { githubLogins, zitadelSubs, ignored };
+}
+
+/** The allowlist variables, by name, that take parseAllowlist entries. */
+export const ALLOWLIST_VARIABLES = ["MCTL_ACADEMY_MODERATORS", "MCTL_ACADEMY_STATS_ADMINS"];
+
+/**
+ * The prefixes the boot warning may print: provider names and the usual wrong
+ * guesses at one. A closed set, because the prefix is operator text like the
+ * rest of the entry and can be an identity itself
+ * (`someone@example.com:zitadel`).
+ */
+const NAMEABLE_PREFIXES = new Set(["email", "github", "google", "zitadel"]);
+
+/**
+ * Log, once at boot, how many allowlist entries parseAllowlist will ignore
+ * and under which prefixes (`github:octocat`, `zitadel:` with no id). Nothing
+ * an operator typed is printed: a prefix is named only when it is one of
+ * NAMEABLE_PREFIXES, and stands as `(other)` when it is not. Not fatal: the entry already
+ * fails shut, and refusing to start over a moderator typo would take the
+ * whole site down. The point is that the mistake is visible in the log.
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {Pick<Console, "warn">} [logger]
+ */
+export function warnIgnoredAllowlistEntries(env, logger = console) {
+  for (const name of ALLOWLIST_VARIABLES) {
+    const { ignored } = parseAllowlist(env[name]);
+    if (ignored.length > 0) {
+      // The entry most likely to land here is an identity, on either side of
+      // the colon, and an identity has no place in a service log.
+      const prefixes = [
+        ...new Set(
+          ignored.map((entry) => {
+            const prefix = entry.slice(0, entry.indexOf(":")).trim().toLowerCase();
+            if (!prefix) return "(none)";
+            return NAMEABLE_PREFIXES.has(prefix) ? `"${prefix}:"` : "(other)";
+          }),
+        ),
+      ];
+      logger.warn(
+        `[boot] ${name}: ignoring ${ignored.length} ${ignored.length === 1 ? "entry" : "entries"} ` +
+          `with prefix ${prefixes.join(", ")} ` +
+          "(entries are a GitHub login or zitadel:<user id>)",
+      );
+    }
+  }
+}
+
+/**
+ * Whether the signed-in user is on the allowlist. A failed account lookup
+ * throws (and the route answers 500) instead of reading as "not listed" or
+ * "listed": an unobserved answer is neither.
+ *
+ * @param {{ user?: { id?: string, githubLogin?: string | null } } | null | undefined} session
+ * @param {string | undefined} raw
+ * @param {{ query: (sql: string, params: unknown[]) => Promise<{ rows: unknown[] }> }} pool
+ */
+export async function isAllowlisted(session, raw, pool) {
+  const user = session?.user;
+  if (!user?.id) return false;
+  const { githubLogins, zitadelSubs } = parseAllowlist(raw);
+  if (user.githubLogin && githubLogins.has(String(user.githubLogin).toLowerCase())) return true;
+  if (zitadelSubs.size === 0) return false;
+  const { rows } = await pool.query(
+    `SELECT 1 FROM "account" WHERE "userId" = $1 AND "providerId" = $2 AND "accountId" = ANY($3) LIMIT 1`,
+    [user.id, ZITADEL_PROVIDER_ID, [...zitadelSubs]],
+  );
+  return rows.length > 0;
+}
