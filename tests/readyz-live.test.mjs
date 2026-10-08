@@ -6,8 +6,10 @@ import path from "node:path";
 
 const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const CONTAINER = "mctl-academy-readyz-live-test";
-const PG_PORT = 55432;
 const APP_PORT = 55080;
+// Docker picks a free host port; a fixed one collided with a port already in
+// use on the CI runner ("address already in use") and failed unrelated PRs.
+let PG_PORT;
 
 function dockerAvailable() {
   try {
@@ -68,9 +70,14 @@ describe(
         "-e",
         "POSTGRES_DB=readyz_live",
         "-p",
-        `${PG_PORT}:5432`,
+        "127.0.0.1::5432",
         "postgres:17-alpine",
       ]);
+      PG_PORT = execFileSync("docker", ["port", CONTAINER, "5432/tcp"], { encoding: "utf8" })
+        .trim()
+        .split("\n")[0]
+        .split(":")
+        .pop();
 
       let serverProcess;
       try {
