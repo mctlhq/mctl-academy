@@ -126,6 +126,8 @@ env:
 jobs:
   discover:
     runs-on: ubuntu-latest
+    # Discovery took 27s on the 2026-10-08 run.
+    timeout-minutes: 10
     permissions:
       contents: read
       pull-requests: read
@@ -209,6 +211,9 @@ jobs:
     needs: discover
     if: needs.discover.outputs.skip != 'true' && needs.discover.outputs.empty != 'true' && inputs.dry_run != true
     runs-on: ubuntu-latest
+    # 12 minutes on the 2026-10-08 run that passed; a failed run (37702168094)
+    # held this job for 75 minutes before it gave up.
+    timeout-minutes: 45
     outputs:
       branch: ${{ steps.branch.outputs.name }}
       changed: ${{ steps.commit.outputs.changed }}
@@ -2842,6 +2847,8 @@ jobs:
     needs: author
     if: needs.author.outputs.changed == 'true'
     runs-on: ubuntu-latest
+    # 9 minutes on the 2026-10-08 run.
+    timeout-minutes: 30
     steps:
       - name: Generate mctl-agents App token
         id: app-token
