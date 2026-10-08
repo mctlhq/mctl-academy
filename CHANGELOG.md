@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.1.54](https://github.com/mctlhq/mctl-academy/compare/0.1.53...0.1.54) (2026-10-08)
+
+
+### Features
+
+* **ci:** keep what a failed agent decided and what it wrote ([921cc4b](https://github.com/mctlhq/mctl-academy/commit/921cc4b50259af9f0cbecbcf46aadcce14cf66b4))
+* **ci:** scope a replenish run to one course with a course input ([db99044](https://github.com/mctlhq/mctl-academy/commit/db99044d8607cd9125c73d17c9928b9877a4dc69))
+* **ci:** scope a replenish run to one course with a course input ([80bc780](https://github.com/mctlhq/mctl-academy/commit/80bc78014d0fceb27f1e17613a20224cfc04d0e0))
+
+
+### Bug Fixes
+
+* **ci:** address review of the failed-agent evidence ([ab19f3c](https://github.com/mctlhq/mctl-academy/commit/ab19f3cd75e92242e18ce95e14dff526855aadbc))
+* **ci:** clear persisted extraheaders before the fresh-token push ([298dcee](https://github.com/mctlhq/mctl-academy/commit/298dcee0a639872a1f28689bd76bffeccc217029))
+* **ci:** clear persisted extraheaders before the fresh-token push ([d48ecae](https://github.com/mctlhq/mctl-academy/commit/d48ecae99097bf0f6259f0046539e2db0b2e6c30))
+* **ci:** give the Anthropic author the same 160-turn budget as Nebius ([0890474](https://github.com/mctlhq/mctl-academy/commit/08904740991b0d460a067a0172879ca3f5de584a))
+* **ci:** give the Anthropic author the same 160-turn budget as Nebius ([f08ef9f](https://github.com/mctlhq/mctl-academy/commit/f08ef9f51828dbdef441ccd6270a5a2fd52e95b3))
+* **ci:** give the Anthropic reviewer the same 120-turn budget as Nebius ([14d31e0](https://github.com/mctlhq/mctl-academy/commit/14d31e07fb1521435e935ea1d39499bd59bb3bf9))
+* **ci:** give the Anthropic reviewer the same 120-turn budget as Nebius ([44de623](https://github.com/mctlhq/mctl-academy/commit/44de623fc9a93a5d4542229e06f2184721c76c77))
+* **ci:** give the Anthropic selector the same 60-turn budget too ([92bdbe4](https://github.com/mctlhq/mctl-academy/commit/92bdbe4a4956779ee51c801eb99fba4d5d3e0b02))
+* **ci:** keep drift whole under a course scope and fail on an unknown course ([5bd3067](https://github.com/mctlhq/mctl-academy/commit/5bd306778841e352342f5313d14f5f839a1af019))
+* **ci:** push the replenish branch with a fresh App token ([d0d477f](https://github.com/mctlhq/mctl-academy/commit/d0d477ffc7e59f6bbb348fe53c9d33f829a2c1f3))
+* **ci:** push the replenish branch with a fresh App token ([f6d70c8](https://github.com/mctlhq/mctl-academy/commit/f6d70c814f91b6282e01f16946f71e0b4b62e07d))
+* **ci:** reset the remote URL and push the review branch with a fresh token too ([fcf47a5](https://github.com/mctlhq/mctl-academy/commit/fcf47a5fce39a0cd4af762add30b807981ae7946))
+* **content:** drop the duplicate dedicated-endpoint source ([f554465](https://github.com/mctlhq/mctl-academy/commit/f554465669ff6bbdf4356601429df308953a505e))
+
 ## [0.1.53](https://github.com/mctlhq/mctl-academy/compare/0.1.52...0.1.53) (2026-10-07)
 
 
