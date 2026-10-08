@@ -52,7 +52,7 @@ import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, parseDocument, isSeq } from "yaml";
-import { loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
+import { courseObjectives, loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
 import { storeFromEnv } from "./lib/snapshot-store.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -64,9 +64,11 @@ const SOURCE_ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
 const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
 const QUESTION_ID = /^q-[a-z0-9]{12}$/;
 
-export function knownObjectives(contentDir = CONTENT) {
+export function knownObjectives(contentDir = CONTENT, courseId = null) {
+  const courses = loadCourses(contentDir);
+  if (courseId) return courseObjectives(courses, courseId);
   const set = new Set();
-  for (const course of loadCourses(contentDir).values()) {
+  for (const course of courses.values()) {
     for (const d of course.domains ?? []) for (const o of d.objectives ?? []) set.add(`${d.id}/${o.id}`);
   }
   return set;
@@ -459,6 +461,12 @@ export function prBody({
   const capturedSet = new Set(captured);
   const capturedUrls = new Set(selected.filter((r) => capturedSet.has(r.id)).map((r) => r.url));
   const lines = ["## Replenish run", ""];
+  if (candidates.course) {
+    lines.push(
+      `Scoped to course \`${candidates.course}\`: gaps and new pages cover that course only; drift is reported for all courses.`,
+      "",
+    );
+  }
   lines.push(
     `Discovery: ${candidates.newPagesTotal} uncited pages in the indices, ${candidates.newPages.length} offered, ${candidates.drifted.length} drifted sources, ${(candidates.unreachable ?? []).length} unreachable, ${candidates.gaps.length} gaps.`,
     "",
@@ -539,7 +547,9 @@ async function main(argv) {
     const { rows, dropped } = validateSelection({
       select,
       candidates,
-      objectives: knownObjectives(),
+      // A run scoped to one course (candidates.course) places pages only on
+      // that course's objectives.
+      objectives: knownObjectives(CONTENT, candidates.course ?? null),
       existingIds,
     });
     for (const d of dropped)
