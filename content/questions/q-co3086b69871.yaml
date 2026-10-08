@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-co-storage-types
     excerpt: One shared filesystem can be attached to multiple VMs at once.
-    source_sha256: 41ef16f0c6c8d0713bf3b19c3e135ec8c26e21e208943bd7f58ae26a50114c98
+    source_sha256: 88bc77c8be2772f94ff5adaa613a0c131a9d17af012485ebcf60040afbe183d9
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: f3320d4711517c5e1f29a4e8eaa65f7ef355e9b6e705d928d7c534280e713de7
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 12639145019f9a5d9eb2e117fb280dca6091553e4a3641aaa09d0a081db07296

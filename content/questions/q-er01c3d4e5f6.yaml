@@ -30,16 +30,16 @@ options:
 evidence:
   - source_id: src-recovery-rerank
     excerpt: Reranks documents based on their relevance to a query.
-    source_sha256: b5ea87b47f4124fe86076d019dafd4958b56fd43c31f7cd9149d2a9de9c8c401
+    source_sha256: 3ecbe3c6899f87e00d868dddbb94bac99b86a077b2075fab6bc5177733febda3
   - source_id: src-recovery-rerank
     excerpt: "relevance_score: type: number title: Relevance Score description:
       Relevance score of the document"
-    source_sha256: b5ea87b47f4124fe86076d019dafd4958b56fd43c31f7cd9149d2a9de9c8c401
+    source_sha256: 3ecbe3c6899f87e00d868dddbb94bac99b86a077b2075fab6bc5177733febda3
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
 reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 347d316ce3199d287fab18c0eb61893200987f7f92e29828b15ce2327fe6c4fa
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 4a57c99ab675e8ff8d53374777f65209b70d8fb87bc2d3a03cc25d8a16f2a097

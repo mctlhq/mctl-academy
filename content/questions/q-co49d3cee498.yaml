@@ -29,12 +29,12 @@ evidence:
   - source_id: src-co-k8s-node-groups
     excerpt: scales a node group up or down, Managed Kubernetes does not recreate
       any nodes
-    source_sha256: 6eb7708800c5ba3d03ba414312ee8d07e58eaad82ee7fa457439eaf12b7b07fd
+    source_sha256: 5f148e1a79ec0cac101b2eab9a57f996355607103aca30ff1c2edd6e9709010a
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:codex-drift-reviewer
-  at: 2026-09-06T11:02:18Z
-  content_sha256: b68477ff091dd2b50f81a30f4a8136e30490f1cfea4c6909f8a70cc028b12b15
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 48719b98b1c774932011e8b2b5dc87962bc47e78e3452ca93fcd1d2ecb761e4d

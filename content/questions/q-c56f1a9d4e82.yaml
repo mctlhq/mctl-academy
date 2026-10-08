@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-c56f1a9d4e82
+status: published
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: According to the Reranking API reference, which fields are required in a
+  POST /v1/rerank request body?
+options:
+  - id: a
+    text: model, query, and documents
+    correct: true
+    explanation: "Correct. The RerankRequest schema lists its required fields:
+      \"required: - model - query - documents\"."
+  - id: b
+    text: model, documents, and user
+    correct: false
+    explanation: user is documented as an optional identifier for your end-user; it
+      is not part of the required list.
+  - id: c
+    text: model, query, and service_tier
+    correct: false
+    explanation: service_tier is optional, defaulting to auto; it is not part of the
+      required list.
+  - id: d
+    text: query, documents, and user
+    correct: false
+    explanation: model is required but omitted here, and user is an optional
+      identifier rather than a required field.
+evidence:
+  - source_id: src-recovery-rerank
+    excerpt: "required: - model - query - documents"
+    source_sha256: 3ecbe3c6899f87e00d868dddbb94bac99b86a077b2075fab6bc5177733febda3
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:55:04Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 6aa48c06c002ba9f1dbfa5684b754668ba303aaae4c92be6726adb318bc05735

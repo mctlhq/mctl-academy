@@ -30,15 +30,15 @@ options:
 evidence:
   - source_id: src-recovery-sandbox
     excerpt: Automatic cleanup and resource limits help prevent abuse.
-    source_sha256: 70237e9cedd07349efe63d6c9b560b99989cc42cb78c771fa78be99f68f38cf9
+    source_sha256: 895f554935676f690ba684209e132b1d1c12077aa4b8461c3be5cfb575fd28d6
   - source_id: src-recovery-sandbox
     excerpt: Number of simultaneously running operations is limited to 50.
-    source_sha256: 70237e9cedd07349efe63d6c9b560b99989cc42cb78c771fa78be99f68f38cf9
+    source_sha256: 895f554935676f690ba684209e132b1d1c12077aa4b8461c3be5cfb575fd28d6
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
 reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 4b426fcbfce0e1d8903a7edb7f2ba2e3fb9491f2034b9a82cb49e4eeeb786b93
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: a78b2fca8b2d97b5ddb396069bcbe14faefe4bcd6d2d2f228e83baaca876a8e2

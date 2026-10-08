@@ -214,3 +214,8 @@ sources:
       - domain-4/billing-and-consumption
       - domain-4/capacity-and-scaling
       - domain-4/observability
+  - id: src-dedicated-deploy-api
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-api.md
+    title: "Quickstart: Deploy via API"
+    objectives:
+      - domain-1/api-authentication

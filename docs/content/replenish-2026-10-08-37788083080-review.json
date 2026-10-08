@@ -1,0 +1,489 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-08T14:14:36Z",
+  "questions": [
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "3bbaddc1a765cb978f4dadd4aa334068c3082f3552dd013502f75be990f18d5b",
+      "approved": true,
+      "reason": "The rerank page states \"Reranks documents based on their relevance to a query.\" and each RerankResult carries an index and a relevance_score, so the ranking step is the rerank operation; the embeddings, chat and models excerpts rule the other three options out.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "2d45bcc4fcbafa9de2fcb678136c4d916885b8ee5a9f09c5018d71ce8d8a9cbf",
+      "approved": true,
+      "reason": "The EmbeddingRequest schema lists \"required: - model - input\", and encoding_format, dimensions and user are all shown as optional, so only option a is defensible.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-9d47f02ce5a1",
+      "content_sha256": "9a5c3947bb870948a39c5c4385247cdac64cf3c28ec264398208b741f992577d",
+      "approved": true,
+      "reason": "Best Practices says \"Min replicas are guaranteed while active. If you stop the endpoint the reservation will be freed up.\", which supports the freed reservation plus guarantee-while-active answer and contradicts options a and c.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-a83c5e2f9b17",
+      "content_sha256": "3776c69fb8ea2bf636d9e1d7d6e067bb8c34c2658b183e3ed0b21f663029dc71",
+      "approved": true,
+      "reason": "Every control-plane example in the Deploy via API quickstart sends -H \"Authorization: Bearer $API_TOKEN\"; the page separately defines endpoint_id and routing_key as identifiers, not credentials.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-bc01b0c1d2e3",
+      "content_sha256": "85876caa445c96277610da2885ace17a22dca41948d1f2137212d8065f2c8742",
+      "approved": true,
+      "reason": "The comparison table row \"| Pricing | Per GPU/hour, billed with per-minute granularity | Per token |\" sits under the headers Dedicated Endpoints and Public Serverless Endpoints, matching option b exactly.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "6aa48c06c002ba9f1dbfa5684b754668ba303aaae4c92be6726adb318bc05735",
+      "approved": true,
+      "reason": "The RerankRequest schema lists \"required: - model - query - documents\" while user and service_tier (default auto) are optional, leaving one best answer.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "b24bf3c620af5bef4af669a5bbe89b5e9dc685bae042ce160fa1c9c4fd32a577",
+      "approved": true,
+      "reason": "The stream parameter is documented as sending tokens \"as data-only [server-sent events] ... as they become available, with the stream terminated by a `data: [DONE]` message\", which only option a states.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "80166134c7a42e965c9c354594e9576cedda6eeb4fa7ee9fc3f615a72bac9bc7",
+      "approved": true,
+      "reason": "The temperature description says \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and the page never promises byte-identical output or that top_p is disabled.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "10003ca60ef72ac5302667fb08bdac1c1bb6e602cea86fcc99b226510f2b6e4a",
+      "approved": true,
+      "reason": "The isolation section says each cluster is assigned a unique P-Key so that \"nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\", which is precisely option b.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "97e10584053b2f8e6aecc0a3ea2ef8add1252e503f08e9fb5e617aa82627319f",
+      "approved": true,
+      "reason": "GPUDirect RDMA \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\", supporting option c and excluding the host-memory bounce distractor.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co2331c8572e",
+      "content_sha256": "338061671e745f68f3812ced7e73044990f7eedcdc8fe9f61f5ead36c8cfcbea",
+      "approved": true,
+      "reason": "The fabrics section says \"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids GPUs to this cluster\", so the documented constraint is the GPU platform, not a node count or project.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co24917d1a57",
+      "content_sha256": "da26ea702fec86c50c27e631a8b9ff259965f5cbe29a1f37686cf7b2cbb78acd",
+      "approved": true,
+      "reason": "The quickstart says \"Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine.\", which matches option a and not the per-workload or per-node claims.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "d5dd975d96d0efbb038a282c3757c098db597fcfa1ae4339aadffa38f1d02243",
+      "approved": true,
+      "reason": "The warning states \"You cannot move a resource to another network or subnet after creation.\", with no stop/restart or extra-interface exception, so recreation is the only answer.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "52e274cde08635d33c256e16944d951c024a8da49d7b1e10acc6ad1261eaefd2",
+      "approved": true,
+      "reason": "The page says that to \"disable connectivity between resources or allocate the same private IP address to multiple different resources ... create separate networks for them\", which is option c; resources in one network connect directly by private IP.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co2738f2a8fd",
+      "content_sha256": "3ae9265e4eb9840999502271e9cc3a623dd6cfa663fe21ab9dda57a336604735",
+      "approved": true,
+      "reason": "\"For a security group to apply to a VM, you need to add a VM's network interface to the security group.\" identifies the missing step uniquely.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co285d098105",
+      "content_sha256": "9c7497e95bf56eda6a661fabfa3dd723b2d7fd633ca39374b02bdc77de97df82",
+      "approved": true,
+      "reason": "The parameter description reads \"`.spec.priority`: Priority of the rule. 1 is the highest priority, 1000 is the lowest.\", and lookup runs from 1 upward stopping at the first match, so priority 1 wins.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "a8c36c3265ddbdfa0ce36868efb5964f65344d6d3a60a12b2449e7f85a06ffd1",
+      "approved": true,
+      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted.\" directly supports erasure on an overnight stop.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "12639145019f9a5d9eb2e117fb280dca6091553e4a3641aaa09d0a081db07296",
+      "approved": true,
+      "reason": "\"One shared filesystem can be attached to multiple VMs at once.\" supports option d, and the same page says one network SSD disk \"can only be added to one running VM at a time\", excluding option a.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "2bd5a564492feb3986f718a35743d517b28e5ab5fa05809282689d81032f155b",
+      "approved": true,
+      "reason": "For Network SSD Non-replicated disks, \"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB.\", and 100 GiB is not such a multiple.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "9462771988e63415ab93fba3f8a9af878ea506958cf9cf8fbbdf37ddcaf16369",
+      "approved": true,
+      "reason": "\"Sharing a filesystem across projects is not supported, even if the projects are in the same region\", and all attached VMs must belong to the same project, so only option c holds.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co356433d8e1",
+      "content_sha256": "75faca1c407d12faec4a91b1dd2d1a3254226597a2dbce1a3ca8db652feb1e4a",
+      "approved": true,
+      "reason": "The Compute roles list reads \"`compute.instance-power-operator`: perform power operations on virtual machines without broader Compute permissions\"; viewer grants View only and editor is broader.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co36b9e8169f",
+      "content_sha256": "f1aa4154242aa78387c34f6e18b537c24f0d4fde6c80bc0f7ee51eeaff3db741",
+      "approved": true,
+      "reason": "\"`storage.uploader`: view buckets, upload objects but not list or download them\" is exactly the write-only requirement; object-viewer and object-lister grant the withheld reads.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co47ac4ebcf8",
+      "content_sha256": "32f7d562d148fd3ee6c3ffc7c82bf5528c9d7e625f76d4e79db00bdf761b8940",
+      "approved": true,
+      "reason": "In context the sentence reads \"If the condition remains in the `False` status for more than five minutes, or if the condition remains in the `Unknown` status for more than 15 minutes, the service runs an automatic recovery\", so eight minutes of False triggers recovery and the 15-minute window applies only to Unknown.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co48348207ce",
+      "content_sha256": "d0888137f24fe5b0d52eb9ef44c73b6c0923291407e55b106d5d9f0ba4a734ed",
+      "approved": true,
+      "reason": "For a Network SSD NRD boot disk with persistent I/O errors, \"the service runs an automatic recovery: it deletes the node and then creates a new one with a different name and healthy boot disk\", matching option b and excluding the rename and manual-action distractors.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "48719b98b1c774932011e8b2b5dc87962bc47e78e3452ca93fcd1d2ecb761e4d",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes.\"; the rolling replacement described elsewhere follows template changes, not size changes.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co502cd7b152",
+      "content_sha256": "15ba9eaef0a1e9eb2e0474a188bd4ec5308de99817d5cd18803f68f640600fe0",
+      "approved": true,
+      "reason": "\"A VM and its resources count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped.\" rules out quota release on stop.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "fbd0a31c56ac39fa9fc42c8ef3a2976fd94c5710b0027859af5d930e67bc5d10",
+      "approved": true,
+      "reason": "\"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs.\" supports option b; no mirrored Kubernetes quota is documented.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co524dc191c3",
+      "content_sha256": "dba5ac30e48d5e5a4675e0fbf112349928f354058f749df18a7bc14de069ff22",
+      "approved": true,
+      "reason": "\"Compute has different quotas for GPU and non-GPU virtual machines.\" is stated verbatim, and the page also shows non-GPU VM quotas, excluding option b.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co575c01880f",
+      "content_sha256": "51f52129f38ed5dadd45f2b0e1957670c6f8ca06a32a4fece039639e5b3befb9",
+      "approved": true,
+      "reason": "\"Every LogQL query starts with a stream selector inside curly braces.\" answers the stem directly, with the other options unsupported.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co5875c6855b",
+      "content_sha256": "efa05ca0d902e331754a9fb8f7f9f1aa48ad0c38f17d4e65990e280be1e85b49",
+      "approved": true,
+      "reason": "The limitations list says `__bucket__` must always be included and \"Queries without it return no entries.\", with no implicit default bucket.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co59980cc53a",
+      "content_sha256": "850c4caf0212503fffe6682a9557f89ae8556cd3ab22c4e2c19b9f4ec45b5e95",
+      "approved": true,
+      "reason": "The bucket list reads \"`sp_serial`: Compute virtual machines (serial logs)\", while the other three buckets are documented for Kubernetes control plane, Standalone Applications and user-ingested logs.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-co60d070417e",
+      "content_sha256": "535fba0a04d5144d6fcd04565d4426eab57ed56de6fdc7aaa87544670187d103",
+      "approved": true,
+      "reason": "\"The `step` value (interval between points) must be smaller than the `range` value (the interval over which aggregation is performed).\" gives one correct ordering.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-cs01d4e5f6a7",
+      "content_sha256": "fb2e0261a6e8b00a2e18fa33dfab358c9907ed17aa89050e133a2d3543df81ea",
+      "approved": true,
+      "reason": "Partially ready is defined as \"Endpoint can serve traffic, but below expected capacity. Some replicas are still starting, updating, or unavailable.\"; Ready and Not ready are defined otherwise and Warning is a lifecycle status.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-cs02a5b6c7d8",
+      "content_sha256": "2edfb6641787714ab062b23dd051dce0f5e0ee0682fcf2c92efc36ac5d89fc41",
+      "approved": true,
+      "reason": "The overview says \"Set minimum and maximum replicas to automatically scale capacity with traffic.\" and the capacity page adds \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely.\", which is option a in full.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de01a1b2c3d4",
+      "content_sha256": "277b1af84cb94080cda9abb4fd9699f67020eed27b57de0cdf5bce6ca9ee336a",
+      "approved": true,
+      "reason": "The table row \"| Capacity | Capacity reserved for your organization | Shared multi-tenant capacity |\" supports option a, while the capacity page's \"it is not a long-term reservation\" excludes option b.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de02b2c3d4e5",
+      "content_sha256": "164c229c70e7d9f7ad69dc9ba15576b29b7951bb0aaa03a0855757431776bee9",
+      "approved": true,
+      "reason": "The terminology table defines routing_key as \"The model identifier you pass to inference calls. Returned when you create an endpoint.\" and endpoint_id as the \"Identifier used for update/delete operations.\"",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de03c5d6e7f8",
+      "content_sha256": "6d8f7616c4f805703afd9ab59fcd91d39a1ac58cf5aa77a59dbbfd72bb001b15",
+      "approved": true,
+      "reason": "The comparison row \"| Custom weights support | Supported for eligible models | Base models only |\" supports option b, and the capacity page's \"do not include a formal SLA unless covered by contract\" defeats option a.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de04e5f6a7b8",
+      "content_sha256": "dae531f7574f65083796ee8a637720647ba53e0941171662c0a05140c1426892",
+      "approved": true,
+      "reason": "Over-the-Limit Processing says such requests \"may still be processed. This occurs when the system has spare capacity available, and your request can be handled with a lower priority\", flagged by \"x-ratelimit-over-limit: yes\" as an early warning, so the always-429 option is wrong.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de06a7b8c9d0",
+      "content_sha256": "cdb1d97690d64951074fff3b36bb688f3c4bd4d77f2a5c9c20050d134565707e",
+      "approved": false,
+      "reason": "The stem asks for the pay-as-you-go billing metric, but the only cited excerpt is the rate-limit sentence about tracking consumption with the x-ratelimit-remaining-requests and x-ratelimit-remaining-tokens headers; that page says nothing about billing or per-token pricing, so the evidence does not establish the correct option.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de08c9d0e1f2",
+      "content_sha256": "f1e026dfa9e3399b2ed2805f343a9b9396314ae17535c0b17ac197d8a2f5b8ef",
+      "approved": true,
+      "reason": "Ready is defined as \"Endpoint is fully provisioned and ready for expected traffic.\", and \"Lifecycle is deployment state. Readiness is traffic-serving capability.\" rules out the Running and Starting lifecycle distractors.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-de09d0e1f2a3",
+      "content_sha256": "ac1efbe2349f037b75eb7ddb206dc16a4d45428f60df9329a8ed184372595712",
+      "approved": true,
+      "reason": "\"If you exceed the active limit you will receive **HTTP 429**.\" is stated verbatim on the rate limits page, making option a uniquely correct.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-el01a0b1c2d3",
+      "content_sha256": "8b8de48e2712c9b5afb1b4a2df70830b17a8668aa84382be4c644ccf48c98e1e",
+      "approved": true,
+      "reason": "The page's key principle is \"Lifecycle is deployment state. Readiness is traffic-serving capability.\" followed by \"Use Readiness to decide whether to send traffic.\", so routing should read readiness.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-el02b1c2d3e4",
+      "content_sha256": "8cf9f8a762aea6b0083d7c785810ee226137c0e790cb5c4529ffd2b9d269ac0b",
+      "approved": true,
+      "reason": "Partially ready reads \"Endpoint can serve traffic, but below expected capacity.\", which matches option b and distinguishes it from Ready and Not ready.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-el03c3d4e5f6",
+      "content_sha256": "282fafb85fb022c5a1dee0c5f9d96d6c0b27b1168e0555d82813b8baa1903e84",
+      "approved": true,
+      "reason": "\"Lifecycle is deployment state. Readiness is traffic-serving capability.\" supports option c, and the remaining options describe things the page never attributes to either status.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "4a57c99ab675e8ff8d53374777f65209b70d8fb87bc2d3a03cc25d8a16f2a097",
+      "approved": true,
+      "reason": "Rerank \"Reranks documents based on their relevance to a query\" and each RerankResult defines an index plus \"relevance_score ... Relevance score of the document\", so no vector, rewrite or completion is returned.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-f29ae7c1b4d6",
+      "content_sha256": "1af38e77824d6387b323e2c073941ad361d3779fd2cc8067a8cae88c8dfea86e",
+      "approved": true,
+      "reason": "The Quickstart's Get API key steps say \"For authentication, [get an API key]\", while the Cookbook and playground are presented for examples and testing rather than authentication.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld28389db1f6",
+      "content_sha256": "1b6dbf38e39a5bc0da4caabc7922c52a80504779082add5c42412a2b49525695",
+      "approved": true,
+      "reason": "\"Unless you override it via the `context_length` hyperparameter, the default context length for fine-tuning is **8192 tokens**.\" gives the default directly, and 131072 is only the top of the supported range.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld295930cb94",
+      "content_sha256": "49fd986fc9a99fedd1b7ef3d8c03695ab4a3eba6915801f0eedb02a93baa3143",
+      "approved": true,
+      "reason": "The page lists, in adjacent bullets, \"Which **context lengths** they support\" and \"Which **fine-tuning types** are available (LoRA vs full fine-tuning)\", which is exactly the pair in option a.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld388171b0f1",
+      "content_sha256": "0371af06ba28815e0dbe86fc0598ed5425997753e747d8dcbdb303dd294a3885",
+      "approved": true,
+      "reason": "The Region control reads \"Choose where your deployment runs to optimize latency and meet data residency requirements.\", so region is the jurisdiction control rather than autoscaling or GPU configuration.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld39cd7b5510",
+      "content_sha256": "cf940a886752d4ed660ea0529627590991cadc6d830e60e4cbb81044c04a5503",
+      "approved": true,
+      "reason": "\"Use the control plane to create and manage deployments, and the data plane to run inference through OpenAI-compatible APIs.\" states option c and contradicts the other three splits.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld403e852cea",
+      "content_sha256": "4e43421f6c012128a435bd87260c8cd63e9df4d3b2f8bfbb068125e9d0fe3ec1",
+      "approved": true,
+      "reason": "The Autoscaling control reads \"Set minimum and maximum replicas to automatically scale capacity with traffic.\", which is the documented answer for fluctuating demand.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld43c53921d4",
+      "content_sha256": "53723918cb54da6d705a5be229169733f31972774995553a11e0e9df65b455ed",
+      "approved": true,
+      "reason": "The \"Key use cases\" list reads \"predictable capacity\" and \"finetuned base model with custom weights\", the pair in option d; zero-cost idling and permanent reservation are contradicted elsewhere.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld448ca61125",
+      "content_sha256": "23c8a8983be5a6ee4b7ad6d0d0f2eb38f139d04e149a6c6eaed32ac389a92e3b",
+      "approved": true,
+      "reason": "The GPU configuration control reads \"Select GPU type and GPUs per replica to match your performance and throughput needs.\", so both are selectable and no enterprise-contract condition is documented.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld55363f7872",
+      "content_sha256": "6ac7fee426f8e6529cace4a6224ee2ed36c2c50a7a868cf361bae5df6950403f",
+      "approved": true,
+      "reason": "The Updating lifecycle status reads \"Endpoint is applying configuration changes.\" followed by \"Traffic may continue, but capacity can temporarily degrade.\", matching option c and excluding Starting and failure readings.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld56c5356b61",
+      "content_sha256": "0846b2a08a664dc55383fcaabd09c38dcf927dab9a61e8e47d5319232f1f6fd8",
+      "approved": true,
+      "reason": "\"This distinction helps separate deployment progress from actual availability.\" is the page's own reason for the two status types, which is option b.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld5748e509af",
+      "content_sha256": "18094ddbde7ead25727569ec28b21ecc1b67ae22feeb7cac40c47bba6d9ae3c3",
+      "approved": true,
+      "reason": "The Billing Policy says \"A dedicated endpoint is considered **active, accessible, and billable** when **at least one replica is running**\", so charges follow running replicas rather than existence, traffic or a monthly maximum.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ld583078adf3",
+      "content_sha256": "a32c8b463b83c834a94fa3a462d15dcaeb90938464e25d6bed43c020b0ad4dd9",
+      "approved": true,
+      "reason": "\"When **zero replicas are running**, the endpoint is not accessible and billing charges do not apply.\" states both halves of option b.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ob01d8e9f0a1",
+      "content_sha256": "a80bc90b647ca603534152c5b8a6381565629d48c812936372507d0550564845",
+      "approved": true,
+      "reason": "The rate limits page says to \"track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers\", naming exactly the headers in option d.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "655d2f27b8a9a43df1d1d6d55af3b83adec63b2571dee1886b780b0a7a0a299a",
+      "approved": true,
+      "reason": "The Usage schema defines completion_tokens, prompt_tokens and \"total_tokens ... Total number of tokens used in the request (prompt + completion)\", so only option a lists real fields.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "cde42511493ddb0df0a885dd4dd24fbb476a314a68f090594be3bc30493ca190",
+      "approved": true,
+      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and the GET /v1/models schema includes context_length.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-pf10e9f0a1b2",
+      "content_sha256": "a81008dc05461bfa26749ed1e1e8cb61a1e43fcaca2c7965b7469886518fe9fa",
+      "approved": true,
+      "reason": "After the date \"you will not be able to select them in the Playground or send API requests using their model IDs\" and \"Token Factory does not automatically reroute requests from deprecated models\"; dedicated endpoints are explicitly unaffected.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "0df09010ed83c0c22a34c63c515fdd4b29326a9abc23d164ad4f0acf31cf08a7",
+      "approved": true,
+      "reason": "The temperature description reads \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and no other option is a model parameter.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-rl01d7e8f9a0",
+      "content_sha256": "4378599f63e9c911f09b26bf2e6fa63af768e3ee372800240d019e74ac904b1d",
+      "approved": true,
+      "reason": "\"Every user is provided with a default rate limit cap. This limit grows automatically when you consistently operate close to your capacity and current limit.\" supports automatic growth without a request or an Enterprise upgrade.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-rl02e8f9a0b1",
+      "content_sha256": "d376b5a3852201c9cac44dcd61d708bb7b4401944b67d88e245dcd42f1d3b4f6",
+      "approved": true,
+      "reason": "The page tells you to \"track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers\", which is the inline headroom signal in option c; no webhook or quota endpoint is documented.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-rl03f9a0b1c2",
+      "content_sha256": "db0777da5158b7516abedddbce38987cd0f9545f910a1de3d337a272b27db66d",
+      "approved": true,
+      "reason": "Over-the-Limit Processing explains \"This occurs when the system has spare capacity available, and your request can be handled with a lower priority without affecting other users.\", matching option d exactly.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-rl04b6c7d8e9",
+      "content_sha256": "a1e48c81b389bce816ec261c0f3cbe7b9b1aa55ddf52bfa14c62ba67c1205eb4",
+      "approved": true,
+      "reason": "\"This limit grows automatically when you consistently operate close to your capacity and current limit.\" supports automatic cap growth, and the other options describe penalties the page never mentions.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-rl05c7d8e9f0",
+      "content_sha256": "7a2870ea7172b093d6e628f7cedd06eb10db723bf6cd7d76041a734b58316f8a",
+      "approved": false,
+      "reason": "The answer turns on the status code, but the cited excerpt is only \"track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers\", which never names a status code; the page's \"If you exceed the active limit you will receive **HTTP 429**.\" sentence is not cited, so the excerpt does not establish the correct option.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-sb01a9b0c1d2",
+      "content_sha256": "273fef4cbedc148cc511b184ceaacb33ca2f5e1f5e4778af2562af4a6720d599",
+      "approved": true,
+      "reason": "The Secure isolation feature reads \"VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads.\", which is option a verbatim in substance.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    },
+    {
+      "id": "q-sb02b0c1d2e3",
+      "content_sha256": "a78b2fca8b2d97b5ddb396069bcbe14faefe4bcd6d2d2f228e83baaca876a8e2",
+      "approved": true,
+      "reason": "The Educational platforms use case says \"Automatic cleanup and resource limits help prevent abuse.\", and the beta limits state \"Number of simultaneously running operations is limited to 50.\", defeating the unlimited-operations option.",
+      "reviewed_at": "2026-10-08T14:14:36Z"
+    }
+  ]
+}
