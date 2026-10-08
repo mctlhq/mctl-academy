@@ -76,6 +76,10 @@ on:
         description: "Run even when a replenish PR is already open"
         type: boolean
         default: false
+      course:
+        description: "Scope the run to one course id (e.g. ai-cloudops-engineer); empty = all courses"
+        type: string
+        default: ""
       provider:
         description: "Which models write and review this run"
         type: choice
@@ -172,11 +176,15 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          COURSE: ${{ inputs.course }}
         run: |
           set -euo pipefail
           case "$MAX_NEW" in *[!0-9]*|"") echo "::error::max_new must be an integer"; exit 1;; esac
+          case "$COURSE" in *[!a-z0-9-]*) echo "::error::course must be a course id (lowercase letters, digits, dashes)"; exit 1;; esac
           mkdir -p _run _agent
-          node scripts/discover-docs.mjs --out _run/candidates.json --max-new "$MAX_NEW" --check-live --update-state
+          course_args=()
+          if [ -n "$COURSE" ]; then course_args=(--course "$COURSE"); fi
+          node scripts/discover-docs.mjs --out _run/candidates.json --max-new "$MAX_NEW" --check-live --update-state "${course_args[@]}"
           empty=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("_run/candidates.json","utf8")).empty)')
           echo "empty=$empty" >> "$GITHUB_OUTPUT"
           {

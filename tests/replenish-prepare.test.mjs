@@ -30,6 +30,7 @@ import {
   reviewScopeProblems,
   demote,
   prBody,
+  knownObjectives,
 } from "../scripts/replenish-prepare.mjs";
 import { mergeVersions, buildSourceRecord, parseMode, parseCaptureArgs } from "../scripts/capture-source.mjs";
 
@@ -2489,5 +2490,35 @@ test("each job pushes with an App token minted after its agents, not the one fro
     const env = JSON.stringify(steps[push].env);
     assert.ok(env.includes("steps.push-token.outputs.token"), `${name}: does not use the fresh token`);
     assert.ok(!env.includes("steps.app-token.outputs.token"), `${name}: still uses the first token`);
+  }
+});
+
+test("knownObjectives(dir, course) places pages only on that course's objectives", () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-objectives-"));
+  try {
+    mkdirSync(join(dir, "courses"));
+    const course = (id, objective) =>
+      yaml({
+        schema_version: 1,
+        id,
+        title: id,
+        mock: { question_count: 1, time_limit_minutes: 10 },
+        domains: [
+          {
+            id: "domain-1",
+            title: "D",
+            weight: 100,
+            mock_questions: 1,
+            objectives: [{ id: objective, title: "t" }],
+          },
+        ],
+      });
+    writeFileSync(join(dir, "courses", "a.yaml"), course("course-a", "alpha"));
+    writeFileSync(join(dir, "courses", "b.yaml"), course("course-b", "beta"));
+    assert.deepEqual([...knownObjectives(dir)].sort(), ["domain-1/alpha", "domain-1/beta"]);
+    assert.deepEqual([...knownObjectives(dir, "course-b")], ["domain-1/beta"]);
+    assert.deepEqual([...knownObjectives(dir, "no-such-course")], []);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });

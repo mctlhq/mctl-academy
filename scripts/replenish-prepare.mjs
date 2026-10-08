@@ -64,9 +64,10 @@ const SOURCE_ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
 const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
 const QUESTION_ID = /^q-[a-z0-9]{12}$/;
 
-export function knownObjectives(contentDir = CONTENT) {
+export function knownObjectives(contentDir = CONTENT, courseId = null) {
   const set = new Set();
   for (const course of loadCourses(contentDir).values()) {
+    if (courseId && course.id !== courseId) continue;
     for (const d of course.domains ?? []) for (const o of d.objectives ?? []) set.add(`${d.id}/${o.id}`);
   }
   return set;
@@ -539,7 +540,9 @@ async function main(argv) {
     const { rows, dropped } = validateSelection({
       select,
       candidates,
-      objectives: knownObjectives(),
+      // A run scoped to one course (candidates.course) places pages only on
+      // that course's objectives.
+      objectives: knownObjectives(CONTENT, candidates.course ?? null),
       existingIds,
     });
     for (const d of dropped)
