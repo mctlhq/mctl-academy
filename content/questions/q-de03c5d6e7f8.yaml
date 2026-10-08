@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de03c5d6e7f8
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/dedicated-endpoints
 stem: Why would a team deploy a fine-tuned model with custom weights on a
@@ -42,3 +42,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 6d8f7616c4f805703afd9ab59fcd91d39a1ac58cf5aa77a59dbbfd72bb001b15

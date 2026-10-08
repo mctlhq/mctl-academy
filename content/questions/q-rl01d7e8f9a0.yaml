@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rl01d7e8f9a0
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limits
 stem: Your traffic has grown steadily for weeks and you have not asked for a
@@ -36,3 +36,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 4378599f63e9c911f09b26bf2e6fa63af768e3ee372800240d019e74ac904b1d

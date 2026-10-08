@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld55363f7872
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: An operations dashboard shows a dedicated endpoint as Updating. What does
@@ -31,3 +31,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 6ac7fee426f8e6529cace4a6224ee2ed36c2c50a7a868cf361bae5df6950403f

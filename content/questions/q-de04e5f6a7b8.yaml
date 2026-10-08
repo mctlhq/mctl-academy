@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de04e5f6a7b8
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limits
 stem: A request to a public serverless endpoint exceeds your nominal rate limit
@@ -41,3 +41,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: dae531f7574f65083796ee8a637720647ba53e0941171662c0a05140c1426892

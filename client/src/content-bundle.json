@@ -189,6 +189,47 @@
     ]
   },
   {
+    "id": "q-7b2d9f4a1c63",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/embeddings-and-rerank",
+    "stem": "According to the Embeddings API reference, which fields are required in a POST /v1/embeddings request body?",
+    "objectiveTitle": "Embeddings and reranking for retrieval",
+    "sources": [
+      {
+        "title": "Embeddings API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-embeddings.md",
+        "excerpt": "required: - model - input"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "model and input",
+        "correct": true,
+        "explanation": "Correct. The EmbeddingRequest schema lists its required fields: \"required: - model - input\"."
+      },
+      {
+        "id": "b",
+        "text": "model and encoding_format",
+        "correct": false,
+        "explanation": "encoding_format is optional, with a documented default of float; it is not part of the required list."
+      },
+      {
+        "id": "c",
+        "text": "model and dimensions",
+        "correct": false,
+        "explanation": "dimensions is optional; the schema allows it to be an integer or null and does not list it as required."
+      },
+      {
+        "id": "d",
+        "text": "input and user",
+        "correct": false,
+        "explanation": "model is required but omitted here, and user is an optional identifier for your end-user rather than a required field."
+      }
+    ]
+  },
+  {
     "id": "q-9d47f02ce5a1",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -235,6 +276,47 @@
     ]
   },
   {
+    "id": "q-a83c5e2f9b17",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/api-authentication",
+    "stem": "Per the \"Quickstart: Deploy via API\" guide, how do requests to the dedicated endpoints control plane authenticate?",
+    "objectiveTitle": "API keys, authentication, and request basics",
+    "sources": [
+      {
+        "title": "Quickstart: Deploy via API",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-api.md",
+        "excerpt": "-H \"Authorization: Bearer $API_TOKEN\""
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "With a bearer token in the Authorization header",
+        "correct": true,
+        "explanation": "Correct. The control-plane examples set the header: -H \"Authorization: Bearer $API_TOKEN\"."
+      },
+      {
+        "id": "b",
+        "text": "By supplying the endpoint's routing_key as a credential",
+        "correct": false,
+        "explanation": "routing_key is the model identifier used when sending inference requests to the data plane, not a credential."
+      },
+      {
+        "id": "c",
+        "text": "By placing the endpoint_id in the Authorization header",
+        "correct": false,
+        "explanation": "endpoint_id is used to manage the endpoint through the control plane; it is an identifier, not an authentication credential."
+      },
+      {
+        "id": "d",
+        "text": "By selecting a deployment region",
+        "correct": false,
+        "explanation": "region chooses where the deployment runs; it has no role in authenticating a request."
+      }
+    ]
+  },
+  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -272,6 +354,47 @@
         "text": "Both are billed a flat fee per HTTP request",
         "correct": false,
         "explanation": "The documented bases are tokens for serverless and GPU-hours for dedicated, not request counts."
+      }
+    ]
+  },
+  {
+    "id": "q-c56f1a9d4e82",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/embeddings-and-rerank",
+    "stem": "According to the Reranking API reference, which fields are required in a POST /v1/rerank request body?",
+    "objectiveTitle": "Embeddings and reranking for retrieval",
+    "sources": [
+      {
+        "title": "Reranking API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md",
+        "excerpt": "required: - model - query - documents"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "model, query, and documents",
+        "correct": true,
+        "explanation": "Correct. The RerankRequest schema lists its required fields: \"required: - model - query - documents\"."
+      },
+      {
+        "id": "b",
+        "text": "model, documents, and user",
+        "correct": false,
+        "explanation": "user is documented as an optional identifier for your end-user; it is not part of the required list."
+      },
+      {
+        "id": "c",
+        "text": "model, query, and service_tier",
+        "correct": false,
+        "explanation": "service_tier is optional, defaulting to auto; it is not part of the required list."
+      },
+      {
+        "id": "d",
+        "text": "query, documents, and user",
+        "correct": false,
+        "explanation": "model is required but omitted here, and user is an optional identifier rather than a required field."
       }
     ]
   },
@@ -624,7 +747,7 @@
       {
         "title": "Security groups in Nebius AI Cloud",
         "url": "https://docs.nebius.com/vpc/security-groups/overview.md",
-        "excerpt": "For a security group to apply to a VM, you need to assign the security group to a VM's network interface."
+        "excerpt": "For a security group to apply to a VM, you need to add a VM's network interface to the security group."
       }
     ],
     "options": [
@@ -648,9 +771,9 @@
       },
       {
         "id": "d",
-        "text": "The security group has not been assigned to the VM's network interface",
+        "text": "The VM's network interface has not been added to the security group",
         "correct": true,
-        "explanation": "Correct. A security group only applies to a VM once it is assigned to that VM's network interface."
+        "explanation": "Correct. A security group only applies to a VM once the VM's network interface has been added to that security group."
       }
     ]
   },
@@ -2115,7 +2238,7 @@
       {
         "title": "Dedicated endpoints",
         "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
-        "excerpt": "| Capacity | Isolated capacity reserved for your organization | Shared multi-tenant capacity |"
+        "excerpt": "| Capacity | Capacity reserved for your organization | Shared multi-tenant capacity |"
       },
       {
         "title": "Endpoint capacity",
@@ -2126,9 +2249,9 @@
     "options": [
       {
         "id": "a",
-        "text": "Dedicated endpoints get isolated capacity reserved for your organization while the endpoint runs; serverless uses shared multi-tenant capacity",
+        "text": "Dedicated endpoints get capacity reserved for your organization while serverless uses shared multi-tenant capacity",
         "correct": true,
-        "explanation": "The table lists isolated capacity reserved for your organization against shared multi-tenant capacity; the capacity page adds that the reservation applies only while the endpoint is running."
+        "explanation": "The table lists capacity reserved for your organization against shared multi-tenant capacity; the capacity page adds that the reservation applies only while the endpoint is running."
       },
       {
         "id": "b",
@@ -2807,6 +2930,47 @@
         "text": "A chat completion that answers the query using the document",
         "correct": false,
         "explanation": "Answer generation is the job of chat completions; rerank returns relevance scores only."
+      }
+    ]
+  },
+  {
+    "id": "q-f29ae7c1b4d6",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/api-authentication",
+    "stem": "Per the Token Factory Quickstart guide, what does the documentation identify as the authentication step before making API requests?",
+    "objectiveTitle": "API keys, authentication, and request basics",
+    "sources": [
+      {
+        "title": "Quickstart",
+        "url": "https://docs.tokenfactory.nebius.com/quickstart.md",
+        "excerpt": "For authentication, [get an API key]"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Getting an API key",
+        "correct": true,
+        "explanation": "Correct. The setup steps state it directly: \"For authentication, [get an API key]\"."
+      },
+      {
+        "id": "b",
+        "text": "Browsing the official Cookbook for reusable code snippets",
+        "correct": false,
+        "explanation": "The Cookbook is offered to explore code examples and reusable snippets, not as the authentication step."
+      },
+      {
+        "id": "c",
+        "text": "Comparing models in the playground",
+        "correct": false,
+        "explanation": "The playground is for testing and comparing models, not for authenticating requests."
+      },
+      {
+        "id": "d",
+        "text": "Setting up a third-party framework integration",
+        "correct": false,
+        "explanation": "Framework integrations extend capabilities for building applications; they are not what the guide names as the authentication step."
       }
     ]
   },

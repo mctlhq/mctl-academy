@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f29ae7c1b4d6
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/api-authentication
 stem: Per the Token Factory Quickstart guide, what does the documentation
@@ -9,8 +9,8 @@ options:
   - id: a
     text: Getting an API key
     correct: true
-    explanation: "Correct. The setup steps state it directly: \"For
-      authentication, [get an API key]\"."
+    explanation: "Correct. The setup steps state it directly: \"For authentication,
+      [get an API key]\"."
   - id: b
     text: Browsing the official Cookbook for reusable code snippets
     correct: false
@@ -25,8 +25,8 @@ options:
     text: Setting up a third-party framework integration
     correct: false
     explanation: Framework integrations extend capabilities for building
-      applications; they are not what the guide names as the
-      authentication step.
+      applications; they are not what the guide names as the authentication
+      step.
 evidence:
   - source_id: src-recovery-quickstart
     excerpt: "For authentication, [get an API key]"
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 1af38e77824d6387b323e2c073941ad361d3779fd2cc8067a8cae88c8dfea86e

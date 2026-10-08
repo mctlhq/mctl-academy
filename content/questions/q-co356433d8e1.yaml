@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co356433d8e1
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/iam-roles
 stem: An on-call rotation must be able to stop and start VMs during incidents,
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 75faca1c407d12faec4a91b1dd2d1a3254226597a2dbce1a3ca8db652feb1e4a

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld43c53921d4
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
 stem: Leadership asks what dedicated endpoints give the business that shared
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 53723918cb54da6d705a5be229169733f31972774995553a11e0e9df65b455ed

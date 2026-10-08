@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co26744a9769
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/network-vpc
 stem: A team wants two test environments in the same region that use identical
@@ -40,3 +40,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 52e274cde08635d33c256e16944d951c024a8da49d7b1e10acc6ad1261eaefd2

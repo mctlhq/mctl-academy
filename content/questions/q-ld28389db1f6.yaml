@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld28389db1f6
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
 stem: A team starts a fine-tuning job and does not set `context_length`. What
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 1b6dbf38e39a5bc0da4caabc7922c52a80504779082add5c42412a2b49525695

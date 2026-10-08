@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ob01d8e9f0a1
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability
 stem: What response headers should client applications inspect to monitor
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: a80bc90b647ca603534152c5b8a6381565629d48c812936372507d0550564845

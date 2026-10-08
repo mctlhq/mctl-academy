@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld403e852cea
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
 stem: A workload's traffic varies sharply between business hours and overnight.
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 4e43421f6c012128a435bd87260c8cd63e9df4d3b2f8bfbb068125e9d0fe3ec1

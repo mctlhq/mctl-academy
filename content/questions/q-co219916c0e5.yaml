@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co219916c0e5
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: Two teams run separate GPU clusters that were placed in the same
@@ -39,3 +39,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 10003ca60ef72ac5302667fb08bdac1c1bb6e602cea86fcc99b226510f2b6e4a

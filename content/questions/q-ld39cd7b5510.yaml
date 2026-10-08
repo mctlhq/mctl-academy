@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld39cd7b5510
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
 stem: How is a dedicated endpoint deployment managed versus how inference
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: cf940a886752d4ed660ea0529627590991cadc6d830e60e4cbb81044c04a5503

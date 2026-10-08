@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-cs02a5b6c7d8
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: How does a dedicated endpoint scale its capacity as traffic changes?
@@ -40,3 +40,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 2edfb6641787714ab062b23dd051dce0f5e0ee0682fcf2c92efc36ac5d89fc41

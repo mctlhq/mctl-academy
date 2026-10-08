@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6b9e2f4a17c3
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: You are composing a retrieval pipeline. Candidate passages have already
@@ -50,3 +50,7 @@ authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 3bbaddc1a765cb978f4dadd4aa334068c3082f3552dd013502f75be990f18d5b

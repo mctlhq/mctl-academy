@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9d47f02ce5a1
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: A team's dedicated endpoint keeps its baseline capacity on minimum
@@ -44,3 +44,7 @@ authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 9a5c3947bb870948a39c5c4385247cdac64cf3c28ec264398208b741f992577d

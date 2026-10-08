@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co60d070417e
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/escalation-workflows
 stem: An aggregated LogQL query is rejected because its `step` and `range`
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 535fba0a04d5144d6fcd04565d4426eab57ed56de6fdc7aaa87544670187d103

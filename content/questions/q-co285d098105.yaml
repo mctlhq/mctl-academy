@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co285d098105
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/network-vpc
 stem: Two security rules in one group match the same packet with conflicting
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 9c7497e95bf56eda6a661fabfa3dd723b2d7fd633ca39374b02bdc77de97df82

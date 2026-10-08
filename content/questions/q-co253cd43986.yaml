@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co253cd43986
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/network-vpc
 stem: A VM was created in the wrong subnet. The team wants it moved to the
@@ -35,3 +35,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: d5dd975d96d0efbb038a282c3757c098db597fcfa1ae4339aadffa38f1d02243

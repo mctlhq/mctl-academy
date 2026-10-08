@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf10e9f0a1b2
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
 stem: What happens to a Serverless model after its published deprecation date?
@@ -39,3 +39,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: a81008dc05461bfa26749ed1e1e8cb61a1e43fcaca2c7965b7469886518fe9fa
