@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-cs01d4e5f6a7
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: A dedicated endpoint is serving traffic, but some replicas are still
@@ -30,15 +30,11 @@ options:
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Endpoint can serve traffic, but below expected capacity.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
   - source_id: src-endpoint-lifecycle
     excerpt: Some replicas are still starting, updating, or unavailable.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: ad869328f2c5fd553b69c38b7bbbcad3e61e193f96523b13c365b2fe5931210d

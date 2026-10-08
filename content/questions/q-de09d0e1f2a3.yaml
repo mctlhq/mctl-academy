@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de09d0e1f2a3
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/rate-limits
 stem: Which HTTP status does the API return when a request exceeds the active
@@ -27,12 +27,8 @@ options:
 evidence:
   - source_id: src-rate-limits
     excerpt: If you exceed the active limit you will receive **HTTP 429**.
-    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+    source_sha256: a930a4443120747b78d1c298b040d72612031c4ae735a83929d6e5769548e6d7
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: cf178a279482fc4b8f7d22e1c9e99f7fdd735ba295199c74e5415bd8a8cc86ee

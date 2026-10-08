@@ -353,8 +353,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/add-ons.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/networking/assign-security-groups.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/defined-ips.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/dynamic-to-static.md
@@ -841,8 +839,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/security-groups/manage.md
     first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md
-    first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/custom-weights.md
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-api.md
@@ -1031,17 +1027,7 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/june-2026-deprecation-notice.md
     first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/legal/dpa.md
-    first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/legal/hipaa-guideline.md
-    first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/legal/legal-quick-guide.md
-    first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/legal/privacy-policy.md
-    first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/legal/subprocessors.md
-    first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/legal/terms-of-service.md
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/post-training/custom-speculator.md
     first_seen: 2026-09-13
@@ -1249,4 +1235,40 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/utilities/prompt-presets.md
     first_seen: 2026-09-13
+  - url: https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/3p-integrations/wiz.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/cli/update.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/grpc-api/errors.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/kubernetes/networking/manage-security-groups.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/rest-api/errors.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/serverless/devlabs/manage.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/serverless/jobs/auto-restarts.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/serverless/quickstart/devlabs.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/signup-billing/manage-pricing-policy.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/signup-billing/payments/cost-breakdown.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/signup-billing/pricing-policy.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/signup-billing/usage/cost-allocation-labels.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/vpc/dns/manage-records.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/vpc/dns/manage-zones.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/vpc/dns/overview.md
+    first_seen: 2026-10-08
+  - url: https://docs.nebius.com/vpc/dns/resources/quotas-limits.md
+    first_seen: 2026-10-08
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/mcp/tools/grep.md
+    first_seen: 2026-10-08
 ignored: []

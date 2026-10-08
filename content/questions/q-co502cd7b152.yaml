@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co502cd7b152
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: A team stops several GPU VMs overnight and expects the freed quota to let
@@ -28,12 +28,8 @@ evidence:
   - source_id: src-co-compute-quotas
     excerpt: count towards the quotas throughout the VM's lifecycle, from its
       creation to deletion, regardless of whether it is running or stopped
-    source_sha256: 89c1003f8e3a218e76a6c7207b467f62be048b6b481ed03874e734b6b500a9b0
+    source_sha256: f48aaac3871e8016c228deea7561c5b5e80de333739871d31d1c57b1f0584183
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: dcfa12ae5002ea36e2083248545a964d37427cc2c648a37d5a67436bddb6aa4c

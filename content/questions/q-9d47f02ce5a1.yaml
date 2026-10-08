@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9d47f02ce5a1
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: A team's dedicated endpoint keeps its baseline capacity on minimum
@@ -36,15 +36,11 @@ evidence:
   - source_id: src-recovery-best-practice
     excerpt: Min replicas are guaranteed while active. If you stop the endpoint the
       reservation will be freed up.
-    source_sha256: b4f09c4433e8b3690ddf0024c6c37ed5a64e65766301a0e17fccd09f5e0a5982
+    source_sha256: c3f9513afb2bcd83438d76aa129f8eb955c696bf1893dbffc9dbee95e10b2a43
   - source_id: src-recovery-best-practice
     excerpt: Minimum replicas are always allocated while the endpoint is active.
-    source_sha256: b4f09c4433e8b3690ddf0024c6c37ed5a64e65766301a0e17fccd09f5e0a5982
+    source_sha256: c3f9513afb2bcd83438d76aa129f8eb955c696bf1893dbffc9dbee95e10b2a43
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 4154a8039d7d285bb45b07855252ab94bf281736407b34763d77227c25e27b1c
