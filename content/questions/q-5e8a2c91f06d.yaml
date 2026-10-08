@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-5e8a2c91f06d
+status: review_ready
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: In a `/v1/rerank` response, which field tells a retrieval pipeline how
+  well each candidate document matches the query?
+options:
+  - id: a
+    text: "`relevance_score`"
+    correct: true
+    explanation: The RerankResult schema documents `relevance_score` as the
+      relevance score of the document, which is what a pipeline uses to rank
+      candidates.
+  - id: b
+    text: "`total_tokens`"
+    correct: false
+    explanation: "`total_tokens` is part of RerankUsage and reports token
+      usage for the request, not how relevant a document is."
+  - id: c
+    text: "`embedding`"
+    correct: false
+    explanation: "`embedding` is a field of the Embedding object returned by
+      the `/v1/embeddings` endpoint, not part of a rerank result."
+  - id: d
+    text: "`owned_by`"
+    correct: false
+    explanation: "`owned_by` is a field of the Model object returned by the
+      List models endpoint, unrelated to reranking documents."
+evidence:
+  - source_id: src-recovery-rerank
+    excerpt: Relevance score of the document
+    source_sha256: 3ecbe3c6899f87e00d868dddbb94bac99b86a077b2075fab6bc5177733febda3
+    locator: RerankResult > relevance_score
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T17:23:06Z
+course_id: agentic-ai-builder

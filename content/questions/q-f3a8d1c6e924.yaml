@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-f3a8d1c6e924
+status: review_ready
+domain: domain-3
+objective: domain-3/datasets
+stem: Which dataset format should you choose for fine-tuning when you need
+  full control over tokenization, packing, loss masking, and attention
+  masking yourself?
+options:
+  - id: a
+    text: Pretokenized
+    correct: true
+    explanation: The guide says to use the Pretokenized dataset format when
+      you want full control over tokenization, packing, loss masking, and
+      attention masking.
+  - id: b
+    text: Conversational
+    correct: false
+    explanation: Conversational datasets are chat-style `messages` arrays;
+      tokenization is handled for you, not controlled directly.
+  - id: c
+    text: Instruction
+    correct: false
+    explanation: Instruction datasets are prompt/completion pairs;
+      tokenization is handled for you, not controlled directly.
+  - id: d
+    text: Text
+    correct: false
+    explanation: Text datasets are a single `text` field per line;
+      tokenization is handled for you, not controlled directly.
+evidence:
+  - source_id: src-recovery-datasets
+    excerpt: Use the **Pretokenized** dataset format if you want to
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+    locator: Pre-tokenized data > When to use pretokenized datasets
+  - source_id: src-recovery-datasets
+    excerpt: Have full control over **tokenization, packing, loss masking,
+      and attention masking**.
+    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+    locator: Pre-tokenized data > When to use pretokenized datasets
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T17:23:06Z
+course_id: agentic-ai-builder

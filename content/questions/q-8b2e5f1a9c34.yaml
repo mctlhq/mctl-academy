@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-8b2e5f1a9c34
+status: review_ready
+domain: domain-1
+objective: domain-1/playground
+stem: In the Token Factory Playground, what does the "Quality" value shown on
+  a model card represent?
+options:
+  - id: a
+    text: The MMLU score reported by the model provider
+    correct: true
+    explanation: The model card documentation defines Quality as the MMLU
+      score reported by the model provider.
+  - id: b
+    text: The approximate generation speed in tokens per second
+    correct: false
+    explanation: That is the separate "Tokens per second" metric on the
+      model card, not Quality.
+  - id: c
+    text: The price per input token, in USD per million tokens
+    correct: false
+    explanation: That is the separate "Input tokens" price metric on the
+      model card, not Quality.
+  - id: d
+    text: The price per output token, in USD per million tokens
+    correct: false
+    explanation: That is the separate "Output tokens" price metric on the
+      model card, not Quality.
+evidence:
+  - source_id: src-recovery-playground
+    excerpt: "**Quality** — MMLU score reported by the model provider."
+    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    locator: Model card
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T17:23:06Z
+course_id: agentic-ai-builder
