@@ -2693,9 +2693,26 @@ jobs:
           bun run test:content
           node scripts/content-quality-report.mjs
 
+      # The token minted at the top of this job lives one hour and the author
+      # job does not: run 37702168094 (2026-10-07, nebius) spent 74 minutes in
+      # the agents, wrote five questions and then lost them to
+      # "Invalid username or token" on the push below. The checkout persisted
+      # that first token, so the push gets a fresh one minted here, as late as
+      # possible.
+      - name: Generate a fresh mctl-agents App token for the push
+        id: push-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.AGENTS_APP_ID }}
+          private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
+          owner: mctlhq
+          repositories: mctl-academy
+          permission-contents: write
+
       - name: Commit and push the authored branch
         id: commit
         env:
+          PUSH_TOKEN: ${{ steps.push-token.outputs.token }}
           # Read while the shell or the loader starts, before the first line of
           # this script: a check written inside the script has already lost.
           # $GITHUB_ENV carries them from the agent's step into every step that
@@ -2746,7 +2763,11 @@ jobs:
           else
             echo "::notice::the author wrote nothing; pushing ${pending} mechanically re-validated item(s) for review"
           fi
-          git push origin "HEAD:${{ steps.branch.outputs.name }}"
+          # Drop the persisted (possibly expired) checkout credential and push
+          # with the fresh token for this one command only.
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 | tr -d '\n')
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${{ steps.branch.outputs.name }}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       # Three artifacts, and the split is the point: nothing an agent wrote may
