@@ -2490,6 +2490,24 @@ test("each job pushes with an App token minted after its agents, not the one fro
     const env = JSON.stringify(steps[push].env);
     assert.ok(env.includes("steps.push-token.outputs.token"), `${name}: does not use the fresh token`);
     assert.ok(!env.includes("steps.app-token.outputs.token"), `${name}: still uses the first token`);
+    // actions/checkout keeps its header in an included config file, so
+    // `--unset-all` cannot drop it and git sends two Authorization headers
+    // (HTTP 400, run 37748173704). The push must clear them with an empty
+    // extraheader value ahead of the fresh one, and nothing may rely on unset.
+    // Executable lines only: a shell comment naming the flag is documentation.
+    const code = steps[push].run
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l))
+      .join("\n");
+    assert.match(
+      code,
+      /-c "http\.https:\/\/github\.com\/\.extraheader=" -c "http\.https:\/\/github\.com\/\.extraheader=AUTHORIZATION: basic \$\{auth\}" push /,
+      `${name}: the push does not reset extraheader before setting its own`,
+    );
+    assert.ok(
+      !code.includes("--unset-all"),
+      `${name}: relies on unset-all, which misses the checkout header`,
+    );
   }
 });
 
