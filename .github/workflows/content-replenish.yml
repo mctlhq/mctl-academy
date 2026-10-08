@@ -111,14 +111,15 @@ env:
   # (its own `env:` block shadows a step-level one), and empty means Anthropic.
   RELAY_PORT: "8787"
   ANTHROPIC_BASE_URL: ${{ inputs.provider == 'nebius' && 'http://127.0.0.1:8787' || '' }}
-  # Turn budgets are per-provider: GLM-5.3 spent 33 turns on the selector task
-  # that Sonnet fits in well under 25, and the action FAILS a run that finishes
-  # successfully over its ceiling rather than truncating it. Sonnet needed 124
-  # turns to write 8 questions (run 37762971241), so its author budget matches
-  # Nebius's: a run that overshoots loses the whole authored branch.
+  # The action FAILS a run that finishes successfully over its ceiling rather
+  # than truncating it, and a failed author or review job loses the batch.
+  # Selector: GLM-5.3 spent 33 turns where Sonnet fits in under 25. Author and
+  # reviewer: Sonnet needed 124 turns for 8 questions (run 37762971241) and
+  # Opus 104 turns to review them (run 37783427034), so both take Nebius's
+  # budgets on every provider.
   SELECTOR_TURNS: ${{ inputs.provider == 'nebius' && '60' || '25' }}
   AUTHOR_TURNS: "160"
-  REVIEWER_TURNS: ${{ inputs.provider == 'nebius' && '120' || '60' }}
+  REVIEWER_TURNS: "120"
   BOT_NAME: mctl-agents[bot]
   BOT_EMAIL: mctl-agents[bot]@users.noreply.github.com
 
