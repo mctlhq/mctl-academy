@@ -2693,9 +2693,26 @@ jobs:
           bun run test:content
           node scripts/content-quality-report.mjs
 
+      # The token minted at the top of this job lives one hour and the author
+      # job does not: run 37702168094 (2026-10-07, nebius) spent 74 minutes in
+      # the agents, wrote five questions and then lost them to
+      # "Invalid username or token" on the push below. The checkout persisted
+      # that first token, so the push gets a fresh one minted here, as late as
+      # possible.
+      - name: Generate a fresh mctl-agents App token for the push
+        id: push-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.AGENTS_APP_ID }}
+          private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
+          owner: mctlhq
+          repositories: mctl-academy
+          permission-contents: write
+
       - name: Commit and push the authored branch
         id: commit
         env:
+          PUSH_TOKEN: ${{ steps.push-token.outputs.token }}
           # Read while the shell or the loader starts, before the first line of
           # this script: a check written inside the script has already lost.
           # $GITHUB_ENV carries them from the agent's step into every step that
@@ -2746,7 +2763,16 @@ jobs:
           else
             echo "::notice::the author wrote nothing; pushing ${pending} mechanically re-validated item(s) for review"
           fi
-          git push origin "HEAD:${{ steps.branch.outputs.name }}"
+          # Make exactly one credential reachable. claude-code-action rewrites
+          # origin to https://x-access-token:<first token>@github.com/... in
+          # every agent step, so the expired token sits in the remote URL, not
+          # in the checkout extraheader. Reset the URL, drop any extraheader,
+          # and push with the fresh token for this one command only.
+          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::${auth}"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${{ steps.branch.outputs.name }}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       # Three artifacts, and the split is the point: nothing an agent wrote may
@@ -2764,7 +2790,8 @@ jobs:
       # that builds the PR body, their sole consumer.
       #
       # `authoring` holds _agent/CHANGES.md, the author agent's account of what it
-      # wrote, and is downloaded by no job at all.
+      # wrote, and is downloaded by no job at all. It also carries content/questions/ so
+      # that a failed push does not lose the authored files; nothing reads it back.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -2793,6 +2820,7 @@ jobs:
           path: |
             _run/
             _agent/
+            content/questions/
             !_run/from-discover/
           retention-days: 14
           if-no-files-found: ignore
@@ -4090,6 +4118,20 @@ jobs:
           name: pr-inputs-${{ github.run_id }}
           path: _run/from-prbody
 
+      # Same one-hour limit as in the author job, and the reviewer can run two
+      # attempts of up to REVIEWER_TURNS each. Mint late, for the push and for
+      # `gh pr create`.
+      - name: Generate a fresh mctl-agents App token for the push
+        id: push-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.AGENTS_APP_ID }}
+          private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
+          owner: mctlhq
+          repositories: mctl-academy
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Commit the review and open the pull request
         if: steps.items.outputs.count != '0'
         env:
@@ -4115,7 +4157,7 @@ jobs:
           # means the current directory, and Actions offers no way to unset a
           # variable the agent may have set.
           LD_LIBRARY_PATH: /nonexistent
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.push-token.outputs.token }}
           REPO: ${{ github.repository }}
           BRANCH: ${{ needs.author.outputs.branch }}
           CAPTURED: ${{ needs.author.outputs.captured }}
@@ -4126,7 +4168,11 @@ jobs:
           k=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.env.receipt,"utf8"));console.log(r.questions.filter(q=>q.approved).length)')
           git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "content(replenish): promote ${k} reviewed question(s)" \
             -m "Reviewed by ${REVIEWER_ID} (${REVIEWER_MODEL}) against the two CONTENT-POLICY criteria; receipt with fingerprints committed under docs/content/. Rejected new items are dropped, rejected re-validations return to needs_review."
-          git push origin "HEAD:${BRANCH}"
+          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::${auth}"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${BRANCH}"
 
           node scripts/replenish-prepare.mjs pr-body --candidates _run/candidates.json --receipt "$receipt" \
             --captured "$CAPTURED" --selected _run/from-prbody/selected.json \
