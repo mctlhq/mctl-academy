@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-c519a8f27d64
+status: review_ready
+domain: domain-2
+objective: domain-2/framework-integrations
+stem: In the Quickstart's Explore section, which card is described as letting you
+  "build inference into applications that are based on supported third-party
+  integrations"?
+options:
+  - id: a
+    text: Third-party integrations
+    correct: true
+    explanation: The Third-party integrations card is described exactly this way in
+      the Explore section.
+  - id: b
+    text: Inference
+    correct: false
+    explanation: The Inference card is described as sending requests such as
+      prompts, chats, or images and getting responses, not integrations.
+  - id: c
+    text: Fine-tuning
+    correct: false
+    explanation: The Fine-tuning card is described as training models with datasets
+      to increase accuracy and reliability, not third-party integrations.
+  - id: d
+    text: API
+    correct: false
+    explanation: The API card is described as learning how to authenticate and make
+      requests to the inference API, not integrations.
+evidence:
+  - source_id: src-recovery-quickstart
+    excerpt: Build inference into applications that are based on supported
+      third-party integrations
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:20:05Z
+course_id: agentic-ai-builder

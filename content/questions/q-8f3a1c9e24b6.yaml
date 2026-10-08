@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-8f3a1c9e24b6
+status: review_ready
+domain: domain-1
+objective: domain-1/api-authentication
+stem: Before you can get an API key, how does the Quickstart say you log in to
+  create a Token Factory account?
+options:
+  - id: a
+    text: Using your Google or GitHub account
+    correct: true
+    explanation: The Quickstart's "Get API key" steps say to log in using your
+      Google or GitHub account, then get an API key.
+  - id: b
+    text: By setting a username and password during signup
+    correct: false
+    explanation: The Quickstart does not describe a password-based signup step;
+      login is through Google or GitHub.
+  - id: c
+    text: Through a corporate SAML single sign-on connection
+    correct: false
+    explanation: SAML SSO is not mentioned in the Quickstart's account creation
+      steps.
+  - id: d
+    text: By verifying a phone number via SMS code
+    correct: false
+    explanation: Phone verification is not part of the documented account creation
+      flow.
+evidence:
+  - source_id: src-recovery-quickstart
+    excerpt: Log in using your Google or GitHub account
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:20:05Z
+course_id: agentic-ai-builder

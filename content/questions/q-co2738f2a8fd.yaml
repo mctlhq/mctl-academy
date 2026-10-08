@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co2738f2a8fd
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/network-vpc
 stem: An engineer created a security group with the intended rules, but the VM's
@@ -21,19 +21,16 @@ options:
     correct: false
     explanation: A restart is not the documented requirement for a security group to apply.
   - id: d
-    text: The security group has not been assigned to the VM's network interface
+    text: The VM's network interface has not been added to the security group
     correct: true
-    explanation: Correct. A security group only applies to a VM once it is assigned
-      to that VM's network interface.
+    explanation: Correct. A security group only applies to a VM once that VM's
+      network interface has been added to the security group.
 evidence:
   - source_id: src-co-vpc-security-groups
-    excerpt: For a security group to apply to a VM, you need to assign the security
-      group to a VM's network interface.
-    source_sha256: 713756c7ee69d7b51477c85b5632e9c2e4576b0325f6b247e9033b9806877f8c
+    excerpt: For a security group to apply to a VM, you need to add a VM's network
+      interface to the security group.
+    source_sha256: 2d7b7ba3369e1129d71211773c9ac03613eda68160258710bfd7f38bc32b5f4a
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:claude-author
+  at: 2026-10-08T13:20:05Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

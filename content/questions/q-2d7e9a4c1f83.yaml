@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-2d7e9a4c1f83
+status: review_ready
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: What does the `dimensions` parameter control in a Create Embeddings
+  request?
+options:
+  - id: a
+    text: The dimensionality (size) of each returned embedding vector
+    correct: true
+    explanation: The `dimensions` field's description states it is the dimensions
+      to use for the request, i.e. the length of each embedding vector.
+  - id: b
+    text: The number of documents included in a single rerank request
+    correct: false
+    explanation: "`dimensions` belongs to the Embeddings request schema, not the
+      Rerank endpoint's documents list."
+  - id: c
+    text: The maximum number of tokens the model may generate in its reply
+    correct: false
+    explanation: Embeddings requests do not generate text completions, so there is
+      no generated-reply length to cap.
+  - id: d
+    text: The number of parallel requests processed in one batch
+    correct: false
+    explanation: "`dimensions` configures the shape of the embedding request body
+      itself, not request batching or concurrency."
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: The dimensions to use for the request.
+    source_sha256: 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:20:05Z
+course_id: agentic-ai-builder
