@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-f29ae7c1b4d6
+status: review_ready
+domain: domain-1
+objective: domain-1/api-authentication
+stem: Per the Token Factory Quickstart guide, what does the documentation
+  identify as the authentication step before making API requests?
+options:
+  - id: a
+    text: Getting an API key
+    correct: true
+    explanation: "Correct. The setup steps state it directly: \"For
+      authentication, [get an API key]\"."
+  - id: b
+    text: Browsing the official Cookbook for reusable code snippets
+    correct: false
+    explanation: The Cookbook is offered to explore code examples and reusable
+      snippets, not as the authentication step.
+  - id: c
+    text: Comparing models in the playground
+    correct: false
+    explanation: The playground is for testing and comparing models, not for
+      authenticating requests.
+  - id: d
+    text: Setting up a third-party framework integration
+    correct: false
+    explanation: Framework integrations extend capabilities for building
+      applications; they are not what the guide names as the
+      authentication step.
+evidence:
+  - source_id: src-recovery-quickstart
+    excerpt: "For authentication, [get an API key]"
+    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:55:04Z
+course_id: agentic-ai-builder
