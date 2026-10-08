@@ -634,8 +634,10 @@ jobs:
           # step precedes, and the repository root is inside the boundary check.
           mkdir -p "$RUNNER_TEMP/exec"
           if [ -f "$out" ]; then
-            "$JQ" -c '[.[] | select(.type == "result")] | last // {}
-              | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd}' \
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
               "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
               || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           else
@@ -1017,8 +1019,10 @@ jobs:
           # step precedes, and the repository root is inside the boundary check.
           mkdir -p "$RUNNER_TEMP/exec"
           if [ -f "$out" ]; then
-            "$JQ" -c '[.[] | select(.type == "result")] | last // {}
-              | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd}' \
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
               "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
               || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           else
@@ -1934,8 +1938,10 @@ jobs:
           # step precedes, and the repository root is inside the boundary check.
           mkdir -p "$RUNNER_TEMP/exec"
           if [ -f "$out" ]; then
-            "$JQ" -c '[.[] | select(.type == "result")] | last // {}
-              | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd}' \
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
               "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
               || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           else
@@ -2219,6 +2225,17 @@ jobs:
           LD_DEBUG: ""
         run: |
           set -euo pipefail
+          # Copy the interrupted attempt's question files aside before the tree
+          # is cleaned, or the authoring artifact only ever holds the retry's
+          # work and the primary attempt's is gone for good. $RUNNER_TEMP is
+          # beyond `git clean`, the boundary check and the guard manifest, and it
+          # rides along in the exec-authoring artifact, so it is inspectable and
+          # never promotable.
+          mkdir -p "$RUNNER_TEMP/exec/discarded-author-primary"
+          git status --porcelain -uall -- content/questions | cut -c4- \
+            | while IFS= read -r f; do
+                if [ -f "$f" ]; then cp -- "$f" "$RUNNER_TEMP/exec/discarded-author-primary/"; fi
+              done
           git checkout .
           git clean -fd
           # The interrupted attempt's execution output is one of the things it
@@ -2347,8 +2364,10 @@ jobs:
           # step precedes, and the repository root is inside the boundary check.
           mkdir -p "$RUNNER_TEMP/exec"
           if [ -f "$out" ]; then
-            "$JQ" -c '[.[] | select(.type == "result")] | last // {}
-              | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd}' \
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
               "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
               || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           else
@@ -2911,8 +2930,18 @@ jobs:
             _agent/
             content/questions/
             !_run/from-discover/
-            ${{ runner.temp }}/exec/
-            content/questions/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Its own artifact on purpose: with more than one search path
+      # upload-artifact roots the zip at their least common ancestor, so putting
+      # $RUNNER_TEMP next to the workspace paths would re-root every entry and
+      # flip the layout depending on whether exec/ happened to be empty.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: exec-authoring-${{ github.run_id }}
+          path: ${{ runner.temp }}/exec/
           retention-days: 14
           if-no-files-found: ignore
 
@@ -3356,8 +3385,10 @@ jobs:
           # step precedes, and the repository root is inside the boundary check.
           mkdir -p "$RUNNER_TEMP/exec"
           if [ -f "$out" ]; then
-            "$JQ" -c '[.[] | select(.type == "result")] | last // {}
-              | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd}' \
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
               "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
               || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           else
@@ -3743,8 +3774,10 @@ jobs:
           # step precedes, and the repository root is inside the boundary check.
           mkdir -p "$RUNNER_TEMP/exec"
           if [ -f "$out" ]; then
-            "$JQ" -c '[.[] | select(.type == "result")] | last // {}
-              | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd}' \
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
               "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
               || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           else
@@ -4355,7 +4388,15 @@ jobs:
             _agent/
             !_run/from-author/
             docs/content/replenish-*-review.json
-            ${{ runner.temp }}/exec/
             content/questions/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Separate from review-<run_id> for the same layout reason as above.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: exec-review-${{ github.run_id }}
+          path: ${{ runner.temp }}/exec/
           retention-days: 14
           if-no-files-found: ignore
