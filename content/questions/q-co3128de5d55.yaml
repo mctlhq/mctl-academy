@@ -27,11 +27,12 @@ evidence:
   - source_id: src-co-storage-types
     excerpt: The size of each namespace is 93 GiB, so the disk size must be a
       multiple of 93 GiB.
-    source_sha256: f0bd680d398d92edb35ee7b493c504d3e6e3025666f9621717da72efbc164b93
+    source_sha256: 88bc77c8be2772f94ff5adaa613a0c131a9d17af012485ebcf60040afbe183d9
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 2bd5a564492feb3986f718a35743d517b28e5ab5fa05809282689d81032f155b

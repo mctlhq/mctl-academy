@@ -1,6 +1,13 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { auth, assertAuthSecretConfigured } from "./auth.mjs";
+import {
+  auth,
+  authPool,
+  assertAuthSecretConfigured,
+  assertZitadelConfigValid,
+  zitadelSignIn,
+} from "./auth.mjs";
+import { isAllowlisted, warnIgnoredAllowlistEntries } from "./allowlist.mjs";
 import { attemptsRouter } from "./routes/attempts.mjs";
 import { accountRouter } from "./routes/account.mjs";
 import { votesRouter } from "./routes/votes.mjs";
@@ -68,15 +75,27 @@ app.onError(errorHandler);
 try {
   await initDb();
   assertAuthSecretConfigured();
+  assertZitadelConfigValid();
 } catch (err) {
   console.error("[boot] Fatal:", err.message);
   process.exit(1);
 }
+// Not fatal (see the function): only makes an allowlist typo visible.
+warnIgnoredAllowlistEntries(process.env);
 
 // better-auth owns /api/auth/* wholesale — origin validation, CSRF/Fetch
 // Metadata checks and secure production cookies are its concern, not a
 // parallel hand-rolled middleware. See server/auth.mjs.
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+
+/**
+ * GET /api/sign-in-options - which optional sign-in buttons to show.
+ *
+ * GitHub's button is always rendered; ZITADEL's only when the server has it
+ * configured, so a deployment without the ZITADEL_* variables looks exactly
+ * as before. Outside /api/auth/* because better-auth owns that prefix.
+ */
+app.get("/api/sign-in-options", (c) => c.json({ zitadel: zitadelSignIn() }));
 
 // Mount attempt sync router (issue #57)
 app.route("/api/attempts", attemptsRouter);
@@ -213,19 +232,14 @@ app.post("/api/reports", requireSameOrigin, rateLimit(), async (c) => {
  *
  * Reports carry learner-authored free text and a reporter user id, so this
  * listing is personal data and must never be world-readable. Access requires a
- * valid session whose GitHub login is in MCTL_ACADEMY_MODERATORS (a
- * comma-separated allowlist). With the allowlist unset the route is closed to
+ * valid session whose user is in MCTL_ACADEMY_MODERATORS (a comma-separated
+ * allowlist of GitHub logins and `zitadel:<sub>` entries; see
+ * server/allowlist.mjs). With the allowlist unset the route is closed to
  * everyone, so an unconfigured environment fails shut rather than open.
  */
 app.get("/api/reports", async (c) => {
-  const moderators = (process.env.MCTL_ACADEMY_MODERATORS || "")
-    .split(",")
-    .map((login) => login.trim().toLowerCase())
-    .filter(Boolean);
-
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  const githubLogin = session?.user?.githubLogin;
-  if (!githubLogin || !moderators.includes(String(githubLogin).toLowerCase())) {
+  if (!(await isAllowlisted(session, process.env.MCTL_ACADEMY_MODERATORS, authPool))) {
     return c.json({ error: "Not found" }, 404);
   }
 
@@ -247,20 +261,14 @@ app.get("/api/reports", async (c) => {
  *
  * Aggregate counts (sign-ups, sessions, attempts, accuracy) for an in-app
  * view of the same numbers the private Grafana dashboard shows. Gated the
- * same way /api/reports is: a valid session whose GitHub login is in
- * MCTL_ACADEMY_STATS_ADMINS (a comma-separated allowlist), 404 for everyone
- * else so an unconfigured environment fails shut and the route's existence
- * isn't revealed to non-admins.
+ * same way /api/reports is: a valid session whose user is in
+ * MCTL_ACADEMY_STATS_ADMINS (same entry format), 404 for everyone else so an
+ * unconfigured environment fails shut and the route's existence isn't
+ * revealed to non-admins.
  */
 app.get("/api/admin/stats", async (c) => {
-  const admins = (process.env.MCTL_ACADEMY_STATS_ADMINS || "")
-    .split(",")
-    .map((login) => login.trim().toLowerCase())
-    .filter(Boolean);
-
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  const githubLogin = session?.user?.githubLogin;
-  if (!githubLogin || !admins.includes(String(githubLogin).toLowerCase())) {
+  if (!(await isAllowlisted(session, process.env.MCTL_ACADEMY_STATS_ADMINS, authPool))) {
     return c.json({ error: "Not found" }, 404);
   }
 

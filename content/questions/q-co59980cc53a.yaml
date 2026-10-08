@@ -26,11 +26,12 @@ options:
 evidence:
   - source_id: src-co-logs-query-language
     excerpt: '`sp_serial`: Compute virtual machines (serial logs)'
-    source_sha256: 703f578284a89761e264801c97448607bae0ec78ee2521b5ccf8cd1770d4a172
+    source_sha256: 82e3a86c401a3bdb5dfb0b5cd580eab6797a83609f7b957921779ed670db4af0
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 850c4caf0212503fffe6682a9557f89ae8556cd3ab22c4e2c19b9f4ec45b5e95

@@ -32,12 +32,12 @@ evidence:
     source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
   - source_id: src-recovery-models
     excerpt: "context_length: type: integer title: Context Length"
-    source_sha256: 5fa7decba80dd0a117fa5d218eb69fc963ff207856d15cda01c089666b009eae
+    source_sha256: abf56736eda2e10f564e3d44930b0070aedbe1928e5d39607309a9edeae4d971
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: d6007c176c443329466256d82ac6d91b04bcc3efc2a32114f6ad4b46d02fa317
+  at: 2026-10-08T14:14:37Z
+  content_sha256: cde42511493ddb0df0a885dd4dd24fbb476a314a68f090594be3bc30493ca190

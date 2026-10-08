@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-7b2d9f4a1c63
+status: published
+domain: domain-2
+objective: domain-2/embeddings-and-rerank
+stem: According to the Embeddings API reference, which fields are required in a
+  POST /v1/embeddings request body?
+options:
+  - id: a
+    text: model and input
+    correct: true
+    explanation: "Correct. The EmbeddingRequest schema lists its required fields:
+      \"required: - model - input\"."
+  - id: b
+    text: model and encoding_format
+    correct: false
+    explanation: encoding_format is optional, with a documented default of float; it
+      is not part of the required list.
+  - id: c
+    text: model and dimensions
+    correct: false
+    explanation: dimensions is optional; the schema allows it to be an integer or
+      null and does not list it as required.
+  - id: d
+    text: input and user
+    correct: false
+    explanation: model is required but omitted here, and user is an optional
+      identifier for your end-user rather than a required field.
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: "required: - model - input"
+    source_sha256: 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:55:04Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 2d45bcc4fcbafa9de2fcb678136c4d916885b8ee5a9f09c5018d71ce8d8a9cbf

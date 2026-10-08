@@ -11,33 +11,41 @@ options:
     text: Nothing; the federation must be deleted and created again
     correct: false
     explanation: Certificates are managed on an existing federation, so a rebuild is
-      not required.
+      not required. Deleting a federation cannot even be reversed, so it would
+      be the destructive option.
   - id: b
     text: Only deactivate the federation until the IdP is rolled back
     correct: false
-    explanation: Deactivation is available, but it is not the mechanism for handling
-      a rotated certificate.
+    explanation: Deactivation is available, but while a federation is inactive its
+      users cannot sign in until it is reactivated; it is not the mechanism for
+      handling a rotated certificate.
   - id: c
     text: Rotate it automatically, since certificates are synced from the IdP
     correct: false
     explanation: Certificates are uploaded and managed deliberately rather than
-      synchronized on their own.
+      synchronized on their own; the page describes uploading or deleting
+      attached certificates, not automatic rotation.
   - id: d
     text: Upload the new certificate and delete the old one on the existing
       federation
     correct: true
-    explanation: Correct. Attached certificates can be uploaded or deleted as part
-      of managing a federation.
+    explanation: Correct. You can upload or delete attached certificates as part of
+      managing a federation, so the rotated certificate replaces the old one in
+      place.
 evidence:
   - source_id: src-co-iam-federations
-    excerpt: In Nebius AI Cloud, you can create, activate and deactivate
-      federations, change their settings, and upload or delete attached
-      certificates.
-    source_sha256: fa13aae6c00c9f3ac2756d76c0a504c5e98473c7016eebf0f2a95bae749c90fa
+    excerpt: you can create, activate, deactivate and delete federations, change
+      their settings, and upload or delete attached certificates.
+    source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
+  - source_id: src-co-iam-federations
+    excerpt: A federation cannot function correctly without at least one valid
+      certificate.
+    source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:glm-author
+  at: 2026-09-13T05:17:47Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:deepseek-reviewer
+  at: 2026-09-13T05:40:54Z
+  content_sha256: 4184f02b76244272fb32e7add53d85a805d98e37ac683fce086eef551f924391

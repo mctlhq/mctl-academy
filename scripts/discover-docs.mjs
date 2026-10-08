@@ -18,24 +18,26 @@
  *   3. Gaps: Mock shortfalls per domain and objectives with fewer published
  *      questions than --min-per-objective, from the content quality report.
  *
- * Failures are part of the report, never swallowed: an index that could not
- * be fetched and a source page that did not answer are listed in the output
- * and keep `empty` false, so a blind run can never read as a quiet week. When
- * no index at all answers the run fails.
- *
- * The output is a candidates.json that an authoring run reads as data. This
- * script never writes under content/ except the discovery watermark, and only
- * with --update-state.
- *
- * Usage:
- *   node scripts/discover-docs.mjs [--out candidates.json] [--max-new 3]
- *        [--check-live] [--update-state] [--min-per-objective 3]
+ * With --course <id> the report is scoped to one course, so a manual run can
+ * be bounded to what the budget covers: gaps of that course only, and new
+ * pages on its primary documentation host (COURSE_PRIMARY_HOST), since a page
+ * has no course of its own. Drifted and unreachable sources and index errors
+ * stay whole on purpose: the deterministic steps that mark, quarantine and
+ * repair drift read the full list, and scoping it would commit out-of-scope
+ * demotions while skipping their repair. The watermark is still written from
+ * every new page, so scoping never loses a first-seen date.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
-import { ALLOWED_HOSTS, loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
+import {
+  ALLOWED_HOSTS,
+  courseObjectives,
+  loadCourses,
+  loadSources,
+  loadYamlDir,
+} from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 import { detectDocsDelta } from "./detect-docs-delta.mjs";
 import { qualityReport } from "./content-quality-report.mjs";
@@ -205,6 +207,7 @@ export function gapsFrom(report, minPerObjective) {
  * @param {number} [deps.maxNew]
  * @param {boolean} [deps.checkLive]
  * @param {number} [deps.minPerObjective]
+ * @param {string | null} [deps.course] scope the report to one course id
  * @param {string} [deps.today]
  * @param {(url: string) => Promise<string>} [deps.fetch]
  * @param {{ get(key: string): Promise<string | null> } | null} [deps.store]
@@ -217,12 +220,17 @@ export async function discover({
   maxNew = 3,
   checkLive = false,
   minPerObjective = 3,
+  course = null,
   today = new Date().toISOString().slice(0, 10),
   fetch = fetchText,
   store = storeFromEnv(),
   indices = LLMS_INDICES,
   warn = (msg) => console.warn(`::warning::${msg}`),
 } = {}) {
+  const courses = loadCourses(contentDir);
+  // An unknown course throws (courseObjectives): "nothing to do for a course
+  // that does not exist" must not read as a quiet week.
+  if (course) courseObjectives(courses, course);
   const state = loadDiscoveryState(stateFile);
   const known = knownUrls(contentDir);
   const pages = [];
@@ -304,15 +312,22 @@ export async function discover({
   }
 
   const report = qualityReport({
-    courses: loadCourses(contentDir),
+    courses,
     sources: loadSources(contentDir),
     questions: loadYamlDir(contentDir, "questions").map((e) => e.data),
   });
-  const gaps = gapsFrom(report, minPerObjective);
+  const gaps = gapsFrom(course ? report.filter((c) => c.course === course) : report, minPerObjective);
 
-  const selectedNew = rankPages(fresh, gaps).slice(0, maxNew);
+  // Pages carry no course of their own; the course's primary host is the
+  // proxy. `fresh` stays whole for the watermark below.
+  if (course && !COURSE_PRIMARY_HOST[course]) {
+    warn(`course ${course} has no primary host in COURSE_PRIMARY_HOST; no new page can be offered for it`);
+  }
+  const candidatesNew = course ? fresh.filter((p) => p.host === COURSE_PRIMARY_HOST[course]) : fresh;
+  const selectedNew = rankPages(candidatesNew, gaps).slice(0, maxNew);
   const result = {
     generated_at: new Date().toISOString(),
+    course,
     empty:
       selectedNew.length === 0 &&
       drifted.length === 0 &&
@@ -320,7 +335,7 @@ export async function discover({
       indexErrors.length === 0 &&
       unreachable.length === 0,
     newPages: selectedNew,
-    newPagesTotal: fresh.length,
+    newPagesTotal: candidatesNew.length,
     drifted,
     unreachable,
     indexErrors,
@@ -349,8 +364,21 @@ export async function discover({
   return { result, nextState, stateFile };
 }
 
-export function summarize({ newPages, newPagesTotal, drifted, gaps, unreachable = [], indexErrors = [] }) {
+export function summarize({
+  course = null,
+  newPages,
+  newPagesTotal,
+  drifted,
+  gaps,
+  unreachable = [],
+  indexErrors = [],
+}) {
   const lines = [];
+  if (course)
+    lines.push(
+      `Scoped to course ${course}: its gaps and pages on its primary host only; drift is reported whole.`,
+      "",
+    );
   if (indexErrors.length) {
     lines.push(`## Index errors (${indexErrors.length}) — the new-page count below is incomplete`);
     for (const e of indexErrors) lines.push(`- ${e.index}: ${e.message}`);
@@ -385,7 +413,14 @@ export function summarize({ newPages, newPagesTotal, drifted, gaps, unreachable 
 }
 
 function parseArgs(argv) {
-  const opts = { out: null, maxNew: 3, checkLive: false, updateState: false, minPerObjective: 3 };
+  const opts = {
+    out: null,
+    maxNew: 3,
+    checkLive: false,
+    updateState: false,
+    minPerObjective: 3,
+    course: null,
+  };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     const value = () => {
@@ -395,6 +430,7 @@ function parseArgs(argv) {
     if (a === "--out") opts.out = value();
     else if (a === "--max-new") opts.maxNew = Number(value());
     else if (a === "--min-per-objective") opts.minPerObjective = Number(value());
+    else if (a === "--course") opts.course = value();
     else if (a === "--check-live") opts.checkLive = true;
     else if (a === "--update-state") opts.updateState = true;
     else throw new Error(`unknown argument ${a}`);

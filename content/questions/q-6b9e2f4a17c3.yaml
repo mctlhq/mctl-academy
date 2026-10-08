@@ -1,0 +1,56 @@
+schema_version: 1
+id: q-6b9e2f4a17c3
+status: published
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: You are composing a retrieval pipeline. Candidate passages have already
+  been retrieved from the corpus, and you now need them ordered by how relevant
+  each one is to the user's query before the best few are passed to the model.
+  Which documented API operation performs this ranking step?
+options:
+  - id: a
+    text: Create embeddings for the query and each candidate passage
+    correct: false
+    explanation: The embeddings endpoint takes input text to embed and returns
+      embedding vectors; it does not compare your documents against the query or
+      return an ordering of them.
+  - id: b
+    text: Create a chat completion for the query
+    correct: false
+    explanation: The chat completion endpoint creates a model response for the given
+      chat conversation; generating an answer is a later pipeline stage than
+      ranking the retrieved passages.
+  - id: c
+    text: Rerank the candidate documents against the query
+    correct: true
+    explanation: The rerank operation reranks documents based on their relevance to
+      a query; each result carries the document's index and a relevance score,
+      so the pipeline can keep the most relevant passages.
+  - id: d
+    text: List the currently available models
+    correct: false
+    explanation: The List models operation lists the currently available models and
+      basic information such as the owner and availability; it takes no
+      documents and returns no ranking.
+evidence:
+  - source_id: src-recovery-rerank
+    excerpt: Reranks documents based on their relevance to a query.
+    source_sha256: 3ecbe3c6899f87e00d868dddbb94bac99b86a077b2075fab6bc5177733febda3
+  - source_id: src-recovery-embedding
+    excerpt: Input text to embed, encoded as a string or array of tokens.
+    source_sha256: 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
+  - source_id: src-recovery-chat
+    excerpt: Creates a model response for the given chat conversation.
+    source_sha256: ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
+  - source_id: src-recovery-models
+    excerpt: Lists the currently available models, and provides basic information
+      about each one such as the owner and availability.
+    source_sha256: abf56736eda2e10f564e3d44930b0070aedbe1928e5d39607309a9edeae4d971
+authored:
+  by: agent:glm-author
+  at: 2026-09-13T05:17:47Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 3bbaddc1a765cb978f4dadd4aa334068c3082f3552dd013502f75be990f18d5b

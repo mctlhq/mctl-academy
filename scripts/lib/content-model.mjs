@@ -142,6 +142,20 @@ export function loadCourses(contentDir, onError = null) {
   return courses;
 }
 
+/**
+ * `domain-N/objective` ids of one course. Throws on an unknown course: an
+ * unknown id must fail loudly, never read as "this course has no objectives".
+ */
+export function courseObjectives(courses, courseId) {
+  const course = courses.get(courseId);
+  if (!course) {
+    throw new Error(`unknown course "${courseId}"; known: ${[...courses.keys()].join(", ") || "none"}`);
+  }
+  const set = new Set();
+  for (const d of course.domains ?? []) for (const o of d.objectives ?? []) set.add(`${d.id}/${o.id}`);
+  return set;
+}
+
 /** Sources keyed by id, for evidence resolution. */
 export function loadSources(contentDir, onError = null) {
   const sources = new Map();

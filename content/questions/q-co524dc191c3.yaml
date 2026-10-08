@@ -28,12 +28,12 @@ options:
 evidence:
   - source_id: src-co-compute-quotas
     excerpt: Compute has different quotas for GPU and non-GPU virtual machines.
-    source_sha256: 70984369ccff0d27e5a8c6d709a4738f82eb68265eac7c06f721e6e2d1939d4e
+    source_sha256: f48aaac3871e8016c228deea7561c5b5e80de333739871d31d1c57b1f0584183
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:codex-drift-reviewer
-  at: 2026-09-06T11:02:18Z
-  content_sha256: a9cb2fa90ab631c1f2d8aa4f0c3d4a6cce4f75743fe0ccf0ab9c3022cbdfeecd
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: dba5ac30e48d5e5a4675e0fbf112349928f354058f749df18a7bc14de069ff22

@@ -52,7 +52,7 @@ import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, parseDocument, isSeq } from "yaml";
-import { loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
+import { courseObjectives, loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
 import { storeFromEnv } from "./lib/snapshot-store.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -64,9 +64,11 @@ const SOURCE_ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
 const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
 const QUESTION_ID = /^q-[a-z0-9]{12}$/;
 
-export function knownObjectives(contentDir = CONTENT) {
+export function knownObjectives(contentDir = CONTENT, courseId = null) {
+  const courses = loadCourses(contentDir);
+  if (courseId) return courseObjectives(courses, courseId);
   const set = new Set();
-  for (const course of loadCourses(contentDir).values()) {
+  for (const course of courses.values()) {
     for (const d of course.domains ?? []) for (const o of d.objectives ?? []) set.add(`${d.id}/${o.id}`);
   }
   return set;
@@ -257,6 +259,47 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
 }
 
 /**
+ * Every question the agent added or rewrote must carry the run's own author id.
+ * AUTHOR_ID already drives the commit message, the PR body and the agent's
+ * prompt, but a prompt is an instruction, not a guarantee: the first Nebius run
+ * produced files GLM wrote and `agent:claude-author` signed, because the id had
+ * been spelled literally in the prompt. Under CONTENT-POLICY authorship and
+ * approval are separated mechanically, so this is checked mechanically too.
+ *
+ * @param {object} args
+ * @param {string[]} args.changed  question files changed against the base
+ * @param {string} args.expected  the run's author id, e.g. "agent:glm-author"
+ * @param {(file: string) => string | null} args.authoredBy  as written on disk;
+ *   "" when the file parses but carries no id, null when there is nothing to read
+ * @param {(file: string) => string | null} [args.statusAtBase]  only `published`
+ *   and `retired` are exempt: they are other agents' work, and guardChanges
+ *   rejects a change to them anyway, so naming them here would report one fault
+ *   twice. Everything else the agent touched -- a new file, a needs_review
+ *   rewrite, a review_ready item left on the branch by an earlier run -- is this
+ *   run's work and carries this run's id.
+ */
+export function authorshipProblems({ changed, expected, authoredBy, statusAtBase = null }) {
+  const problems = [];
+  for (const file of changed) {
+    if (statusAtBase && ["published", "retired"].includes(statusAtBase(file))) continue;
+    const by = authoredBy(file);
+    // null is "no file, or one that does not parse" -- both already reported.
+    if (by === null) continue;
+    if (by === "") {
+      // The schema requires `authored` and lint:content runs in the same gate,
+      // but a rule that holds only because of what another gate happens to do
+      // first is one reordering away from not holding at all.
+      problems.push(`${file} carries no authored id, and this run's author is ${expected}`);
+      continue;
+    }
+    if (by !== expected) {
+      problems.push(`${file} is authored by ${by}, but this run's author is ${expected}`);
+    }
+  }
+  return problems;
+}
+
+/**
  * @param {object} args
  * @param {string[]} args.changed  question files changed against the base
  * @param {(file: string) => string | null} args.statusAtBase  null when absent at base
@@ -266,8 +309,11 @@ export function statusAtRef({ base, file, cwd = process.cwd() }) {
  *   author-phase rule: the agent may only ever leave a file review_ready or needs_review,
  *   never publish one itself (a backdated human `reviewed` block would otherwise pass
  *   the lint). The post-promotion guard omits it.
+ * @param {(file: string) => string | null} [args.problemNow]  why the parser refused a
+ *   file, for the unparseable case. Injected for the same reason as statusNow: this
+ *   function never reads the disk itself.
  */
-export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
+export function guardChanges({ changed, statusAtBase, max, statusNow = null, problemNow = null }) {
   const problems = [];
   if (max !== null) {
     if (!Number.isInteger(max) || max < 0) problems.push(`cap must be a non-negative integer, got ${max}`);
@@ -295,10 +341,42 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null }) {
           `${file} is ${now} after authoring; only review_ready or needs_review may leave this step`,
         );
       }
-      if (now === "unparseable") problems.push(`${file} is not parseable YAML after authoring`);
+      if (now === "unparseable") {
+        // guardChanges stays pure: the caller that reads from disk is also the
+        // one that can say WHY the parser refused the file.
+        const why = problemNow?.(file);
+        problems.push(`${file} is not parseable YAML after authoring${why ? `: ${why}` : ""}`);
+      }
     }
   }
   return problems;
+}
+
+/**
+ * The parser's own complaint about a file, for the boundary error. statusOnDisk
+ * swallows it to answer a yes/no question; naming the file without saying what
+ * is wrong with it leaves whoever reads the failed run with nothing to act on,
+ * and the authored file never reaches a branch they could open.
+ */
+export function yamlProblem({ file, cwd = process.cwd() }) {
+  try {
+    parseYaml(readFileSync(join(cwd, file), "utf8"));
+    return "the file parses on re-read; it changed under the gate";
+  } catch (e) {
+    return String(e?.message ?? e).split("\n")[0];
+  }
+}
+
+export function authoredOnDisk({ file, cwd = process.cwd() }) {
+  const abs = join(cwd, file);
+  if (!existsSync(abs)) return null;
+  try {
+    return parseYaml(readFileSync(abs, "utf8"))?.authored?.by ?? "";
+  } catch {
+    // "unparseable", which the guard reports on its own; returning "" here
+    // instead would report the same file twice under two different faults.
+    return null;
+  }
 }
 
 export function statusOnDisk({ file, cwd = process.cwd() }) {
@@ -383,6 +461,12 @@ export function prBody({
   const capturedSet = new Set(captured);
   const capturedUrls = new Set(selected.filter((r) => capturedSet.has(r.id)).map((r) => r.url));
   const lines = ["## Replenish run", ""];
+  if (candidates.course) {
+    lines.push(
+      `Scoped to course \`${candidates.course}\`: gaps and new pages cover that course only; drift is reported for all courses.`,
+      "",
+    );
+  }
   lines.push(
     `Discovery: ${candidates.newPagesTotal} uncited pages in the indices, ${candidates.newPages.length} offered, ${candidates.drifted.length} drifted sources, ${(candidates.unreachable ?? []).length} unreachable, ${candidates.gaps.length} gaps.`,
     "",
@@ -463,7 +547,9 @@ async function main(argv) {
     const { rows, dropped } = validateSelection({
       select,
       candidates,
-      objectives: knownObjectives(),
+      // A run scoped to one course (candidates.course) places pages only on
+      // that course's objectives.
+      objectives: knownObjectives(CONTENT, candidates.course ?? null),
       existingIds,
     });
     for (const d of dropped)
@@ -532,7 +618,27 @@ async function main(argv) {
       statusAtBase: (file) => statusAtRef({ base, file }),
       max,
       statusNow: args.includes("--forbid-published-now") ? (file) => statusOnDisk({ file }) : null,
+      problemNow: (file) => yamlProblem({ file }),
     });
+    // The author phase must name the run's author: an omitted --author used to
+    // be indistinguishable from a pass, which makes the only mechanical link
+    // between AUTHOR_ID and content/questions a flag someone can drop.
+    const expected = opt(args, "author");
+    const authorPhase = args.includes("--forbid-published-now");
+    if (authorPhase && !expected) {
+      console.error("::error::guard --author <id> is required on the author phase");
+      process.exit(1);
+    }
+    if (expected) {
+      problems.push(
+        ...authorshipProblems({
+          changed,
+          expected,
+          authoredBy: (file) => authoredOnDisk({ file }),
+          statusAtBase: (file) => statusAtRef({ base, file }),
+        }),
+      );
+    }
     for (const p of problems) console.error(`::error::${p}`);
     console.log(`${changed.length} question file(s) changed against ${base}`);
     if (problems.length) process.exit(1);

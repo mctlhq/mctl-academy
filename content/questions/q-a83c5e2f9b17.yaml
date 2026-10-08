@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-a83c5e2f9b17
+status: published
+domain: domain-1
+objective: domain-1/api-authentication
+stem: 'Per the "Quickstart: Deploy via API" guide, how do requests to the
+  dedicated endpoints control plane authenticate?'
+options:
+  - id: a
+    text: With a bearer token in the Authorization header
+    correct: true
+    explanation: 'Correct. The control-plane examples set the header: -H
+      "Authorization: Bearer $API_TOKEN".'
+  - id: b
+    text: By supplying the endpoint's routing_key as a credential
+    correct: false
+    explanation: routing_key is the model identifier used when sending inference
+      requests to the data plane, not a credential.
+  - id: c
+    text: By placing the endpoint_id in the Authorization header
+    correct: false
+    explanation: endpoint_id is used to manage the endpoint through the control
+      plane; it is an identifier, not an authentication credential.
+  - id: d
+    text: By selecting a deployment region
+    correct: false
+    explanation: region chooses where the deployment runs; it has no role in
+      authenticating a request.
+evidence:
+  - source_id: src-dedicated-deploy-api
+    excerpt: '-H "Authorization: Bearer $API_TOKEN"'
+    source_sha256: 231283c8cef3bbe57a1b2b19c5b2870542893df970c9c8498ab93437f6beb845
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T13:55:04Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 3776c69fb8ea2bf636d9e1d7d6e067bb8c34c2658b183e3ed0b21f663029dc71

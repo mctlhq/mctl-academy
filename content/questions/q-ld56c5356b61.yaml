@@ -27,11 +27,12 @@ evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: This distinction helps separate deployment progress from actual
       availability.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 0846b2a08a664dc55383fcaabd09c38dcf927dab9a61e8e47d5319232f1f6fd8

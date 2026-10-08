@@ -1,0 +1,20 @@
+{
+  "reviewer": "agent:deepseek-reviewer",
+  "reviewed_at": "2026-09-12T23:15:06Z",
+  "questions": [
+    {
+      "id": "q-3f9c2a8e61d7",
+      "content_sha256": "c03205481c06e192f267c64399564fb9474f8a3ad7e779b87f22346ffe67df60",
+      "approved": true,
+      "reason": "The captured text states inference logs are 'automatically collected chat completions generated via API or Playground (unless Zero Data Retention is enabled)', directly supporting the correct option. No other option is defensible from the page.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    },
+    {
+      "id": "q-a51f8c3e07d2",
+      "content_sha256": "ea5f15a7304339758f10921db10c37c0d50bac3533398e39f94df6b061836002",
+      "approved": true,
+      "reason": "The captured page lists both triggers verbatim: 'At the start of the month, if your balance is negative' and 'When the configured billing threshold is reached'. The correct option combines them faithfully; the distractors describe triggers the page does not mention.",
+      "reviewed_at": "2026-09-12T23:15:06Z"
+    }
+  ]
+}

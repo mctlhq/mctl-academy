@@ -27,11 +27,12 @@ evidence:
   - source_id: src-ld-models
     excerpt: Unless you override it via the `context_length` hyperparameter, the
       default context length for fine-tuning is **8192 tokens**.
-    source_sha256: 3b72254af3b4649d0cf1e434a4c529e5aa97da97eafc0f52ed0bc6d708b1a69d
+    source_sha256: 23dd00ea0619c7f43602b6d5955e694869363b9696973aafe4c83596cbf70063
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 1b6dbf38e39a5bc0da4caabc7922c52a80504779082add5c42412a2b49525695

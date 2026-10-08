@@ -30,11 +30,12 @@ evidence:
     excerpt: track your consumption against your limits using the
       `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens`
       response headers.
-    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+    source_sha256: a930a4443120747b78d1c298b040d72612031c4ae735a83929d6e5769548e6d7
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: a80bc90b647ca603534152c5b8a6381565629d48c812936372507d0550564845

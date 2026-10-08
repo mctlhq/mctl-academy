@@ -9,8 +9,9 @@ import {
   rmSync,
   existsSync,
 } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
+import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { parse as parseYaml, stringify as yaml } from "yaml";
 import {
@@ -18,6 +19,8 @@ import {
   appendManifestRows,
   revalidationIds,
   guardChanges,
+  authorshipProblems,
+  yamlProblem,
   changedQuestionFiles,
   statusAtRef,
   reviewIds,
@@ -27,6 +30,7 @@ import {
   reviewScopeProblems,
   demote,
   prBody,
+  knownObjectives,
 } from "../scripts/replenish-prepare.mjs";
 import { mergeVersions, buildSourceRecord, parseMode, parseCaptureArgs } from "../scripts/capture-source.mjs";
 
@@ -651,8 +655,21 @@ test("each agent gets exactly the tools it needs, and no scoped grant", () => {
       { ...primary.with, claude_code_oauth_token: null },
       `${step.name} differs from its primary by more than the token`,
     );
-    assert.match(step.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN_2/);
-    assert.match(primary.with.claude_code_oauth_token, /CLAUDE_CODE_OAUTH_TOKEN }}/);
+    assert.match(step.with.claude_code_oauth_token, /secrets\.CLAUDE_CODE_OAUTH_TOKEN_2\b/);
+    // Both agent steps must put the SECRET in the truthy branch. `cond && '' ||
+    // secret` reads like a ternary and is not one: '' is falsy in a GitHub
+    // expression, so `||` falls through and the Anthropic token is handed to a
+    // step pointed at a third-party endpoint. That shipped once.
+    for (const s2 of [step, primary]) {
+      assert.doesNotMatch(
+        s2.with.claude_code_oauth_token,
+        /&&\s*''\s*\|\|/,
+        `${s2.name}: an empty string in the truthy branch never survives ||`,
+      );
+      assert.match(s2.with.claude_code_oauth_token, /!=\s*'nebius'\s*&&\s*secrets\./, s2.name);
+    }
+    // \b stops this matching CLAUDE_CODE_OAUTH_TOKEN_2.
+    assert.match(primary.with.claude_code_oauth_token, /secrets\.CLAUDE_CODE_OAUTH_TOKEN\b/);
     assert.equal(primary["continue-on-error"], true, `${primary.name} fails the job before the retry runs`);
   }
 });
@@ -2138,6 +2155,160 @@ test("guardChanges skips the cap when max is null and rejects an unparseable fil
   );
 });
 
+test("the author phase refuses to run without being told whose work it is", () => {
+  const script = fileURLToPath(new URL("../scripts/replenish-prepare.mjs", import.meta.url));
+  const { dir, run: git } = gitRepo();
+  try {
+    git(["commit", "-q", "--allow-empty", "-m", "base"]);
+    const base = git(["rev-parse", "HEAD"]).trim();
+    const run = (args) => spawnSync(process.execPath, [script, ...args], { cwd: dir, encoding: "utf8" });
+    // An omitted flag used to be indistinguishable from a pass.
+    const missing = run(["guard", "--base", base, "--max", "5", "--forbid-published-now"]);
+    assert.equal(missing.status, 1);
+    assert.match(missing.stderr, /--author <id> is required on the author phase/);
+    // The post-promotion guard has no author to name and must still run.
+    assert.equal(run(["guard", "--base", base]).status, 0);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the workflow wires the authorship gate and agrees with itself on the port", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const gates = workflow.jobs.author.steps.find(
+    (s) => s.name === "Deterministic gates on the authored content",
+  );
+  const guard = gates.run.split("\n").find((l) => l.includes("replenish-prepare.mjs guard"));
+  // Dropping this flag leaves the suite green and removes the only mechanical
+  // link between AUTHOR_ID and what lands in content/questions.
+  assert.match(guard, /--forbid-published-now/);
+  assert.match(guard, /--author "\$AUTHOR_ID"/);
+
+  // The prompt has to name the id on BOTH paths: "a fresh authored block" sits
+  // next to "preserve the key order of existing files", and the file it points
+  // at already carries someone else's id.
+  const authorAgents = workflow.jobs.author.steps.filter(
+    (s) => s.uses?.startsWith("anthropics/claude-code-action@") && s.id?.startsWith("author-agent"),
+  );
+  assert.equal(authorAgents.length, 2, "the author agent and its retry");
+  for (const step of authorAgents) {
+    assert.match(step.with.prompt, /authored: \{ by: "\$\{\{ env\.AUTHOR_ID \}\}"/);
+    assert.match(step.with.prompt, /fresh `authored` block naming\s+`\$\{\{ env\.AUTHOR_ID \}\}`/);
+    // The gate demands this run's id on every file the agent touched, draft and
+    // review_ready included. Three such files sit on main carrying agent:claude,
+    // so an instruction that covers only the two paths above turns a permitted
+    // move -- finishing a half-written item on the objective it was sent to
+    // fill -- into a failed run that pushes nothing.
+    assert.match(step.with.prompt, /Any file you add or change is yours/);
+    assert.match(step.with.prompt, /`draft` or `review_ready`\s+item you decide to finish/);
+  }
+
+  // RELAY_PORT and the URL the CLI is pointed at are two literals that have to
+  // agree; nothing at workflow level can derive one from the other.
+  const port = String(workflow.env.RELAY_PORT);
+  assert.match(workflow.env.ANTHROPIC_BASE_URL, new RegExp(`127\\.0\\.0\\.1:${port}'`));
+  for (const job of ["author", "review"]) {
+    const relay = workflow.jobs[job].steps.find((s) => s.name === "Start the Nebius relay");
+    assert.ok(relay, `${job} starts no relay`);
+    assert.equal(relay.env.RELAY_PORT, "${{ env.RELAY_PORT }}");
+    assert.ok(relay.env.NEBIUS_MODEL, `${job} lets the relay fall back to its own default model`);
+  }
+});
+
+test("the unparseable message carries the parser's own complaint", () => {
+  const dir = mkdtempSync(join(tmpdir(), "yaml-"));
+  try {
+    writeFileSync(join(dir, "bad.yaml"), 'stem: "unterminated\noptions: [\n');
+    const why = yamlProblem({ file: "bad.yaml", cwd: dir });
+    // Naming the file without saying what is wrong with it left a failed run
+    // with nothing to act on: the authored file never reaches a branch.
+    assert.match(why, /quote|unexpected|flow|Missing/i);
+    assert.doesNotMatch(why, /\n/);
+    // And the guard composes it, rather than dropping it on the floor.
+    const problem = guardChanges({
+      changed: ["bad.yaml"],
+      statusAtBase: () => null,
+      max: null,
+      statusNow: () => "unparseable",
+      problemNow: () => why,
+    })[0];
+    assert.ok(problem.includes(why), problem);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("a question the run did not author is rejected, whoever signed it", () => {
+  const signed = { "new.yaml": "agent:glm-author", "borrowed.yaml": "agent:claude-author" };
+  const problems = authorshipProblems({
+    changed: ["new.yaml", "borrowed.yaml"],
+    expected: "agent:glm-author",
+    authoredBy: (f) => signed[f] ?? null,
+  });
+  // The first Nebius run wrote files GLM authored and claude-author signed,
+  // because the id lived in the prompt and a prompt is not a guarantee.
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /borrowed\.yaml is authored by agent:claude-author/);
+  assert.match(problems[0], /this run's author is agent:glm-author/);
+
+  // An unsigned file is a violation, not a skip: the schema requires the block
+  // and lint rejects it, but this rule must not depend on another gate's order.
+  assert.match(
+    authorshipProblems({
+      changed: ["unsigned.yaml"],
+      expected: "agent:glm-author",
+      authoredBy: () => "",
+    })[0],
+    /unsigned\.yaml carries no authored id/,
+  );
+  // Nothing to read stays a skip -- the guard reports an unparseable file
+  // itself, and one fault should not be named twice.
+  assert.deepEqual(
+    authorshipProblems({ changed: ["gone.yaml"], expected: "agent:glm-author", authoredBy: () => null }),
+    [],
+  );
+
+  // A file that was already published before this run belongs to whoever wrote
+  // it then; re-signing it would be the false claim, not the honest one.
+  assert.deepEqual(
+    authorshipProblems({
+      changed: ["borrowed.yaml"],
+      expected: "agent:glm-author",
+      authoredBy: (f) => signed[f] ?? null,
+      statusAtBase: () => "published",
+    }),
+    [],
+  );
+  // Everything else the agent touched is this run's work: a needs_review
+  // rewrite, and equally a review_ready item an earlier run left on the branch
+  // -- which is not hypothetical, the replenish branches carry dozens.
+  for (const at of ["needs_review", "review_ready", "draft"]) {
+    assert.equal(
+      authorshipProblems({
+        changed: ["borrowed.yaml"],
+        expected: "agent:glm-author",
+        authoredBy: (f) => signed[f] ?? null,
+        statusAtBase: () => at,
+      }).length,
+      1,
+      `a ${at} file rewritten by this run must carry this run's id`,
+    );
+  }
+  // retired is exempt for the same reason as published: guardChanges rejects
+  // the change itself, and one fault should not be reported twice.
+  assert.deepEqual(
+    authorshipProblems({
+      changed: ["borrowed.yaml"],
+      expected: "agent:glm-author",
+      authoredBy: (f) => signed[f] ?? null,
+      statusAtBase: () => "retired",
+    }),
+    [],
+  );
+});
+
 test("statusOnDisk reports a corrupt file rather than passing it as absent", () => {
   const { dir } = gitRepo();
   try {
@@ -2370,4 +2541,112 @@ test("mergeVersions keeps every earlier hash of a re-captured source", () => {
   // pinned to one, on an ordinary full re-capture.
   assert.deepEqual(mergeVersions({ sha256: B, status: "current", versions: [A] }, C), [A]);
   assert.deepEqual(mergeVersions({ sha256: C, status: "current", versions: [A, B] }, C), [A, B]);
+});
+
+test("the selector, author and reviewer turn budgets are the same on every provider", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // Run 37762971241: Sonnet wrote 8 questions in 124 turns, the action failed
+  // the successful run for passing its 80-turn ceiling, and the authored
+  // branch was never pushed. The ceiling is a failure line, not a truncation.
+  // Sonnet's selector used exactly its old 25-turn ceiling in run 37783427034.
+  assert.equal(String(workflow.env.SELECTOR_TURNS), "60");
+  assert.equal(String(workflow.env.AUTHOR_TURNS), "160");
+  // Run 37783427034: the Opus reviewer needed 104 turns for the same batch and
+  // failed the same way against its 60-turn ceiling.
+  assert.equal(String(workflow.env.REVIEWER_TURNS), "120");
+});
+
+test("each job pushes with an App token minted after its agents, not the one from the top of the job", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The App token lives one hour. Run 37702168094 spent 74 minutes in the
+  // author agents and lost five question files to "Invalid username or token"
+  // on the push. A refactor that hoists the push-token step back above the
+  // agents, or points the push at steps.app-token, brings that run back with
+  // every gate still green.
+  const cases = [
+    { job: "author", lastAgent: "author-agent-2", pusher: (s) => s.id === "commit", name: "author push" },
+    {
+      job: "review",
+      lastAgent: "reviewer-agent-2",
+      pusher: (s) => s.name === "Commit the review and open the pull request",
+      name: "review push",
+    },
+  ];
+  for (const { job, lastAgent, pusher, name } of cases) {
+    const steps = workflow.jobs[job].steps;
+    const mint = steps.findIndex((s) => s.id === "push-token");
+    const agent = steps.findIndex((s) => s.id === lastAgent);
+    const push = steps.findIndex(pusher);
+    assert.notEqual(mint, -1, `${name}: no push-token step`);
+    assert.notEqual(agent, -1, `${name}: ${lastAgent} not found`);
+    assert.notEqual(push, -1, `${name}: pushing step not found`);
+    assert.ok(mint > agent, `${name}: push-token is minted before ${lastAgent}`);
+    assert.ok(mint < push, `${name}: push-token is minted after the pushing step`);
+    const env = JSON.stringify(steps[push].env);
+    assert.ok(env.includes("steps.push-token.outputs.token"), `${name}: does not use the fresh token`);
+    assert.ok(!env.includes("steps.app-token.outputs.token"), `${name}: still uses the first token`);
+    // actions/checkout keeps its header in an included config file, so
+    // `--unset-all` cannot drop it and git sends two Authorization headers
+    // (HTTP 400, run 37748173704). The push must clear them with an empty
+    // extraheader value ahead of the fresh one, and nothing may rely on unset.
+    // Executable lines only: a shell comment naming the flag is documentation.
+    const code = steps[push].run
+      .split("\n")
+      .filter((l) => !/^\s*#/.test(l))
+      .join("\n");
+    assert.match(
+      code,
+      /-c "http\.https:\/\/github\.com\/\.extraheader=" -c "http\.https:\/\/github\.com\/\.extraheader=AUTHORIZATION: basic \$\{auth\}" push /,
+      `${name}: the push does not reset extraheader before setting its own`,
+    );
+    assert.ok(
+      !code.includes("--unset-all"),
+      `${name}: relies on unset-all, which misses the checkout header`,
+    );
+  }
+});
+
+test("knownObjectives(dir, course) places pages only on that course's objectives", () => {
+  const dir = mkdtempSync(join(tmpdir(), "academy-objectives-"));
+  try {
+    mkdirSync(join(dir, "courses"));
+    const course = (id, objective) =>
+      yaml({
+        schema_version: 1,
+        id,
+        title: id,
+        mock: { question_count: 1, time_limit_minutes: 10 },
+        domains: [
+          {
+            id: "domain-1",
+            title: "D",
+            weight: 100,
+            mock_questions: 1,
+            objectives: [{ id: objective, title: "t" }],
+          },
+        ],
+      });
+    writeFileSync(join(dir, "courses", "a.yaml"), course("course-a", "alpha"));
+    writeFileSync(join(dir, "courses", "b.yaml"), course("course-b", "beta"));
+    assert.deepEqual([...knownObjectives(dir)].sort(), ["domain-1/alpha", "domain-1/beta"]);
+    assert.deepEqual([...knownObjectives(dir, "course-b")], ["domain-1/beta"]);
+    assert.throws(() => knownObjectives(dir, "no-such-course"), /unknown course "no-such-course"/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("prBody says when the run was scoped to one course, and says nothing otherwise", () => {
+  const args = {
+    receipt: { reviewer: "r", reviewed_at: "2026-10-08T00:00:00Z", questions: [] },
+    captured: [],
+    selected: [],
+  };
+  const scoped = prBody({ ...args, candidates: { ...CANDIDATES, course: "ai-cloudops-engineer" } });
+  assert.match(scoped, /Scoped to course `ai-cloudops-engineer`: gaps and new pages cover that course only/);
+  assert.ok(!/Scoped to course/.test(prBody({ ...args, candidates: { ...CANDIDATES, course: null } })));
 });

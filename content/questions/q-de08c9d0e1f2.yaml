@@ -30,15 +30,15 @@ options:
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Endpoint is fully provisioned and ready for expected traffic.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
   - source_id: src-endpoint-lifecycle
     excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: f197ce316dcd46a46c377f539064a27226cd7253316cb888b44e4fd4ba80a2b5
+  at: 2026-10-08T14:14:37Z
+  content_sha256: f1e026dfa9e3399b2ed2805f343a9b9396314ae17535c0b17ac197d8a2f5b8ef

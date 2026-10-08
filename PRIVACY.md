@@ -7,9 +7,11 @@ your progress, and nothing else.
 
 | Data | Why | Source |
 |---|---|---|
-| Your email address | Required by the account system (better-auth); this application itself never emails you or displays it | GitHub or Google OAuth |
+| Your email address | Required by the account system (better-auth); this application itself never emails you or displays it | GitHub or Google OAuth, or MCTL's ZITADEL sign-in where offered |
 | GitHub login (username), if you sign in with GitHub | Shown in the interface so you know who you are signed in as | GitHub OAuth |
 | Your name and profile image, as provided by the sign-in provider | Shown in the interface | GitHub or Google OAuth |
+| Your name, if you sign in with ZITADEL (no profile image; a name that is an e-mail address is replaced by "Learner") | Shown in the interface | MCTL's ZITADEL sign-in, where offered |
+| Your ZITADEL user id, if you sign in with ZITADEL | Identifies your account; the e-mail address is never used for that | ZITADEL (OpenID Connect) |
 | Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app |
 | Question reports you file | So a reported question can be fixed | Your use of the app |
 | Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app |
@@ -21,8 +23,9 @@ That is the complete list.
 - **No analytics, no tracking pixels, no third-party scripts.** There is no
   analytics provider at MVP.
 - **No advertising identifiers**, and no data is sold or shared with anyone.
-- **No password.** Authentication is GitHub or Google OAuth only; this
-  application never sees or stores a credential.
+- **No password.** Authentication is GitHub or Google OAuth, or MCTL's
+  ZITADEL sign-in where offered; this application never sees or stores a
+  credential.
 - **OAuth access and refresh tokens are encrypted at rest** and are never used
   to call the GitHub or Google API again after sign-in completes.
 - **No IP address or User-Agent.** The account system this application runs on

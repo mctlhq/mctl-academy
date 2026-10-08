@@ -339,11 +339,13 @@ const links = [
      .signin-github (UserNav.vue's signed-out control) joins this list for
      the same reason: it sits in `.app-nav-actions` next to course-select and
      theme-toggle, and was one of the auto-sized items that squeezed
-     `.app-brand`'s minmax(0, 1fr) column down to the overlap fixed above. */
+     `.app-brand`'s minmax(0, 1fr) column down to the overlap fixed above.
+     .signin-zitadel is the second signed-out control in the same place. */
   .theme-toggle,
   .course-select,
   .user-nav-signed-in :deep(summary),
-  .user-nav-signin :deep(.signin-github) {
+  .user-nav-signin :deep(.signin-github),
+  .user-nav-signin :deep(.signin-zitadel) {
     min-width: 2.75rem;
     min-height: 2.75rem;
   }
@@ -356,6 +358,24 @@ const links = [
 @media (min-width: 981px) and (max-width: 1120px) {
   .streak {
     display: none;
+  }
+}
+
+/* From 561px up to the width where the two-column grid above ends, the
+   ZITADEL button still shows its long label ("Log in with <name>"), and the
+   name is operator text (ZITADEL_DISPLAY_NAME) of any length. Unbounded, it
+   widens the auto column until `.app-brand` is squeezed to nothing, so it
+   ends in an ellipsis instead. Its own band, not the 980px block: a `display`
+   set there would outrank the `display: none` that hides every .signin-label
+   below 560px. */
+@media (min-width: 561px) and (max-width: 980px) {
+  .user-nav-signin :deep(.signin-zitadel .signin-label) {
+    display: inline-block;
+    max-width: 14rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
   }
 }
 
@@ -390,6 +410,22 @@ const links = [
   .user-nav-signin :deep(.signin-github) {
     justify-content: center;
     padding: 0;
+  }
+
+  /* The ZITADEL button has no icon to fall back on, so it swaps its long
+     label for the short one (just the provider name) rather than going
+     blank. Two classes inside :deep() so this outranks UserNav's own scoped
+     `display: none` regardless of stylesheet order. The name is operator
+     text (ZITADEL_DISPLAY_NAME) of any length, so it is bounded like
+     .course-select above: a long one ends in an ellipsis instead of
+     squeezing .app-brand out of its column. */
+  .user-nav-signin :deep(.signin-zitadel .signin-label-short) {
+    display: inline-block;
+    max-width: 8rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
   }
 
   .app-nav-links {

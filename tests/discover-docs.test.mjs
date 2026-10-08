@@ -432,3 +432,94 @@ test("discover: the watermark drops pages that became cited or ignored, and the 
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+function addCloudopsCourse(dir) {
+  writeFileSync(
+    join(dir, "courses", "ai-cloudops-engineer.yaml"),
+    yaml({
+      schema_version: 1,
+      id: "ai-cloudops-engineer",
+      title: "CloudOps",
+      mock: { question_count: 1, time_limit_minutes: 10 },
+      domains: [
+        {
+          id: "domain-1",
+          title: "D1",
+          weight: 100,
+          mock_questions: 1,
+          objectives: [{ id: "network-vpc", title: "VPC" }],
+        },
+      ],
+    }),
+  );
+}
+
+// docs.nebius.com is the CloudOps primary host, tokenfactory the Builder's.
+const fetchBothHosts = async (url) => {
+  if (url === "https://docs.tokenfactory.nebius.com/llms.txt") return INDEX;
+  if (url === "https://docs.nebius.com/llms.txt") {
+    return "- [VPC](https://docs.nebius.com/vpc/overview.md): Networks\n";
+  }
+  if (url.endsWith("quotas-limits.md")) return NEW;
+  throw new Error(`unexpected fetch ${url}`);
+};
+
+test("discover: --course scopes gaps, drift and new pages to one course, and the watermark keeps every page", async () => {
+  const dir = fixture();
+  addCloudopsCourse(dir);
+  try {
+    const run = (course) =>
+      discover({
+        contentDir: dir,
+        checkLive: true,
+        maxNew: 5,
+        minPerObjective: 1,
+        today: "2026-10-08",
+        fetch: fetchBothHosts,
+        store: fakeStore,
+        warn: () => {},
+        indices: ["https://docs.tokenfactory.nebius.com/llms.txt", "https://docs.nebius.com/llms.txt"],
+        course,
+      });
+    // Control: unscoped, the Builder's drift and tokenfactory pages are offered.
+    const all = await run(null);
+    assert.equal(all.result.course, null);
+    assert.ok(all.result.drifted.some((d) => d.id === "src-quotas"));
+    assert.ok(all.result.newPages.some((p) => p.host === "docs.tokenfactory.nebius.com"));
+
+    const scoped = await run("ai-cloudops-engineer");
+    assert.equal(scoped.result.course, "ai-cloudops-engineer");
+    // Drift stays whole: the deterministic mark/quarantine/repair steps read it.
+    assert.deepEqual(
+      scoped.result.drifted.map((d) => d.id),
+      all.result.drifted.map((d) => d.id),
+    );
+    assert.ok(scoped.result.gaps.length > 0);
+    assert.ok(scoped.result.gaps.every((g) => g.course === "ai-cloudops-engineer"));
+    assert.deepEqual(
+      scoped.result.newPages.map((p) => p.url),
+      ["https://docs.nebius.com/vpc/overview.md"],
+    );
+    assert.equal(scoped.result.newPagesTotal, 1);
+    assert.match(scoped.result.summary, /Scoped to course ai-cloudops-engineer/);
+    // Scoping must not lose the first-seen dates of the pages it hid.
+    assert.deepEqual(
+      scoped.nextState.seen.map((e) => e.url).sort(),
+      all.nextState.seen.map((e) => e.url).sort(),
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: an unknown --course is an error, never an empty report", async () => {
+  const dir = fixture();
+  try {
+    await assert.rejects(
+      discover({ contentDir: dir, fetch: fakeFetch(NEW), store: fakeStore, warn: () => {}, course: "nope" }),
+      /unknown course "nope"/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

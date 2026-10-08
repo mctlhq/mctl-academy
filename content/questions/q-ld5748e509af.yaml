@@ -27,11 +27,12 @@ evidence:
   - source_id: src-ld-dedicated-billing-policy
     excerpt: A dedicated endpoint is considered **active, accessible, and billable**
       when **at least one replica is running**
-    source_sha256: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
+    source_sha256: 4dac77d8f293a6c579d343d824634ab60ac38ba23ff15b8e021e552657dbca6d
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 18094ddbde7ead25727569ec28b21ecc1b67ae22feeb7cac40c47bba6d9ae3c3

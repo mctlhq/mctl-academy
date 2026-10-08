@@ -28,12 +28,12 @@ evidence:
   - source_id: src-recovery-chat
     excerpt: Higher values like 0.8 will make the output more random, while lower
       values like 0.2 will make it more focused and deterministic.
-    source_sha256: 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
+    source_sha256: ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: a4babe3d995d97cf6b691a1cff8d5a5b51a36dfb74e6b48ff742759a4ecfa71c
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 0df09010ed83c0c22a34c63c515fdd4b29326a9abc23d164ad4f0acf31cf08a7

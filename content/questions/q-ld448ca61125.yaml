@@ -27,11 +27,12 @@ evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: Select GPU type and GPUs per replica to match your performance and
       throughput needs.
-    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-08T14:14:37Z
+  content_sha256: 23c8a8983be5a6ee4b7ad6d0d0f2eb38f139d04e149a6c6eaed32ac389a92e3b
