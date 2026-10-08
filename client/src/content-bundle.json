@@ -522,57 +522,6 @@
     ]
   },
   {
-    "id": "q-9d1f7a4c3e68",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/capacity-and-scaling",
-    "stem": "What guarantee applies to the minimum replicas configured for a dedicated endpoint while it is actively running?",
-    "objectiveTitle": "Capacity, availability, and service guarantees",
-    "sources": [
-      {
-        "title": "Endpoint capacity",
-        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
-        "excerpt": "Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active."
-      },
-      {
-        "title": "Endpoint capacity",
-        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
-        "excerpt": "If the endpoint stops for any reason, this allocation is released"
-      },
-      {
-        "title": "Endpoint capacity",
-        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
-        "excerpt": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "They are reserved and non-preemptible, allocated to the deployment for as long as the endpoint is active",
-        "correct": true,
-        "explanation": "The capacity documentation states that minimum replicas are reserved and non-preemptible, remaining allocated for as long as the endpoint is active."
-      },
-      {
-        "id": "b",
-        "text": "They can be reclaimed at any time to serve another customer's burst traffic",
-        "correct": false,
-        "explanation": "That describes capacity above the minimum, which depends on burst availability; the minimum itself is reserved, not reclaimable."
-      },
-      {
-        "id": "c",
-        "text": "They remain reserved indefinitely, even after the endpoint is stopped",
-        "correct": false,
-        "explanation": "The documentation states that if the endpoint stops for any reason, this allocation is released, not kept indefinitely."
-      },
-      {
-        "id": "d",
-        "text": "They come with a formal 99.9% monthly SLA",
-        "correct": false,
-        "explanation": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract; 99.9% is only a historical average, not a guarantee tied to minimum replicas."
-      }
-    ]
-  },
-  {
     "id": "q-9d47f02ce5a1",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",

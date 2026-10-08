@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9d1f7a4c3e68
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: What guarantee applies to the minimum replicas configured for a dedicated
@@ -27,8 +27,7 @@ options:
     text: They come with a formal 99.9% monthly SLA
     correct: false
     explanation: Self-service dedicated endpoints do not include a formal SLA unless
-      covered by contract; 99.9% is only a historical average, not a guarantee
-      tied to minimum replicas.
+      covered by contract, so the minimum replicas carry no SLA guarantee.
 evidence:
   - source_id: src-recovery-capacity
     excerpt: Minimum replicas are reserved and non-preemptible and remain allocated
@@ -48,7 +47,3 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: cc809feca287c6ed746394851379fde83da4bdbe981f6a536b572ab1d853fb74
