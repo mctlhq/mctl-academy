@@ -489,7 +489,11 @@ test("discover: --course scopes gaps, drift and new pages to one course, and the
 
     const scoped = await run("ai-cloudops-engineer");
     assert.equal(scoped.result.course, "ai-cloudops-engineer");
-    assert.deepEqual(scoped.result.drifted, [], "src-quotas cites a Builder objective");
+    // Drift stays whole: the deterministic mark/quarantine/repair steps read it.
+    assert.deepEqual(
+      scoped.result.drifted.map((d) => d.id),
+      all.result.drifted.map((d) => d.id),
+    );
     assert.ok(scoped.result.gaps.length > 0);
     assert.ok(scoped.result.gaps.every((g) => g.course === "ai-cloudops-engineer"));
     assert.deepEqual(

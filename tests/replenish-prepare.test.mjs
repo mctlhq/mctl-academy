@@ -2517,8 +2517,19 @@ test("knownObjectives(dir, course) places pages only on that course's objectives
     writeFileSync(join(dir, "courses", "b.yaml"), course("course-b", "beta"));
     assert.deepEqual([...knownObjectives(dir)].sort(), ["domain-1/alpha", "domain-1/beta"]);
     assert.deepEqual([...knownObjectives(dir, "course-b")], ["domain-1/beta"]);
-    assert.deepEqual([...knownObjectives(dir, "no-such-course")], []);
+    assert.throws(() => knownObjectives(dir, "no-such-course"), /unknown course "no-such-course"/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("prBody says when the run was scoped to one course, and says nothing otherwise", () => {
+  const args = {
+    receipt: { reviewer: "r", reviewed_at: "2026-10-08T00:00:00Z", questions: [] },
+    captured: [],
+    selected: [],
+  };
+  const scoped = prBody({ ...args, candidates: { ...CANDIDATES, course: "ai-cloudops-engineer" } });
+  assert.match(scoped, /Scoped to course `ai-cloudops-engineer`: gaps and new pages cover that course only/);
+  assert.ok(!/Scoped to course/.test(prBody({ ...args, candidates: { ...CANDIDATES, course: null } })));
 });

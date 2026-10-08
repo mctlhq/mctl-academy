@@ -18,29 +18,26 @@
  *   3. Gaps: Mock shortfalls per domain and objectives with fewer published
  *      questions than --min-per-objective, from the content quality report.
  *
- * With --course <id> the report is scoped to one course: gaps of that course
- * only, drifted sources that cite one of its objectives, and new pages on its
- * primary documentation host (COURSE_PRIMARY_HOST). The watermark is still
- * written from every new page, so scoping a run never loses a first-seen date.
- *
- * Failures are part of the report, never swallowed: an index that could not
- * be fetched and a source page that did not answer are listed in the output
- * and keep `empty` false, so a blind run can never read as a quiet week. When
- * no index at all answers the run fails.
- *
- * The output is a candidates.json that an authoring run reads as data. This
- * script never writes under content/ except the discovery watermark, and only
- * with --update-state.
- *
- * Usage:
- *   node scripts/discover-docs.mjs [--out candidates.json] [--max-new 3]
- *        [--check-live] [--update-state] [--min-per-objective 3] [--course <id>]
+ * With --course <id> the report is scoped to one course, so a manual run can
+ * be bounded to what the budget covers: gaps of that course only, and new
+ * pages on its primary documentation host (COURSE_PRIMARY_HOST), since a page
+ * has no course of its own. Drifted and unreachable sources and index errors
+ * stay whole on purpose: the deterministic steps that mark, quarantine and
+ * repair drift read the full list, and scoping it would commit out-of-scope
+ * demotions while skipping their repair. The watermark is still written from
+ * every new page, so scoping never loses a first-seen date.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
-import { ALLOWED_HOSTS, loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
+import {
+  ALLOWED_HOSTS,
+  courseObjectives,
+  loadCourses,
+  loadSources,
+  loadYamlDir,
+} from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 import { detectDocsDelta } from "./detect-docs-delta.mjs";
 import { qualityReport } from "./content-quality-report.mjs";
@@ -154,15 +151,6 @@ export const COURSE_PRIMARY_HOST = {
   "ai-leader": "docs.tokenfactory.nebius.com",
 };
 
-/** `domain-N/objective` ids of one course, or null when the course is unknown. */
-export function courseObjectives(courses, courseId) {
-  const course = courses.get(courseId);
-  if (!course) return null;
-  const set = new Set();
-  for (const d of course.domains ?? []) for (const o of d.objectives ?? []) set.add(`${d.id}/${o.id}`);
-  return set;
-}
-
 export function rankPages(pages, gaps) {
   const hostScore = new Map();
   const slugTokens = new Set();
@@ -240,12 +228,9 @@ export async function discover({
   warn = (msg) => console.warn(`::warning::${msg}`),
 } = {}) {
   const courses = loadCourses(contentDir);
-  // An unknown course is an error, never an empty report: "nothing to do for a
-  // course that does not exist" must not read as a quiet week.
-  const scope = course ? courseObjectives(courses, course) : null;
-  if (course && !scope) {
-    throw new Error(`unknown course "${course}"; known: ${[...courses.keys()].join(", ") || "none"}`);
-  }
+  // An unknown course throws (courseObjectives): "nothing to do for a course
+  // that does not exist" must not read as a quiet week.
+  if (course) courseObjectives(courses, course);
   const state = loadDiscoveryState(stateFile);
   const known = knownUrls(contentDir);
   const pages = [];
@@ -323,7 +308,6 @@ export async function discover({
         entry.removedLines = delta.removedLines.length;
       }
     } else if (!store) warn(`${data.id}: no R2 credentials; delta not classified`);
-    if (scope && !entry.objectives.some((o) => scope.has(o))) continue;
     drifted.push(entry);
   }
 
@@ -392,7 +376,7 @@ export function summarize({
   const lines = [];
   if (course)
     lines.push(
-      `Scoped to course ${course}: its gaps, its drifted sources and pages on its primary host only.`,
+      `Scoped to course ${course}: its gaps and pages on its primary host only; drift is reported whole.`,
       "",
     );
   if (indexErrors.length) {
