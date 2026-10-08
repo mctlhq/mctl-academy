@@ -2459,13 +2459,15 @@ test("mergeVersions keeps every earlier hash of a re-captured source", () => {
   assert.deepEqual(mergeVersions({ sha256: C, status: "current", versions: [A, B] }, C), [A, B]);
 });
 
-test("the author turn budget is the same 160 on every provider", () => {
+test("the selector, author and reviewer turn budgets are the same on every provider", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
   // Run 37762971241: Sonnet wrote 8 questions in 124 turns, the action failed
   // the successful run for passing its 80-turn ceiling, and the authored
   // branch was never pushed. The ceiling is a failure line, not a truncation.
+  // Sonnet's selector used exactly its old 25-turn ceiling in run 37783427034.
+  assert.equal(String(workflow.env.SELECTOR_TURNS), "60");
   assert.equal(String(workflow.env.AUTHOR_TURNS), "160");
   // Run 37783427034: the Opus reviewer needed 104 turns for the same batch and
   // failed the same way against its 60-turn ceiling.

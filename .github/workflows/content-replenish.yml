@@ -113,11 +113,11 @@ env:
   ANTHROPIC_BASE_URL: ${{ inputs.provider == 'nebius' && 'http://127.0.0.1:8787' || '' }}
   # The action FAILS a run that finishes successfully over its ceiling rather
   # than truncating it, and a failed author or review job loses the batch.
-  # Selector: GLM-5.3 spent 33 turns where Sonnet fits in under 25. Author and
-  # reviewer: Sonnet needed 124 turns for 8 questions (run 37762971241) and
-  # Opus 104 turns to review them (run 37783427034), so both take Nebius's
-  # budgets on every provider.
-  SELECTOR_TURNS: ${{ inputs.provider == 'nebius' && '60' || '25' }}
+  # Selector: GLM-5.3 spent 33 turns, Sonnet exactly 25 (run 37783427034).
+  # Author and reviewer: Sonnet needed 124 turns for 8 questions (run
+  # 37762971241) and Opus 104 turns to review them (run 37783427034). All three
+  # take the Nebius budgets on every provider.
+  SELECTOR_TURNS: "60"
   AUTHOR_TURNS: "160"
   REVIEWER_TURNS: "120"
   BOT_NAME: mctl-agents[bot]
