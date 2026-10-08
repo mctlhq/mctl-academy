@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co524dc191c3
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: Planning capacity, an engineer assumes one VM quota governs every machine
@@ -28,12 +28,8 @@ options:
 evidence:
   - source_id: src-co-compute-quotas
     excerpt: Compute has different quotas for GPU and non-GPU virtual machines.
-    source_sha256: 89c1003f8e3a218e76a6c7207b467f62be048b6b481ed03874e734b6b500a9b0
+    source_sha256: f48aaac3871e8016c228deea7561c5b5e80de333739871d31d1c57b1f0584183
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 2a855f8018ada3a36424b499f520d874cef9680ec766ec436ad2a2ee76c84f85

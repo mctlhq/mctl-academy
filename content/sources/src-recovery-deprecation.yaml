@@ -2,11 +2,13 @@ schema_version: 1
 id: src-recovery-deprecation
 url: https://docs.tokenfactory.nebius.com/august-2026-deprecation-notice.md
 title: Model deprecations August 2026
-retrieved_at: 2026-09-05T20:45:01Z
-sha256: 5d9a56546ae0914f86ca3825363be8f8140bb9acb1f2123eaa862e284f4b5987
+retrieved_at: 2026-10-08T13:25:17Z
+sha256: 0e292554fa0fedd115afda9d96d62e7d0227f07224e090969c189e40f3ff832a
 objectives:
   - domain-1/model-catalog
 snapshot:
   bucket: academy-source-snapshots
-  key: 5d9a56546ae0914f86ca3825363be8f8140bb9acb1f2123eaa862e284f4b5987
+  key: 0e292554fa0fedd115afda9d96d62e7d0227f07224e090969c189e40f3ff832a
 status: current
+versions:
+  - 5d9a56546ae0914f86ca3825363be8f8140bb9acb1f2123eaa862e284f4b5987

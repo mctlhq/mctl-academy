@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld388171b0f1
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/workflow-design
 stem: An application must keep inference inside a particular jurisdiction. Which
@@ -28,11 +28,8 @@ evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: Choose where your deployment runs to optimize latency and meet data
       residency requirements.
-    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

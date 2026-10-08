@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-cs02a5b6c7d8
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: How does a dedicated endpoint scale its capacity as traffic changes?
@@ -31,7 +31,7 @@ evidence:
   - source_id: src-recovery-endpoint
     excerpt: Set minimum and maximum replicas to automatically scale capacity with
       traffic.
-    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
   - source_id: src-recovery-capacity
     excerpt: Scaling above minimum replicas depends on available burst capacity and
       is not guaranteed indefinitely.
@@ -40,7 +40,3 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: 19381934a8dff87a5b627ce5ae39ac30e02e90dad086a6ca952920b13186fb23

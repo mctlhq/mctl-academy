@@ -2,12 +2,14 @@ schema_version: 1
 id: src-recovery-billing
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/billing-policy.md
 title: Dedicated billing
-retrieved_at: 2026-09-05T20:44:52Z
-sha256: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
+retrieved_at: 2026-10-08T13:25:15Z
+sha256: 4dac77d8f293a6c579d343d824634ab60ac38ba23ff15b8e021e552657dbca6d
 objectives:
   - domain-4/billing-and-consumption
   - domain-4/dedicated-endpoints
 snapshot:
   bucket: academy-source-snapshots
-  key: 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080
+  key: 4dac77d8f293a6c579d343d824634ab60ac38ba23ff15b8e021e552657dbca6d
 status: current
+versions:
+  - 8282b4092fe902851a18bb39cfa642c0384893d8d2daf95fae0b28c396151080

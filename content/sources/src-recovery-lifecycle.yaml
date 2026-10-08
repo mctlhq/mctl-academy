@@ -2,12 +2,14 @@ schema_version: 1
 id: src-recovery-lifecycle
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/lifecycle-and-status.md
 title: Endpoint lifecycle
-retrieved_at: 2026-09-05T20:44:47Z
-sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+retrieved_at: 2026-10-08T13:25:19Z
+sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
 objectives:
   - domain-4/endpoint-lifecycle
   - domain-4/capacity-and-scaling
 snapshot:
   bucket: academy-source-snapshots
-  key: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+  key: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
 status: current
+versions:
+  - a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3

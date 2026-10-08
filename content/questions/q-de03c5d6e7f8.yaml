@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de03c5d6e7f8
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/dedicated-endpoints
 stem: Why would a team deploy a fine-tuned model with custom weights on a
@@ -33,7 +33,7 @@ evidence:
   - source_id: src-recovery-endpoint
     excerpt: "| Custom weights support | Supported for eligible models | Base models
       only |"
-    source_sha256: c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
+    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
   - source_id: src-recovery-capacity
     excerpt: Self-service dedicated endpoints do not include a formal SLA unless
       covered by contract.
@@ -42,7 +42,3 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: f5567937001c59d7c32e07a40182a445e65daa19c20aba889dbcd17dc6ee0c98

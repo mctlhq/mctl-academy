@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co219916c0e5
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: Two teams run separate GPU clusters that were placed in the same
@@ -34,12 +34,8 @@ evidence:
   - source_id: src-co-gpu-clusters
     excerpt: nodes in different GPU clusters cannot communicate over InfiniBand™
       even if they use the same fabric infrastructure
-    source_sha256: c0a5525d7571cd10f4daf0e98b0e15fe9fd9799f59408c4faeebe77fa112f653
+    source_sha256: b29f84c8b2ba0982188ad01712ffec1e621f86071da3adb5608b22e43ea04382
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:codex-drift-reviewer
-  at: 2026-09-06T11:02:18Z
-  content_sha256: 127c5a2b374c5907826482db651906560a0c97ef22968262a0dc662c62ead650

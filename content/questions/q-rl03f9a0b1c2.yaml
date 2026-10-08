@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rl03f9a0b1c2
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/rate-limits
 stem: A request that exceeded your rate limit succeeded anyway, carrying an
@@ -31,11 +31,8 @@ evidence:
     excerpt: This occurs when the system has spare capacity available, and your
       request can be handled with a lower priority without affecting other
       users.
-    source_sha256: 65943618e908ac9f005ad6afbdcaef2f5ee7cdcacdb5fe6aadda3d1a640412f2
+    source_sha256: a930a4443120747b78d1c298b040d72612031c4ae735a83929d6e5769548e6d7
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el02b1c2d3e4
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: An endpoint reports readiness "Partially ready". What does that tell you?
@@ -27,11 +27,8 @@ options:
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Endpoint can serve traffic, but below expected capacity.
-    source_sha256: a3705231905355f0008b97c85c6cb5c049e3ad05515047b35de68a6401e211d3
+    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder
