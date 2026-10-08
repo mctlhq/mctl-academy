@@ -113,9 +113,11 @@ env:
   ANTHROPIC_BASE_URL: ${{ inputs.provider == 'nebius' && 'http://127.0.0.1:8787' || '' }}
   # Turn budgets are per-provider: GLM-5.3 spent 33 turns on the selector task
   # that Sonnet fits in well under 25, and the action FAILS a run that finishes
-  # successfully over its ceiling rather than truncating it.
+  # successfully over its ceiling rather than truncating it. Sonnet needed 124
+  # turns to write 8 questions (run 37762971241), so its author budget matches
+  # Nebius's: a run that overshoots loses the whole authored branch.
   SELECTOR_TURNS: ${{ inputs.provider == 'nebius' && '60' || '25' }}
-  AUTHOR_TURNS: ${{ inputs.provider == 'nebius' && '160' || '80' }}
+  AUTHOR_TURNS: "160"
   REVIEWER_TURNS: ${{ inputs.provider == 'nebius' && '120' || '60' }}
   BOT_NAME: mctl-agents[bot]
   BOT_EMAIL: mctl-agents[bot]@users.noreply.github.com

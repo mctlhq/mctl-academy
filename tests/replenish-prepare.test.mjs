@@ -2459,6 +2459,16 @@ test("mergeVersions keeps every earlier hash of a re-captured source", () => {
   assert.deepEqual(mergeVersions({ sha256: C, status: "current", versions: [A, B] }, C), [A, B]);
 });
 
+test("the author turn budget is the same 160 on every provider", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // Run 37762971241: Sonnet wrote 8 questions in 124 turns, the action failed
+  // the successful run for passing its 80-turn ceiling, and the authored
+  // branch was never pushed. The ceiling is a failure line, not a truncation.
+  assert.equal(String(workflow.env.AUTHOR_TURNS), "160");
+});
+
 test("each job pushes with an App token minted after its agents, not the one from the top of the job", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
