@@ -1,22 +1,22 @@
 schema_version: 1
 id: q-d49a1e7f3c82
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/chat-completions
-stem: If a Chat Completions request omits the `max_tokens` parameter, what
-  does the API reference say the value defaults to?
+stem: If a Chat Completions request omits the `max_tokens` parameter, what does
+  the API reference say the value defaults to?
 options:
   - id: a
     text: 8192 tokens
     correct: true
-    explanation: The reference states that `max_tokens`, if omitted or set
-      to null, defaults to 8192 tokens.
+    explanation: The reference states that `max_tokens`, if omitted or set to null,
+      defaults to 8192 tokens.
   - id: b
-    text: Unlimited — generation stops only when the model reaches a
-      natural stop point
+    text: Unlimited — generation stops only when the model reaches a natural stop
+      point
     correct: false
-    explanation: The reference defines an explicit numeric default, so
-      generation is not unbounded when the parameter is omitted.
+    explanation: The reference defines an explicit numeric default, so generation is
+      not unbounded when the parameter is omitted.
   - id: c
     text: 100 tokens
     correct: false
@@ -25,8 +25,8 @@ options:
   - id: d
     text: 1 completion
     correct: false
-    explanation: 1 is the documented default for the `n` parameter (number
-      of completions to generate), not for `max_tokens`.
+    explanation: 1 is the documented default for the `n` parameter (number of
+      completions to generate), not for `max_tokens`.
 evidence:
   - source_id: src-recovery-chat
     excerpt: If omitted or set to null, defaults to 8192 tokens.
@@ -36,3 +36,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: 1f497669889cf40ea3245aea2e20c714b57acb20b925a135de01848bf40c5f3b

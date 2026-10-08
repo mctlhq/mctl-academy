@@ -1,18 +1,16 @@
 schema_version: 1
 id: q-c71b4f9a3d85
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/framework-integrations
 stem: Beyond calling the OpenAI-compatible API directly, what does the Token
-  Factory Quickstart identify as a way to put inference into your
-  applications?
+  Factory Quickstart identify as a way to put inference into your applications?
 options:
   - id: a
     text: Supported third-party integrations
     correct: true
-    explanation: The Quickstart's "Third-party integrations" card describes
-      building inference into applications based on supported third-party
-      integrations.
+    explanation: The Quickstart's "Third-party integrations" card describes building
+      inference into applications based on supported third-party integrations.
   - id: b
     text: Fine-tuning datasets to increase output accuracy
     correct: false
@@ -21,13 +19,13 @@ options:
   - id: c
     text: Authenticating and making requests to the inference API
     correct: false
-    explanation: That describes the Quickstart's "API" card, which is the
-      direct API path the question excludes.
+    explanation: That describes the Quickstart's "API" card, which is the direct API
+      path the question excludes.
   - id: d
     text: Sending prompts, chats, or images and getting responses
     correct: false
-    explanation: That describes the Quickstart's "Inference" card, a
-      different capability from third-party integrations.
+    explanation: That describes the Quickstart's "Inference" card, a different
+      capability from third-party integrations.
 evidence:
   - source_id: src-recovery-quickstart
     excerpt: Build inference into applications that are based on supported
@@ -38,3 +36,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: 8b496bd747f5774609cd2156bddb6d78955a075c534c734cc883cafecd59f826

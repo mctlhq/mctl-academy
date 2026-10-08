@@ -1,30 +1,28 @@
 schema_version: 1
 id: q-b58e3f9a2c71
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability
 stem: In a Chat Completions response, what is the documented purpose of the
   `system_fingerprint` field?
 options:
   - id: a
-    text: It represents the backend configuration, so it can be used with
-      the `seed` parameter to detect changes that might affect determinism
+    text: It represents the backend configuration, so it can be used with the `seed`
+      parameter to detect changes that might affect determinism
     correct: true
     explanation: The reference says this fingerprint represents the backend
-      configuration the model runs with, used with `seed` to understand
-      when backend changes might impact determinism.
+      configuration the model runs with, used with `seed` to understand when
+      backend changes might impact determinism.
   - id: b
-    text: It reports how many GPU replicas are currently serving the
-      endpoint
+    text: It reports how many GPU replicas are currently serving the endpoint
     correct: false
-    explanation: Replica counts are a capacity concept covered elsewhere;
-      the chat completion schema does not describe `system_fingerprint` this
-      way.
+    explanation: Replica counts are a capacity concept covered elsewhere; the chat
+      completion schema does not describe `system_fingerprint` this way.
   - id: c
     text: It uniquely identifies the end user who made the request
     correct: false
-    explanation: That is the documented purpose of the separate `user`
-      parameter, not `system_fingerprint`.
+    explanation: That is the documented purpose of the separate `user` parameter,
+      not `system_fingerprint`.
   - id: d
     text: It reports the cumulative prompt and completion token counts
     correct: false
@@ -32,8 +30,8 @@ options:
       `system_fingerprint`.
 evidence:
   - source_id: src-recovery-chat
-    excerpt: This fingerprint represents the backend configuration that the
-      model runs with.
+    excerpt: This fingerprint represents the backend configuration that the model
+      runs with.
     source_sha256: ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
     locator: ChatCompletionChunk > system_fingerprint
   - source_id: src-recovery-chat
@@ -43,11 +41,15 @@ evidence:
     source_sha256: ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
     locator: ChatCompletionChunk > system_fingerprint
   - source_id: src-recovery-chat
-    excerpt: A unique identifier representing your end-user, which can help
-      us to monitor and detect abuse.
+    excerpt: A unique identifier representing your end-user, which can help us to
+      monitor and detect abuse.
     source_sha256: ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
     locator: ChatCompletionRequest > user
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: e6233014e261ee1b2366af0a4253511ec11d3ba810d3d184518e04f7f493a282

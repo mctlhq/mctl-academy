@@ -1,5 +1,46 @@
 [
   {
+    "id": "q-0f3d9a7c2b56",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/model-catalog",
+    "stem": "On `GET /v1/models`, what is the documented default value of the `verbose` query parameter?",
+    "objectiveTitle": "Listing models, model flavors, and deprecation notices",
+    "sources": [
+      {
+        "title": "List models API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/models/list-models.md",
+        "excerpt": "type: boolean default: false title: Verbose"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`false`",
+        "correct": true,
+        "explanation": "The `verbose` parameter's schema sets its type to boolean with a default of `false`."
+      },
+      {
+        "id": "b",
+        "text": "`true`",
+        "correct": false,
+        "explanation": "`true` is the opposite of the documented default; a caller must explicitly set it to get the extended fields."
+      },
+      {
+        "id": "c",
+        "text": "`1`",
+        "correct": false,
+        "explanation": "`1` is the documented default for the Chat Completions `n` parameter, not for `verbose` on the models endpoint."
+      },
+      {
+        "id": "d",
+        "text": "`auto`",
+        "correct": false,
+        "explanation": "`auto` is the documented default for `service_tier`, a different parameter entirely."
+      }
+    ]
+  },
+  {
     "id": "q-1d28809ed6da",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -37,6 +78,47 @@
         "text": "Equal-sized files are mandatory",
         "correct": false,
         "explanation": "A validation dataset is optional, and the typical split is unequal."
+      }
+    ]
+  },
+  {
+    "id": "q-2c8f5a3d9e17",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "What capability do Nebius Sandboxes document as distinguishing them from traditional containers, letting an AI agent try multiple execution paths?",
+    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
+    "sources": [
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "Unlike traditional containers, Sandboxes supports Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly",
+        "correct": true,
+        "explanation": "The overview states that, unlike traditional containers, Sandboxes supports Git-like branching, letting you fork from any checkpoint and roll back instantly."
+      },
+      {
+        "id": "b",
+        "text": "OCI image support for importing images from any OCI-compliant registry",
+        "correct": false,
+        "explanation": "OCI image support is a separate documented feature, about sandbox base images, not branching execution state."
+      },
+      {
+        "id": "c",
+        "text": "Built-in resource metrics tracking CPU time, memory usage, and I/O operations",
+        "correct": false,
+        "explanation": "Resource metrics are a separate documented feature, about measuring an execution, not forking or rolling back state."
+      },
+      {
+        "id": "d",
+        "text": "Async operations with polling and cancellation support",
+        "correct": false,
+        "explanation": "Async operations describe how long-running work is managed, not the branching capability itself."
       }
     ]
   },
@@ -174,6 +256,88 @@
     ]
   },
   {
+    "id": "q-46c9e2a7b815",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/fine-tuning-jobs",
+    "stem": "According to the documented fine-tuning job status progression, which status comes first, before `queued` and `running`?",
+    "objectiveTitle": "Fine-tuning job lifecycle, events, and checkpoints",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "`status`: `validating_files` → `queued` → `running` → `succeeded` / `failed`"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`validating_files`",
+        "correct": true,
+        "explanation": "The job's key fields list the status progression as `validating_files` → `queued` → `running` → `succeeded` / `failed`, with `validating_files` first."
+      },
+      {
+        "id": "b",
+        "text": "`queued`",
+        "correct": false,
+        "explanation": "`queued` is the second status in the documented progression, after `validating_files`."
+      },
+      {
+        "id": "c",
+        "text": "`running`",
+        "correct": false,
+        "explanation": "`running` is the third status in the documented progression, after `validating_files` and `queued`."
+      },
+      {
+        "id": "d",
+        "text": "`succeeded`",
+        "correct": false,
+        "explanation": "`succeeded` is one of the two documented terminal statuses, reached at the end of the progression, not the start."
+      }
+    ]
+  },
+  {
+    "id": "q-5e8a2c91f06d",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/retrieval-pipelines",
+    "stem": "In a `/v1/rerank` response, which field tells a retrieval pipeline how well each candidate document matches the query?",
+    "objectiveTitle": "Composing retrieval-augmented pipelines",
+    "sources": [
+      {
+        "title": "Reranking API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md",
+        "excerpt": "Relevance score of the document"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`relevance_score`",
+        "correct": true,
+        "explanation": "The RerankResult schema documents `relevance_score` as the relevance score of the document, which is what a pipeline uses to rank candidates."
+      },
+      {
+        "id": "b",
+        "text": "`total_tokens`",
+        "correct": false,
+        "explanation": "`total_tokens` is part of RerankUsage and reports token usage for the request, not how relevant a document is."
+      },
+      {
+        "id": "c",
+        "text": "`embedding`",
+        "correct": false,
+        "explanation": "`embedding` is a field of the Embedding object returned by the `/v1/embeddings` endpoint, not part of a rerank result."
+      },
+      {
+        "id": "d",
+        "text": "`owned_by`",
+        "correct": false,
+        "explanation": "`owned_by` is a field of the Model object returned by the List models endpoint, unrelated to reranking documents."
+      }
+    ]
+  },
+  {
     "id": "q-6b9e2f4a17c3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -230,6 +394,52 @@
     ]
   },
   {
+    "id": "q-71e4b9c2a5f3",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "After uploading files through the Files API, which endpoint returns the raw file contents rather than just its metadata?",
+    "objectiveTitle": "Uploading, retrieving, and deleting files",
+    "sources": [
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "Download file contents"
+      },
+      {
+        "title": "Supervised Fine-Tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "curl \"https://api.tokenfactory.nebius.com/v1/files/<file_ID>/content\""
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`GET /v1/files/<file_ID>/content`",
+        "correct": true,
+        "explanation": "The \"Download file contents\" step calls `GET /v1/files/<file_ID>/content` to retrieve the raw bytes of a file."
+      },
+      {
+        "id": "b",
+        "text": "`GET /v1/files/<file_ID>`",
+        "correct": false,
+        "explanation": "That endpoint is used in the \"Inspect file metadata\" step and returns metadata such as `filename`, `bytes`, and `purpose`, not the file's contents."
+      },
+      {
+        "id": "c",
+        "text": "`GET /v1/fine_tuning/jobs/<job_ID>/checkpoints`",
+        "correct": false,
+        "explanation": "That endpoint lists a job's checkpoints and their `result_files` IDs; it does not return a file's contents."
+      },
+      {
+        "id": "d",
+        "text": "`GET /v1/fine_tuning/jobs/<job_ID>/events`",
+        "correct": false,
+        "explanation": "That endpoint lists a fine-tuning job's lifecycle events; it has nothing to do with file contents."
+      }
+    ]
+  },
+  {
     "id": "q-7b2d9f4a1c63",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -267,6 +477,98 @@
         "text": "input and user",
         "correct": false,
         "explanation": "model is required but omitted here, and user is an optional identifier for your end-user rather than a required field."
+      }
+    ]
+  },
+  {
+    "id": "q-8b2e5f1a9c34",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-1",
+    "objective": "domain-1/playground",
+    "stem": "In the Token Factory Playground, what does the \"Quality\" value shown on a model card represent?",
+    "objectiveTitle": "Using the UI and playground to compare models",
+    "sources": [
+      {
+        "title": "Playground",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md",
+        "excerpt": "**Quality** — MMLU score reported by the model provider."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The MMLU score reported by the model provider",
+        "correct": true,
+        "explanation": "The model card documentation defines Quality as the MMLU score reported by the model provider."
+      },
+      {
+        "id": "b",
+        "text": "The approximate generation speed in tokens per second",
+        "correct": false,
+        "explanation": "That is the separate \"Tokens per second\" metric on the model card, not Quality."
+      },
+      {
+        "id": "c",
+        "text": "The price per input token, in USD per million tokens",
+        "correct": false,
+        "explanation": "That is the separate \"Input tokens\" price metric on the model card, not Quality."
+      },
+      {
+        "id": "d",
+        "text": "The price per output token, in USD per million tokens",
+        "correct": false,
+        "explanation": "That is the separate \"Output tokens\" price metric on the model card, not Quality."
+      }
+    ]
+  },
+  {
+    "id": "q-9d1f7a4c3e68",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "What guarantee applies to the minimum replicas configured for a dedicated endpoint while it is actively running?",
+    "objectiveTitle": "Capacity, availability, and service guarantees",
+    "sources": [
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active."
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "If the endpoint stops for any reason, this allocation is released"
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "They are reserved and non-preemptible, allocated to the deployment for as long as the endpoint is active",
+        "correct": true,
+        "explanation": "The capacity documentation states that minimum replicas are reserved and non-preemptible, remaining allocated for as long as the endpoint is active."
+      },
+      {
+        "id": "b",
+        "text": "They can be reclaimed at any time to serve another customer's burst traffic",
+        "correct": false,
+        "explanation": "That describes capacity above the minimum, which depends on burst availability; the minimum itself is reserved, not reclaimable."
+      },
+      {
+        "id": "c",
+        "text": "They remain reserved indefinitely, even after the endpoint is stopped",
+        "correct": false,
+        "explanation": "The documentation states that if the endpoint stops for any reason, this allocation is released, not kept indefinitely."
+      },
+      {
+        "id": "d",
+        "text": "They come with a formal 99.9% monthly SLA",
+        "correct": false,
+        "explanation": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract; 99.9% is only a historical average, not a guarantee tied to minimum replicas."
       }
     ]
   },
@@ -404,6 +706,98 @@
     ]
   },
   {
+    "id": "q-a94f1d2b7c3e",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/retrieval-pipelines",
+    "stem": "Which `/v1/embeddings` request parameter lets you request a specific embedding vector size from the model, for use in a retrieval pipeline's vector index?",
+    "objectiveTitle": "Composing retrieval-augmented pipelines",
+    "sources": [
+      {
+        "title": "Embeddings API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-embeddings.md",
+        "excerpt": "The dimensions to use for the request."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`dimensions`",
+        "correct": true,
+        "explanation": "The Embeddings API reference describes `dimensions` as the dimensions to use for the request, letting you choose the returned vector size."
+      },
+      {
+        "id": "b",
+        "text": "`encoding_format`",
+        "correct": false,
+        "explanation": "`encoding_format` controls whether the returned vector is encoded as float or base64; it does not change the vector's size."
+      },
+      {
+        "id": "c",
+        "text": "`service_tier`",
+        "correct": false,
+        "explanation": "`service_tier` selects the priority tier for the request (such as `auto` or `flex`); it has no effect on embedding dimensions."
+      },
+      {
+        "id": "d",
+        "text": "`model`",
+        "correct": false,
+        "explanation": "`model` selects which embedding model to call; requesting a vector size is a separate, dedicated parameter."
+      }
+    ]
+  },
+  {
+    "id": "q-b58e3f9a2c71",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/observability",
+    "stem": "In a Chat Completions response, what is the documented purpose of the `system_fingerprint` field?",
+    "objectiveTitle": "Inference observability and integrations",
+    "sources": [
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "This fingerprint represents the backend configuration that the model runs with."
+      },
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism."
+      },
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "A unique identifier representing your end-user, which can help us to monitor and detect abuse."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It represents the backend configuration, so it can be used with the `seed` parameter to detect changes that might affect determinism",
+        "correct": true,
+        "explanation": "The reference says this fingerprint represents the backend configuration the model runs with, used with `seed` to understand when backend changes might impact determinism."
+      },
+      {
+        "id": "b",
+        "text": "It reports how many GPU replicas are currently serving the endpoint",
+        "correct": false,
+        "explanation": "Replica counts are a capacity concept covered elsewhere; the chat completion schema does not describe `system_fingerprint` this way."
+      },
+      {
+        "id": "c",
+        "text": "It uniquely identifies the end user who made the request",
+        "correct": false,
+        "explanation": "That is the documented purpose of the separate `user` parameter, not `system_fingerprint`."
+      },
+      {
+        "id": "d",
+        "text": "It reports the cumulative prompt and completion token counts",
+        "correct": false,
+        "explanation": "That is the documented purpose of the `usage` object, not `system_fingerprint`."
+      }
+    ]
+  },
+  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -482,6 +876,47 @@
         "text": "query, documents, and user",
         "correct": false,
         "explanation": "model is required but omitted here, and user is an optional identifier rather than a required field."
+      }
+    ]
+  },
+  {
+    "id": "q-c71b4f9a3d85",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/framework-integrations",
+    "stem": "Beyond calling the OpenAI-compatible API directly, what does the Token Factory Quickstart identify as a way to put inference into your applications?",
+    "objectiveTitle": "Third-party framework integrations",
+    "sources": [
+      {
+        "title": "Quickstart",
+        "url": "https://docs.tokenfactory.nebius.com/quickstart.md",
+        "excerpt": "Build inference into applications that are based on supported third-party integrations"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Supported third-party integrations",
+        "correct": true,
+        "explanation": "The Quickstart's \"Third-party integrations\" card describes building inference into applications based on supported third-party integrations."
+      },
+      {
+        "id": "b",
+        "text": "Fine-tuning datasets to increase output accuracy",
+        "correct": false,
+        "explanation": "That describes the Quickstart's \"Fine-tuning\" card, not the third-party integrations path."
+      },
+      {
+        "id": "c",
+        "text": "Authenticating and making requests to the inference API",
+        "correct": false,
+        "explanation": "That describes the Quickstart's \"API\" card, which is the direct API path the question excludes."
+      },
+      {
+        "id": "d",
+        "text": "Sending prompts, chats, or images and getting responses",
+        "correct": false,
+        "explanation": "That describes the Quickstart's \"Inference\" card, a different capability from third-party integrations."
       }
     ]
   },
@@ -2315,6 +2750,47 @@
     ]
   },
   {
+    "id": "q-d49a1e7f3c82",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/chat-completions",
+    "stem": "If a Chat Completions request omits the `max_tokens` parameter, what does the API reference say the value defaults to?",
+    "objectiveTitle": "Chat completions: parameters, streaming, and responses",
+    "sources": [
+      {
+        "title": "Chat completion API",
+        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
+        "excerpt": "If omitted or set to null, defaults to 8192 tokens."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "8192 tokens",
+        "correct": true,
+        "explanation": "The reference states that `max_tokens`, if omitted or set to null, defaults to 8192 tokens."
+      },
+      {
+        "id": "b",
+        "text": "Unlimited — generation stops only when the model reaches a natural stop point",
+        "correct": false,
+        "explanation": "The reference defines an explicit numeric default, so generation is not unbounded when the parameter is omitted."
+      },
+      {
+        "id": "c",
+        "text": "100 tokens",
+        "correct": false,
+        "explanation": "100 appears only as an example value for `max_tokens` in the reference, not as its documented default."
+      },
+      {
+        "id": "d",
+        "text": "1 completion",
+        "correct": false,
+        "explanation": "1 is the documented default for the `n` parameter (number of completions to generate), not for `max_tokens`."
+      }
+    ]
+  },
+  {
     "id": "q-de01a1b2c3d4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -3058,6 +3534,52 @@
         "text": "Setting up a third-party framework integration",
         "correct": false,
         "explanation": "Framework integrations extend capabilities for building applications; they are not what the guide names as the authentication step."
+      }
+    ]
+  },
+  {
+    "id": "q-f3a8d1c6e924",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/datasets",
+    "stem": "Which dataset format should you choose for fine-tuning when you need full control over tokenization, packing, loss masking, and attention masking yourself?",
+    "objectiveTitle": "Creating and managing datasets",
+    "sources": [
+      {
+        "title": "Dataset formats",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "Use the **Pretokenized** dataset format if you want to"
+      },
+      {
+        "title": "Dataset formats",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/datasets.md",
+        "excerpt": "Have full control over **tokenization, packing, loss masking, and attention masking**."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Pretokenized",
+        "correct": true,
+        "explanation": "The guide says to use the Pretokenized dataset format when you want full control over tokenization, packing, loss masking, and attention masking."
+      },
+      {
+        "id": "b",
+        "text": "Conversational",
+        "correct": false,
+        "explanation": "Conversational datasets are chat-style `messages` arrays; tokenization is handled for you, not controlled directly."
+      },
+      {
+        "id": "c",
+        "text": "Instruction",
+        "correct": false,
+        "explanation": "Instruction datasets are prompt/completion pairs; tokenization is handled for you, not controlled directly."
+      },
+      {
+        "id": "d",
+        "text": "Text",
+        "correct": false,
+        "explanation": "Text datasets are a single `text` field per line; tokenization is handled for you, not controlled directly."
       }
     ]
   },

@@ -1,53 +1,54 @@
 schema_version: 1
 id: q-9d1f7a4c3e68
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
-stem: What guarantee applies to the minimum replicas configured for a
-  dedicated endpoint while it is actively running?
+stem: What guarantee applies to the minimum replicas configured for a dedicated
+  endpoint while it is actively running?
 options:
   - id: a
-    text: They are reserved and non-preemptible, allocated to the
-      deployment for as long as the endpoint is active
+    text: They are reserved and non-preemptible, allocated to the deployment for as
+      long as the endpoint is active
     correct: true
-    explanation: The capacity documentation states that minimum replicas
-      are reserved and non-preemptible, remaining allocated for as long as
-      the endpoint is active.
+    explanation: The capacity documentation states that minimum replicas are
+      reserved and non-preemptible, remaining allocated for as long as the
+      endpoint is active.
   - id: b
-    text: They can be reclaimed at any time to serve another customer's
-      burst traffic
+    text: They can be reclaimed at any time to serve another customer's burst traffic
     correct: false
-    explanation: That describes capacity above the minimum, which depends
-      on burst availability; the minimum itself is reserved, not reclaimable.
+    explanation: That describes capacity above the minimum, which depends on burst
+      availability; the minimum itself is reserved, not reclaimable.
   - id: c
-    text: They remain reserved indefinitely, even after the endpoint is
-      stopped
+    text: They remain reserved indefinitely, even after the endpoint is stopped
     correct: false
-    explanation: The documentation states that if the endpoint stops for
-      any reason, this allocation is released, not kept indefinitely.
+    explanation: The documentation states that if the endpoint stops for any reason,
+      this allocation is released, not kept indefinitely.
   - id: d
     text: They come with a formal 99.9% monthly SLA
     correct: false
-    explanation: Self-service dedicated endpoints do not include a formal
-      SLA unless covered by contract; 99.9% is only a historical average,
-      not a guarantee tied to minimum replicas.
+    explanation: Self-service dedicated endpoints do not include a formal SLA unless
+      covered by contract; 99.9% is only a historical average, not a guarantee
+      tied to minimum replicas.
 evidence:
   - source_id: src-recovery-capacity
-    excerpt: Minimum replicas are reserved and non-preemptible and remain
-      allocated to your deployment for as long as the endpoint is active.
+    excerpt: Minimum replicas are reserved and non-preemptible and remain allocated
+      to your deployment for as long as the endpoint is active.
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
     locator: Minimum replicas guarantee
   - source_id: src-recovery-capacity
-    excerpt: If the endpoint stops for any reason, this allocation is
-      released
+    excerpt: If the endpoint stops for any reason, this allocation is released
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
     locator: Minimum replicas guarantee
   - source_id: src-recovery-capacity
-    excerpt: Self-service dedicated endpoints do not include a formal SLA
-      unless covered by contract.
+    excerpt: Self-service dedicated endpoints do not include a formal SLA unless
+      covered by contract.
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
     locator: SLA
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: cc809feca287c6ed746394851379fde83da4bdbe981f6a536b572ab1d853fb74

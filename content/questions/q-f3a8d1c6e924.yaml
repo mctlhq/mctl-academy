@@ -1,18 +1,18 @@
 schema_version: 1
 id: q-f3a8d1c6e924
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/datasets
-stem: Which dataset format should you choose for fine-tuning when you need
-  full control over tokenization, packing, loss masking, and attention
-  masking yourself?
+stem: Which dataset format should you choose for fine-tuning when you need full
+  control over tokenization, packing, loss masking, and attention masking
+  yourself?
 options:
   - id: a
     text: Pretokenized
     correct: true
-    explanation: The guide says to use the Pretokenized dataset format when
-      you want full control over tokenization, packing, loss masking, and
-      attention masking.
+    explanation: The guide says to use the Pretokenized dataset format when you want
+      full control over tokenization, packing, loss masking, and attention
+      masking.
   - id: b
     text: Conversational
     correct: false
@@ -21,24 +21,28 @@ options:
   - id: c
     text: Instruction
     correct: false
-    explanation: Instruction datasets are prompt/completion pairs;
-      tokenization is handled for you, not controlled directly.
+    explanation: Instruction datasets are prompt/completion pairs; tokenization is
+      handled for you, not controlled directly.
   - id: d
     text: Text
     correct: false
-    explanation: Text datasets are a single `text` field per line;
-      tokenization is handled for you, not controlled directly.
+    explanation: Text datasets are a single `text` field per line; tokenization is
+      handled for you, not controlled directly.
 evidence:
   - source_id: src-recovery-datasets
     excerpt: Use the **Pretokenized** dataset format if you want to
     source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
     locator: Pre-tokenized data > When to use pretokenized datasets
   - source_id: src-recovery-datasets
-    excerpt: Have full control over **tokenization, packing, loss masking,
-      and attention masking**.
+    excerpt: Have full control over **tokenization, packing, loss masking, and
+      attention masking**.
     source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
     locator: Pre-tokenized data > When to use pretokenized datasets
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: 5b2004cf33fb23df9a899bc9ee6ebc752f9b1e8df7e6b26687b0439d60fcf90c

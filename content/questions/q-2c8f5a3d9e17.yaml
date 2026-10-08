@@ -1,44 +1,46 @@
 schema_version: 1
 id: q-2c8f5a3d9e17
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
-stem: What capability do Nebius Sandboxes document as distinguishing them
-  from traditional containers, letting an AI agent try multiple execution
-  paths?
+stem: What capability do Nebius Sandboxes document as distinguishing them from
+  traditional containers, letting an AI agent try multiple execution paths?
 options:
   - id: a
-    text: Git-like branching — fork from any checkpoint, run parallel
-      explorations, and roll back instantly
+    text: Git-like branching — fork from any checkpoint, run parallel explorations,
+      and roll back instantly
     correct: true
-    explanation: The overview states that, unlike traditional containers,
-      Sandboxes supports Git-like branching, letting you fork from any
-      checkpoint and roll back instantly.
+    explanation: The overview states that, unlike traditional containers, Sandboxes
+      supports Git-like branching, letting you fork from any checkpoint and roll
+      back instantly.
   - id: b
-    text: OCI image support for importing images from any OCI-compliant
-      registry
+    text: OCI image support for importing images from any OCI-compliant registry
     correct: false
-    explanation: OCI image support is a separate documented feature, about
-      sandbox base images, not branching execution state.
+    explanation: OCI image support is a separate documented feature, about sandbox
+      base images, not branching execution state.
   - id: c
-    text: Built-in resource metrics tracking CPU time, memory usage, and
-      I/O operations
+    text: Built-in resource metrics tracking CPU time, memory usage, and I/O
+      operations
     correct: false
-    explanation: Resource metrics are a separate documented feature, about
-      measuring an execution, not forking or rolling back state.
+    explanation: Resource metrics are a separate documented feature, about measuring
+      an execution, not forking or rolling back state.
   - id: d
     text: Async operations with polling and cancellation support
     correct: false
-    explanation: Async operations describe how long-running work is managed,
-      not the branching capability itself.
+    explanation: Async operations describe how long-running work is managed, not the
+      branching capability itself.
 evidence:
   - source_id: src-recovery-sandbox
-    excerpt: Unlike traditional containers, Sandboxes supports Git-like
-      branching — fork from any checkpoint, run parallel explorations, and
-      roll back instantly.
+    excerpt: Unlike traditional containers, Sandboxes supports Git-like branching —
+      fork from any checkpoint, run parallel explorations, and roll back
+      instantly.
     source_sha256: 895f554935676f690ba684209e132b1d1c12077aa4b8461c3be5cfb575fd28d6
     locator: Overview
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: dc361e7e90ba5576ba88557664b962d7ec5aae17e94b205aee69b33e921583ce

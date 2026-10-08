@@ -1,21 +1,21 @@
 schema_version: 1
 id: q-0f3d9a7c2b56
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
-stem: On `GET /v1/models`, what is the documented default value of the
-  `verbose` query parameter?
+stem: On `GET /v1/models`, what is the documented default value of the `verbose`
+  query parameter?
 options:
   - id: a
     text: "`false`"
     correct: true
-    explanation: The `verbose` parameter's schema sets its type to boolean
-      with a default of `false`.
+    explanation: The `verbose` parameter's schema sets its type to boolean with a
+      default of `false`.
   - id: b
     text: "`true`"
     correct: false
-    explanation: "`true` is the opposite of the documented default; a caller
-      must explicitly set it to get the extended fields."
+    explanation: "`true` is the opposite of the documented default; a caller must
+      explicitly set it to get the extended fields."
   - id: c
     text: "`1`"
     correct: false
@@ -24,8 +24,8 @@ options:
   - id: d
     text: "`auto`"
     correct: false
-    explanation: "`auto` is the documented default for `service_tier`, a
-      different parameter entirely."
+    explanation: "`auto` is the documented default for `service_tier`, a different
+      parameter entirely."
 evidence:
   - source_id: src-recovery-models
     excerpt: "type: boolean default: false title: Verbose"
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: 7e6765c2d51519762a0f0d4d28cdc9efc0a08c4a10ad421536f83ebeb6352aa1
