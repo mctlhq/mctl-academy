@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-dedicated-endpoint-faq
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/faq.md
+title: FAQ & Troubleshooting
+retrieved_at: 2026-10-08T17:24:40Z
+sha256: 205ca9f6fe1887f0a50159987aa0a314ba8d7583a4349f69be80d167e3581c69
+objectives:
+  - domain-4/capacity-and-scaling
+  - domain-4/observability
+snapshot:
+  bucket: academy-source-snapshots
+  key: 205ca9f6fe1887f0a50159987aa0a314ba8d7583a4349f69be80d167e3581c69
+status: current

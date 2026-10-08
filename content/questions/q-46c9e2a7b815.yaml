@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-46c9e2a7b815
+status: published
+domain: domain-3
+objective: domain-3/fine-tuning-jobs
+stem: According to the documented fine-tuning job status progression, which
+  status comes first, before `queued` and `running`?
+options:
+  - id: a
+    text: "`validating_files`"
+    correct: true
+    explanation: The job's key fields list the status progression as
+      `validating_files` → `queued` → `running` → `succeeded` / `failed`, with
+      `validating_files` first.
+  - id: b
+    text: "`queued`"
+    correct: false
+    explanation: "`queued` is the second status in the documented progression, after
+      `validating_files`."
+  - id: c
+    text: "`running`"
+    correct: false
+    explanation: "`running` is the third status in the documented progression, after
+      `validating_files` and `queued`."
+  - id: d
+    text: "`succeeded`"
+    correct: false
+    explanation: "`succeeded` is one of the two documented terminal statuses,
+      reached at the end of the progression, not the start."
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: "`status`: `validating_files` → `queued` → `running` → `succeeded` /
+      `failed`"
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+    locator: Fine-tuning job object (response shape) > Key fields to watch
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T17:23:06Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: e680a005091335d65b450374016be18204dd5f9c6e8fe6462161e978efe02ae1

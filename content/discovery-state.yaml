@@ -841,8 +841,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/custom-weights.md
     first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-api.md
-    first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-ui.md
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/faq.md

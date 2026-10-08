@@ -219,3 +219,9 @@ sources:
     title: "Quickstart: Deploy via API"
     objectives:
       - domain-1/api-authentication
+  - id: src-dedicated-endpoint-faq
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/faq.md
+    title: FAQ & Troubleshooting
+    objectives:
+      - domain-4/capacity-and-scaling
+      - domain-4/observability

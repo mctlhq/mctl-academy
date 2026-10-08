@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-a94f1d2b7c3e
+status: published
+domain: domain-2
+objective: domain-2/retrieval-pipelines
+stem: Which `/v1/embeddings` request parameter lets you request a specific
+  embedding vector size from the model, for use in a retrieval pipeline's vector
+  index?
+options:
+  - id: a
+    text: "`dimensions`"
+    correct: true
+    explanation: The Embeddings API reference describes `dimensions` as the
+      dimensions to use for the request, letting you choose the returned vector
+      size.
+  - id: b
+    text: "`encoding_format`"
+    correct: false
+    explanation: "`encoding_format` controls whether the returned vector is encoded
+      as float or base64; it does not change the vector's size."
+  - id: c
+    text: "`service_tier`"
+    correct: false
+    explanation: "`service_tier` selects the priority tier for the request (such as
+      `auto` or `flex`); it has no effect on embedding dimensions."
+  - id: d
+    text: "`model`"
+    correct: false
+    explanation: "`model` selects which embedding model to call; requesting a vector
+      size is a separate, dedicated parameter."
+evidence:
+  - source_id: src-recovery-embedding
+    excerpt: The dimensions to use for the request.
+    source_sha256: 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
+    locator: EmbeddingRequest > dimensions
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T17:23:06Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: 95ae31cc6908d54c50fd28c93be3bc76f1d4178641952760201f959b54ebd24e

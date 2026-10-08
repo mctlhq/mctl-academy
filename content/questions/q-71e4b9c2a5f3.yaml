@@ -1,0 +1,46 @@
+schema_version: 1
+id: q-71e4b9c2a5f3
+status: published
+domain: domain-3
+objective: domain-3/files-api
+stem: After uploading files through the Files API, which endpoint returns the
+  raw file contents rather than just its metadata?
+options:
+  - id: a
+    text: "`GET /v1/files/<file_ID>/content`"
+    correct: true
+    explanation: The "Download file contents" step calls `GET
+      /v1/files/<file_ID>/content` to retrieve the raw bytes of a file.
+  - id: b
+    text: "`GET /v1/files/<file_ID>`"
+    correct: false
+    explanation: That endpoint is used in the "Inspect file metadata" step and
+      returns metadata such as `filename`, `bytes`, and `purpose`, not the
+      file's contents.
+  - id: c
+    text: "`GET /v1/fine_tuning/jobs/<job_ID>/checkpoints`"
+    correct: false
+    explanation: That endpoint lists a job's checkpoints and their `result_files`
+      IDs; it does not return a file's contents.
+  - id: d
+    text: "`GET /v1/fine_tuning/jobs/<job_ID>/events`"
+    correct: false
+    explanation: That endpoint lists a fine-tuning job's lifecycle events; it has
+      nothing to do with file contents.
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: Download file contents
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+    locator: cURL walkthrough > Download file contents
+  - source_id: src-supervised-fine-tuning
+    excerpt: curl "https://api.tokenfactory.nebius.com/v1/files/<file_ID>/content"
+    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+    locator: cURL walkthrough > Download file contents
+authored:
+  by: agent:claude-author
+  at: 2026-10-08T17:23:06Z
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-08T17:42:34Z
+  content_sha256: d131b03328a4e7090e3caa841f5922df2255984c00c568a8c6e53fde51337f64
