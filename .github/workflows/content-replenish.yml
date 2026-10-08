@@ -2773,14 +2773,16 @@ jobs:
           fi
           # Make exactly one credential reachable. claude-code-action rewrites
           # origin to https://x-access-token:<first token>@github.com/... in
-          # every agent step, so the expired token sits in the remote URL, not
-          # in the checkout extraheader. Reset the URL, drop any extraheader,
-          # and push with the fresh token for this one command only.
+          # every agent step, so the expired token sits in the remote URL, and
+          # actions/checkout keeps its own header in an included config file
+          # that `git config --local --unset-all` cannot reach. Reset the URL,
+          # then clear every extraheader git already knows with an empty value
+          # (git's documented reset) and add the fresh one: run 37748173704
+          # sent both and GitHub answered 400 "Duplicate header: Authorization".
           git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
-          git config --local --unset-all http.https://github.com/.extraheader || true
           auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 | tr -d '\n')
           echo "::add-mask::${auth}"
-          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${{ steps.branch.outputs.name }}"
+          git -c "http.https://github.com/.extraheader=" -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${{ steps.branch.outputs.name }}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       # Three artifacts, and the split is the point: nothing an agent wrote may
@@ -4177,10 +4179,11 @@ jobs:
           git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -m "content(replenish): promote ${k} reviewed question(s)" \
             -m "Reviewed by ${REVIEWER_ID} (${REVIEWER_MODEL}) against the two CONTENT-POLICY criteria; receipt with fingerprints committed under docs/content/. Rejected new items are dropped, rejected re-validations return to needs_review."
           git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
-          git config --local --unset-all http.https://github.com/.extraheader || true
           auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')
           echo "::add-mask::${auth}"
-          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${BRANCH}"
+          # Empty value first: it clears the header actions/checkout persisted
+          # (see the author job's push).
+          git -c "http.https://github.com/.extraheader=" -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth}" push origin "HEAD:${BRANCH}"
 
           node scripts/replenish-prepare.mjs pr-body --candidates _run/candidates.json --receipt "$receipt" \
             --captured "$CAPTURED" --selected _run/from-prbody/selected.json \
