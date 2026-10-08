@@ -2457,3 +2457,37 @@ test("mergeVersions keeps every earlier hash of a re-captured source", () => {
   assert.deepEqual(mergeVersions({ sha256: B, status: "current", versions: [A] }, C), [A]);
   assert.deepEqual(mergeVersions({ sha256: C, status: "current", versions: [A, B] }, C), [A, B]);
 });
+
+test("each job pushes with an App token minted after its agents, not the one from the top of the job", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // The App token lives one hour. Run 37702168094 spent 74 minutes in the
+  // author agents and lost five question files to "Invalid username or token"
+  // on the push. A refactor that hoists the push-token step back above the
+  // agents, or points the push at steps.app-token, brings that run back with
+  // every gate still green.
+  const cases = [
+    { job: "author", lastAgent: "author-agent-2", pusher: (s) => s.id === "commit", name: "author push" },
+    {
+      job: "review",
+      lastAgent: "reviewer-agent-2",
+      pusher: (s) => s.name === "Commit the review and open the pull request",
+      name: "review push",
+    },
+  ];
+  for (const { job, lastAgent, pusher, name } of cases) {
+    const steps = workflow.jobs[job].steps;
+    const mint = steps.findIndex((s) => s.id === "push-token");
+    const agent = steps.findIndex((s) => s.id === lastAgent);
+    const push = steps.findIndex(pusher);
+    assert.notEqual(mint, -1, `${name}: no push-token step`);
+    assert.notEqual(agent, -1, `${name}: ${lastAgent} not found`);
+    assert.notEqual(push, -1, `${name}: pushing step not found`);
+    assert.ok(mint > agent, `${name}: push-token is minted before ${lastAgent}`);
+    assert.ok(mint < push, `${name}: push-token is minted after the pushing step`);
+    const env = JSON.stringify(steps[push].env);
+    assert.ok(env.includes("steps.push-token.outputs.token"), `${name}: does not use the fresh token`);
+    assert.ok(!env.includes("steps.app-token.outputs.token"), `${name}: still uses the first token`);
+  }
+});
