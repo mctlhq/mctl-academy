@@ -781,6 +781,84 @@ test("every commit takes its identity from the command line, not from .git/confi
   }
 });
 
+test("the artifacts that survive a failure carry the evidence and the authored bank", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // A run that fails at the agent uploads nothing else: the commit and push
+  // steps are skipped. These artifacts are the only record of what happened,
+  // so they carry the questions the agent wrote and the decision evidence --
+  // readable afterwards rather than promotable, which the review job still
+  // gates.
+  const pathsOf = (job, name) => {
+    const step = workflow.jobs[job].steps.find((x) => x.with?.name === name);
+    assert.ok(step, `${job} has no ${name} artifact`);
+    assert.equal(step.if, "always()", `${name} is not uploaded when the job fails`);
+    return step.with.path
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+  };
+  for (const [job, name, evidence] of [
+    ["author", "authoring-${{ github.run_id }}", "exec-authoring-${{ github.run_id }}"],
+    ["review", "review-${{ github.run_id }}", "exec-review-${{ github.run_id }}"],
+  ]) {
+    const paths = pathsOf(job, name);
+    assert.ok(paths.includes("content/questions/"), `${name} does not carry the authored questions`);
+    // upload-artifact roots a zip at the least common ancestor of its paths.
+    // $RUNNER_TEMP is outside the workspace, so listing it here would re-root
+    // every entry, and only when exec/ was non-empty: the same artifact name
+    // with two layouts, in the one artifact meant to be read after a failure.
+    assert.ok(
+      !paths.some((p) => p.includes("runner.temp")),
+      `${name} lists a path outside the workspace and would be re-rooted`,
+    );
+    assert.deepEqual(
+      pathsOf(job, evidence),
+      ["${{ runner.temp }}/exec/"],
+      `${evidence} is not the execution evidence on its own`,
+    );
+  }
+});
+
+test("the retry reset keeps the interrupted author attempt's question files", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // `git clean -fd` deletes the primary attempt's untracked files before the
+  // fallback runs, so without a copy the artifact holds only the last
+  // attempt's work -- not the 19 files the motivating run lost.
+  // The reset in front of the author's retry, not the selector's: the selector
+  // writes no question files.
+  const steps = workflow.jobs.author.steps;
+  const reset = steps[steps.findIndex((x) => x.id === "author-agent-2") - 1];
+  assert.equal(reset?.name, "Undo what the interrupted attempt left behind");
+  const dir = mkdtempSync(join(tmpdir(), "academy-reset-"));
+  // Outside the repository, as the runner's temp is: inside it `git clean`
+  // would take the copy too.
+  const temp = mkdtempSync(join(tmpdir(), "academy-reset-temp-"));
+  try {
+    const sh = (cmd) => execFileSync("bash", ["-c", cmd], { cwd: dir, stdio: "pipe" });
+    sh("git init -q . && mkdir -p content/questions && echo kept > content/questions/q-kept.yaml");
+    sh("git add -A && git -c user.name=t -c user.email=t@t commit -q -m base");
+    sh("echo new > content/questions/q-new.yaml && echo edit >> content/questions/q-kept.yaml");
+    execFileSync("bash", ["-c", reset.run], {
+      cwd: dir,
+      env: { ...process.env, RUNNER_TEMP: temp },
+      stdio: "pipe",
+    });
+    // The tree is clean again ...
+    assert.equal(sh("git status --porcelain").toString().trim(), "");
+    // ... and what the attempt wrote survived outside it.
+    const saved = join(temp, "exec", "discarded-author-primary");
+    assert.equal(readFileSync(join(saved, "q-new.yaml"), "utf8"), "new\n");
+    assert.equal(readFileSync(join(saved, "q-kept.yaml"), "utf8"), "kept\nedit\n");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+    rmSync(temp, { recursive: true, force: true });
+  }
+});
+
 test("bun is pinned to the version the agent action installs under it", () => {
   const text = readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8");
   // claude-code-action embeds its own oven-sh/setup-bun. With `latest` here the
@@ -996,7 +1074,19 @@ test("an exhausted token is retried on the second one and never read as an answe
         join(dir, "claude-execution-output.json"),
         typeof result === "string" ? result : JSON.stringify(result),
       );
-    return { dir, env: { ...process.env, RUNNER_TEMP: dir, GITHUB_OUTPUT: join(dir, "out.txt"), ...env } };
+    // EXEC_TAG names the file each decision writes its evidence to. The
+    // workflow sets it on all six steps; supplying it here keeps the fixture a
+    // model of the workflow rather than of a step run without its env.
+    return {
+      dir,
+      env: {
+        ...process.env,
+        RUNNER_TEMP: dir,
+        GITHUB_OUTPUT: join(dir, "out.txt"),
+        EXEC_TAG: "fixture",
+        ...env,
+      },
+    };
   };
   const exits = (run, envs, result) => {
     const { dir, env } = stage(envs, result);
@@ -1014,6 +1104,22 @@ test("an exhausted token is retried on the second one and never read as an answe
     try {
       execFileSync("bash", ["-c", run], { cwd: dir, env, stdio: ["ignore", "pipe", "pipe"] });
       return /failed=(\w+)/.exec(readFileSync(env.GITHUB_OUTPUT, "utf8"))?.[1];
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  // What the decision wrote down about itself. The step may exit non-zero --
+  // the evidence has to survive that, since a failing run is the one worth
+  // reading afterwards.
+  const evidence = (run, envs, result) => {
+    const { dir, env } = stage(envs, result);
+    try {
+      try {
+        execFileSync("bash", ["-c", run], { cwd: dir, env, stdio: ["ignore", "pipe", "pipe"] });
+      } catch {
+        /* the step failing is one of the cases under test */
+      }
+      return JSON.parse(readFileSync(join(dir, "exec", "fixture.json"), "utf8"));
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -1064,8 +1170,60 @@ test("an exhausted token is retried on the second one and never read as an answe
         "an execution output with no result entry must retry, not pass",
       );
 
+      // Every decision leaves behind what it decided from. The file this
+      // reads is cleared before each agent and overwritten by the next, and
+      // was never uploaded, so "why is_error" had to be guessed from step
+      // durations. Non-content fields only: the action hides the execution
+      // output deliberately, and a turn count and a cost answer the question
+      // without republishing what it hid.
+      assert.deepEqual(
+        evidence(check.run, { OUTCOME: "success" }, [
+          { type: "result", subtype: "success", is_error: false, num_turns: 7, total_cost_usd: 0.4 },
+        ]),
+        {
+          type: "result",
+          subtype: "success",
+          is_error: false,
+          num_turns: 7,
+          duration_ms: null,
+          duration_api_ms: null,
+          total_cost_usd: 0.4,
+        },
+      );
+      // Valid JSON that is not an array is a state the decision above already
+      // classifies; the evidence must say so rather than call it unparseable.
+      assert.match(
+        evidence(check.run, { OUTCOME: "success" }, { type: "result" }).note,
+        /not the expected array/,
+        "a non-array execution output is mislabelled",
+      );
+      assert.match(
+        evidence(check.run, { OUTCOME: "success" }, null).note,
+        /wrote no execution output/,
+        "an absent execution output leaves no explanation behind",
+      );
+      assert.match(
+        evidence(check.run, { OUTCOME: "success" }, "{ truncated").note,
+        /unparseable/,
+        "an unparseable execution output leaves no explanation behind",
+      );
+
       const closed = steps[last + 1];
       assert.equal(closed.name, "Neither token could run this agent");
+      // The fallback decision writes the same evidence, from a copy of the
+      // block that sits after an early exit when there is no second token.
+      assert.equal(
+        evidence(closed.run, { HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" }, [
+          { type: "result", is_error: true, num_turns: 1 },
+        ]).is_error,
+        true,
+        "the fallback decision leaves nothing behind",
+      );
+      // Six hand-copied blocks: pin them the way the other duplicated checks
+      // are pinned, so one edited copy cannot drift quietly.
+      const block = (run) => run.match(/# Keep what the decision was made from[\s\S]*?\nfi\n/)?.[0];
+      assert.ok(block(check.run), `${check.name} has no evidence block`);
+      assert.equal(block(closed.run), block(check.run), "the evidence copies have drifted apart");
       // Same treatment: the fallback's own result decides, and a run with no
       // second token at all is a failure rather than a quiet pass.
       // Everything else says "the retry went fine", so only the HAS_FALLBACK

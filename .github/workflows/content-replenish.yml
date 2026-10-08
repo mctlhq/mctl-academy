@@ -591,6 +591,7 @@ jobs:
         id: selector-agent-check
         if: steps.branch.outputs.new_pages != '0'
         env:
+          EXEC_TAG: selector-primary
           OUTCOME: ${{ steps.selector-agent.outcome }}
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
@@ -626,6 +627,26 @@ jobs:
             is_error=$("$JQ" -r 'if type != "array" then "true"
               else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
               end' "$out" 2>/dev/null || echo true)
+          fi
+          # Keep what the decision was made from. This file is cleared before
+          # every agent and overwritten by the next, so the job would otherwise
+          # end holding only the last attempt's copy -- and it is never
+          # uploaded, which is why "why is_error" has had to be guessed. Only
+          # the non-content fields are kept: the action hides the execution
+          # output for a reason, and a cost and a turn count answer the
+          # question without republishing what it hid. Written under
+          # $RUNNER_TEMP on purpose -- _run/ is inside the manifest this very
+          # step precedes, and the repository root is inside the boundary check.
+          mkdir -p "$RUNNER_TEMP/exec"
+          if [ -f "$out" ]; then
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
+              "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
+              || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
+          else
+            echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
@@ -951,6 +972,7 @@ jobs:
       - name: Neither token could run this agent
         if: steps.branch.outputs.new_pages != '0' && steps.selector-agent-check.outputs.failed == 'true'
         env:
+          EXEC_TAG: selector-fallback
           FALLBACK_OUTCOME: ${{ steps.selector-agent-2.outcome }}
           HAS_FALLBACK: ${{ steps.fallback-token.outputs.available }}
           # Same reason as every other shell step between an agent and the
@@ -990,6 +1012,26 @@ jobs:
             is_error=$("$JQ" -r 'if type != "array" then "true"
               else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
               end' "$out" 2>/dev/null || echo true)
+          fi
+          # Keep what the decision was made from. This file is cleared before
+          # every agent and overwritten by the next, so the job would otherwise
+          # end holding only the last attempt's copy -- and it is never
+          # uploaded, which is why "why is_error" has had to be guessed. Only
+          # the non-content fields are kept: the action hides the execution
+          # output for a reason, and a cost and a turn count answer the
+          # question without republishing what it hid. Written under
+          # $RUNNER_TEMP on purpose -- _run/ is inside the manifest this very
+          # step precedes, and the repository root is inside the boundary check.
+          mkdir -p "$RUNNER_TEMP/exec"
+          if [ -f "$out" ]; then
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
+              "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
+              || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
+          else
+            echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::error::neither token could run the agent"
@@ -1853,6 +1895,7 @@ jobs:
       - name: Author agent writes review_ready questions -- did it run at all
         id: author-agent-check
         env:
+          EXEC_TAG: author-primary
           OUTCOME: ${{ steps.author-agent.outcome }}
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
@@ -1888,6 +1931,26 @@ jobs:
             is_error=$("$JQ" -r 'if type != "array" then "true"
               else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
               end' "$out" 2>/dev/null || echo true)
+          fi
+          # Keep what the decision was made from. This file is cleared before
+          # every agent and overwritten by the next, so the job would otherwise
+          # end holding only the last attempt's copy -- and it is never
+          # uploaded, which is why "why is_error" has had to be guessed. Only
+          # the non-content fields are kept: the action hides the execution
+          # output for a reason, and a cost and a turn count answer the
+          # question without republishing what it hid. Written under
+          # $RUNNER_TEMP on purpose -- _run/ is inside the manifest this very
+          # step precedes, and the repository root is inside the boundary check.
+          mkdir -p "$RUNNER_TEMP/exec"
+          if [ -f "$out" ]; then
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
+              "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
+              || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
+          else
+            echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
@@ -2167,6 +2230,17 @@ jobs:
           LD_DEBUG: ""
         run: |
           set -euo pipefail
+          # Copy the interrupted attempt's question files aside before the tree
+          # is cleaned, or the authoring artifact only ever holds the retry's
+          # work and the primary attempt's is gone for good. $RUNNER_TEMP is
+          # beyond `git clean`, the boundary check and the guard manifest, and it
+          # rides along in the exec-authoring artifact, so it is inspectable and
+          # never promotable.
+          mkdir -p "$RUNNER_TEMP/exec/discarded-author-primary"
+          git status --porcelain -uall -- content/questions | cut -c4- \
+            | while IFS= read -r f; do
+                if [ -f "$f" ]; then cp -- "$f" "$RUNNER_TEMP/exec/discarded-author-primary/"; fi
+              done
           git checkout .
           git clean -fd
           # The interrupted attempt's execution output is one of the things it
@@ -2243,6 +2317,7 @@ jobs:
       - name: Neither token could run this agent
         if: steps.author-agent-check.outputs.failed == 'true'
         env:
+          EXEC_TAG: author-fallback
           FALLBACK_OUTCOME: ${{ steps.author-agent-2.outcome }}
           HAS_FALLBACK: ${{ steps.fallback-token.outputs.available }}
           # Same reason as every other shell step between an agent and the
@@ -2282,6 +2357,26 @@ jobs:
             is_error=$("$JQ" -r 'if type != "array" then "true"
               else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
               end' "$out" 2>/dev/null || echo true)
+          fi
+          # Keep what the decision was made from. This file is cleared before
+          # every agent and overwritten by the next, so the job would otherwise
+          # end holding only the last attempt's copy -- and it is never
+          # uploaded, which is why "why is_error" has had to be guessed. Only
+          # the non-content fields are kept: the action hides the execution
+          # output for a reason, and a cost and a turn count answer the
+          # question without republishing what it hid. Written under
+          # $RUNNER_TEMP on purpose -- _run/ is inside the manifest this very
+          # step precedes, and the repository root is inside the boundary check.
+          mkdir -p "$RUNNER_TEMP/exec"
+          if [ -f "$out" ]; then
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
+              "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
+              || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
+          else
+            echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::error::neither token could run the agent"
@@ -2843,6 +2938,18 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
+      # Its own artifact on purpose: with more than one search path
+      # upload-artifact roots the zip at their least common ancestor, so putting
+      # $RUNNER_TEMP next to the workspace paths would re-root every entry and
+      # flip the layout depending on whether exec/ happened to be empty.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: exec-authoring-${{ github.run_id }}
+          path: ${{ runner.temp }}/exec/
+          retention-days: 14
+          if-no-files-found: ignore
+
   review:
     needs: author
     if: needs.author.outputs.changed == 'true'
@@ -3237,6 +3344,7 @@ jobs:
         id: reviewer-agent-check
         if: steps.items.outputs.count != '0'
         env:
+          EXEC_TAG: reviewer-primary
           OUTCOME: ${{ steps.reviewer-agent.outcome }}
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
@@ -3272,6 +3380,26 @@ jobs:
             is_error=$("$JQ" -r 'if type != "array" then "true"
               else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
               end' "$out" 2>/dev/null || echo true)
+          fi
+          # Keep what the decision was made from. This file is cleared before
+          # every agent and overwritten by the next, so the job would otherwise
+          # end holding only the last attempt's copy -- and it is never
+          # uploaded, which is why "why is_error" has had to be guessed. Only
+          # the non-content fields are kept: the action hides the execution
+          # output for a reason, and a cost and a turn count answer the
+          # question without republishing what it hid. Written under
+          # $RUNNER_TEMP on purpose -- _run/ is inside the manifest this very
+          # step precedes, and the repository root is inside the boundary check.
+          mkdir -p "$RUNNER_TEMP/exec"
+          if [ -f "$out" ]; then
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
+              "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
+              || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
+          else
+            echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
@@ -3601,6 +3729,7 @@ jobs:
       - name: Neither token could run this agent
         if: steps.items.outputs.count != '0' && steps.reviewer-agent-check.outputs.failed == 'true'
         env:
+          EXEC_TAG: reviewer-fallback
           FALLBACK_OUTCOME: ${{ steps.reviewer-agent-2.outcome }}
           HAS_FALLBACK: ${{ steps.fallback-token.outputs.available }}
           # Same reason as every other shell step between an agent and the
@@ -3640,6 +3769,26 @@ jobs:
             is_error=$("$JQ" -r 'if type != "array" then "true"
               else ([.[] | select(.type == "result")] | if length > 0 then (.[-1].is_error // false | tostring) else "true" end)
               end' "$out" 2>/dev/null || echo true)
+          fi
+          # Keep what the decision was made from. This file is cleared before
+          # every agent and overwritten by the next, so the job would otherwise
+          # end holding only the last attempt's copy -- and it is never
+          # uploaded, which is why "why is_error" has had to be guessed. Only
+          # the non-content fields are kept: the action hides the execution
+          # output for a reason, and a cost and a turn count answer the
+          # question without republishing what it hid. Written under
+          # $RUNNER_TEMP on purpose -- _run/ is inside the manifest this very
+          # step precedes, and the repository root is inside the boundary check.
+          mkdir -p "$RUNNER_TEMP/exec"
+          if [ -f "$out" ]; then
+            "$JQ" -c 'if type != "array" then {note: "execution output is \(type), not the expected array"}
+              else ([.[] | select(.type == "result")] | last // {}
+                | {type, subtype, is_error, num_turns, duration_ms, duration_api_ms, total_cost_usd})
+              end' \
+              "$out" > "$RUNNER_TEMP/exec/$EXEC_TAG.json" 2>/dev/null \
+              || echo '{"note":"execution output present but unparseable"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
+          else
+            echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
             echo "::error::neither token could run the agent"
@@ -4246,5 +4395,15 @@ jobs:
             _agent/
             !_run/from-author/
             docs/content/replenish-*-review.json
+            content/questions/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Separate from review-<run_id> for the same layout reason as above.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: exec-review-${{ github.run_id }}
+          path: ${{ runner.temp }}/exec/
           retention-days: 14
           if-no-files-found: ignore
