@@ -82,47 +82,6 @@
     ]
   },
   {
-    "id": "q-2c8f5a3d9e17",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "What capability do Nebius Sandboxes document as distinguishing them from traditional containers, letting an AI agent try multiple execution paths?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Unlike traditional containers, Sandboxes supports Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly",
-        "correct": true,
-        "explanation": "The overview states that, unlike traditional containers, Sandboxes supports Git-like branching, letting you fork from any checkpoint and roll back instantly."
-      },
-      {
-        "id": "b",
-        "text": "OCI image support for importing images from any OCI-compliant registry",
-        "correct": false,
-        "explanation": "OCI image support is a separate documented feature, about sandbox base images, not branching execution state."
-      },
-      {
-        "id": "c",
-        "text": "Built-in resource metrics tracking CPU time, memory usage, and I/O operations",
-        "correct": false,
-        "explanation": "Resource metrics are a separate documented feature, about measuring an execution, not forking or rolling back state."
-      },
-      {
-        "id": "d",
-        "text": "Async operations with polling and cancellation support",
-        "correct": false,
-        "explanation": "Async operations describe how long-running work is managed, not the branching capability itself."
-      }
-    ]
-  },
-  {
     "id": "q-3ed9d6aa21de",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -334,62 +293,6 @@
         "text": "`owned_by`",
         "correct": false,
         "explanation": "`owned_by` is a field of the Model object returned by the List models endpoint, unrelated to reranking documents."
-      }
-    ]
-  },
-  {
-    "id": "q-6b9e2f4a17c3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/retrieval-pipelines",
-    "stem": "You are composing a retrieval pipeline. Candidate passages have already been retrieved from the corpus, and you now need them ordered by how relevant each one is to the user's query before the best few are passed to the model. Which documented API operation performs this ranking step?",
-    "objectiveTitle": "Composing retrieval-augmented pipelines",
-    "sources": [
-      {
-        "title": "Reranking API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/rerank-documents.md",
-        "excerpt": "Reranks documents based on their relevance to a query."
-      },
-      {
-        "title": "Embeddings API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-embeddings.md",
-        "excerpt": "Input text to embed, encoded as a string or array of tokens."
-      },
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "Creates a model response for the given chat conversation."
-      },
-      {
-        "title": "List models API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/models/list-models.md",
-        "excerpt": "Lists the currently available models, and provides basic information about each one such as the owner and availability."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Create embeddings for the query and each candidate passage",
-        "correct": false,
-        "explanation": "The embeddings endpoint takes input text to embed and returns embedding vectors; it does not compare your documents against the query or return an ordering of them."
-      },
-      {
-        "id": "b",
-        "text": "Create a chat completion for the query",
-        "correct": false,
-        "explanation": "The chat completion endpoint creates a model response for the given chat conversation; generating an answer is a later pipeline stage than ranking the retrieved passages."
-      },
-      {
-        "id": "c",
-        "text": "Rerank the candidate documents against the query",
-        "correct": true,
-        "explanation": "The rerank operation reranks documents based on their relevance to a query; each result carries the document's index and a relevance score, so the pipeline can keep the most relevant passages."
-      },
-      {
-        "id": "d",
-        "text": "List the currently available models",
-        "correct": false,
-        "explanation": "The List models operation lists the currently available models and basic information such as the owner and availability; it takes no documents and returns no ranking."
       }
     ]
   },
@@ -696,57 +599,6 @@
     ]
   },
   {
-    "id": "q-b58e3f9a2c71",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/observability",
-    "stem": "In a Chat Completions response, what is the documented purpose of the `system_fingerprint` field?",
-    "objectiveTitle": "Inference observability and integrations",
-    "sources": [
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "This fingerprint represents the backend configuration that the model runs with."
-      },
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism."
-      },
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "A unique identifier representing your end-user, which can help us to monitor and detect abuse."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "It represents the backend configuration, so it can be used with the `seed` parameter to detect changes that might affect determinism",
-        "correct": true,
-        "explanation": "The reference says this fingerprint represents the backend configuration the model runs with, used with `seed` to understand when backend changes might impact determinism."
-      },
-      {
-        "id": "b",
-        "text": "It reports how many GPU replicas are currently serving the endpoint",
-        "correct": false,
-        "explanation": "Replica counts are a capacity concept covered elsewhere; the chat completion schema does not describe `system_fingerprint` this way."
-      },
-      {
-        "id": "c",
-        "text": "It uniquely identifies the end user who made the request",
-        "correct": false,
-        "explanation": "That is the documented purpose of the separate `user` parameter, not `system_fingerprint`."
-      },
-      {
-        "id": "d",
-        "text": "It reports the cumulative prompt and completion token counts",
-        "correct": false,
-        "explanation": "That is the documented purpose of the `usage` object, not `system_fingerprint`."
-      }
-    ]
-  },
-  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -866,93 +718,6 @@
         "text": "Sending prompts, chats, or images and getting responses",
         "correct": false,
         "explanation": "That describes the Quickstart's \"Inference\" card, a different capability from third-party integrations."
-      }
-    ]
-  },
-  {
-    "id": "q-cc01a1b2c3d4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/chat-completions",
-    "stem": "When `stream` is enabled in a Chat Completions request, how does Token Factory deliver the partial message deltas?",
-    "objectiveTitle": "Chat completions: parameters, streaming, and responses",
-    "sources": [
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "Tokens will be sent as data-only [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format)"
-      },
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "as they become available, with the stream terminated by a `data: [DONE]` message."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "As data-only server-sent events, with the stream terminated by a `data: [DONE]` message",
-        "correct": true,
-        "explanation": "The `stream` parameter is documented to send tokens as data-only server-sent events as they become available, and the stream ends with `data: [DONE]`."
-      },
-      {
-        "id": "b",
-        "text": "As binary WebSocket frames on a persistent socket",
-        "correct": false,
-        "explanation": "The Chat Completions API streams over HTTP server-sent events; the documentation does not describe a WebSocket transport."
-      },
-      {
-        "id": "c",
-        "text": "As a multipart/form-data response with one part per token",
-        "correct": false,
-        "explanation": "Multipart encoding is not used for streaming completions; the documented format is server-sent events."
-      },
-      {
-        "id": "d",
-        "text": "As a single JSON array returned only after generation finishes",
-        "correct": false,
-        "explanation": "Waiting for the whole array would defeat streaming; deltas are sent as they become available."
-      }
-    ]
-  },
-  {
-    "id": "q-cc02b2c3d4e5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/chat-completions",
-    "stem": "According to the Chat Completions API reference, what effect does a low `temperature` value such as 0.2 have on sampling?",
-    "objectiveTitle": "Chat completions: parameters, streaming, and responses",
-    "sources": [
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The output becomes more random across the vocabulary",
-        "correct": false,
-        "explanation": "The reference attributes more random output to higher values such as 0.8, not to low values."
-      },
-      {
-        "id": "b",
-        "text": "The output becomes more focused and deterministic than at higher values",
-        "correct": true,
-        "explanation": "The reference states that lower values like 0.2 make the output more focused and deterministic, while higher values like 0.8 make it more random."
-      },
-      {
-        "id": "c",
-        "text": "Nucleus sampling via `top_p` is disabled automatically",
-        "correct": false,
-        "explanation": "`top_p` is a separate parameter; the reference only recommends altering one of the two, it does not say one disables the other."
-      },
-      {
-        "id": "d",
-        "text": "Every repeated request is guaranteed to return byte-identical text",
-        "correct": false,
-        "explanation": "The reference describes the output as more focused and deterministic; it does not promise identical output across requests."
       }
     ]
   },
@@ -2695,47 +2460,6 @@
         "text": "Capacity is fixed at creation and cannot change while the endpoint runs",
         "correct": false,
         "explanation": "Autoscaling between minimum and maximum replicas is one of the controls dedicated endpoints give you."
-      }
-    ]
-  },
-  {
-    "id": "q-d49a1e7f3c82",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/chat-completions",
-    "stem": "If a Chat Completions request omits the `max_tokens` parameter, what does the API reference say the value defaults to?",
-    "objectiveTitle": "Chat completions: parameters, streaming, and responses",
-    "sources": [
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "If omitted or set to null, defaults to 8192 tokens."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "8192 tokens",
-        "correct": true,
-        "explanation": "The reference states that `max_tokens`, if omitted or set to null, defaults to 8192 tokens."
-      },
-      {
-        "id": "b",
-        "text": "Unlimited — generation stops only when the model reaches a natural stop point",
-        "correct": false,
-        "explanation": "The reference defines an explicit numeric default, so generation is not unbounded when the parameter is omitted."
-      },
-      {
-        "id": "c",
-        "text": "100 tokens",
-        "correct": false,
-        "explanation": "100 appears only as an example value for `max_tokens` in the reference, not as its documented default."
-      },
-      {
-        "id": "d",
-        "text": "1 completion",
-        "correct": false,
-        "explanation": "1 is the documented default for the `n` parameter (number of completions to generate), not for `max_tokens`."
       }
     ]
   },
@@ -5854,52 +5578,6 @@
     ]
   },
   {
-    "id": "q-ob02a9b0c1d2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/observability",
-    "stem": "Which token counts does the `usage` object of a Chat Completions response report?",
-    "objectiveTitle": "Inference observability and integrations",
-    "sources": [
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "completion_tokens: type: integer title: Completion Tokens description: Number of tokens in the generated completion. prompt_tokens: type: integer title: Prompt Tokens"
-      },
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "total_tokens: type: integer title: Total Tokens description: Total number of tokens used in the request (prompt + completion)."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "`prompt_tokens`, `completion_tokens`, and `total_tokens`",
-        "correct": true,
-        "explanation": "The Usage schema defines prompt tokens, completion tokens, and total tokens, where the total is prompt plus completion."
-      },
-      {
-        "id": "b",
-        "text": "`gpu_temperature_celsius` and `fan_speed_rpm`",
-        "correct": false,
-        "explanation": "Hardware telemetry is not part of the chat completion response."
-      },
-      {
-        "id": "c",
-        "text": "`disk_write_mbps` and `network_latency_ms`",
-        "correct": false,
-        "explanation": "Transport metrics are not reported in the usage object."
-      },
-      {
-        "id": "d",
-        "text": "`database_connections_active`",
-        "correct": false,
-        "explanation": "Database counters have nothing to do with inference usage."
-      }
-    ]
-  },
-  {
     "id": "q-op01d1e2f3a4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -6448,47 +6126,6 @@
     ]
   },
   {
-    "id": "q-pf11f0a1b2c3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-1",
-    "objective": "domain-1/playground",
-    "stem": "Which model parameter makes generated output more random at higher values and more focused at lower values?",
-    "objectiveTitle": "Using the UI and playground to compare models",
-    "sources": [
-      {
-        "title": "Chat completion API",
-        "url": "https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md",
-        "excerpt": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "`temperature`",
-        "correct": true,
-        "explanation": "The API reference describes temperature between 0 and 2: higher values like 0.8 make output more random, lower values like 0.2 more focused and deterministic."
-      },
-      {
-        "id": "b",
-        "text": "TCP window size",
-        "correct": false,
-        "explanation": "A transport-layer setting with no effect on sampling."
-      },
-      {
-        "id": "c",
-        "text": "CPU core affinity",
-        "correct": false,
-        "explanation": "A process scheduling setting, not a model parameter."
-      },
-      {
-        "id": "d",
-        "text": "Display refresh rate",
-        "correct": false,
-        "explanation": "A display property, unrelated to generation."
-      }
-    ]
-  },
-  {
     "id": "q-pf12a1b2c3d4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -6695,93 +6332,6 @@
         "text": "The model automatically switches to 4-bit quantization mode",
         "correct": false,
         "explanation": "Quantization is a model architecture format, not a rate limit quota mechanism."
-      }
-    ]
-  },
-  {
-    "id": "q-sb01a9b0c1d2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Why do Sandboxes use VM-level isolation when running code produced by an AI agent?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "So that untrusted code cannot escape the sandbox or affect other workloads",
-        "correct": true,
-        "explanation": "The Sandboxes overview lists secure isolation first: VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads."
-      },
-      {
-        "id": "b",
-        "text": "To make model token generation faster",
-        "correct": false,
-        "explanation": "Sandboxes execute code; they do not run model inference or change its throughput."
-      },
-      {
-        "id": "c",
-        "text": "To remove the need for an API key",
-        "correct": false,
-        "explanation": "Isolation is about containing executed code; authentication is unaffected."
-      },
-      {
-        "id": "d",
-        "text": "To convert scripts into static web pages",
-        "correct": false,
-        "explanation": "Sandboxes execute code and capture results; they do not transform code into HTML."
-      }
-    ]
-  },
-  {
-    "id": "q-sb02b0c1d2e3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Which Sandboxes behaviours does the documentation cite as helping to prevent abuse when students or agents execute code?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Automatic cleanup and resource limits help prevent abuse."
-      },
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Number of simultaneously running operations is limited to 50."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Automatic git commits after every execution",
-        "correct": false,
-        "explanation": "Sandboxes offer Git-like branching of execution state, not automatic commits, and that feature is not what the docs tie to abuse prevention."
-      },
-      {
-        "id": "b",
-        "text": "Automatic cleanup and resource limits",
-        "correct": true,
-        "explanation": "The educational-platforms use case states that automatic cleanup and resource limits help prevent abuse; the beta also caps simultaneous operations at 50."
-      },
-      {
-        "id": "c",
-        "text": "DNS pre-fetching for faster downloads",
-        "correct": false,
-        "explanation": "DNS behaviour is not mentioned anywhere in the Sandboxes overview."
-      },
-      {
-        "id": "d",
-        "text": "An unlimited number of simultaneously running operations",
-        "correct": false,
-        "explanation": "The opposite is documented: during the beta, simultaneously running operations are limited to 50."
       }
     ]
   },
