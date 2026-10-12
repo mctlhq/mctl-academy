@@ -225,3 +225,8 @@ sources:
     objectives:
       - domain-4/capacity-and-scaling
       - domain-4/observability
+  - id: src-integrations-overview
+    url: https://docs.tokenfactory.nebius.com/integrations/overview.md
+    title: Overview
+    objectives:
+      - domain-2/framework-integrations

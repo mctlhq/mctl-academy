@@ -41,7 +41,7 @@ evidence:
     source_sha256: 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
   - source_id: src-recovery-chat
     excerpt: Creates a model response for the given chat conversation.
-    source_sha256: ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
+    source_sha256: 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
   - source_id: src-recovery-models
     excerpt: Lists the currently available models, and provides basic information
       about each one such as the owner and availability.
@@ -52,5 +52,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 3bbaddc1a765cb978f4dadd4aa334068c3082f3552dd013502f75be990f18d5b
+  at: 2026-10-12T15:59:31Z
+  content_sha256: 86377073c70afd0f313046b2d678e3e4076b2789ac53f64f37f4eb8ebd06753e

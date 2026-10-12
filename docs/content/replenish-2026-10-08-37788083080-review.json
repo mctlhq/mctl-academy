@@ -3,13 +3,6 @@
   "reviewed_at": "2026-10-08T14:14:36Z",
   "questions": [
     {
-      "id": "q-6b9e2f4a17c3",
-      "content_sha256": "3bbaddc1a765cb978f4dadd4aa334068c3082f3552dd013502f75be990f18d5b",
-      "approved": true,
-      "reason": "The rerank page states \"Reranks documents based on their relevance to a query.\" and each RerankResult carries an index and a relevance_score, so the ranking step is the rerank operation; the embeddings, chat and models excerpts rule the other three options out.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
       "id": "q-7b2d9f4a1c63",
       "content_sha256": "2d45bcc4fcbafa9de2fcb678136c4d916885b8ee5a9f09c5018d71ce8d8a9cbf",
       "approved": true,
@@ -42,20 +35,6 @@
       "content_sha256": "6aa48c06c002ba9f1dbfa5684b754668ba303aaae4c92be6726adb318bc05735",
       "approved": true,
       "reason": "The RerankRequest schema lists \"required: - model - query - documents\" while user and service_tier (default auto) are optional, leaving one best answer.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-cc01a1b2c3d4",
-      "content_sha256": "b24bf3c620af5bef4af669a5bbe89b5e9dc685bae042ce160fa1c9c4fd32a577",
-      "approved": true,
-      "reason": "The stream parameter is documented as sending tokens \"as data-only [server-sent events] ... as they become available, with the stream terminated by a `data: [DONE]` message\", which only option a states.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-cc02b2c3d4e5",
-      "content_sha256": "80166134c7a42e965c9c354594e9576cedda6eeb4fa7ee9fc3f615a72bac9bc7",
-      "approved": true,
-      "reason": "The temperature description says \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and the page never promises byte-identical output or that top_p is disabled.",
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
@@ -409,13 +388,6 @@
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
-      "id": "q-ob02a9b0c1d2",
-      "content_sha256": "655d2f27b8a9a43df1d1d6d55af3b83adec63b2571dee1886b780b0a7a0a299a",
-      "approved": true,
-      "reason": "The Usage schema defines completion_tokens, prompt_tokens and \"total_tokens ... Total number of tokens used in the request (prompt + completion)\", so only option a lists real fields.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
       "id": "q-pf06a4b5c6d7",
       "content_sha256": "cde42511493ddb0df0a885dd4dd24fbb476a314a68f090594be3bc30493ca190",
       "approved": true,
@@ -427,13 +399,6 @@
       "content_sha256": "a81008dc05461bfa26749ed1e1e8cb61a1e43fcaca2c7965b7469886518fe9fa",
       "approved": true,
       "reason": "After the date \"you will not be able to select them in the Playground or send API requests using their model IDs\" and \"Token Factory does not automatically reroute requests from deprecated models\"; dedicated endpoints are explicitly unaffected.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-pf11f0a1b2c3",
-      "content_sha256": "0df09010ed83c0c22a34c63c515fdd4b29326a9abc23d164ad4f0acf31cf08a7",
-      "approved": true,
-      "reason": "The temperature description reads \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and no other option is a model parameter.",
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
@@ -484,6 +449,48 @@
       "approved": true,
       "reason": "The Educational platforms use case says \"Automatic cleanup and resource limits help prevent abuse.\", and the beta limits state \"Number of simultaneously running operations is limited to 50.\", defeating the unlimited-operations option.",
       "reviewed_at": "2026-10-08T14:14:36Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "3bbaddc1a765cb978f4dadd4aa334068c3082f3552dd013502f75be990f18d5b",
+      "approved": true,
+      "reason": "The rerank page states \"Reranks documents based on their relevance to a query.\" and each RerankResult carries an index and a relevance_score, so the ranking step is the rerank operation; the embeddings, chat and models excerpts rule the other three options out.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-12T15:59:31Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "b24bf3c620af5bef4af669a5bbe89b5e9dc685bae042ce160fa1c9c4fd32a577",
+      "approved": true,
+      "reason": "The stream parameter is documented as sending tokens \"as data-only [server-sent events] ... as they become available, with the stream terminated by a `data: [DONE]` message\", which only option a states.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-12T15:59:31Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "80166134c7a42e965c9c354594e9576cedda6eeb4fa7ee9fc3f615a72bac9bc7",
+      "approved": true,
+      "reason": "The temperature description says \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and the page never promises byte-identical output or that top_p is disabled.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-12T15:59:31Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "655d2f27b8a9a43df1d1d6d55af3b83adec63b2571dee1886b780b0a7a0a299a",
+      "approved": true,
+      "reason": "The Usage schema defines completion_tokens, prompt_tokens and \"total_tokens ... Total number of tokens used in the request (prompt + completion)\", so only option a lists real fields.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-12T15:59:31Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "0df09010ed83c0c22a34c63c515fdd4b29326a9abc23d164ad4f0acf31cf08a7",
+      "approved": true,
+      "reason": "The temperature description reads \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and no other option is a model parameter.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-12T15:59:31Z"
     }
   ]
 }
