@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-7f3a92c6e158
+status: review_ready
+domain: domain-2
+objective: domain-2/framework-integrations
+stem: In the Token Factory third-party integrations overview, which framework is
+  listed under the "AI Application Frameworks" category?
+options:
+  - id: a
+    text: Postman
+    correct: false
+    explanation: Postman is listed under the overview's Developer Tools category,
+      not AI Application Frameworks.
+  - id: b
+    text: Helicone
+    correct: false
+    explanation: Helicone is listed under the overview's Observability category,
+      not AI Application Frameworks.
+  - id: c
+    text: Langchain
+    correct: true
+    explanation: The overview's AI Application Frameworks category lists
+      Llama-Index and Langchain.
+  - id: d
+    text: Tavily
+    correct: false
+    explanation: Tavily is listed under the overview's Agentic Search category,
+      not AI Application Frameworks.
+evidence:
+  - source_id: src-integrations-overview
+    excerpt: "## AI Application Frameworks"
+    source_sha256: d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20
+  - source_id: src-integrations-overview
+    excerpt: <Card title="Langchain" icon="boxes-stacked"
+      href="/integrations/frameworks/langchain" />
+    source_sha256: d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20
+authored:
+  by: agent:claude-author
+  at: 2026-10-12T15:48:08Z
+course_id: agentic-ai-builder

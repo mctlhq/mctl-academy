@@ -1,0 +1,51 @@
+schema_version: 1
+id: q-b4de81f9a062
+status: review_ready
+domain: domain-4
+objective: domain-4/capacity-and-scaling
+stem: A self-service dedicated endpoint is stopped for scheduled maintenance.
+  According to the capacity documentation, what happens to the GPU capacity it
+  was using?
+options:
+  - id: a
+    text: It is released back to the shared pool, the same as if the endpoint
+      had been stopped manually
+    correct: true
+    explanation: The capacity documentation states that GPU capacity is released
+      back to the shared pool and that this applies regardless of why the
+      endpoint stopped, naming scheduled maintenance as one of those reasons.
+  - id: b
+    text: It stays allocated under the minimum replicas guarantee until the
+      endpoint restarts
+    correct: false
+    explanation: The minimum replicas guarantee is documented as applying only
+      while the endpoint is active; it is not a long-term reservation that
+      survives a stop.
+  - id: c
+    text: It remains available under the burst capacity used for scaling above
+      the minimum replicas
+    correct: false
+    explanation: Burst capacity is documented as governing scaling above the
+      minimum while an endpoint is running, not retaining capacity after a stop.
+  - id: d
+    text: It is automatically converted into reserved GPU capacity for the
+      account
+    correct: false
+    explanation: Reserved capacity is documented as a separate, contract-based
+      option arranged through Sales; stopping an endpoint does not convert
+      anything into a reservation.
+evidence:
+  - source_id: src-recovery-capacity
+    excerpt: When an endpoint stops, its GPU capacity is released back to the
+      shared pool.
+    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+  - source_id: src-recovery-capacity
+    excerpt: This applies regardless of why the endpoint stopped
+    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+  - source_id: src-recovery-capacity
+    excerpt: The endpoint is stopped for scheduled or emergency maintenance
+    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+authored:
+  by: agent:claude-author
+  at: 2026-10-12T15:48:08Z
+course_id: agentic-ai-builder
