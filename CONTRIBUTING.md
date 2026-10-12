@@ -62,8 +62,12 @@ blocks the merge.
 
 Standard for this organization:
 
-- Conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `ci:`, `refactor:`,
-  `test:`. Subject under 72 characters; the body explains *why*.
+- Conventional commits: `feat:`, `fix:`, `content:`, `chore:`, `docs:`, `ci:`,
+  `refactor:`, `test:`. Subject under 72 characters; the body explains *why*.
+- Use `content:` for any change to questions, sources or the content bundle.
+  Like `feat:` and `fix:` it cuts a release, which is what ships the bundle;
+  a `chore:` or `docs:` commit does not, so content typed that way never
+  reaches production.
 - Never commit to `main`. Branch, open a pull request, merge with a **merge
   commit** — never a squash.
 - Branch names: `feat/…`, `fix/…`, `ci/…`, `docs/…`, `chore/…`. Do not start a
