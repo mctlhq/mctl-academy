@@ -141,7 +141,7 @@ jobs:
             fi
           fi
           git checkout -B "$QUARANTINE_BRANCH"
-          git commit -m "chore(quarantine): auto-quarantine drifted sources and rebuild bundle"
+          git commit -m "content(quarantine): auto-quarantine drifted sources and rebuild bundle"
           git push --force origin "HEAD:${QUARANTINE_BRANCH}"
 
           existing=$(gh pr list --repo "$REPO" --state open --head "$QUARANTINE_BRANCH" --json number --jq '.[0].number // empty')
@@ -154,7 +154,7 @@ jobs:
           # commit on a side branch into something a human sees. Labels are
           # not: apply each with its own failure tolerance (#198, #199).
           pr_url=$(gh pr create --repo "$REPO" --base main --head "$QUARANTINE_BRANCH" \
-            --title "chore(quarantine): auto-quarantine drifted sources" \
+            --title "content(quarantine): auto-quarantine drifted sources" \
             --body "Upstream documentation drift detected by ${RUN_URL}.
 
           Sources marked \`drifted\` and their published questions moved to \`needs_review\`; the client bundle is rebuilt without them. Merge to deploy the fail-closed bundle. This branch is rebuilt from main on every drift run.")
