@@ -185,8 +185,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/maintenance.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/manage.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/network.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/not-enough-resources.md
@@ -843,8 +841,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-ui.md
     first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/faq.md
-    first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/operating.md
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/quickstart.md
@@ -952,8 +948,6 @@ seen:
   - url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-a-response.md
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-completion.md
-    first_seen: 2026-09-13
-  - url: https://docs.tokenfactory.nebius.com/api-reference/inference/generate.md
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/api-reference/introduction.md
     first_seen: 2026-09-13
@@ -1269,4 +1263,68 @@ seen:
     first_seen: 2026-10-08
   - url: https://docs.tokenfactory.nebius.com/sandboxes/mcp/tools/grep.md
     first_seen: 2026-10-08
+  - url: https://docs.nebius.com/compute/virtual-machines/create.md
+    first_seen: 2026-10-12
+  - url: https://docs.nebius.com/compute/virtual-machines/update.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/concepts/execution-lifecycle.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/concepts/images-checkpoints-and-branches.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/concepts/sessions-and-execution-modes.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/build-reusable-custom-environment.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/generate-and-download-binary-artifact.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/index.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/interact-with-a-process.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/prepare-once-reuse-safely.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/recover-from-known-good-image.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/run-bounded-evaluation-batch.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/stream-a-build-or-test-run.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/try-two-coding-fixes.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/cookbook/verify-with-networking-disabled.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/branch-compare-and-recover.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/configure-networking-and-secrets.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/prepare-and-reuse-environments.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/run-commands-and-results.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/run-concurrent-workloads.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/run-subprocesses-and-send-input.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/stream-output-and-events.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/guides/work-with-files-and-artifacts.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/operate/limits-retention-and-usage.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/operate/security-and-data-handling.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/operate/troubleshooting.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/operate/update-images-and-clients.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/reference/index.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/start/choose-an-interface.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/start/cli-quickstart.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/start/python-quickstart.md
+    first_seen: 2026-10-12
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/start/set-up-access.md
+    first_seen: 2026-10-12
 ignored: []
