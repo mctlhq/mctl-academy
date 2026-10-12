@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b58e3f9a2c71
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability
 stem: In a Chat Completions response, what is the documented purpose of the
@@ -49,3 +49,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-12T15:59:31Z
+  content_sha256: cd9c459aafd7e7088a403e9d90d6f72488c96960b807a419f8b5cbc0dc933b26

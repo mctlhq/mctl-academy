@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-d49a1e7f3c82
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/chat-completions
 stem: If a Chat Completions request omits the `max_tokens` parameter, what does
@@ -36,3 +36,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-12T15:59:31Z
+  content_sha256: 2e6522df7663a8424d40dee6bafd54a64fe39e2094f3346faaaf638a3ca72d6d

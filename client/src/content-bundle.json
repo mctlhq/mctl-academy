@@ -82,47 +82,6 @@
     ]
   },
   {
-    "id": "q-2c8f5a3d9e17",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "What capability do Nebius Sandboxes document as distinguishing them from traditional containers, letting an AI agent try multiple execution paths?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Unlike traditional containers, Sandboxes supports Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly",
-        "correct": true,
-        "explanation": "The overview states that, unlike traditional containers, Sandboxes supports Git-like branching, letting you fork from any checkpoint and roll back instantly."
-      },
-      {
-        "id": "b",
-        "text": "OCI image support for importing images from any OCI-compliant registry",
-        "correct": false,
-        "explanation": "OCI image support is a separate documented feature, about sandbox base images, not branching execution state."
-      },
-      {
-        "id": "c",
-        "text": "Built-in resource metrics tracking CPU time, memory usage, and I/O operations",
-        "correct": false,
-        "explanation": "Resource metrics are a separate documented feature, about measuring an execution, not forking or rolling back state."
-      },
-      {
-        "id": "d",
-        "text": "Async operations with polling and cancellation support",
-        "correct": false,
-        "explanation": "Async operations describe how long-running work is managed, not the branching capability itself."
-      }
-    ]
-  },
-  {
     "id": "q-3ed9d6aa21de",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -481,6 +440,52 @@
     ]
   },
   {
+    "id": "q-7f3a92c6e158",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/framework-integrations",
+    "stem": "In the Token Factory third-party integrations overview, which framework is listed under the \"AI Application Frameworks\" category?",
+    "objectiveTitle": "Third-party framework integrations",
+    "sources": [
+      {
+        "title": "Overview",
+        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
+        "excerpt": "## AI Application Frameworks"
+      },
+      {
+        "title": "Overview",
+        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
+        "excerpt": "<Card title=\"Langchain\" icon=\"boxes-stacked\" href=\"/integrations/frameworks/langchain\" />"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Postman",
+        "correct": false,
+        "explanation": "Postman is listed under the overview's Developer Tools category, not AI Application Frameworks."
+      },
+      {
+        "id": "b",
+        "text": "Helicone",
+        "correct": false,
+        "explanation": "Helicone is listed under the overview's Observability category, not AI Application Frameworks."
+      },
+      {
+        "id": "c",
+        "text": "Langchain",
+        "correct": true,
+        "explanation": "The overview's AI Application Frameworks category lists Llama-Index and Langchain."
+      },
+      {
+        "id": "d",
+        "text": "Tavily",
+        "correct": false,
+        "explanation": "Tavily is listed under the overview's Agentic Search category, not AI Application Frameworks."
+      }
+    ]
+  },
+  {
     "id": "q-8b2e5f1a9c34",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -692,6 +697,57 @@
         "text": "`model`",
         "correct": false,
         "explanation": "`model` selects which embedding model to call; requesting a vector size is a separate, dedicated parameter."
+      }
+    ]
+  },
+  {
+    "id": "q-b4de81f9a062",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "A self-service dedicated endpoint is stopped for scheduled maintenance. According to the capacity documentation, what happens to the GPU capacity it was using?",
+    "objectiveTitle": "Capacity, availability, and service guarantees",
+    "sources": [
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "When an endpoint stops, its GPU capacity is released back to the shared pool."
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "This applies regardless of why the endpoint stopped"
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "The endpoint is stopped for scheduled or emergency maintenance"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It is released back to the shared pool, the same as if the endpoint had been stopped manually",
+        "correct": true,
+        "explanation": "The capacity documentation states that GPU capacity is released back to the shared pool and that this applies regardless of why the endpoint stopped, naming scheduled maintenance as one of those reasons."
+      },
+      {
+        "id": "b",
+        "text": "It stays allocated under the minimum replicas guarantee until the endpoint restarts",
+        "correct": false,
+        "explanation": "The minimum replicas guarantee is documented as applying only while the endpoint is active; it is not a long-term reservation that survives a stop."
+      },
+      {
+        "id": "c",
+        "text": "It remains available under the burst capacity used for scaling above the minimum replicas",
+        "correct": false,
+        "explanation": "Burst capacity is documented as governing scaling above the minimum while an endpoint is running, not retaining capacity after a stop."
+      },
+      {
+        "id": "d",
+        "text": "It is automatically converted into reserved GPU capacity for the account",
+        "correct": false,
+        "explanation": "Reserved capacity is documented as a separate, contract-based option arranged through Sales; stopping an endpoint does not convert anything into a reservation."
       }
     ]
   },
@@ -6695,93 +6751,6 @@
         "text": "The model automatically switches to 4-bit quantization mode",
         "correct": false,
         "explanation": "Quantization is a model architecture format, not a rate limit quota mechanism."
-      }
-    ]
-  },
-  {
-    "id": "q-sb01a9b0c1d2",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Why do Sandboxes use VM-level isolation when running code produced by an AI agent?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "So that untrusted code cannot escape the sandbox or affect other workloads",
-        "correct": true,
-        "explanation": "The Sandboxes overview lists secure isolation first: VM-level isolation ensures untrusted code cannot escape the sandbox or affect other workloads."
-      },
-      {
-        "id": "b",
-        "text": "To make model token generation faster",
-        "correct": false,
-        "explanation": "Sandboxes execute code; they do not run model inference or change its throughput."
-      },
-      {
-        "id": "c",
-        "text": "To remove the need for an API key",
-        "correct": false,
-        "explanation": "Isolation is about containing executed code; authentication is unaffected."
-      },
-      {
-        "id": "d",
-        "text": "To convert scripts into static web pages",
-        "correct": false,
-        "explanation": "Sandboxes execute code and capture results; they do not transform code into HTML."
-      }
-    ]
-  },
-  {
-    "id": "q-sb02b0c1d2e3",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Which Sandboxes behaviours does the documentation cite as helping to prevent abuse when students or agents execute code?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Automatic cleanup and resource limits help prevent abuse."
-      },
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Number of simultaneously running operations is limited to 50."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Automatic git commits after every execution",
-        "correct": false,
-        "explanation": "Sandboxes offer Git-like branching of execution state, not automatic commits, and that feature is not what the docs tie to abuse prevention."
-      },
-      {
-        "id": "b",
-        "text": "Automatic cleanup and resource limits",
-        "correct": true,
-        "explanation": "The educational-platforms use case states that automatic cleanup and resource limits help prevent abuse; the beta also caps simultaneous operations at 50."
-      },
-      {
-        "id": "c",
-        "text": "DNS pre-fetching for faster downloads",
-        "correct": false,
-        "explanation": "DNS behaviour is not mentioned anywhere in the Sandboxes overview."
-      },
-      {
-        "id": "d",
-        "text": "An unlimited number of simultaneously running operations",
-        "correct": false,
-        "explanation": "The opposite is documented: during the beta, simultaneously running operations are limited to 50."
       }
     ]
   },

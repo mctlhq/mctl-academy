@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7f3a92c6e158
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/framework-integrations
 stem: In the Token Factory third-party integrations overview, which framework is
@@ -14,18 +14,18 @@ options:
   - id: b
     text: Helicone
     correct: false
-    explanation: Helicone is listed under the overview's Observability category,
-      not AI Application Frameworks.
+    explanation: Helicone is listed under the overview's Observability category, not
+      AI Application Frameworks.
   - id: c
     text: Langchain
     correct: true
-    explanation: The overview's AI Application Frameworks category lists
-      Llama-Index and Langchain.
+    explanation: The overview's AI Application Frameworks category lists Llama-Index
+      and Langchain.
   - id: d
     text: Tavily
     correct: false
-    explanation: Tavily is listed under the overview's Agentic Search category,
-      not AI Application Frameworks.
+    explanation: Tavily is listed under the overview's Agentic Search category, not
+      AI Application Frameworks.
 evidence:
   - source_id: src-integrations-overview
     excerpt: "## AI Application Frameworks"
@@ -38,3 +38,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-12T15:48:08Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-12T15:59:31Z
+  content_sha256: 97802082c5eb8d5a97eaa3f519663368e8a5e15aebb46831e7e0138fe8763352
