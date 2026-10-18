@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.1.56](https://github.com/mctlhq/mctl-academy/compare/0.1.55...0.1.56) (2026-10-18)
+
+
+### Features
+
+* **sources:** allowlist pinned nebius-physical-ai guides ([c4a5eb4](https://github.com/mctlhq/mctl-academy/commit/c4a5eb4e6e37325da151ec0581709216522ce00a))
+* **sources:** allowlist pinned nebius-physical-ai guides ([1111967](https://github.com/mctlhq/mctl-academy/commit/1111967cff4f147cd1c4cfaf001ac10a396d9cc9))
+* **sources:** allowlist the LeRobot docs by path prefix ([b7740fe](https://github.com/mctlhq/mctl-academy/commit/b7740feabb956a2f8236d4edba1a8b616557317d))
+* **sources:** allowlist the LeRobot docs by path prefix ([42496f9](https://github.com/mctlhq/mctl-academy/commit/42496f90c675225ae87cdc06c3348861aa714143))
+
+
+### Bug Fixes
+
+* **replenish:** tell the author to double-quote text scalars ([75cafd9](https://github.com/mctlhq/mctl-academy/commit/75cafd924b064555e83c45b0d41b958d435192b0))
+* **replenish:** tell the author to double-quote text scalars ([b3cea9a](https://github.com/mctlhq/mctl-academy/commit/b3cea9aac48b23b183a638f04657c9888a4d399f))
+* **sources:** check the allowlist against the post-redirect URL ([8bb183d](https://github.com/mctlhq/mctl-academy/commit/8bb183ddc6e36a0148eff3fd867ee190d07f2210))
+* **sources:** refuse a redirect onto an unverified pinned commit ([7e2766c](https://github.com/mctlhq/mctl-academy/commit/7e2766c4a9baf45d418945bf0adbed54d9e1cb34))
+* **sources:** send a User-Agent to the GitHub compare API ([ad5f21e](https://github.com/mctlhq/mctl-academy/commit/ad5f21efb9b7ca2f5e13379f2637d3c57f8b1117))
+* **sources:** verify pinned commits are on upstream main ([f7ec2c7](https://github.com/mctlhq/mctl-academy/commit/f7ec2c7ba39da1498ab838bcba634b4c023c13f5))
+
+
+### Content
+
+* **courses:** add the Physical AI course map ([af442dd](https://github.com/mctlhq/mctl-academy/commit/af442dddc666c361e26488a6c74355769054640e))
+* **replenish:** author 1 question file(s) from 8 captured source(s) ([da66d90](https://github.com/mctlhq/mctl-academy/commit/da66d90b25404a0f3c16f4dd40382564ada3c8bb))
+* **replenish:** author 20 question file(s) from 0 captured source(s) ([c06ddf8](https://github.com/mctlhq/mctl-academy/commit/c06ddf8bb9943049f36ce0b8fb7e1fd09e6cb913))
+* **replenish:** author 20 question file(s) from 0 captured source(s) ([6d35f8d](https://github.com/mctlhq/mctl-academy/commit/6d35f8dfcf11f26d4f84d854257076ab9640e331))
+* **replenish:** promote 19 reviewed question(s) ([762218b](https://github.com/mctlhq/mctl-academy/commit/762218bb634146cf6af8889dc038e4ef7d9c6250))
+* **replenish:** promote 19 reviewed question(s) ([caa0b7c](https://github.com/mctlhq/mctl-academy/commit/caa0b7c45d5341285ef76c22a83c54d41c316a36))
+* **replenish:** promote 27 reviewed question(s) ([1638510](https://github.com/mctlhq/mctl-academy/commit/163851003c34bbf79a3a404b2f70e2370e96563d))
+* **sources:** add Physical AI pages to the capture manifest ([8b0f240](https://github.com/mctlhq/mctl-academy/commit/8b0f24022bedd4d1081cb70d6666922ebd9b082a))
+* **sources:** add pinned nebius-physical-ai pages to the manifest ([07accf7](https://github.com/mctlhq/mctl-academy/commit/07accf77a5f2dc67ca2f92fac9c572ce3dd69298))
+
 ## [0.1.55](https://github.com/mctlhq/mctl-academy/compare/0.1.54...0.1.55) (2026-10-12)
 
 
