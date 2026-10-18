@@ -6555,20 +6555,20 @@
       {
         "title": "Organizations and Projects",
         "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
-        "excerpt": "Be invited to other organizations and collaborate on their projects"
+        "excerpt": "When you sign up for Nebius Token Factory, a personal organization is created automatically."
       },
       {
         "title": "Organizations and Projects",
         "url": "https://docs.tokenfactory.nebius.com/team-access/org-projects.md",
-        "excerpt": "Create additional organizations for separate teams or business units"
+        "excerpt": "You can also be invited to other organizations and collaborate on their projects."
       }
     ],
     "options": [
       {
         "id": "a",
-        "text": "Yes: a user can be invited to other organizations and can create additional organizations",
+        "text": "Yes: besides the personal organization created automatically at sign-up, a user can be invited to other organizations",
         "correct": true,
-        "explanation": "Besides the personal organization created at sign-up, the docs say you can be invited to other organizations and create additional ones for separate teams or business units."
+        "explanation": "The docs say a personal organization is created automatically at sign-up, and that you can also be invited to other organizations and collaborate on their projects."
       },
       {
         "id": "b",

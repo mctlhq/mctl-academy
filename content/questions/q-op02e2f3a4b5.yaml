@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op02e2f3a4b5
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: What exists immediately after you sign up, before you create anything?
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 8493cd5d4ad3c87120942be1e450589ab77e28a93746678667cd260229d24d2f

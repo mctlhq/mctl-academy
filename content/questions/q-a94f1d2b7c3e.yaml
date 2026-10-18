@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a94f1d2b7c3e
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: Which `/v1/embeddings` request parameter lets you request a specific
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 4f642b098e03836b6ea616219669439ac249c42b943e6d8a7a792d7662af405a

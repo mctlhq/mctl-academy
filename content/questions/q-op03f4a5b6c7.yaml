@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op03f4a5b6c7
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: Which level of the Token Factory resource hierarchy directly contains API
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: e5ffd6b2648334199f884ee1753fd1671d119a372165c2658d547ad2e922d4e5

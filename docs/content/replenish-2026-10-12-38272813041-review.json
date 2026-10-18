@@ -3,13 +3,6 @@
   "reviewed_at": "2026-10-12T15:59:31Z",
   "questions": [
     {
-      "id": "q-6b9e2f4a17c3",
-      "content_sha256": "86377073c70afd0f313046b2d678e3e4076b2789ac53f64f37f4eb8ebd06753e",
-      "approved": true,
-      "reason": "The rerank page states \"Reranks documents based on their relevance to a query.\" and its RerankResult carries index and relevance_score, so option c is the ranking operation; the embeddings page only \"Creates a model response for the given text\" from \"Input text to embed\" and never ranks, chat \"Creates a model response for the given chat conversation.\", and List models \"Lists the currently available models\" - all four excerpts appear verbatim.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
-    },
-    {
       "id": "q-7f3a92c6e158",
       "content_sha256": "97802082c5eb8d5a97eaa3f519663368e8a5e15aebb46831e7e0138fe8763352",
       "approved": true,
@@ -22,48 +15,64 @@
       "approved": true,
       "reason": "The capacity page states \"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", listing both \"You stop the endpoint manually\" and \"The endpoint is stopped for scheduled or emergency maintenance\", and rules out the distractors by adding that the minimum replicas guarantee \"applies only while the endpoint is running\", that scaling above minimum depends on burst capacity, and that reservation requires contacting Sales.",
       "reviewed_at": "2026-10-12T15:59:31Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "86377073c70afd0f313046b2d678e3e4076b2789ac53f64f37f4eb8ebd06753e",
+      "approved": true,
+      "reason": "The rerank page states \"Reranks documents based on their relevance to a query.\" and its RerankResult carries index and relevance_score, so option c is the ranking operation; the embeddings page only \"Creates a model response for the given text\" from \"Input text to embed\" and never ranks, chat \"Creates a model response for the given chat conversation.\", and List models \"Lists the currently available models\" - all four excerpts appear verbatim.",
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     },
     {
       "id": "q-b58e3f9a2c71",
       "content_sha256": "cd9c459aafd7e7088a403e9d90d6f72488c96960b807a419f8b5cbc0dc933b26",
       "approved": true,
       "reason": "The system_fingerprint description reads \"This fingerprint represents the backend configuration that the model runs with.\" and \"Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.\", matching option a without over-claiming; the end-user identifier excerpt belongs to the separate `user` request property, and token counts belong to Usage, so no distractor is defensible.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     },
     {
       "id": "q-cc01a1b2c3d4",
       "content_sha256": "f87bc818ea7880150980a0580186f2fa556b7a6b057607b6b47a814f493c299a",
       "approved": true,
       "reason": "The `stream` property says tokens \"will be sent as data-only [server-sent events](...)\" \"as they become available, with the stream terminated by a `data: [DONE]` message.\" - both excerpts verbatim - which supports option a and excludes the WebSocket, multipart, and post-generation-array alternatives.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     },
     {
       "id": "q-cc02b2c3d4e5",
       "content_sha256": "1a2dee9f7f1c7e99edb75a5ab86cb830581ebab4800a4a377ea8a2d192e725bf",
       "approved": true,
       "reason": "The temperature description states \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", which supports option b; the page's \"We generally recommend altering this or `top_p` but not both\" is a recommendation rather than automatic disabling, and it never promises identical repeated output.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     },
     {
       "id": "q-d49a1e7f3c82",
       "content_sha256": "2e6522df7663a8424d40dee6bafd54a64fe39e2094f3346faaaf638a3ca72d6d",
       "approved": true,
       "reason": "The `max_tokens` description ends \"If omitted or set to null, defaults to 8192 tokens.\" (verbatim), so option a is established; 100 appears only as the parameter's example value and the documented default of 1 belongs to `n` (\"How many completions to generate for each prompt\", default: 1).",
-      "reviewed_at": "2026-10-12T15:59:31Z"
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     },
     {
       "id": "q-ob02a9b0c1d2",
       "content_sha256": "ffb0200e4ecb18440c9bfe06b46a496b62bf4d3908ffd909547b46ef4476c377",
       "approved": true,
       "reason": "The Usage schema referenced by ChatCompletionResponse's `usage` defines completion_tokens, prompt_tokens, and \"total_tokens ... Total number of tokens used in the request (prompt + completion).\", all required, so only option a matches; the hardware, transport, and database counters appear nowhere in the schema.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     },
     {
       "id": "q-pf11f0a1b2c3",
       "content_sha256": "3b92586b3d9518dd7115c964e78e5341f9f65065a3a1c8c9045313763d899f50",
       "approved": true,
       "reason": "The excerpt \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\" is the documented description of `temperature`, and the remaining options are transport, scheduling, and display settings that the page never describes as model parameters.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     }
   ]
 }

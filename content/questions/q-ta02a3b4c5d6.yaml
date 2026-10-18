@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ta02a3b4c5d6
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/team-access
 stem: What organization structure is initialized when a new user signs up for
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 99d3888f977bcbfd48a27748a2e6b30cabb19d5eccbafa804b2302150ada18a8

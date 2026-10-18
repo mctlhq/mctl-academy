@@ -3,13 +3,6 @@
   "reviewed_at": "2026-10-08T14:14:36Z",
   "questions": [
     {
-      "id": "q-7b2d9f4a1c63",
-      "content_sha256": "2d45bcc4fcbafa9de2fcb678136c4d916885b8ee5a9f09c5018d71ce8d8a9cbf",
-      "approved": true,
-      "reason": "The EmbeddingRequest schema lists \"required: - model - input\", and encoding_format, dimensions and user are all shown as optional, so only option a is defensible.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
       "id": "q-9d47f02ce5a1",
       "content_sha256": "9a5c3947bb870948a39c5c4385247cdac64cf3c28ec264398208b741f992577d",
       "approved": true,
@@ -28,13 +21,6 @@
       "content_sha256": "85876caa445c96277610da2885ace17a22dca41948d1f2137212d8065f2c8742",
       "approved": true,
       "reason": "The comparison table row \"| Pricing | Per GPU/hour, billed with per-minute granularity | Per token |\" sits under the headers Dedicated Endpoints and Public Serverless Endpoints, matching option b exactly.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-c56f1a9d4e82",
-      "content_sha256": "6aa48c06c002ba9f1dbfa5684b754668ba303aaae4c92be6726adb318bc05735",
-      "approved": true,
-      "reason": "The RerankRequest schema lists \"required: - model - query - documents\" while user and service_tier (default auto) are optional, leaving one best answer.",
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
@@ -94,34 +80,6 @@
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
-      "id": "q-co29b9f076dc",
-      "content_sha256": "a8c36c3265ddbdfa0ce36868efb5964f65344d6d3a60a12b2449e7f85a06ffd1",
-      "approved": true,
-      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted.\" directly supports erasure on an overnight stop.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-co3086b69871",
-      "content_sha256": "12639145019f9a5d9eb2e117fb280dca6091553e4a3641aaa09d0a081db07296",
-      "approved": true,
-      "reason": "\"One shared filesystem can be attached to multiple VMs at once.\" supports option d, and the same page says one network SSD disk \"can only be added to one running VM at a time\", excluding option a.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-co3128de5d55",
-      "content_sha256": "2bd5a564492feb3986f718a35743d517b28e5ab5fa05809282689d81032f155b",
-      "approved": true,
-      "reason": "For Network SSD Non-replicated disks, \"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB.\", and 100 GiB is not such a multiple.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-co32676fb56d",
-      "content_sha256": "9462771988e63415ab93fba3f8a9af878ea506958cf9cf8fbbdf37ddcaf16369",
-      "approved": true,
-      "reason": "\"Sharing a filesystem across projects is not supported, even if the projects are in the same region\", and all attached VMs must belong to the same project, so only option c holds.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
       "id": "q-co356433d8e1",
       "content_sha256": "75faca1c407d12faec4a91b1dd2d1a3254226597a2dbce1a3ca8db652feb1e4a",
       "approved": true,
@@ -147,13 +105,6 @@
       "content_sha256": "d0888137f24fe5b0d52eb9ef44c73b6c0923291407e55b106d5d9f0ba4a734ed",
       "approved": true,
       "reason": "For a Network SSD NRD boot disk with persistent I/O errors, \"the service runs an automatic recovery: it deletes the node and then creates a new one with a different name and healthy boot disk\", matching option b and excluding the rename and manual-action distractors.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-co49d3cee498",
-      "content_sha256": "48719b98b1c774932011e8b2b5dc87962bc47e78e3452ca93fcd1d2ecb761e4d",
-      "approved": true,
-      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes.\"; the rolling replacement described elsewhere follows template changes, not size changes.",
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
@@ -290,13 +241,6 @@
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
-      "id": "q-er01c3d4e5f6",
-      "content_sha256": "4a57c99ab675e8ff8d53374777f65209b70d8fb87bc2d3a03cc25d8a16f2a097",
-      "approved": true,
-      "reason": "Rerank \"Reranks documents based on their relevance to a query\" and each RerankResult defines an index plus \"relevance_score ... Relevance score of the document\", so no vector, rewrite or completion is returned.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
       "id": "q-f29ae7c1b4d6",
       "content_sha256": "1af38e77824d6387b323e2c073941ad361d3779fd2cc8067a8cae88c8dfea86e",
       "approved": true,
@@ -385,13 +329,6 @@
       "content_sha256": "a80bc90b647ca603534152c5b8a6381565629d48c812936372507d0550564845",
       "approved": true,
       "reason": "The rate limits page says to \"track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers\", naming exactly the headers in option d.",
-      "reviewed_at": "2026-10-08T14:14:36Z"
-    },
-    {
-      "id": "q-pf06a4b5c6d7",
-      "content_sha256": "cde42511493ddb0df0a885dd4dd24fbb476a314a68f090594be3bc30493ca190",
-      "approved": true,
-      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and the GET /v1/models schema includes context_length.",
       "reviewed_at": "2026-10-08T14:14:36Z"
     },
     {
@@ -491,6 +428,78 @@
       "reason": "The temperature description reads \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\", and no other option is a model parameter.",
       "reviewed_at": "2026-10-08T14:14:36Z",
       "superseded_at": "2026-10-12T15:59:31Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "2d45bcc4fcbafa9de2fcb678136c4d916885b8ee5a9f09c5018d71ce8d8a9cbf",
+      "approved": true,
+      "reason": "The EmbeddingRequest schema lists \"required: - model - input\", and encoding_format, dimensions and user are all shown as optional, so only option a is defensible.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "6aa48c06c002ba9f1dbfa5684b754668ba303aaae4c92be6726adb318bc05735",
+      "approved": true,
+      "reason": "The RerankRequest schema lists \"required: - model - query - documents\" while user and service_tier (default auto) are optional, leaving one best answer.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "a8c36c3265ddbdfa0ce36868efb5964f65344d6d3a60a12b2449e7f85a06ffd1",
+      "approved": true,
+      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted.\" directly supports erasure on an overnight stop.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "12639145019f9a5d9eb2e117fb280dca6091553e4a3641aaa09d0a081db07296",
+      "approved": true,
+      "reason": "\"One shared filesystem can be attached to multiple VMs at once.\" supports option d, and the same page says one network SSD disk \"can only be added to one running VM at a time\", excluding option a.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "2bd5a564492feb3986f718a35743d517b28e5ab5fa05809282689d81032f155b",
+      "approved": true,
+      "reason": "For Network SSD Non-replicated disks, \"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB.\", and 100 GiB is not such a multiple.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "9462771988e63415ab93fba3f8a9af878ea506958cf9cf8fbbdf37ddcaf16369",
+      "approved": true,
+      "reason": "\"Sharing a filesystem across projects is not supported, even if the projects are in the same region\", and all attached VMs must belong to the same project, so only option c holds.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "48719b98b1c774932011e8b2b5dc87962bc47e78e3452ca93fcd1d2ecb761e4d",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes.\"; the rolling replacement described elsewhere follows template changes, not size changes.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "4a57c99ab675e8ff8d53374777f65209b70d8fb87bc2d3a03cc25d8a16f2a097",
+      "approved": true,
+      "reason": "Rerank \"Reranks documents based on their relevance to a query\" and each RerankResult defines an index plus \"relevance_score ... Relevance score of the document\", so no vector, rewrite or completion is returned.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "cde42511493ddb0df0a885dd4dd24fbb476a314a68f090594be3bc30493ca190",
+      "approved": true,
+      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and the GET /v1/models schema includes context_length.",
+      "reviewed_at": "2026-10-08T14:14:36Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     }
   ]
 }

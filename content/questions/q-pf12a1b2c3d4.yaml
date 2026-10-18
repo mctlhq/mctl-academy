@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf12a1b2c3d4
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: Can a single Token Factory user account belong to more than one organization?
@@ -31,10 +31,14 @@ evidence:
       created automatically.
     source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
   - source_id: src-org-projects
-    excerpt: You can also be invited to other organizations and collaborate on
-      their projects.
+    excerpt: You can also be invited to other organizations and collaborate on their
+      projects.
     source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude-author
   at: 2026-10-18T01:26:04Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 728eb7cefda0b208635a2929718b187e2fe0febfac5f85e0df1e3494966aee22

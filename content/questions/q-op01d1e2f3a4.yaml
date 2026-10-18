@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op01d1e2f3a4
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: Two teams must not see each other's datasets or endpoints. Which level of
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 6de25e1a832e49eadc7bf8b99fb0d2c0748f3498b4952debaa2d4d04db28db8c

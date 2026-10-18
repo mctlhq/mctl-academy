@@ -3,13 +3,6 @@
   "reviewed_at": "2026-10-08T17:42:33Z",
   "questions": [
     {
-      "id": "q-0f3d9a7c2b56",
-      "content_sha256": "7e6765c2d51519762a0f0d4d28cdc9efc0a08c4a10ad421536f83ebeb6352aa1",
-      "approved": true,
-      "reason": "The captured OpenAPI block for the `verbose` query parameter of GET /v1/models reads \"type: boolean / default: false / title: Verbose\", which establishes `false` as the default; `true`, `1` and `auto` are not defaults of that parameter anywhere on the page.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
       "id": "q-2c8f5a3d9e17",
       "content_sha256": "dc361e7e90ba5576ba88557664b962d7ec5aae17e94b205aee69b33e921583ce",
       "approved": true,
@@ -21,13 +14,6 @@
       "content_sha256": "e680a005091335d65b450374016be18204dd5f9c6e8fe6462161e978efe02ae1",
       "approved": true,
       "reason": "\"Key fields to watch during a run\" lists \"`status`: `validating_files` → `queued` → `running` → `succeeded` / `failed`\", so `validating_files` is unambiguously the first status and each distractor is explicitly later in the same chain.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-5e8a2c91f06d",
-      "content_sha256": "4c46908624c8c68f1c7c47c0b5a385fd03262d08828ff023a5eebf858a4ef1ca",
-      "approved": true,
-      "reason": "The RerankResult schema documents `relevance_score` with the description \"Relevance score of the document\", found verbatim; `total_tokens` belongs to RerankUsage (\"Total number of tokens used in the request\") and `embedding`/`owned_by` do not occur in the rerank response at all.",
       "reviewed_at": "2026-10-08T17:42:33Z"
     },
     {
@@ -49,13 +35,6 @@
       "content_sha256": "cc809feca287c6ed746394851379fde83da4bdbe981f6a536b572ab1d853fb74",
       "approved": true,
       "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\" supports the key; the same page releases the allocation when the endpoint stops, confines reclaim risk to scaling above the minimum, and says self-service endpoints have no formal SLA, so no distractor survives.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-a94f1d2b7c3e",
-      "content_sha256": "95ae31cc6908d54c50fd28c93be3bc76f1d4178641952760201f959b54ebd24e",
-      "approved": true,
-      "reason": "EmbeddingRequest documents `dimensions` (type integer, examples 4096 and 8192) as \"The dimensions to use for the request\", found verbatim; `encoding_format` is documented as float or base64 only, and `service_tier`/`model` have no bearing on vector size.",
       "reviewed_at": "2026-10-08T17:42:33Z"
     },
     {
@@ -89,6 +68,30 @@
       "reason": "The `max_tokens` description states \"If omitted or set to null, defaults to 8192 tokens\", which rules out the unlimited option; 100 appears only as the parameter's example value and 1 is the documented default of `n`.",
       "reviewed_at": "2026-10-08T17:42:33Z",
       "superseded_at": "2026-10-12T15:59:31Z"
+    },
+    {
+      "id": "q-0f3d9a7c2b56",
+      "content_sha256": "7e6765c2d51519762a0f0d4d28cdc9efc0a08c4a10ad421536f83ebeb6352aa1",
+      "approved": true,
+      "reason": "The captured OpenAPI block for the `verbose` query parameter of GET /v1/models reads \"type: boolean / default: false / title: Verbose\", which establishes `false` as the default; `true`, `1` and `auto` are not defaults of that parameter anywhere on the page.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-5e8a2c91f06d",
+      "content_sha256": "4c46908624c8c68f1c7c47c0b5a385fd03262d08828ff023a5eebf858a4ef1ca",
+      "approved": true,
+      "reason": "The RerankResult schema documents `relevance_score` with the description \"Relevance score of the document\", found verbatim; `total_tokens` belongs to RerankUsage (\"Total number of tokens used in the request\") and `embedding`/`owned_by` do not occur in the rerank response at all.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-a94f1d2b7c3e",
+      "content_sha256": "95ae31cc6908d54c50fd28c93be3bc76f1d4178641952760201f959b54ebd24e",
+      "approved": true,
+      "reason": "EmbeddingRequest documents `dimensions` (type integer, examples 4096 and 8192) as \"The dimensions to use for the request\", found verbatim; `encoding_format` is documented as float or base64 only, and `service_tier`/`model` have no bearing on vector size.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-18T01:33:33Z"
     }
   ]
 }

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ta03b4c5d6e7
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/team-access
 stem: How is access to the resources inside one specific project controlled
@@ -41,3 +41,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 9be32919b171bdb39b78eefe885afdc569f209b6ae28eb76d563d5b2eb75d46e

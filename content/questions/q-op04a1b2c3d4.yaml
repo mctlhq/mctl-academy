@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op04a1b2c3d4
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: What happens when a new user signs up for Nebius Token Factory for the
@@ -31,3 +31,7 @@ authored:
   by: agent:claude
   at: 2026-08-07T19:30:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 39f97780716e0c3801fe76c5036ed9662c86b391af91bc3a760889fbeee2fdc2

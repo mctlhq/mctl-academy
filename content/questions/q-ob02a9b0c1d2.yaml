@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ob02a9b0c1d2
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability
 stem: Which token counts does the `usage` object of a Chat Completions response
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: c22810585735abcda78f59df0e65932fb31bfea2b9905297352a55363221079b

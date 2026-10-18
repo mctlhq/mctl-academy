@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-cc01a1b2c3d4
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/chat-completions
 stem: When `stream` is enabled in a Chat Completions request, how does Token
@@ -41,3 +41,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 612f79c7d4ca5ddf9de9a943906daec991d944b40c9415b3231af0a95b75004c
