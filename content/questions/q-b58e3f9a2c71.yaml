@@ -32,18 +32,18 @@ evidence:
   - source_id: src-recovery-chat
     excerpt: This fingerprint represents the backend configuration that the model
       runs with.
-    source_sha256: 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
+    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
     locator: ChatCompletionChunk > system_fingerprint
   - source_id: src-recovery-chat
     excerpt: Can be used in conjunction with the `seed` request parameter to
       understand when backend changes have been made that might impact
       determinism.
-    source_sha256: 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
+    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
     locator: ChatCompletionChunk > system_fingerprint
   - source_id: src-recovery-chat
     excerpt: A unique identifier representing your end-user, which can help us to
       monitor and detect abuse.
-    source_sha256: 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
+    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
     locator: ChatCompletionRequest > user
 authored:
   by: agent:claude-author
@@ -51,5 +51,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-12T15:59:31Z
-  content_sha256: cd9c459aafd7e7088a403e9d90d6f72488c96960b807a419f8b5cbc0dc933b26
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 297ffade600b7b9b76471bfc9158fa900401889ef195e0bc5cf9b547c445b856

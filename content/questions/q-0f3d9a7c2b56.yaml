@@ -29,7 +29,7 @@ options:
 evidence:
   - source_id: src-recovery-models
     excerpt: "type: boolean default: false title: Verbose"
-    source_sha256: abf56736eda2e10f564e3d44930b0070aedbe1928e5d39607309a9edeae4d971
+    source_sha256: e1dafb714f59049ff17445fe20b4252fcc6a1988df60c0144426ef4a3974d288
     locator: GET /v1/models > verbose parameter
 authored:
   by: agent:claude-author
@@ -37,5 +37,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 7e6765c2d51519762a0f0d4d28cdc9efc0a08c4a10ad421536f83ebeb6352aa1
+  at: 2026-10-18T01:33:33Z
+  content_sha256: e2935b54fde25868e23a2142aa13f39c133eca1d93d6a5b1a273d8be50f3a812

@@ -32,16 +32,16 @@ evidence:
   - source_id: src-recovery-chat
     excerpt: Tokens will be sent as data-only [server-sent
       events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format)
-    source_sha256: 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
+    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
   - source_id: src-recovery-chat
     excerpt: "as they become available, with the stream terminated by a `data:
       [DONE]` message."
-    source_sha256: 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
+    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-12T15:59:31Z
-  content_sha256: f87bc818ea7880150980a0580186f2fa556b7a6b057607b6b47a814f493c299a
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 612f79c7d4ca5ddf9de9a943906daec991d944b40c9415b3231af0a95b75004c

@@ -28,11 +28,12 @@ evidence:
   - source_id: src-org-projects
     excerpt: When you sign up for Nebius Token Factory, a personal organization is
       created automatically.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 99d3888f977bcbfd48a27748a2e6b30cabb19d5eccbafa804b2302150ada18a8

@@ -111,30 +111,6 @@
       "reason": "Supervised Fine-Tuning, 'Hyperparameters' section: '`learning_rate` (float, optional) Step size for gradient descent. Must be >= 0. Typical values: 1e-6–5e-5. Default: 0.00001'. Option d matches the definition and range, and every clause of its explanation (>= 0, typical range, default) is on the page. Each distractor is the page's definition of a different hyperparameter (n_epochs 'Number of passes over the entire dataset', range 1–20; lora_r 'Rank of LoRA matrices', range 8–128; warmup_ratio 'Fraction of total training steps used for linear warmup', range 0–1), so none describes learning_rate and d is the single best answer. Reviewed as a fresh item under a new ID; the earlier q-ft04d8e9f0a1 revision about a too-high learning rate has no supporting passage on this page (only max_grad_norm has documented too-high/too-low consequences) and stays needs_review."
     },
     {
-      "id": "q-ta01d2e3f4a5",
-      "content_sha256": "01e4c7e396fb6a21bb8838219abfd2d126ade59236aec132ecc543f2d8d721bd",
-      "approved": true,
-      "reason": "Organizations and Projects, 'Hierarchy Overview': 'Organization → Projects → Resources'; 'Each Project within an organization acts as an isolated environment for related resources and teams'; 'Resources—such as models, endpoints, files, and datasets—exist inside a project and inherit its access settings'. Option d is supported in full. a is contradicted by 'isolated environment' and by access being granted via groups; b is contradicted by 'within an organization' and by 'Within a project, you can create and manage: API keys'; c is contradicted by 'a default project is created automatically' at sign-up, with no identity provider mentioned on the page. Minor: the d explanation lists API keys among the inheriting resources while the inherit sentence names models, endpoints, files, datasets; API keys are listed as project resources in the next section, so this is not a contradiction. d is uniquely best."
-    },
-    {
-      "id": "q-ta03b4c5d6e7",
-      "content_sha256": "73b6d67897eb6feaf7f5ec1a758bbbb1190c3eb7fd2e04b39b10883bd985b9fa",
-      "approved": true,
-      "reason": "Organizations and Projects, 'Projects' section: 'Each project includes Project Groups that control access to project resources', set against the 'Organization' section: 'To grant a user access to organizational resources, add them to the relevant Organization Group'. The stem asks about access to one project's resources without organization-wide access, which maps to Project Groups; option b is supported. a fails on its own wording ('the only access mechanism') because Project Groups exist and are the documented control for project resources. c has no basis: API keys are listed as resources created within a project, never as a way to grant a user access. d misreads 'Projects can be multi-region, allowing you to group resources by product, team, use case', which is about organising resources, not access. b is uniquely best."
-    },
-    {
-      "id": "q-op03f4a5b6c7",
-      "content_sha256": "4843257c76a26d1d5cc6ec3a3b3c495cbae8964a6605d6c4b125b951c97652b4",
-      "approved": true,
-      "reason": "Organizations and Projects, 'Projects' section: 'Within a project, you can create and manage: API keys, Fine-tuning jobs, Dedicated endpoints, Files and datasets'; the hierarchy diagram draws exactly these four under Project A. Option a is supported. d is contradicted by the hierarchy 'Organization → Projects → Resources' and by the organization being described as containing projects, organization groups and user accounts; b has no basis, user accounts appear only as members with groups and permissions; c is contradicted by 'Projects can be multi-region', so regions are not a containing scope. a is uniquely best."
-    },
-    {
-      "id": "q-pf12a1b2c3d4",
-      "content_sha256": "6a8fa6fbabbebf1312acd10f15577aa60742a9a0a541fd1bf2bcbc0abb4df144",
-      "approved": true,
-      "reason": "Organizations and Projects, 'Organization' section: 'When you sign up for Nebius Token Factory, a personal organization is created automatically. You can also: Be invited to other organizations and collaborate on their projects; Create additional organizations for separate teams or business units'. Option a restates both bullets. b is contradicted by those bullets; c and d add conditions (per-organization payment card, 24-hour window) that appear nowhere on the page. a is uniquely best."
-    },
-    {
       "id": "q-pf05f3a4b5c6",
       "content_sha256": "4e30f0885115273ce9e0875044e0a8f2742091d4e235bc2b6735ae7b71954c44",
       "approved": true,
@@ -273,6 +249,34 @@
       "approved": true,
       "reason": "Create chat completion reference, ChatCompletionRequest.temperature: 'What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic'. Option a is supported. The only other sampling parameter with a related description, top_p (nucleus sampling, probability mass), is not offered as an option, so no distractor is defensible; b, c, d are transport, scheduling and display settings that appear nowhere in the reference. a is uniquely best.",
       "superseded_at": "2026-10-08T14:14:37Z"
+    },
+    {
+      "id": "q-ta01d2e3f4a5",
+      "content_sha256": "01e4c7e396fb6a21bb8838219abfd2d126ade59236aec132ecc543f2d8d721bd",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Hierarchy Overview': 'Organization → Projects → Resources'; 'Each Project within an organization acts as an isolated environment for related resources and teams'; 'Resources—such as models, endpoints, files, and datasets—exist inside a project and inherit its access settings'. Option d is supported in full. a is contradicted by 'isolated environment' and by access being granted via groups; b is contradicted by 'within an organization' and by 'Within a project, you can create and manage: API keys'; c is contradicted by 'a default project is created automatically' at sign-up, with no identity provider mentioned on the page. Minor: the d explanation lists API keys among the inheriting resources while the inherit sentence names models, endpoints, files, datasets; API keys are listed as project resources in the next section, so this is not a contradiction. d is uniquely best.",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-ta03b4c5d6e7",
+      "content_sha256": "73b6d67897eb6feaf7f5ec1a758bbbb1190c3eb7fd2e04b39b10883bd985b9fa",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Projects' section: 'Each project includes Project Groups that control access to project resources', set against the 'Organization' section: 'To grant a user access to organizational resources, add them to the relevant Organization Group'. The stem asks about access to one project's resources without organization-wide access, which maps to Project Groups; option b is supported. a fails on its own wording ('the only access mechanism') because Project Groups exist and are the documented control for project resources. c has no basis: API keys are listed as resources created within a project, never as a way to grant a user access. d misreads 'Projects can be multi-region, allowing you to group resources by product, team, use case', which is about organising resources, not access. b is uniquely best.",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-op03f4a5b6c7",
+      "content_sha256": "4843257c76a26d1d5cc6ec3a3b3c495cbae8964a6605d6c4b125b951c97652b4",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Projects' section: 'Within a project, you can create and manage: API keys, Fine-tuning jobs, Dedicated endpoints, Files and datasets'; the hierarchy diagram draws exactly these four under Project A. Option a is supported. d is contradicted by the hierarchy 'Organization → Projects → Resources' and by the organization being described as containing projects, organization groups and user accounts; b has no basis, user accounts appear only as members with groups and permissions; c is contradicted by 'Projects can be multi-region', so regions are not a containing scope. a is uniquely best.",
+      "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-pf12a1b2c3d4",
+      "content_sha256": "6a8fa6fbabbebf1312acd10f15577aa60742a9a0a541fd1bf2bcbc0abb4df144",
+      "approved": true,
+      "reason": "Organizations and Projects, 'Organization' section: 'When you sign up for Nebius Token Factory, a personal organization is created automatically. You can also: Be invited to other organizations and collaborate on their projects; Create additional organizations for separate teams or business units'. Option a restates both bullets. b is contradicted by those bullets; c and d add conditions (per-organization payment card, 24-hour window) that appear nowhere on the page. a is uniquely best.",
+      "superseded_at": "2026-10-18T01:33:33Z"
     }
   ]
 }

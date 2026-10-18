@@ -1,0 +1,209 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-18T01:33:33Z",
+  "questions": [
+    {
+      "id": "q-0f3d9a7c2b56",
+      "content_sha256": "e2935b54fde25868e23a2142aa13f39c133eca1d93d6a5b1a273d8be50f3a812",
+      "approved": true,
+      "reason": "The captured `GET /v1/models` parameter schema reads \"name: verbose ... type: boolean / default: false / title: Verbose\", which establishes `false` as the default and rules out the other three literals.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-5e8a2c91f06d",
+      "content_sha256": "864f892139ff25314905d604ca1e2639506230285fa025324ccb28ce2ba845ce",
+      "approved": true,
+      "reason": "RerankResult documents `relevance_score` with \"Relevance score of the document\"; `total_tokens` (RerankUsage), `embedding` and `owned_by` belong to other schemas on other pages, so only one option fits.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "4fcab7fe7b0d956aa7de9412af4dbb3a71ea962d10ba78120e769f3f86236655",
+      "approved": true,
+      "reason": "\"Reranks documents based on their relevance to a query.\" names the ranking operation, and the three distractors are each excluded by their own captured summaries (embed input text, create a model response for a chat conversation, list available models).",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "5d118b1e43e8bcdb56b978ded8d816901836d8d307dc4002621d1a9e86676f53",
+      "approved": true,
+      "reason": "EmbeddingRequest ends with \"required: - model - input\"; encoding_format (default float), dimensions and user are all documented as optional on the same page.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-a94f1d2b7c3e",
+      "content_sha256": "4f642b098e03836b6ea616219669439ac249c42b943e6d8a7a792d7662af405a",
+      "approved": true,
+      "reason": "`dimensions` is documented as \"The dimensions to use for the request.\" with integer examples 4096 and 8192, while encoding_format is explicitly \"The format to return the embeddings in. Can be either float or base64\" and service_tier is a priority setting, so only `dimensions` sets vector size.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-b58e3f9a2c71",
+      "content_sha256": "297ffade600b7b9b76471bfc9158fa900401889ef195e0bc5cf9b547c445b856",
+      "approved": true,
+      "reason": "system_fingerprint is described as \"This fingerprint represents the backend configuration that the model runs with.; Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.\", matching option a exactly.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-bc02c1d2e3f4",
+      "content_sha256": "b57c9e195f7ac6fd0f39ab4718b73d82cac94fcf60b1c8847aaf6dd91d714b63",
+      "approved": false,
+      "reason": "The only evidence is \"When you sign up for Nebius Token Factory, a personal organization is created automatically.\", which says nothing about spending budget alerts or hard credit caps; the captured page contains no mention of budgets, caps or billing at all, so the correct option is unsupported.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "79802308edf9393069ccd477c7330d0e7cfc00487634263b068b18bdcff98879",
+      "approved": true,
+      "reason": "RerankRequest lists \"required: - model - query - documents\"; user is \"A unique identifier representing your end-user\" and service_tier defaults to auto, both optional.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "612f79c7d4ca5ddf9de9a943906daec991d944b40c9415b3231af0a95b75004c",
+      "approved": true,
+      "reason": "The `stream` description reads \"Tokens will be sent as data-only [server-sent events](...) as they become available, with the stream terminated by a `data: [DONE]` message.\", which only option a states.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "027a646051ad32baca4995e23e1eaa19029a6e0265254b0b760cb411d66bd6af",
+      "approved": true,
+      "reason": "The temperature description states \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\"; the page promises no byte-identical output and does not say top_p is disabled.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "7ff2c5a2d63203fc4299447c2c2cb5a659f4541508780bd01fe9d01e7220538d",
+      "approved": true,
+      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted.\" directly settles the stopped-overnight case against every other option.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "a79ee692d3e04f0cb84df8db16f2fc83f85933580365fe0a188381a0dbfa0f99",
+      "approved": true,
+      "reason": "\"One shared filesystem can be attached to multiple VMs at once.\" supports option d, and the same page rules out option a with \"One Compute network SSD disk can only be added to one running VM at a time.\"",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "876f3d7f906009eb35da3a48c2fa869e019c073ebc0a53612d970e1511ebac12",
+      "approved": true,
+      "reason": "\"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB.\" explains the rejection of 100 GiB; no other option is grounded in the page.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "6eafe40d16974f329752ee6f56acaec50662a2b0312c68f547874eb1ffc0167c",
+      "approved": true,
+      "reason": "\"All VMs that the filesystem is attached to must belong to the same project. Sharing a filesystem across projects is not supported, even if the projects are in the same region.\" makes option c the only defensible answer and kills the same-tenant distractor.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "a983b41174fcf9bff598e6a09ec4ff75ba848be0192e1f961032b0ad6c6ab84b",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes.\" supports option a verbatim and contradicts the replacement and drain-and-recreate distractors.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-d49a1e7f3c82",
+      "content_sha256": "4326a4081ab81cfd82cf54a9904e62c41431dfce352567ce68e1b6f9bc84bae8",
+      "approved": true,
+      "reason": "The max_tokens description ends \"If omitted or set to null, defaults to 8192 tokens.\"; 100 appears only under `examples` and 1 is the default for `n`.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "b7cdc198a3d34d50fe74714d05d2bc04874412e06f3cbd630bab56820ec1563e",
+      "approved": true,
+      "reason": "RerankResult requires index, document and relevance_score, with \"Relevance score of the document\", matching option c; no vector, rewrite or completion is returned.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "c22810585735abcda78f59df0e65932fb31bfea2b9905297352a55363221079b",
+      "approved": true,
+      "reason": "The chat page's Usage schema defines completion_tokens, prompt_tokens and \"Total number of tokens used in the request (prompt + completion).\", exactly option a.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-op01d1e2f3a4",
+      "content_sha256": "6de25e1a832e49eadc7bf8b99fb0d2c0748f3498b4952debaa2d4d04db28db8c",
+      "approved": true,
+      "reason": "\"Resources—such as models, endpoints, files, and datasets—exist inside a project and inherit its access settings.\", together with \"Each Project ... acts as an isolated environment\", makes the project the isolating level.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-op02e2f3a4b5",
+      "content_sha256": "8493cd5d4ad3c87120942be1e450589ab77e28a93746678667cd260229d24d2f",
+      "approved": true,
+      "reason": "\"When you sign up for Nebius Token Factory, a personal organization is created automatically.\" supports option d; option c is excluded because the page puts the organization above projects rather than creating it on invitation.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-op03f4a5b6c7",
+      "content_sha256": "e5ffd6b2648334199f884ee1753fd1671d119a372165c2658d547ad2e922d4e5",
+      "approved": true,
+      "reason": "\"Within a project, you can create and manage: API keys, Fine-tuning jobs, Dedicated endpoints, Files and datasets\" names projects as the containing level, and the organization is documented as containing projects, groups and user accounts.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-op04a1b2c3d4",
+      "content_sha256": "39f97780716e0c3801fe76c5036ed9662c86b391af91bc3a760889fbeee2fdc2",
+      "approved": true,
+      "reason": "\"When you sign up for Nebius Token Factory, a personal organization is created automatically.\" states the automatic personal organization; no ticket, sandbox or agreement appears on the page.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "21146c35776193155e64d03ac290d8e16748822ab0e897034f39af8818fb6ed0",
+      "approved": true,
+      "reason": "\"To view an extended list of model parameters via the API, send a request to the List models endpoint with the query parameter `verbose=true`.\", and the models schema does carry \"context_length: type: integer\".",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-pf09d8e9f0a1",
+      "content_sha256": "973a60a4f1b01d0c435d344fd1c192aec48e675118b258ce65e1abecdd5ca02f",
+      "approved": false,
+      "reason": "The sole excerpt, \"exist inside a project and inherit its access settings.\", says nothing about the permissions needed to create dedicated endpoints; the correct option's claim of \"project administrator or endpoint management write permissions\" is invented beyond the captured page.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "24a4e59c4a2ddcd3ccc6377f2fdaa54dc6a5e1dcc813e0d2eaa00344a85cf3a7",
+      "approved": true,
+      "reason": "\"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\" identifies temperature; the distractors are not model parameters.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-pf12a1b2c3d4",
+      "content_sha256": "728eb7cefda0b208635a2929718b187e2fe0febfac5f85e0df1e3494966aee22",
+      "approved": true,
+      "reason": "The page states the automatic personal organization and then \"You can also be invited to other organizations and collaborate on their projects.\", which supports option a and refutes the permanent-lock distractor.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-ta01d2e3f4a5",
+      "content_sha256": "6ebc6b845dffa6fb7ae91b62a3435f7f323bc53c3c8123f02c258ae6fd76f7e7",
+      "approved": true,
+      "reason": "\"Each Project within an organization acts as an isolated environment for related resources and teams.\" plus resources that \"exist inside a project and inherit its access settings\" match option d and contradict the other three.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-ta02a3b4c5d6",
+      "content_sha256": "99d3888f977bcbfd48a27748a2e6b30cabb19d5eccbafa804b2302150ada18a8",
+      "approved": true,
+      "reason": "\"When you sign up for Nebius Token Factory, a personal organization is created automatically.\" supports option a; the enterprise, sandbox and 24-hour-trial options have no basis on the page.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-ta03b4c5d6e7",
+      "content_sha256": "9be32919b171bdb39b78eefe885afdc569f209b6ae28eb76d563d5b2eb75d46e",
+      "approved": true,
+      "reason": "\"Each project includes Project Groups that control access to project resources.\" supports option b, and \"To grant a user access to organizational resources, add them to the relevant Organization Group.\" keeps Organization Groups at the wrong scope for the stem.",
+      "reviewed_at": "2026-10-18T01:33:33Z"
+    }
+  ]
+}

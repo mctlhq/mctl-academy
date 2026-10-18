@@ -30,7 +30,7 @@ options:
 evidence:
   - source_id: src-recovery-rerank
     excerpt: Relevance score of the document
-    source_sha256: 3ecbe3c6899f87e00d868dddbb94bac99b86a077b2075fab6bc5177733febda3
+    source_sha256: d4a0639b6b0016761b750bcc740c8f456e21ed7248fbc48528c214d7117b9016
     locator: RerankResult > relevance_score
 authored:
   by: agent:claude-author
@@ -38,5 +38,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 4c46908624c8c68f1c7c47c0b5a385fd03262d08828ff023a5eebf858a4ef1ca
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 864f892139ff25314905d604ca1e2639506230285fa025324ccb28ce2ba845ce

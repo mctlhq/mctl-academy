@@ -29,11 +29,12 @@ options:
 evidence:
   - source_id: src-org-projects
     excerpt: exist inside a project and inherit its access settings.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T01:33:33Z
+  content_sha256: 6de25e1a832e49eadc7bf8b99fb0d2c0748f3498b4952debaa2d4d04db28db8c
