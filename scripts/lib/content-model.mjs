@@ -41,6 +41,10 @@ export const ALLOWED_SOURCES = [
     pathPrefix: "/nebius/nebius-physical-ai/",
     pathPattern:
       /^\/nebius\/nebius-physical-ai\/[0-9a-f]{40}\/docs\/(quickstart\.md|workbench\/(guides|cookbooks)\/[a-z0-9-]+\.md|workbench\/composing-cloud-and-token-factory\.md)$/,
+    // GitHub serves every commit in a fork network under the parent's path,
+    // so a SHA in the URL does not show the parent published it. Capture
+    // checks the commit is on this branch of this repository.
+    pinned: { repo: "nebius/nebius-physical-ai", branch: "main" },
   },
 ];
 
@@ -63,6 +67,22 @@ export function isAllowedSourceUrl(value) {
       url.pathname.startsWith(s.pathPrefix) &&
       (!s.pathPattern || s.pathPattern.test(url.pathname)),
   );
+}
+
+/**
+ * The repository commit an allowlisted URL is pinned to, or null for an
+ * entry that is not commit-pinned. The SHA is the path segment right after
+ * the repository, which `pathPattern` has already constrained to 40 hex.
+ */
+export function pinnedCommitOf(value) {
+  if (!isAllowedSourceUrl(value)) return null;
+  const url = value instanceof URL ? value : new URL(value);
+  const entry = ALLOWED_SOURCES.find(
+    (s) => s.pinned && url.hostname === s.host && url.pathname.startsWith(s.pathPrefix),
+  );
+  if (!entry) return null;
+  const sha = url.pathname.slice(entry.pathPrefix.length).split("/")[0];
+  return { repo: entry.pinned.repo, branch: entry.pinned.branch, sha };
 }
 
 /**

@@ -2764,3 +2764,84 @@ test("fetchSource refuses a redirect out of the allowlisted path prefix", async 
   }
   assert.equal(await withFetch(from, () => fetchSource(from)), "body");
 });
+
+// GitHub serves a fork's commits under the parent repository's path, so a
+// pinned nebius-physical-ai URL is only fetched once the commit is shown to be
+// on the parent's main branch.
+const PINNED_SHA = "8195442868f877cbd933eaeecd23b765974de20f";
+const PINNED_URL = `https://raw.githubusercontent.com/nebius/nebius-physical-ai/${PINNED_SHA}/docs/quickstart.md`;
+
+/** @param {(url: string) => Response} answer @param {() => Promise<unknown>} fn */
+async function withFetchBy(answer, fn) {
+  const real = globalThis.fetch;
+  /** @type {string[]} */
+  const calls = [];
+  globalThis.fetch = /** @type {typeof fetch} */ (
+    /** @type {unknown} */ (
+      async (/** @type {string} */ input) => {
+        calls.push(String(input));
+        const res = answer(String(input));
+        Object.defineProperty(res, "url", { value: String(input) });
+        return res;
+      }
+    )
+  );
+  try {
+    return { result: await fn(), calls };
+  } finally {
+    globalThis.fetch = real;
+  }
+}
+
+/** @param {number} code @param {string} [status] */
+const compareAnswer = (code, status) => (/** @type {string} */ url) =>
+  url.startsWith("https://api.github.com/")
+    ? new Response(JSON.stringify({ status }), { status: code })
+    : new Response("pinned body");
+
+test("fetchSource fetches a pinned page only when its commit is on upstream main", async () => {
+  for (const status of ["ahead", "identical"]) {
+    const { result, calls } = await withFetchBy(compareAnswer(200, status), () => fetchSource(PINNED_URL));
+    assert.equal(result, "pinned body");
+    assert.equal(
+      calls[0],
+      `https://api.github.com/repos/nebius/nebius-physical-ai/compare/${PINNED_SHA}...main`,
+    );
+  }
+});
+
+test("fetchSource refuses a pinned commit that is not on upstream main", async () => {
+  for (const { code, status } of [
+    { code: 200, status: "diverged" },
+    { code: 200, status: "behind" },
+    { code: 404, status: undefined },
+    { code: 500, status: undefined },
+  ]) {
+    const { result, calls } = await withFetchBy(compareAnswer(code, status), () =>
+      fetchSource(PINNED_URL).then(
+        () => "fetched",
+        (/** @type {Error} */ e) => e.message,
+      ),
+    );
+    assert.match(String(result), /not on main|returned HTTP/, `${code} ${status}`);
+    assert.equal(calls.length, 1, "the page itself must not be fetched");
+  }
+});
+
+test("fetchSource does not ask GitHub about a page that is not commit-pinned", async () => {
+  const url = "https://huggingface.co/docs/lerobot/il_robots.md";
+  const { result, calls } = await withFetchBy(
+    () => new Response("body"),
+    () => fetchSource(url),
+  );
+  assert.equal(result, "body");
+  assert.deepEqual(calls, [url]);
+});
+
+test("the drift check's fetch skips the provenance call: bytes at a fixed commit cannot change", async () => {
+  const { result, calls } = await withFetchBy(compareAnswer(200, "diverged"), () =>
+    fetchSource(PINNED_URL, { verifyPin: false }),
+  );
+  assert.equal(result, "pinned body");
+  assert.deepEqual(calls, [PINNED_URL]);
+});

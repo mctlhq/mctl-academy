@@ -34,9 +34,20 @@ releases, and it changes several times a week, so it is read only through
 `raw.githubusercontent.com` at a **full 40-character commit SHA**: the
 recorded hash then names bytes that cannot move, and the lint rejects a branch
 name, a short SHA, or any path outside the scoped pages (`pathPattern` in
-`ALLOWED_SOURCES`). The drift job still checks a pinned page but always
-finds it clean, so it never refreshes one; moving to a newer commit is a
-deliberate re-capture under new URLs. Questions from these pages test the workflows and platform choices they
+`ALLOWED_SOURCES`). A SHA in the URL alone does not prove the parent
+published it: GitHub serves every commit of the fork network under the
+parent's path, including commits that exist only in a fork. So capturing a
+pinned page, and the Capture sources dry run, first ask the GitHub compare API
+whether the commit is an ancestor of `nebius/nebius-physical-ai` `main`
+(`ahead` or `identical`). Otherwise they refuse, including when the question
+cannot be answered. The drift job skips that call, because the provenance was
+settled when the record was minted and bytes at a fixed commit cannot change,
+so a pinned page always compares clean and is never refreshed. Moving to a
+newer commit is a deliberate re-capture under new URLs. If the pinned URL
+stops resolving (the repository is renamed, made private or deleted), the
+drift job reports the page as unreachable every week rather than as drift.
+That calls for a deliberate re-capture at a current commit or for marking the
+source `deprecated`, not for waiting. Questions from these pages test the workflows and platform choices they
 describe, not flags of the repository's `npa` CLI, which is unversioned and
 changes without notice.
 

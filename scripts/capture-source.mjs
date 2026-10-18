@@ -18,7 +18,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
-import { isAllowedSourceUrl } from "./lib/content-model.mjs";
+import { isAllowedSourceUrl, pinnedCommitOf } from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -48,7 +48,14 @@ function listSources() {
  */
 const FETCH_TIMEOUT_MS = 30_000;
 
-export async function fetchSource(url) {
+/**
+ * `verifyPin` (default on) checks a commit-pinned URL's commit is on the
+ * upstream branch before fetching; see assertCommitOnBranch. Only the drift
+ * check turns it off: it compares a recorded hash with bytes at a fixed
+ * commit, which cannot change, and the provenance was settled when the
+ * record was minted.
+ */
+export async function fetchSource(url, { verifyPin = true } = {}) {
   if (!isAllowedSourceUrl(url)) {
     throw new Error(`refusing to capture ${url}: not on the SOURCES.md allowlist`);
   }
@@ -60,6 +67,8 @@ export async function fetchSource(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
+    const pin = pinnedCommitOf(url);
+    if (pin && verifyPin) await assertCommitOnBranch(pin, controller.signal);
     const res = await fetch(url, {
       headers: { accept: "text/markdown, text/plain, text/html" },
       signal: controller.signal,
@@ -77,6 +86,29 @@ export async function fetchSource(url) {
     throw e;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+/**
+ * Refuse a pinned commit unless it is reachable from the repository's branch.
+ * `compare/<sha>...<branch>` is `ahead` or `identical` exactly when the
+ * commit is an ancestor of the branch tip. A fork-only commit compares as
+ * `diverged` or is not found. Any other answer, including a failed request,
+ * refuses: an unverified commit is not a verified one.
+ */
+async function assertCommitOnBranch({ repo, branch, sha }, signal) {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const res = await fetch(`https://api.github.com/repos/${repo}/compare/${sha}...${branch}`, {
+    headers: {
+      accept: "application/vnd.github+json",
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
+    signal,
+  });
+  if (!res.ok) throw new Error(`verify ${repo}@${sha}: compare with ${branch} returned HTTP ${res.status}`);
+  const { status } = await res.json();
+  if (status !== "ahead" && status !== "identical") {
+    throw new Error(`refusing ${repo}@${sha}: commit is not on ${branch} (compare status ${status})`);
   }
 }
 
@@ -120,7 +152,7 @@ async function check({ markDrifted = false } = {}) {
 
   for (const { path: sourcePath, data } of sources) {
     try {
-      const text = await fetchSource(data.url);
+      const text = await fetchSource(data.url, { verifyPin: false });
       const hash = sha256(Buffer.from(text, "utf8"));
       if (hash === data.sha256) {
         console.log(`ok       ${data.id}`);
