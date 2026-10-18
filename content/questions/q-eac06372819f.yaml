@@ -1,0 +1,50 @@
+schema_version: 1
+id: q-eac06372819f
+status: published
+domain: domain-4
+objective: domain-4/edge-cloud-placement
+stem: "A team is choosing whether to run policy inference on an edge device or
+  in the cloud, and notes that PI0 occupies 14GB of memory at inference time
+  while SmolVLA needs only ~2GB. What does this imply for placement?"
+options:
+  - id: a
+    text: "SmolVLA's much smaller footprint makes it far more suitable for
+      memory-constrained edge hardware than PI0"
+    correct: true
+    explanation: "Correct. The async inference guide reports PI0 needs 14GB at
+      inference time versus SmolVLA's ~2GB, so SmolVLA fits constrained hardware
+      far more easily."
+  - id: b
+    text: "Both policies need identical hardware, since LeRobot's async pipeline
+      abstracts away memory differences"
+    correct: false
+    explanation: "The guide reports a large, concrete memory difference between the
+      two policies; the async pipeline does not equalize it."
+  - id: c
+    text: "The 14GB figure for PI0 is training memory and is irrelevant to where
+      inference runs"
+    correct: false
+    explanation: "The guide states this figure explicitly as memory occupied 'at
+      inference time', not training memory."
+  - id: d
+    text: "Memory footprint depends only on `chunk_size_threshold`, not on which
+      policy is deployed"
+    correct: false
+    explanation: "`chunk_size_threshold` tunes how often the client sends
+      observations; it does not change which policy's weights must fit in
+      memory."
+evidence:
+  - source_id: src-pa-lerobot-async
+    excerpt: "[PI0](https://huggingface.co/lerobot/pi0) occupies 14GB of memory at
+      inference time, while
+      [SmolVLA](https://huggingface.co/lerobot/smolvla_base) requires only
+      ~2GB."
+    source_sha256: e822df700612d3dd5003959b73b7e69334d1dc8ab19708b1bc050ba0fcd74738
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: a6a45092ee3136a00a8cabb410170d8d49121ac4bd3e2f7f0bc0a33988ab5e9d

@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-c3814f269b05
+status: published
+domain: domain-3
+objective: domain-3/deployment-evaluation
+stem: "When evaluating a deployed robot policy with `lerobot-rollout`, which
+  `--strategy.type` runs the policy continuously but only saves the last N
+  seconds of telemetry when an operator presses a save key?"
+options:
+  - id: a
+    text: "`highlight`"
+    correct: true
+    explanation: "Correct. The `highlight` strategy is described as autonomous
+      rollout with on-demand recording via a memory-bounded ring buffer, flushed
+      on a save key press."
+  - id: b
+    text: "`sentry`"
+    correct: false
+    explanation: "`sentry` is continuous autonomous recording with periodic upload
+      to the Hub, not a ring buffer flushed on demand."
+  - id: c
+    text: "`dagger`"
+    correct: false
+    explanation: "`dagger` is human-in-the-loop data collection via a teleoperator
+      takeover, not an on-demand ring-buffer recorder."
+  - id: d
+    text: "`episodic`"
+    correct: false
+    explanation: "`episodic` mirrors `lerobot-record`'s fixed episode/reset
+      structure, not an on-demand ring buffer."
+evidence:
+  - source_id: src-pa-lerobot-rollout
+    excerpt: "Autonomous rollout with on-demand recording via a memory-bounded ring
+      buffer."
+    source_sha256: b27b25d9592811201c7e095484971ab31b9bf2542cc9ac90afedd64b73c0cf4b
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 9675512560e6cad79394872ea3364a22db5425db3ca0800199308bc0c926b23c

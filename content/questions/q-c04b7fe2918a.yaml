@@ -1,0 +1,49 @@
+schema_version: 1
+id: q-c04b7fe2918a
+status: published
+domain: domain-1
+objective: domain-1/robot-policy-training
+stem: "When training an ACT policy with `lerobot-train --policy.type=act`, how
+  does the policy's architecture adapt to a specific robot's motor states,
+  actions and cameras?"
+options:
+  - id: a
+    text: "It automatically adapts to whatever has been saved in the dataset's
+      metadata"
+    correct: true
+    explanation: "Correct. The guide says this policy will automatically adapt to
+      the number of motor states, motor actions and cameras of your robot which
+      have been saved in your dataset."
+  - id: b
+    text: "You must manually set `--policy.input_features` and
+      `--policy.output_features` for each robot"
+    correct: false
+    explanation: "Those flags are used elsewhere to disable automatic feature
+      inference (for example when loading a pretrained policy for PEFT), not as
+      the normal required step for a new ACT policy."
+  - id: c
+    text: "You must record a separate calibration file per camera before training
+      will start"
+    correct: false
+    explanation: "Calibration files identify a specific robot/teleop pair for
+      teleoperation and recording; they are not what the policy uses to adapt
+      its architecture."
+  - id: d
+    text: "You must re-run `accelerate config` to register the robot's hardware
+      profile"
+    correct: false
+    explanation: "`accelerate config` configures multi-GPU training hardware, not
+      the policy's motor/camera feature adaptation."
+evidence:
+  - source_id: src-pa-lerobot-il-robots
+    excerpt: "automatically adapt to the number of motor states, motor actions and
+      cameras of your robot (e.g. `laptop` and `phone`) which have been saved"
+    source_sha256: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: c7d36a733c1fe2696617622c36c09eb158d3fba2c8c11ff4aaa4e589a12348a7

@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-7fa13c2e9b84
+status: published
+domain: domain-1
+objective: domain-1/supervised-fine-tuning
+stem: "When fine-tuning a robot policy with PEFT in LeRobot, which command-line
+  parameter selects which adaptation method (such as LoRA) to use?"
+options:
+  - id: a
+    text: "`--peft.method_type`"
+    correct: true
+    explanation: "Correct. The guide names this parameter as the one that lets you
+      select which PEFT method to use, such as LoRA."
+  - id: b
+    text: "`--peft.r`"
+    correct: false
+    explanation: "This sets the rank of the LoRA adapter once LoRA has already been
+      selected as the method; it does not choose the method itself."
+  - id: c
+    text: "`--peft.lora_alpha`"
+    correct: false
+    explanation: "This sets the LoRA scaling factor (scaling = lora_alpha / r); it
+      does not choose which PEFT method runs."
+  - id: d
+    text: "`--peft.target_modules`"
+    correct: false
+    explanation: "This specifies which layers a chosen PEFT method targets; it does
+      not select the method itself."
+evidence:
+  - source_id: src-pa-lerobot-peft
+    excerpt: "Note the `--peft.method_type` parameter that let's you select which
+      PEFT method to use."
+    source_sha256: 66a8214c9b7b1b109974b2b9f686f5f0c83061b478a7fa3f5ab07ae30b597e6c
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 0602a9c03f9a9ef85cd4d827e13609bd800a42c42f14010d99c7f85a7b3e0076

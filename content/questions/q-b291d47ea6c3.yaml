@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-b291d47ea6c3
+status: published
+domain: domain-1
+objective: domain-1/supervised-fine-tuning
+stem: "After an Axolotl LoRA fine-tuning job on Nebius Serverless AI completes,
+  where are the resulting adapter weights found?"
+options:
+  - id: a
+    text: "In the `output` directory of the `fine-tuning-axolotl` Object Storage
+      bucket mounted to the job"
+    correct: true
+    explanation: "Correct. The tutorial stores the LoRA adapter weights as files in
+      the output directory of that bucket."
+  - id: b
+    text: "On the job's container disk, which persists after the job completes"
+    correct: false
+    explanation: "Serverless AI deletes the job (and its container VM) after
+      completion, so results are not left on the job's own disk; they must be in
+      the mounted bucket."
+  - id: c
+    text: "Pushed automatically to a Hugging Face Hub model repository"
+    correct: false
+    explanation: "That is how LeRobot training checkpoints can be shared; this
+      Axolotl job writes its results to the mounted Object Storage bucket
+      instead."
+  - id: d
+    text: "In the Nebius Container Registry, alongside the job's container image"
+    correct: false
+    explanation: "Container Registry stores container images, not job output; the
+      fine-tuning results go to the mounted Object Storage bucket."
+evidence:
+  - source_id: src-pa-serverless-fine-tuning
+    excerpt: "They are stored as files in the `output` directory, in the
+      `fine-tuning-axolotl` bucket."
+    source_sha256: 4a9d9ef1d3a8b5fa4de3ac1a6dfd0cec5ffe364ce9b6670832f89a1350bf9ece
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 3959eaa772aaa73c07a07c796571b63ccd842e87fef2a8ea9e5c334239d4f2b8

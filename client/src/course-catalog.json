@@ -113,8 +113,8 @@
   {
     "id": "physical-ai",
     "title": "Physical AI",
-    "publishedQuestionCount": 0,
-    "available": false,
+    "publishedQuestionCount": 19,
+    "available": true,
     "mock": {
       "questionCount": 30,
       "timeLimitMinutes": 60,

@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-4210b8e6c3a7
+status: published
+domain: domain-4
+objective: domain-4/application-integration
+stem: "A robot application behind a firewall needs to expose its HTTP API to an
+  external integration using Nebius Tunnels, without opening inbound firewall
+  ports. What must the VM or private network accept from the internet?"
+options:
+  - id: a
+    text: "Nothing; it never needs to accept inbound connections, since the agent
+      connects outbound to the Nebius edge"
+    correct: true
+    explanation: "Correct. The overview states the VM or private network doesn't
+      need to accept inbound connections from the internet for tunnel traffic."
+  - id: b
+    text: "Inbound connections from the regional Nebius edge's IP range"
+    correct: false
+    explanation: "The overview describes the agent making an outbound connection to
+      the edge, not the network accepting inbound connections from it."
+  - id: c
+    text: "Inbound connections on whatever port is set in `services.name`"
+    correct: false
+    explanation: "`services.name` names the service in the agent configuration; it
+      is not a network port the VM must accept inbound traffic on."
+  - id: d
+    text: "Inbound connections over HTTP/2 only, when `protocol: h2` is configured"
+    correct: false
+    explanation: "`protocol: h2` controls which traffic type the tunnel supports; it
+      does not require the VM to accept any inbound connection."
+evidence:
+  - source_id: src-pa-tunnels-overview
+    excerpt: "The VM or private network doesn't need to accept inbound connections
+      from the internet for this traffic."
+    source_sha256: 54707987328b3b5ec40e28d698fa2b6fe54327a6c381b7d985f67471f95b6db3
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 1af42ff221714c7d1805bc8cb2c04a631a2cc0a52c1dbaf5b55288503fea3063

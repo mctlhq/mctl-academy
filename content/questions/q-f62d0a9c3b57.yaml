@@ -1,0 +1,48 @@
+schema_version: 1
+id: q-f62d0a9c3b57
+status: published
+domain: domain-1
+objective: domain-1/gpu-orchestration
+stem: "A team scales LeRobot training from 1 to 4 GPUs using `accelerate
+  launch`. By default, what happens to the learning rate and the number of
+  training steps?"
+options:
+  - id: a
+    text: "They stay exactly as specified; LeRobot does not auto-scale either one
+      for the number of GPUs"
+    correct: true
+    explanation: "Correct. The multi-GPU guide states LeRobot does NOT automatically
+      scale learning rates or training steps based on the number of GPUs, giving
+      full control over hyperparameters."
+  - id: b
+    text: "The learning rate is scaled automatically by the number of GPUs, as many
+      distributed frameworks do"
+    correct: false
+    explanation: "The guide contrasts LeRobot with those frameworks: unlike them,
+      LeRobot keeps the learning rate exactly as specified."
+  - id: c
+    text: "The number of training steps is automatically reduced to keep total
+      samples seen constant"
+    correct: false
+    explanation: "The guide shows reducing steps for a larger effective batch size
+      as something you do manually, not something LeRobot does automatically."
+  - id: d
+    text: "Both are automatically doubled to match the larger effective batch size
+      from more GPUs"
+    correct: false
+    explanation: "The effective batch size does grow with more GPUs, but LeRobot
+      does not automatically adjust the learning rate or step count in
+      response."
+evidence:
+  - source_id: src-pa-lerobot-multi-gpu
+    excerpt: "LeRobot does **NOT** automatically scale learning rates or training
+      steps based on the number of GPUs."
+    source_sha256: e07e67dcb332b43cb182fff5e4c0deac241b8b26517e162269fa9068c01efdc2
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 7d6e0d4c9902b803afdddac3730cedcc685530e5b3a1aaf9a709bc39c939954f

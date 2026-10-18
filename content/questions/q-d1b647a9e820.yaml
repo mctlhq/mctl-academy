@@ -1,0 +1,47 @@
+schema_version: 1
+id: q-d1b647a9e820
+status: published
+domain: domain-2
+objective: domain-2/dataset-curation
+stem: "Before merging several LeRobot datasets into one with
+  `lerobot-edit-dataset --operation.type merge`, what must be true of the input
+  datasets?"
+options:
+  - id: a
+    text: "They must have identical features; episodes are then concatenated in the
+      order given in `repo_ids`"
+    correct: true
+    explanation: "Correct. The dataset tools guide states the datasets must have
+      identical features for a merge, with episodes concatenated in the
+      specified `repo_ids` order."
+  - id: b
+    text: "They must already be encoded as videos via the convert-to-video operation"
+    correct: false
+    explanation: "Convert-to-video is a separate, optional operation; the merge
+      requirement documented is identical features, not a shared storage
+      encoding."
+  - id: c
+    text: "They must use the same RGB and depth encoder settings configured for
+      re-encoding videos"
+    correct: false
+    explanation: "Encoder settings are a separate, optional concern for re-encoding
+      existing videos, not a stated requirement for merging."
+  - id: d
+    text: "They must already be split into train/val/test using the same fractions"
+    correct: false
+    explanation: "Splitting is a separate, independent operation; the documented
+      merge requirement is identical features, not matching prior splits."
+evidence:
+  - source_id: src-pa-lerobot-dataset-tools
+    excerpt: "Combine multiple datasets into one. The datasets must have identical
+      features, and episodes are concatenated in the order specified in
+      `repo_ids`"
+    source_sha256: 5ce2771b051bb29cd9615c83227337bef8f96e8f8916a5e3373d77ee0011e447
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: ebed0fc5df127322d27fd684ab7d42b2b8cf35362f7e6ff02a2a11fff2301c27
