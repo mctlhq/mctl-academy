@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-tf-compute-combos
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/tokenfactory-compute-combos.md
+title: Token Factory with Nebius GPU workloads
+retrieved_at: 2026-10-18T01:48:36Z
+sha256: b1cd3d9866c9fa4a69b09f774a11132cf54f9112202a224c023da491b128e5b7
+objectives:
+  - domain-3/inference-capacity
+  - domain-3/inference-setup
+snapshot:
+  bucket: academy-source-snapshots
+  key: b1cd3d9866c9fa4a69b09f774a11132cf54f9112202a224c023da491b128e5b7
+status: current

@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-quickstart
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/quickstart.md
+title: npa Quickstart
+retrieved_at: 2026-10-18T01:48:07Z
+sha256: a4fc3794311a8beeb4a6ce4d48fa68230dca4709be4f087eb0975f57c387099d
+objectives:
+  - domain-4/application-integration
+  - domain-1/gpu-orchestration
+snapshot:
+  bucket: academy-source-snapshots
+  key: a4fc3794311a8beeb4a6ce4d48fa68230dca4709be4f087eb0975f57c387099d
+status: current

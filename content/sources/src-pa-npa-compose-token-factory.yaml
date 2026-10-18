@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-compose-token-factory
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/composing-cloud-and-token-factory.md
+title: Compose Nebius GPU workloads with Token Factory
+retrieved_at: 2026-10-18T01:48:09Z
+sha256: 8bfca76dc167e41763cd9a3ca2751b9cb53890f2b6d4400fd60fd9f59a68edbb
+objectives:
+  - domain-3/inference-setup
+  - domain-4/application-integration
+snapshot:
+  bucket: academy-source-snapshots
+  key: 8bfca76dc167e41763cd9a3ca2751b9cb53890f2b6d4400fd60fd9f59a68edbb
+status: current

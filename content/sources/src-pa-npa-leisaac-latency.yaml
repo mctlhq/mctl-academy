@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-leisaac-latency
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/leisaac-transport-latency.md
+title: LeIsaac low-latency browser transport
+retrieved_at: 2026-10-18T01:48:21Z
+sha256: d517258a8ad0eacf6ee092302e578f02d9b639c58900674dc3cdafa62ce477d0
+objectives:
+  - domain-4/edge-cloud-placement
+  - domain-2/data-collection
+snapshot:
+  bucket: academy-source-snapshots
+  key: d517258a8ad0eacf6ee092302e578f02d9b639c58900674dc3cdafa62ce477d0
+status: current

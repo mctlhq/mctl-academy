@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-physical-augmentation
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/physical-augmentation.md
+title: Physical augmentation with executed actions
+retrieved_at: 2026-10-18T01:48:19Z
+sha256: 656d7be36be5d91f6a34616fda1e4795d1f329d4809f4e2f7b6cfbfeca6ebe6c
+objectives:
+  - domain-2/dataset-curation
+  - domain-2/dataset-quality
+snapshot:
+  bucket: academy-source-snapshots
+  key: 656d7be36be5d91f6a34616fda1e4795d1f329d4809f4e2f7b6cfbfeca6ebe6c
+status: current

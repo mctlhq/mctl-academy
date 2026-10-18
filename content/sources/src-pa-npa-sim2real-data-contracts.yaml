@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-sim2real-data-contracts
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/sim2real-data-contracts.md
+title: "Sim-to-Real: data types and artifact contracts"
+retrieved_at: 2026-10-18T01:48:24Z
+sha256: 3d4abbda0a8171b9a03c62f58228ec7998c3af1018b9d60c1c5adeff43153293
+objectives:
+  - domain-4/workflow-security
+  - domain-2/dataset-curation
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3d4abbda0a8171b9a03c62f58228ec7998c3af1018b9d60c1c5adeff43153293
+status: current

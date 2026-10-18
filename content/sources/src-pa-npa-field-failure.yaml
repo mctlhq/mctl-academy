@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-pa-npa-field-failure
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/field-failure-policy-improvement.md
+title: Field failure to navigation policy improvement
+retrieved_at: 2026-10-18T01:48:30Z
+sha256: 178843d1b675d2876a7ea669808fc4803a3f9afd9bd0255fb686ae44d100718a
+objectives:
+  - domain-3/deployment-evaluation
+  - domain-4/observability-tracing
+  - domain-1/training-results
+snapshot:
+  bucket: academy-source-snapshots
+  key: 178843d1b675d2876a7ea669808fc4803a3f9afd9bd0255fb686ae44d100718a
+status: current
