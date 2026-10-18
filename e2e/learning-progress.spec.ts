@@ -131,11 +131,16 @@ test("progress denominator and recommended domain link agree", async ({ page }) 
 test("a short bank explains the mock shortfall and a complete bank starts a mock", async ({ page }) => {
   // Derived from the shipped artefacts, not from a guess about which bank is
   // short today: the Builder bank was short during its evidence recovery and
-  // is complete again after it, and this spec must hold in both states.
-  const short = catalog.find((c) => !mockComplete(c));
+  // is complete again after it, and this spec must hold in both states. A
+  // course with no published questions at all is not "short": its option is
+  // disabled ("Coming soon") and cannot be selected.
+  const short = catalog.find((c) => c.available && !mockComplete(c));
   const complete = catalog.find((c) => mockComplete(c));
   expect(complete, "at least one course must be able to fill its Mock").toBeDefined();
   await page.goto("/mock");
+  for (const c of catalog.filter((c) => !c.available)) {
+    await expect(page.locator(`[data-testid="course-select"] option[value="${c.id}"]`)).toBeDisabled();
+  }
   if (short) {
     await page.getByTestId("course-select").selectOption(short.id);
     await expect(page.getByTestId("not-enough-content")).toBeVisible();

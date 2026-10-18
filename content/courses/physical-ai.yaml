@@ -49,7 +49,7 @@ domains:
     mock_questions: 6
     objectives:
       - id: inference-setup
-        title: "Setting up model inference on Nebius AI Cloud"
+        title: "Setting up managed model inference in the cloud"
       - id: release-management
         title: "Staging and production releases with versioned model artifacts, promotion and rollback"
       - id: deployment-evaluation
