@@ -1,0 +1,47 @@
+schema_version: 1
+id: q-8e4f1a6c9b32
+status: review_ready
+domain: domain-2
+objective: domain-2/dataset-quality
+stem: "In Nebius's physical-augmentation demonstration-collection workflow, a
+  Franka cube-lift attempt ends with the object lifted only 4 cm and then
+  dropped. Per the documented acceptance checks, what happens to that
+  attempt?"
+options:
+  - id: a
+    text: "It is accepted anyway, because `collection/` retains every attempt
+      regardless of outcome"
+    correct: false
+    explanation: "`collection/` retains every raw attempt for record-keeping, but
+      only attempts passing the acceptance checks are exported into the
+      accepted LeRobot dataset."
+  - id: b
+    text: "It is accepted as long as the camera captured the full 1280x720 RTX
+      frame resolution"
+    correct: false
+    explanation: "Camera frame resolution describes recording quality, not one of
+      the documented physical acceptance criteria for a demonstration."
+  - id: c
+    text: "It is rejected only if it also occurred under the displaced-object
+      condition rather than the nominal condition"
+    correct: false
+    explanation: "Acceptance checks apply the same way across all four sealed
+      conditions; nothing in the documentation exempts non-nominal conditions
+      from the acceptance criteria."
+  - id: d
+    text: "It fails acceptance, since acceptance requires a measured lift of at
+      least 10 cm along with low object velocity, proximity to the closed
+      tool, and limited lateral drift"
+    correct: true
+    explanation: "Correct. Acceptance requires a measured lift of at least 10 cm,
+      low object velocity, proximity to the closed tool, and limited lateral
+      drift, so a 4 cm lift that is then dropped fails the check."
+evidence:
+  - source_id: src-pa-npa-physical-augmentation
+    excerpt: "Acceptance requires a measured lift of at least 10 cm, low object
+      velocity, proximity to the closed tool, limited lateral drift,"
+    source_sha256: 656d7be36be5d91f6a34616fda1e4795d1f329d4809f4e2f7b6cfbfeca6ebe6c
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:48:02Z
+course_id: physical-ai

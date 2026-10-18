@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-5b9d3f7a2c18
+status: review_ready
+domain: domain-2
+objective: domain-2/dataset-quality
+stem: "After exporting subtask labels for a LeRobot dataset through FiftyOne,
+  what must be true of the export report before the derived dataset is used
+  for training?"
+options:
+  - id: a
+    text: "The report must show `unlabeled_frame_count: 0`"
+    correct: true
+    explanation: "Correct. The guide states to train against the derived prefix
+      only after the report shows unlabeled_frame_count: 0."
+  - id: b
+    text: "The report must show at least one overlapping labeled interval,
+      confirming two reviewers agreed"
+    correct: false
+    explanation: "Labeled intervals are required to not overlap and to fully
+      cover every frame; an overlapping interval is a problem the export
+      coverage check is meant to catch, not a sign of agreement."
+  - id: c
+    text: "The report's `episode_index_mapping` must equal the source dataset's
+      original episode indexes"
+    correct: false
+    explanation: "episode_index_mapping is a field from the separate native
+      validation report showing that source and derived indexes differ; it is
+      not the training-readiness check for a newly exported dataset."
+  - id: d
+    text: "The derived dataset's output prefix must be identical to the source
+      dataset's prefix"
+    correct: false
+    explanation: "The export requires a new, empty output prefix distinct from
+      the source; the original dataset is never rewritten in place."
+evidence:
+  - source_id: src-pa-npa-subtask-labeling
+    excerpt: "Train against the derived prefix only after the report shows
+      `unlabeled_frame_count: 0`."
+    source_sha256: 3aa701ef6806152dd7daa3bee70ffc3977625f47bed8d07a4a32ff321fb0d8e6
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:48:02Z
+course_id: physical-ai

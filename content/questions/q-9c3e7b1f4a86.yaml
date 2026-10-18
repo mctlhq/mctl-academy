@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-9c3e7b1f4a86
+status: review_ready
+domain: domain-4
+objective: domain-4/observability-tracing
+stem: "A team is viewing metrics for a Serverless AI endpoint that serves their
+  robot inference pipeline, but cannot find the endpoint's underlying VM
+  listed anywhere under Compute. Per the monitoring documentation, why is
+  that?"
+options:
+  - id: a
+    text: "The underlying VMs aren't shown in Compute, even though the Metrics
+      tab of the job or endpoint reports the same metrics"
+    correct: true
+    explanation: "Correct. The documentation states you view metrics on the
+      Metrics tab of the job or endpoint, and that the underlying VMs aren't
+      shown in Compute."
+  - id: b
+    text: "Because usage data only becomes available 5-10 minutes after the
+      resource is created"
+    correct: false
+    explanation: "The 5-10 minute delay is about when usage data first appears on
+      the dashboard, not about why the VM itself is absent from Compute."
+  - id: c
+    text: "Because the dashboards refresh only every 15 seconds by default"
+    correct: false
+    explanation: "The refresh interval controls how often displayed data updates;
+      it does not explain why the VM is missing from the Compute page."
+  - id: d
+    text: "Because the dashboards exist mainly to help the Nebius support team
+      investigate issues, not to show resources to customers"
+    correct: false
+    explanation: "The dashboards are for the customer to monitor utilization and
+      schedule quota increases; support-team investigation is a secondary use,
+      not the reason the VM is hidden from Compute."
+evidence:
+  - source_id: src-pa-serverless-monitoring
+    excerpt: "View them on the **Metrics** tab of your job or endpoint; the
+      underlying VMs aren't shown in Compute."
+    source_sha256: 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:48:02Z
+course_id: physical-ai
