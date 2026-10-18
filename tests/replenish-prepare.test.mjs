@@ -32,7 +32,13 @@ import {
   prBody,
   knownObjectives,
 } from "../scripts/replenish-prepare.mjs";
-import { mergeVersions, buildSourceRecord, parseMode, parseCaptureArgs } from "../scripts/capture-source.mjs";
+import {
+  mergeVersions,
+  buildSourceRecord,
+  parseMode,
+  parseCaptureArgs,
+  fetchSource,
+} from "../scripts/capture-source.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -2723,4 +2729,26 @@ test("prBody says when the run was scoped to one course, and says nothing otherw
   const scoped = prBody({ ...args, candidates: { ...CANDIDATES, course: "ai-cloudops-engineer" } });
   assert.match(scoped, /Scoped to course `ai-cloudops-engineer`: gaps and new pages cover that course only/);
   assert.ok(!/Scoped to course/.test(prBody({ ...args, candidates: { ...CANDIDATES, course: null } })));
+});
+
+// fetch follows redirects; the allowlist must hold for the URL the bytes came
+// from, not only for the one requested.
+async function withFetch(finalUrl, fn) {
+  const real = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, status: 200, url: finalUrl, text: async () => "body" });
+  try {
+    return await fn();
+  } finally {
+    globalThis.fetch = real;
+  }
+}
+
+test("fetchSource refuses a redirect out of the allowlisted path prefix", async () => {
+  const from = "https://huggingface.co/docs/lerobot/il_robots.md";
+  for (const to of ["https://huggingface.co/docs/transformers/index.md", "https://evil.example/x.md"]) {
+    await withFetch(to, () =>
+      assert.rejects(fetchSource(from), /redirected to .* outside the SOURCES.md allowlist/),
+    );
+  }
+  assert.equal(await withFetch(from, () => fetchSource(from)), "body");
 });

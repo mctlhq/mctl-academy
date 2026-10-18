@@ -77,6 +77,11 @@ export async function fetchText(url) {
       // The status rides along so a 404 (page gone) can be told from a 5xx.
       throw Object.assign(new Error(`fetch ${url}: HTTP ${res.status}`), { status: res.status });
     }
+    // Same redirect rule as fetchSource() in capture-source.mjs: the final URL
+    // must still be inside the allowlist.
+    if (!isAllowedSourceUrl(res.url)) {
+      throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
+    }
     return await res.text();
   } finally {
     clearTimeout(timer);

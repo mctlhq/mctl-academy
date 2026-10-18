@@ -10,6 +10,7 @@ import {
   gapsFrom,
   rankPages,
   discover,
+  fetchText,
   DISCOVERY_STATE_HEADER,
 } from "../scripts/discover-docs.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
@@ -521,5 +522,20 @@ test("discover: an unknown --course is an error, never an empty report", async (
     );
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("fetchText refuses a redirect out of the allowlisted path prefix", async () => {
+  const real = globalThis.fetch;
+  const from = "https://huggingface.co/docs/lerobot/il_robots.md";
+  try {
+    for (const to of ["https://huggingface.co/docs/transformers/index.md", "https://evil.example/x.md"]) {
+      globalThis.fetch = async () => ({ ok: true, status: 200, url: to, text: async () => "body" });
+      await assert.rejects(fetchText(from), /redirected to .* outside the SOURCES.md allowlist/);
+    }
+    globalThis.fetch = async () => ({ ok: true, status: 200, url: from, text: async () => "body" });
+    assert.equal(await fetchText(from), "body");
+  } finally {
+    globalThis.fetch = real;
   }
 });

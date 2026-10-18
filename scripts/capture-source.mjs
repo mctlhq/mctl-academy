@@ -39,14 +39,14 @@ function listSources() {
 /**
  * Fetch a source document.
  *
- * Every allowlisted docs tree (both Nebius sites and the LeRobot docs) serves
- * a `.md` twin of every page and publishes an llms.txt index of them. The markdown is what we snapshot: it is the same
+ * Every allowlisted docs tree (both Nebius sites and the LeRobot docs)
+ * serves a `.md` twin of every page and publishes an llms.txt index of them. The markdown is what we snapshot: it is the same
  * prose without the navigation chrome, so a hash changes when the content
  * changes rather than when the site's header does.
  */
 const FETCH_TIMEOUT_MS = 30_000;
 
-async function fetchSource(url) {
+export async function fetchSource(url) {
   if (!isAllowedSourceUrl(url)) {
     throw new Error(`refusing to capture ${url}: not on the SOURCES.md allowlist`);
   }
@@ -63,6 +63,12 @@ async function fetchSource(url) {
       signal: controller.signal,
     });
     if (!res.ok) throw new Error(`fetch ${url}: HTTP ${res.status}`);
+    // fetch follows redirects, so the bytes may come from somewhere other than
+    // the URL checked above. On a host allowlisted by path prefix, a redirect
+    // out of the prefix would otherwise be stored under the allowlisted URL.
+    if (!isAllowedSourceUrl(res.url)) {
+      throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
+    }
     return await res.text();
   } catch (e) {
     if (e.name === "AbortError") throw new Error(`fetch ${url}: timed out after ${FETCH_TIMEOUT_MS}ms`);
