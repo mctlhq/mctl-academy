@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4a1c9e7f2b56
-status: published
+status: retired
 domain: domain-3
 objective: domain-3/inference-capacity
 stem: "When sizing single-GPU inference capacity for a Diffusion Policy
