@@ -80,6 +80,12 @@ export async function fetchSource(url, { verifyPin = true } = {}) {
     if (!isAllowedSourceUrl(res.url)) {
       throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
     }
+    // Ancestry was checked for the commit in the requested URL only, so the
+    // bytes must come from that same commit (or from no pinned commit at all).
+    const landed = pinnedCommitOf(res.url);
+    if (verifyPin && landed && landed.sha !== pin?.sha) {
+      throw new Error(`fetch ${url}: redirected to ${res.url}, an unverified commit`);
+    }
     return await res.text();
   } catch (e) {
     if (e.name === "AbortError") throw new Error(`fetch ${url}: timed out after ${FETCH_TIMEOUT_MS}ms`);
