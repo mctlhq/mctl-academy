@@ -1,25 +1,24 @@
 schema_version: 1
 id: q-4f8a2c6e9d31
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/application-integration
 stem: "A robot application's CI pipeline needs to push container images to
-  Nebius Container Registry so a fleet service can pull and run them. What
-  does running `nebius registry configure-helper` let the pipeline do?"
+  Nebius Container Registry so a fleet service can pull and run them. What does
+  running `nebius registry configure-helper` let the pipeline do?"
 options:
   - id: a
-    text: "Automatically create a new registry, replacing the separate
-      `nebius registry create` step"
+    text: "Automatically create a new registry, replacing the separate `nebius
+      registry create` step"
     correct: false
-    explanation: "Creating a registry is a distinct documented step
-      (`nebius registry create`); the credential helper only configures Docker
+    explanation: "Creating a registry is a distinct documented step (`nebius
+      registry create`); the credential helper only configures Docker
       authentication, it does not create registries."
   - id: b
     text: "Run Docker commands as root for faster image pushes"
     correct: false
     explanation: "The guide explicitly warns not to run Docker commands as root,
-      since the credential helper is configured for the user account, not
-      root."
+      since the credential helper is configured for the user account, not root."
   - id: c
     text: "Remove the need to install Docker Engine before pushing images"
     correct: false
@@ -40,3 +39,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: bcb3f5fe0e9e862af0286358f743d6d5c97985a08a657117629dcf9f1d53648b

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6a2f9c4e8b15
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/edge-cloud-placement
 stem: "In LeRobot's asynchronous inference design, the `RobotClient` streams
@@ -8,8 +8,8 @@ stem: "In LeRobot's asynchronous inference design, the `RobotClient` streams
   the robot's own controller. Why?"
 options:
   - id: a
-    text: "The policy server can only be reached over the network, never from
-      the same physical machine as the client"
+    text: "The policy server can only be reached over the network, never from the
+      same physical machine as the client"
     correct: false
     explanation: "The guide explicitly shows spinning up a PolicyServer and
       connecting a RobotClient from the same machine, so a remote server is not
@@ -22,26 +22,28 @@ options:
       inference on the server, which the documentation says is assumed to have
       better computational resources than the robot controller."
   - id: c
-    text: "SmolVLA cannot run inference on any device other than a remote GPU
-      server"
+    text: "SmolVLA cannot run inference on any device other than a remote GPU server"
     correct: false
-    explanation: "The guide lists `policy_device` options including cpu, mps and
-      xpu alongside cuda, so inference is not restricted to a remote GPU
-      server."
+    explanation: "The guide lists `policy_device` options including cpu, mps and xpu
+      alongside cuda, so inference is not restricted to a remote GPU server."
   - id: d
-    text: "Async inference eliminates idle frames by computing the next action
-      chunk before the current chunk is exhausted"
+    text: "Async inference eliminates idle frames by computing the next action chunk
+      before the current chunk is exhausted"
     correct: false
-    explanation: "That describes a real benefit of the async design generally,
-      but it is not the documented reason for placing inference on a separate
-      server rather than the robot controller."
+    explanation: "That describes a real benefit of the async design generally, but
+      it is not the documented reason for placing inference on a separate server
+      rather than the robot controller."
 evidence:
   - source_id: src-pa-lerobot-async
-    excerpt: "receives action chunks obtained running inference on the server
-      (which we assume to have better computational resources than the robot
+    excerpt: "receives action chunks obtained running inference on the server (which
+      we assume to have better computational resources than the robot
       controller)."
     source_sha256: e822df700612d3dd5003959b73b7e69334d1dc8ab19708b1bc050ba0fcd74738
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: dce5baa1853dd360866edd274bdc3749924c4431d1410ce56156a7c42911f0a0

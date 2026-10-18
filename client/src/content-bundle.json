@@ -205,6 +205,88 @@
     ]
   },
   {
+    "id": "q-1e7b4f9a3c62",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/workflow-security",
+    "stem": "After running `npa studio search` to find robot run artifacts across object-storage buckets, why should the resulting search JSON and download receipts be kept out of Git and public documentation?",
+    "objectiveTitle": "Versioning models and configurations and protecting credentials, artifacts and data",
+    "sources": [
+      {
+        "title": "Find artifacts across object-storage buckets",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/find-artifacts.md",
+        "excerpt": "Search JSON and download receipts contain project identities, regional endpoints, bucket names, and object keys. Store them outside Git and public documentation."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "They contain the downloaded media files themselves, which are too large for Git",
+        "correct": false,
+        "explanation": "The search result is a JSON inventory, not downloaded media; it does not embed the media files."
+      },
+      {
+        "id": "b",
+        "text": "Running `npa studio search` provisions cloud resources that must be torn down, and the receipt proves that provisioning occurred",
+        "correct": false,
+        "explanation": "The guide states search does not provision resources, download media, or modify storage, so there is no provisioning to prove or conceal."
+      },
+      {
+        "id": "c",
+        "text": "They contain project identities, regional endpoints, bucket names, and object keys",
+        "correct": true,
+        "explanation": "Correct. The guide states these files contain project identities, regional endpoints, bucket names, and object keys, and should be stored outside Git and public documentation."
+      },
+      {
+        "id": "d",
+        "text": "The download receipt proves the downloaded object stayed byte-for-byte unchanged, and that proof must stay private",
+        "correct": false,
+        "explanation": "The guide explicitly says the receipt alone does not prove the object stayed unchanged between search and download, so it is not that kind of proof."
+      }
+    ]
+  },
+  {
+    "id": "q-2a8c4e6f91b7",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/deployment-evaluation",
+    "stem": "A team wants to run a quick evaluation of a deployed robot policy with `lerobot-rollout`, just observing its behavior on the real robot without recording any data. Which `--strategy.type` is designed for this?",
+    "objectiveTitle": "Evaluating deployments against physical tasks, failure scenarios and safety checks",
+    "sources": [
+      {
+        "title": "Policy Deployment (lerobot-rollout)",
+        "url": "https://huggingface.co/docs/lerobot/inference.md",
+        "excerpt": "Autonomous policy execution with no data recording. Use this for quick evaluation, demos, or when you only need to observe the robot."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`sentry`",
+        "correct": false,
+        "explanation": "`sentry` is continuous autonomous recording with periodic upload to the Hub, not a no-recording quick-evaluation mode."
+      },
+      {
+        "id": "b",
+        "text": "`episodic`",
+        "correct": false,
+        "explanation": "`episodic` mirrors lerobot-record's fixed episode/reset structure and records each episode, rather than running with no data recording."
+      },
+      {
+        "id": "c",
+        "text": "`base`",
+        "correct": true,
+        "explanation": "Correct. The `base` strategy is autonomous policy execution with no data recording, described for quick evaluation, demos, or observing the robot."
+      },
+      {
+        "id": "d",
+        "text": "`dagger`",
+        "correct": false,
+        "explanation": "`dagger` is human-in-the-loop data collection that alternates policy execution with teleoperator correction, not an observation-only strategy."
+      }
+    ]
+  },
+  {
     "id": "q-2f6b8d4a1c93",
     "course_id": "physical-ai",
     "domain": "domain-3",
@@ -283,6 +365,47 @@
         "text": "Because a secret's primary version updates automatically whenever the application runs",
         "correct": false,
         "explanation": "The primary version only changes when explicitly set to a different version; it does not update automatically on application use."
+      }
+    ]
+  },
+  {
+    "id": "q-3c7b5f9a1e84",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/training-results",
+    "stem": "A team reads a single `lerobot-eval` run on the LIBERO suites to pick between two candidate policies, and the two success rates are close. Why does LeRobot's LIBERO documentation recommend not trusting that single run?",
+    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
+    "sources": [
+      {
+        "title": "LIBERO",
+        "url": "https://huggingface.co/docs/lerobot/libero.md",
+        "excerpt": "Success rates may vary by a few percent across evaluation seeds, so we recommend averaging over 3 seeds."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Hub dataset revisions must be pinned with `--dataset.revision` before any success rate is comparable",
+        "correct": false,
+        "explanation": "Pinning the dataset revision is a separate reproducibility requirement for comparing against published results, not the reason to average over multiple seeds."
+      },
+      {
+        "id": "b",
+        "text": "`--eval.batch_size` must be set to 3 for a statistically valid comparison",
+        "correct": false,
+        "explanation": "`--eval.batch_size` controls how many environments run in parallel; it is not tied to the number of evaluation seeds recommended for averaging."
+      },
+      {
+        "id": "c",
+        "text": "Success rates may vary by a few percent across evaluation seeds, so results should be averaged over 3 seeds",
+        "correct": true,
+        "explanation": "Correct. The documentation states success rates may vary by a few percent across evaluation seeds, and recommends averaging over 3 seeds."
+      },
+      {
+        "id": "d",
+        "text": "Soft resets are not bit-identical to hard resets, so three repeats are needed to compensate for reset drift",
+        "correct": false,
+        "explanation": "Soft versus hard reset fidelity is a separate documented concern; the 3-seed recommendation is about evaluation-seed variance, not reset behavior."
       }
     ]
   },
@@ -671,6 +794,47 @@
     ]
   },
   {
+    "id": "q-4f8a2c6e9d31",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/application-integration",
+    "stem": "A robot application's CI pipeline needs to push container images to Nebius Container Registry so a fleet service can pull and run them. What does running `nebius registry configure-helper` let the pipeline do?",
+    "objectiveTitle": "Connecting inference and data pipelines to robot applications through APIs, services and containers",
+    "sources": [
+      {
+        "title": "Getting started with Container Registry: Create your first registry and manage a Docker image in it",
+        "url": "https://docs.nebius.com/container-registry/quickstart.md",
+        "excerpt": "Run the Nebius AI Cloud Docker credential helper. It lets you use registries in Container Registry without running the `docker login`."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Automatically create a new registry, replacing the separate `nebius registry create` step",
+        "correct": false,
+        "explanation": "Creating a registry is a distinct documented step (`nebius registry create`); the credential helper only configures Docker authentication, it does not create registries."
+      },
+      {
+        "id": "b",
+        "text": "Run Docker commands as root for faster image pushes",
+        "correct": false,
+        "explanation": "The guide explicitly warns not to run Docker commands as root, since the credential helper is configured for the user account, not root."
+      },
+      {
+        "id": "c",
+        "text": "Remove the need to install Docker Engine before pushing images",
+        "correct": false,
+        "explanation": "Installing Docker Engine is a separate prerequisite step; the credential helper only configures authentication for an already-installed Docker."
+      },
+      {
+        "id": "d",
+        "text": "Use registries in Container Registry without running `docker login`",
+        "correct": true,
+        "explanation": "Correct. The credential helper lets you use registries in Container Registry without running docker login."
+      }
+    ]
+  },
+  {
     "id": "q-5a3f7d9c1e48",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -713,6 +877,47 @@
         "text": "Recording stops entirely for the rest of the episode once a pause occurs",
         "correct": false,
         "explanation": "Recording resumes once takeover begins — all movements during takeover are recorded — so a pause does not end recording for the rest of the episode."
+      }
+    ]
+  },
+  {
+    "id": "q-5b9d3f7a2c18",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/dataset-quality",
+    "stem": "After exporting subtask labels for a LeRobot dataset through FiftyOne, what must be true of the export report before the derived dataset is used for training?",
+    "objectiveTitle": "Balancing real and synthetic data and finding poor samples, labelling problems and coverage gaps",
+    "sources": [
+      {
+        "title": "Label LeRobot subtasks in FiftyOne",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/lerobot-subtask-labeling.md",
+        "excerpt": "Train against the derived prefix only after the report shows `unlabeled_frame_count: 0`."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The report must show `unlabeled_frame_count: 0`",
+        "correct": true,
+        "explanation": "Correct. The guide states to train against the derived prefix only after the report shows unlabeled_frame_count: 0."
+      },
+      {
+        "id": "b",
+        "text": "The report must show at least one overlapping labeled interval, confirming two reviewers agreed",
+        "correct": false,
+        "explanation": "Labeled intervals are required to not overlap and to fully cover every frame; an overlapping interval is a problem the export coverage check is meant to catch, not a sign of agreement."
+      },
+      {
+        "id": "c",
+        "text": "The report's `episode_index_mapping` must equal the source dataset's original episode indexes",
+        "correct": false,
+        "explanation": "episode_index_mapping is a field from the separate native validation report showing that source and derived indexes differ; it is not the training-readiness check for a newly exported dataset."
+      },
+      {
+        "id": "d",
+        "text": "The derived dataset's output prefix must be identical to the source dataset's prefix",
+        "correct": false,
+        "explanation": "The export requires a new, empty output prefix distinct from the source; the original dataset is never rewritten in place."
       }
     ]
   },
@@ -841,6 +1046,47 @@
         "text": "`owned_by`",
         "correct": false,
         "explanation": "`owned_by` is a field of the Model object returned by the List models endpoint, unrelated to reranking documents."
+      }
+    ]
+  },
+  {
+    "id": "q-6a2f9c4e8b15",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/edge-cloud-placement",
+    "stem": "In LeRobot's asynchronous inference design, the `RobotClient` streams observations to a separate `PolicyServer` rather than running the policy on the robot's own controller. Why?",
+    "objectiveTitle": "Choosing cloud or edge execution for latency and deployment requirements",
+    "sources": [
+      {
+        "title": "Asynchronous Inference",
+        "url": "https://huggingface.co/docs/lerobot/async.md",
+        "excerpt": "receives action chunks obtained running inference on the server (which we assume to have better computational resources than the robot controller)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The policy server can only be reached over the network, never from the same physical machine as the client",
+        "correct": false,
+        "explanation": "The guide explicitly shows spinning up a PolicyServer and connecting a RobotClient from the same machine, so a remote server is not required."
+      },
+      {
+        "id": "b",
+        "text": "The server is assumed to have better computational resources than the robot controller",
+        "correct": true,
+        "explanation": "Correct. The RobotClient receives action chunks from running inference on the server, which the documentation says is assumed to have better computational resources than the robot controller."
+      },
+      {
+        "id": "c",
+        "text": "SmolVLA cannot run inference on any device other than a remote GPU server",
+        "correct": false,
+        "explanation": "The guide lists `policy_device` options including cpu, mps and xpu alongside cuda, so inference is not restricted to a remote GPU server."
+      },
+      {
+        "id": "d",
+        "text": "Async inference eliminates idle frames by computing the next action chunk before the current chunk is exhausted",
+        "correct": false,
+        "explanation": "That describes a real benefit of the async design generally, but it is not the documented reason for placing inference on a separate server rather than the robot controller."
       }
     ]
   },
@@ -1193,6 +1439,47 @@
     ]
   },
   {
+    "id": "q-7d4b9f2a6c53",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/deployment-evaluation",
+    "stem": "Before a deployment decision, a team runs two candidate policies through the same LIBERO evaluation episodes to compare them head to head. What does the documentation recommend to keep that comparison fair?",
+    "objectiveTitle": "Evaluating deployments against physical tasks, failure scenarios and safety checks",
+    "sources": [
+      {
+        "title": "LIBERO",
+        "url": "https://huggingface.co/docs/lerobot/libero.md",
+        "excerpt": "To compare two policies on the same episodes, use the same `--seed`, keep `--env.init_states=true`, and run each task in a single batch"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Use a different `--seed` for each policy so the two runs are statistically independent",
+        "correct": false,
+        "explanation": "The documentation recommends the same seed for both policies so they face identical episodes, not independent seeds."
+      },
+      {
+        "id": "b",
+        "text": "Use the same `--seed`, keep `--env.init_states=true`, and run each task in a single batch",
+        "correct": true,
+        "explanation": "Correct. To compare two policies on the same episodes, the documentation recommends the same seed, keeping init_states=true, and running each task in a single batch."
+      },
+      {
+        "id": "c",
+        "text": "Disable `--env.init_states` so each policy encounters freshly randomized resets",
+        "correct": false,
+        "explanation": "The recommendation is to keep init_states=true, which fixes the initial states both policies see, not to disable it."
+      },
+      {
+        "id": "d",
+        "text": "Use soft resets instead of hard resets, since soft resets are faster for comparison runs",
+        "correct": false,
+        "explanation": "The documentation says to use hard resets when reproducing benchmark results, because soft resets are not bit-identical to hard resets."
+      }
+    ]
+  },
+  {
     "id": "q-7f3a92c6e158",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -1362,6 +1649,47 @@
     ]
   },
   {
+    "id": "q-8e4f1a6c9b32",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/dataset-quality",
+    "stem": "In Nebius's physical-augmentation demonstration-collection workflow, a Franka cube-lift attempt ends with the object lifted only 4 cm and then dropped. Per the documented acceptance checks, what happens to that attempt?",
+    "objectiveTitle": "Balancing real and synthetic data and finding poor samples, labelling problems and coverage gaps",
+    "sources": [
+      {
+        "title": "Physical augmentation with executed actions",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/physical-augmentation.md",
+        "excerpt": "Acceptance requires a measured lift of at least 10 cm, low object velocity, proximity to the closed tool, limited lateral drift,"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It is accepted anyway, because `collection/` retains every attempt regardless of outcome",
+        "correct": false,
+        "explanation": "`collection/` retains every raw attempt for record-keeping, but only attempts passing the acceptance checks are exported into the accepted LeRobot dataset."
+      },
+      {
+        "id": "b",
+        "text": "It is accepted as long as the camera captured the full 1280x720 RTX frame resolution",
+        "correct": false,
+        "explanation": "Camera frame resolution describes recording quality, not one of the documented physical acceptance criteria for a demonstration."
+      },
+      {
+        "id": "c",
+        "text": "It is rejected only if it also occurred under the displaced-object condition rather than the nominal condition",
+        "correct": false,
+        "explanation": "Acceptance checks apply the same way across all four sealed conditions; nothing in the documentation exempts non-nominal conditions from the acceptance criteria."
+      },
+      {
+        "id": "d",
+        "text": "It fails acceptance, since acceptance requires a measured lift of at least 10 cm along with low object velocity, proximity to the closed tool, and limited lateral drift",
+        "correct": true,
+        "explanation": "Correct. Acceptance requires a measured lift of at least 10 cm, low object velocity, proximity to the closed tool, and limited lateral drift, so a 4 cm lift that is then dropped fails the check."
+      }
+    ]
+  },
+  {
     "id": "q-8f1a3d6e9c52",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -1399,6 +1727,47 @@
         "text": "It is not deleted automatically when the cluster is deleted",
         "correct": true,
         "explanation": "Correct. The quickstart states the bucket created for the cluster's logs and metrics is not deleted automatically when the cluster is deleted."
+      }
+    ]
+  },
+  {
+    "id": "q-9c3e7b1f4a86",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/observability-tracing",
+    "stem": "A team is viewing metrics for a Serverless AI endpoint that serves their robot inference pipeline, but cannot find the endpoint's underlying VM listed anywhere under Compute. Per the monitoring documentation, why is that?",
+    "objectiveTitle": "Collecting logs, metrics and diagnostics and tracing failures across data, models and robots",
+    "sources": [
+      {
+        "title": "Metrics for endpoints and jobs",
+        "url": "https://docs.nebius.com/serverless/monitoring.md",
+        "excerpt": "View them on the **Metrics** tab of your job or endpoint; the underlying VMs aren't shown in Compute."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The underlying VMs aren't shown in Compute, even though the Metrics tab of the job or endpoint reports the same metrics",
+        "correct": true,
+        "explanation": "Correct. The documentation states you view metrics on the Metrics tab of the job or endpoint, and that the underlying VMs aren't shown in Compute."
+      },
+      {
+        "id": "b",
+        "text": "Because usage data only becomes available 5-10 minutes after the resource is created",
+        "correct": false,
+        "explanation": "The 5-10 minute delay is about when usage data first appears on the dashboard, not about why the VM itself is absent from Compute."
+      },
+      {
+        "id": "c",
+        "text": "Because the dashboards refresh only every 15 seconds by default",
+        "correct": false,
+        "explanation": "The refresh interval controls how often displayed data updates; it does not explain why the VM is missing from the Compute page."
+      },
+      {
+        "id": "d",
+        "text": "Because the dashboards exist mainly to help the Nebius support team investigate issues, not to show resources to customers",
+        "correct": false,
+        "explanation": "The dashboards are for the customer to monitor utilization and schedule quota increases; support-team investigation is a secondary use, not the reason the VM is hidden from Compute."
       }
     ]
   },
@@ -4784,6 +5153,47 @@
         "text": "A chat completion that answers the query using the document",
         "correct": false,
         "explanation": "Answer generation is the job of chat completions; rerank returns relevance scores only."
+      }
+    ]
+  },
+  {
+    "id": "q-f1a4c8e2b9d6",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/training-results",
+    "stem": "Nebius's field-failure-to-navigation-policy-improvement workflow writes a sealed `decision.json` recommending promotion or retaining the baseline. What must be true of the primary metric for that comparison to recommend promotion?",
+    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
+    "sources": [
+      {
+        "title": "Field failure to navigation policy improvement",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/field-failure-policy-improvement.md",
+        "excerpt": "Promotion requires a strictly positive primary mean improvement at least its sealed `minimum_improvement`, and no individual scenario/seed/metric degradation beyond that metric's `maximum_regression`."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Any positive improvement on the primary metric, regardless of how small, as long as it is nonzero",
+        "correct": false,
+        "explanation": "The comparison requires the improvement to reach the sealed minimum_improvement bound, not merely be positive by any amount."
+      },
+      {
+        "id": "b",
+        "text": "A strictly positive primary mean improvement at least the sealed `minimum_improvement`, with no metric's degradation beyond its `maximum_regression`",
+        "correct": true,
+        "explanation": "Correct. The decision requires a strictly positive primary mean improvement at least the sealed minimum_improvement, with no scenario/seed/metric degrading beyond that metric's maximum_regression."
+      },
+      {
+        "id": "c",
+        "text": "An improvement measured only on the training-exposed replay cohort, since that cohort is diagnostic",
+        "correct": false,
+        "explanation": "The training-exposed replay cohort is diagnostic only; the decision is a sealed comparison over the declared metrics and bounds, not a training-exposed-only check."
+      },
+      {
+        "id": "d",
+        "text": "Every secondary metric must independently clear its own `minimum_improvement` as well",
+        "correct": false,
+        "explanation": "Secondary metrics are regression guards whose minimum_improvement is only informational unless one is selected as the primary metric."
       }
     ]
   },

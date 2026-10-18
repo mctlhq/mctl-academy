@@ -1,31 +1,30 @@
 schema_version: 1
 id: q-9c3e7b1f4a86
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability-tracing
 stem: "A team is viewing metrics for a Serverless AI endpoint that serves their
-  robot inference pipeline, but cannot find the endpoint's underlying VM
-  listed anywhere under Compute. Per the monitoring documentation, why is
-  that?"
+  robot inference pipeline, but cannot find the endpoint's underlying VM listed
+  anywhere under Compute. Per the monitoring documentation, why is that?"
 options:
   - id: a
-    text: "The underlying VMs aren't shown in Compute, even though the Metrics
-      tab of the job or endpoint reports the same metrics"
+    text: "The underlying VMs aren't shown in Compute, even though the Metrics tab
+      of the job or endpoint reports the same metrics"
     correct: true
-    explanation: "Correct. The documentation states you view metrics on the
-      Metrics tab of the job or endpoint, and that the underlying VMs aren't
-      shown in Compute."
+    explanation: "Correct. The documentation states you view metrics on the Metrics
+      tab of the job or endpoint, and that the underlying VMs aren't shown in
+      Compute."
   - id: b
-    text: "Because usage data only becomes available 5-10 minutes after the
-      resource is created"
+    text: "Because usage data only becomes available 5-10 minutes after the resource
+      is created"
     correct: false
     explanation: "The 5-10 minute delay is about when usage data first appears on
       the dashboard, not about why the VM itself is absent from Compute."
   - id: c
     text: "Because the dashboards refresh only every 15 seconds by default"
     correct: false
-    explanation: "The refresh interval controls how often displayed data updates;
-      it does not explain why the VM is missing from the Compute page."
+    explanation: "The refresh interval controls how often displayed data updates; it
+      does not explain why the VM is missing from the Compute page."
   - id: d
     text: "Because the dashboards exist mainly to help the Nebius support team
       investigate issues, not to show resources to customers"
@@ -42,3 +41,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: 1c29b82e8fb4e1c1e5437a6751fe70bfe5f37af546e6cb3843d9980ef9277802

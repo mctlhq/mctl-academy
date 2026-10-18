@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1e7b4f9a3c62
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/workflow-security
 stem: "After running `npa studio search` to find robot run artifacts across
@@ -8,14 +8,14 @@ stem: "After running `npa studio search` to find robot run artifacts across
   receipts be kept out of Git and public documentation?"
 options:
   - id: a
-    text: "They contain the downloaded media files themselves, which are too
-      large for Git"
+    text: "They contain the downloaded media files themselves, which are too large
+      for Git"
     correct: false
     explanation: "The search result is a JSON inventory, not downloaded media; it
       does not embed the media files."
   - id: b
-    text: "Running `npa studio search` provisions cloud resources that must be
-      torn down, and the receipt proves that provisioning occurred"
+    text: "Running `npa studio search` provisions cloud resources that must be torn
+      down, and the receipt proves that provisioning occurred"
     correct: false
     explanation: "The guide states search does not provision resources, download
       media, or modify storage, so there is no provisioning to prove or
@@ -24,9 +24,9 @@ options:
     text: "They contain project identities, regional endpoints, bucket names, and
       object keys"
     correct: true
-    explanation: "Correct. The guide states these files contain project
-      identities, regional endpoints, bucket names, and object keys, and
-      should be stored outside Git and public documentation."
+    explanation: "Correct. The guide states these files contain project identities,
+      regional endpoints, bucket names, and object keys, and should be stored
+      outside Git and public documentation."
   - id: d
     text: "The download receipt proves the downloaded object stayed byte-for-byte
       unchanged, and that proof must stay private"
@@ -36,11 +36,15 @@ options:
       kind of proof."
 evidence:
   - source_id: src-pa-npa-find-artifacts
-    excerpt: "Search JSON and download receipts contain project identities,
-      regional endpoints, bucket names, and object keys. Store them outside
-      Git and public documentation."
+    excerpt: "Search JSON and download receipts contain project identities, regional
+      endpoints, bucket names, and object keys. Store them outside Git and
+      public documentation."
     source_sha256: ab1005bf8a9682f9a39731729a11d2885b8edb95fe878f17fb6f1b447439cea6
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: 939e86a51bfe322f9a0ea36f649cae9fc3322161a43dcb4aec4504ea8467effb

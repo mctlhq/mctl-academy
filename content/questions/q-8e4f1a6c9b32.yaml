@@ -1,23 +1,22 @@
 schema_version: 1
 id: q-8e4f1a6c9b32
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/dataset-quality
 stem: "In Nebius's physical-augmentation demonstration-collection workflow, a
   Franka cube-lift attempt ends with the object lifted only 4 cm and then
-  dropped. Per the documented acceptance checks, what happens to that
-  attempt?"
+  dropped. Per the documented acceptance checks, what happens to that attempt?"
 options:
   - id: a
     text: "It is accepted anyway, because `collection/` retains every attempt
       regardless of outcome"
     correct: false
     explanation: "`collection/` retains every raw attempt for record-keeping, but
-      only attempts passing the acceptance checks are exported into the
-      accepted LeRobot dataset."
+      only attempts passing the acceptance checks are exported into the accepted
+      LeRobot dataset."
   - id: b
-    text: "It is accepted as long as the camera captured the full 1280x720 RTX
-      frame resolution"
+    text: "It is accepted as long as the camera captured the full 1280x720 RTX frame
+      resolution"
     correct: false
     explanation: "Camera frame resolution describes recording quality, not one of
       the documented physical acceptance criteria for a demonstration."
@@ -30,8 +29,8 @@ options:
       from the acceptance criteria."
   - id: d
     text: "It fails acceptance, since acceptance requires a measured lift of at
-      least 10 cm along with low object velocity, proximity to the closed
-      tool, and limited lateral drift"
+      least 10 cm along with low object velocity, proximity to the closed tool,
+      and limited lateral drift"
     correct: true
     explanation: "Correct. Acceptance requires a measured lift of at least 10 cm,
       low object velocity, proximity to the closed tool, and limited lateral
@@ -45,3 +44,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: 7ae6bb83b602a4268adf0020f6fe82effd59dfcc008c8e47657b2b2bce020a89
