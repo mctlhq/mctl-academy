@@ -317,6 +317,27 @@ test("rejects a host that is not on the allowlist", () => {
   assert.match(output, /allowlist/);
 });
 
+test("accepts a page inside the LeRobot docs tree", () => {
+  const s = source({ url: "https://huggingface.co/docs/lerobot/il_robots.md" });
+  const { ok, output } = lint({ sources: [s] });
+  assert.equal(ok, true, output);
+});
+
+// huggingface.co is allowlisted for one path prefix only; the rest of the
+// host (other libraries' docs, model cards, the blog) was never reviewed.
+test("rejects a page on an allowlisted host but outside its path prefix", () => {
+  for (const url of [
+    "https://huggingface.co/docs/transformers/index.md",
+    "https://huggingface.co/docs/lerobot/../transformers/index.md",
+    "https://huggingface.co/docs/lerobotx/index.md",
+    "https://huggingface.co/blog/lerobot",
+  ]) {
+    const { ok, output } = lint({ sources: [source({ url })] });
+    assert.equal(ok, false, url);
+    assert.match(output, /allowlist/);
+  }
+});
+
 test("accepts the Token Factory docs host", () => {
   const s = source({ url: "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling" });
   const { ok, output } = lint({ sources: [s] });

@@ -18,6 +18,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
+import { isAllowedSourceUrl } from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -25,9 +26,6 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
   ? resolve(process.env.ACADEMY_CONTENT_DIR)
   : join(ROOT, "content");
 const SOURCES = join(CONTENT, "sources");
-
-/** Mirrors SOURCES.md. Duplicated in validate-content.mjs, which lints it. */
-const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
 
 const nowUtc = () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 
@@ -41,17 +39,16 @@ function listSources() {
 /**
  * Fetch a source document.
  *
- * Both Nebius doc sites serve a `.md` twin of every page and publish an
- * llms.txt index of them. The markdown is what we snapshot: it is the same
+ * Every allowlisted docs tree (both Nebius sites and the LeRobot docs) serves
+ * a `.md` twin of every page and publishes an llms.txt index of them. The markdown is what we snapshot: it is the same
  * prose without the navigation chrome, so a hash changes when the content
  * changes rather than when the site's header does.
  */
 const FETCH_TIMEOUT_MS = 30_000;
 
 async function fetchSource(url) {
-  const host = new URL(url).host;
-  if (!ALLOWED_HOSTS.includes(host)) {
-    throw new Error(`refusing to capture ${host}: not on the SOURCES.md allowlist`);
+  if (!isAllowedSourceUrl(url)) {
+    throw new Error(`refusing to capture ${url}: not on the SOURCES.md allowlist`);
   }
   // Bounded on purpose. In --check mode this is the drift job's per-source
   // call, and one hung upstream response would otherwise pin the weekly run

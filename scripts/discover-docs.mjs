@@ -32,7 +32,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import {
-  ALLOWED_HOSTS,
+  isAllowedSourceUrl,
   courseObjectives,
   loadCourses,
   loadSources,
@@ -65,9 +65,7 @@ export const DISCOVERY_STATE_HEADER = `# Watermark for scripts/discover-docs.mjs
 `;
 
 export async function fetchText(url) {
-  const host = new URL(url).host;
-  if (!ALLOWED_HOSTS.includes(host))
-    throw new Error(`refusing to fetch ${host}: not on the SOURCES.md allowlist`);
+  if (!isAllowedSourceUrl(url)) throw new Error(`refusing to fetch ${url}: not on the SOURCES.md allowlist`);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -103,7 +101,7 @@ export function parseLlmsIndex(text) {
     } catch {
       continue;
     }
-    if (!ALLOWED_HOSTS.includes(host) || !url.endsWith(".md") || seen.has(url)) continue;
+    if (!isAllowedSourceUrl(url) || !url.endsWith(".md") || seen.has(url)) continue;
     seen.add(url);
     pages.push({ url, title: title.trim(), description: description.trim(), host });
   }

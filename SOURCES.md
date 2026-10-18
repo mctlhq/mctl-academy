@@ -10,6 +10,18 @@ unpublished rather than being covered from general knowledge.
 |---|---|---|---|
 | `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints, inference observability, team access and single sign-on, billing and consumption | Snapshot to private R2 | 2026-08-06 |
 | `docs.nebius.com` | Public AI Cloud documentation — GPU compute and clusters, Managed Service for Kubernetes, block/shared/object storage, VPC networking and security groups, IAM, projects and federations, Observability (metrics, dashboards, alerts, logs), quotas and limits, node lifecycle and troubleshooting | Snapshot to private R2 | 2026-08-06 |
+| `huggingface.co/docs/lerobot/` (this path prefix only) | Public LeRobot documentation — dataset format and recording, teleoperation, training and fine-tuning robot policies (including VLA policies and PEFT), simulation environments, policy evaluation and deployment. The rest of `huggingface.co` (other libraries' docs, model and dataset cards, the blog, forums) is out of scope | Snapshot to private R2 | 2026-10-18 |
+
+The LeRobot row was added 2026-10-18 for robotics and robot-learning
+workflows that no Nebius page documents. Its retention review: the
+documentation is generated from the `docs/` tree of `huggingface/lerobot`,
+which is licensed Apache-2.0, so storing a private snapshot and quoting
+excerpts of at most 25 words with attribution is within the license. The site
+serves a `.md` twin of every page and an index at
+`https://huggingface.co/docs/lerobot/llms.txt`, so it is captured the same way
+as the Nebius sites. The allowlist is enforced as host plus path prefix
+(`ALLOWED_SOURCES` in `scripts/lib/content-model.mjs`), so a page elsewhere on
+`huggingface.co` fails the lint even though the host is listed.
 
 Scope widened 2026-08-16 (no new hosts) to cover the page families the CloudOps
 and Leader banks are authored from. Retention terms were re-confirmed for both
@@ -18,6 +30,7 @@ covered by the original 2026-08-06 review.
 
 ### Candidates under review
 - `docs.tavily.com`: Recommended learning on public certification pages for web search tool integration. Currently **pending retention review** before any content cites it.
+- `docs.nvidia.com` (Cosmos, OSMO) and `docs.isaacsim.omniverse.nvidia.com` / `isaac-sim.github.io/IsaacLab` (Isaac Sim, Isaac Lab): simulation, synthetic data and robot training tooling. Currently **pending retention review**: the pages are marked "All rights reserved" rather than openly licensed, and the Isaac sites serve no `.md` twin, so a snapshot would hash navigation chrome as well as content.
 
 ## Course-specific source priority matrix
 
@@ -28,6 +41,9 @@ Source priorities are scoped per course, reflecting the public exam bounds:
 | **Agentic AI Builder** (`agentic-ai-builder`) | `docs.tokenfactory.nebius.com` | `docs.tavily.com` (pending review) | `docs.nebius.com` infrastructure details |
 | **AI CloudOps Engineer** (`ai-cloudops-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Non-cloud developer SDKs |
 | **AI Leader** (`ai-leader`) | `docs.tokenfactory.nebius.com` | `docs.nebius.com` (high-level only) | AI Cloud deployment details |
+
+`huggingface.co/docs/lerobot/` is not a source for any of the three courses
+above; it is in scope only for a robotics course.
 
 ## Discovery & Change Sync (`Nebius Docs Sync`)
 
@@ -42,7 +58,9 @@ Discovery of canonical documentation is driven directly by official Nebius endpo
 Markdown representation (`.md`) only when it is captured, and proposes pages that no
 source record, manifest row or `ignored` entry in `content/discovery-state.yaml`
 names. A proposed page becomes a source only through the capture path below; the
-discovery report never writes a source record. Context7 and external GitHub
+discovery report never writes a source record. The LeRobot index is not polled:
+its pages are added by hand to `content/capture-manifest.yaml`, and once
+captured they are drift-checked like every other source. Context7 and external GitHub
 repositories (e.g. `nebius/api`, `nebius/token-factory-cookbook`) may be used as
 secondary research tools by agents, but **never** as canonical evidence sources or
 authoritative change triggers.
