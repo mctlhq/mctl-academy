@@ -152,6 +152,10 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET: academy-source-snapshots
           DRY_RUN: ${{ inputs.dry_run }}
+          # Read-only use: fetchSource asks the compare API whether a
+          # commit-pinned page's commit is on upstream main. Unauthenticated
+          # calls share a 60/hour limit across the runner's IP.
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           mkdir -p captured
           failed=""

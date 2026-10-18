@@ -11,6 +11,7 @@ unpublished rather than being covered from general knowledge.
 | `docs.tokenfactory.nebius.com` | Public Token Factory documentation — inference, function calling, structured output, post-training, sandboxes, dedicated endpoints, inference observability, team access and single sign-on, billing and consumption | Snapshot to private R2 | 2026-08-06 |
 | `docs.nebius.com` | Public AI Cloud documentation — GPU compute and clusters, Managed Service for Kubernetes, block/shared/object storage, VPC networking and security groups, IAM, projects and federations, Observability (metrics, dashboards, alerts, logs), quotas and limits, node lifecycle and troubleshooting | Snapshot to private R2 | 2026-08-06 |
 | `huggingface.co/docs/lerobot/` (this path prefix only) | Public LeRobot documentation — dataset format and recording, teleoperation, training and fine-tuning robot policies (including VLA policies and PEFT), simulation environments, policy evaluation and deployment. The rest of `huggingface.co` (other libraries' docs, model and dataset cards, the blog, forums) is out of scope | Snapshot to private R2 | 2026-10-18 |
+| `raw.githubusercontent.com/nebius/nebius-physical-ai/<commit>/docs/` (pinned commit; listed pages only) | Nebius-published Physical AI workbench guides and cookbooks — simulation assets and digital twins, scan-to-simulation and neural reconstruction, synthetic and augmented robot data, robot policy training and serving, composing AI Cloud with Token Factory. In scope: `docs/quickstart.md`, `docs/workbench/guides/*.md`, `docs/workbench/cookbooks/*.md` (one level) and `docs/workbench/composing-cloud-and-token-factory.md`. Out of scope: everything else in the repository, including `evidence/` trees, dated results and validation reports, architecture plans and the CLI reference | Snapshot to private R2 | 2026-10-18 |
 
 The LeRobot row was added 2026-10-18 for robotics and robot-learning
 workflows that no Nebius page documents. Its retention review: the
@@ -22,6 +23,33 @@ serves a `.md` twin of every page and an index at
 as the Nebius sites. The allowlist is enforced as host plus path prefix
 (`ALLOWED_SOURCES` in `scripts/lib/content-model.mjs`), so a page elsewhere on
 `huggingface.co` fails the lint even though the host is listed.
+
+The nebius-physical-ai row was added 2026-10-18 for the Physical AI topics
+(simulation, synthetic data, scan-to-simulation, policy training on Nebius)
+that neither the Nebius docs sites nor LeRobot document. Its retention review:
+the repository `nebius/nebius-physical-ai` is published by Nebius under
+Apache-2.0, so a private snapshot and excerpts of at most 25 words with
+attribution are within the license. It has no documentation site and no
+releases, and it changes several times a week, so it is read only through
+`raw.githubusercontent.com` at a **full 40-character commit SHA**: the
+recorded hash then names bytes that cannot move, and the lint rejects a branch
+name, a short SHA, or any path outside the scoped pages (`pathPattern` in
+`ALLOWED_SOURCES`). A SHA in the URL alone does not prove the parent
+published it: GitHub serves every commit of the fork network under the
+parent's path, including commits that exist only in a fork. So capturing a
+pinned page, and the Capture sources dry run, first ask the GitHub compare API
+whether the commit is an ancestor of `nebius/nebius-physical-ai` `main`
+(`ahead` or `identical`). Otherwise they refuse, including when the question
+cannot be answered. The drift job skips that call, because the provenance was
+settled when the record was minted and bytes at a fixed commit cannot change,
+so a pinned page always compares clean and is never refreshed. Moving to a
+newer commit is a deliberate re-capture under new URLs. If the pinned URL
+stops resolving (the repository is renamed, made private or deleted), the
+drift job reports the page as unreachable every week rather than as drift.
+That calls for a deliberate re-capture at a current commit or for marking the
+source `deprecated`, not for waiting. Questions from these pages test the workflows and platform choices they
+describe, not flags of the repository's `npa` CLI, which is unversioned and
+changes without notice.
 
 Scope widened 2026-08-16 (no new hosts) to cover the page families the CloudOps
 and Leader banks are authored from. Retention terms were re-confirmed for both
@@ -41,9 +69,9 @@ Source priorities are scoped per course, reflecting the public exam bounds:
 | **Agentic AI Builder** (`agentic-ai-builder`) | `docs.tokenfactory.nebius.com` | `docs.tavily.com` (pending review) | `docs.nebius.com` infrastructure details |
 | **AI CloudOps Engineer** (`ai-cloudops-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Non-cloud developer SDKs |
 | **AI Leader** (`ai-leader`) | `docs.tokenfactory.nebius.com` | `docs.nebius.com` (high-level only) | AI Cloud deployment details |
-| **Physical AI** (`physical-ai`) | `docs.nebius.com` | `huggingface.co/docs/lerobot/`, `docs.tokenfactory.nebius.com` | Other `huggingface.co` docs |
+| **Physical AI** (`physical-ai`) | `docs.nebius.com` | `huggingface.co/docs/lerobot/`, `nebius/nebius-physical-ai` (pinned guides), `docs.tokenfactory.nebius.com` | Other `huggingface.co` docs; the rest of `nebius/nebius-physical-ai` |
 
-`huggingface.co/docs/lerobot/` is a source for the Physical AI course only.
+`huggingface.co/docs/lerobot/` and `nebius/nebius-physical-ai` are sources for the Physical AI course only.
 
 ## Discovery & Change Sync (`Nebius Docs Sync`)
 
@@ -63,7 +91,9 @@ its pages are added by hand to `content/capture-manifest.yaml`, and once
 captured they are drift-checked like every other source. Context7 and external GitHub
 repositories (e.g. `nebius/api`, `nebius/token-factory-cookbook`) may be used as
 secondary research tools by agents, but **never** as canonical evidence sources or
-authoritative change triggers.
+authoritative change triggers. The one exception is the scoped, commit-pinned
+`nebius/nebius-physical-ai` pages in the allowlist above; the rest of that
+repository, and every other repository, remains a research tool only.
 
 ## Explicitly not sources
 

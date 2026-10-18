@@ -338,6 +338,41 @@ test("rejects a page on an allowlisted host but outside its path prefix", () => 
   }
 });
 
+const NPA_SHA = "8195442868f877cbd933eaeecd23b765974de20f";
+const NPA = `https://raw.githubusercontent.com/nebius/nebius-physical-ai/${NPA_SHA}/docs`;
+
+test("accepts a nebius-physical-ai guide or cookbook pinned to a commit", () => {
+  for (const url of [
+    `${NPA}/workbench/guides/digital-twin.md`,
+    `${NPA}/workbench/cookbooks/public-vla-training.md`,
+    `${NPA}/workbench/composing-cloud-and-token-factory.md`,
+    `${NPA}/quickstart.md`,
+  ]) {
+    const { ok, output } = lint({ sources: [source({ url })] });
+    assert.equal(ok, true, `${url}\n${output}`);
+  }
+});
+
+// The repository is allowlisted only at an immutable commit and only for its
+// guide and cookbook pages: a branch ref moves under a recorded hash, and the
+// same tree holds run evidence, dated results and internal plans.
+test("rejects nebius-physical-ai pages off a pinned commit or outside the guides", () => {
+  for (const url of [
+    "https://raw.githubusercontent.com/nebius/nebius-physical-ai/main/docs/quickstart.md",
+    `https://raw.githubusercontent.com/nebius/nebius-physical-ai/${NPA_SHA.slice(0, 12)}/docs/quickstart.md`,
+    `${NPA}/architecture/evidence/token-factory-sdg/report.json`,
+    `${NPA}/workbench/behavior-experiment-results-2026-09-17.md`,
+    `${NPA}/workbench/cookbooks/byof-isaac-lab/README.md`,
+    `${NPA}/workbench/guides/../../../README.md`,
+    `https://raw.githubusercontent.com/nebius/other-repo/${NPA_SHA}/docs/quickstart.md`,
+    `https://github.com/nebius/nebius-physical-ai/blob/${NPA_SHA}/docs/quickstart.md`,
+  ]) {
+    const { ok, output } = lint({ sources: [source({ url })] });
+    assert.equal(ok, false, url);
+    assert.match(output, /allowlist/);
+  }
+});
+
 test("accepts the Token Factory docs host", () => {
   const s = source({ url: "https://docs.tokenfactory.nebius.com/ai-models-inference/function-calling" });
   const { ok, output } = lint({ sources: [s] });

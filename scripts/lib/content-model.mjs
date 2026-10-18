@@ -27,12 +27,25 @@ export const UNUSABLE_SOURCE_STATUSES = new Set(["drifted", "deprecated"]);
  * SOURCES.md allowlist; the lint, the capture and discovery scripts and the
  * generated-artefact contract all read it from here so they cannot drift. The
  * prefix keeps a shared host such as huggingface.co to the one documentation
- * tree whose retention terms were reviewed.
+ * tree whose retention terms were reviewed. An entry with a `pathPattern`
+ * must also match it in full: the nebius-physical-ai repository is read only
+ * at a pinned commit and only from its guide and cookbook pages, because the
+ * same tree also holds run evidence, dated results and internal plans.
  */
 export const ALLOWED_SOURCES = [
   { host: "docs.tokenfactory.nebius.com", pathPrefix: "/" },
   { host: "docs.nebius.com", pathPrefix: "/" },
   { host: "huggingface.co", pathPrefix: "/docs/lerobot/" },
+  {
+    host: "raw.githubusercontent.com",
+    pathPrefix: "/nebius/nebius-physical-ai/",
+    pathPattern:
+      /^\/nebius\/nebius-physical-ai\/[0-9a-f]{40}\/docs\/(quickstart\.md|workbench\/(guides|cookbooks)\/[a-z0-9-]+\.md|workbench\/composing-cloud-and-token-factory\.md)$/,
+    // GitHub serves every commit in a fork network under the parent's path,
+    // so a SHA in the URL does not show the parent published it. Capture
+    // checks the commit is on this branch of this repository.
+    pinned: { repo: "nebius/nebius-physical-ai", branch: "main" },
+  },
 ];
 
 /**
@@ -48,7 +61,28 @@ export function isAllowedSourceUrl(value) {
     return false;
   }
   if (url.protocol !== "https:" || url.username || url.password || url.port) return false;
-  return ALLOWED_SOURCES.some((s) => url.hostname === s.host && url.pathname.startsWith(s.pathPrefix));
+  return ALLOWED_SOURCES.some(
+    (s) =>
+      url.hostname === s.host &&
+      url.pathname.startsWith(s.pathPrefix) &&
+      (!s.pathPattern || s.pathPattern.test(url.pathname)),
+  );
+}
+
+/**
+ * The repository commit an allowlisted URL is pinned to, or null for an
+ * entry that is not commit-pinned. The SHA is the path segment right after
+ * the repository, which `pathPattern` has already constrained to 40 hex.
+ */
+export function pinnedCommitOf(value) {
+  if (!isAllowedSourceUrl(value)) return null;
+  const url = value instanceof URL ? value : new URL(value);
+  const entry = ALLOWED_SOURCES.find(
+    (s) => s.pinned && url.hostname === s.host && url.pathname.startsWith(s.pathPrefix),
+  );
+  if (!entry) return null;
+  const sha = url.pathname.slice(entry.pathPrefix.length).split("/")[0];
+  return { repo: entry.pinned.repo, branch: entry.pinned.branch, sha };
 }
 
 /**

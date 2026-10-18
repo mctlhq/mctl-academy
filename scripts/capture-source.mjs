@@ -18,7 +18,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
-import { isAllowedSourceUrl } from "./lib/content-model.mjs";
+import { isAllowedSourceUrl, pinnedCommitOf } from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -40,14 +40,22 @@ function listSources() {
  * Fetch a source document.
  *
  * Every allowlisted docs tree (both Nebius sites and the LeRobot docs)
- * serves a `.md` twin of every page and publishes an llms.txt index of them.
+ * serves a `.md` twin of every page and publishes an llms.txt index of them;
+ * the nebius-physical-ai pages are Markdown files read at a pinned commit.
  * The markdown is what we snapshot: it is the same prose without the
  * navigation chrome, so a hash changes when the content changes rather than
  * when the site's header does.
  */
 const FETCH_TIMEOUT_MS = 30_000;
 
-export async function fetchSource(url) {
+/**
+ * `verifyPin` (default on) checks a commit-pinned URL's commit is on the
+ * upstream branch before fetching; see assertCommitOnBranch. Only the drift
+ * check turns it off: it compares a recorded hash with bytes at a fixed
+ * commit, which cannot change, and the provenance was settled when the
+ * record was minted.
+ */
+export async function fetchSource(url, { verifyPin = true } = {}) {
   if (!isAllowedSourceUrl(url)) {
     throw new Error(`refusing to capture ${url}: not on the SOURCES.md allowlist`);
   }
@@ -59,6 +67,8 @@ export async function fetchSource(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
+    const pin = pinnedCommitOf(url);
+    if (pin && verifyPin) await assertCommitOnBranch(pin, controller.signal);
     const res = await fetch(url, {
       headers: { accept: "text/markdown, text/plain, text/html" },
       signal: controller.signal,
@@ -70,12 +80,44 @@ export async function fetchSource(url) {
     if (!isAllowedSourceUrl(res.url)) {
       throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
     }
+    // Ancestry was checked for the commit in the requested URL only, so the
+    // bytes must come from that same commit (or from no pinned commit at all).
+    const landed = pinnedCommitOf(res.url);
+    if (verifyPin && landed && landed.sha !== pin?.sha) {
+      throw new Error(`fetch ${url}: redirected to ${res.url}, an unverified commit`);
+    }
     return await res.text();
   } catch (e) {
     if (e.name === "AbortError") throw new Error(`fetch ${url}: timed out after ${FETCH_TIMEOUT_MS}ms`);
     throw e;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+/**
+ * Refuse a pinned commit unless it is reachable from the repository's branch.
+ * `compare/<sha>...<branch>` is `ahead` or `identical` exactly when the
+ * commit is an ancestor of the branch tip. A fork-only commit compares as
+ * `diverged` or is not found. Any other answer, including a failed request,
+ * refuses: an unverified commit is not a verified one.
+ */
+async function assertCommitOnBranch({ repo, branch, sha }, signal) {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const res = await fetch(`https://api.github.com/repos/${repo}/compare/${sha}...${branch}`, {
+    headers: {
+      accept: "application/vnd.github+json",
+      // The REST API refuses a request without one; set it rather than rely
+      // on the runtime's default.
+      "user-agent": "mctl-academy-capture",
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
+    signal,
+  });
+  if (!res.ok) throw new Error(`verify ${repo}@${sha}: compare with ${branch} returned HTTP ${res.status}`);
+  const { status } = await res.json();
+  if (status !== "ahead" && status !== "identical") {
+    throw new Error(`refusing ${repo}@${sha}: commit is not on ${branch} (compare status ${status})`);
   }
 }
 
@@ -119,7 +161,7 @@ async function check({ markDrifted = false } = {}) {
 
   for (const { path: sourcePath, data } of sources) {
     try {
-      const text = await fetchSource(data.url);
+      const text = await fetchSource(data.url, { verifyPin: false });
       const hash = sha256(Buffer.from(text, "utf8"));
       if (hash === data.sha256) {
         console.log(`ok       ${data.id}`);
