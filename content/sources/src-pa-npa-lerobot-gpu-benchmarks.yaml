@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-lerobot-gpu-benchmarks
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/lerobot-gpu-benchmarks.md
+title: "LeRobot GPU Benchmarks: Reproducing the Research via Nebius Workbench"
+retrieved_at: 2026-10-18T01:48:38Z
+sha256: 47903e3f3c7e68d4235fc5dc1b2887097289217cb58926fde4ff3efc048d7933
+objectives:
+  - domain-1/gpu-orchestration
+  - domain-1/training-results
+snapshot:
+  bucket: academy-source-snapshots
+  key: 47903e3f3c7e68d4235fc5dc1b2887097289217cb58926fde4ff3efc048d7933
+status: current

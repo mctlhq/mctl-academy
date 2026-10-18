@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-pa-npa-data-factory
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/physical-ai-data-factory.md
+title: NVIDIA Physical AI Data Factory on NPA (no OSMO)
+retrieved_at: 2026-10-18T01:48:17Z
+sha256: e4450ef24828a65f9aafecab36177ece7474d8b9c6cd19471c7daf4b24215eab
+objectives:
+  - domain-2/dataset-curation
+  - domain-2/dataset-quality
+  - domain-2/simulation-assets
+snapshot:
+  bucket: academy-source-snapshots
+  key: e4450ef24828a65f9aafecab36177ece7474d8b9c6cd19471c7daf4b24215eab
+status: current

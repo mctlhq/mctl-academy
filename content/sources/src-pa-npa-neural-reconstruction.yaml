@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-neural-reconstruction
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/neural-reconstruction.md
+title: Turn a real photo capture into a 3D scene you can fly through
+retrieved_at: 2026-10-18T01:48:15Z
+sha256: 1c06d10dde26cb345b0f79b9a6256a35e49c5e292a6f0f79c0f08dd19aba3655
+objectives:
+  - domain-2/simulation-assets
+  - domain-2/data-collection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 1c06d10dde26cb345b0f79b9a6256a35e49c5e292a6f0f79c0f08dd19aba3655
+status: current

@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-subtask-labeling
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/lerobot-subtask-labeling.md
+title: Label LeRobot subtasks in FiftyOne
+retrieved_at: 2026-10-18T01:48:26Z
+sha256: 3aa701ef6806152dd7daa3bee70ffc3977625f47bed8d07a4a32ff321fb0d8e6
+objectives:
+  - domain-2/dataset-quality
+  - domain-2/dataset-curation
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3aa701ef6806152dd7daa3bee70ffc3977625f47bed8d07a4a32ff321fb0d8e6
+status: current

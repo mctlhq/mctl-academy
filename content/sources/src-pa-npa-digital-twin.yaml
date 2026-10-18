@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-pa-npa-digital-twin
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/digital-twin.md
+title: Render digital-twin scenes on Nebius GPUs
+retrieved_at: 2026-10-18T01:48:11Z
+sha256: d231106190bf2f8c7f4b45f914feca2ca462f75d23eae3e74bef37ea9b771b90
+objectives:
+  - domain-2/simulation-assets
+snapshot:
+  bucket: academy-source-snapshots
+  key: d231106190bf2f8c7f4b45f914feca2ca462f75d23eae3e74bef37ea9b771b90
+status: current

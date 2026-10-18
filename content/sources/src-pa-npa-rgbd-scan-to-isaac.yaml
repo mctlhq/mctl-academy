@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-rgbd-scan-to-isaac
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/rgbd-scan-to-isaac.md
+title: Reconstruct a metric RGB-D scan for Isaac
+retrieved_at: 2026-10-18T01:48:13Z
+sha256: 48a4f4859973bdc15ea6c51a273f47fa8ea98c47e0f600d71d29d601c65debb7
+objectives:
+  - domain-2/simulation-assets
+  - domain-2/data-collection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 48a4f4859973bdc15ea6c51a273f47fa8ea98c47e0f600d71d29d601c65debb7
+status: current

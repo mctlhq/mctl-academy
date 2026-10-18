@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-find-artifacts
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/find-artifacts.md
+title: Find artifacts across object-storage buckets
+retrieved_at: 2026-10-18T01:48:32Z
+sha256: ab1005bf8a9682f9a39731729a11d2885b8edb95fe878f17fb6f1b447439cea6
+objectives:
+  - domain-4/workflow-security
+  - domain-4/observability-tracing
+snapshot:
+  bucket: academy-source-snapshots
+  key: ab1005bf8a9682f9a39731729a11d2885b8edb95fe878f17fb6f1b447439cea6
+status: current

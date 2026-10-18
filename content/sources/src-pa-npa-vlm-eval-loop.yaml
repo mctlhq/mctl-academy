@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-npa-vlm-eval-loop
+url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/vlm-eval-loop-runbook.md
+title: VLM-Eval Loop Runbook
+retrieved_at: 2026-10-18T01:48:34Z
+sha256: 1e16650a31343bc7026325a836da076f7598f41661b7da4538195fef8b32ce69
+objectives:
+  - domain-3/deployment-evaluation
+  - domain-1/training-results
+snapshot:
+  bucket: academy-source-snapshots
+  key: 1e16650a31343bc7026325a836da076f7598f41661b7da4538195fef8b32ce69
+status: current
