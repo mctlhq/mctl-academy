@@ -51,7 +51,7 @@ authoritative change triggers.
 
 | Excluded | Reason |
 |---|---|
-| Certification exam guide PDF | Exam material; strictly prohibited by `LEGAL.md` |
+| Certification exam guide PDF | Course-map input only (domains, weights, format); never evidence for a question, see `LEGAL.md` |
 | Any exam simulator, braindump, or question bank | Provenance cannot be established |
 | Recollection of a real sitting | Prohibited by `CONTENT-POLICY.md` |
 | Community forum posts, blogs, videos | Not authoritative; no retention terms |
