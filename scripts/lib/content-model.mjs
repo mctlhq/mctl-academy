@@ -23,10 +23,33 @@ import { reviewProblems } from "./question-review.mjs";
 export const UNUSABLE_SOURCE_STATUSES = new Set(["drifted", "deprecated"]);
 
 /**
- * Hosts content may cite. Mirrors the SOURCES.md allowlist; the lint and the
- * generated-artefact contract both read it from here so they cannot drift.
+ * Documentation content may cite, as a host plus a path prefix. Mirrors the
+ * SOURCES.md allowlist; the lint, the capture and discovery scripts and the
+ * generated-artefact contract all read it from here so they cannot drift. The
+ * prefix keeps a shared host such as huggingface.co to the one documentation
+ * tree whose retention terms were reviewed.
  */
-export const ALLOWED_HOSTS = ["docs.tokenfactory.nebius.com", "docs.nebius.com"];
+export const ALLOWED_SOURCES = [
+  { host: "docs.tokenfactory.nebius.com", pathPrefix: "/" },
+  { host: "docs.nebius.com", pathPrefix: "/" },
+  { host: "huggingface.co", pathPrefix: "/docs/lerobot/" },
+];
+
+/**
+ * Whether a URL is inside the allowlist: HTTPS, no credentials or explicit
+ * port, and under an allowlisted prefix. The WHATWG parser has already
+ * resolved `..` and `%2e%2e` segments, so a prefix match cannot be escaped.
+ */
+export function isAllowedSourceUrl(value) {
+  let url;
+  try {
+    url = value instanceof URL ? value : new URL(value);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "https:" || url.username || url.password || url.port) return false;
+  return ALLOWED_SOURCES.some((s) => url.hostname === s.host && url.pathname.startsWith(s.pathPrefix));
+}
 
 /**
  * Where independent review receipts live, relative to a content directory:

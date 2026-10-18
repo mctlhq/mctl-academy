@@ -25,7 +25,7 @@
  * without touching the filesystem or shelling out to a build.
  */
 
-import { ALLOWED_HOSTS } from "./content-model.mjs";
+import { isAllowedSourceUrl } from "./content-model.mjs";
 
 const OPTION_IDS = ["a", "b", "c", "d"];
 
@@ -68,12 +68,7 @@ function validateBundleQuestion(question, index, errors) {
       }
       try {
         const url = new URL(source?.url);
-        if (
-          url.protocol !== "https:" ||
-          !ALLOWED_HOSTS.includes(url.hostname) ||
-          url.username ||
-          url.password
-        ) {
+        if (!isAllowedSourceUrl(url)) {
           errors.push(`${at}.sources: expected an allowlisted HTTPS documentation URL`);
         }
       } catch {

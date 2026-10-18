@@ -74,7 +74,13 @@ test("objectiveTitle and sources are required — a builder that drops them fail
 });
 
 test("public evidence rejects executable or unapproved URLs and oversized excerpts", () => {
-  for (const url of ["javascript:alert(1)", "http://docs.nebius.com/x", "https://evil.example/x"]) {
+  for (const url of [
+    "javascript:alert(1)",
+    "http://docs.nebius.com/x",
+    "https://evil.example/x",
+    "https://docs.nebius.com:8443/x",
+    "https://huggingface.co/docs/transformers/x",
+  ]) {
     const { bundle, catalog } = valid();
     const withSources = [{ ...bundle[0], sources: [{ title: "Docs", url, excerpt: "A supported claim" }] }];
     assert.ok(validateGeneratedArtifacts(withSources, catalog).some((error) => error.includes("sources")));

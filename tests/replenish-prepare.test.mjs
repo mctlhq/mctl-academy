@@ -32,7 +32,13 @@ import {
   prBody,
   knownObjectives,
 } from "../scripts/replenish-prepare.mjs";
-import { mergeVersions, buildSourceRecord, parseMode, parseCaptureArgs } from "../scripts/capture-source.mjs";
+import {
+  mergeVersions,
+  buildSourceRecord,
+  parseMode,
+  parseCaptureArgs,
+  fetchSource,
+} from "../scripts/capture-source.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -2723,4 +2729,38 @@ test("prBody says when the run was scoped to one course, and says nothing otherw
   const scoped = prBody({ ...args, candidates: { ...CANDIDATES, course: "ai-cloudops-engineer" } });
   assert.match(scoped, /Scoped to course `ai-cloudops-engineer`: gaps and new pages cover that course only/);
   assert.ok(!/Scoped to course/.test(prBody({ ...args, candidates: { ...CANDIDATES, course: null } })));
+});
+
+// fetch follows redirects; the allowlist must hold for the URL the bytes came
+// from, not only for the one requested.
+/**
+ * A fetch stub answering with a real Response whose final URL is `url`, as
+ * fetch reports it after following redirects. Only the call signature is
+ * exercised, so the cast skips Bun's extra `fetch.preconnect` member.
+ */
+function fetchLandingOn(url) {
+  const res = new Response("body");
+  Object.defineProperty(res, "url", { value: url });
+  return /** @type {typeof fetch} */ (/** @type {unknown} */ (async () => res));
+}
+
+/** @param {string} finalUrl @param {() => Promise<unknown>} fn */
+async function withFetch(finalUrl, fn) {
+  const real = globalThis.fetch;
+  globalThis.fetch = fetchLandingOn(finalUrl);
+  try {
+    return await fn();
+  } finally {
+    globalThis.fetch = real;
+  }
+}
+
+test("fetchSource refuses a redirect out of the allowlisted path prefix", async () => {
+  const from = "https://huggingface.co/docs/lerobot/il_robots.md";
+  for (const to of ["https://huggingface.co/docs/transformers/index.md", "https://evil.example/x.md"]) {
+    await withFetch(to, () =>
+      assert.rejects(fetchSource(from), /redirected to .* outside the SOURCES.md allowlist/),
+    );
+  }
+  assert.equal(await withFetch(from, () => fetchSource(from)), "body");
 });

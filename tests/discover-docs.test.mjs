@@ -10,6 +10,7 @@ import {
   gapsFrom,
   rankPages,
   discover,
+  fetchText,
   DISCOVERY_STATE_HEADER,
 } from "../scripts/discover-docs.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
@@ -521,5 +522,31 @@ test("discover: an unknown --course is an error, never an empty report", async (
     );
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+/**
+ * A fetch stub answering with a real Response whose final URL is `url`, as
+ * fetch reports it after following redirects. Only the call signature is
+ * exercised, so the cast skips Bun's extra `fetch.preconnect` member.
+ */
+function fetchLandingOn(url) {
+  const res = new Response("body");
+  Object.defineProperty(res, "url", { value: url });
+  return /** @type {typeof fetch} */ (/** @type {unknown} */ (async () => res));
+}
+
+test("fetchText refuses a redirect out of the allowlisted path prefix", async () => {
+  const real = globalThis.fetch;
+  const from = "https://huggingface.co/docs/lerobot/il_robots.md";
+  try {
+    for (const to of ["https://huggingface.co/docs/transformers/index.md", "https://evil.example/x.md"]) {
+      globalThis.fetch = fetchLandingOn(to);
+      await assert.rejects(fetchText(from), /redirected to .* outside the SOURCES.md allowlist/);
+    }
+    globalThis.fetch = fetchLandingOn(from);
+    assert.equal(await fetchText(from), "body");
+  } finally {
+    globalThis.fetch = real;
   }
 });

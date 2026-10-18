@@ -24,7 +24,7 @@ import Ajv from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { parse as parseYaml } from "yaml";
 import {
-  ALLOWED_HOSTS,
+  isAllowedSourceUrl,
   checkBundleEligibility,
   defaultReviewDir,
   loadReviewReceipts,
@@ -150,9 +150,8 @@ for (const { file, data } of sources) {
   sourceIds.add(data.id);
   sourcesById.set(data.id, data);
 
-  const host = new URL(data.url).host;
-  if (!ALLOWED_HOSTS.includes(host)) {
-    err(file, `host ${host} is not on the SOURCES.md allowlist`);
+  if (!isAllowedSourceUrl(data.url)) {
+    err(file, `${data.url} is not on the SOURCES.md allowlist`);
   }
   if (data.snapshot && data.snapshot.key !== data.sha256) {
     err(file, "snapshot.key must equal sha256 — snapshots are keyed by content hash");

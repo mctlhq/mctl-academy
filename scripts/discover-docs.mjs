@@ -32,7 +32,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import {
-  ALLOWED_HOSTS,
+  isAllowedSourceUrl,
   courseObjectives,
   loadCourses,
   loadSources,
@@ -65,9 +65,7 @@ export const DISCOVERY_STATE_HEADER = `# Watermark for scripts/discover-docs.mjs
 `;
 
 export async function fetchText(url) {
-  const host = new URL(url).host;
-  if (!ALLOWED_HOSTS.includes(host))
-    throw new Error(`refusing to fetch ${host}: not on the SOURCES.md allowlist`);
+  if (!isAllowedSourceUrl(url)) throw new Error(`refusing to fetch ${url}: not on the SOURCES.md allowlist`);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -78,6 +76,11 @@ export async function fetchText(url) {
     if (!res.ok) {
       // The status rides along so a 404 (page gone) can be told from a 5xx.
       throw Object.assign(new Error(`fetch ${url}: HTTP ${res.status}`), { status: res.status });
+    }
+    // Same redirect rule as fetchSource() in capture-source.mjs: the final URL
+    // must still be inside the allowlist.
+    if (!isAllowedSourceUrl(res.url)) {
+      throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
     }
     return await res.text();
   } finally {
@@ -103,7 +106,7 @@ export function parseLlmsIndex(text) {
     } catch {
       continue;
     }
-    if (!ALLOWED_HOSTS.includes(host) || !url.endsWith(".md") || seen.has(url)) continue;
+    if (!isAllowedSourceUrl(url) || !url.endsWith(".md") || seen.has(url)) continue;
     seen.add(url);
     pages.push({ url, title: title.trim(), description: description.trim(), host });
   }
