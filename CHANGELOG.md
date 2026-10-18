@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.57](https://github.com/mctlhq/mctl-academy/compare/0.1.56...0.1.57) (2026-10-18)
+
+
+### Bug Fixes
+
+* **content:** retire five weak Physical AI questions ([88733af](https://github.com/mctlhq/mctl-academy/commit/88733af6fc4c840607e15007bb1b908320206914))
+* **content:** retire five weak Physical AI questions ([5b78076](https://github.com/mctlhq/mctl-academy/commit/5b78076314b92b74bc30ec8fe860b092aa647117))
+
+
+### Content
+
+* **replenish:** author 10 question file(s) from 0 captured source(s) ([389cdc3](https://github.com/mctlhq/mctl-academy/commit/389cdc30013aabcab46fb324d86f8fd947d9bbd8))
+* **replenish:** promote 10 reviewed question(s) ([47b1316](https://github.com/mctlhq/mctl-academy/commit/47b1316b226093fb1b1ceeca409dfa24d255c1ea))
+
 ## [0.1.56](https://github.com/mctlhq/mctl-academy/compare/0.1.55...0.1.56) (2026-10-18)
 
 
