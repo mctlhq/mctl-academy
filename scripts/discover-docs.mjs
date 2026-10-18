@@ -149,6 +149,7 @@ export const COURSE_PRIMARY_HOST = {
   "agentic-ai-builder": "docs.tokenfactory.nebius.com",
   "ai-cloudops-engineer": "docs.nebius.com",
   "ai-leader": "docs.tokenfactory.nebius.com",
+  "physical-ai": "docs.nebius.com",
 };
 
 export function rankPages(pages, gaps) {
