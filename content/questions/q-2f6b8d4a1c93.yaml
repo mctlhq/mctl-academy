@@ -1,0 +1,52 @@
+schema_version: 1
+id: q-2f6b8d4a1c93
+status: published
+domain: domain-3
+objective: domain-3/release-management
+stem: "A team pushed several checkpoints of a robot policy to the Hugging Face
+  Hub during training with `--save_checkpoint_to_hub=true`, and now wants to
+  roll back inference to the checkpoint saved at step 10000 without hunting for
+  its commit hash. How can they select it?"
+options:
+  - id: a
+    text: "Pass the exact commit sha of that push, since step numbers are not
+      tracked on the Hub"
+    correct: false
+    explanation: "The documentation states checkpoints are tagged by step number
+      specifically so a commit sha lookup is not needed."
+  - id: b
+    text: "Pass `--policy.pretrained_revision=010000`, since each pushed checkpoint
+      is tagged with its step number"
+    correct: true
+    explanation: "Correct. The documentation states each pushed checkpoint is tagged
+      with its step (for example `--policy.pretrained_revision=010000`), so a
+      checkpoint can be recovered by step number without looking up its commit
+      sha."
+  - id: c
+    text: "Re-run training from scratch for exactly 10000 steps to regenerate an
+      equivalent checkpoint"
+    correct: false
+    explanation: "The documented workflow recovers an already-pushed checkpoint by
+      its step tag; retraining from scratch is not the documented rollback
+      method."
+  - id: d
+    text: "Use `--resume=true` without any revision argument, which always loads the
+      step-10000 checkpoint"
+    correct: false
+    explanation: "`--resume=true` without a revision continues from the latest Hub
+      checkpoint, not a specific earlier step; selecting step 10000 requires
+      `--policy.pretrained_revision`."
+evidence:
+  - source_id: src-pa-lerobot-il-robots
+    excerpt: "Each pushed checkpoint is tagged with its step (e.g.
+      `--policy.pretrained_revision=010000`), so you can recover a checkpoint by
+      step without looking up its commit sha."
+    source_sha256: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: bc488c664b24c48e044d4d5895f07d83b76e6e3ce3e4f2291a4002f094b2d458

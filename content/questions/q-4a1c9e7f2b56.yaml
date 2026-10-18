@@ -1,0 +1,52 @@
+schema_version: 1
+id: q-4a1c9e7f2b56
+status: published
+domain: domain-3
+objective: domain-3/inference-capacity
+stem: "When sizing single-GPU inference capacity for a Diffusion Policy
+  deployment, Nebius's LeRobot GPU benchmark research measured H200 at 10.06 ms
+  per sample and B300 (stock PyTorch) at 36.48 ms. What does this imply for
+  provisioning latency-sensitive Diffusion Policy inference?"
+options:
+  - id: a
+    text: "H200 should be preferred over B300 for Diffusion Policy inference when
+      stock PyTorch is used, since it measured roughly 3.6x lower latency"
+    correct: true
+    explanation: "Correct. The benchmark measured H200 Diffusion inference at 10.06
+      ms versus B300 at 36.48 ms with stock PyTorch, so H200 gives meaningfully
+      lower per-sample latency for this policy."
+  - id: b
+    text: "B300 should be preferred because it has more VRAM and memory bandwidth
+      than H200"
+    correct: false
+    explanation: "B300 does have more VRAM and bandwidth, but the benchmark's
+      measured Diffusion inference latency was higher on B300 under stock
+      PyTorch, so raw spec advantages did not translate into lower latency
+      here."
+  - id: c
+    text: "The two GPUs are interchangeable for Diffusion Policy inference because
+      training throughput was comparable"
+    correct: false
+    explanation: "Training throughput and inference latency are measured separately
+      in the benchmark; comparable training numbers do not establish comparable
+      inference latency."
+  - id: d
+    text: "RTX PRO 6000 should be preferred because it has the lowest inference
+      latency of all four GPUs tested"
+    correct: false
+    explanation: "The benchmark reports H200 as the lowest measured Diffusion
+      inference latency (10.06 ms); RTX PRO 6000 is not documented as the
+      fastest option for this policy."
+evidence:
+  - source_id: src-pa-npa-lerobot-gpu-benchmarks
+    excerpt: "The research measured H200 Diffusion inference at 10.06 ms and B300
+      Diffusion inference at 36.48 ms."
+    source_sha256: 47903e3f3c7e68d4235fc5dc1b2887097289217cb58926fde4ff3efc048d7933
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 07da1937653b3de7c3a3426961ddaee54795166a37c0df1c6e9c1fa2f59cc4fe

@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-9c4e7b2a5f16
+status: published
+domain: domain-1
+objective: domain-1/experiment-tracking
+stem: "Before creating a Managed Service for MLflow cluster, what access level
+  does the quickstart require within your tenant or project?"
+options:
+  - id: a
+    text: "The `admin` role, for example via the default `admins` group"
+    correct: true
+    explanation: "Correct. The quickstart's prerequisites require being in a group
+      with the `admin` role within the tenant or project before creating a
+      cluster."
+  - id: b
+    text: "The `editor` role, the same level required for most other Nebius AI Cloud
+      resources"
+    correct: false
+    explanation: "The MLflow quickstart specifically requires the `admin` role for
+      cluster creation, not the `editor` role used elsewhere in the platform."
+  - id: c
+    text: "The `viewer` role, since cluster creation is a read-only operation"
+    correct: false
+    explanation: "Cluster creation is a write operation and the `viewer` role is
+      insufficient; the quickstart requires the `admin` role."
+  - id: d
+    text: "No specific role is required as long as you have a valid CLI profile"
+    correct: false
+    explanation: "The quickstart explicitly lists the `admin` role as a
+      prerequisite, independent of having a configured CLI profile."
+evidence:
+  - source_id: src-pa-mlflow-quickstart
+    excerpt: "that has the `admin` role within your tenant or project; for example,
+      the default `admins` group."
+    source_sha256: 29909942e742212ef6a47415660921945a59e225121ff88cffe6944d02efae09
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 43ab7de69b0290135c6800e9d5f1052105c531bc8a947379419d6f2e83449f3d

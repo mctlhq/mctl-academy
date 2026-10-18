@@ -1,0 +1,53 @@
+schema_version: 1
+id: q-2a7c4f1b9e63
+status: published
+domain: domain-1
+objective: domain-1/training-results
+stem: "In Nebius's field-failure-to-policy-improvement workflow, a candidate
+  navigation policy passed the 80% success threshold on the training-exposed
+  replay cohort but failed that same threshold on both held-out cohorts. What
+  does this pattern indicate for the promotion decision?"
+options:
+  - id: a
+    text: "The candidate should be promoted immediately, since it already cleared
+      the 80% success threshold"
+    correct: false
+    explanation: "The 80% threshold was only cleared on training-exposed replay,
+      which the workflow treats as diagnostic only; both held-out arms — the
+      actual promotion evidence — failed that threshold."
+  - id: b
+    text: "The held-out cohorts should be retrained on the same scenarios as the
+      training-exposed cohort until they also pass"
+    correct: false
+    explanation: "Held-out cohorts are untouched by design so they can validate
+      generalization; retraining them on training-exposed scenarios would defeat
+      the purpose of the held-out check."
+  - id: c
+    text: "The candidate should not be promoted, since passing on training-exposed
+      data does not establish that the improvement generalizes to held-out
+      scenarios"
+    correct: true
+    explanation: "Correct. The workflow measured the candidate passing the 80%
+      threshold only on the training-exposed replay cohort, while both held-out
+      arms failed it — exactly the pattern the workflow treats as evidence to
+      retain the baseline rather than promote."
+  - id: d
+    text: "The 80% threshold should be lowered for held-out cohorts so the candidate
+      can pass"
+    correct: false
+    explanation: "Nothing in the workflow describes adjusting thresholds to fit a
+      candidate's held-out performance; the comparison uses the declared
+      thresholds as sealed, predetermined bounds."
+evidence:
+  - source_id: src-pa-npa-field-failure
+    excerpt: "The candidate passed the 80% standalone success threshold on the
+      training-exposed scan; both held-out arms failed that threshold."
+    source_sha256: 178843d1b675d2876a7ea669808fc4803a3f9afd9bd0255fb686ae44d100718a
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 25c35844368d81977d19eac22c4dd1e04d8b4a47f6e7b65167ad851db2e80f64
