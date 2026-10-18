@@ -109,5 +109,42 @@
         }
       ]
     }
+  },
+  {
+    "id": "physical-ai",
+    "title": "Physical AI",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Post-training Physical AI models",
+          "weight": 40,
+          "mockQuestions": 12
+        },
+        {
+          "id": "domain-2",
+          "title": "Building Physical AI data pipelines",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-3",
+          "title": "Evaluating and deploying inference",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-4",
+          "title": "Integrating robotics applications",
+          "weight": 15,
+          "mockQuestions": 4
+        }
+      ]
+    }
   }
 ]

@@ -1,0 +1,72 @@
+schema_version: 1
+id: physical-ai
+prepares_for: "Nebius Physical AI"
+title: "Physical AI"
+description: "Practice for the Nebius Physical AI certification. Scenario questions covering post-training of language, vision-language and vision-language-action models and robot policies, robotics data pipelines, inference evaluation and deployment, and integrating models with robot applications."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+domains:
+  - id: domain-1
+    title: "Post-training Physical AI models"
+    weight: 40
+    mock_questions: 12
+    objectives:
+      - id: supervised-fine-tuning
+        title: "Running supervised fine-tuning jobs for language, vision-language and vision-language-action models"
+      - id: robot-policy-training
+        title: "Training and fine-tuning robot policies from demonstration data with LeRobot"
+      - id: experiment-tracking
+        title: "Configuring and tracking post-training experiments and hyperparameter searches"
+      - id: gpu-orchestration
+        title: "Sizing GPU nodes and orchestration for model size, workload, cost and completion time"
+      - id: training-results
+        title: "Reading training and validation results to pick models and policies for evaluation"
+
+  - id: domain-2
+    title: "Building Physical AI data pipelines"
+    weight: 25
+    mock_questions: 8
+    objectives:
+      - id: simulation-assets
+        title: "Preparing 3D assets for simulation and synthetic data generation"
+      - id: data-collection
+        title: "Collecting robot logs, sensor streams and demonstrations"
+      - id: dataset-curation
+        title: "Filtering, cleaning, augmenting and organising data into training and evaluation datasets"
+      - id: dataset-quality
+        title: "Balancing real and synthetic data and finding poor samples, labelling problems and coverage gaps"
+
+  - id: domain-3
+    title: "Evaluating and deploying inference"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: inference-setup
+        title: "Setting up managed model inference in the cloud"
+      - id: release-management
+        title: "Staging and production releases with versioned model artifacts, promotion and rollback"
+      - id: deployment-evaluation
+        title: "Evaluating deployments against physical tasks, failure scenarios and safety checks"
+      - id: inference-capacity
+        title: "Sizing inference capacity for quality, latency, throughput and cost"
+
+  - id: domain-4
+    title: "Integrating robotics applications"
+    weight: 15
+    mock_questions: 4
+    objectives:
+      - id: application-integration
+        title: "Connecting inference and data pipelines to robot applications through APIs, services and containers"
+      - id: observability-tracing
+        title: "Collecting logs, metrics and diagnostics and tracing failures across data, models and robots"
+      - id: edge-cloud-placement
+        title: "Choosing cloud or edge execution for latency and deployment requirements"
+      - id: workflow-security
+        title: "Versioning models and configurations and protecting credentials, artifacts and data"
