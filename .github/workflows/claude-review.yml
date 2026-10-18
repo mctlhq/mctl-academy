@@ -10,7 +10,7 @@ permissions: {}
 
 jobs:
   claude-review:
-    uses: mctlhq/.github/.github/workflows/claude-review.yml@39c2256465fecd73c317d24bb9e6fb9b1e086162
+    uses: mctlhq/.github/.github/workflows/claude-review.yml@c0cf863c2d5a9d6c028bc8b986280eb846ef695b
     permissions:
       contents: read
       pull-requests: write
@@ -38,7 +38,14 @@ jobs:
       # LLM-checking-LLM loop that gate exists to avoid. content/schemas/
       # is excluded here (still reviewed) since a bad schema silently
       # weakens the gate for every future question.
-      skip-paths: '^content/(questions|lessons|sources)/'
+      #
+      # A replenish PR also carries what the run generates from content/:
+      # the client bundle and catalog, the review receipt and the discovery
+      # state. Without them here a replenish PR never matched and went to
+      # the reviewer anyway (#322). They are safe to skip: ci.yml rebuilds
+      # the bundle and catalog and fails on any byte that content/ does not
+      # produce, and the lint verifies receipt fingerprints mechanically.
+      skip-paths: '^(content/(questions|lessons|sources)/|content/discovery-state\.yaml$|client/src/(content-bundle|course-catalog)\.json$|docs/content/[^/]+-review\.json$)'
       conventions: |
         mctl Academy is a free study tool for an agentic AI certification.
         It is NOT a secure assessment: the repository is public and the
