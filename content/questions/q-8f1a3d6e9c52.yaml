@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-8f1a3d6e9c52
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/experiment-tracking
 stem: "Together with an MLflow cluster, Managed Service for MLflow creates an
@@ -8,20 +8,18 @@ stem: "Together with an MLflow cluster, Managed Service for MLflow creates an
   that bucket after the MLflow cluster is deleted?"
 options:
   - id: a
-    text: "It is deleted automatically along with the cluster, so no further
-      action is needed"
+    text: "It is deleted automatically along with the cluster, so no further action
+      is needed"
     correct: false
     explanation: "The quickstart explicitly says the bucket is not deleted
       automatically when the cluster is deleted."
   - id: b
-    text: "It becomes read-only but remains free of charge until manually
-      deleted"
+    text: "It becomes read-only but remains free of charge until manually deleted"
     correct: false
-    explanation: "The quickstart does not describe a free, read-only state for
-      the bucket; it only states that it is not deleted automatically."
+    explanation: "The quickstart does not describe a free, read-only state for the
+      bucket; it only states that it is not deleted automatically."
   - id: c
-    text: "It is automatically migrated to a new cluster if one is created
-      later"
+    text: "It is automatically migrated to a new cluster if one is created later"
     correct: false
     explanation: "No such automatic migration is documented; the quickstart only
       states that the bucket persists and is not deleted automatically."
@@ -33,10 +31,13 @@ options:
       is deleted."
 evidence:
   - source_id: src-pa-mlflow-quickstart
-    excerpt: "This bucket is not deleted automatically after you delete the
-      cluster."
+    excerpt: "This bucket is not deleted automatically after you delete the cluster."
     source_sha256: 29909942e742212ef6a47415660921945a59e225121ff88cffe6944d02efae09
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 4a3b7a348ed017d825a0364dbd61d1dc88c46cc91475a0175707dff4c6e2d16e

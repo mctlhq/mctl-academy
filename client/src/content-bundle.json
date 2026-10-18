@@ -123,6 +123,47 @@
     ]
   },
   {
+    "id": "q-1b6d9f3a8e47",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/training-results",
+    "stem": "A team wants one place to compare model artifacts, training results and the hyperparameters used across several post-training runs, instead of checking separate logs and output directories. What does Managed Service for MLflow provide for this purpose?",
+    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
+    "sources": [
+      {
+        "title": "Managed Service for MLflow",
+        "url": "https://docs.nebius.com/mlflow/index.md",
+        "excerpt": "Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results and tuned hyperparameters in a single interface."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A separate dashboard for artifacts and a separate one for hyperparameters that must be cross-referenced manually",
+        "correct": false,
+        "explanation": "The documentation describes one single interface for artifacts, results and hyperparameters together, not separate dashboards that need manual cross-referencing."
+      },
+      {
+        "id": "b",
+        "text": "A single interface for accessing model artifacts, training results and tuned hyperparameters together",
+        "correct": true,
+        "explanation": "Correct. The Managed MLflow overview states it enables access to model artifacts, training results and tuned hyperparameters in a single interface, which is exactly this comparison use case."
+      },
+      {
+        "id": "c",
+        "text": "Automatic selection of the best-performing model without exposing the underlying training results",
+        "correct": false,
+        "explanation": "Managed MLflow exposes training results and metrics for the team to compare; it does not silently auto-select a best model and hide the data."
+      },
+      {
+        "id": "d",
+        "text": "Storage for hyperparameters only, with model artifacts and results tracked elsewhere",
+        "correct": false,
+        "explanation": "The documentation states all three — model artifacts, training results and hyperparameters — are accessible in the same interface, not hyperparameters alone."
+      }
+    ]
+  },
+  {
     "id": "q-1d28809ed6da",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -160,6 +201,88 @@
         "text": "Equal-sized files are mandatory",
         "correct": false,
         "explanation": "A validation dataset is optional, and the typical split is unequal."
+      }
+    ]
+  },
+  {
+    "id": "q-2a7c4f1b9e63",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/training-results",
+    "stem": "In Nebius's field-failure-to-policy-improvement workflow, a candidate navigation policy passed the 80% success threshold on the training-exposed replay cohort but failed that same threshold on both held-out cohorts. What does this pattern indicate for the promotion decision?",
+    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
+    "sources": [
+      {
+        "title": "Field failure to navigation policy improvement",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/field-failure-policy-improvement.md",
+        "excerpt": "The candidate passed the 80% standalone success threshold on the training-exposed scan; both held-out arms failed that threshold."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The candidate should be promoted immediately, since it already cleared the 80% success threshold",
+        "correct": false,
+        "explanation": "The 80% threshold was only cleared on training-exposed replay, which the workflow treats as diagnostic only; both held-out arms — the actual promotion evidence — failed that threshold."
+      },
+      {
+        "id": "b",
+        "text": "The held-out cohorts should be retrained on the same scenarios as the training-exposed cohort until they also pass",
+        "correct": false,
+        "explanation": "Held-out cohorts are untouched by design so they can validate generalization; retraining them on training-exposed scenarios would defeat the purpose of the held-out check."
+      },
+      {
+        "id": "c",
+        "text": "The candidate should not be promoted, since passing on training-exposed data does not establish that the improvement generalizes to held-out scenarios",
+        "correct": true,
+        "explanation": "Correct. The workflow measured the candidate passing the 80% threshold only on the training-exposed replay cohort, while both held-out arms failed it — exactly the pattern the workflow treats as evidence to retain the baseline rather than promote."
+      },
+      {
+        "id": "d",
+        "text": "The 80% threshold should be lowered for held-out cohorts so the candidate can pass",
+        "correct": false,
+        "explanation": "Nothing in the workflow describes adjusting thresholds to fit a candidate's held-out performance; the comparison uses the declared thresholds as sealed, predetermined bounds."
+      }
+    ]
+  },
+  {
+    "id": "q-2f6b8d4a1c93",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/release-management",
+    "stem": "A team pushed several checkpoints of a robot policy to the Hugging Face Hub during training with `--save_checkpoint_to_hub=true`, and now wants to roll back inference to the checkpoint saved at step 10000 without hunting for its commit hash. How can they select it?",
+    "objectiveTitle": "Staging and production releases with versioned model artifacts, promotion and rollback",
+    "sources": [
+      {
+        "title": "Imitation Learning on Real-World Robots",
+        "url": "https://huggingface.co/docs/lerobot/il_robots.md",
+        "excerpt": "Each pushed checkpoint is tagged with its step (e.g. `--policy.pretrained_revision=010000`), so you can recover a checkpoint by step without looking up its commit sha."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Pass the exact commit sha of that push, since step numbers are not tracked on the Hub",
+        "correct": false,
+        "explanation": "The documentation states checkpoints are tagged by step number specifically so a commit sha lookup is not needed."
+      },
+      {
+        "id": "b",
+        "text": "Pass `--policy.pretrained_revision=010000`, since each pushed checkpoint is tagged with its step number",
+        "correct": true,
+        "explanation": "Correct. The documentation states each pushed checkpoint is tagged with its step (for example `--policy.pretrained_revision=010000`), so a checkpoint can be recovered by step number without looking up its commit sha."
+      },
+      {
+        "id": "c",
+        "text": "Re-run training from scratch for exactly 10000 steps to regenerate an equivalent checkpoint",
+        "correct": false,
+        "explanation": "The documented workflow recovers an already-pushed checkpoint by its step tag; retraining from scratch is not the documented rollback method."
+      },
+      {
+        "id": "d",
+        "text": "Use `--resume=true` without any revision argument, which always loads the step-10000 checkpoint",
+        "correct": false,
+        "explanation": "`--resume=true` without a revision continues from the latest Hub checkpoint, not a specific earlier step; selecting step 10000 requires `--policy.pretrained_revision`."
       }
     ]
   },
@@ -205,6 +328,47 @@
     ]
   },
   {
+    "id": "q-3d7e2a6b9c41",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-setup",
+    "stem": "A team stops a Serverless AI endpoint overnight to avoid paying for idle compute, but had earlier attached a mounted Object Storage volume to it for model files. What are they billed for while the endpoint is stopped?",
+    "objectiveTitle": "Setting up managed model inference in the cloud",
+    "sources": [
+      {
+        "title": "Managing endpoints in Serverless AI",
+        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
+        "excerpt": "Computing resources of stopped endpoints aren't charged. However, if you mounted a volume to the endpoint, you are charged for the volume"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing at all, since stopping an endpoint suspends all billing including attached volumes",
+        "correct": false,
+        "explanation": "The documentation specifically states that a mounted volume continues to be charged even while the endpoint itself is stopped; stopping does not suspend all billing."
+      },
+      {
+        "id": "b",
+        "text": "The same compute charges as a running endpoint, since stopped endpoints remain reserved",
+        "correct": false,
+        "explanation": "The documentation states computing resources of stopped endpoints aren't charged; only the mounted volume continues to incur charges."
+      },
+      {
+        "id": "c",
+        "text": "Only the volume's one-time creation fee, with no ongoing storage charges",
+        "correct": false,
+        "explanation": "The documentation describes an ongoing charge for the mounted volume while the endpoint is stopped, not a one-time creation fee."
+      },
+      {
+        "id": "d",
+        "text": "Nothing for compute, since stopped endpoints aren't charged for computing resources — but they are still charged for the mounted volume",
+        "correct": true,
+        "explanation": "Correct. The documentation states computing resources of stopped endpoints aren't charged, but if a volume was mounted to the endpoint, you are charged for that volume even while the endpoint is stopped."
+      }
+    ]
+  },
+  {
     "id": "q-3d8e6a21f974",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -242,6 +406,52 @@
         "text": "Hugging Face Jobs",
         "correct": false,
         "explanation": "Hugging Face Jobs is documented elsewhere as a way to run LeRobot training on managed HF infrastructure, not as what this workflow uses."
+      }
+    ]
+  },
+  {
+    "id": "q-3e9b6d2a4f81",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/simulation-assets",
+    "stem": "A team preparing a 3D scene for simulation via NVIDIA's Neural Reconstruction Engine (NuRec) on Nebius Workbench is choosing between an RTX PRO 6000 and an H200 GPU for the reconstruction job. Which should they choose, and why?",
+    "objectiveTitle": "Preparing 3D assets for simulation and synthetic data generation",
+    "sources": [
+      {
+        "title": "Turn a real photo capture into a 3D scene you can fly through",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/neural-reconstruction.md",
+        "excerpt": "Gaussian rasterization and ray tracing are RT-core work."
+      },
+      {
+        "title": "Turn a real photo capture into a 3D scene you can fly through",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/neural-reconstruction.md",
+        "excerpt": "H100 and H200 are faster chips with **no RT cores** and are the wrong choice"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "H200, because it has more memory bandwidth and will reconstruct the scene faster overall",
+        "correct": false,
+        "explanation": "Raw speed and memory bandwidth are not the deciding factor here; the guide states H200 lacks the RT cores that Gaussian rasterization and ray tracing require, making it the wrong choice regardless of other specs."
+      },
+      {
+        "id": "b",
+        "text": "Either GPU works equally well, since NuRec reconstruction is a CPU-bound workload",
+        "correct": false,
+        "explanation": "The guide specifies the reconstruction stages are GPU work needing RT cores, not a CPU-bound workload where GPU choice would not matter."
+      },
+      {
+        "id": "c",
+        "text": "H200, because RT cores are only needed for rendering novel views, not for reconstruction itself",
+        "correct": false,
+        "explanation": "The guide attributes the RT-core requirement to Gaussian rasterization and ray tracing broadly, which covers the reconstruction stage itself, not only a later render stage."
+      },
+      {
+        "id": "d",
+        "text": "RTX PRO 6000, because Gaussian rasterization and ray tracing require RT cores, which H200 lacks despite being a faster chip overall",
+        "correct": true,
+        "explanation": "Correct. The guide explains Gaussian rasterization and ray tracing are RT-core work, and that H100/H200 are faster chips but have no RT cores, making them the wrong choice for this reconstruction workflow."
       }
     ]
   },
@@ -461,6 +671,175 @@
     ]
   },
   {
+    "id": "q-4a1c9e7f2b56",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-capacity",
+    "stem": "When sizing single-GPU inference capacity for a Diffusion Policy deployment, Nebius's LeRobot GPU benchmark research measured H200 at 10.06 ms per sample and B300 (stock PyTorch) at 36.48 ms. What does this imply for provisioning latency-sensitive Diffusion Policy inference?",
+    "objectiveTitle": "Sizing inference capacity for quality, latency, throughput and cost",
+    "sources": [
+      {
+        "title": "LeRobot GPU Benchmarks: Reproducing the Research via Nebius Workbench",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/lerobot-gpu-benchmarks.md",
+        "excerpt": "The research measured H200 Diffusion inference at 10.06 ms and B300 Diffusion inference at 36.48 ms."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "H200 should be preferred over B300 for Diffusion Policy inference when stock PyTorch is used, since it measured roughly 3.6x lower latency",
+        "correct": true,
+        "explanation": "Correct. The benchmark measured H200 Diffusion inference at 10.06 ms versus B300 at 36.48 ms with stock PyTorch, so H200 gives meaningfully lower per-sample latency for this policy."
+      },
+      {
+        "id": "b",
+        "text": "B300 should be preferred because it has more VRAM and memory bandwidth than H200",
+        "correct": false,
+        "explanation": "B300 does have more VRAM and bandwidth, but the benchmark's measured Diffusion inference latency was higher on B300 under stock PyTorch, so raw spec advantages did not translate into lower latency here."
+      },
+      {
+        "id": "c",
+        "text": "The two GPUs are interchangeable for Diffusion Policy inference because training throughput was comparable",
+        "correct": false,
+        "explanation": "Training throughput and inference latency are measured separately in the benchmark; comparable training numbers do not establish comparable inference latency."
+      },
+      {
+        "id": "d",
+        "text": "RTX PRO 6000 should be preferred because it has the lowest inference latency of all four GPUs tested",
+        "correct": false,
+        "explanation": "The benchmark reports H200 as the lowest measured Diffusion inference latency (10.06 ms); RTX PRO 6000 is not documented as the fastest option for this policy."
+      }
+    ]
+  },
+  {
+    "id": "q-4c8e2b6f1a93",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/data-collection",
+    "stem": "A robotics engineer runs `lerobot-record` over SSH on a headless Linux machine with no `$DISPLAY` set. Can they use the arrow-key and Escape shortcuts to control recording (stop early, re-record, end session)?",
+    "objectiveTitle": "Collecting robot logs, sensor streams and demonstrations",
+    "sources": [
+      {
+        "title": "Imitation Learning on Real-World Robots",
+        "url": "https://huggingface.co/docs/lerobot/il_robots.md",
+        "excerpt": "the recording control-flow keys (arrow keys, Escape) work on X11, Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an interactive terminal"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "No — control-flow keys require a global keyboard backend and therefore fail over SSH without a display",
+        "correct": false,
+        "explanation": "A global keyboard backend is required for keyboard teleoperation, not for the recording control-flow keys, which are read directly from the terminal."
+      },
+      {
+        "id": "b",
+        "text": "Yes — these control-flow keys work on X11, Wayland, and headless/SSH sessions as long as the command runs in an interactive terminal",
+        "correct": true,
+        "explanation": "Correct. The tutorial states the recording control-flow keys work on X11, Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an interactive terminal, with no `$DISPLAY` setup needed."
+      },
+      {
+        "id": "c",
+        "text": "No — `$DISPLAY` must be explicitly set before any keyboard shortcuts work",
+        "correct": false,
+        "explanation": "The tutorial states no `$DISPLAY` setup is needed for the recording control-flow keys."
+      },
+      {
+        "id": "d",
+        "text": "Yes, but only if the session also has X11 forwarding enabled",
+        "correct": false,
+        "explanation": "The documented behavior covers X11, Wayland, and headless/SSH sessions without requiring X11 forwarding specifically."
+      }
+    ]
+  },
+  {
+    "id": "q-4e8c2a6f9d17",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/deployment-evaluation",
+    "stem": "In Nebius's SmolVLA robot-policy train-and-serve workflow, an earlier 10-epoch pilot checkpoint passed both promotion evaluation gates. When that same checkpoint was evaluated on the reserved deployment states, what happened?",
+    "objectiveTitle": "Evaluating deployments against physical tasks, failure scenarios and safety checks",
+    "sources": [
+      {
+        "title": "Robot policy: train and serve",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/robot-policy-train-and-serve.md",
+        "excerpt": "An earlier 10-epoch pilot passed both promotion gates but scored 5/10 on deployment states 20–29; the unchanged 70% requirement correctly rejected it."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It automatically passed deployment evaluation, since promotion gates already cover the same held-out states",
+        "correct": false,
+        "explanation": "Promotion evaluations use states 0–9 and 10–19, while deployment states 20–29 are a separate reserved set; passing promotion did not guarantee passing deployment evaluation."
+      },
+      {
+        "id": "b",
+        "text": "It was excluded from deployment evaluation because it had already passed promotion",
+        "correct": false,
+        "explanation": "The documentation describes the pilot checkpoint actually being evaluated on deployment states and failing that threshold, not being excluded from deployment evaluation."
+      },
+      {
+        "id": "c",
+        "text": "The 70% deployment threshold was lowered afterward so the pilot checkpoint would pass",
+        "correct": false,
+        "explanation": "The documentation describes the 70% requirement as unchanged and correctly rejecting the pilot; no threshold adjustment is documented."
+      },
+      {
+        "id": "d",
+        "text": "It scored 5 out of 10 on the deployment states, below the 70% requirement, so it was correctly rejected despite passing promotion",
+        "correct": true,
+        "explanation": "Correct. The documentation reports that the 10-epoch pilot passed both promotion gates but scored 5/10 on deployment states 20–29, and the unchanged 70% requirement correctly rejected it — promotion success did not guarantee deployment-evaluation success."
+      }
+    ]
+  },
+  {
+    "id": "q-5a3f7d9c1e48",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/data-collection",
+    "stem": "During a LeRobot Human-in-the-Loop (HIL) data collection session, what is recorded while the robot is paused (holding its position, before the human takes control), versus after the human triggers takeover?",
+    "objectiveTitle": "Collecting robot logs, sensor streams and demonstrations",
+    "sources": [
+      {
+        "title": "Human-In-the-Loop Data Collection",
+        "url": "https://huggingface.co/docs/lerobot/hil_data_collection.md",
+        "excerpt": "No frames recorded during pause"
+      },
+      {
+        "title": "Human-In-the-Loop Data Collection",
+        "url": "https://huggingface.co/docs/lerobot/hil_data_collection.md",
+        "excerpt": "All movements are recorded"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Frames are recorded continuously through both the pause and the takeover, at the same rate",
+        "correct": false,
+        "explanation": "The guide specifically says no frames are recorded during pause; recording only begins once takeover starts."
+      },
+      {
+        "id": "b",
+        "text": "Frames are recorded during the pause but discarded once takeover begins",
+        "correct": false,
+        "explanation": "The guide does not describe recording during pause at all, let alone discarding it later; no frames are recorded during pause in the first place."
+      },
+      {
+        "id": "c",
+        "text": "No frames are recorded during the pause; once takeover begins, all movements are recorded",
+        "correct": true,
+        "explanation": "Correct. The guide states no frames are recorded during the pause step, while after takeover all movements (recovery and correction) are recorded as training data."
+      },
+      {
+        "id": "d",
+        "text": "Recording stops entirely for the rest of the episode once a pause occurs",
+        "correct": false,
+        "explanation": "Recording resumes once takeover begins — all movements during takeover are recorded — so a pause does not end recording for the rest of the episode."
+      }
+    ]
+  },
+  {
     "id": "q-5c8f2b0491ea",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -498,6 +877,52 @@
         "text": "It is skipped, because objects under 100 MB are assumed already synchronized",
         "correct": false,
         "explanation": "Skipping applies to objects last modified before the prior successful iteration, not to every object simply because it is small."
+      }
+    ]
+  },
+  {
+    "id": "q-5d3b8a1f6c94",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-capacity",
+    "stem": "When sizing a Token Factory dedicated endpoint's inference capacity, how do its minimum and maximum replica counts behave differently?",
+    "objectiveTitle": "Sizing inference capacity for quality, latency, throughput and cost",
+    "sources": [
+      {
+        "title": "Capacity, availability, and service guarantees",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active."
+      },
+      {
+        "title": "Capacity, availability, and service guarantees",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both minimum and maximum replicas are reserved and non-preemptible for the lifetime of the endpoint",
+        "correct": false,
+        "explanation": "Only the minimum replica count is documented as reserved and non-preemptible; scaling above it depends on burst capacity, which is not a guaranteed reservation."
+      },
+      {
+        "id": "b",
+        "text": "Minimum replicas are reserved and non-preemptible while the endpoint is active, but scaling above minimum depends on burst capacity that is not guaranteed",
+        "correct": true,
+        "explanation": "Correct. Minimum replicas are reserved and non-preemptible for as long as the endpoint runs, while scaling above that minimum depends on available burst capacity, which the documentation says is not guaranteed indefinitely."
+      },
+      {
+        "id": "c",
+        "text": "Minimum replicas depend on burst capacity, while maximum replicas are always guaranteed",
+        "correct": false,
+        "explanation": "This reverses the documented behavior: it is the minimum replicas that are reserved, and scaling above the minimum that depends on unguaranteed burst capacity."
+      },
+      {
+        "id": "d",
+        "text": "Replica counts are fixed at deployment time and cannot change without recreating the endpoint",
+        "correct": false,
+        "explanation": "The documentation describes scaling between minimum and maximum replicas as normal operation, not something that requires recreating the endpoint."
       }
     ]
   },
@@ -584,6 +1009,47 @@
     ]
   },
   {
+    "id": "q-6b9c4e1a7f32",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/dataset-curation",
+    "stem": "When creating or recording a LeRobotDataset v3.0 dataset, what happens if `dataset.finalize()` is never called before `push_to_hub()`?",
+    "objectiveTitle": "Filtering, cleaning, augmenting and organising data into training and evaluation datasets",
+    "sources": [
+      {
+        "title": "LeRobotDataset v3.0",
+        "url": "https://huggingface.co/docs/lerobot/lerobot-dataset-v3.md",
+        "excerpt": "Without calling `finalize()`, your parquet files will be incomplete and the dataset won't load properly."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The dataset still loads correctly, but without any normalization statistics",
+        "correct": false,
+        "explanation": "The documented failure mode is incomplete, improperly loading parquet files from unclosed writers — not merely missing normalization statistics."
+      },
+      {
+        "id": "b",
+        "text": "The dataset uploads successfully but with videos stripped from the MP4 shards",
+        "correct": false,
+        "explanation": "The documentation does not describe `finalize()` as affecting video shards specifically; it describes parquet writer closure and metadata footers."
+      },
+      {
+        "id": "c",
+        "text": "`push_to_hub()` automatically calls `finalize()` internally, so omitting it has no effect",
+        "correct": false,
+        "explanation": "The documentation instructs callers to explicitly call `finalize()` before `push_to_hub()`, and warns of incomplete parquet files if it is skipped — it does not describe `push_to_hub()` calling it automatically."
+      },
+      {
+        "id": "d",
+        "text": "The parquet files will be incomplete and the dataset won't load properly",
+        "correct": true,
+        "explanation": "Correct. The documentation states that without calling `finalize()`, the parquet files will be incomplete and the dataset won't load properly, because `finalize()` closes the parquet writers and writes footer metadata."
+      }
+    ]
+  },
+  {
     "id": "q-6b9e2f4a17c3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -636,6 +1102,47 @@
         "text": "List the currently available models",
         "correct": false,
         "explanation": "The List models operation lists the currently available models and basic information such as the owner and availability; it takes no documents and returns no ranking."
+      }
+    ]
+  },
+  {
+    "id": "q-6e2f4c9a1d78",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-capacity",
+    "stem": "A team wants to shift idle GPU capacity from a Soperator training cluster to an inference node group during a traffic spike, and back again afterward. According to Nebius's documentation on moving capacity between training and inference workloads, what must be true for this to work without stopping the whole Soperator cluster?",
+    "objectiveTitle": "Sizing inference capacity for quality, latency, throughput and cost",
+    "sources": [
+      {
+        "title": "Moving capacity between training and inference workloads",
+        "url": "https://docs.nebius.com/slurm-soperator/capacity/move-capacity.md",
+        "excerpt": "you can move GPU capacity between them without stopping the entire Soperator cluster"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The inference node group must run in the same Kubernetes cluster as Soperator; separate clusters cannot share capacity",
+        "correct": false,
+        "explanation": "The documentation explicitly supports both separate Kubernetes clusters and node groups within one cluster, as long as they share a capacity block group."
+      },
+      {
+        "id": "b",
+        "text": "The entire Soperator cluster must be stopped first so its GPUs can be freed for the inference node group",
+        "correct": false,
+        "explanation": "The documented workflow specifically avoids stopping the entire cluster; individual worker nodes are released via Slurm power-management commands instead."
+      },
+      {
+        "id": "c",
+        "text": "The Soperator cluster and the inference node group must share a capacity block group, so individual worker nodes can be released and reassigned",
+        "correct": true,
+        "explanation": "Correct. The documentation requires a capacity block group shared between the Soperator cluster and the inference node group; worker nodes are then released from Soperator and added to the inference node group rather than stopping the whole cluster."
+      },
+      {
+        "id": "d",
+        "text": "Capacity can only move permanently from training to inference, never back again",
+        "correct": false,
+        "explanation": "The documentation describes moving capacity in both directions: from training to inference during high inference demand, and back to training when inference traffic drops."
       }
     ]
   },
@@ -723,6 +1230,88 @@
         "text": "input and user",
         "correct": false,
         "explanation": "model is required but omitted here, and user is an optional identifier for your end-user rather than a required field."
+      }
+    ]
+  },
+  {
+    "id": "q-7c4a9f1d3e85",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-setup",
+    "stem": "What is the difference between stopping a Serverless AI endpoint and deleting it, with respect to its underlying VM and boot disk?",
+    "objectiveTitle": "Setting up managed model inference in the cloud",
+    "sources": [
+      {
+        "title": "Managing endpoints in Serverless AI",
+        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
+        "excerpt": "When you delete an endpoint, Serverless AI automatically deletes its VM and container (boot) disk."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Stopping leaves the VM and disk in place (uncharged for compute), while deleting automatically removes the VM and its boot disk",
+        "correct": true,
+        "explanation": "Correct. The documentation states that stopping an endpoint simply stops billing for its computing resources, while deleting it automatically deletes the VM and the container (boot) disk."
+      },
+      {
+        "id": "b",
+        "text": "Both stopping and deleting immediately remove the VM and boot disk",
+        "correct": false,
+        "explanation": "Stopping an endpoint does not remove its VM or disk; only deleting the endpoint is documented as automatically deleting the VM and boot disk."
+      },
+      {
+        "id": "c",
+        "text": "Deleting only removes the boot disk, while the VM must be deleted separately",
+        "correct": false,
+        "explanation": "The documentation states that deleting the endpoint automatically deletes both the VM and the container (boot) disk together, not the disk alone."
+      },
+      {
+        "id": "d",
+        "text": "Stopping permanently deletes the VM, while deleting only pauses billing",
+        "correct": false,
+        "explanation": "This reverses the documented behavior: stopping pauses compute billing without deleting the VM, while deleting the endpoint is what removes the VM and disk."
+      }
+    ]
+  },
+  {
+    "id": "q-7d1f4a9c2b65",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/simulation-assets",
+    "stem": "A team scans a room with a depth camera and runs it through Nebius's RGB-D-to-Isaac reconstruction workflow to build a simulation asset. A corner of the room was never visible to the camera. What does the resulting scene contain for that corner?",
+    "objectiveTitle": "Preparing 3D assets for simulation and synthetic data generation",
+    "sources": [
+      {
+        "title": "Reconstruct a metric RGB-D scan for Isaac",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/rgbd-scan-to-isaac.md",
+        "excerpt": "Missing surfaces and unseen space stay unknown; the workflow does not invent floors, close holes"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing — the workflow leaves unseen space unknown rather than inventing geometry to fill it in",
+        "correct": true,
+        "explanation": "Correct. The guide states missing surfaces and unseen space stay unknown, and the workflow does not invent floors or close holes to cover gaps in the capture."
+      },
+      {
+        "id": "b",
+        "text": "A smoothed, extrapolated floor and walls generated to close the visual gap",
+        "correct": false,
+        "explanation": "The guide explicitly says the workflow does not invent floors or close holes for unseen space; gaps remain unfilled rather than extrapolated."
+      },
+      {
+        "id": "c",
+        "text": "A low-resolution placeholder mesh automatically downloaded from a public asset library",
+        "correct": false,
+        "explanation": "No such placeholder-mesh substitution is documented; unseen space simply stays unknown in the reconstructed scene."
+      },
+      {
+        "id": "d",
+        "text": "An estimate derived by inferring metric scale from the capture's COLMAP units",
+        "correct": false,
+        "explanation": "The guide says the workflow does not infer metric scale from arbitrary COLMAP units; that is listed as something it explicitly avoids, not a technique used to fill gaps."
       }
     ]
   },
@@ -855,6 +1444,52 @@
     ]
   },
   {
+    "id": "q-8a5c1f9d4e62",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/dataset-quality",
+    "stem": "A sim-to-real pipeline run sets `NPA_ENV_COUNT=10000` for its synthetic environment generation stage. What does this configuration actually produce at envgen time?",
+    "objectiveTitle": "Balancing real and synthetic data and finding poor samples, labelling problems and coverage gaps",
+    "sources": [
+      {
+        "title": "Sim-to-Real: data types and artifact contracts",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/sim2real-data-contracts.md",
+        "excerpt": "`NPA_ENV_COUNT=10000` creates **10K JSON env records** (~8K train / ~2K held-out)."
+      },
+      {
+        "title": "Sim-to-Real: data types and artifact contracts",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/sim2real-data-contracts.md",
+        "excerpt": "They are **not** 10K Isaac Sim instances at envgen time."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "10,000 simultaneously running Isaac Sim instances, one per configured environment",
+        "correct": false,
+        "explanation": "The documentation explicitly states these are not 10K Isaac Sim instances at envgen time; they are JSON records describing scenarios, not running simulator instances."
+      },
+      {
+        "id": "b",
+        "text": "A single Isaac Sim instance that sequentially simulates all 10,000 environments before any records are written",
+        "correct": false,
+        "explanation": "The documented behavior is JSON record generation at envgen time, not a described sequential Isaac Sim simulation pass producing the records."
+      },
+      {
+        "id": "c",
+        "text": "10K JSON environment records (about 8K train, 2K held-out) — not 10K running Isaac Sim instances",
+        "correct": true,
+        "explanation": "Correct. The documentation explicitly calls this out as a common mistake: `NPA_ENV_COUNT=10000` creates 10K JSON env records split roughly 8K train / 2K held-out, and these are not 10K Isaac Sim instances at envgen time."
+      },
+      {
+        "id": "d",
+        "text": "10,000 held-out evaluation environments with no training split",
+        "correct": false,
+        "explanation": "The documented split is roughly 8K train and 2K held-out, not 10,000 held-out environments with no training data."
+      }
+    ]
+  },
+  {
     "id": "q-8b2e5f1a9c34",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -892,6 +1527,129 @@
         "text": "The price per output token, in USD per million tokens",
         "correct": false,
         "explanation": "That is the separate \"Output tokens\" price metric on the model card, not Quality."
+      }
+    ]
+  },
+  {
+    "id": "q-8f1a3d6e9c52",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/experiment-tracking",
+    "stem": "Together with an MLflow cluster, Managed Service for MLflow creates an Object Storage bucket to store experiment logs and metrics. What happens to that bucket after the MLflow cluster is deleted?",
+    "objectiveTitle": "Configuring and tracking post-training experiments and hyperparameter searches",
+    "sources": [
+      {
+        "title": "Getting started with Managed Service for MLflow: create your first cluster",
+        "url": "https://docs.nebius.com/mlflow/quickstart.md",
+        "excerpt": "This bucket is not deleted automatically after you delete the cluster."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It is deleted automatically along with the cluster, so no further action is needed",
+        "correct": false,
+        "explanation": "The quickstart explicitly says the bucket is not deleted automatically when the cluster is deleted."
+      },
+      {
+        "id": "b",
+        "text": "It becomes read-only but remains free of charge until manually deleted",
+        "correct": false,
+        "explanation": "The quickstart does not describe a free, read-only state for the bucket; it only states that it is not deleted automatically."
+      },
+      {
+        "id": "c",
+        "text": "It is automatically migrated to a new cluster if one is created later",
+        "correct": false,
+        "explanation": "No such automatic migration is documented; the quickstart only states that the bucket persists and is not deleted automatically."
+      },
+      {
+        "id": "d",
+        "text": "It is not deleted automatically when the cluster is deleted",
+        "correct": true,
+        "explanation": "Correct. The quickstart states the bucket created for the cluster's logs and metrics is not deleted automatically when the cluster is deleted."
+      }
+    ]
+  },
+  {
+    "id": "q-9c4e7b2a5f16",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/experiment-tracking",
+    "stem": "Before creating a Managed Service for MLflow cluster, what access level does the quickstart require within your tenant or project?",
+    "objectiveTitle": "Configuring and tracking post-training experiments and hyperparameter searches",
+    "sources": [
+      {
+        "title": "Getting started with Managed Service for MLflow: create your first cluster",
+        "url": "https://docs.nebius.com/mlflow/quickstart.md",
+        "excerpt": "that has the `admin` role within your tenant or project; for example, the default `admins` group."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The `admin` role, for example via the default `admins` group",
+        "correct": true,
+        "explanation": "Correct. The quickstart's prerequisites require being in a group with the `admin` role within the tenant or project before creating a cluster."
+      },
+      {
+        "id": "b",
+        "text": "The `editor` role, the same level required for most other Nebius AI Cloud resources",
+        "correct": false,
+        "explanation": "The MLflow quickstart specifically requires the `admin` role for cluster creation, not the `editor` role used elsewhere in the platform."
+      },
+      {
+        "id": "c",
+        "text": "The `viewer` role, since cluster creation is a read-only operation",
+        "correct": false,
+        "explanation": "Cluster creation is a write operation and the `viewer` role is insufficient; the quickstart requires the `admin` role."
+      },
+      {
+        "id": "d",
+        "text": "No specific role is required as long as you have a valid CLI profile",
+        "correct": false,
+        "explanation": "The quickstart explicitly lists the `admin` role as a prerequisite, independent of having a configured CLI profile."
+      }
+    ]
+  },
+  {
+    "id": "q-9d3a5e7c1f46",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/release-management",
+    "stem": "A team submits LeRobot training as a Hugging Face Job. The job fails before the trained model is pushed to its model repo. What happens to that model repo?",
+    "objectiveTitle": "Staging and production releases with versioned model artifacts, promotion and rollback",
+    "sources": [
+      {
+        "title": "Imitation Learning on Real-World Robots",
+        "url": "https://huggingface.co/docs/lerobot/il_robots.md",
+        "excerpt": "If a run fails before the model is pushed, that repo is left on the Hub so you can inspect it"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It is automatically deleted as soon as the job fails, to avoid clutter",
+        "correct": false,
+        "explanation": "The documentation explicitly says a failed run's model repo is not deleted automatically; it is left on the Hub for inspection."
+      },
+      {
+        "id": "b",
+        "text": "It is automatically retried with the same repo until the push succeeds",
+        "correct": false,
+        "explanation": "No automatic retry of a failed job against the same repo is documented; the repo is simply left behind, uninspected unless the team checks it."
+      },
+      {
+        "id": "c",
+        "text": "It is left on the Hub so the team can inspect it — it is not deleted automatically, so repeated failures can leave empty repos behind",
+        "correct": true,
+        "explanation": "Correct. The documentation states the model repo is created up front, and if a run fails before the model is pushed, that repo is left on the Hub for inspection rather than deleted automatically."
+      },
+      {
+        "id": "d",
+        "text": "It becomes a private draft that only becomes visible once the push succeeds",
+        "correct": false,
+        "explanation": "The repo's visibility is governed by the `--policy.private` setting, not by whether the push succeeded; a failed run's repo is documented as being left on the Hub as-is."
       }
     ]
   },
@@ -938,6 +1696,47 @@
         "text": "The reservation is freed up, and the minimum replicas are guaranteed again once the endpoint is active",
         "correct": true,
         "explanation": "Minimum replicas are always allocated while the endpoint is active; stopping the endpoint frees the reservation, so the guarantee applies only while it runs."
+      }
+    ]
+  },
+  {
+    "id": "q-9e2d6a4c8f15",
+    "course_id": "physical-ai",
+    "domain": "domain-2",
+    "objective": "domain-2/dataset-curation",
+    "stem": "When labeling LeRobot subtasks in FiftyOne before exporting a derived dataset, what rule governs how adjacent subtask intervals (for example, `approach` ending and `grasp` beginning) may relate to each other?",
+    "objectiveTitle": "Filtering, cleaning, augmenting and organising data into training and evaluation datasets",
+    "sources": [
+      {
+        "title": "Label LeRobot subtasks in FiftyOne",
+        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/lerobot-subtask-labeling.md",
+        "excerpt": "Intervals are half-open (`[start, end)`). They may touch, but must not overlap, and every frame in every exported episode must be covered."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Intervals are half-open, so they may touch at a boundary but must not overlap, and every frame in every exported episode must be covered",
+        "correct": true,
+        "explanation": "Correct. The guide states intervals are half-open (`[start, end)`), so adjacent intervals may touch but must not overlap, and complete frame coverage is required before export."
+      },
+      {
+        "id": "b",
+        "text": "Intervals may overlap by a few frames to make boundary review easier",
+        "correct": false,
+        "explanation": "The guide explicitly requires that intervals must not overlap; overlapping boundaries are a documented export failure, not an allowed convenience."
+      },
+      {
+        "id": "c",
+        "text": "Only the first and last frame of each episode need a subtask label; interior frames are optional",
+        "correct": false,
+        "explanation": "The guide requires every frame in every exported episode to be covered by a label, not only the first and last frames."
+      },
+      {
+        "id": "d",
+        "text": "Gaps between intervals are allowed as long as the gap is shorter than one second",
+        "correct": false,
+        "explanation": "The guide requires complete coverage of every frame with no gaps; there is no documented gap-duration allowance."
       }
     ]
   },

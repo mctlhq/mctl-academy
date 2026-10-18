@@ -1,39 +1,39 @@
 schema_version: 1
 id: q-8a5c1f9d4e62
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/dataset-quality
 stem: "A sim-to-real pipeline run sets `NPA_ENV_COUNT=10000` for its synthetic
-  environment generation stage. What does this configuration actually produce
-  at envgen time?"
+  environment generation stage. What does this configuration actually produce at
+  envgen time?"
 options:
   - id: a
-    text: "10,000 simultaneously running Isaac Sim instances, one per
-      configured environment"
+    text: "10,000 simultaneously running Isaac Sim instances, one per configured
+      environment"
     correct: false
-    explanation: "The documentation explicitly states these are not 10K Isaac
-      Sim instances at envgen time; they are JSON records describing
-      scenarios, not running simulator instances."
+    explanation: "The documentation explicitly states these are not 10K Isaac Sim
+      instances at envgen time; they are JSON records describing scenarios, not
+      running simulator instances."
   - id: b
     text: "A single Isaac Sim instance that sequentially simulates all 10,000
       environments before any records are written"
     correct: false
-    explanation: "The documented behavior is JSON record generation at envgen
-      time, not a described sequential Isaac Sim simulation pass producing the
+    explanation: "The documented behavior is JSON record generation at envgen time,
+      not a described sequential Isaac Sim simulation pass producing the
       records."
   - id: c
     text: "10K JSON environment records (about 8K train, 2K held-out) — not 10K
       running Isaac Sim instances"
     correct: true
-    explanation: "Correct. The documentation explicitly calls this out as a
-      common mistake: `NPA_ENV_COUNT=10000` creates 10K JSON env records split
-      roughly 8K train / 2K held-out, and these are not 10K Isaac Sim instances
-      at envgen time."
+    explanation: "Correct. The documentation explicitly calls this out as a common
+      mistake: `NPA_ENV_COUNT=10000` creates 10K JSON env records split roughly
+      8K train / 2K held-out, and these are not 10K Isaac Sim instances at
+      envgen time."
   - id: d
     text: "10,000 held-out evaluation environments with no training split"
     correct: false
-    explanation: "The documented split is roughly 8K train and 2K held-out,
-      not 10,000 held-out environments with no training data."
+    explanation: "The documented split is roughly 8K train and 2K held-out, not
+      10,000 held-out environments with no training data."
 evidence:
   - source_id: src-pa-npa-sim2real-data-contracts
     excerpt: "`NPA_ENV_COUNT=10000` creates **10K JSON env records** (~8K train /
@@ -46,3 +46,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 234c73f1b86984eefa37c0d0b80d332d4af80f5bc6dbe9a4d116babbc6728710

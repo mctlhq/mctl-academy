@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5a3f7d9c1e48
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/data-collection
 stem: "During a LeRobot Human-in-the-Loop (HIL) data collection session, what is
@@ -8,28 +8,26 @@ stem: "During a LeRobot Human-in-the-Loop (HIL) data collection session, what is
   takes control), versus after the human triggers takeover?"
 options:
   - id: a
-    text: "Frames are recorded continuously through both the pause and the
-      takeover, at the same rate"
+    text: "Frames are recorded continuously through both the pause and the takeover,
+      at the same rate"
     correct: false
-    explanation: "The guide specifically says no frames are recorded during
-      pause; recording only begins once takeover starts."
+    explanation: "The guide specifically says no frames are recorded during pause;
+      recording only begins once takeover starts."
   - id: b
-    text: "Frames are recorded during the pause but discarded once takeover
-      begins"
+    text: "Frames are recorded during the pause but discarded once takeover begins"
     correct: false
-    explanation: "The guide does not describe recording during pause at all,
-      let alone discarding it later; no frames are recorded during pause in
-      the first place."
+    explanation: "The guide does not describe recording during pause at all, let
+      alone discarding it later; no frames are recorded during pause in the
+      first place."
   - id: c
     text: "No frames are recorded during the pause; once takeover begins, all
       movements are recorded"
     correct: true
-    explanation: "Correct. The guide states no frames are recorded during the
-      pause step, while after takeover all movements (recovery and correction)
-      are recorded as training data."
+    explanation: "Correct. The guide states no frames are recorded during the pause
+      step, while after takeover all movements (recovery and correction) are
+      recorded as training data."
   - id: d
-    text: "Recording stops entirely for the rest of the episode once a pause
-      occurs"
+    text: "Recording stops entirely for the rest of the episode once a pause occurs"
     correct: false
     explanation: "Recording resumes once takeover begins — all movements during
       takeover are recorded — so a pause does not end recording for the rest of
@@ -45,3 +43,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 369d5eb6ebdd1c250f0d43f8b7fbbd24bbdd1a07f77d2fbcb6f09a5dd55fe790

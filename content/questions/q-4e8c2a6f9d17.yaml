@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4e8c2a6f9d17
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/deployment-evaluation
 stem: "In Nebius's SmolVLA robot-policy train-and-serve workflow, an earlier
@@ -9,41 +9,44 @@ stem: "In Nebius's SmolVLA robot-policy train-and-serve workflow, an earlier
   happened?"
 options:
   - id: a
-    text: "It automatically passed deployment evaluation, since promotion
-      gates already cover the same held-out states"
+    text: "It automatically passed deployment evaluation, since promotion gates
+      already cover the same held-out states"
     correct: false
-    explanation: "Promotion evaluations use states 0–9 and 10–19, while
-      deployment states 20–29 are a separate reserved set; passing promotion
-      did not guarantee passing deployment evaluation."
+    explanation: "Promotion evaluations use states 0–9 and 10–19, while deployment
+      states 20–29 are a separate reserved set; passing promotion did not
+      guarantee passing deployment evaluation."
   - id: b
-    text: "It was excluded from deployment evaluation because it had already
-      passed promotion"
+    text: "It was excluded from deployment evaluation because it had already passed
+      promotion"
     correct: false
-    explanation: "The documentation describes the pilot checkpoint actually
-      being evaluated on deployment states and failing that threshold, not
-      being excluded from deployment evaluation."
+    explanation: "The documentation describes the pilot checkpoint actually being
+      evaluated on deployment states and failing that threshold, not being
+      excluded from deployment evaluation."
   - id: c
     text: "The 70% deployment threshold was lowered afterward so the pilot
       checkpoint would pass"
     correct: false
-    explanation: "The documentation describes the 70% requirement as unchanged
-      and correctly rejecting the pilot; no threshold adjustment is
-      documented."
+    explanation: "The documentation describes the 70% requirement as unchanged and
+      correctly rejecting the pilot; no threshold adjustment is documented."
   - id: d
     text: "It scored 5 out of 10 on the deployment states, below the 70%
       requirement, so it was correctly rejected despite passing promotion"
     correct: true
-    explanation: "Correct. The documentation reports that the 10-epoch pilot
-      passed both promotion gates but scored 5/10 on deployment states 20–29,
-      and the unchanged 70% requirement correctly rejected it — promotion
-      success did not guarantee deployment-evaluation success."
+    explanation: "Correct. The documentation reports that the 10-epoch pilot passed
+      both promotion gates but scored 5/10 on deployment states 20–29, and the
+      unchanged 70% requirement correctly rejected it — promotion success did
+      not guarantee deployment-evaluation success."
 evidence:
   - source_id: src-pa-npa-policy-train-serve
-    excerpt: "An earlier 10-epoch pilot passed both promotion gates but scored
-      5/10 on deployment states 20–29; the unchanged 70% requirement correctly
+    excerpt: "An earlier 10-epoch pilot passed both promotion gates but scored 5/10
+      on deployment states 20–29; the unchanged 70% requirement correctly
       rejected it."
     source_sha256: f5969deb048cc9109908abaabef6acbe8880e27ca48f3a02dbfc8f06dd053c8f
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: abb1a98fd38aada8b47946a1ff269bc7df83eb81e94923a5f51ef53334366ef3

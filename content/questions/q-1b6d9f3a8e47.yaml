@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1b6d9f3a8e47
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/training-results
 stem: "A team wants one place to compare model artifacts, training results and
@@ -9,26 +9,26 @@ stem: "A team wants one place to compare model artifacts, training results and
   MLflow provide for this purpose?"
 options:
   - id: a
-    text: "A separate dashboard for artifacts and a separate one for
-      hyperparameters that must be cross-referenced manually"
+    text: "A separate dashboard for artifacts and a separate one for hyperparameters
+      that must be cross-referenced manually"
     correct: false
-    explanation: "The documentation describes one single interface for
-      artifacts, results and hyperparameters together, not separate dashboards
-      that need manual cross-referencing."
+    explanation: "The documentation describes one single interface for artifacts,
+      results and hyperparameters together, not separate dashboards that need
+      manual cross-referencing."
   - id: b
-    text: "A single interface for accessing model artifacts, training results
-      and tuned hyperparameters together"
+    text: "A single interface for accessing model artifacts, training results and
+      tuned hyperparameters together"
     correct: true
-    explanation: "Correct. The Managed MLflow overview states it enables access
-      to model artifacts, training results and tuned hyperparameters in a
-      single interface, which is exactly this comparison use case."
+    explanation: "Correct. The Managed MLflow overview states it enables access to
+      model artifacts, training results and tuned hyperparameters in a single
+      interface, which is exactly this comparison use case."
   - id: c
     text: "Automatic selection of the best-performing model without exposing the
       underlying training results"
     correct: false
-    explanation: "Managed MLflow exposes training results and metrics for the
-      team to compare; it does not silently auto-select a best model and hide
-      the data."
+    explanation: "Managed MLflow exposes training results and metrics for the team
+      to compare; it does not silently auto-select a best model and hide the
+      data."
   - id: d
     text: "Storage for hyperparameters only, with model artifacts and results
       tracked elsewhere"
@@ -46,3 +46,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: 2c51ce46e80f256ecb3ebf108f39545b87151764f094d8f93b67bfd12455c838

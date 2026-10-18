@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-5d3b8a1f6c94
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/inference-capacity
-stem: "When sizing a Token Factory dedicated endpoint's inference capacity, how do
-  its minimum and maximum replica counts behave differently?"
+stem: "When sizing a Token Factory dedicated endpoint's inference capacity, how
+  do its minimum and maximum replica counts behave differently?"
 options:
   - id: a
     text: "Both minimum and maximum replicas are reserved and non-preemptible for
@@ -14,38 +14,42 @@ options:
       non-preemptible; scaling above it depends on burst capacity, which is not
       a guaranteed reservation."
   - id: b
-    text: "Minimum replicas are reserved and non-preemptible while the endpoint
-      is active, but scaling above minimum depends on burst capacity that is not
+    text: "Minimum replicas are reserved and non-preemptible while the endpoint is
+      active, but scaling above minimum depends on burst capacity that is not
       guaranteed"
     correct: true
-    explanation: "Correct. Minimum replicas are reserved and non-preemptible for
-      as long as the endpoint runs, while scaling above that minimum depends on
+    explanation: "Correct. Minimum replicas are reserved and non-preemptible for as
+      long as the endpoint runs, while scaling above that minimum depends on
       available burst capacity, which the documentation says is not guaranteed
       indefinitely."
   - id: c
     text: "Minimum replicas depend on burst capacity, while maximum replicas are
       always guaranteed"
     correct: false
-    explanation: "This reverses the documented behavior: it is the minimum
-      replicas that are reserved, and scaling above the minimum that depends on
+    explanation: "This reverses the documented behavior: it is the minimum replicas
+      that are reserved, and scaling above the minimum that depends on
       unguaranteed burst capacity."
   - id: d
     text: "Replica counts are fixed at deployment time and cannot change without
       recreating the endpoint"
     correct: false
-    explanation: "The documentation describes scaling between minimum and
-      maximum replicas as normal operation, not something that requires
-      recreating the endpoint."
+    explanation: "The documentation describes scaling between minimum and maximum
+      replicas as normal operation, not something that requires recreating the
+      endpoint."
 evidence:
   - source_id: src-ld-capacity-and-scaling
-    excerpt: "Minimum replicas are reserved and non-preemptible and remain
-      allocated to your deployment for as long as the endpoint is active."
+    excerpt: "Minimum replicas are reserved and non-preemptible and remain allocated
+      to your deployment for as long as the endpoint is active."
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
   - source_id: src-ld-capacity-and-scaling
-    excerpt: "Scaling above minimum replicas depends on available burst capacity
-      and is not guaranteed indefinitely."
+    excerpt: "Scaling above minimum replicas depends on available burst capacity and
+      is not guaranteed indefinitely."
     source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: cde65dc5c469946cee2c3db42eec9e3de76fb7c5564438701ae68471235f35d0

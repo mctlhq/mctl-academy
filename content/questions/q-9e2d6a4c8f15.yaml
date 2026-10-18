@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9e2d6a4c8f15
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/dataset-curation
 stem: "When labeling LeRobot subtasks in FiftyOne before exporting a derived
@@ -11,34 +11,37 @@ options:
     text: "Intervals are half-open, so they may touch at a boundary but must not
       overlap, and every frame in every exported episode must be covered"
     correct: true
-    explanation: "Correct. The guide states intervals are half-open
-      (`[start, end)`), so adjacent intervals may touch but must not overlap,
-      and complete frame coverage is required before export."
+    explanation: "Correct. The guide states intervals are half-open (`[start,
+      end)`), so adjacent intervals may touch but must not overlap, and complete
+      frame coverage is required before export."
   - id: b
-    text: "Intervals may overlap by a few frames to make boundary review
-      easier"
+    text: "Intervals may overlap by a few frames to make boundary review easier"
     correct: false
-    explanation: "The guide explicitly requires that intervals must not
-      overlap; overlapping boundaries are a documented export failure, not an
-      allowed convenience."
+    explanation: "The guide explicitly requires that intervals must not overlap;
+      overlapping boundaries are a documented export failure, not an allowed
+      convenience."
   - id: c
     text: "Only the first and last frame of each episode need a subtask label;
       interior frames are optional"
     correct: false
-    explanation: "The guide requires every frame in every exported episode to
-      be covered by a label, not only the first and last frames."
+    explanation: "The guide requires every frame in every exported episode to be
+      covered by a label, not only the first and last frames."
   - id: d
-    text: "Gaps between intervals are allowed as long as the gap is shorter
-      than one second"
+    text: "Gaps between intervals are allowed as long as the gap is shorter than one
+      second"
     correct: false
-    explanation: "The guide requires complete coverage of every frame with no
-      gaps; there is no documented gap-duration allowance."
+    explanation: "The guide requires complete coverage of every frame with no gaps;
+      there is no documented gap-duration allowance."
 evidence:
   - source_id: src-pa-npa-subtask-labeling
-    excerpt: "Intervals are half-open (`[start, end)`). They may touch, but must
-      not overlap, and every frame in every exported episode must be covered."
+    excerpt: "Intervals are half-open (`[start, end)`). They may touch, but must not
+      overlap, and every frame in every exported episode must be covered."
     source_sha256: 3aa701ef6806152dd7daa3bee70ffc3977625f47bed8d07a4a32ff321fb0d8e6
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T09:29:20Z
+  content_sha256: c06c10a6d0cd7f7994dd9524aeb18e205a32fa96737ed0dc53cc58d41113abea
