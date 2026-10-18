@@ -2733,9 +2733,21 @@ test("prBody says when the run was scoped to one course, and says nothing otherw
 
 // fetch follows redirects; the allowlist must hold for the URL the bytes came
 // from, not only for the one requested.
+/**
+ * A fetch stub answering with a real Response whose final URL is `url`, as
+ * fetch reports it after following redirects. Only the call signature is
+ * exercised, so the cast skips Bun's extra `fetch.preconnect` member.
+ */
+function fetchLandingOn(url) {
+  const res = new Response("body");
+  Object.defineProperty(res, "url", { value: url });
+  return /** @type {typeof fetch} */ (/** @type {unknown} */ (async () => res));
+}
+
+/** @param {string} finalUrl @param {() => Promise<unknown>} fn */
 async function withFetch(finalUrl, fn) {
   const real = globalThis.fetch;
-  globalThis.fetch = async () => ({ ok: true, status: 200, url: finalUrl, text: async () => "body" });
+  globalThis.fetch = fetchLandingOn(finalUrl);
   try {
     return await fn();
   } finally {

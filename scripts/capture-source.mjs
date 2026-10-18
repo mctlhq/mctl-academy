@@ -40,9 +40,10 @@ function listSources() {
  * Fetch a source document.
  *
  * Every allowlisted docs tree (both Nebius sites and the LeRobot docs)
- * serves a `.md` twin of every page and publishes an llms.txt index of them. The markdown is what we snapshot: it is the same
- * prose without the navigation chrome, so a hash changes when the content
- * changes rather than when the site's header does.
+ * serves a `.md` twin of every page and publishes an llms.txt index of them.
+ * The markdown is what we snapshot: it is the same prose without the
+ * navigation chrome, so a hash changes when the content changes rather than
+ * when the site's header does.
  */
 const FETCH_TIMEOUT_MS = 30_000;
 
