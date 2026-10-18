@@ -41,9 +41,9 @@ Source priorities are scoped per course, reflecting the public exam bounds:
 | **Agentic AI Builder** (`agentic-ai-builder`) | `docs.tokenfactory.nebius.com` | `docs.tavily.com` (pending review) | `docs.nebius.com` infrastructure details |
 | **AI CloudOps Engineer** (`ai-cloudops-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Non-cloud developer SDKs |
 | **AI Leader** (`ai-leader`) | `docs.tokenfactory.nebius.com` | `docs.nebius.com` (high-level only) | AI Cloud deployment details |
+| **Physical AI** (`physical-ai`) | `docs.nebius.com` | `huggingface.co/docs/lerobot/`, `docs.tokenfactory.nebius.com` | Other `huggingface.co` docs |
 
-`huggingface.co/docs/lerobot/` is not a source for any of the three courses
-above; it is in scope only for a robotics course.
+`huggingface.co/docs/lerobot/` is a source for the Physical AI course only.
 
 ## Discovery & Change Sync (`Nebius Docs Sync`)
 
