@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op02e2f3a4b5
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: What exists immediately after you sign up, before you create anything?
@@ -29,11 +29,8 @@ evidence:
   - source_id: src-org-projects
     excerpt: When you sign up for Nebius Token Factory, a personal organization is
       created automatically.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-bc02c1d2e3f4
-status: needs_review
+status: review_ready
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: What cost control safeguard prevents unexpected usage charges on an
@@ -28,11 +28,8 @@ evidence:
   - source_id: src-org-projects
     excerpt: When you sign up for Nebius Token Factory, a personal organization is
       created automatically.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-07T15:00:00Z
 course_id: agentic-ai-builder

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ta03b4c5d6e7
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/team-access
 stem: How is access to the resources inside one specific project controlled
@@ -32,16 +32,12 @@ evidence:
   - source_id: src-org-projects
     excerpt: Each project includes **Project Groups** that control access to project
       resources.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
   - source_id: src-org-projects
     excerpt: To grant a user access to organizational resources, add them to the
       relevant **Organization Group**.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: 73b6d67897eb6feaf7f5ec1a758bbbb1190c3eb7fd2e04b39b10883bd985b9fa

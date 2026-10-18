@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-op03f4a5b6c7
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/organizations-and-projects
 stem: Which level of the Token Factory resource hierarchy directly contains API
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-org-projects
     excerpt: "Within a project, you can create and manage: * **API keys** *
       **Fine-tuning jobs** * **Dedicated endpoints** * **Files and datasets**"
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: 4843257c76a26d1d5cc6ec3a3b3c495cbae8964a6605d6c4b125b951c97652b4

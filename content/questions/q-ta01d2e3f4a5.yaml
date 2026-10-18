@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ta01d2e3f4a5
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/team-access
 stem: How are projects positioned in the Token Factory resource hierarchy?
@@ -31,15 +31,11 @@ evidence:
   - source_id: src-org-projects
     excerpt: Each **Project** within an organization acts as an isolated environment
       for related resources and teams.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
   - source_id: src-org-projects
     excerpt: exist inside a project and inherit its access settings.
-    source_sha256: 4395ddd46ec3b5b70661a1fdfbf8d4f2a4dc06546dfa74b8aa59617a0bc4c4a0
+    source_sha256: a7bcff26cbbc60cf72ee0bb665631dfc8f78caf39ee54dc4e998a9c95935728d
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: 01e4c7e396fb6a21bb8838219abfd2d126ade59236aec132ecc543f2d8d721bd

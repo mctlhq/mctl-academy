@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a94f1d2b7c3e
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: Which `/v1/embeddings` request parameter lets you request a specific
@@ -31,13 +31,9 @@ options:
 evidence:
   - source_id: src-recovery-embedding
     excerpt: The dimensions to use for the request.
-    source_sha256: 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
+    source_sha256: 3ef0d919930a16882eb198d5cd74c03d063a80c14f6edd8fc6ee0e839f3e27c1
     locator: EmbeddingRequest > dimensions
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 95ae31cc6908d54c50fd28c93be3bc76f1d4178641952760201f959b54ebd24e
