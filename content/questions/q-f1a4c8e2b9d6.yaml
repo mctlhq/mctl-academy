@@ -1,0 +1,52 @@
+schema_version: 1
+id: q-f1a4c8e2b9d6
+status: published
+domain: domain-1
+objective: domain-1/training-results
+stem: "Nebius's field-failure-to-navigation-policy-improvement workflow writes a
+  sealed `decision.json` recommending promotion or retaining the baseline. What
+  must be true of the primary metric for that comparison to recommend
+  promotion?"
+options:
+  - id: a
+    text: "Any positive improvement on the primary metric, regardless of how small,
+      as long as it is nonzero"
+    correct: false
+    explanation: "The comparison requires the improvement to reach the sealed
+      minimum_improvement bound, not merely be positive by any amount."
+  - id: b
+    text: "A strictly positive primary mean improvement at least the sealed
+      `minimum_improvement`, with no metric's degradation beyond its
+      `maximum_regression`"
+    correct: true
+    explanation: "Correct. The decision requires a strictly positive primary mean
+      improvement at least the sealed minimum_improvement, with no
+      scenario/seed/metric degrading beyond that metric's maximum_regression."
+  - id: c
+    text: "An improvement measured only on the training-exposed replay cohort, since
+      that cohort is diagnostic"
+    correct: false
+    explanation: "The training-exposed replay cohort is diagnostic only; the
+      decision is a sealed comparison over the declared metrics and bounds, not
+      a training-exposed-only check."
+  - id: d
+    text: "Every secondary metric must independently clear its own
+      `minimum_improvement` as well"
+    correct: false
+    explanation: "Secondary metrics are regression guards whose minimum_improvement
+      is only informational unless one is selected as the primary metric."
+evidence:
+  - source_id: src-pa-npa-field-failure
+    excerpt: "Promotion requires a strictly positive primary mean improvement at
+      least its sealed `minimum_improvement`, and no individual
+      scenario/seed/metric degradation beyond that metric's
+      `maximum_regression`."
+    source_sha256: 178843d1b675d2876a7ea669808fc4803a3f9afd9bd0255fb686ae44d100718a
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:48:02Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: 562901cf47ced50fbac11774cae53f0a3f2eed27dbcee4eb0d5854ad93e35124

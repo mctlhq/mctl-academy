@@ -1,0 +1,76 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-18T10:04:20Z",
+  "questions": [
+    {
+      "id": "q-1e7b4f9a3c62",
+      "content_sha256": "939e86a51bfe322f9a0ea36f649cae9fc3322161a43dcb4aec4504ea8467effb",
+      "approved": true,
+      "reason": "The captured page states verbatim: \"Search JSON and download receipts contain project identities, regional endpoints, bucket names, and object keys. Store them outside Git and public documentation.\" The three distractors are each contradicted by the same page (\"The result is a JSON inventory, not downloaded media\"; \"it does not provision resources, download media, or modify storage\"; \"the receipt alone does not prove the object stayed unchanged between search and download\"), so option c is uniquely best.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-2a8c4e6f91b7",
+      "content_sha256": "2670d8c4064e42fa615f71aa99f6cf9c6c3b266f3e600f84a7024c2faac16b77",
+      "approved": true,
+      "reason": "Under \"Base (`--strategy.type=base`)\" the page reads verbatim: \"Autonomous policy execution with no data recording. Use this for quick evaluation, demos, or when you only need to observe the robot.\" The other strategies are each documented as recording data (sentry: \"Continuous autonomous recording\"; episodic: \"Episode-oriented recording\"; dagger: \"Human-in-the-loop data collection\"), so only base fits a no-recording observation run.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-3c7b5f9a1e84",
+      "content_sha256": "0ec09c685867749b39456cd95348d7037df91fa71b117bb9ffe28028c983433e",
+      "approved": true,
+      "reason": "The excerpt appears verbatim in \"Recommended evaluation episodes\": \"Success rates may vary by a few percent across evaluation seeds, so we recommend averaging over 3 seeds.\" The dataset-revision pinning sentence is about comparability of reported results against the same Hub data revision, and the soft-reset and batch-size statements concern reset fidelity and parallelism, so none of them answers why a single run is untrustworthy.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-4f8a2c6e9d31",
+      "content_sha256": "bcb3f5fe0e9e862af0286358f743d6d5c97985a08a657117629dcf9f1d53648b",
+      "approved": true,
+      "reason": "Step 1 of \"Configure Docker\" states verbatim: \"Run the Nebius AI Cloud Docker credential helper. It lets you use registries in Container Registry without running the `docker login`.\" Registry creation and Docker Engine installation are separate documented steps, and the page warns \"Do not run Docker commands as root\", so option d is the only defensible choice.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-5b9d3f7a2c18",
+      "content_sha256": "f1c340686af8bbe979a32bf7546bc879d9cc38100430bc3ab32c6657bc7455d1",
+      "approved": true,
+      "reason": "Section 3 ends verbatim: \"Train against the derived prefix only after the report shows `unlabeled_frame_count: 0`.\" The page elsewhere rules out the distractors - intervals \"must not overlap\", the derived episode indexes deliberately differ from source ones (\"source episode indexes are not the same as the contiguous indexes in the derived dataset\"), and \"The output prefix must be empty\".",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-6a2f9c4e8b15",
+      "content_sha256": "dce5baa1853dd360866edd274bdc3749924c4431d1410ce56156a7c42911f0a0",
+      "approved": true,
+      "reason": "\"Launch the Robot Client\" states verbatim that the client \"receives action chunks obtained running inference on the server (which we assume to have better computational resources than the robot controller).\" The idle-frame distractor describes the async paradigm's benefit rather than the documented reason for placing inference off the controller, and the page explicitly supports running server and client \"from the same machine\", so option b is uniquely best.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-7d4b9f2a6c53",
+      "content_sha256": "89df52b88e8919ea34c8d57c209f4fd46a422d081f1ef9a041b5031f9c119aff",
+      "approved": true,
+      "reason": "The page states verbatim: \"To compare two policies on the same episodes, use the same `--seed`, keep `--env.init_states=true`, and run each task in a single batch\" (`--eval.batch_size` equal to episodes per task). The soft-reset option is contradicted by \"Use hard resets when reproducing benchmark results\", and differing seeds or disabled init_states are the opposite of the recommendation.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-8e4f1a6c9b32",
+      "content_sha256": "7ae6bb83b602a4268adf0020f6fe82effd59dfcc008c8e47657b2b2bce020a89",
+      "approved": true,
+      "reason": "The artifacts section states verbatim: \"Acceptance requires a measured lift of at least 10 cm, low object velocity, proximity to the closed tool, limited lateral drift, and 30 consecutive stable control steps,\" so a 4 cm lift fails. Option a is defeated because `reports/lerobot/` \"contains only accepted demonstrations\" even though `collection/` retains every attempt, and nothing on the page exempts any of the four sealed conditions or ties acceptance to frame resolution.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-9c3e7b1f4a86",
+      "content_sha256": "1c29b82e8fb4e1c1e5437a6751fe70bfe5f37af546e6cb3843d9980ef9277802",
+      "approved": true,
+      "reason": "The Metrics section states verbatim: \"Serverless AI reports the same metrics as Compute container virtual machines. View them on the Metrics tab of your job or endpoint; the underlying VMs aren't shown in Compute.\" The 5-10 minute availability delay and the 15-second refresh interval are about dashboard data timing, and support-team investigation is listed as one dashboard use, not a reason the VM is absent, so only option a addresses the absence.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    },
+    {
+      "id": "q-f1a4c8e2b9d6",
+      "content_sha256": "562901cf47ced50fbac11774cae53f0a3f2eed27dbcee4eb0d5854ad93e35124",
+      "approved": true,
+      "reason": "The decision section states verbatim: \"Promotion requires a strictly positive primary mean improvement at least its sealed `minimum_improvement`, and no individual scenario/seed/metric degradation beyond that metric's `maximum_regression`.\" The same paragraph defeats option d (\"Secondary metrics are regression guards; their `minimum_improvement` is informational unless selected as the primary\"), and training-exposed replays \"never contribute to promotion\", ruling out option c.",
+      "reviewed_at": "2026-10-18T10:04:20Z"
+    }
+  ]
+}

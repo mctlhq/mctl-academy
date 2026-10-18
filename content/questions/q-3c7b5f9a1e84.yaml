@@ -1,0 +1,48 @@
+schema_version: 1
+id: q-3c7b5f9a1e84
+status: published
+domain: domain-1
+objective: domain-1/training-results
+stem: "A team reads a single `lerobot-eval` run on the LIBERO suites to pick
+  between two candidate policies, and the two success rates are close. Why does
+  LeRobot's LIBERO documentation recommend not trusting that single run?"
+options:
+  - id: a
+    text: "Hub dataset revisions must be pinned with `--dataset.revision` before any
+      success rate is comparable"
+    correct: false
+    explanation: "Pinning the dataset revision is a separate reproducibility
+      requirement for comparing against published results, not the reason to
+      average over multiple seeds."
+  - id: b
+    text: "`--eval.batch_size` must be set to 3 for a statistically valid comparison"
+    correct: false
+    explanation: "`--eval.batch_size` controls how many environments run in
+      parallel; it is not tied to the number of evaluation seeds recommended for
+      averaging."
+  - id: c
+    text: "Success rates may vary by a few percent across evaluation seeds, so
+      results should be averaged over 3 seeds"
+    correct: true
+    explanation: "Correct. The documentation states success rates may vary by a few
+      percent across evaluation seeds, and recommends averaging over 3 seeds."
+  - id: d
+    text: "Soft resets are not bit-identical to hard resets, so three repeats are
+      needed to compensate for reset drift"
+    correct: false
+    explanation: "Soft versus hard reset fidelity is a separate documented concern;
+      the 3-seed recommendation is about evaluation-seed variance, not reset
+      behavior."
+evidence:
+  - source_id: src-pa-lerobot-libero
+    excerpt: "Success rates may vary by a few percent across evaluation seeds, so we
+      recommend averaging over 3 seeds."
+    source_sha256: 18e906f6eb576a3eb93d8bc905a0a80338f67f13ed2120f47b978bf0cd556c2d
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:48:02Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: 0ec09c685867749b39456cd95348d7037df91fa71b117bb9ffe28028c983433e

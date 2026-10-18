@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-2a8c4e6f91b7
+status: published
+domain: domain-3
+objective: domain-3/deployment-evaluation
+stem: "A team wants to run a quick evaluation of a deployed robot policy with
+  `lerobot-rollout`, just observing its behavior on the real robot without
+  recording any data. Which `--strategy.type` is designed for this?"
+options:
+  - id: a
+    text: "`sentry`"
+    correct: false
+    explanation: "`sentry` is continuous autonomous recording with periodic upload
+      to the Hub, not a no-recording quick-evaluation mode."
+  - id: b
+    text: "`episodic`"
+    correct: false
+    explanation: "`episodic` mirrors lerobot-record's fixed episode/reset structure
+      and records each episode, rather than running with no data recording."
+  - id: c
+    text: "`base`"
+    correct: true
+    explanation: "Correct. The `base` strategy is autonomous policy execution with
+      no data recording, described for quick evaluation, demos, or observing the
+      robot."
+  - id: d
+    text: "`dagger`"
+    correct: false
+    explanation: "`dagger` is human-in-the-loop data collection that alternates
+      policy execution with teleoperator correction, not an observation-only
+      strategy."
+evidence:
+  - source_id: src-pa-lerobot-rollout
+    excerpt: "Autonomous policy execution with no data recording. Use this for quick
+      evaluation, demos, or when you only need to observe the robot."
+    source_sha256: b27b25d9592811201c7e095484971ab31b9bf2542cc9ac90afedd64b73c0cf4b
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:48:02Z
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T10:04:20Z
+  content_sha256: 2670d8c4064e42fa615f71aa99f6cf9c6c3b266f3e600f84a7024c2faac16b77
