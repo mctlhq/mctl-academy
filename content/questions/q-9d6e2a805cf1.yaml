@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-9d6e2a805cf1
+status: review_ready
+domain: domain-3
+objective: domain-3/inference-capacity
+stem: "A team just created a new Serverless AI endpoint and wants to check
+  its GPU utilization to plan capacity. How soon after creation does usage
+  data appear on the Metrics dashboard?"
+options:
+  - id: a
+    text: "5-10 minutes after the resource is created"
+    correct: true
+    explanation: "Correct. The monitoring documentation states usage data
+      becomes available 5-10 minutes after a resource is created."
+  - id: b
+    text: "Immediately, with no delay"
+    correct: false
+    explanation: "The documentation states a 5-10 minute delay before
+      usage data becomes available, not immediate availability."
+  - id: c
+    text: "Every 15 seconds, matching the dashboard's refresh interval"
+    correct: false
+    explanation: "The 15-second figure is how often already-available
+      data refreshes, not how long it takes for data to first become
+      available."
+  - id: d
+    text: "Only after the next scheduled quota increase review"
+    correct: false
+    explanation: "Quota increases are a separate, unrelated process; they
+      do not gate when usage data appears on the dashboard."
+evidence:
+  - source_id: src-pa-serverless-monitoring
+    excerpt: "Usage data for endpoints and jobs becomes available 5–10
+      minutes after a resource is created."
+    source_sha256: 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai

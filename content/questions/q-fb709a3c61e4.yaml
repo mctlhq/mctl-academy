@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-fb709a3c61e4
+status: review_ready
+domain: domain-3
+objective: domain-3/release-management
+stem: "Following the Container Registry quickstart's steps to push a Docker
+  image (pull, tag, push, run), what must you do to the image between
+  pulling it and pushing it?"
+options:
+  - id: a
+    text: "Assign it a tag identifying the registry path, for example
+      with `docker tag`"
+    correct: true
+    explanation: "Correct. The quickstart's step between pulling and
+      pushing is to assign the image a tag."
+  - id: b
+    text: "Create a new registry to hold that specific image version"
+    correct: false
+    explanation: "The quickstart creates one registry and reuses it; a
+      new registry per image version is not the documented step."
+  - id: c
+    text: "Re-run `nebius profile create` to refresh your CLI credentials"
+    correct: false
+    explanation: "That is a one-time CLI setup step from earlier in the
+      guide, not something repeated for every image push."
+  - id: d
+    text: "Re-run `nebius registry configure-helper` to reconfigure
+      Docker"
+    correct: false
+    explanation: "That one-time step configures the Docker credential
+      helper; it is not repeated between pulling and pushing each image."
+evidence:
+  - source_id: src-pa-registry-quickstart
+    excerpt: "Assign the image a tag:"
+    source_sha256: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+    locator: "Push and run a Docker image, step 2"
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai

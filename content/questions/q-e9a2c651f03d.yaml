@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-e9a2c651f03d
+status: review_ready
+domain: domain-1
+objective: domain-1/experiment-tracking
+stem: "A team creates a Managed Service for MLflow cluster in Nebius AI Cloud
+  with the 'Public and private' access option. How can the private tracking
+  endpoint be reached?"
+options:
+  - id: a
+    text: "From the network where the cluster is located, for example via a
+      VM in that network"
+    correct: true
+    explanation: "Correct. The quickstart states the private endpoint is
+      reached from the network where the cluster is located, for example
+      via a VM in that network."
+  - id: b
+    text: "From the internet, the same way as the public endpoint"
+    correct: false
+    explanation: "The quickstart distinguishes the two: the public endpoint
+      is reachable from the internet, while the private endpoint is
+      reached from the cluster's own network."
+  - id: c
+    text: "From anywhere, since selecting both options makes both endpoints
+      internet-reachable"
+    correct: false
+    explanation: "Selecting 'Public and private' creates two distinct
+      endpoints with different reachability, not two endpoints that are
+      both reachable from the internet."
+  - id: d
+    text: "Only from inside the same Nebius AI Cloud project as the
+      cluster, regardless of network"
+    correct: false
+    explanation: "Reachability is scoped to the cluster's network, not to
+      project membership."
+evidence:
+  - source_id: src-pa-mlflow-quickstart
+    excerpt: "the private endpoint from the network where the cluster is
+      located (for example, via a virtual machine in this network)."
+    source_sha256: 29909942e742212ef6a47415660921945a59e225121ff88cffe6944d02efae09
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai

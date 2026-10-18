@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-3d8e6a21f974
+status: review_ready
+domain: domain-1
+objective: domain-1/robot-policy-training
+stem: "Nebius's public workflow for continued SmolVLA training and deployment
+  (robot-policy-train-and-serve) runs its stages on which infrastructure?"
+options:
+  - id: a
+    text: "Managed Kubernetes with torchrun"
+    correct: true
+    explanation: "Correct. The cookbook states the workflow uses managed
+      Kubernetes and torchrun, not Slurm."
+  - id: b
+    text: "Slurm batch adapters"
+    correct: false
+    explanation: "The cookbook explicitly says the workflow does not use
+      Slurm; existing Slurm-based operator adapters are a separate,
+      documented contract for a different pipeline."
+  - id: c
+    text: "Google Colab notebooks"
+    correct: false
+    explanation: "Colab is documented elsewhere as an option for training
+      without a local GPU, not as the infrastructure behind this managed
+      workflow."
+  - id: d
+    text: "Hugging Face Jobs"
+    correct: false
+    explanation: "Hugging Face Jobs is documented elsewhere as a way to run
+      LeRobot training on managed HF infrastructure, not as what this
+      workflow uses."
+evidence:
+  - source_id: src-pa-npa-policy-train-serve
+    excerpt: "It uses managed Kubernetes and torchrun, **not Slurm**."
+    source_sha256: f5969deb048cc9109908abaabef6acbe8880e27ca48f3a02dbfc8f06dd053c8f
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai

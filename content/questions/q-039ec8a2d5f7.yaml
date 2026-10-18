@@ -1,0 +1,42 @@
+schema_version: 1
+id: q-039ec8a2d5f7
+status: review_ready
+domain: domain-2
+objective: domain-2/dataset-quality
+stem: "Per LeRobot's Human-In-the-Loop data collection guide, what is
+  'distribution shift' a description of?"
+options:
+  - id: a
+    text: "Small deployment-time errors compounding and pushing the robot
+      into states never seen during training"
+    correct: true
+    explanation: "Correct. The guide defines this as small errors
+      compounding during deployment and pushing the robot into states
+      never seen during training."
+  - id: b
+    text: "The teleoperator's torque being disabled while the policy runs
+      autonomously"
+    correct: false
+    explanation: "That describes part of the HIL control loop mechanics,
+      not the definition of distribution shift."
+  - id: c
+    text: "The policy and human alternating control multiple times within
+      one episode"
+    correct: false
+    explanation: "That describes how HIL episodes are structured, not
+      what distribution shift means."
+  - id: d
+    text: "A dataset being split into fixed train/validation/test
+      fractions before fine-tuning"
+    correct: false
+    explanation: "That describes a separate dataset-splitting operation,
+      unrelated to the concept of distribution shift."
+evidence:
+  - source_id: src-pa-lerobot-hil-data
+    excerpt: "During deployment, small errors can compound and push the
+      robot into states never seen during training (distribution shift)."
+    source_sha256: 56a35ec789b4059eefa20006bf4552106fa09af06f9018635d6bd085874e67d6
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai

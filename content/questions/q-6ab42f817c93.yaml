@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-6ab42f817c93
+status: review_ready
+domain: domain-2
+objective: domain-2/simulation-assets
+stem: "The Nebius Physical AI digital-twin campus render reports counts of
+  robots, warehouse units and solar arrays in its authored scene. What do
+  these counts represent?"
+options:
+  - id: a
+    text: "Figures derived from the native authored geometry, not live
+      facility operations"
+    correct: true
+    explanation: "Correct. The guide states scene counts come from native
+      geometry and do not represent live operations."
+  - id: b
+    text: "Live sensor telemetry streamed from the actual physical
+      facility"
+    correct: false
+    explanation: "The guide explicitly says the counts do not represent
+      live operations; this is an authored reference scene, not a live
+      feed."
+  - id: c
+    text: "The number of rendered image frames produced by the HTML
+      viewer"
+    correct: false
+    explanation: "Frame counts for the viewer are a separate, documented
+      figure (for example, 32 distinct views); the scene counts concern
+      modeled objects, not rendered frames."
+  - id: d
+    text: "The number of GPU workers allocated for the render job"
+    correct: false
+    explanation: "Worker allocation (for example, one RTX PRO 6000
+      worker) is infrastructure sizing, a separate figure from the
+      scene's object counts."
+evidence:
+  - source_id: src-pa-npa-digital-twin
+    excerpt: "Scene counts come from native geometry; they do not
+      represent live operations."
+    source_sha256: d231106190bf2f8c7f4b45f914feca2ca462f75d23eae3e74bef37ea9b771b90
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T08:30:25Z
+course_id: physical-ai
