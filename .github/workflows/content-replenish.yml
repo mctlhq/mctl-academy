@@ -1859,6 +1859,10 @@ jobs:
             - `evidence[]`: `source_id` of a record whose _run/captured/<id>.md contains the excerpt,
               `source_sha256` copied from that record, `excerpt` copied verbatim from the captured
               text, at most 25 words; the excerpt must establish the correct answer on its own
+            - write every `stem`, option `text`, `explanation` and `excerpt` as a double-quoted
+              YAML string (escape any `"` or backslash inside it). A plain scalar that contains `: ` or
+              ` #` -- common when quoting config such as `adapter: qlora` -- does not parse, and
+              one unparseable file fails the whole run
             Do not paraphrase excerpts, do not cite a page for a claim it does not make, and do
             not write a question whose answer the captured text leaves open.
 
@@ -2283,6 +2287,10 @@ jobs:
             - `evidence[]`: `source_id` of a record whose _run/captured/<id>.md contains the excerpt,
               `source_sha256` copied from that record, `excerpt` copied verbatim from the captured
               text, at most 25 words; the excerpt must establish the correct answer on its own
+            - write every `stem`, option `text`, `explanation` and `excerpt` as a double-quoted
+              YAML string (escape any `"` or backslash inside it). A plain scalar that contains `: ` or
+              ` #` -- common when quoting config such as `adapter: qlora` -- does not parse, and
+              one unparseable file fails the whole run
             Do not paraphrase excerpts, do not cite a page for a claim it does not make, and do
             not write a question whose answer the captured text leaves open.
 
