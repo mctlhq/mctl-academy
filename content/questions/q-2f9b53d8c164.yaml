@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-2f9b53d8c164
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/workflow-security
 stem: "Why does Nebius recommend storing API keys and passwords for a robot
@@ -8,41 +8,41 @@ stem: "Why does Nebius recommend storing API keys and passwords for a robot
   manifests or cloud-init scripts?"
 options:
   - id: a
-    text: "To avoid hardcoding sensitive data, which helps eliminate
-      vulnerabilities and maintain security compliance"
+    text: "To avoid hardcoding sensitive data, which helps eliminate vulnerabilities
+      and maintain security compliance"
     correct: true
-    explanation: "Correct. The overview states SecretStash lets you
-      avoid hardcoding sensitive data in Terraform manifests or
-      cloud-init scripts, eliminating vulnerabilities and maintaining
-      compliance."
+    explanation: "Correct. The overview states SecretStash lets you avoid hardcoding
+      sensitive data in Terraform manifests or cloud-init scripts, eliminating
+      vulnerabilities and maintaining compliance."
   - id: b
-    text: "Because each secret version can be edited in place once it is
-      rotated"
+    text: "Because each secret version can be edited in place once it is rotated"
     correct: false
-    explanation: "The overview states a version is a snapshot that
-      cannot be modified once created, so versions are not edited in
-      place."
+    explanation: "The overview states a version is a snapshot that cannot be
+      modified once created, so versions are not edited in place."
   - id: c
-    text: "Because SecretStash is the only supported way to authenticate
-      a service account"
+    text: "Because SecretStash is the only supported way to authenticate a service
+      account"
     correct: false
-    explanation: "Service accounts can also authenticate using
-      authorized key pairs or VM metadata authentication, documented
-      elsewhere, so SecretStash is not the only method."
+    explanation: "Service accounts can also authenticate using authorized key pairs
+      or VM metadata authentication, documented elsewhere, so SecretStash is not
+      the only method."
   - id: d
-    text: "Because a secret's primary version updates automatically
-      whenever the application runs"
+    text: "Because a secret's primary version updates automatically whenever the
+      application runs"
     correct: false
-    explanation: "The primary version only changes when explicitly set
-      to a different version; it does not update automatically on
-      application use."
+    explanation: "The primary version only changes when explicitly set to a
+      different version; it does not update automatically on application use."
 evidence:
   - source_id: src-pa-mysterybox-overview
-    excerpt: "SecretStash allows you to avoid hardcoding sensitive data,
-      for example, in [Terraform
-      manifests](/terraform-provider/index) or cloud-init scripts."
+    excerpt: "SecretStash allows you to avoid hardcoding sensitive data, for
+      example, in [Terraform manifests](/terraform-provider/index) or cloud-init
+      scripts."
     source_sha256: 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: f6d94c776cf7afe8cfb444956c95f1b26784965d96bbca9602459ef247db5319

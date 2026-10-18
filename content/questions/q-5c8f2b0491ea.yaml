@@ -1,45 +1,47 @@
 schema_version: 1
 id: q-5c8f2b0491ea
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/data-collection
 stem: "A robotics team is transferring recorded sensor-log objects between
-  Nebius Object Storage buckets. For an object smaller than 100 MB, what
-  does the data transfer do?"
+  Nebius Object Storage buckets. For an object smaller than 100 MB, what does
+  the data transfer do?"
 options:
   - id: a
-    text: "It makes a single `GetObject` request to the source bucket and a
-      single `PutObject` request to the destination bucket"
+    text: "It makes a single `GetObject` request to the source bucket and a single
+      `PutObject` request to the destination bucket"
     correct: true
-    explanation: "Correct. For objects under 100 MB, the documentation
-      describes exactly one GetObject and one PutObject request."
+    explanation: "Correct. For objects under 100 MB, the documentation describes
+      exactly one GetObject and one PutObject request."
   - id: b
-    text: "It performs `CreateMultipartUpload` followed by multiple
-      `UploadPart` requests"
+    text: "It performs `CreateMultipartUpload` followed by multiple `UploadPart`
+      requests"
     correct: false
-    explanation: "That multipart sequence is documented for larger
-      objects, not for objects under 100 MB."
+    explanation: "That multipart sequence is documented for larger objects, not for
+      objects under 100 MB."
   - id: c
-    text: "It only updates the destination object's metadata with
-      `CopyObject`, without transferring the data"
+    text: "It only updates the destination object's metadata with `CopyObject`,
+      without transferring the data"
     correct: false
-    explanation: "That path applies when source and destination data are
-      already identical but metadata differs, not to every small object
-      being transferred."
+    explanation: "That path applies when source and destination data are already
+      identical but metadata differs, not to every small object being
+      transferred."
   - id: d
     text: "It is skipped, because objects under 100 MB are assumed already
       synchronized"
     correct: false
-    explanation: "Skipping applies to objects last modified before the
-      prior successful iteration, not to every object simply because it
-      is small."
+    explanation: "Skipping applies to objects last modified before the prior
+      successful iteration, not to every object simply because it is small."
 evidence:
   - source_id: src-pa-object-storage-transfer
-    excerpt: "If the object is less than 100 MB, it makes a single
-      `GetObject` request to the source bucket and a single `PutObject`
-      request"
+    excerpt: "If the object is less than 100 MB, it makes a single `GetObject`
+      request to the source bucket and a single `PutObject` request"
     source_sha256: 9e73aedf8b0e51a99e6531fb78fc4440f03709f5d6cf35a51b7a9a7ff67d1d04
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 88fab3401b49cacadca5c2c547efce9319e593b2c556280f6c70ec3277aa73f6

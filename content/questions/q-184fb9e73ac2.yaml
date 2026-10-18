@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-184fb9e73ac2
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/gpu-orchestration
 stem: "When sizing GPU memory for a LeRobot training run, why does using the
@@ -8,37 +8,39 @@ stem: "When sizing GPU memory for a LeRobot training run, why does using the
   backward pass?"
 options:
   - id: a
-    text: "AdamW carries optimizer state that adds roughly 30-100% on top of
-      a forward+backward pass alone"
+    text: "AdamW carries optimizer state that adds roughly 30-100% on top of a
+      forward+backward pass alone"
     correct: true
-    explanation: "Correct. The hardware guide states AdamW, the LeRobot
-      default, carries optimizer state that adds ~30-100% over a
-      forward+backward pass alone."
+    explanation: "Correct. The hardware guide states AdamW, the LeRobot default,
+      carries optimizer state that adds ~30-100% over a forward+backward pass
+      alone."
   - id: b
-    text: "AdamW automatically shards parameters, gradients and optimizer
-      state across every available GPU"
+    text: "AdamW automatically shards parameters, gradients and optimizer state
+      across every available GPU"
     correct: false
-    explanation: "That describes FSDP, a separate feature for training
-      large models across multiple GPUs, not what the AdamW optimizer
-      itself does."
+    explanation: "That describes FSDP, a separate feature for training large models
+      across multiple GPUs, not what the AdamW optimizer itself does."
   - id: c
     text: "AdamW doubles the effective batch size for every optimizer step"
     correct: false
-    explanation: "Effective batch size is `batch_size × num_gpus`,
-      controlled by your launch configuration, not changed by choosing
-      AdamW."
+    explanation: "Effective batch size is `batch_size × num_gpus`, controlled by
+      your launch configuration, not changed by choosing AdamW."
   - id: d
-    text: "AdamW requires mixed precision (fp16/bf16) to be enabled, which
-      increases activation memory"
+    text: "AdamW requires mixed precision (fp16/bf16) to be enabled, which increases
+      activation memory"
     correct: false
-    explanation: "Mixed precision is a separate, optional setting for
-      multi-GPU training; AdamW does not require it."
+    explanation: "Mixed precision is a separate, optional setting for multi-GPU
+      training; AdamW does not require it."
 evidence:
   - source_id: src-pa-lerobot-hardware-guide
-    excerpt: "AdamW (the LeRobot default) carries optimizer state that adds
-      ~30–100% over a forward+backward pass alone."
+    excerpt: "AdamW (the LeRobot default) carries optimizer state that adds ~30–100%
+      over a forward+backward pass alone."
     source_sha256: d9e2f755b0b2388374dada9b08ad826fdddb81e92c64643cba18d8cb7bbd67fe
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-18T08:51:12Z
+  content_sha256: 89529969fe597e92e9f897a4df8be0982a627c1541af0eee221c541de22f45d9

@@ -1,0 +1,146 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-18T08:51:12Z",
+  "questions": [
+    {
+      "id": "q-039ec8a2d5f7",
+      "content_sha256": "a6413b5ba76d62c5abcf7f7c96ac9b86b7c8dc9676a1992e50345b5fdaa1c5ca",
+      "approved": true,
+      "reason": "The guide defines the term exactly as option a states: \"During deployment, small errors can compound and push the robot into states never seen during training (distribution shift).\" The other options describe the HIL control loop or dataset splitting, neither of which the page offers as a definition of distribution shift.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-184fb9e73ac2",
+      "content_sha256": "89529969fe597e92e9f897a4df8be0982a627c1541af0eee221c541de22f45d9",
+      "approved": true,
+      "reason": "The memory section states \"AdamW (the LeRobot default) carries optimizer state that adds ~30-100% over a forward+backward pass alone\", which is option a verbatim in substance. Sharding across GPUs is attributed on the page to FSDP, not to AdamW, and nothing supports the batch-size or mixed-precision options.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-2f9b53d8c164",
+      "content_sha256": "f6d94c776cf7afe8cfb444956c95f1b26784965d96bbca9602459ef247db5319",
+      "approved": true,
+      "reason": "The overview states \"SecretStash allows you to avoid hardcoding sensitive data, for example, in [Terraform manifests](/terraform-provider/index) or cloud-init scripts. As a result, you eliminate vulnerabilities and maintain compliance with security.\" The page contradicts the distractors: a version \"cannot modify this snapshot once it is created\", other authentication methods exist, and the primary version changes only by explicit setting.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-3d8e6a21f974",
+      "content_sha256": "4b3250e6eb8047399f431fb8452ab9af9c6ef35b3af6ffa8676cc7a368fc5ab5",
+      "approved": true,
+      "reason": "The cookbook says of this workflow \"It uses managed Kubernetes and torchrun, **not Slurm**\", which rules out the Slurm distractor on the same page; Colab and Hugging Face Jobs appear nowhere as this workflow's infrastructure.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-4210b8e6c3a7",
+      "content_sha256": "1af42ff221714c7d1805bc8cb2c04a631a2cc0a52c1dbaf5b55288503fea3063",
+      "approved": true,
+      "reason": "The overview states \"The agent opens an outbound TLS connection to a regional Nebius edge endpoint\" and \"The VM or private network doesn't need to accept inbound connections from the internet for this traffic\", which is option a. The page makes services.name a service name rather than a port and makes protocol: h2 a traffic-type setting, so neither distractor implies an inbound requirement.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-5c8f2b0491ea",
+      "content_sha256": "88fab3401b49cacadca5c2c547efce9319e593b2c556280f6c70ec3277aa73f6",
+      "approved": true,
+      "reason": "The iterations section states \"If the object is less than 100 MB, it makes a single `GetObject` request to the source bucket and a single `PutObject` request to the destination bucket\", with the multipart sequence reserved \"For larger objects\". The CopyObject and skip paths are conditioned on identical data with differing metadata and on the last-modified time, not on object size.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-6ab42f817c93",
+      "content_sha256": "8ddac57fecbed65f53d13920e7b7fe43ad7f8f6e108866db4bc233391c195d13",
+      "approved": true,
+      "reason": "The guide states \"Scene counts come from native geometry; they do not represent live operations\", directly supporting option a and excluding the live-telemetry distractor. Frame counts and GPU worker allocation are separate figures on the page.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-7fa13c2e9b84",
+      "content_sha256": "0602a9c03f9a9ef85cd4d827e13609bd800a42c42f14010d99c7f85a7b3e0076",
+      "approved": true,
+      "reason": "The PEFT guide says \"Note the `--peft.method_type` parameter that let's you select which PEFT method to use.\" The same paragraph assigns `--peft.r` the rank, `--peft.lora_alpha` the scaling factor and `--peft.target_modules` the targeted layers, so only one option selects the method.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "c1b500dc9fc883c2d9c5b101992a6608f5cd1e8370047b50107e0f7c4ffe9af7",
+      "approved": true,
+      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\" for the vllm/vllm-openai endpoint image. The MLflow, Container Registry and Slurm options belong to other services and are not offered by this container.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-9d6e2a805cf1",
+      "content_sha256": "36ec19b80fa5c5237a0f5d4a429d634f0ec453d697d0190ac3200de6dd69856a",
+      "approved": false,
+      "reason": "The excerpt is not found verbatim: the captured text reads \"becomes available 5-10\\u00a0minutes after a resource is created\" with a non-breaking space before \"minutes\", whereas the excerpt uses an ordinary space. The substance of the answer is otherwise supported by that sentence, so correcting the quoted whitespace is the only defect to fix.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-a7e3419db2c6",
+      "content_sha256": "d41aeed79d97f41fead27df2ccfb815b866ea4cc325645963a74bd2f720a3e1f",
+      "approved": true,
+      "reason": "The reproduction section states \"These results are consistent with the [original results](https://github.com/Physical-Intelligence/openpi/tree/main/examples/libero#results) reported by Physical Intelligence\", and the adjacent tables (97.5 against 96.85) rule out the exact-match option as well as the substantially-lower and single-suite options.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "3959eaa772aaa73c07a07c796571b63ccd842e87fef2a8ea9e5c334239d4f2b8",
+      "approved": true,
+      "reason": "The tutorial states the LoRA adapter weights \"are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket.\" It also says \"Serverless AI deletes the job after its completion. Thus, the bucket preserves the job data\", which excludes the container-disk option.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-b85c1e49730d",
+      "content_sha256": "6ceb6d1cef9ca53025d8a6958fc1e071fdb496e75d4dbdc3ca8b5c437ff7a07c",
+      "approved": true,
+      "reason": "The debugging guide states that when such a resource \"fails, gets canceled or returns an error, Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs.\" The 24-hour window is explicitly a consequence of adding the \"sleep-on-fail\" wrapper, not the default.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-c04b7fe2918a",
+      "content_sha256": "c7d36a733c1fe2696617622c36c09eb158d3fba2c8c11ff4aaa4e589a12348a7",
+      "approved": true,
+      "reason": "The training section says `policy.type=act` means \"this policy will automatically adapt to the number of motor states, motor actions and cameras of your robot (e.g. `laptop` and `phone`) which have been saved in your dataset.\" Nothing on the page requires setting feature flags, per-camera calibration files or `accelerate config` for this adaptation.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-c3814f269b05",
+      "content_sha256": "9675512560e6cad79394872ea3364a22db5425db3ca0800199308bc0c926b23c",
+      "approved": true,
+      "reason": "The highlight strategy is \"Autonomous rollout with on-demand recording via a memory-bounded ring buffer\", where \"the buffer captures the last N seconds of telemetry. Press the save key to flush the buffer\". Sentry (continuous recording with Hub upload), dagger (teleoperator takeover) and episodic (fixed episode/reset) are each described differently on the same page.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-d1b647a9e820",
+      "content_sha256": "ebed0fc5df127322d27fd684ab7d42b2b8cf35362f7e6ff02a2a11fff2301c27",
+      "approved": true,
+      "reason": "The overview of the merge operation reads \"Combine multiple datasets into one. The datasets must have identical features, and episodes are concatenated in the order specified in `repo_ids`\". Video conversion, encoder settings and splitting are listed as separate operations with no stated bearing on merging.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "b2e9bc998fb9abf7b77ff28f239ec0cc3f810f7da5d82ad208c0471f683a980f",
+      "approved": true,
+      "reason": "For the \"Public and private\" option the quickstart states \"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network).\" That sentence distinguishes the two endpoints and scopes private reachability to the network, not the project.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-eac06372819f",
+      "content_sha256": "a6a45092ee3136a00a8cabb410170d8d49121ac4bd3e2f7f0bc0a33988ab5e9d",
+      "approved": true,
+      "reason": "The tuning section states \"[PI0](https://huggingface.co/lerobot/pi0) occupies 14GB of memory at inference time, while [SmolVLA](https://huggingface.co/lerobot/smolvla_base) requires only ~2GB\" and adds that \"smaller policies require less computational resources\". The figure is explicitly inference-time memory, and chunk_size_threshold is described as controlling observation frequency, not model memory.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-f62d0a9c3b57",
+      "content_sha256": "7d6e0d4c9902b803afdddac3730cedcc685530e5b3a1aaf9a709bc39c939954f",
+      "approved": true,
+      "reason": "The guide states \"LeRobot does **NOT** automatically scale learning rates or training steps based on the number of GPUs. This gives you full control over your training hyperparameters\", and presents both LR and step scaling as things \"you should do it manually\".",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    },
+    {
+      "id": "q-fb709a3c61e4",
+      "content_sha256": "a427902aaa905a84203fb76aa7315f85c5a951ca20a626b8953ac23860766390",
+      "approved": true,
+      "reason": "In \"Push and run a Docker image\", step 2 between pulling and pushing is \"Assign the image a tag:\" followed by `docker tag hello-world cr.$REGION_ID.nebius.cloud/$REGISTRY_PATH/hello-world:hello`. Creating a registry, `nebius profile create` and `nebius registry configure-helper` are one-time setup steps earlier in the guide.",
+      "reviewed_at": "2026-10-18T08:51:12Z"
+    }
+  ]
+}
