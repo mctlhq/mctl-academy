@@ -67,8 +67,8 @@ what was corrected and why, so the deltas are reviewable rather than buried.
 - A permission/positioning request is sent to Nebius Academy in parallel and tracked in
   a public issue. Launch does not block on the reply; the maintainer accepts the
   residual risk. (Not legal advice.)
-- The exam guide PDF is never stored, quoted, cited, embedded, given to an agent, or
-  used in review.
+- The exam guide PDF is never stored, quoted, cited or used as evidence in review. It
+  may be read to write a course map (domains, weights, format); see `LEGAL.md`.
 
 ## 2. Clean-room content policy — `CONTENT-POLICY.md`
 

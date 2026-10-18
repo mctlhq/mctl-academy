@@ -21,6 +21,7 @@ Official Nebius certification names — specifically:
 - "Nebius AI Leader"
 - "Nebius AI CloudOps Engineer"
 - "Nebius Agentic AI Builder"
+- "Nebius Physical AI"
 
 appear strictly in course descriptions as nominative statements of what each course prepares for — naming a thing in order to refer to it.
 
@@ -55,9 +56,22 @@ semi-official preparation channel.
 Content is derived exclusively from the sources allowlisted in `SOURCES.md`,
 which means public product documentation.
 
-**The certification exam guide PDF is never stored, quoted, cited, embedded,
-given to an agent, or used in review.** It is not a source. It is not a topic
-list. It is out of scope entirely.
+**The certification exam guide is a course-map input, never a source.** It is
+a public document the vendor publishes for anyone preparing for the exam, and
+it describes the exam from outside: target role, domains, weights and format.
+It contains no exam items.
+
+- It **may** be read, by a person or an agent, to write a course file under
+  `content/courses/`: domain titles, domain weights, mock format, and
+  objective titles paraphrased from its outline. This is the "published domain
+  weights" `CONTENT-POLICY.md` allocates coverage from.
+- It is **never** cited by a question, quoted in an evidence excerpt, stored
+  in the repository or the snapshot store, or used as evidence in review.
+  Question text still comes only from allowlisted documentation, and an
+  objective with no allowlisted source stays unpublished.
+
+Changed 2026-10-18 by maintainer decision. Until then the guide was out of
+scope entirely, which left domain weights with no written origin.
 
 The clean-room authoring rules that follow from the maintainer having sat the
 exam are in `CONTENT-POLICY.md`, which is the binding document for contributors.
