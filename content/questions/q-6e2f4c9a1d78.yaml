@@ -1,0 +1,50 @@
+schema_version: 1
+id: q-6e2f4c9a1d78
+status: review_ready
+domain: domain-3
+objective: domain-3/inference-capacity
+stem: "A team wants to shift idle GPU capacity from a Soperator training cluster
+  to an inference node group during a traffic spike, and back again afterward.
+  According to Nebius's documentation on moving capacity between training and
+  inference workloads, what must be true for this to work without stopping the
+  whole Soperator cluster?"
+options:
+  - id: a
+    text: "The inference node group must run in the same Kubernetes cluster as
+      Soperator; separate clusters cannot share capacity"
+    correct: false
+    explanation: "The documentation explicitly supports both separate Kubernetes
+      clusters and node groups within one cluster, as long as they share a
+      capacity block group."
+  - id: b
+    text: "The entire Soperator cluster must be stopped first so its GPUs can be
+      freed for the inference node group"
+    correct: false
+    explanation: "The documented workflow specifically avoids stopping the
+      entire cluster; individual worker nodes are released via Slurm
+      power-management commands instead."
+  - id: c
+    text: "The Soperator cluster and the inference node group must share a
+      capacity block group, so individual worker nodes can be released and
+      reassigned"
+    correct: true
+    explanation: "Correct. The documentation requires a capacity block group
+      shared between the Soperator cluster and the inference node group; worker
+      nodes are then released from Soperator and added to the inference node
+      group rather than stopping the whole cluster."
+  - id: d
+    text: "Capacity can only move permanently from training to inference, never
+      back again"
+    correct: false
+    explanation: "The documentation describes moving capacity in both
+      directions: from training to inference during high inference demand, and
+      back to training when inference traffic drops."
+evidence:
+  - source_id: src-pa-soperator-move-capacity
+    excerpt: "you can move GPU capacity between them without stopping the entire
+      Soperator cluster"
+    source_sha256: f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai

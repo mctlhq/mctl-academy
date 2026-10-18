@@ -1,0 +1,47 @@
+schema_version: 1
+id: q-3d7e2a6b9c41
+status: review_ready
+domain: domain-3
+objective: domain-3/inference-setup
+stem: "A team stops a Serverless AI endpoint overnight to avoid paying for idle
+  compute, but had earlier attached a mounted Object Storage volume to it for
+  model files. What are they billed for while the endpoint is stopped?"
+options:
+  - id: a
+    text: "Nothing at all, since stopping an endpoint suspends all billing
+      including attached volumes"
+    correct: false
+    explanation: "The documentation specifically states that a mounted volume
+      continues to be charged even while the endpoint itself is stopped;
+      stopping does not suspend all billing."
+  - id: b
+    text: "The same compute charges as a running endpoint, since stopped
+      endpoints remain reserved"
+    correct: false
+    explanation: "The documentation states computing resources of stopped
+      endpoints aren't charged; only the mounted volume continues to incur
+      charges."
+  - id: c
+    text: "Only the volume's one-time creation fee, with no ongoing storage
+      charges"
+    correct: false
+    explanation: "The documentation describes an ongoing charge for the
+      mounted volume while the endpoint is stopped, not a one-time creation
+      fee."
+  - id: d
+    text: "Nothing for compute, since stopped endpoints aren't charged for
+      computing resources — but they are still charged for the mounted volume"
+    correct: true
+    explanation: "Correct. The documentation states computing resources of
+      stopped endpoints aren't charged, but if a volume was mounted to the
+      endpoint, you are charged for that volume even while the endpoint is
+      stopped."
+evidence:
+  - source_id: src-pa-serverless-endpoints
+    excerpt: "Computing resources of stopped endpoints aren't charged. However,
+      if you mounted a volume to the endpoint, you are charged for the volume"
+    source_sha256: af3f072f951f152bf234900a1bca569216ddfde4049a79cdb0f124c65f280030
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai

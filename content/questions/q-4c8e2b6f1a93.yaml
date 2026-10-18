@@ -1,0 +1,45 @@
+schema_version: 1
+id: q-4c8e2b6f1a93
+status: review_ready
+domain: domain-2
+objective: domain-2/data-collection
+stem: "A robotics engineer runs `lerobot-record` over SSH on a headless Linux
+  machine with no `$DISPLAY` set. Can they use the arrow-key and Escape
+  shortcuts to control recording (stop early, re-record, end session)?"
+options:
+  - id: a
+    text: "No — control-flow keys require a global keyboard backend and
+      therefore fail over SSH without a display"
+    correct: false
+    explanation: "A global keyboard backend is required for keyboard
+      teleoperation, not for the recording control-flow keys, which are read
+      directly from the terminal."
+  - id: b
+    text: "Yes — these control-flow keys work on X11, Wayland, and headless/SSH
+      sessions as long as the command runs in an interactive terminal"
+    correct: true
+    explanation: "Correct. The tutorial states the recording control-flow keys
+      work on X11, Wayland, and headless/SSH sessions as long as
+      `lerobot-record` runs in an interactive terminal, with no `$DISPLAY`
+      setup needed."
+  - id: c
+    text: "No — `$DISPLAY` must be explicitly set before any keyboard shortcuts
+      work"
+    correct: false
+    explanation: "The tutorial states no `$DISPLAY` setup is needed for the
+      recording control-flow keys."
+  - id: d
+    text: "Yes, but only if the session also has X11 forwarding enabled"
+    correct: false
+    explanation: "The documented behavior covers X11, Wayland, and
+      headless/SSH sessions without requiring X11 forwarding specifically."
+evidence:
+  - source_id: src-pa-lerobot-il-robots
+    excerpt: "the recording control-flow keys (arrow keys, Escape) work on X11,
+      Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an
+      interactive terminal"
+    source_sha256: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai

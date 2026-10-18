@@ -1,0 +1,51 @@
+schema_version: 1
+id: q-3e9b6d2a4f81
+status: review_ready
+domain: domain-2
+objective: domain-2/simulation-assets
+stem: "A team preparing a 3D scene for simulation via NVIDIA's Neural
+  Reconstruction Engine (NuRec) on Nebius Workbench is choosing between an RTX
+  PRO 6000 and an H200 GPU for the reconstruction job. Which should they choose,
+  and why?"
+options:
+  - id: a
+    text: "H200, because it has more memory bandwidth and will reconstruct the
+      scene faster overall"
+    correct: false
+    explanation: "Raw speed and memory bandwidth are not the deciding factor
+      here; the guide states H200 lacks the RT cores that Gaussian
+      rasterization and ray tracing require, making it the wrong choice
+      regardless of other specs."
+  - id: b
+    text: "Either GPU works equally well, since NuRec reconstruction is a
+      CPU-bound workload"
+    correct: false
+    explanation: "The guide specifies the reconstruction stages are GPU work
+      needing RT cores, not a CPU-bound workload where GPU choice would not
+      matter."
+  - id: c
+    text: "H200, because RT cores are only needed for rendering novel views,
+      not for reconstruction itself"
+    correct: false
+    explanation: "The guide attributes the RT-core requirement to Gaussian
+      rasterization and ray tracing broadly, which covers the reconstruction
+      stage itself, not only a later render stage."
+  - id: d
+    text: "RTX PRO 6000, because Gaussian rasterization and ray tracing require
+      RT cores, which H200 lacks despite being a faster chip overall"
+    correct: true
+    explanation: "Correct. The guide explains Gaussian rasterization and ray
+      tracing are RT-core work, and that H100/H200 are faster chips but have no
+      RT cores, making them the wrong choice for this reconstruction workflow."
+evidence:
+  - source_id: src-pa-npa-neural-reconstruction
+    excerpt: "Gaussian rasterization and ray tracing are RT-core work."
+    source_sha256: 1c06d10dde26cb345b0f79b9a6256a35e49c5e292a6f0f79c0f08dd19aba3655
+  - source_id: src-pa-npa-neural-reconstruction
+    excerpt: "H100 and H200 are faster chips with **no RT cores** and are the
+      wrong choice"
+    source_sha256: 1c06d10dde26cb345b0f79b9a6256a35e49c5e292a6f0f79c0f08dd19aba3655
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai

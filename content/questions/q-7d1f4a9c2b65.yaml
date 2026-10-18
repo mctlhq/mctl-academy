@@ -1,0 +1,46 @@
+schema_version: 1
+id: q-7d1f4a9c2b65
+status: review_ready
+domain: domain-2
+objective: domain-2/simulation-assets
+stem: "A team scans a room with a depth camera and runs it through Nebius's
+  RGB-D-to-Isaac reconstruction workflow to build a simulation asset. A corner
+  of the room was never visible to the camera. What does the resulting scene
+  contain for that corner?"
+options:
+  - id: a
+    text: "Nothing — the workflow leaves unseen space unknown rather than
+      inventing geometry to fill it in"
+    correct: true
+    explanation: "Correct. The guide states missing surfaces and unseen space
+      stay unknown, and the workflow does not invent floors or close holes to
+      cover gaps in the capture."
+  - id: b
+    text: "A smoothed, extrapolated floor and walls generated to close the
+      visual gap"
+    correct: false
+    explanation: "The guide explicitly says the workflow does not invent floors
+      or close holes for unseen space; gaps remain unfilled rather than
+      extrapolated."
+  - id: c
+    text: "A low-resolution placeholder mesh automatically downloaded from a
+      public asset library"
+    correct: false
+    explanation: "No such placeholder-mesh substitution is documented; unseen
+      space simply stays unknown in the reconstructed scene."
+  - id: d
+    text: "An estimate derived by inferring metric scale from the capture's
+      COLMAP units"
+    correct: false
+    explanation: "The guide says the workflow does not infer metric scale from
+      arbitrary COLMAP units; that is listed as something it explicitly avoids,
+      not a technique used to fill gaps."
+evidence:
+  - source_id: src-pa-npa-rgbd-scan-to-isaac
+    excerpt: "Missing surfaces and unseen space stay unknown; the workflow does
+      not invent floors, close holes"
+    source_sha256: 48a4f4859973bdc15ea6c51a273f47fa8ea98c47e0f600d71d29d601c65debb7
+authored:
+  by: agent:claude-author
+  at: 2026-10-18T09:04:42Z
+course_id: physical-ai
