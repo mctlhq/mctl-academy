@@ -407,3 +407,119 @@ sources:
     objectives:
       - domain-1/training-results
       - domain-3/deployment-evaluation
+
+  # nebius/nebius-physical-ai, pinned to 8195442868f8 (SOURCES.md): simulation,
+  # synthetic data and robot policy workflows on Nebius.
+
+  - id: src-pa-npa-quickstart
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/quickstart.md
+    title: "npa Quickstart"
+    objectives:
+      - domain-4/application-integration
+      - domain-1/gpu-orchestration
+
+  - id: src-pa-npa-compose-token-factory
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/composing-cloud-and-token-factory.md
+    title: "Compose Nebius GPU workloads with Token Factory"
+    objectives:
+      - domain-3/inference-setup
+      - domain-4/application-integration
+
+  - id: src-pa-npa-digital-twin
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/digital-twin.md
+    title: "Render digital-twin scenes on Nebius GPUs"
+    objectives:
+      - domain-2/simulation-assets
+
+  - id: src-pa-npa-rgbd-scan-to-isaac
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/rgbd-scan-to-isaac.md
+    title: "Reconstruct a metric RGB-D scan for Isaac"
+    objectives:
+      - domain-2/simulation-assets
+      - domain-2/data-collection
+
+  - id: src-pa-npa-neural-reconstruction
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/neural-reconstruction.md
+    title: "Turn a real photo capture into a 3D scene you can fly through"
+    objectives:
+      - domain-2/simulation-assets
+      - domain-2/data-collection
+
+  - id: src-pa-npa-data-factory
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/physical-ai-data-factory.md
+    title: "NVIDIA Physical AI Data Factory on NPA (no OSMO)"
+    objectives:
+      - domain-2/dataset-curation
+      - domain-2/dataset-quality
+      - domain-2/simulation-assets
+
+  - id: src-pa-npa-physical-augmentation
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/physical-augmentation.md
+    title: "Physical augmentation with executed actions"
+    objectives:
+      - domain-2/dataset-curation
+      - domain-2/dataset-quality
+
+  - id: src-pa-npa-leisaac-latency
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/leisaac-transport-latency.md
+    title: "LeIsaac low-latency browser transport"
+    objectives:
+      - domain-4/edge-cloud-placement
+      - domain-2/data-collection
+
+  - id: src-pa-npa-sim2real-data-contracts
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/sim2real-data-contracts.md
+    title: "Sim-to-Real: data types and artifact contracts"
+    objectives:
+      - domain-4/workflow-security
+      - domain-2/dataset-curation
+
+  - id: src-pa-npa-subtask-labeling
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/lerobot-subtask-labeling.md
+    title: "Label LeRobot subtasks in FiftyOne"
+    objectives:
+      - domain-2/dataset-quality
+      - domain-2/dataset-curation
+
+  - id: src-pa-npa-policy-train-serve
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/robot-policy-train-and-serve.md
+    title: "Robot policy: train and serve"
+    objectives:
+      - domain-1/robot-policy-training
+      - domain-3/inference-setup
+
+  - id: src-pa-npa-field-failure
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/field-failure-policy-improvement.md
+    title: "Field failure to navigation policy improvement"
+    objectives:
+      - domain-3/deployment-evaluation
+      - domain-4/observability-tracing
+      - domain-1/training-results
+
+  - id: src-pa-npa-find-artifacts
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/find-artifacts.md
+    title: "Find artifacts across object-storage buckets"
+    objectives:
+      - domain-4/workflow-security
+      - domain-4/observability-tracing
+
+  - id: src-pa-npa-vlm-eval-loop
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/vlm-eval-loop-runbook.md
+    title: "VLM-Eval Loop Runbook"
+    objectives:
+      - domain-3/deployment-evaluation
+      - domain-1/training-results
+
+  - id: src-pa-npa-tf-compute-combos
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/tokenfactory-compute-combos.md
+    title: "Token Factory with Nebius GPU workloads"
+    objectives:
+      - domain-3/inference-capacity
+      - domain-3/inference-setup
+
+  - id: src-pa-npa-lerobot-gpu-benchmarks
+    url: https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/lerobot-gpu-benchmarks.md
+    title: "LeRobot GPU Benchmarks: Reproducing the Research via Nebius Workbench"
+    objectives:
+      - domain-1/gpu-orchestration
+      - domain-1/training-results
