@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-hil-data
+url: https://huggingface.co/docs/lerobot/hil_data_collection.md
+title: Human-In-the-Loop Data Collection
+retrieved_at: 2026-10-18T01:17:39Z
+sha256: 56a35ec789b4059eefa20006bf4552106fa09af06f9018635d6bd085874e67d6
+objectives:
+  - domain-2/data-collection
+  - domain-2/dataset-quality
+snapshot:
+  bucket: academy-source-snapshots
+  key: 56a35ec789b4059eefa20006bf4552106fa09af06f9018635d6bd085874e67d6
+status: current

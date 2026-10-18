@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-tf-custom-weights
+url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/custom-weights.md
+title: Custom model weights
+retrieved_at: 2026-10-18T01:17:32Z
+sha256: 75cbe9bb2b469ff5b2b3e6429ea70f69aec36ea7e194284eaee146ca3f3b7f3e
+objectives:
+  - domain-3/inference-setup
+  - domain-3/release-management
+snapshot:
+  bucket: academy-source-snapshots
+  key: 75cbe9bb2b469ff5b2b3e6429ea70f69aec36ea7e194284eaee146ca3f3b7f3e
+status: current

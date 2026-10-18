@@ -230,3 +230,180 @@ sources:
     title: Overview
     objectives:
       - domain-2/framework-integrations
+
+  # ---------------------------------------------------------------------
+  # physical-ai — docs.nebius.com (primary) and the LeRobot docs
+  # (huggingface.co/docs/lerobot/, allowlisted 2026-10-18). Objective ids
+  # below are the physical-ai course map's.
+  # ---------------------------------------------------------------------
+
+  - id: src-pa-serverless-overview
+    url: https://docs.nebius.com/serverless/overview.md
+    title: "About Serverless AI"
+    objectives:
+      - domain-1/gpu-orchestration
+      - domain-3/inference-setup
+
+  - id: src-pa-serverless-fine-tuning
+    url: https://docs.nebius.com/serverless/tutorials/fine-tuning.md
+    title: "Fine-tuning a large language model by using a Serverless AI job and Axolotl"
+    objectives:
+      - domain-1/supervised-fine-tuning
+
+  - id: src-pa-serverless-jobs
+    url: https://docs.nebius.com/serverless/jobs/manage.md
+    title: "Managing jobs in Serverless AI"
+    objectives:
+      - domain-1/gpu-orchestration
+
+  - id: src-pa-serverless-endpoints
+    url: https://docs.nebius.com/serverless/endpoints/manage.md
+    title: "Managing endpoints in Serverless AI"
+    objectives:
+      - domain-3/inference-setup
+      - domain-4/application-integration
+
+  - id: src-pa-serverless-deploy-model
+    url: https://docs.nebius.com/serverless/tutorials/deploy-model.md
+    title: "Deploying a large language model and chatting with it by using Serverless AI endpoints"
+    objectives:
+      - domain-3/inference-setup
+
+  - id: src-pa-serverless-monitoring
+    url: https://docs.nebius.com/serverless/monitoring.md
+    title: "Metrics for endpoints and jobs"
+    objectives:
+      - domain-3/inference-capacity
+      - domain-4/observability-tracing
+
+  - id: src-pa-serverless-failure
+    url: https://docs.nebius.com/serverless/jobs/failure.md
+    title: "Debugging failed Devlabs, jobs and endpoints"
+    objectives:
+      - domain-4/observability-tracing
+
+  - id: src-pa-mlflow-index
+    url: https://docs.nebius.com/mlflow/index.md
+    title: "Managed Service for MLflow"
+    objectives:
+      - domain-1/experiment-tracking
+
+  - id: src-pa-mlflow-quickstart
+    url: https://docs.nebius.com/mlflow/quickstart.md
+    title: "Getting started with Managed Service for MLflow: create your first cluster"
+    objectives:
+      - domain-1/experiment-tracking
+
+  - id: src-pa-soperator-move-capacity
+    url: https://docs.nebius.com/slurm-soperator/capacity/move-capacity.md
+    title: "Moving capacity between training and inference workloads"
+    objectives:
+      - domain-1/gpu-orchestration
+      - domain-3/inference-capacity
+
+  - id: src-pa-registry-quickstart
+    url: https://docs.nebius.com/container-registry/quickstart.md
+    title: "Getting started with Container Registry: Create your first registry and manage a Docker image in it"
+    objectives:
+      - domain-3/release-management
+      - domain-4/application-integration
+
+  - id: src-pa-tunnels-overview
+    url: https://docs.nebius.com/tunnels/overview.md
+    title: "About Nebius Tunnels"
+    objectives:
+      - domain-4/application-integration
+
+  - id: src-pa-mysterybox-overview
+    url: https://docs.nebius.com/mysterybox/overview.md
+    title: "MysteryBox overview"
+    objectives:
+      - domain-4/workflow-security
+
+  - id: src-pa-object-storage-transfer
+    url: https://docs.nebius.com/object-storage/transfer/overview.md
+    title: "How data transfers work in Nebius AI Cloud"
+    objectives:
+      - domain-2/data-collection
+
+  - id: src-pa-tf-custom-weights
+    url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/custom-weights.md
+    title: "Custom model weights"
+    objectives:
+      - domain-3/inference-setup
+      - domain-3/release-management
+
+  - id: src-pa-lerobot-il-robots
+    url: https://huggingface.co/docs/lerobot/il_robots.md
+    title: "Imitation Learning on Real-World Robots"
+    objectives:
+      - domain-1/robot-policy-training
+      - domain-2/data-collection
+
+  - id: src-pa-lerobot-dataset-v3
+    url: https://huggingface.co/docs/lerobot/lerobot-dataset-v3.md
+    title: "LeRobotDataset v3.0"
+    objectives:
+      - domain-2/data-collection
+      - domain-2/dataset-curation
+
+  - id: src-pa-lerobot-dataset-tools
+    url: https://huggingface.co/docs/lerobot/using_dataset_tools.md
+    title: "Using Dataset Tools"
+    objectives:
+      - domain-2/dataset-curation
+      - domain-2/dataset-quality
+
+  - id: src-pa-lerobot-hil-data
+    url: https://huggingface.co/docs/lerobot/hil_data_collection.md
+    title: "Human-In-the-Loop Data Collection"
+    objectives:
+      - domain-2/data-collection
+      - domain-2/dataset-quality
+
+  - id: src-pa-lerobot-peft
+    url: https://huggingface.co/docs/lerobot/peft_training.md
+    title: "Parameter efficient fine-tuning with PEFT"
+    objectives:
+      - domain-1/supervised-fine-tuning
+      - domain-1/robot-policy-training
+
+  - id: src-pa-lerobot-smolvla
+    url: https://huggingface.co/docs/lerobot/smolvla.md
+    title: "SmolVLA"
+    objectives:
+      - domain-1/supervised-fine-tuning
+      - domain-1/robot-policy-training
+
+  - id: src-pa-lerobot-multi-gpu
+    url: https://huggingface.co/docs/lerobot/multi_gpu_training.md
+    title: "Multi-GPU Training"
+    objectives:
+      - domain-1/gpu-orchestration
+
+  - id: src-pa-lerobot-hardware-guide
+    url: https://huggingface.co/docs/lerobot/hardware_guide.md
+    title: "Compute HW Guide for LeRobot Training"
+    objectives:
+      - domain-1/gpu-orchestration
+
+  - id: src-pa-lerobot-rollout
+    url: https://huggingface.co/docs/lerobot/inference.md
+    title: "Policy Deployment (lerobot-rollout)"
+    objectives:
+      - domain-3/deployment-evaluation
+      - domain-4/application-integration
+
+  - id: src-pa-lerobot-async
+    url: https://huggingface.co/docs/lerobot/async.md
+    title: "Asynchronous Inference"
+    objectives:
+      - domain-4/edge-cloud-placement
+      - domain-4/application-integration
+
+  - id: src-pa-lerobot-libero
+    url: https://huggingface.co/docs/lerobot/libero.md
+    title: "LIBERO"
+    objectives:
+      - domain-1/training-results
+      - domain-3/deployment-evaluation

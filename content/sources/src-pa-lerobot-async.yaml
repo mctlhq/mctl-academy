@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-async
+url: https://huggingface.co/docs/lerobot/async.md
+title: Asynchronous Inference
+retrieved_at: 2026-10-18T01:17:49Z
+sha256: e822df700612d3dd5003959b73b7e69334d1dc8ab19708b1bc050ba0fcd74738
+objectives:
+  - domain-4/edge-cloud-placement
+  - domain-4/application-integration
+snapshot:
+  bucket: academy-source-snapshots
+  key: e822df700612d3dd5003959b73b7e69334d1dc8ab19708b1bc050ba0fcd74738
+status: current

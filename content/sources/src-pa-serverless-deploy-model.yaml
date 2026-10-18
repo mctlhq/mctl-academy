@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-serverless-deploy-model
+url: https://docs.nebius.com/serverless/tutorials/deploy-model.md
+title: Deploying a large language model and chatting with it by using Serverless
+  AI endpoints
+retrieved_at: 2026-10-18T01:17:16Z
+sha256: 8c90f50e48d2508f2da7301ed9190e0f1039c39b786aa233d75e81591ca1070b
+objectives:
+  - domain-3/inference-setup
+snapshot:
+  bucket: academy-source-snapshots
+  key: 8c90f50e48d2508f2da7301ed9190e0f1039c39b786aa233d75e81591ca1070b
+status: current

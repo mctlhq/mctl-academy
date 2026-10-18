@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-il-robots
+url: https://huggingface.co/docs/lerobot/il_robots.md
+title: Imitation Learning on Real-World Robots
+retrieved_at: 2026-10-18T01:17:34Z
+sha256: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+objectives:
+  - domain-1/robot-policy-training
+  - domain-2/data-collection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+status: current

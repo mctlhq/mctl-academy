@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-pa-registry-quickstart
+url: https://docs.nebius.com/container-registry/quickstart.md
+title: "Getting started with Container Registry: Create your first registry and
+  manage a Docker image in it"
+retrieved_at: 2026-10-18T01:17:26Z
+sha256: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+objectives:
+  - domain-3/release-management
+  - domain-4/application-integration
+snapshot:
+  bucket: academy-source-snapshots
+  key: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+status: current

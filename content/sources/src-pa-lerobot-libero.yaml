@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-libero
+url: https://huggingface.co/docs/lerobot/libero.md
+title: LIBERO
+retrieved_at: 2026-10-18T01:17:51Z
+sha256: 18e906f6eb576a3eb93d8bc905a0a80338f67f13ed2120f47b978bf0cd556c2d
+objectives:
+  - domain-1/training-results
+  - domain-3/deployment-evaluation
+snapshot:
+  bucket: academy-source-snapshots
+  key: 18e906f6eb576a3eb93d8bc905a0a80338f67f13ed2120f47b978bf0cd556c2d
+status: current
