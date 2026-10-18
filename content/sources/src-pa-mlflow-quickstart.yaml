@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-pa-mlflow-quickstart
+url: https://docs.nebius.com/mlflow/quickstart.md
+title: "Getting started with Managed Service for MLflow: create your first cluster"
+retrieved_at: 2026-10-18T01:17:22Z
+sha256: 29909942e742212ef6a47415660921945a59e225121ff88cffe6944d02efae09
+objectives:
+  - domain-1/experiment-tracking
+snapshot:
+  bucket: academy-source-snapshots
+  key: 29909942e742212ef6a47415660921945a59e225121ff88cffe6944d02efae09
+status: current

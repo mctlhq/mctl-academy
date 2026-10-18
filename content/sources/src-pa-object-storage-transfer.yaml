@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-pa-object-storage-transfer
+url: https://docs.nebius.com/object-storage/transfer/overview.md
+title: How data transfers work in Nebius AI Cloud
+retrieved_at: 2026-10-18T01:17:31Z
+sha256: 9e73aedf8b0e51a99e6531fb78fc4440f03709f5d6cf35a51b7a9a7ff67d1d04
+objectives:
+  - domain-2/data-collection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 9e73aedf8b0e51a99e6531fb78fc4440f03709f5d6cf35a51b7a9a7ff67d1d04
+status: current

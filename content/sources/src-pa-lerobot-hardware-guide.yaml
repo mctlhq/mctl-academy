@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-pa-lerobot-hardware-guide
+url: https://huggingface.co/docs/lerobot/hardware_guide.md
+title: Compute HW Guide for LeRobot Training
+retrieved_at: 2026-10-18T01:17:46Z
+sha256: d9e2f755b0b2388374dada9b08ad826fdddb81e92c64643cba18d8cb7bbd67fe
+objectives:
+  - domain-1/gpu-orchestration
+snapshot:
+  bucket: academy-source-snapshots
+  key: d9e2f755b0b2388374dada9b08ad826fdddb81e92c64643cba18d8cb7bbd67fe
+status: current

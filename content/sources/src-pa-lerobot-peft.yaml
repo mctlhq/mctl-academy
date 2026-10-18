@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-peft
+url: https://huggingface.co/docs/lerobot/peft_training.md
+title: Parameter efficient fine-tuning with PEFT
+retrieved_at: 2026-10-18T01:17:41Z
+sha256: 66a8214c9b7b1b109974b2b9f686f5f0c83061b478a7fa3f5ab07ae30b597e6c
+objectives:
+  - domain-1/supervised-fine-tuning
+  - domain-1/robot-policy-training
+snapshot:
+  bucket: academy-source-snapshots
+  key: 66a8214c9b7b1b109974b2b9f686f5f0c83061b478a7fa3f5ab07ae30b597e6c
+status: current

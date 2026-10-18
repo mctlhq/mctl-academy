@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-rollout
+url: https://huggingface.co/docs/lerobot/inference.md
+title: Policy Deployment (lerobot-rollout)
+retrieved_at: 2026-10-18T01:17:48Z
+sha256: b27b25d9592811201c7e095484971ab31b9bf2542cc9ac90afedd64b73c0cf4b
+objectives:
+  - domain-3/deployment-evaluation
+  - domain-4/application-integration
+snapshot:
+  bucket: academy-source-snapshots
+  key: b27b25d9592811201c7e095484971ab31b9bf2542cc9ac90afedd64b73c0cf4b
+status: current

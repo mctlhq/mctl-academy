@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-pa-lerobot-multi-gpu
+url: https://huggingface.co/docs/lerobot/multi_gpu_training.md
+title: Multi-GPU Training
+retrieved_at: 2026-10-18T01:17:44Z
+sha256: e07e67dcb332b43cb182fff5e4c0deac241b8b26517e162269fa9068c01efdc2
+objectives:
+  - domain-1/gpu-orchestration
+snapshot:
+  bucket: academy-source-snapshots
+  key: e07e67dcb332b43cb182fff5e4c0deac241b8b26517e162269fa9068c01efdc2
+status: current

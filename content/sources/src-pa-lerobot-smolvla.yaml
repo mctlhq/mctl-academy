@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-pa-lerobot-smolvla
+url: https://huggingface.co/docs/lerobot/smolvla.md
+title: SmolVLA
+retrieved_at: 2026-10-18T01:17:43Z
+sha256: 4afcf23e842346103b68ed3d544fb70a316a40c95fd9a15013914bba9b309d7d
+objectives:
+  - domain-1/supervised-fine-tuning
+  - domain-1/robot-policy-training
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4afcf23e842346103b68ed3d544fb70a316a40c95fd9a15013914bba9b309d7d
+status: current

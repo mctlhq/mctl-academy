@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-pa-serverless-failure
+url: https://docs.nebius.com/serverless/jobs/failure.md
+title: Debugging failed Devlabs, jobs and endpoints
+retrieved_at: 2026-10-18T01:17:19Z
+sha256: 4dad00e1fdadae0869840b76d6aa07f0fe9d2393cbb8a150e29b8745ccece7c4
+objectives:
+  - domain-4/observability-tracing
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4dad00e1fdadae0869840b76d6aa07f0fe9d2393cbb8a150e29b8745ccece7c4
+status: current
