@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a7e3419db2c6
-status: published
+status: retired
 domain: domain-1
 objective: domain-1/training-results
 stem: "LeRobot reproduces Pi0.5 on the LIBERO benchmark and reports a 97.5

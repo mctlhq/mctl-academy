@@ -205,47 +205,6 @@
     ]
   },
   {
-    "id": "q-2a7c4f1b9e63",
-    "course_id": "physical-ai",
-    "domain": "domain-1",
-    "objective": "domain-1/training-results",
-    "stem": "In Nebius's field-failure-to-policy-improvement workflow, a candidate navigation policy passed the 80% success threshold on the training-exposed replay cohort but failed that same threshold on both held-out cohorts. What does this pattern indicate for the promotion decision?",
-    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
-    "sources": [
-      {
-        "title": "Field failure to navigation policy improvement",
-        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/field-failure-policy-improvement.md",
-        "excerpt": "The candidate passed the 80% standalone success threshold on the training-exposed scan; both held-out arms failed that threshold."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The candidate should be promoted immediately, since it already cleared the 80% success threshold",
-        "correct": false,
-        "explanation": "The 80% threshold was only cleared on training-exposed replay, which the workflow treats as diagnostic only; both held-out arms — the actual promotion evidence — failed that threshold."
-      },
-      {
-        "id": "b",
-        "text": "The held-out cohorts should be retrained on the same scenarios as the training-exposed cohort until they also pass",
-        "correct": false,
-        "explanation": "Held-out cohorts are untouched by design so they can validate generalization; retraining them on training-exposed scenarios would defeat the purpose of the held-out check."
-      },
-      {
-        "id": "c",
-        "text": "The candidate should not be promoted, since passing on training-exposed data does not establish that the improvement generalizes to held-out scenarios",
-        "correct": true,
-        "explanation": "Correct. The workflow measured the candidate passing the 80% threshold only on the training-exposed replay cohort, while both held-out arms failed it — exactly the pattern the workflow treats as evidence to retain the baseline rather than promote."
-      },
-      {
-        "id": "d",
-        "text": "The 80% threshold should be lowered for held-out cohorts so the candidate can pass",
-        "correct": false,
-        "explanation": "Nothing in the workflow describes adjusting thresholds to fit a candidate's held-out performance; the comparison uses the declared thresholds as sealed, predetermined bounds."
-      }
-    ]
-  },
-  {
     "id": "q-2f6b8d4a1c93",
     "course_id": "physical-ai",
     "domain": "domain-3",
@@ -671,47 +630,6 @@
     ]
   },
   {
-    "id": "q-4a1c9e7f2b56",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/inference-capacity",
-    "stem": "When sizing single-GPU inference capacity for a Diffusion Policy deployment, Nebius's LeRobot GPU benchmark research measured H200 at 10.06 ms per sample and B300 (stock PyTorch) at 36.48 ms. What does this imply for provisioning latency-sensitive Diffusion Policy inference?",
-    "objectiveTitle": "Sizing inference capacity for quality, latency, throughput and cost",
-    "sources": [
-      {
-        "title": "LeRobot GPU Benchmarks: Reproducing the Research via Nebius Workbench",
-        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/lerobot-gpu-benchmarks.md",
-        "excerpt": "The research measured H200 Diffusion inference at 10.06 ms and B300 Diffusion inference at 36.48 ms."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "H200 should be preferred over B300 for Diffusion Policy inference when stock PyTorch is used, since it measured roughly 3.6x lower latency",
-        "correct": true,
-        "explanation": "Correct. The benchmark measured H200 Diffusion inference at 10.06 ms versus B300 at 36.48 ms with stock PyTorch, so H200 gives meaningfully lower per-sample latency for this policy."
-      },
-      {
-        "id": "b",
-        "text": "B300 should be preferred because it has more VRAM and memory bandwidth than H200",
-        "correct": false,
-        "explanation": "B300 does have more VRAM and bandwidth, but the benchmark's measured Diffusion inference latency was higher on B300 under stock PyTorch, so raw spec advantages did not translate into lower latency here."
-      },
-      {
-        "id": "c",
-        "text": "The two GPUs are interchangeable for Diffusion Policy inference because training throughput was comparable",
-        "correct": false,
-        "explanation": "Training throughput and inference latency are measured separately in the benchmark; comparable training numbers do not establish comparable inference latency."
-      },
-      {
-        "id": "d",
-        "text": "RTX PRO 6000 should be preferred because it has the lowest inference latency of all four GPUs tested",
-        "correct": false,
-        "explanation": "The benchmark reports H200 as the lowest measured Diffusion inference latency (10.06 ms); RTX PRO 6000 is not documented as the fastest option for this policy."
-      }
-    ]
-  },
-  {
     "id": "q-4c8e2b6f1a93",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -749,47 +667,6 @@
         "text": "Yes, but only if the session also has X11 forwarding enabled",
         "correct": false,
         "explanation": "The documented behavior covers X11, Wayland, and headless/SSH sessions without requiring X11 forwarding specifically."
-      }
-    ]
-  },
-  {
-    "id": "q-4e8c2a6f9d17",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/deployment-evaluation",
-    "stem": "In Nebius's SmolVLA robot-policy train-and-serve workflow, an earlier 10-epoch pilot checkpoint passed both promotion evaluation gates. When that same checkpoint was evaluated on the reserved deployment states, what happened?",
-    "objectiveTitle": "Evaluating deployments against physical tasks, failure scenarios and safety checks",
-    "sources": [
-      {
-        "title": "Robot policy: train and serve",
-        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/cookbooks/robot-policy-train-and-serve.md",
-        "excerpt": "An earlier 10-epoch pilot passed both promotion gates but scored 5/10 on deployment states 20–29; the unchanged 70% requirement correctly rejected it."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "It automatically passed deployment evaluation, since promotion gates already cover the same held-out states",
-        "correct": false,
-        "explanation": "Promotion evaluations use states 0–9 and 10–19, while deployment states 20–29 are a separate reserved set; passing promotion did not guarantee passing deployment evaluation."
-      },
-      {
-        "id": "b",
-        "text": "It was excluded from deployment evaluation because it had already passed promotion",
-        "correct": false,
-        "explanation": "The documentation describes the pilot checkpoint actually being evaluated on deployment states and failing that threshold, not being excluded from deployment evaluation."
-      },
-      {
-        "id": "c",
-        "text": "The 70% deployment threshold was lowered afterward so the pilot checkpoint would pass",
-        "correct": false,
-        "explanation": "The documentation describes the 70% requirement as unchanged and correctly rejecting the pilot; no threshold adjustment is documented."
-      },
-      {
-        "id": "d",
-        "text": "It scored 5 out of 10 on the deployment states, below the 70% requirement, so it was correctly rejected despite passing promotion",
-        "correct": true,
-        "explanation": "Correct. The documentation reports that the 10-epoch pilot passed both promotion gates but scored 5/10 on deployment states 20–29, and the unchanged 70% requirement correctly rejected it — promotion success did not guarantee deployment-evaluation success."
       }
     ]
   },
@@ -1444,52 +1321,6 @@
     ]
   },
   {
-    "id": "q-8a5c1f9d4e62",
-    "course_id": "physical-ai",
-    "domain": "domain-2",
-    "objective": "domain-2/dataset-quality",
-    "stem": "A sim-to-real pipeline run sets `NPA_ENV_COUNT=10000` for its synthetic environment generation stage. What does this configuration actually produce at envgen time?",
-    "objectiveTitle": "Balancing real and synthetic data and finding poor samples, labelling problems and coverage gaps",
-    "sources": [
-      {
-        "title": "Sim-to-Real: data types and artifact contracts",
-        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/sim2real-data-contracts.md",
-        "excerpt": "`NPA_ENV_COUNT=10000` creates **10K JSON env records** (~8K train / ~2K held-out)."
-      },
-      {
-        "title": "Sim-to-Real: data types and artifact contracts",
-        "url": "https://raw.githubusercontent.com/nebius/nebius-physical-ai/8195442868f877cbd933eaeecd23b765974de20f/docs/workbench/guides/sim2real-data-contracts.md",
-        "excerpt": "They are **not** 10K Isaac Sim instances at envgen time."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "10,000 simultaneously running Isaac Sim instances, one per configured environment",
-        "correct": false,
-        "explanation": "The documentation explicitly states these are not 10K Isaac Sim instances at envgen time; they are JSON records describing scenarios, not running simulator instances."
-      },
-      {
-        "id": "b",
-        "text": "A single Isaac Sim instance that sequentially simulates all 10,000 environments before any records are written",
-        "correct": false,
-        "explanation": "The documented behavior is JSON record generation at envgen time, not a described sequential Isaac Sim simulation pass producing the records."
-      },
-      {
-        "id": "c",
-        "text": "10K JSON environment records (about 8K train, 2K held-out) — not 10K running Isaac Sim instances",
-        "correct": true,
-        "explanation": "Correct. The documentation explicitly calls this out as a common mistake: `NPA_ENV_COUNT=10000` creates 10K JSON env records split roughly 8K train / 2K held-out, and these are not 10K Isaac Sim instances at envgen time."
-      },
-      {
-        "id": "d",
-        "text": "10,000 held-out evaluation environments with no training split",
-        "correct": false,
-        "explanation": "The documented split is roughly 8K train and 2K held-out, not 10,000 held-out environments with no training data."
-      }
-    ]
-  },
-  {
     "id": "q-8b2e5f1a9c34",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -1783,47 +1614,6 @@
         "text": "Only when a promo code is applied to the account",
         "correct": false,
         "explanation": "Promo codes add free credits to the balance; they are not an automatic charging trigger."
-      }
-    ]
-  },
-  {
-    "id": "q-a7e3419db2c6",
-    "course_id": "physical-ai",
-    "domain": "domain-1",
-    "objective": "domain-1/training-results",
-    "stem": "LeRobot reproduces Pi0.5 on the LIBERO benchmark and reports a 97.5 average success rate across the four suites. When picking this reproduction for evaluation, how should its average compare to Physical Intelligence's original OpenPI results?",
-    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
-    "sources": [
-      {
-        "title": "LIBERO",
-        "url": "https://huggingface.co/docs/lerobot/libero.md",
-        "excerpt": "These results are consistent with the [original results](https://github.com/Physical-Intelligence/openpi/tree/main/examples/libero#results) reported by Physical Intelligence:"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "It should be consistent with OpenPI's reported results, not wildly different",
-        "correct": true,
-        "explanation": "Correct. LeRobot's documentation states these reproduced results are consistent with the original results reported by Physical Intelligence."
-      },
-      {
-        "id": "b",
-        "text": "It should be substantially lower, since LeRobot only fine-tunes for 6k additional steps",
-        "correct": false,
-        "explanation": "The documentation reports the reproduction as consistent with, not substantially lower than, the original OpenPI results."
-      },
-      {
-        "id": "c",
-        "text": "It should match only on the LIBERO-Object suite, not the other three",
-        "correct": false,
-        "explanation": "The documentation describes overall consistency with the original results, not agreement limited to a single suite."
-      },
-      {
-        "id": "d",
-        "text": "It should match OpenPI's numbers exactly, digit for digit",
-        "correct": false,
-        "explanation": "The reported averages (97.5 vs 96.85) are close but not identical; the documentation calls them consistent, not exact matches."
       }
     ]
   },

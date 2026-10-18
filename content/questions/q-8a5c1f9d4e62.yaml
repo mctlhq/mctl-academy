@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-8a5c1f9d4e62
-status: published
+status: retired
 domain: domain-2
 objective: domain-2/dataset-quality
 stem: "A sim-to-real pipeline run sets `NPA_ENV_COUNT=10000` for its synthetic
