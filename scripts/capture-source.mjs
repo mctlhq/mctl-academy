@@ -101,6 +101,9 @@ async function assertCommitOnBranch({ repo, branch, sha }, signal) {
   const res = await fetch(`https://api.github.com/repos/${repo}/compare/${sha}...${branch}`, {
     headers: {
       accept: "application/vnd.github+json",
+      // The REST API refuses a request without one; set it rather than rely
+      // on the runtime's default.
+      "user-agent": "mctl-academy-capture",
       ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
     signal,
