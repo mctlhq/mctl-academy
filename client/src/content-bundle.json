@@ -410,47 +410,6 @@
     ]
   },
   {
-    "id": "q-3d7e2a6b9c41",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/inference-setup",
-    "stem": "A team stops a Serverless AI endpoint overnight to avoid paying for idle compute, but had earlier attached a mounted Object Storage volume to it for model files. What are they billed for while the endpoint is stopped?",
-    "objectiveTitle": "Setting up managed model inference in the cloud",
-    "sources": [
-      {
-        "title": "Managing endpoints in Serverless AI",
-        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
-        "excerpt": "Computing resources of stopped endpoints aren't charged. However, if you mounted a volume to the endpoint, you are charged for the volume"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Nothing at all, since stopping an endpoint suspends all billing including attached volumes",
-        "correct": false,
-        "explanation": "The documentation specifically states that a mounted volume continues to be charged even while the endpoint itself is stopped; stopping does not suspend all billing."
-      },
-      {
-        "id": "b",
-        "text": "The same compute charges as a running endpoint, since stopped endpoints remain reserved",
-        "correct": false,
-        "explanation": "The documentation states computing resources of stopped endpoints aren't charged; only the mounted volume continues to incur charges."
-      },
-      {
-        "id": "c",
-        "text": "Only the volume's one-time creation fee, with no ongoing storage charges",
-        "correct": false,
-        "explanation": "The documentation describes an ongoing charge for the mounted volume while the endpoint is stopped, not a one-time creation fee."
-      },
-      {
-        "id": "d",
-        "text": "Nothing for compute, since stopped endpoints aren't charged for computing resources — but they are still charged for the mounted volume",
-        "correct": true,
-        "explanation": "Correct. The documentation states computing resources of stopped endpoints aren't charged, but if a volume was mounted to the endpoint, you are charged for that volume even while the endpoint is stopped."
-      }
-    ]
-  },
-  {
     "id": "q-3d8e6a21f974",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -1353,47 +1312,6 @@
         "text": "input and user",
         "correct": false,
         "explanation": "model is required but omitted here, and user is an optional identifier for your end-user rather than a required field."
-      }
-    ]
-  },
-  {
-    "id": "q-7c4a9f1d3e85",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/inference-setup",
-    "stem": "What is the difference between stopping a Serverless AI endpoint and deleting it, with respect to its underlying VM and boot disk?",
-    "objectiveTitle": "Setting up managed model inference in the cloud",
-    "sources": [
-      {
-        "title": "Managing endpoints in Serverless AI",
-        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
-        "excerpt": "When you delete an endpoint, Serverless AI automatically deletes its VM and container (boot) disk."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Stopping leaves the VM and disk in place (uncharged for compute), while deleting automatically removes the VM and its boot disk",
-        "correct": true,
-        "explanation": "Correct. The documentation states that stopping an endpoint simply stops billing for its computing resources, while deleting it automatically deletes the VM and the container (boot) disk."
-      },
-      {
-        "id": "b",
-        "text": "Both stopping and deleting immediately remove the VM and boot disk",
-        "correct": false,
-        "explanation": "Stopping an endpoint does not remove its VM or disk; only deleting the endpoint is documented as automatically deleting the VM and boot disk."
-      },
-      {
-        "id": "c",
-        "text": "Deleting only removes the boot disk, while the VM must be deleted separately",
-        "correct": false,
-        "explanation": "The documentation states that deleting the endpoint automatically deletes both the VM and the container (boot) disk together, not the disk alone."
-      },
-      {
-        "id": "d",
-        "text": "Stopping permanently deletes the VM, while deleting only pauses billing",
-        "correct": false,
-        "explanation": "This reverses the documented behavior: stopping pauses compute billing without deleting the VM, while deleting the endpoint is what removes the VM and disk."
       }
     ]
   },
