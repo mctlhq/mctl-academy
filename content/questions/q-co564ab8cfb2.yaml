@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co564ab8cfb2
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: An intermittent VM fault has just cleared. Support asks for diagnostic

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-82e5d1c4930b
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/inference-setup
 stem: "You deploy an open-source LLM through a Nebius Serverless AI endpoint

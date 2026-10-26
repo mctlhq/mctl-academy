@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ob01d8e9f0a1
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/observability
 stem: What response headers should client applications inspect to monitor

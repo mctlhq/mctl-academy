@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-8b2e5f1a9c34
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/playground
 stem: In the Token Factory Playground, what does the "Quality" value shown on a

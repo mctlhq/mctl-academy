@@ -10,4 +10,4 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
-status: current
+status: drifted

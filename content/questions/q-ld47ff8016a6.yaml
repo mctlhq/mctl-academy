@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld47ff8016a6
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/structured-output
 stem: Which `response_format` setting should be used when the response must

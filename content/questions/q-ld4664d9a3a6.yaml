@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld4664d9a3a6
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/structured-output
 stem: 'A team sets `response_format` to `{"type": "json_object"}` and is

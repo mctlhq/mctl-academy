@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-so03f7a8b9c0
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/structured-output
 stem: You already pass a JSON schema in `response_format` but output quality is

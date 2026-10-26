@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a51f8c3e07d2
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: With a bank card as the payment method, when is the card automatically charged?

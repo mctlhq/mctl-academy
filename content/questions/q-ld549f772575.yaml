@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld549f772575
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: A business continuity plan assumes a dedicated endpoint will return to

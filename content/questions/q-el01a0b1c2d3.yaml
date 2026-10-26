@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el01a0b1c2d3
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: Your load balancer must decide whether to route traffic to a dedicated

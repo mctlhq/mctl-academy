@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld26959cd0bd
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/model-selection
 stem: Comparing two candidate models on their cards in the UI, a team wants a

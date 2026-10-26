@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld31ea78838c
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/inference-basics
 stem: A developer asks how to send traffic to the Fast flavor of a model from

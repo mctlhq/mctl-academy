@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-3d7e2a6b9c41
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/inference-setup
 stem: "A team stops a Serverless AI endpoint overnight to avoid paying for idle
