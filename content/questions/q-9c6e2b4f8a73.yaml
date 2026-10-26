@@ -1,0 +1,45 @@
+schema_version: 1
+id: q-9c6e2b4f8a73
+status: review_ready
+domain: domain-4
+objective: domain-4/edge-cloud-placement
+stem: "Nebius's LeIsaac low-latency browser transport runbook measures
+  teleoperation video from a cloud-hosted simulator reaching a browser client.
+  What does it report about the relationship between the simulator's rendered
+  frame rate and the frame rate that reached browser paint under the original
+  transport?"
+options:
+  - id: a
+    text: "The simulator produced 11.28 FPS, but only 1.58 FPS reached browser
+      paint under the control workload"
+    correct: true
+    explanation: "Correct. The runbook reports the measured source viewport
+      produced 11.28 FPS, while only 1.58 FPS reached browser paint under the
+      control workload."
+  - id: b
+    text: "Both rates matched at 11.28 FPS because JPEG encoding was lossless"
+    correct: false
+    explanation: "The runbook reports a large gap between the two rates, not a
+      match, and does not attribute the gap to encoding losslessness."
+  - id: c
+    text: "The browser paint rate exceeded the simulator's render rate due to
+      local caching"
+    correct: false
+    explanation: "The documented browser paint rate (1.58 FPS) is lower than the
+      simulator's rate (11.28 FPS), not higher."
+  - id: d
+    text: "Frame rate was fixed at one frame every 150 ms regardless of viewport
+      load"
+    correct: false
+    explanation: "150 ms is documented as the browser's next-request scheduling
+      interval, not a fixed, load-independent frame rate for the whole
+      pipeline."
+evidence:
+  - source_id: src-pa-npa-leisaac-latency
+    excerpt: "The measured source viewport produced 11.28 FPS, while only 1.58
+      FPS reached browser paint under the control workload."
+    source_sha256: d517258a8ad0eacf6ee092302e578f02d9b639c58900674dc3cdafa62ce477d0
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: physical-ai

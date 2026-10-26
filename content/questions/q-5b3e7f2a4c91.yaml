@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-5b3e7f2a4c91
+status: review_ready
+domain: domain-1
+objective: domain-1/robot-policy-training
+stem: "Nebius's robot-policy-train-and-serve workflow gates deployment on a
+  success-threshold requirement. What happened to an earlier 10-epoch pilot
+  that passed both promotion gates but scored 5/10 on deployment states
+  20-29?"
+options:
+  - id: a
+    text: "It was correctly rejected, because the deployment success threshold is
+      70% and it scored only 50%"
+    correct: true
+    explanation: "Correct. The documentation states the pilot passed both
+      promotion gates but scored 5/10 on deployment, and the unchanged 70%
+      requirement correctly rejected it."
+  - id: b
+    text: "It was promoted anyway, since passing both promotion gates is the only
+      documented requirement"
+    correct: false
+    explanation: "Passing the promotion gates was not sufficient; the deployment
+      success threshold still applied and rejected the pilot."
+  - id: c
+    text: "It triggered an automatic retrain with a larger batch size"
+    correct: false
+    explanation: "The documentation describes the pilot result informing a later
+      training change, not an automatic retraining trigger."
+  - id: d
+    text: "It was accepted as a partial success because promotion gates outrank
+      the deployment check"
+    correct: false
+    explanation: "The documentation states the opposite: the deployment threshold
+      is what rejected the pilot despite its promotion gates passing."
+evidence:
+  - source_id: src-pa-npa-policy-train-serve
+    excerpt: "An earlier 10-epoch pilot passed both promotion gates but scored
+      5/10 on deployment states 20–29; the unchanged 70% requirement correctly
+      rejected it."
+    source_sha256: f5969deb048cc9109908abaabef6acbe8880e27ca48f3a02dbfc8f06dd053c8f
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: physical-ai

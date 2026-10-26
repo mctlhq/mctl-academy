@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-6d4f1a9c3e82
+status: review_ready
+domain: domain-1
+objective: domain-1/supervised-fine-tuning
+stem: "LeRobot's SmolVLA fine-tuning guide reports recording 50 episodes across
+  5 cube positions (10 each) for the SVLA SO100 PickPlace dataset. What does
+  the guide say happened when a similar dataset with only 25 episodes was
+  tried?"
+options:
+  - id: a
+    text: "It was not enough and led to bad performance"
+    correct: true
+    explanation: "Correct. The guide says a similar dataset with 25 episodes was
+      tried and was not enough, leading to bad performance."
+  - id: b
+    text: "It performed identically, because episode count does not affect
+      SmolVLA fine-tuning"
+    correct: false
+    explanation: "The guide reports the opposite: fewer episodes led to bad
+      performance, and it concludes data quantity is a key factor."
+  - id: c
+    text: "It trained faster with no change in task success rate"
+    correct: false
+    explanation: "The guide does not report a training-speed comparison here; it
+      reports a quality problem from having too few episodes."
+  - id: d
+    text: "It required switching from a single A100 GPU to Google Colab"
+    correct: false
+    explanation: "Colab is mentioned as an option for users without a GPU device,
+      not as a consequence of using fewer episodes."
+evidence:
+  - source_id: src-pa-lerobot-smolvla
+    excerpt: "We tried similar dataset with 25 episodes, and it was not enough
+      leading to a bad performance."
+    source_sha256: 4afcf23e842346103b68ed3d544fb70a316a40c95fd9a15013914bba9b309d7d
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: physical-ai

@@ -1,0 +1,46 @@
+schema_version: 1
+id: q-1d7a9c3e5f62
+status: review_ready
+domain: domain-4
+objective: domain-4/observability-tracing
+stem: "Nebius's field-failure-to-navigation-policy-improvement workflow writes
+  each held-out evaluation episode's simulator output to an
+  `evaluation-<index>.tar` archive. According to the workflow's documentation,
+  what happens to that native rendered video and trajectory data after the
+  worker's temporary directory is removed?"
+options:
+  - id: a
+    text: "It remains available, since it was already retained in the tar
+      archive under the adapter attempt"
+    correct: true
+    explanation: "Correct. The documentation states native rendered frames/video
+      and full trajectories remain available after the worker's temporary
+      directory is removed, because they were retained in the archive."
+  - id: b
+    text: "It is deleted along with the temporary directory, since the tar
+      archive is also temporary"
+    correct: false
+    explanation: "The documentation says the opposite: the archived data
+      specifically survives removal of the worker's temporary directory."
+  - id: c
+    text: "It is only viewable while the originating worker process is still
+      running"
+    correct: false
+    explanation: "The archive's availability is documented as surviving after
+      the worker's temporary directory is removed, not tied to the worker
+      process staying alive."
+  - id: d
+    text: "It is overwritten by the next adapter attempt's evaluation output"
+    correct: false
+    explanation: "Each attempt receives its own unique output generation; the
+      documentation does not describe later attempts overwriting an earlier
+      attempt's archive."
+evidence:
+  - source_id: src-pa-npa-field-failure
+    excerpt: "Native rendered frames/video and full trajectories therefore
+      remain available after the worker's temporary directory is removed."
+    source_sha256: 178843d1b675d2876a7ea669808fc4803a3f9afd9bd0255fb686ae44d100718a
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: physical-ai

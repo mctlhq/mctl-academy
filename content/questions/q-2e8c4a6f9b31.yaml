@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-2e8c4a6f9b31
+status: review_ready
+domain: domain-4
+objective: domain-4/application-integration
+stem: "To use Nebius Token Factory's hosted inference from an `npa` workbench
+  workflow, what credential must be configured, and what can't substitute for
+  it?"
+options:
+  - id: a
+    text: "A `NEBIUS_TOKEN_FACTORY_KEY`, saved with `npa configure`; a Nebius IAM
+      token cannot replace it"
+    correct: true
+    explanation: "Correct. The quickstart says to save NEBIUS_TOKEN_FACTORY_KEY
+      with npa configure, then run npa workbench token-factory verify, and
+      states a Nebius IAM token cannot replace this key."
+  - id: b
+    text: "A Nebius IAM token alone, since it covers every hosted service"
+    correct: false
+    explanation: "The quickstart explicitly states a Nebius IAM token cannot
+      replace the Token Factory key."
+  - id: c
+    text: "An SSH key uploaded to the service account's authorized keys"
+    correct: false
+    explanation: "Authorized SSH keys are documented for VM access elsewhere, not
+      for authenticating hosted Token Factory inference."
+  - id: d
+    text: "A Kubernetes service account token from the SkyPilot cluster"
+    correct: false
+    explanation: "Workflow execution needing SkyPilot and storage setup is a
+      separate prerequisite from the Token Factory credential itself."
+evidence:
+  - source_id: src-pa-npa-quickstart
+    excerpt: "save `NEBIUS_TOKEN_FACTORY_KEY` with `npa configure`, then run `npa
+      workbench token-factory verify`. A Nebius IAM token cannot replace this
+      key."
+    source_sha256: a4fc3794311a8beeb4a6ce4d48fa68230dca4709be4f087eb0975f57c387099d
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: physical-ai

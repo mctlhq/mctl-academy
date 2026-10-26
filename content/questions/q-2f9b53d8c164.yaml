@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-2f9b53d8c164
-status: needs_review
+status: review_ready
 domain: domain-4
 objective: domain-4/workflow-security
 stem: "Why does Nebius recommend storing API keys and passwords for a robot
@@ -35,14 +35,10 @@ options:
 evidence:
   - source_id: src-pa-mysterybox-overview
     excerpt: "SecretStash allows you to avoid hardcoding sensitive data, for
-      example, in [Terraform manifests](/terraform-provider/index) or cloud-init
-      scripts."
-    source_sha256: 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31
+      example, in [Terraform manifests](https://docs.nebius.com/terraform-provider/index.md)
+      or cloud-init scripts."
+    source_sha256: 79cb41c1342e747c79e5521daa32f94830a0c0582c85a4f0eb1c900c7d8cf4ab
 authored:
   by: agent:claude-author
-  at: 2026-10-18T08:30:25Z
+  at: 2026-10-26T13:22:41Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: f6d94c776cf7afe8cfb444956c95f1b26784965d96bbca9602459ef247db5319

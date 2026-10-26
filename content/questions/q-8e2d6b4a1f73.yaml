@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-8e2d6b4a1f73
+status: review_ready
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: "Among Sandboxes' core identifiers, what distinguishes a Tag from an Image
+  UUID?"
+options:
+  - id: a
+    text: "A Tag is a mutable name that points to an image, while an Image UUID
+      identifies an immutable stored filesystem state"
+    correct: true
+    explanation: "Correct. The overview's identifier table defines Image UUID as
+      an immutable stored filesystem state and Tag as a mutable name that points
+      to an image."
+  - id: b
+    text: "A Tag identifies one asynchronous service operation, while an Image UUID
+      identifies a process inside that operation"
+    correct: false
+    explanation: "Those definitions belong to Operation ID and Subprocess ID
+      respectively, not to Tag or Image UUID."
+  - id: c
+    text: "A Tag and an Image UUID both identify the same immutable filesystem
+      state and can be used interchangeably"
+    correct: false
+    explanation: "The overview explicitly says these identifiers are not
+      interchangeable, and only the Image UUID is immutable."
+  - id: d
+    text: "A Tag identifies uploaded content that can be attached to an operation"
+    correct: false
+    explanation: "That describes an Upload ID; a Tag is a mutable name pointing to
+      an image, not uploaded content."
+evidence:
+  - source_id: src-recovery-sandbox
+    excerpt: "Tag | A mutable name that points to an image."
+    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+  - source_id: src-recovery-sandbox
+    excerpt: "Image UUID | An immutable stored filesystem state."
+    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: agentic-ai-builder

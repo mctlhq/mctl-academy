@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-9f3b7a2e5c81
+status: review_ready
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: "In Token Factory Sandboxes, what happens when an application submits a
+  command to run as an operation?"
+options:
+  - id: a
+    text: "The service starts fresh compute from the selected image, runs the
+      command, and returns its output and process result"
+    correct: true
+    explanation: "Correct. The overview defines an operation as starting fresh
+      compute from an image, running the command, and returning its output and
+      process result."
+  - id: b
+    text: "It resumes the previous operation's still-running process on the same
+      compute"
+    correct: false
+    explanation: "A saved image does not retain a running process, process memory,
+      open file handles, or network connections, so there is no running process
+      to resume."
+  - id: c
+    text: "It permanently reserves the underlying VM so later operations reuse the
+      same running compute"
+    correct: false
+    explanation: "Every operation starts fresh compute regardless of the
+      save-or-discard choice; nothing is permanently reserved."
+  - id: d
+    text: "It automatically converts the command's filesystem changes into a saved
+      image without being asked"
+    correct: false
+    explanation: "Saving changes as an image is a choice made before submitting the
+      operation, not an automatic side effect of running a command."
+evidence:
+  - source_id: src-recovery-sandbox
+    excerpt: "Each run in Sandboxes is an **operation**: it starts fresh compute
+      from an image, runs your command, and returns its output and process
+      result."
+    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: agentic-ai-builder

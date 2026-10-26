@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-3f9b5d7a2e84
+status: review_ready
+domain: domain-3
+objective: domain-3/inference-capacity
+stem: "Nebius's Token Factory + GPU workloads cookbook chains a GPU rollout
+  stage with a hosted inference judge stage in one workflow. What resources
+  does the checked-in GPU stage request, compared to the hosted stage?"
+options:
+  - id: a
+    text: "The GPU stage requests one H100, 16 CPUs, and 64 GiB memory, while the
+      hosted stage requests 4 CPUs and 16 GiB"
+    correct: true
+    explanation: "Correct. The cookbook states the checked-in GPU stages request
+      one H100, 16 CPUs, and 64 GiB memory, while hosted stages request 4 CPUs
+      and 16 GiB."
+  - id: b
+    text: "Both stages request identical GPU and CPU allocations because they
+      share one workflow spec"
+    correct: false
+    explanation: "The two stages are documented with different resource
+      requests; sharing a workflow spec does not make their allocations
+      identical."
+  - id: c
+    text: "The hosted stage requests the H100, while the GPU stage only needs
+      CPUs"
+    correct: false
+    explanation: "This reverses the documented allocation: the GPU stage is the
+      one that requests the H100."
+  - id: d
+    text: "The GPU stage requests 4 CPUs and 16 GiB, while the hosted stage needs
+      one H100"
+    correct: false
+    explanation: "This also reverses the documented allocation between the two
+      stages."
+evidence:
+  - source_id: src-pa-npa-tf-compute-combos
+    excerpt: "The checked-in GPU stages request one H100, 16 CPUs, and 64 GiB
+      memory; hosted stages request 4 CPUs and 16 GiB."
+    source_sha256: b1cd3d9866c9fa4a69b09f774a11132cf54f9112202a224c023da491b128e5b7
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: physical-ai

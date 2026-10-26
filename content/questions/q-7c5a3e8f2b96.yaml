@@ -1,0 +1,42 @@
+schema_version: 1
+id: q-7c5a3e8f2b96
+status: review_ready
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: "A Sandboxes operation sets environment values while it runs. Per the
+  overview's 'What survives' table, when do those environment values persist
+  into a later operation?"
+options:
+  - id: a
+    text: "Only when the interface explicitly saves both the image and supported
+      environment metadata"
+    correct: true
+    explanation: "Correct. The table states environment values are available to
+      the current process and persist only when the interface explicitly saves
+      both the image and supported environment metadata."
+  - id: b
+    text: "Automatically, whenever filesystem changes are saved as an image"
+    correct: false
+    explanation: "Saving the image alone is not enough; the table requires the
+      interface to also save supported environment metadata."
+  - id: c
+    text: "Whenever the operation completes successfully, regardless of the save
+      choice"
+    correct: false
+    explanation: "Success or failure of the operation is not what the table ties
+      persistence to; it depends on the save choice and environment metadata
+      support."
+  - id: d
+    text: "Never; environment values cannot be captured by any saved image"
+    correct: false
+    explanation: "The table documents a case where environment values do persist,
+      so they are not always lost."
+evidence:
+  - source_id: src-recovery-sandbox
+    excerpt: "They persist only when the interface explicitly saves both the
+      image and supported environment metadata."
+    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+authored:
+  by: agent:claude-author
+  at: 2026-10-26T13:22:41Z
+course_id: agentic-ai-builder
