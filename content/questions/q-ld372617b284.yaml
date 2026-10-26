@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld372617b284
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/product-outcomes
 stem: A team is torn between two prompt-and-parameter configurations and wants a
@@ -27,11 +27,8 @@ options:
 evidence:
   - source_id: src-ld-playground
     excerpt: To work with two model setups side by side, click **Compare**.
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

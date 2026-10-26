@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld278e02131d
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/model-selection
 stem: A finance stakeholder asks how per-token pricing is presented when
@@ -26,11 +26,8 @@ evidence:
   - source_id: src-ld-playground
     excerpt: '**Input tokens** — Price per token included in an API request, shown
       in USD per million tokens.'
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

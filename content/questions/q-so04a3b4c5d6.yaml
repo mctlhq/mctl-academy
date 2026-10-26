@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-so04a3b4c5d6
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/structured-output
 stem: Your application needs the model's JSON to follow a specific structure.
@@ -32,15 +32,11 @@ evidence:
   - source_id: src-structured-output
     excerpt: Use **JSON schema instead of JSON objects** whenever you need **strict
       JSON structure**
-    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+    source_sha256: 2aa65140a13a0ccbac9613b891f0a1eba6418f6129408f084b8885e05c2f99f9
   - source_id: src-structured-output
     excerpt: Forces arbitrary JSON output, the model will decide on the schema by itself
-    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+    source_sha256: 2aa65140a13a0ccbac9613b891f0a1eba6418f6129408f084b8885e05c2f99f9
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: d8c4aaccc6cabd87e5b1cc2029f2c5f750891b514942a377ef11fa23a25e376a

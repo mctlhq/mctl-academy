@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co575c01880f
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/escalation-workflows
 stem: An engineer new to Logs asks how any LogQL query must begin. What is the
@@ -27,12 +27,8 @@ options:
 evidence:
   - source_id: src-co-logs-query-language
     excerpt: Every LogQL query starts with a stream selector inside curly braces.
-    source_sha256: 82e3a86c401a3bdb5dfb0b5cd580eab6797a83609f7b957921779ed670db4af0
+    source_sha256: c78ead26efe94ea77eed1468c8ecae87d6e6a25f4ef733469abcafef9d100377
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 51f52129f38ed5dadd45f2b0e1957670c6f8ca06a32a4fece039639e5b3befb9

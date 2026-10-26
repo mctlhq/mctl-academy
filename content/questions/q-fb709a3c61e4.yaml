@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fb709a3c61e4
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/release-management
 stem: "Following the Container Registry quickstart's steps to push a Docker
@@ -31,13 +31,9 @@ options:
 evidence:
   - source_id: src-pa-registry-quickstart
     excerpt: "Assign the image a tag:"
-    source_sha256: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+    source_sha256: 9dc1a60d813d88736e0d2f80e98244a1aeea1b6fb169819b60378cd0caa5685a
     locator: "Push and run a Docker image, step 2"
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: a427902aaa905a84203fb76aa7315f85c5a951ca20a626b8953ac23860766390

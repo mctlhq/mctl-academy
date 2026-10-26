@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4210b8e6c3a7
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/application-integration
 stem: "A robot application behind a firewall needs to expose its HTTP API to an
@@ -32,12 +32,8 @@ evidence:
   - source_id: src-pa-tunnels-overview
     excerpt: "The VM or private network doesn't need to accept inbound connections
       from the internet for this traffic."
-    source_sha256: 54707987328b3b5ec40e28d698fa2b6fe54327a6c381b7d985f67471f95b6db3
+    source_sha256: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: 1af42ff221714c7d1805bc8cb2c04a631a2cc0a52c1dbaf5b55288503fea3063

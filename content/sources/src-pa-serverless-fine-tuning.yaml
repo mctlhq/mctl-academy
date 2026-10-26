@@ -2,11 +2,13 @@ schema_version: 1
 id: src-pa-serverless-fine-tuning
 url: https://docs.nebius.com/serverless/tutorials/fine-tuning.md
 title: Fine-tuning a large language model by using a Serverless AI job and Axolotl
-retrieved_at: 2026-10-18T01:17:11Z
-sha256: 4a9d9ef1d3a8b5fa4de3ac1a6dfd0cec5ffe364ce9b6670832f89a1350bf9ece
+retrieved_at: 2026-10-26T13:25:02Z
+sha256: c0c45188041e47656be1ff97030b8766e7480447bc7b1c91bcb113105fc27636
 objectives:
   - domain-1/supervised-fine-tuning
 snapshot:
   bucket: academy-source-snapshots
-  key: 4a9d9ef1d3a8b5fa4de3ac1a6dfd0cec5ffe364ce9b6670832f89a1350bf9ece
+  key: c0c45188041e47656be1ff97030b8766e7480447bc7b1c91bcb113105fc27636
 status: current
+versions:
+  - 4a9d9ef1d3a8b5fa4de3ac1a6dfd0cec5ffe364ce9b6670832f89a1350bf9ece

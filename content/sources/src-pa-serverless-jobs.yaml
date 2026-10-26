@@ -2,11 +2,13 @@ schema_version: 1
 id: src-pa-serverless-jobs
 url: https://docs.nebius.com/serverless/jobs/manage.md
 title: Managing jobs in Serverless AI
-retrieved_at: 2026-10-18T01:17:12Z
-sha256: 69e9b6a81c8adfdad90e45e6ae13414158d378205578c88d65efaf06f67b935e
+retrieved_at: 2026-10-26T13:25:03Z
+sha256: d75b10696d2368b80ab4a8de75d245783e4dfeacf2fbc13101c410939b475eb5
 objectives:
   - domain-1/gpu-orchestration
 snapshot:
   bucket: academy-source-snapshots
-  key: 69e9b6a81c8adfdad90e45e6ae13414158d378205578c88d65efaf06f67b935e
+  key: d75b10696d2368b80ab4a8de75d245783e4dfeacf2fbc13101c410939b475eb5
 status: current
+versions:
+  - 69e9b6a81c8adfdad90e45e6ae13414158d378205578c88d65efaf06f67b935e

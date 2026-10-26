@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co40c9898d9e
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/security-policies
 stem: Your organization's IdP has rotated the signing certificate used for
@@ -36,16 +36,12 @@ evidence:
   - source_id: src-co-iam-federations
     excerpt: you can create, activate, deactivate and delete federations, change
       their settings, and upload or delete attached certificates.
-    source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
+    source_sha256: b2f68e63cf1496c7e631778662dcb8959fe983ad303cd0abc8a3ae132c6fe0af
   - source_id: src-co-iam-federations
     excerpt: A federation cannot function correctly without at least one valid
       certificate.
-    source_sha256: c31d9d30d824b6da196e44d8d7a3d05eb55f938d7fa2adf7b77ec0b1cae16f33
+    source_sha256: b2f68e63cf1496c7e631778662dcb8959fe983ad303cd0abc8a3ae132c6fe0af
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 4184f02b76244272fb32e7add53d85a805d98e37ac683fce086eef551f924391

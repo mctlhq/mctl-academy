@@ -2,11 +2,13 @@ schema_version: 1
 id: src-pa-mlflow-index
 url: https://docs.nebius.com/mlflow/index.md
 title: Managed Service for MLflow
-retrieved_at: 2026-10-18T01:17:21Z
-sha256: bb97dc33a526a8ddf4d365f1ae4e6925dfed1502288c9166edbf0eb54b8b9086
+retrieved_at: 2026-10-26T13:24:53Z
+sha256: e3c5c60f8835b8d9bf228f2a5a6276c633ab6018f9d5355da600c9e3564a19ea
 objectives:
   - domain-1/experiment-tracking
 snapshot:
   bucket: academy-source-snapshots
-  key: bb97dc33a526a8ddf4d365f1ae4e6925dfed1502288c9166edbf0eb54b8b9086
+  key: e3c5c60f8835b8d9bf228f2a5a6276c633ab6018f9d5355da600c9e3564a19ea
 status: current
+versions:
+  - bb97dc33a526a8ddf4d365f1ae4e6925dfed1502288c9166edbf0eb54b8b9086

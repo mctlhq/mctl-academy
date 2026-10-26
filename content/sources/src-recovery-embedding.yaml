@@ -2,15 +2,16 @@ schema_version: 1
 id: src-recovery-embedding
 url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-embeddings.md
 title: Embeddings API
-retrieved_at: 2026-10-18T01:26:25Z
-sha256: 3ef0d919930a16882eb198d5cd74c03d063a80c14f6edd8fc6ee0e839f3e27c1
+retrieved_at: 2026-10-26T13:25:16Z
+sha256: cea1dd915d38bec83f248c945f020d92d6768d0e0a58dfaa07857bd21047dd67
 objectives:
   - domain-2/embeddings-and-rerank
 snapshot:
   bucket: academy-source-snapshots
-  key: 3ef0d919930a16882eb198d5cd74c03d063a80c14f6edd8fc6ee0e839f3e27c1
+  key: cea1dd915d38bec83f248c945f020d92d6768d0e0a58dfaa07857bd21047dd67
 status: current
 versions:
   - e5d3ecd618e477f013cd3469df0f51ed8c0c87ea16c4d758e1fe7d0dbe6bb036
   - b916c7f9ea8e38049b873ba445620ad4a55ea1eb2e2df62027c38fb137c985db
   - 37f723722faebd4ccc39361d6bc431e115126fc5346803aec0f370c513668849
+  - 3ef0d919930a16882eb198d5cd74c03d063a80c14f6edd8fc6ee0e839f3e27c1

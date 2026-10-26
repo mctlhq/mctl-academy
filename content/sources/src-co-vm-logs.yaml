@@ -2,11 +2,13 @@ schema_version: 1
 id: src-co-vm-logs
 url: https://docs.nebius.com/compute/virtual-machines/logs.md
 title: How to collect diagnostic logs from Compute virtual machines
-retrieved_at: 2026-08-16T18:54:35Z
-sha256: a4f077c9be43a10dc4ed7a6cf5d172f553a56a27eca101ac4efe6732ce67ad50
+retrieved_at: 2026-10-26T13:24:37Z
+sha256: 820f0911e3979113c176bcfaa5018e3b7a4a2a26f1c79aa74a7876b85bfab521
 objectives:
   - domain-4/operational-troubleshooting
 snapshot:
   bucket: academy-source-snapshots
-  key: a4f077c9be43a10dc4ed7a6cf5d172f553a56a27eca101ac4efe6732ce67ad50
+  key: 820f0911e3979113c176bcfaa5018e3b7a4a2a26f1c79aa74a7876b85bfab521
 status: current
+versions:
+  - a4f077c9be43a10dc4ed7a6cf5d172f553a56a27eca101ac4efe6732ce67ad50

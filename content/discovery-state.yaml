@@ -33,48 +33,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/applications/kubernetes/nvidia-blueprint-virtual-screening/licenses.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/comfyui/connect.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/comfyui/export-data.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/comfyui/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/flowise/connect.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/flowise/export-data.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/flowise/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/jupyterlab/connect.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/jupyterlab/deploy.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/jupyterlab/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/jupyterlab/notebooks.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/open-webui/connect.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/open-webui/export-data.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/open-webui/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/pricing.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/qdrant/connect.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/qdrant/export-data.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/qdrant/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/quotas.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/standalone/stop-start.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/types.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/events/export.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/events/filter.md
@@ -157,15 +115,9 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/use.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/applications-containers.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/applications.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/capacity-advisor.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/connect.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/containers.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/delete.md
     first_seen: 2026-09-13
@@ -1299,6 +1251,30 @@ seen:
     first_seen: 2026-10-18
   - url: https://docs.nebius.com/tunnels/tutorials/webhook.md
     first_seen: 2026-10-18
-  - url: https://docs.tokenfactory.nebius.com/notifications-and-subscription.md
-    first_seen: 2026-10-18
+  - url: https://docs.nebius.com/applications/comfyui/connect.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/comfyui/export-data.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/comfyui/index.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/jupyterlab/connect.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/jupyterlab/deploy.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/jupyterlab/index.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/jupyterlab/notebooks.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/qdrant/connect.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/qdrant/export-data.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/applications/qdrant/index.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/serverless/maintenance/stop-start.md
+    first_seen: 2026-10-26
+  - url: https://docs.nebius.com/signup-billing/spot-prices.md
+    first_seen: 2026-10-26
+  - url: https://docs.tokenfactory.nebius.com/cached-tokens.md
+    first_seen: 2026-10-26
 ignored: []

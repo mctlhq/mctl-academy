@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc04a8b9c0d1
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/function-calling
 stem: A workflow must always call `read_file` first, regardless of what the user
@@ -28,11 +28,8 @@ evidence:
   - source_id: src-function-calling
     excerpt: This forces the model to call the `read_file` function regardless of
       context, overriding its own tool selection logic.
-    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+    source_sha256: e3bb6c330048d66059012799f2efda935f13cbc7a133b63712bc1b080bf7fa82
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder

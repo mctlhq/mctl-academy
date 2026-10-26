@@ -2,11 +2,13 @@ schema_version: 1
 id: src-pa-mysterybox-overview
 url: https://docs.nebius.com/mysterybox/overview.md
 title: MysteryBox overview
-retrieved_at: 2026-10-18T01:17:29Z
-sha256: 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31
+retrieved_at: 2026-10-26T13:24:55Z
+sha256: 79cb41c1342e747c79e5521daa32f94830a0c0582c85a4f0eb1c900c7d8cf4ab
 objectives:
   - domain-4/workflow-security
 snapshot:
   bucket: academy-source-snapshots
-  key: 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31
+  key: 79cb41c1342e747c79e5521daa32f94830a0c0582c85a4f0eb1c900c7d8cf4ab
 status: current
+versions:
+  - 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31

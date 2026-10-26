@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3128de5d55
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: An engineer tries to create a 100 GiB Network SSD Non-replicated disk and
@@ -27,12 +27,8 @@ evidence:
   - source_id: src-co-storage-types
     excerpt: The size of each namespace is 93 GiB, so the disk size must be a
       multiple of 93 GiB.
-    source_sha256: 8be93545b3ba8adb94b518c5af81224b2a40a91d05f1ed949b56b9be382ce1b4
+    source_sha256: 8e297297ff906c82eb2281820383484de5ad19b9bfb9c9ab970805ff87dd964e
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: 876f3d7f906009eb35da3a48c2fa869e019c073ebc0a53612d970e1511ebac12

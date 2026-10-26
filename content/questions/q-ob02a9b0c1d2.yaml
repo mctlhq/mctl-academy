@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ob02a9b0c1d2
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/observability
 stem: Which token counts does the `usage` object of a Chat Completions response
@@ -28,16 +28,12 @@ evidence:
     excerpt: "completion_tokens: type: integer title: Completion Tokens description:
       Number of tokens in the generated completion. prompt_tokens: type: integer
       title: Prompt Tokens"
-    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+    source_sha256: c5da9a21ba477a377b2f4e533e4288b6cedb43a4a522317b065bbe9057dac9a8
   - source_id: src-recovery-chat
     excerpt: "total_tokens: type: integer title: Total Tokens description: Total
       number of tokens used in the request (prompt + completion)."
-    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+    source_sha256: c5da9a21ba477a377b2f4e533e4288b6cedb43a4a522317b065bbe9057dac9a8
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: c22810585735abcda78f59df0e65932fb31bfea2b9905297352a55363221079b

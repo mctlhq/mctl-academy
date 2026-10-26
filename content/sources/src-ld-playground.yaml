@@ -2,12 +2,14 @@ schema_version: 1
 id: src-ld-playground
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/playground.md
 title: UI and Playground
-retrieved_at: 2026-08-16T18:54:42Z
-sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+retrieved_at: 2026-10-26T13:24:52Z
+sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 objectives:
   - domain-2/product-outcomes
   - domain-1/model-selection
 snapshot:
   bucket: academy-source-snapshots
-  key: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+  key: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 status: current
+versions:
+  - 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55

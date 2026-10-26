@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4f8a2c6e9d31
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/application-integration
 stem: "A robot application's CI pipeline needs to push container images to
@@ -34,12 +34,8 @@ evidence:
   - source_id: src-pa-registry-quickstart
     excerpt: "Run the Nebius AI Cloud Docker credential helper. It lets you use
       registries in Container Registry without running the `docker login`."
-    source_sha256: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+    source_sha256: 9dc1a60d813d88736e0d2f80e98244a1aeea1b6fb169819b60378cd0caa5685a
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T10:04:20Z
-  content_sha256: bcb3f5fe0e9e862af0286358f743d6d5c97985a08a657117629dcf9f1d53648b

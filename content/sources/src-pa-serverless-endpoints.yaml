@@ -2,12 +2,14 @@ schema_version: 1
 id: src-pa-serverless-endpoints
 url: https://docs.nebius.com/serverless/endpoints/manage.md
 title: Managing endpoints in Serverless AI
-retrieved_at: 2026-10-18T01:17:14Z
-sha256: af3f072f951f152bf234900a1bca569216ddfde4049a79cdb0f124c65f280030
+retrieved_at: 2026-10-26T13:24:59Z
+sha256: f490f7a3f0b75fe80d9d8c36fc5d197d36603bc88fc5da2139f7c250a274aa89
 objectives:
   - domain-3/inference-setup
   - domain-4/application-integration
 snapshot:
   bucket: academy-source-snapshots
-  key: af3f072f951f152bf234900a1bca569216ddfde4049a79cdb0f124c65f280030
+  key: f490f7a3f0b75fe80d9d8c36fc5d197d36603bc88fc5da2139f7c250a274aa89
 status: current
+versions:
+  - af3f072f951f152bf234900a1bca569216ddfde4049a79cdb0f124c65f280030

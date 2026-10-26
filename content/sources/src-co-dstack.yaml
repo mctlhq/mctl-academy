@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-co-dstack
+url: https://docs.nebius.com/3p-integrations/dstack.md
+title: Installation of dstack for AI workload orchestration
+retrieved_at: 2026-10-26T13:24:18Z
+sha256: 5c926f3661e81bbba27b77f8f7631b1b8440e45857b035bcdef1176b16a09c36
+objectives:
+  - domain-1/gpu-orchestration
+snapshot:
+  bucket: academy-source-snapshots
+  key: 5c926f3661e81bbba27b77f8f7631b1b8440e45857b035bcdef1176b16a09c36
+status: current

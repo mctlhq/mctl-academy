@@ -2,12 +2,14 @@ schema_version: 1
 id: src-pa-soperator-move-capacity
 url: https://docs.nebius.com/slurm-soperator/capacity/move-capacity.md
 title: Moving capacity between training and inference workloads
-retrieved_at: 2026-10-18T01:17:24Z
-sha256: f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
+retrieved_at: 2026-10-26T13:25:06Z
+sha256: 49774139fada4b505aec63db1cd03fd690503debd41154a53612edb99ff52d7d
 objectives:
   - domain-1/gpu-orchestration
   - domain-3/inference-capacity
 snapshot:
   bucket: academy-source-snapshots
-  key: f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
+  key: 49774139fada4b505aec63db1cd03fd690503debd41154a53612edb99ff52d7d
 status: current
+versions:
+  - f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f29ae7c1b4d6
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/api-authentication
 stem: Per the Token Factory Quickstart guide, what does the documentation
@@ -30,12 +30,8 @@ options:
 evidence:
   - source_id: src-recovery-quickstart
     excerpt: "For authentication, [get an API key]"
-    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+    source_sha256: c5cd2fedff5f96353b54925393a78f6306a011b49a3b4009cb0c0a1601191747
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 1af38e77824d6387b323e2c073941ad361d3779fd2cc8067a8cae88c8dfea86e

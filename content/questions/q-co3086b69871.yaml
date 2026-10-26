@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3086b69871
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: Four running VMs must read and write one common dataset at the same time.
@@ -29,12 +29,8 @@ options:
 evidence:
   - source_id: src-co-storage-types
     excerpt: One shared filesystem can be attached to multiple VMs at once.
-    source_sha256: 8be93545b3ba8adb94b518c5af81224b2a40a91d05f1ed949b56b9be382ce1b4
+    source_sha256: 8e297297ff906c82eb2281820383484de5ad19b9bfb9c9ab970805ff87dd964e
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: a79ee692d3e04f0cb84df8db16f2fc83f85933580365fe0a188381a0dbfa0f99
