@@ -2,12 +2,14 @@ schema_version: 1
 id: src-pa-serverless-monitoring
 url: https://docs.nebius.com/serverless/monitoring.md
 title: Metrics for endpoints and jobs
-retrieved_at: 2026-10-18T01:17:17Z
-sha256: 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea
+retrieved_at: 2026-10-30T14:51:11Z
+sha256: de24508d715fc4857dca33b7c2ac6d81638900a2fcb52a575b026a0804eec0c5
 objectives:
   - domain-3/inference-capacity
   - domain-4/observability-tracing
 snapshot:
   bucket: academy-source-snapshots
-  key: 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea
+  key: de24508d715fc4857dca33b7c2ac6d81638900a2fcb52a575b026a0804eec0c5
 status: current
+versions:
+  - 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea

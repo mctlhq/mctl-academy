@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9c3e7b1f4a86
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/observability-tracing
 stem: "A team is viewing metrics for a Serverless AI endpoint that serves their
@@ -36,12 +36,8 @@ evidence:
   - source_id: src-pa-serverless-monitoring
     excerpt: "View them on the **Metrics** tab of your job or endpoint; the
       underlying VMs aren't shown in Compute."
-    source_sha256: 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea
+    source_sha256: de24508d715fc4857dca33b7c2ac6d81638900a2fcb52a575b026a0804eec0c5
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T10:04:20Z
-  content_sha256: 1c29b82e8fb4e1c1e5437a6751fe70bfe5f37af546e6cb3843d9980ef9277802

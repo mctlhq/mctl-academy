@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co46427e70ca
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: While adding a notification email to an alert, an engineer without admin
@@ -27,11 +27,8 @@ options:
 evidence:
   - source_id: src-co-alerts
     excerpt: If you don't have admin rights, you can see only your own contacts
-    source_sha256: 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
+    source_sha256: cbb836187203fd8a9a98eced0d27af2314b25afa7150daf07c30421608dfcb37
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

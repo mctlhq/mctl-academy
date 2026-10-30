@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld42b692341b
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/product-outcomes
 stem: A developer has finished tuning a chat setup in the Playground and needs
@@ -28,11 +28,8 @@ evidence:
   - source_id: src-ld-playground
     excerpt: '**Export as code** — Click **View code** in the left panel to copy
       your model setup (including the chat) for use in your application.'
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

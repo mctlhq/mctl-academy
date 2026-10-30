@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fj02b0c1d2e3
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/fine-tuning-jobs
 stem: How can a developer inspect what happened during a fine-tuning job, such
@@ -29,15 +29,11 @@ evidence:
   - source_id: src-supervised-fine-tuning
     excerpt: Events help you understand the lifecycle (file validation, dataset
       processing, training progress).
-    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
   - source_id: src-supervised-fine-tuning
     excerpt: events = client.fine_tuning.jobs.list_events(job.id)
-    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T07:03:45Z
-  content_sha256: c34946e16fd263ec9a2a586edfcfc7670e07f771108886898e6087667a7351cc

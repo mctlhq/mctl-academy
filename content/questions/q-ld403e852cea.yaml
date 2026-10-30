@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld403e852cea
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/workflow-design
 stem: A workload's traffic varies sharply between business hours and overnight.
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: Set minimum and maximum replicas to automatically scale capacity with
       traffic.
-    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
+    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 4e43421f6c012128a435bd87260c8cd63e9df4d3b2f8bfbb068125e9d0fe3ec1

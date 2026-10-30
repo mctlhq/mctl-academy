@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co564ab8cfb2
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: An intermittent VM fault has just cleared. Support asks for diagnostic
@@ -30,11 +30,8 @@ evidence:
   - source_id: src-co-vm-logs
     excerpt: We strongly recommend collecting logs while the issue is still
       occurring, because they capture more information about the broken state
-    source_sha256: a4f077c9be43a10dc4ed7a6cf5d172f553a56a27eca101ac4efe6732ce67ad50
+    source_sha256: 820f0911e3979113c176bcfaa5018e3b7a4a2a26f1c79aa74a7876b85bfab521
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

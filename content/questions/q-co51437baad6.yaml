@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co51437baad6
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: A Managed Kubernetes node group fails to grow because of a quota limit,
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-co-compute-quotas
     excerpt: These quotas apply to Compute VMs and also to Managed Service for
       Soperator and Managed Service for Kubernetes® nodes
-    source_sha256: f48aaac3871e8016c228deea7561c5b5e80de333739871d31d1c57b1f0584183
+    source_sha256: ec01f18c5011655dc58b53d5de29e2a27ee983b21daa69a3ee06902dc8060edc
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: fbd0a31c56ac39fa9fc42c8ef3a2976fd94c5710b0027859af5d930e67bc5d10

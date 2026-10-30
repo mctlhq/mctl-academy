@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld217205c155
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A product lead asks whether choosing the Fast flavor of a model will
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: c8080e419349eca2febd1ee038448ac2b35ce8f1b7f1953f03a58d20bda64611

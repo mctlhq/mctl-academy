@@ -2,11 +2,13 @@ schema_version: 1
 id: src-pa-tunnels-overview
 url: https://docs.nebius.com/tunnels/overview.md
 title: About Nebius Tunnels
-retrieved_at: 2026-10-18T01:17:27Z
-sha256: 54707987328b3b5ec40e28d698fa2b6fe54327a6c381b7d985f67471f95b6db3
+retrieved_at: 2026-10-30T14:51:14Z
+sha256: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
 objectives:
   - domain-4/application-integration
 snapshot:
   bucket: academy-source-snapshots
-  key: 54707987328b3b5ec40e28d698fa2b6fe54327a6c381b7d985f67471f95b6db3
+  key: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
 status: current
+versions:
+  - 54707987328b3b5ec40e28d698fa2b6fe54327a6c381b7d985f67471f95b6db3

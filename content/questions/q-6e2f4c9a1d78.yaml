@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6e2f4c9a1d78
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/inference-capacity
 stem: "A team wants to shift idle GPU capacity from a Soperator training cluster
@@ -42,12 +42,8 @@ evidence:
   - source_id: src-pa-soperator-move-capacity
     excerpt: "you can move GPU capacity between them without stopping the entire
       Soperator cluster"
-    source_sha256: f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
+    source_sha256: 49774139fada4b505aec63db1cd03fd690503debd41154a53612edb99ff52d7d
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T09:29:20Z
-  content_sha256: 242bd0401272f74f8bdcc8f691b8e80a7c42ed80f70e8742686f80e23c31ea1c

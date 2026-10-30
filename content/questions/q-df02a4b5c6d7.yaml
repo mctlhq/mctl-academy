@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-df02a4b5c6d7
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/dataset-formats
 stem: You want a fine-tuned model to be better at calling your tools. What can a
@@ -30,11 +30,8 @@ evidence:
   - source_id: src-dataset-formats
     excerpt: Each training example can optionally include a `tools` field that
       defines the tools available in that conversation.
-    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+    source_sha256: 85722b2677ef9bfc772256754df8a362cb841ff27ac49f56bddc40803acb1033
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder

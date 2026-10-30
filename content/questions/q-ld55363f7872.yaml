@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld55363f7872
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: An operations dashboard shows a dedicated endpoint as Updating. What does
@@ -26,12 +26,8 @@ options:
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Endpoint is applying configuration changes.
-    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
+    source_sha256: 7c7dec03fa43ddb98fc5700635096e6e1da30efe511595efe4e7307acccaee04
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 6ac7fee426f8e6529cace4a6224ee2ed36c2c50a7a868cf361bae5df6950403f

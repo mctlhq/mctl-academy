@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el01a0b1c2d3
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: Your load balancer must decide whether to route traffic to a dedicated
@@ -28,12 +28,8 @@ options:
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
-    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
+    source_sha256: 7c7dec03fa43ddb98fc5700635096e6e1da30efe511595efe4e7307acccaee04
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 8b8de48e2712c9b5afb1b4a2df70830b17a8668aa84382be4c644ccf48c98e1e

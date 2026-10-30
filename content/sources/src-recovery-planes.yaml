@@ -2,13 +2,14 @@ schema_version: 1
 id: src-recovery-planes
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/control-data-plane.md
 title: Control and data plane
-retrieved_at: 2026-10-08T13:59:08Z
-sha256: 9e00c5b715c4e3de30d3a8c6145403ef60a3a3ade86bb68a2be9c962b6ddcc29
+retrieved_at: 2026-10-30T14:51:30Z
+sha256: d4db1f3fedee50c64e96f460f467de414adcd4015f3d82ffbe5ee6c21bb957a7
 objectives:
   - domain-4/dedicated-endpoints
 snapshot:
   bucket: academy-source-snapshots
-  key: 9e00c5b715c4e3de30d3a8c6145403ef60a3a3ade86bb68a2be9c962b6ddcc29
+  key: d4db1f3fedee50c64e96f460f467de414adcd4015f3d82ffbe5ee6c21bb957a7
 status: current
 versions:
   - ffe11185c76bc0b82535a0d81ea41d972fd3d4316cbbe0252c6dd4907b6c5be7
+  - 9e00c5b715c4e3de30d3a8c6145403ef60a3a3ade86bb68a2be9c962b6ddcc29

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-3f7e821d6b04
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/data-lab
 stem: A team wants to build a training dataset from the chat completions their
@@ -38,20 +38,16 @@ evidence:
   - source_id: src-recovery-data-lab
     excerpt: "**Inference Logs:** automatically collected chat completions generated
       via API or Playground"
-    source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
+    source_sha256: d3f90865d2c232b6f508246af4df7e448e9ae6cf7db22b7619bfeb9fda8c38c8
   - source_id: src-recovery-data-lab
     excerpt: "**Filtered Datasets:** datasets created from inference logs using sql
       queries."
-    source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
+    source_sha256: d3f90865d2c232b6f508246af4df7e448e9ae6cf7db22b7619bfeb9fda8c38c8
   - source_id: src-recovery-data-lab
     excerpt: You can upload your own data, connect data from S3-compatible storage,
       or create datasets from inference logs
-    source_sha256: ef12d4cbb340b70bc6599ecc7b7046d18deffb8031741f0774024b37643277d1
+    source_sha256: d3f90865d2c232b6f508246af4df7e448e9ae6cf7db22b7619bfeb9fda8c38c8
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 4f6ee0f06de800d6816ca89c47c99f53da2475f6e4e257cccd6945dbe81a6f4c

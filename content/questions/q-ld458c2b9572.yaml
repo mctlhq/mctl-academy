@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld458c2b9572
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/structured-output
 stem: A downstream service needs the model's answer in a fixed shape it can
@@ -27,11 +27,8 @@ evidence:
   - source_id: src-structured-output
     excerpt: By default, a text generation model responds to your requests with a
       text in natural language.
-    source_sha256: 70921c062c7122cafb3f0f8c05eb185edc48abb463149fc55c3f1358de7551e8
+    source_sha256: 2aa65140a13a0ccbac9613b891f0a1eba6418f6129408f084b8885e05c2f99f9
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z

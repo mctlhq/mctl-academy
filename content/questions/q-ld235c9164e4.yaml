@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld235c9164e4
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: How does speculative decoding raise throughput without degrading output
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-inference-overview
     excerpt: uses auxiliary models to pre-generate likely next tokens. The main
       model verifies these predictions
-    source_sha256: 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca
+    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 622f3375973f619433cd836106892df66d50ac3d50216621251ee476752a1de5

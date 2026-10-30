@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ft03c7d8e9f0
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
 stem: Which fine-tuning hyperparameter sets how many passes the job makes over
@@ -29,12 +29,8 @@ options:
 evidence:
   - source_id: src-supervised-fine-tuning
     excerpt: "`n_epochs` (integer, optional) Number of passes over the entire dataset."
-    source_sha256: aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-09-06T06:49:34Z
-  content_sha256: ddfbb12f11e9fcb65c8e8e8740feb71065ddccca15a8ac414893998d92adb7dc

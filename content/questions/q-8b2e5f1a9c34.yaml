@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-8b2e5f1a9c34
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/playground
 stem: In the Token Factory Playground, what does the "Quality" value shown on a
@@ -29,13 +29,9 @@ options:
 evidence:
   - source_id: src-recovery-playground
     excerpt: "**Quality** — MMLU score reported by the model provider."
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
     locator: Model card
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 54ea9ae5fa6772c495e8b5cdc4ffecdcfb65c22ef9548995c125e2f6960fe763

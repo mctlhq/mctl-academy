@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3467c7f2ed
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/iam-roles
 stem: A service account was created in the tooling project. It now needs to
@@ -31,11 +31,8 @@ evidence:
   - source_id: src-co-iam-overview
     excerpt: a service account can be granted access to any resource in the tenant
       regardless of the project
-    source_sha256: 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
+    source_sha256: 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
