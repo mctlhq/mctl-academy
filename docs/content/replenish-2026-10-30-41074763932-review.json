@@ -1305,13 +1305,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-rl05c7d8e9f0",
-      "content_sha256": "2ec27955a4c9e80b62f0121323bad1c1fd8102c96cd469e0dd0b7ecc978d761f",
-      "approved": true,
-      "reason": "The excerpt is the continuation of \"If you exceed the active limit you will receive **HTTP 429**. To avoid this, you can track your consumption...\" in the section \"Monitoring your headroom and handling 429s\", so read in context the page establishes 429.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-rp01a5b6c7d8",
       "content_sha256": "01560c02a916b1c18b1ca355de6dfdad4da3d3136bec7a1618fa19cbbe2f9b6b",
       "approved": false,

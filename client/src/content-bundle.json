@@ -8927,47 +8927,6 @@
     ]
   },
   {
-    "id": "q-rl05c7d8e9f0",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-4",
-    "objective": "domain-4/rate-limits",
-    "stem": "What HTTP status code is returned when a client request exceeds rate limits?",
-    "objectiveTitle": "Rate limits and scaling behaviour",
-    "sources": [
-      {
-        "title": "Rate Limits & Scaling",
-        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits.md",
-        "excerpt": "track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "HTTP 200 OK",
-        "correct": false,
-        "explanation": "200 OK indicates request success, not rate limiting throttling."
-      },
-      {
-        "id": "b",
-        "text": "HTTP 401 Unauthorized",
-        "correct": false,
-        "explanation": "401 Unauthorized indicates missing or invalid API keys."
-      },
-      {
-        "id": "c",
-        "text": "HTTP 429 Too Many Requests",
-        "correct": true,
-        "explanation": "HTTP 429 Too Many Requests is standard when request rate or token limits are exceeded."
-      },
-      {
-        "id": "d",
-        "text": "HTTP 502 Bad Gateway",
-        "correct": false,
-        "explanation": "502 Bad Gateway indicates upstream server network connectivity failures."
-      }
-    ]
-  },
-  {
     "id": "q-so01d5e6f7a8",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
