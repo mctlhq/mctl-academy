@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-f7c3a9e5d268
+status: review_ready
+domain: domain-3
+objective: domain-3/inference-capacity
+stem: "After creating a new Serverless AI endpoint or job, roughly how long does the documentation say it takes before usage data appears on the Metrics dashboard?"
+options:
+  - id: a
+    text: "5-10 minutes"
+    correct: true
+    explanation: "Correct. Usage data for endpoints and jobs becomes available 5-10 minutes after a resource is created."
+  - id: b
+    text: "Immediately, within the first few seconds"
+    correct: false
+    explanation: "Wrong. The documentation states a 5-10 minute delay before usage data becomes available, not an immediate appearance."
+  - id: c
+    text: "Only once every 15 seconds, starting the moment the endpoint is created"
+    correct: false
+    explanation: "Wrong. The 15-second interval is how often already-available data is refreshed; it is not the initial delay before data first appears."
+  - id: d
+    text: "Only after the first stop-and-restart cycle"
+    correct: false
+    explanation: "Wrong. No restart requirement for usage data to appear is documented; the only documented delay is the 5-10 minutes after creation."
+evidence:
+  - source_id: src-pa-serverless-monitoring
+    excerpt: "Usage data for endpoints and jobs becomes available 5–10 minutes after a resource is created."
+    source_sha256: de24508d715fc4857dca33b7c2ac6d81638900a2fcb52a575b026a0804eec0c5
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-30T14:48:37Z"
+course_id: physical-ai

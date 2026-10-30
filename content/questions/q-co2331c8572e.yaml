@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co2331c8572e
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: You are creating a GPU cluster and must pick an InfiniBand fabric. Why
@@ -29,14 +29,9 @@ options:
       must be chosen against the GPU type you intend to run.
 evidence:
   - source_id: src-co-gpu-clusters
-    excerpt: if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with
-      Intel Sapphire Rapids GPUs to this cluster
-    source_sha256: b29f84c8b2ba0982188ad01712ffec1e621f86071da3adb5608b22e43ea04382
+    excerpt: "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids to this cluster"
+    source_sha256: 2a62c18fcb8a55239f08fa2cbe1caf44dc66b43cf5e5b1553bca15d692931c84
 authored:
-  by: agent:codex-drift-author
-  at: 2026-09-06T11:00:00Z
+  by: "agent:claude-author"
+  at: "2026-10-30T14:48:37Z"
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 338061671e745f68f3812ced7e73044990f7eedcdc8fe9f61f5ead36c8cfcbea
