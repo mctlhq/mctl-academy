@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.58](https://github.com/mctlhq/mctl-academy/compare/0.1.57...0.1.58) (2026-10-30)
+
+
+### Content
+
+* **replenish:** author 14 question file(s) from 69 captured source(s) ([e14db60](https://github.com/mctlhq/mctl-academy/commit/e14db60faa2803b0503daaa4121615ac9c7b91a9))
+* **replenish:** hold q-rl05c7d8e9f0 back from this batch ([af68566](https://github.com/mctlhq/mctl-academy/commit/af685663f942fa3b611a47c65b5ced2996b1524f))
+* **replenish:** promote 183 reviewed question(s) ([42281fd](https://github.com/mctlhq/mctl-academy/commit/42281fd49114a4f1e8a991fd251964edcf85edec))
+
 ## [0.1.57](https://github.com/mctlhq/mctl-academy/compare/0.1.56...0.1.57) (2026-10-18)
 
 
