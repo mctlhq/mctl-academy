@@ -2634,8 +2634,25 @@ test("the selector, author and reviewer turn budgets are the same on every provi
   assert.equal(String(workflow.env.SELECTOR_TURNS), "60");
   assert.equal(String(workflow.env.AUTHOR_TURNS), "160");
   // Run 37783427034: the Opus reviewer needed 104 turns for the same batch and
-  // failed the same way against its 60-turn ceiling.
-  assert.equal(String(workflow.env.REVIEWER_TURNS), "120");
+  // failed the same way against its 60-turn ceiling. Run 40329844597: it
+  // needed 279 turns for 71 items against a 120-turn ceiling.
+  assert.equal(String(workflow.env.REVIEWER_TURNS), "400");
+});
+
+test("the review job has time for two full reviewer attempts", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // Run 40329844597: Opus took 1051 s for 279 turns. The job's 30-minute
+  // limit then cancelled the fallback attempt 12 minutes in. Primary plus
+  // fallback at the full turn budget must fit, with a few minutes for the
+  // steps around them.
+  const secondsPerTurn = 1051 / 279;
+  const attemptMinutes = (Number(workflow.env.REVIEWER_TURNS) * secondsPerTurn) / 60;
+  assert.ok(
+    workflow.jobs.review["timeout-minutes"] >= 2 * attemptMinutes + 5,
+    `review timeout ${workflow.jobs.review["timeout-minutes"]} min < two ${attemptMinutes.toFixed(1)}-min attempts + 5`,
+  );
 });
 
 test("each job pushes with an App token minted after its agents, not the one from the top of the job", () => {
