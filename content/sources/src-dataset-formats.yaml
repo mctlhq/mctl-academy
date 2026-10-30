@@ -2,11 +2,13 @@ schema_version: 1
 id: src-dataset-formats
 url: https://docs.tokenfactory.nebius.com/post-training/datasets.md
 title: Dataset Formats for Fine-Tuning
-retrieved_at: 2026-08-06T00:33:30Z
-sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+retrieved_at: 2026-10-30T14:50:48Z
+sha256: 85722b2677ef9bfc772256754df8a362cb841ff27ac49f56bddc40803acb1033
 objectives:
   - domain-3/dataset-formats
 snapshot:
   bucket: academy-source-snapshots
-  key: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+  key: 85722b2677ef9bfc772256754df8a362cb841ff27ac49f56bddc40803acb1033
 status: current
+versions:
+  - 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f

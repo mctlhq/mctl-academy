@@ -27,12 +27,12 @@ evidence:
   - source_id: src-co-manage-projects
     excerpt: For an existing project, you can only edit the name. You cannot move a
       project to another region or tenant.
-    source_sha256: 8164ebc1567338a0e5e3fcf322266253b34002dd58d9570fe2c9b7aa11115108
+    source_sha256: 8c7ca6398842fe640af364022464165e75d658a8477fb1c9664497922ca1af40
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 7966541c6d0d13603c5c389bc9e013ab42226c9bedef848bc50e088290ca874d
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1993fccfa647ad00bec2309a7ea8526905be10a50d3a960a94efa2af14192080

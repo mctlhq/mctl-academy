@@ -29,16 +29,16 @@ options:
 evidence:
   - source_id: src-integrations-overview
     excerpt: "## AI Application Frameworks"
-    source_sha256: d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20
+    source_sha256: 02147b4950b8d699aa6821a7521447e30d0937296a486bdb668c98eb5db7a7d0
   - source_id: src-integrations-overview
-    excerpt: <Card title="Langchain" icon="boxes-stacked"
-      href="/integrations/frameworks/langchain" />
-    source_sha256: d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20
+    excerpt: "**[Langchain](https://docs.tokenfactory.nebius.com/integrations/frame\
+      works/langchain)**"
+    source_sha256: 02147b4950b8d699aa6821a7521447e30d0937296a486bdb668c98eb5db7a7d0
 authored:
-  by: agent:claude-author
-  at: 2026-10-12T15:48:08Z
+  by: "agent:claude-author"
+  at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-12T15:59:31Z
-  content_sha256: 97802082c5eb8d5a97eaa3f519663368e8a5e15aebb46831e7e0138fe8763352
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 47b033d7d4f4203fa4ce7b4099f828d1f4024475e8af11c3bba5bd1cd1639212

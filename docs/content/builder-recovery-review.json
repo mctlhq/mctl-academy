@@ -3,124 +3,10 @@
   "reviewed_at": "2026-09-06T06:41:52Z",
   "questions": [
     {
-      "id": "q-fc05d2e3f4a5",
-      "content_sha256": "d7b78bec3295f45ce344973efae21d46be47bedbe943560143b022a8650f8de2",
-      "approved": true,
-      "reason": "Function-calling Note: 'The model does not execute the functions itself ... You are responsible for parsing these outputs and executing the corresponding functions on your backend or client side', plus the Python example appending {role: tool, content: result, tool_call_id: call.id} after executing, support option d. The 'Execute and Iterate' step contradicts a, b and c. d is uniquely best."
-    },
-    {
-      "id": "q-fi01c7d8e9f0",
-      "content_sha256": "cd1c11db054a0b30b3fd6502e86c786dc3d1a34ec5d537e61338be93c1168743",
-      "approved": true,
-      "reason": "Quickstart Python snippet constructs OpenAI(base_url=\"https://api.tokenfactory.nebius.com/v1/\", api_key=os.environ.get(\"NEBIUS_API_KEY\")); the JS variant uses the same pair as baseURL/apiKey. Option c is the only pair present in the source; the other three name parameters that do not exist on the client."
-    },
-    {
-      "id": "q-so04a3b4c5d6",
-      "content_sha256": "d8c4aaccc6cabd87e5b1cc2029f2c5f750891b514942a377ef11fa23a25e376a",
-      "approved": true,
-      "reason": "JSON page: 'JSON schema following. Follows the specific schema you provide - {type: json_schema}' vs 'Arbitrary JSON object. Forces arbitrary JSON output, the model will decide on the schema by itself {type: json_object}', and the Tip 'Use JSON schema instead of JSON objects whenever you need strict JSON structure' support option a. b and d contradict the distinction; c ignores the response_format the page prescribes (prompt instruction is described as additional). a is uniquely best."
-    },
-    {
-      "id": "q-df03a5b6c7d8",
-      "content_sha256": "cc4365db00df99ccefe5746da7d80e61dc04c079692f4f436e4cebd95bdad934",
-      "approved": true,
-      "reason": "Datasets page basic conversational example uses roles system, user, assistant; the 'Tool-augmented conversations' example adds {role: tool, tool_call_id: call_1, name: get_weather}. Option a matches exactly. b, c and d name roles/fields absent from the messages examples (query/document are rerank fields). a is uniquely best."
-    },
-    {
-      "id": "q-ds02d4e5f6a7",
-      "content_sha256": "13eb9ff9efcdc040aac09ac1dae31228bf98b220089f944c2a18e5d5831708bf",
-      "approved": true,
-      "reason": "Datasets page opening: 'Nebius Token Factory supports the JSON Lines format (.jsonl) for dataset files', and all four dataset types (conversational, instruction, text, pretokenized) are shown as JSON objects per line. Option d is the only documented format; XML, CSV and protobuf are absent. d is uniquely best."
-    },
-    {
-      "id": "q-fa01a1b2c3d4",
-      "content_sha256": "ff90cba29a392c75eec5b603c12a192f88fb0a3c21acae51c15023dd0c72689c",
-      "approved": true,
-      "reason": "Fine-tuning walkthrough step 2: 'training_file = client.files.create(file=open(\"training.jsonl\",\"rb\"), purpose=\"fine-tune\")' and 'You only need the id fields from these responses to create a fine-tuning job'; API spec: 'training_file (string, required) ID of the file with the training dataset (purpose = \"fine-tune\")'. Option a matches; inline rows, purpose=assistants/name reference, and URLs are not documented inputs. a is uniquely best."
-    },
-    {
-      "id": "q-ft03c7d8e9f0",
-      "content_sha256": "ddfbb12f11e9fcb65c8e8e8740feb71065ddccca15a8ac414893998d92adb7dc",
-      "approved": true,
-      "reason": "Hyperparameters section: 'n_epochs (integer, optional) Number of passes over the entire dataset. Range 1–20. Default 3' supports option c. batch_size and learning_rate are documented with different meanings (learning_rate: 'Step size for gradient descent'); temperature is not a fine-tuning hyperparameter on the page. c is uniquely best."
-    },
-    {
-      "id": "q-la03d6e7f8a9",
-      "content_sha256": "63c4a1430ad33799d82a5fe8654d24b9c9d94f1a93b8da92c419432c494e9fb3",
-      "approved": true,
-      "reason": "Hyperparameters section: 'lora_r (integer, optional) Rank of LoRA matrices. Higher values increase capacity but also overfitting and cost' supports option d. lora_dropout ('Dropout applied to LoRA layers'), weight_decay ('L2 regularization factor'), context_length are each documented with a different meaning. d is uniquely best."
-    },
-    {
-      "id": "q-pf08c6d7e8f9",
-      "content_sha256": "2385a7ec1a355540733c9e976f17de0bf0d8f5c5e0d4175a1873c6e71711f390",
-      "approved": true,
-      "reason": "Quickstart: 'client = OpenAI(base_url=\"https://api.tokenfactory.nebius.com/v1/\", ...)' (and baseURL in the JS variant) supports option a. The three distractors are URLs that appear nowhere in the source. a is uniquely best."
-    },
-    {
-      "id": "q-ld2443c1b29d",
-      "content_sha256": "b420e9909d60497e2175cded4ad2d82ec8b95d40bccd4c9e3028b9cbc7b74fea",
-      "approved": true,
-      "reason": "Reviewed 2026-09-06 after the option-a explanation edit (commit d3366e1). EVIDENCE CAVEAT: the evidence pins src-inference-overview sha 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca; no local snapshot with that hash exists (R2 only; Evidence CI verified the excerpt against it). Context was read from the LIVE revision captured at scratchpad inference-overview-live.md (sha 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340), not from the pinned bytes. In the live page the Quantization card reads exactly \"A technique that reduces the precision of model weights and activations, decreasing memory usage and computation\", which supports the stem (lower numeric precision of the model to reduce memory) and option d. The sibling cards define KV Cache (stores frequently accessed key-value pairs, reducing computations), Paged Attention (memory-management technique that partitions each request KV cache into fixed-size blocks, stored non-contiguously, reducing fragmentation) and Continuous Batching (batches multiple input sequences together, increasing throughput); none mentions precision, so a, b and c are ruled out and d is uniquely best. The rewritten option-a explanation matches the Paged Attention wording that commit 07a74e8 records for the pinned 344d6de4 revision and that the live page still carries; the other three explanations do not contradict the live definitions. Residual risk: the pinned bytes were not inspected directly; the approval rests on CI verbatim verification of the excerpt plus the commit-recorded pinned wording of the Paged Attention card."
-    },
-    {
-      "id": "q-df04b6c7d8e9",
-      "content_sha256": "10ce40c17af2631fa3925d00bf0ba14689bca0b2b1fef18c914b0966e5f52a2c",
-      "approved": true,
-      "reason": "Dataset Formats, section 'Tool-augmented conversations': 'Each training example can optionally include a `tools` field that defines the tools available in that conversation. The schema should match what you plan to use at inference time', followed by a JSON example with a top-level `tools` array and the key point '`tools` is optional'. That supports option b in both halves (optional field on the example; schema matching inference). The page documents JSON Lines files only, no binary payloads, no prompt-comment convention and no webhooks, so a, c and d have no support; b is the single best answer. Option-a explanation ('plain JSON Lines') matches the page's opening statement."
-    },
-    {
-      "id": "q-dl01a3b4c5d6",
-      "content_sha256": "0dc0d7375be4771149301c8670fa8e82fefe71822d2cf5622b888a00342fea4d",
-      "approved": true,
-      "reason": "Data Lab Overview, first paragraphs: 'the unified workspace inside Nebius Token Factory for working with inference logs (chat completions) and datasets' plus the three bullets 'view, filter, and export inference logs', 'preparing datasets via SQL queries' and 'Reusable datasets for batch inference and fine-tuning'. Option a restates exactly those three bullets. The page contains nothing about TLS certificates or Kubernetes nodes (b, c), and the SQL queries are described as creating 'Filtered Datasets ... from inference logs', not querying external production databases (d). Option a is the single best answer."
-    },
-    {
-      "id": "q-fa02b2c3d4e5",
-      "content_sha256": "d33431a2a599d5bc0fc31a3e5cb164105b215c377b37d2e13e3f1a4747e36a6f",
-      "approved": true,
-      "reason": "Supervised Fine-Tuning, Python step 2 uploads both training.jsonl and validation.jsonl with purpose=\"fine-tune\"; the cURL tab uses -F 'purpose=fine-tune' and the response echoes \"purpose\": \"fine-tune\"; the API specification says training_file is the 'ID of the file with the training dataset (purpose = \"fine-tune\")', which backs the second clause of the option-b explanation. No other purpose value appears anywhere on the page, so a, c and d (user_avatar, web_search, cache_backup) are unsupported and b is the single best answer."
-    },
-    {
-      "id": "q-fj02b0c1d2e3",
-      "content_sha256": "c34946e16fd263ec9a2a586edfcfc7670e07f771108886898e6087667a7351cc",
-      "approved": true,
-      "reason": "Supervised Fine-Tuning, Python step 6 'Inspect job events (optional but recommended)': 'Events help you understand the lifecycle (file validation, dataset processing, training progress)' immediately followed by the code 'events = client.fine_tuning.jobs.list_events(job.id)'; the cURL tab exposes the same via GET /v1/fine_tuning/jobs/<job_ID>/events. The stem's three examples are the page's own parenthetical. No serial console (a) or DNS (c) is mentioned, and /v1/models (d) does not appear on the page at all; the only other progress source the page names is the job object itself (trained_steps/total_steps), which is not one of the options. Option b is the single best answer."
-    },
-    {
-      "id": "q-la01c1d2e3f4",
-      "content_sha256": "9629234427502676e5628aeae692686c78ddfd6c69c50857a997d1a6ab1d57df",
-      "approved": true,
-      "reason": "Supervised Fine-Tuning, 'Hyperparameters': '`lora` (boolean, optional) Whether to use LoRA (Low-Rank Adaptation) instead of full-parameter fine-tuning. true: only LoRA adapter weights are trained; base model weights stay frozen. false: full fine-tuning is applied.' Option c is that sentence; a is the documented `lora: false` behaviour (the option-a explanation says so correctly), d inverts the sentence, and nothing on the page singles out the embedding layer (b). Single best answer: c."
-    },
-    {
       "id": "q-la02d2e3f4a5",
       "content_sha256": "a104b1328f9b41814ba72ac3afc018d184f3bcb1dad2a260fe533559167bf93c",
       "approved": true,
       "reason": "Merging LoRA Adapters intro: 'inference usually requires loading both the base model and the LoRA adapter. Here we provide a merge script that bakes the LoRA adapters directly into the base weights and produces a standard checkpoint directory' answers the stem. The rewritten option d ('for each merged layer's weight tensor it adds the scaled product B @ A') now matches the script exactly: _merge_lora_weight computes 'deltaW = B @ A; merged_weight = tensor + scale * deltaW' and _process_single_file applies it only when _needs_lora_merge(tensor_name) and tensor_name.endswith('.weight'), storing every other tensor unchanged. The explanation's default scope is the page's own 'Notes & constraints': 'By default, only layers matching ALLOWED_LORA_LAYERS = [r\"model.layers.*.self_attn\"] are merged. If you trained LoRA on other modules (e.g. MLPs), extend ALLOWED_LORA_LAYERS accordingly'; 'produces a standard checkpoint directory' and 'copied unchanged' are supported by the intro and by 'All non-.safetensors files are copied from the original checkpoint directory'. Nothing on the page describes gradient accumulation, dataset deduplication or prompt prefixing, so a, b and c have no support and d is the single best answer. Previous rejection (quantifier 'each base tensor') is resolved."
-    },
-    {
-      "id": "q-1d28809ed6da",
-      "content_sha256": "3bfa838eab1169c2b1572586838367ccf19cb649477ee9a190e53a2e4f20bedf",
-      "approved": true,
-      "reason": "Supervised Fine-Tuning, Prerequisites step 2: 'Optionally, create a validation dataset as well. A typical split is: 80–90% of examples → training, 10–20% of examples → validation'. Option c reproduces that split. 50/50 (a) and 99/1 (b) fall outside the documented range, and d ('equal-sized files are mandatory') is contradicted twice: the validation set is 'Optionally' created and the split is unequal; the option-c explanation's 'validation dataset is optional' is the same sentence. Single best answer: c. Reviewed as a fresh item under a new ID; the earlier q-ds01c3d4e5f6 revision that tested the rationale for splitting has no supporting passage on this page and stays needs_review."
-    },
-    {
-      "id": "q-3ed9d6aa21de",
-      "content_sha256": "cccb52247b9b9b0320588f7bac1370e7d68e01243e3c167f8c0f9d8b27ed9fe1",
-      "approved": true,
-      "reason": "Supervised Fine-Tuning, 'Hyperparameters' section: '`learning_rate` (float, optional) Step size for gradient descent. Must be >= 0. Typical values: 1e-6–5e-5. Default: 0.00001'. Option d matches the definition and range, and every clause of its explanation (>= 0, typical range, default) is on the page. Each distractor is the page's definition of a different hyperparameter (n_epochs 'Number of passes over the entire dataset', range 1–20; lora_r 'Rank of LoRA matrices', range 8–128; warmup_ratio 'Fraction of total training steps used for linear warmup', range 0–1), so none describes learning_rate and d is the single best answer. Reviewed as a fresh item under a new ID; the earlier q-ft04d8e9f0a1 revision about a too-high learning rate has no supporting passage on this page (only max_grad_norm has documented too-high/too-low consequences) and stays needs_review."
-    },
-    {
-      "id": "q-pf05f3a4b5c6",
-      "content_sha256": "4e30f0885115273ce9e0875044e0a8f2742091d4e235bc2b6735ae7b71954c44",
-      "approved": true,
-      "reason": "Quickstart cURL example: -H \"Authorization: Bearer $NEBIUS_API_KEY\" against https://api.tokenfactory.nebius.com/v1/chat/completions; the Python and JavaScript examples pass the same NEBIUS_API_KEY as api_key / apiKey, and the 'Get API key' accordion says 'For authentication, get an API key'. The chat completion reference on the same host declares security HTTPBearer. Option a is supported. b, c, d (mTLS certificate, password header, IP allowlist) appear nowhere in the quickstart. Single evidence item, but it is the canonical authenticated request and needs no second source. a is uniquely best."
-    },
-    {
-      "id": "q-pf07b5c6d7e8",
-      "content_sha256": "3777458bd86a513c5cf6d5a138eef6c7139086afdba523187a086bdedae87b32",
-      "approved": true,
-      "reason": "UI & Playground: 'The Playground in Nebius Token Factory lets you experiment with available AI models through a web interface — no coding required', and 'Compare setups': 'To work with two model setups side by side, click Compare. This will open two chat windows where you can submit inputs for both setups at the same time'. Option a is supported in full. b, c, d are unrelated to anything on the page. a is uniquely best."
     }
   ],
   "superseded": [
@@ -277,6 +163,139 @@
       "approved": true,
       "reason": "Organizations and Projects, 'Organization' section: 'When you sign up for Nebius Token Factory, a personal organization is created automatically. You can also: Be invited to other organizations and collaborate on their projects; Create additional organizations for separate teams or business units'. Option a restates both bullets. b is contradicted by those bullets; c and d add conditions (per-organization payment card, 24-hour window) that appear nowhere on the page. a is uniquely best.",
       "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-fc05d2e3f4a5",
+      "content_sha256": "d7b78bec3295f45ce344973efae21d46be47bedbe943560143b022a8650f8de2",
+      "approved": true,
+      "reason": "Function-calling Note: 'The model does not execute the functions itself ... You are responsible for parsing these outputs and executing the corresponding functions on your backend or client side', plus the Python example appending {role: tool, content: result, tool_call_id: call.id} after executing, support option d. The 'Execute and Iterate' step contradicts a, b and c. d is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-fi01c7d8e9f0",
+      "content_sha256": "cd1c11db054a0b30b3fd6502e86c786dc3d1a34ec5d537e61338be93c1168743",
+      "approved": true,
+      "reason": "Quickstart Python snippet constructs OpenAI(base_url=\"https://api.tokenfactory.nebius.com/v1/\", api_key=os.environ.get(\"NEBIUS_API_KEY\")); the JS variant uses the same pair as baseURL/apiKey. Option c is the only pair present in the source; the other three name parameters that do not exist on the client.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-so04a3b4c5d6",
+      "content_sha256": "d8c4aaccc6cabd87e5b1cc2029f2c5f750891b514942a377ef11fa23a25e376a",
+      "approved": true,
+      "reason": "JSON page: 'JSON schema following. Follows the specific schema you provide - {type: json_schema}' vs 'Arbitrary JSON object. Forces arbitrary JSON output, the model will decide on the schema by itself {type: json_object}', and the Tip 'Use JSON schema instead of JSON objects whenever you need strict JSON structure' support option a. b and d contradict the distinction; c ignores the response_format the page prescribes (prompt instruction is described as additional). a is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-df03a5b6c7d8",
+      "content_sha256": "cc4365db00df99ccefe5746da7d80e61dc04c079692f4f436e4cebd95bdad934",
+      "approved": true,
+      "reason": "Datasets page basic conversational example uses roles system, user, assistant; the 'Tool-augmented conversations' example adds {role: tool, tool_call_id: call_1, name: get_weather}. Option a matches exactly. b, c and d name roles/fields absent from the messages examples (query/document are rerank fields). a is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-ds02d4e5f6a7",
+      "content_sha256": "13eb9ff9efcdc040aac09ac1dae31228bf98b220089f944c2a18e5d5831708bf",
+      "approved": true,
+      "reason": "Datasets page opening: 'Nebius Token Factory supports the JSON Lines format (.jsonl) for dataset files', and all four dataset types (conversational, instruction, text, pretokenized) are shown as JSON objects per line. Option d is the only documented format; XML, CSV and protobuf are absent. d is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-fa01a1b2c3d4",
+      "content_sha256": "ff90cba29a392c75eec5b603c12a192f88fb0a3c21acae51c15023dd0c72689c",
+      "approved": true,
+      "reason": "Fine-tuning walkthrough step 2: 'training_file = client.files.create(file=open(\"training.jsonl\",\"rb\"), purpose=\"fine-tune\")' and 'You only need the id fields from these responses to create a fine-tuning job'; API spec: 'training_file (string, required) ID of the file with the training dataset (purpose = \"fine-tune\")'. Option a matches; inline rows, purpose=assistants/name reference, and URLs are not documented inputs. a is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-ft03c7d8e9f0",
+      "content_sha256": "ddfbb12f11e9fcb65c8e8e8740feb71065ddccca15a8ac414893998d92adb7dc",
+      "approved": true,
+      "reason": "Hyperparameters section: 'n_epochs (integer, optional) Number of passes over the entire dataset. Range 1–20. Default 3' supports option c. batch_size and learning_rate are documented with different meanings (learning_rate: 'Step size for gradient descent'); temperature is not a fine-tuning hyperparameter on the page. c is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-la03d6e7f8a9",
+      "content_sha256": "63c4a1430ad33799d82a5fe8654d24b9c9d94f1a93b8da92c419432c494e9fb3",
+      "approved": true,
+      "reason": "Hyperparameters section: 'lora_r (integer, optional) Rank of LoRA matrices. Higher values increase capacity but also overfitting and cost' supports option d. lora_dropout ('Dropout applied to LoRA layers'), weight_decay ('L2 regularization factor'), context_length are each documented with a different meaning. d is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-pf08c6d7e8f9",
+      "content_sha256": "2385a7ec1a355540733c9e976f17de0bf0d8f5c5e0d4175a1873c6e71711f390",
+      "approved": true,
+      "reason": "Quickstart: 'client = OpenAI(base_url=\"https://api.tokenfactory.nebius.com/v1/\", ...)' (and baseURL in the JS variant) supports option a. The three distractors are URLs that appear nowhere in the source. a is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-ld2443c1b29d",
+      "content_sha256": "b420e9909d60497e2175cded4ad2d82ec8b95d40bccd4c9e3028b9cbc7b74fea",
+      "approved": true,
+      "reason": "Reviewed 2026-09-06 after the option-a explanation edit (commit d3366e1). EVIDENCE CAVEAT: the evidence pins src-inference-overview sha 344d6de4815469a58d7c91b6e7e02043136b35360334480452ea39b79a32eeca; no local snapshot with that hash exists (R2 only; Evidence CI verified the excerpt against it). Context was read from the LIVE revision captured at scratchpad inference-overview-live.md (sha 9f0c64e301e182dae90c19112f4d077c8ff44a54d2e1138be49f8ede18b39340), not from the pinned bytes. In the live page the Quantization card reads exactly \"A technique that reduces the precision of model weights and activations, decreasing memory usage and computation\", which supports the stem (lower numeric precision of the model to reduce memory) and option d. The sibling cards define KV Cache (stores frequently accessed key-value pairs, reducing computations), Paged Attention (memory-management technique that partitions each request KV cache into fixed-size blocks, stored non-contiguously, reducing fragmentation) and Continuous Batching (batches multiple input sequences together, increasing throughput); none mentions precision, so a, b and c are ruled out and d is uniquely best. The rewritten option-a explanation matches the Paged Attention wording that commit 07a74e8 records for the pinned 344d6de4 revision and that the live page still carries; the other three explanations do not contradict the live definitions. Residual risk: the pinned bytes were not inspected directly; the approval rests on CI verbatim verification of the excerpt plus the commit-recorded pinned wording of the Paged Attention card.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-df04b6c7d8e9",
+      "content_sha256": "10ce40c17af2631fa3925d00bf0ba14689bca0b2b1fef18c914b0966e5f52a2c",
+      "approved": true,
+      "reason": "Dataset Formats, section 'Tool-augmented conversations': 'Each training example can optionally include a `tools` field that defines the tools available in that conversation. The schema should match what you plan to use at inference time', followed by a JSON example with a top-level `tools` array and the key point '`tools` is optional'. That supports option b in both halves (optional field on the example; schema matching inference). The page documents JSON Lines files only, no binary payloads, no prompt-comment convention and no webhooks, so a, c and d have no support; b is the single best answer. Option-a explanation ('plain JSON Lines') matches the page's opening statement.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-dl01a3b4c5d6",
+      "content_sha256": "0dc0d7375be4771149301c8670fa8e82fefe71822d2cf5622b888a00342fea4d",
+      "approved": true,
+      "reason": "Data Lab Overview, first paragraphs: 'the unified workspace inside Nebius Token Factory for working with inference logs (chat completions) and datasets' plus the three bullets 'view, filter, and export inference logs', 'preparing datasets via SQL queries' and 'Reusable datasets for batch inference and fine-tuning'. Option a restates exactly those three bullets. The page contains nothing about TLS certificates or Kubernetes nodes (b, c), and the SQL queries are described as creating 'Filtered Datasets ... from inference logs', not querying external production databases (d). Option a is the single best answer.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-fa02b2c3d4e5",
+      "content_sha256": "d33431a2a599d5bc0fc31a3e5cb164105b215c377b37d2e13e3f1a4747e36a6f",
+      "approved": true,
+      "reason": "Supervised Fine-Tuning, Python step 2 uploads both training.jsonl and validation.jsonl with purpose=\"fine-tune\"; the cURL tab uses -F 'purpose=fine-tune' and the response echoes \"purpose\": \"fine-tune\"; the API specification says training_file is the 'ID of the file with the training dataset (purpose = \"fine-tune\")', which backs the second clause of the option-b explanation. No other purpose value appears anywhere on the page, so a, c and d (user_avatar, web_search, cache_backup) are unsupported and b is the single best answer.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-fj02b0c1d2e3",
+      "content_sha256": "c34946e16fd263ec9a2a586edfcfc7670e07f771108886898e6087667a7351cc",
+      "approved": true,
+      "reason": "Supervised Fine-Tuning, Python step 6 'Inspect job events (optional but recommended)': 'Events help you understand the lifecycle (file validation, dataset processing, training progress)' immediately followed by the code 'events = client.fine_tuning.jobs.list_events(job.id)'; the cURL tab exposes the same via GET /v1/fine_tuning/jobs/<job_ID>/events. The stem's three examples are the page's own parenthetical. No serial console (a) or DNS (c) is mentioned, and /v1/models (d) does not appear on the page at all; the only other progress source the page names is the job object itself (trained_steps/total_steps), which is not one of the options. Option b is the single best answer.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-la01c1d2e3f4",
+      "content_sha256": "9629234427502676e5628aeae692686c78ddfd6c69c50857a997d1a6ab1d57df",
+      "approved": true,
+      "reason": "Supervised Fine-Tuning, 'Hyperparameters': '`lora` (boolean, optional) Whether to use LoRA (Low-Rank Adaptation) instead of full-parameter fine-tuning. true: only LoRA adapter weights are trained; base model weights stay frozen. false: full fine-tuning is applied.' Option c is that sentence; a is the documented `lora: false` behaviour (the option-a explanation says so correctly), d inverts the sentence, and nothing on the page singles out the embedding layer (b). Single best answer: c.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-1d28809ed6da",
+      "content_sha256": "3bfa838eab1169c2b1572586838367ccf19cb649477ee9a190e53a2e4f20bedf",
+      "approved": true,
+      "reason": "Supervised Fine-Tuning, Prerequisites step 2: 'Optionally, create a validation dataset as well. A typical split is: 80–90% of examples → training, 10–20% of examples → validation'. Option c reproduces that split. 50/50 (a) and 99/1 (b) fall outside the documented range, and d ('equal-sized files are mandatory') is contradicted twice: the validation set is 'Optionally' created and the split is unequal; the option-c explanation's 'validation dataset is optional' is the same sentence. Single best answer: c. Reviewed as a fresh item under a new ID; the earlier q-ds01c3d4e5f6 revision that tested the rationale for splitting has no supporting passage on this page and stays needs_review.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-3ed9d6aa21de",
+      "content_sha256": "cccb52247b9b9b0320588f7bac1370e7d68e01243e3c167f8c0f9d8b27ed9fe1",
+      "approved": true,
+      "reason": "Supervised Fine-Tuning, 'Hyperparameters' section: '`learning_rate` (float, optional) Step size for gradient descent. Must be >= 0. Typical values: 1e-6–5e-5. Default: 0.00001'. Option d matches the definition and range, and every clause of its explanation (>= 0, typical range, default) is on the page. Each distractor is the page's definition of a different hyperparameter (n_epochs 'Number of passes over the entire dataset', range 1–20; lora_r 'Rank of LoRA matrices', range 8–128; warmup_ratio 'Fraction of total training steps used for linear warmup', range 0–1), so none describes learning_rate and d is the single best answer. Reviewed as a fresh item under a new ID; the earlier q-ft04d8e9f0a1 revision about a too-high learning rate has no supporting passage on this page (only max_grad_norm has documented too-high/too-low consequences) and stays needs_review.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-pf05f3a4b5c6",
+      "content_sha256": "4e30f0885115273ce9e0875044e0a8f2742091d4e235bc2b6735ae7b71954c44",
+      "approved": true,
+      "reason": "Quickstart cURL example: -H \"Authorization: Bearer $NEBIUS_API_KEY\" against https://api.tokenfactory.nebius.com/v1/chat/completions; the Python and JavaScript examples pass the same NEBIUS_API_KEY as api_key / apiKey, and the 'Get API key' accordion says 'For authentication, get an API key'. The chat completion reference on the same host declares security HTTPBearer. Option a is supported. b, c, d (mTLS certificate, password header, IP allowlist) appear nowhere in the quickstart. Single evidence item, but it is the canonical authenticated request and needs no second source. a is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-pf07b5c6d7e8",
+      "content_sha256": "3777458bd86a513c5cf6d5a138eef6c7139086afdba523187a086bdedae87b32",
+      "approved": true,
+      "reason": "UI & Playground: 'The Playground in Nebius Token Factory lets you experiment with available AI models through a web interface — no coding required', and 'Compare setups': 'To work with two model setups side by side, click Compare. This will open two chat windows where you can submit inputs for both setups at the same time'. Option a is supported in full. b, c, d are unrelated to anything on the page. a is uniquely best.",
+      "superseded_at": "2026-10-30T15:23:08Z"
     }
   ]
 }

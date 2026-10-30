@@ -30,11 +30,12 @@ evidence:
   - source_id: src-function-calling
     excerpt: The model automatically selects the most appropriate function based on
       the context of the prompt. This is the default behavior
-    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+    source_sha256: e3bb6c330048d66059012799f2efda935f13cbc7a133b63712bc1b080bf7fa82
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 854758fb3879095d5d5c5c2af7850e729283151a56d8b8e0e857c14219da30e6

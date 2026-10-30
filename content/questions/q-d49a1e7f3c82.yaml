@@ -30,7 +30,7 @@ options:
 evidence:
   - source_id: src-recovery-chat
     excerpt: If omitted or set to null, defaults to 8192 tokens.
-    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
     locator: ChatCompletionRequest > max_tokens
 authored:
   by: agent:claude-author
@@ -38,5 +38,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: 4326a4081ab81cfd82cf54a9904e62c41431dfce352567ce68e1b6f9bc84bae8
+  at: 2026-10-30T15:23:08Z
+  content_sha256: b05db0c5689b820aefcc127e9b8041ae8198990ee327b8c9c34cbd31f3815cec

@@ -34,12 +34,12 @@ evidence:
   - source_id: src-pa-registry-quickstart
     excerpt: "Run the Nebius AI Cloud Docker credential helper. It lets you use
       registries in Container Registry without running the `docker login`."
-    source_sha256: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+    source_sha256: a36409ce80f86008f70176f9116cd02cea20bca1ee02e8de04737d8a0fc2f73f
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T10:04:20Z
-  content_sha256: bcb3f5fe0e9e862af0286358f743d6d5c97985a08a657117629dcf9f1d53648b
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 6a286b007dfd4f1893468063136343429d76477677d728bebd643f9bda521805

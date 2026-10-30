@@ -30,12 +30,12 @@ evidence:
   - source_id: src-co-storage-types
     excerpt: Sharing a filesystem across projects is not supported, even if the
       projects are in the same
-    source_sha256: 8be93545b3ba8adb94b518c5af81224b2a40a91d05f1ed949b56b9be382ce1b4
+    source_sha256: 5490f69ecc74bde28f2eace2089e9af2ae0fbac2f5d2f8df7d005d565f045b50
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: 6eafe40d16974f329752ee6f56acaec50662a2b0312c68f547874eb1ffc0167c
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 93d875b77073f47179102ce6e9eb6f531accaa3c2dd7aff85ee45bdeead1f199

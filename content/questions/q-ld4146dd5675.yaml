@@ -28,11 +28,12 @@ evidence:
   - source_id: src-ld-playground
     excerpt: '**Save as a prompt preset** — Click **Save preset** in the left panel
       to store your setup for later use or sharing.'
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
-  by: mashkovd
-  at: 2026-08-16T20:24:29Z
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: cf297749e7943247da09f9e670df79f9e27e1bfc947ce8ab06cfdde03ad8dbad

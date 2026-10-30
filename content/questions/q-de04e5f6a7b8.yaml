@@ -33,15 +33,15 @@ evidence:
   - source_id: src-rate-limits
     excerpt: In some cases, requests that exceed your rate limit may still be
       processed. This occurs when the system has spare capacity available,
-    source_sha256: a930a4443120747b78d1c298b040d72612031c4ae735a83929d6e5769548e6d7
+    source_sha256: 7f8c040889c8964058330c70969257846441205ba1aad6fe491bb6ca1606038d
   - source_id: src-rate-limits
     excerpt: "x-ratelimit-over-limit: yes"
-    source_sha256: a930a4443120747b78d1c298b040d72612031c4ae735a83929d6e5769548e6d7
+    source_sha256: 7f8c040889c8964058330c70969257846441205ba1aad6fe491bb6ca1606038d
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: dae531f7574f65083796ee8a637720647ba53e0941171662c0a05140c1426892
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 7bd8eee5ab435c015d325bf7a8efcda332174a39bc769d18d1f91570c13715c0

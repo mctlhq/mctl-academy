@@ -24,13 +24,6 @@
       "reviewed_at": "2026-10-18T10:04:20Z"
     },
     {
-      "id": "q-4f8a2c6e9d31",
-      "content_sha256": "bcb3f5fe0e9e862af0286358f743d6d5c97985a08a657117629dcf9f1d53648b",
-      "approved": true,
-      "reason": "Step 1 of \"Configure Docker\" states verbatim: \"Run the Nebius AI Cloud Docker credential helper. It lets you use registries in Container Registry without running the `docker login`.\" Registry creation and Docker Engine installation are separate documented steps, and the page warns \"Do not run Docker commands as root\", so option d is the only defensible choice.",
-      "reviewed_at": "2026-10-18T10:04:20Z"
-    },
-    {
       "id": "q-5b9d3f7a2c18",
       "content_sha256": "f1c340686af8bbe979a32bf7546bc879d9cc38100430bc3ab32c6657bc7455d1",
       "approved": true,
@@ -59,18 +52,29 @@
       "reviewed_at": "2026-10-18T10:04:20Z"
     },
     {
-      "id": "q-9c3e7b1f4a86",
-      "content_sha256": "1c29b82e8fb4e1c1e5437a6751fe70bfe5f37af546e6cb3843d9980ef9277802",
-      "approved": true,
-      "reason": "The Metrics section states verbatim: \"Serverless AI reports the same metrics as Compute container virtual machines. View them on the Metrics tab of your job or endpoint; the underlying VMs aren't shown in Compute.\" The 5-10 minute availability delay and the 15-second refresh interval are about dashboard data timing, and support-team investigation is listed as one dashboard use, not a reason the VM is absent, so only option a addresses the absence.",
-      "reviewed_at": "2026-10-18T10:04:20Z"
-    },
-    {
       "id": "q-f1a4c8e2b9d6",
       "content_sha256": "562901cf47ced50fbac11774cae53f0a3f2eed27dbcee4eb0d5854ad93e35124",
       "approved": true,
       "reason": "The decision section states verbatim: \"Promotion requires a strictly positive primary mean improvement at least its sealed `minimum_improvement`, and no individual scenario/seed/metric degradation beyond that metric's `maximum_regression`.\" The same paragraph defeats option d (\"Secondary metrics are regression guards; their `minimum_improvement` is informational unless selected as the primary\"), and training-exposed replays \"never contribute to promotion\", ruling out option c.",
       "reviewed_at": "2026-10-18T10:04:20Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-4f8a2c6e9d31",
+      "content_sha256": "bcb3f5fe0e9e862af0286358f743d6d5c97985a08a657117629dcf9f1d53648b",
+      "approved": true,
+      "reason": "Step 1 of \"Configure Docker\" states verbatim: \"Run the Nebius AI Cloud Docker credential helper. It lets you use registries in Container Registry without running the `docker login`.\" Registry creation and Docker Engine installation are separate documented steps, and the page warns \"Do not run Docker commands as root\", so option d is the only defensible choice.",
+      "reviewed_at": "2026-10-18T10:04:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-9c3e7b1f4a86",
+      "content_sha256": "1c29b82e8fb4e1c1e5437a6751fe70bfe5f37af546e6cb3843d9980ef9277802",
+      "approved": true,
+      "reason": "The Metrics section states verbatim: \"Serverless AI reports the same metrics as Compute container virtual machines. View them on the Metrics tab of your job or endpoint; the underlying VMs aren't shown in Compute.\" The 5-10 minute availability delay and the 15-second refresh interval are about dashboard data timing, and support-team investigation is listed as one dashboard use, not a reason the VM is absent, so only option a addresses the absence.",
+      "reviewed_at": "2026-10-18T10:04:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
     }
   ]
 }

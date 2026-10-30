@@ -31,12 +31,12 @@ options:
 evidence:
   - source_id: src-recovery-datasets
     excerpt: Use the **Pretokenized** dataset format if you want to
-    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+    source_sha256: 85722b2677ef9bfc772256754df8a362cb841ff27ac49f56bddc40803acb1033
     locator: Pre-tokenized data > When to use pretokenized datasets
   - source_id: src-recovery-datasets
     excerpt: Have full control over **tokenization, packing, loss masking, and
       attention masking**.
-    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+    source_sha256: 85722b2677ef9bfc772256754df8a362cb841ff27ac49f56bddc40803acb1033
     locator: Pre-tokenized data > When to use pretokenized datasets
 authored:
   by: agent:claude-author
@@ -44,5 +44,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 5b2004cf33fb23df9a899bc9ee6ebc752f9b1e8df7e6b26687b0439d60fcf90c
+  at: 2026-10-30T15:23:08Z
+  content_sha256: c697920e43e5e523cfae58c8cde9c9ea865b5b9d57f6ce602c86cf736e4a1142

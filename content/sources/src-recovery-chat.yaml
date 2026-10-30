@@ -2,17 +2,18 @@ schema_version: 1
 id: src-recovery-chat
 url: https://docs.tokenfactory.nebius.com/api-reference/inference/create-chat-completion.md
 title: Chat completion API
-retrieved_at: 2026-10-18T01:26:24Z
-sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+retrieved_at: 2026-10-30T14:51:18Z
+sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
 objectives:
   - domain-2/chat-completions
   - domain-4/observability
 snapshot:
   bucket: academy-source-snapshots
-  key: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+  key: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
 status: current
 versions:
   - 1967bfb237f6a521a14e7727db98f46976b13a1a804eef48725416ff2af91bc5
   - d93c4f3d8deca8b31a4daf6a5aa2a9509749c67d4128a33bd0b7134cf2eabcf6
   - ef241250d52ecc47a75e54b7a7437f6301d6743dc1beae00ea163484cf182707
   - 2db10a1ebe69f160c10adff3f3e3d488dbaed06941f727a0ce0b8d7f63acd389
+  - 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6

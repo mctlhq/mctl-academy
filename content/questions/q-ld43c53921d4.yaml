@@ -27,12 +27,12 @@ options:
 evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: predictable capacity
-    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
+    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 53723918cb54da6d705a5be229169733f31972774995553a11e0e9df65b455ed
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 121d650ed0cd919aa532ceb201a43d214cf7c582a5493d8909ee8d2a79cb269b

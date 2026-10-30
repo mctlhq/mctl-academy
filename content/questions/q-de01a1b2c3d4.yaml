@@ -33,16 +33,16 @@ evidence:
   - source_id: src-recovery-endpoint
     excerpt: "| Capacity | Capacity reserved for your organization | Shared
       multi-tenant capacity |"
-    source_sha256: f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
+    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
   - source_id: src-recovery-capacity
     excerpt: it is not a long-term reservation, and the minimum replicas guarantee
       applies only while the endpoint is running.
-    source_sha256: bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+    source_sha256: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 277b1af84cb94080cda9abb4fd9699f67020eed27b57de0cdf5bce6ca9ee336a
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 53a1e780126265dd29454029f3780bcb2150845a5b82bacded6ee911ad4b4750

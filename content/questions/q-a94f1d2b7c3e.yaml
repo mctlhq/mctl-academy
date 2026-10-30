@@ -31,7 +31,7 @@ options:
 evidence:
   - source_id: src-recovery-embedding
     excerpt: The dimensions to use for the request.
-    source_sha256: 3ef0d919930a16882eb198d5cd74c03d063a80c14f6edd8fc6ee0e839f3e27c1
+    source_sha256: 529975e2eb326e25366243ed5592eb0f47667ebbb954f385d698b0a10f886a28
     locator: EmbeddingRequest > dimensions
 authored:
   by: agent:claude-author
@@ -39,5 +39,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: 4f642b098e03836b6ea616219669439ac249c42b943e6d8a7a792d7662af405a
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 8548529e71d3022ca8380351a0e607293c9b3d3c467d127f2e2706bffbf48844

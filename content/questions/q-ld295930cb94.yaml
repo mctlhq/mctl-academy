@@ -27,12 +27,12 @@ options:
 evidence:
   - source_id: src-ld-models
     excerpt: Which **context lengths** they support
-    source_sha256: 23dd00ea0619c7f43602b6d5955e694869363b9696973aafe4c83596cbf70063
+    source_sha256: 189c7799d3de556f5512ebf216c1803e9188758b74e44e19d565c0dc037e20f4
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 49fd986fc9a99fedd1b7ef3d8c03695ab4a3eba6915801f0eedb02a93baa3143
+  at: 2026-10-30T15:23:08Z
+  content_sha256: fcd076fb3943114109f99e63db6e14550d84459693f2268f6e1aedeaca134ed8

@@ -2,13 +2,14 @@ schema_version: 1
 id: src-co-logs-query-language
 url: https://docs.nebius.com/observability/logs/query-language.md
 title: LogQL implementation by Nebius AI Cloud
-retrieved_at: 2026-10-08T13:58:49Z
-sha256: 82e3a86c401a3bdb5dfb0b5cd580eab6797a83609f7b957921779ed670db4af0
+retrieved_at: 2026-10-30T14:50:39Z
+sha256: c78ead26efe94ea77eed1468c8ecae87d6e6a25f4ef733469abcafef9d100377
 objectives:
   - domain-4/escalation-workflows
 snapshot:
   bucket: academy-source-snapshots
-  key: 82e3a86c401a3bdb5dfb0b5cd580eab6797a83609f7b957921779ed670db4af0
+  key: c78ead26efe94ea77eed1468c8ecae87d6e6a25f4ef733469abcafef9d100377
 status: current
 versions:
   - 703f578284a89761e264801c97448607bae0ec78ee2521b5ccf8cd1770d4a172
+  - 82e3a86c401a3bdb5dfb0b5cd580eab6797a83609f7b957921779ed670db4af0

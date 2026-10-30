@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-co-k8s-health-checks
     excerpt: If the condition remains in the `False` status for more than five minutes
-    source_sha256: 47ef092b7d3832f4b6227993b6573ff878fd813a79d2bbff94af1d01201ca584
+    source_sha256: a2522bb1e57df92212fdaf132941e190b0deba8e64c1e6146a826e7405602a29
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 32f7d562d148fd3ee6c3ffc7c82bf5528c9d7e625f76d4e79db00bdf761b8940
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1b211166152f3b9473f080034fee5eec9cdd163131b93d10bc95666514db46ed

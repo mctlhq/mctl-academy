@@ -35,12 +35,12 @@ evidence:
   - source_id: src-co-k8s-quickstart
     excerpt: Keep the public endpoint enabled. As a result, the cluster is available
       from the internet, and you can connect to it from any machine.
-    source_sha256: 55bd27075b95fd4cc83893f126dff004377da961d1e903afa923c1a6e91ebff3
+    source_sha256: f33ac1a2a093d8f50adad49512ce9f3b8d24c93283769ccfd94d44f96d14b4b9
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: da26ea702fec86c50c27e631a8b9ff259965f5cbe29a1f37686cf7b2cbb78acd
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1bb2f2f5989049d25ac32251558cadb718d0a3dac5e35eef7302038c222b8631

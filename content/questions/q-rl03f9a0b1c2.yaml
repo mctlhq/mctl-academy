@@ -31,12 +31,12 @@ evidence:
     excerpt: This occurs when the system has spare capacity available, and your
       request can be handled with a lower priority without affecting other
       users.
-    source_sha256: a930a4443120747b78d1c298b040d72612031c4ae735a83929d6e5769548e6d7
+    source_sha256: 7f8c040889c8964058330c70969257846441205ba1aad6fe491bb6ca1606038d
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: db0777da5158b7516abedddbce38987cd0f9545f910a1de3d337a272b27db66d
+  at: 2026-10-30T15:23:08Z
+  content_sha256: a561bbcda2da82617131c2a10a64b03eb07a8af87facecf3f43e7ef8d801ecd3

@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-recovery-rerank
     excerpt: "required: - model - query - documents"
-    source_sha256: d4a0639b6b0016761b750bcc740c8f456e21ed7248fbc48528c214d7117b9016
+    source_sha256: 51501d6a852a638838e4fb8ded65d5949925046266d85750bd051ef28c9e4819
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: 79802308edf9393069ccd477c7330d0e7cfc00487634263b068b18bdcff98879
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 323dbfe9d00f490fad828651646c54ec7d4828e702c275d0af8744be12c9929a

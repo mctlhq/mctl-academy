@@ -36,15 +36,15 @@ evidence:
   - source_id: src-recovery-best-practice
     excerpt: Min replicas are guaranteed while active. If you stop the endpoint the
       reservation will be freed up.
-    source_sha256: c3f9513afb2bcd83438d76aa129f8eb955c696bf1893dbffc9dbee95e10b2a43
+    source_sha256: 2e9a2bf413a5c325ab70bbe949526496ea636781237e7ae42fb6c50fc8b610e0
   - source_id: src-recovery-best-practice
     excerpt: Minimum replicas are always allocated while the endpoint is active.
-    source_sha256: c3f9513afb2bcd83438d76aa129f8eb955c696bf1893dbffc9dbee95e10b2a43
+    source_sha256: 2e9a2bf413a5c325ab70bbe949526496ea636781237e7ae42fb6c50fc8b610e0
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 9a5c3947bb870948a39c5c4385247cdac64cf3c28ec264398208b741f992577d
+  at: 2026-10-30T15:23:08Z
+  content_sha256: ca6084350f1c7b38b4c335bdc915bd84c783df7362b0bc416e83e8ab5d8694dd

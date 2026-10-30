@@ -36,12 +36,12 @@ evidence:
   - source_id: src-pa-object-storage-transfer
     excerpt: "If the object is less than 100 MB, it makes a single `GetObject`
       request to the source bucket and a single `PutObject` request"
-    source_sha256: 9e73aedf8b0e51a99e6531fb78fc4440f03709f5d6cf35a51b7a9a7ff67d1d04
+    source_sha256: 48f0b85c5187d00288f74f669cc55a9d3f387431e7ad59e4a6fa848eb571e3e5
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: 88fab3401b49cacadca5c2c547efce9319e593b2c556280f6c70ec3277aa73f6
+  at: 2026-10-30T15:23:08Z
+  content_sha256: fdfa5ebcd3d59ec0c0d193a130cf6d6dc70aa6522b6f1948411d269bf3980121

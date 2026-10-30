@@ -30,16 +30,16 @@ evidence:
   - source_id: src-recovery-deprecation
     excerpt: you will not be able to select them in the Playground or send API
       requests using their model IDs.
-    source_sha256: 0e292554fa0fedd115afda9d96d62e7d0227f07224e090969c189e40f3ff832a
+    source_sha256: 4c9d8a9f463e8d4cb3ac567b863d5d18dbc74cf0e1c23bbee047ef3ef5d89401
   - source_id: src-recovery-deprecation
     excerpt: Token Factory does not automatically reroute requests from deprecated
       models.
-    source_sha256: 0e292554fa0fedd115afda9d96d62e7d0227f07224e090969c189e40f3ff832a
+    source_sha256: 4c9d8a9f463e8d4cb3ac567b863d5d18dbc74cf0e1c23bbee047ef3ef5d89401
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: a81008dc05461bfa26749ed1e1e8cb61a1e43fcaca2c7965b7469886518fe9fa
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 79aca81592fb936616e2ad041e288fecaaec7ea41bfe20c1f37b106a32230a35

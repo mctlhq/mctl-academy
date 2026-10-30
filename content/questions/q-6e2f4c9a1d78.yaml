@@ -42,12 +42,12 @@ evidence:
   - source_id: src-pa-soperator-move-capacity
     excerpt: "you can move GPU capacity between them without stopping the entire
       Soperator cluster"
-    source_sha256: f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
+    source_sha256: 49774139fada4b505aec63db1cd03fd690503debd41154a53612edb99ff52d7d
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T09:29:20Z
-  content_sha256: 242bd0401272f74f8bdcc8f691b8e80a7c42ed80f70e8742686f80e23c31ea1c
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 6e90179dd504968b4f8198e475b9396a4d7e2a4e15bd6d1cc7015fc699cc9a21

@@ -1,0 +1,53 @@
+schema_version: 1
+id: q-b2e6a4f9c175
+status: published
+domain: domain-4
+objective: domain-4/application-integration
+stem: "A team exposes an internal robot-control service running on a VM to the
+  internet using Nebius Tunnels. According to the documentation, what do they
+  still need to configure themselves?"
+options:
+  - id: a
+    text: "Authentication and authorization within the application itself, since
+      tunnels only secure the transport between the agent and the Nebius edge"
+    correct: true
+    explanation: "Correct. Nebius Tunnels secures the transport between the tunnel
+      agent and Nebius edge, but it doesn't add user authentication or
+      authorization to your application."
+  - id: b
+    text: "A public IP address for the service, since tunnels do not provide public
+      connectivity"
+    correct: false
+    explanation: "Wrong. The documentation describes avoiding the need to assign a
+      public IP address as a benefit of tunnels, not a remaining task for the
+      user."
+  - id: c
+    text: "Inbound firewall rules to accept the tunnel's connection request"
+    correct: false
+    explanation: "Wrong. The tunnel agent opens an outbound connection to the Nebius
+      edge, so no inbound firewall rule is needed; avoiding open inbound ports
+      is a documented benefit."
+  - id: d
+    text: "DNS records and a TLS certificate before the tunnel can be created"
+    correct: false
+    explanation: "Wrong. The documentation lists not needing to configure DNS and
+      TLS certificates as a benefit of tunnels, not something left for the user
+      to do."
+evidence:
+  - source_id: src-pa-tunnels-overview
+    excerpt: "Nebius Tunnels secures the transport between the tunnel agent and
+      Nebius edge, but it doesn't add user authentication or authorization to
+      your application."
+    source_sha256: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
+  - source_id: src-pa-tunnels-overview
+    excerpt: "without opening inbound firewall ports, assigning a public IP address
+      to the service or configuring DNS and TLS certificates"
+    source_sha256: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-30T14:48:37Z"
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: be2aa67d523f920c9edd22d90f439aeef58037cf15460a428eaada06a81e126d

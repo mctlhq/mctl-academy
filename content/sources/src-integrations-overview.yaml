@@ -2,11 +2,13 @@ schema_version: 1
 id: src-integrations-overview
 url: https://docs.tokenfactory.nebius.com/integrations/overview.md
 title: Overview
-retrieved_at: 2026-10-12T15:50:03Z
-sha256: d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20
+retrieved_at: 2026-10-30T14:50:54Z
+sha256: 02147b4950b8d699aa6821a7521447e30d0937296a486bdb668c98eb5db7a7d0
 objectives:
   - domain-2/framework-integrations
 snapshot:
   bucket: academy-source-snapshots
-  key: d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20
+  key: 02147b4950b8d699aa6821a7521447e30d0937296a486bdb668c98eb5db7a7d0
 status: current
+versions:
+  - d13a27e9b9ae8e253a4b48cc244340af0efe931a8a015e1c64fe4377e77f6c20

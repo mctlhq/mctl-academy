@@ -2,7 +2,7 @@
   {
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
-    "publishedQuestionCount": 88,
+    "publishedQuestionCount": 92,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -113,7 +113,7 @@
   {
     "id": "physical-ai",
     "title": "Physical AI",
-    "publishedQuestionCount": 43,
+    "publishedQuestionCount": 48,
     "available": true,
     "mock": {
       "questionCount": 30,

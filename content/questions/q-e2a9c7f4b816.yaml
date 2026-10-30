@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-e2a9c7f4b816
+status: published
+domain: domain-1
+objective: domain-1/supervised-fine-tuning
+stem: "By default, which layers of the LM expert does PEFT target when
+  parameter-efficiently fine-tuning a pre-trained SmolVLA policy in LeRobot with
+  LoRA?"
+options:
+  - id: a
+    text: "`q_proj` and `v_proj`"
+    correct: true
+    explanation: "Correct. By default, PEFT targets the `q_proj` and `v_proj` layers
+      of the LM expert in SmolVLA."
+  - id: b
+    text: "`k_proj` and `o_proj`"
+    correct: false
+    explanation: "Wrong. The documentation names `q_proj` and `v_proj` as the
+      default targets, not `k_proj` and `o_proj`."
+  - id: c
+    text: "Every projection layer in the LM expert, with no default restriction"
+    correct: false
+    explanation: "Wrong. PEFT has a specific default target (`q_proj` and `v_proj`);
+      targeting different or additional layers requires explicitly setting
+      `--peft.target_modules`."
+  - id: d
+    text: "Only the embedding and output head layers"
+    correct: false
+    explanation: "Wrong. The documentation describes targeting `q_proj`/`v_proj` and
+      the state and action projection matrices, not the embedding or output head
+      layers."
+evidence:
+  - source_id: src-pa-lerobot-peft
+    excerpt: "By default, PEFT will target the `q_proj` and `v_proj` layers of the
+      LM expert in SmolVLA."
+    source_sha256: 66a8214c9b7b1b109974b2b9f686f5f0c83061b478a7fa3f5ab07ae30b597e6c
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-30T14:48:37Z"
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 7e49e768ae1493264204758d1757bcdd289fdaa9e2a78ee06dac9d19e028d6b9

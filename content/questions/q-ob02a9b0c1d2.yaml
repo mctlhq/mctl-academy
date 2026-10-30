@@ -28,16 +28,16 @@ evidence:
     excerpt: "completion_tokens: type: integer title: Completion Tokens description:
       Number of tokens in the generated completion. prompt_tokens: type: integer
       title: Prompt Tokens"
-    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
   - source_id: src-recovery-chat
     excerpt: "total_tokens: type: integer title: Total Tokens description: Total
       number of tokens used in the request (prompt + completion)."
-    source_sha256: 9274d66dc2b70e580b4089adffcddcbdc23da5d370a0fadc1e1f8e409fd957b6
+    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T01:33:33Z
-  content_sha256: c22810585735abcda78f59df0e65932fb31bfea2b9905297352a55363221079b
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 3eac5bed83d05574a6ef1e79cf5301cee829cc5d9fca2c7c8e0135b28f65c276

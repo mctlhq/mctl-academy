@@ -28,15 +28,15 @@ evidence:
   - source_id: src-recovery-playground
     excerpt: lets you experiment with available AI models through a web interface —
       no coding required.
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
   - source_id: src-recovery-playground
     excerpt: To work with two model setups side by side, click **Compare**.
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-09-06T06:56:58Z
-  content_sha256: 3777458bd86a513c5cf6d5a138eef6c7139086afdba523187a086bdedae87b32
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 3964454245f2ac3f35665a36a7e7f9bfa2c567dcc003e833e6576b96a43ec4ce

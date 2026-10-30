@@ -28,11 +28,12 @@ evidence:
   - source_id: src-function-calling
     excerpt: This forces the model to call the `read_file` function regardless of
       context, overriding its own tool selection logic.
-    source_sha256: 1ced0e48d880014ddcc5b1f91266fb0fe230fef380e414fb267ea8d5c20adc2b
+    source_sha256: e3bb6c330048d66059012799f2efda935f13cbc7a133b63712bc1b080bf7fa82
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: aaf30b7b34b6b3ef67980ec34a09a5246935cf314edcf17d53f21fa1176d7673

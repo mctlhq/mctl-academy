@@ -2,12 +2,14 @@ schema_version: 1
 id: src-recovery-processing
 url: https://docs.tokenfactory.nebius.com/data-lab/data-processing.md
 title: Data processing
-retrieved_at: 2026-09-05T20:44:44Z
-sha256: c5082a3189d02631cf236362bb986f324ea20d8fd95e8536ca0b4c93caed623c
+retrieved_at: 2026-10-30T14:51:32Z
+sha256: 4b14170506aa2ce33365311a8ddcff7d44190c7d17ba9ffd4a0214065e338ce4
 objectives:
   - domain-3/data-lab
   - domain-3/datasets
 snapshot:
   bucket: academy-source-snapshots
-  key: c5082a3189d02631cf236362bb986f324ea20d8fd95e8536ca0b4c93caed623c
+  key: 4b14170506aa2ce33365311a8ddcff7d44190c7d17ba9ffd4a0214065e338ce4
 status: current
+versions:
+  - c5082a3189d02631cf236362bb986f324ea20d8fd95e8536ca0b4c93caed623c

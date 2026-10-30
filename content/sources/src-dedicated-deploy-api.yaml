@@ -2,11 +2,13 @@ schema_version: 1
 id: src-dedicated-deploy-api
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/deploy-api.md
 title: "Quickstart: Deploy via API"
-retrieved_at: 2026-10-08T13:58:41Z
-sha256: 231283c8cef3bbe57a1b2b19c5b2870542893df970c9c8498ab93437f6beb845
+retrieved_at: 2026-10-30T14:50:49Z
+sha256: caac0e4d44abe1ff018f1d9f9defc5621661b5addbeafa367ac15ea15b864d50
 objectives:
   - domain-1/api-authentication
 snapshot:
   bucket: academy-source-snapshots
-  key: 231283c8cef3bbe57a1b2b19c5b2870542893df970c9c8498ab93437f6beb845
+  key: caac0e4d44abe1ff018f1d9f9defc5621661b5addbeafa367ac15ea15b864d50
 status: current
+versions:
+  - 231283c8cef3bbe57a1b2b19c5b2870542893df970c9c8498ab93437f6beb845

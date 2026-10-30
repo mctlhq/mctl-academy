@@ -1,0 +1,50 @@
+schema_version: 1
+id: q-f4a8e1c6d935
+status: published
+domain: domain-2
+objective: domain-2/agent-sandboxes
+stem: "According to the Sandboxes documentation's state model, what does a saved
+  image contain, and what does it not retain from the operation that produced
+  it?"
+options:
+  - id: a
+    text: "Filesystem state only; it does not retain a running process, process
+      memory, open file handles, network connections, or a live terminal."
+    correct: true
+    explanation: "Correct. The documentation states a saved image contains
+      filesystem state and does not retain a running process, process memory,
+      open file handles, network connections, or a live terminal."
+  - id: b
+    text: "The complete process state, including open network connections and a live
+      terminal, so the image can resume an interactive session."
+    correct: false
+    explanation: "Wrong. The documentation lists network connections and a live
+      terminal among what a saved image does not retain."
+  - id: c
+    text: "Environment values, which persist automatically into every later
+      operation once an image is saved."
+    correct: false
+    explanation: "Wrong. The documentation's survival table says environment values
+      persist only when the interface explicitly saves both the image and
+      supported environment metadata, not automatically."
+  - id: d
+    text: "Only the stdout and stderr produced during the run, without any
+      filesystem changes."
+    correct: false
+    explanation: "Wrong. The documentation describes a saved image as containing
+      filesystem state; stdout and stderr are available through the operation
+      result, a separate item in the survival table."
+evidence:
+  - source_id: src-recovery-sandbox
+    excerpt: "A saved image contains filesystem state. It does not retain a running
+      process, process memory, open file handles, network connections, or a live
+      terminal."
+    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-30T14:48:37Z"
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 62d95c9b1bf7df69754bb26e45d49a67025963978c2341e0cb10d217b72b44d8

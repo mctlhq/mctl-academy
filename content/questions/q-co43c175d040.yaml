@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-co-vm-monitoring
     excerpt: The VM usage data becomes available 5–10 minutes after the VM is created.
-    source_sha256: dff4682651e98af3256f100a456e8cdeea47f13472996329654f5f172114af5c
+    source_sha256: b809c8cf8544df2a2c8a2297375fe0c7b6730829352693961736ba577a2ec319
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: cbb09f1c169f4e28c6024a93afdf2bc10018ed681e9443a36b75a7dbaf9e580a
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: e1c9f6fed4b3874cba0450cf1e570f0ef708d482721c7d510f896ca262633e6a

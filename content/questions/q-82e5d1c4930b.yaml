@@ -31,12 +31,12 @@ options:
 evidence:
   - source_id: src-pa-serverless-deploy-model
     excerpt: "The container exposes an OpenAI-compatible `/v1/chat/completions` API."
-    source_sha256: 8c90f50e48d2508f2da7301ed9190e0f1039c39b786aa233d75e81591ca1070b
+    source_sha256: 202aeea0d19b74f585f8c95feb2a2e592cfdbf1a321537663b88b21fe48f1b47
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: c1b500dc9fc883c2d9c5b101992a6608f5cd1e8370047b50107e0f7c4ffe9af7
+  at: 2026-10-30T15:23:08Z
+  content_sha256: f0828d49a03e521138bd88af9c7781f0cc810f1d25d54170fd2f020552588dc2

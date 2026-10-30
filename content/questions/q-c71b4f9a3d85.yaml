@@ -30,7 +30,7 @@ evidence:
   - source_id: src-recovery-quickstart
     excerpt: Build inference into applications that are based on supported
       third-party integrations
-    source_sha256: 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+    source_sha256: c5cd2fedff5f96353b54925393a78f6306a011b49a3b4009cb0c0a1601191747
     locator: Explore > Third-party integrations card
 authored:
   by: agent:claude-author
@@ -38,5 +38,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 8b496bd747f5774609cd2156bddb6d78955a075c534c734cc883cafecd59f826
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 92093236d76823d934505527909eab29a5d6b3b1bb52d1d5066684c7cbf6b0d8

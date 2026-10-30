@@ -34,12 +34,12 @@ options:
 evidence:
   - source_id: src-endpoint-lifecycle
     excerpt: Lifecycle is deployment state. Readiness is traffic-serving capability.
-    source_sha256: 373843afd1272b1f6f578b8fb0d7a1a9e283a443d102f520248f3c7a121c2ccf
+    source_sha256: 7c7dec03fa43ddb98fc5700635096e6e1da30efe511595efe4e7307acccaee04
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T14:14:37Z
-  content_sha256: 282fafb85fb022c5a1dee0c5f9d96d6c0b27b1168e0555d82813b8baa1903e84
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 74057c3b7ba75ff1d88f0fc6597791a48e1b53edf737585a4896b14b160e7d55

@@ -29,7 +29,7 @@ options:
 evidence:
   - source_id: src-recovery-playground
     excerpt: "**Quality** — MMLU score reported by the model provider."
-    source_sha256: 9a199c354e73dd580bebdfecbb82e8320b3870b525820be4859bd820c5d88e55
+    source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
     locator: Model card
 authored:
   by: agent:claude-author
@@ -37,5 +37,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-08T17:42:34Z
-  content_sha256: 54ea9ae5fa6772c495e8b5cdc4ffecdcfb65c22ef9548995c125e2f6960fe763
+  at: 2026-10-30T15:23:08Z
+  content_sha256: e60a97e80585c19d842555cc17c0803920f0c659fece94eb85a641a81c98494e

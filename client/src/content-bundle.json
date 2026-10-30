@@ -338,7 +338,7 @@
       {
         "title": "MysteryBox overview",
         "url": "https://docs.nebius.com/mysterybox/overview.md",
-        "excerpt": "SecretStash allows you to avoid hardcoding sensitive data, for example, in [Terraform manifests](/terraform-provider/index) or cloud-init scripts."
+        "excerpt": "SecretStash allows you to avoid hardcoding sensitive data, for example, in [Terraform manifests](https://docs.nebius.com/terraform-provider/index.md) or cloud-init scripts."
       }
     ],
     "options": [
@@ -406,47 +406,6 @@
         "text": "Soft resets are not bit-identical to hard resets, so three repeats are needed to compensate for reset drift",
         "correct": false,
         "explanation": "Soft versus hard reset fidelity is a separate documented concern; the 3-seed recommendation is about evaluation-seed variance, not reset behavior."
-      }
-    ]
-  },
-  {
-    "id": "q-3d7e2a6b9c41",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/inference-setup",
-    "stem": "A team stops a Serverless AI endpoint overnight to avoid paying for idle compute, but had earlier attached a mounted Object Storage volume to it for model files. What are they billed for while the endpoint is stopped?",
-    "objectiveTitle": "Setting up managed model inference in the cloud",
-    "sources": [
-      {
-        "title": "Managing endpoints in Serverless AI",
-        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
-        "excerpt": "Computing resources of stopped endpoints aren't charged. However, if you mounted a volume to the endpoint, you are charged for the volume"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Nothing at all, since stopping an endpoint suspends all billing including attached volumes",
-        "correct": false,
-        "explanation": "The documentation specifically states that a mounted volume continues to be charged even while the endpoint itself is stopped; stopping does not suspend all billing."
-      },
-      {
-        "id": "b",
-        "text": "The same compute charges as a running endpoint, since stopped endpoints remain reserved",
-        "correct": false,
-        "explanation": "The documentation states computing resources of stopped endpoints aren't charged; only the mounted volume continues to incur charges."
-      },
-      {
-        "id": "c",
-        "text": "Only the volume's one-time creation fee, with no ongoing storage charges",
-        "correct": false,
-        "explanation": "The documentation describes an ongoing charge for the mounted volume while the endpoint is stopped, not a one-time creation fee."
-      },
-      {
-        "id": "d",
-        "text": "Nothing for compute, since stopped endpoints aren't charged for computing resources — but they are still charged for the mounted volume",
-        "correct": true,
-        "explanation": "Correct. The documentation states computing resources of stopped endpoints aren't charged, but if a volume was mounted to the endpoint, you are charged for that volume even while the endpoint is stopped."
       }
     ]
   },
@@ -1357,47 +1316,6 @@
     ]
   },
   {
-    "id": "q-7c4a9f1d3e85",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/inference-setup",
-    "stem": "What is the difference between stopping a Serverless AI endpoint and deleting it, with respect to its underlying VM and boot disk?",
-    "objectiveTitle": "Setting up managed model inference in the cloud",
-    "sources": [
-      {
-        "title": "Managing endpoints in Serverless AI",
-        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
-        "excerpt": "When you delete an endpoint, Serverless AI automatically deletes its VM and container (boot) disk."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Stopping leaves the VM and disk in place (uncharged for compute), while deleting automatically removes the VM and its boot disk",
-        "correct": true,
-        "explanation": "Correct. The documentation states that stopping an endpoint simply stops billing for its computing resources, while deleting it automatically deletes the VM and the container (boot) disk."
-      },
-      {
-        "id": "b",
-        "text": "Both stopping and deleting immediately remove the VM and boot disk",
-        "correct": false,
-        "explanation": "Stopping an endpoint does not remove its VM or disk; only deleting the endpoint is documented as automatically deleting the VM and boot disk."
-      },
-      {
-        "id": "c",
-        "text": "Deleting only removes the boot disk, while the VM must be deleted separately",
-        "correct": false,
-        "explanation": "The documentation states that deleting the endpoint automatically deletes both the VM and the container (boot) disk together, not the disk alone."
-      },
-      {
-        "id": "d",
-        "text": "Stopping permanently deletes the VM, while deleting only pauses billing",
-        "correct": false,
-        "explanation": "This reverses the documented behavior: stopping pauses compute billing without deleting the VM, while deleting the endpoint is what removes the VM and disk."
-      }
-    ]
-  },
-  {
     "id": "q-7d1f4a9c2b65",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -1495,7 +1413,7 @@
       {
         "title": "Overview",
         "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "<Card title=\"Langchain\" icon=\"boxes-stacked\" href=\"/integrations/frameworks/langchain\" />"
+        "excerpt": "**[Langchain](https://docs.tokenfactory.nebius.com/integrations/frameworks/langchain)**"
       }
     ],
     "options": [
@@ -1813,6 +1731,57 @@
     ]
   },
   {
+    "id": "q-9d1f7a4c3e68",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-4",
+    "objective": "domain-4/capacity-and-scaling",
+    "stem": "What guarantee applies to the minimum replicas configured for a dedicated endpoint while it is actively running?",
+    "objectiveTitle": "Capacity, availability, and service guarantees",
+    "sources": [
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active."
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "If the endpoint stops for any reason, this allocation is released"
+      },
+      {
+        "title": "Endpoint capacity",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "They are reserved and non-preemptible, allocated to the deployment for as long as the endpoint is active",
+        "correct": true,
+        "explanation": "The capacity documentation states that minimum replicas are reserved and non-preemptible, remaining allocated for as long as the endpoint is active."
+      },
+      {
+        "id": "b",
+        "text": "They can be reclaimed at any time to serve another customer's burst traffic",
+        "correct": false,
+        "explanation": "That describes capacity above the minimum, which depends on burst availability; the minimum itself is reserved, not reclaimable."
+      },
+      {
+        "id": "c",
+        "text": "They remain reserved indefinitely, even after the endpoint is stopped",
+        "correct": false,
+        "explanation": "The documentation states that if the endpoint stops for any reason, this allocation is released, not kept indefinitely."
+      },
+      {
+        "id": "d",
+        "text": "They come with a formal 99.9% monthly SLA",
+        "correct": false,
+        "explanation": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract, so the minimum replicas carry no SLA guarantee."
+      }
+    ]
+  },
+  {
     "id": "q-9d3a5e7c1f46",
     "course_id": "physical-ai",
     "domain": "domain-3",
@@ -1941,6 +1910,47 @@
     ]
   },
   {
+    "id": "q-a3d7f2c9e618",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/workflow-security",
+    "stem": "A service account in one Nebius AI Cloud region needs to read a SecretStash secret created in a different region. According to the documentation, can it do so?",
+    "objectiveTitle": "Versioning models and configurations and protecting credentials, artifacts and data",
+    "sources": [
+      {
+        "title": "MysteryBox overview",
+        "url": "https://docs.nebius.com/mysterybox/overview.md",
+        "excerpt": "User and service accounts of different regions cannot access the secret."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "No, user and service accounts in a different region from the secret cannot access it, even with correct permissions",
+        "correct": true,
+        "explanation": "Correct. The documentation states user and service accounts of different regions cannot access the secret."
+      },
+      {
+        "id": "b",
+        "text": "Yes, as long as the service account has the correct IAM permissions, regardless of region",
+        "correct": false,
+        "explanation": "Wrong. The documentation treats region as a separate constraint from permissions: accounts in a different region cannot access the secret even with the right permissions."
+      },
+      {
+        "id": "c",
+        "text": "Yes, but only after the secret is manually copied to the target region by an administrator",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes no manual region-copy mechanism for secrets; it simply states cross-region access is not possible."
+      },
+      {
+        "id": "d",
+        "text": "Yes, but only for the secret's primary version, not other versions",
+        "correct": false,
+        "explanation": "Wrong. The version distinction is unrelated to the region rule; the documented region restriction applies to the secret as a whole."
+      }
+    ]
+  },
+  {
     "id": "q-a51f8c3e07d2",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -1983,6 +1993,47 @@
         "text": "Only when a promo code is applied to the account",
         "correct": false,
         "explanation": "Promo codes add free credits to the balance; they are not an automatic charging trigger."
+      }
+    ]
+  },
+  {
+    "id": "q-a6f3d8c1e975",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/robot-policy-training",
+    "stem": "When running `lerobot-rollout` to evaluate a trained robot policy, which `--strategy.type` provides continuous recording with automatic upload, useful for large-scale evaluation?",
+    "objectiveTitle": "Training and fine-tuning robot policies from demonstration data with LeRobot",
+    "sources": [
+      {
+        "title": "Imitation Learning on Real-World Robots",
+        "url": "https://huggingface.co/docs/lerobot/il_robots.md",
+        "excerpt": "`sentry`: Continuous recording with auto-upload (useful for large-scale evaluation)"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`base`",
+        "correct": false,
+        "explanation": "Wrong. `base` is autonomous rollout with no data recording, useful for quick evaluation, not continuous recording."
+      },
+      {
+        "id": "b",
+        "text": "`sentry`",
+        "correct": true,
+        "explanation": "Correct. `sentry` performs continuous recording with auto-upload, useful for large-scale evaluation."
+      },
+      {
+        "id": "c",
+        "text": "`highlight`",
+        "correct": false,
+        "explanation": "Wrong. `highlight` is ring buffer recording with keystroke save, useful for capturing interesting events, not continuous auto-upload recording."
+      },
+      {
+        "id": "d",
+        "text": "`dagger`",
+        "correct": false,
+        "explanation": "Wrong. `dagger` is human-in-the-loop data collection, not continuous auto-upload recording."
       }
     ]
   },
@@ -2110,6 +2161,52 @@
     ]
   },
   {
+    "id": "q-b2e6a4f9c175",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/application-integration",
+    "stem": "A team exposes an internal robot-control service running on a VM to the internet using Nebius Tunnels. According to the documentation, what do they still need to configure themselves?",
+    "objectiveTitle": "Connecting inference and data pipelines to robot applications through APIs, services and containers",
+    "sources": [
+      {
+        "title": "About Nebius Tunnels",
+        "url": "https://docs.nebius.com/tunnels/overview.md",
+        "excerpt": "Nebius Tunnels secures the transport between the tunnel agent and Nebius edge, but it doesn't add user authentication or authorization to your application."
+      },
+      {
+        "title": "About Nebius Tunnels",
+        "url": "https://docs.nebius.com/tunnels/overview.md",
+        "excerpt": "without opening inbound firewall ports, assigning a public IP address to the service or configuring DNS and TLS certificates"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Authentication and authorization within the application itself, since tunnels only secure the transport between the agent and the Nebius edge",
+        "correct": true,
+        "explanation": "Correct. Nebius Tunnels secures the transport between the tunnel agent and Nebius edge, but it doesn't add user authentication or authorization to your application."
+      },
+      {
+        "id": "b",
+        "text": "A public IP address for the service, since tunnels do not provide public connectivity",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes avoiding the need to assign a public IP address as a benefit of tunnels, not a remaining task for the user."
+      },
+      {
+        "id": "c",
+        "text": "Inbound firewall rules to accept the tunnel's connection request",
+        "correct": false,
+        "explanation": "Wrong. The tunnel agent opens an outbound connection to the Nebius edge, so no inbound firewall rule is needed; avoiding open inbound ports is a documented benefit."
+      },
+      {
+        "id": "d",
+        "text": "DNS records and a TLS certificate before the tunnel can be created",
+        "correct": false,
+        "explanation": "Wrong. The documentation lists not needing to configure DNS and TLS certificates as a benefit of tunnels, not something left for the user to do."
+      }
+    ]
+  },
+  {
     "id": "q-b4de81f9a062",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -2208,6 +2305,47 @@
         "text": "It reports the cumulative prompt and completion token counts",
         "correct": false,
         "explanation": "That is the documented purpose of the `usage` object, not `system_fingerprint`."
+      }
+    ]
+  },
+  {
+    "id": "q-b7d2a9f3e861",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "Sandboxes lets you choose to save or discard filesystem changes before an operation runs. What does the documentation say about compute startup regardless of that choice?",
+    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
+    "sources": [
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "Choose whether to save filesystem changes before submitting an operation. Every operation starts fresh compute, regardless of that choice."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Every operation starts fresh compute from the selected image, no matter whether the result will be saved or discarded.",
+        "correct": true,
+        "explanation": "Correct. The documentation states that every operation starts fresh compute, regardless of the save-or-discard choice."
+      },
+      {
+        "id": "b",
+        "text": "Only discarded operations start fresh compute; a saved operation resumes the previous run's live process.",
+        "correct": false,
+        "explanation": "Wrong. The documentation says every operation starts fresh compute regardless of the choice; a saved image carries filesystem state forward, not a resumed process."
+      },
+      {
+        "id": "c",
+        "text": "Fresh compute is started only for the first operation in a session; later operations reuse the same running environment.",
+        "correct": false,
+        "explanation": "Wrong. Each operation independently starts fresh compute; the documentation does not describe environment reuse across operations."
+      },
+      {
+        "id": "d",
+        "text": "The choice to save or discard can be made after reviewing the operation's output.",
+        "correct": false,
+        "explanation": "Wrong. The documentation states the persistence choice must be made before the operation is submitted, not after reviewing its output."
       }
     ]
   },
@@ -2458,6 +2596,93 @@
     ]
   },
   {
+    "id": "q-c8f1a5e3d964",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/observability-tracing",
+    "stem": "By default, with no special configuration, what happens to the underlying VM when a Serverless AI job, endpoint, or Devlab created from a custom image fails or returns an error, and how can a team keep it available for debugging?",
+    "objectiveTitle": "Collecting logs, metrics and diagnostics and tracing failures across data, models and robots",
+    "sources": [
+      {
+        "title": "Debugging failed Devlabs, jobs and endpoints",
+        "url": "https://docs.nebius.com/serverless/jobs/failure.md",
+        "excerpt": "Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs."
+      },
+      {
+        "title": "Debugging failed Devlabs, jobs and endpoints",
+        "url": "https://docs.nebius.com/serverless/jobs/failure.md",
+        "excerpt": "To keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "By default, Serverless AI deletes the VM and boot disk to avoid costs; to keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper",
+        "correct": true,
+        "explanation": "Correct. Serverless AI deletes the underlying VM and boot disk to avoid costs on failure, and the documented way to keep the VM alive for debugging is to run the deployment with a \"sleep-on-fail\" wrapper."
+      },
+      {
+        "id": "b",
+        "text": "By default, the VM keeps running for 24 hours before deletion, giving time to debug without any special configuration",
+        "correct": false,
+        "explanation": "Wrong. The 24-hour window only happens if you add the documented \"sleep-on-fail\" wrapper; by default, with no special configuration, Serverless AI deletes the VM and boot disk."
+      },
+      {
+        "id": "c",
+        "text": "By default, Serverless AI pauses the VM in a stopped state so you can restart it later and inspect the failure",
+        "correct": false,
+        "explanation": "Wrong. The documentation states the VM and boot disk are deleted on failure, not paused or stopped."
+      },
+      {
+        "id": "d",
+        "text": "By default, Serverless AI automatically restarts the failed command up to three times before giving up",
+        "correct": false,
+        "explanation": "Wrong. No automatic retry of the failed command is documented; the default behavior is deletion of the VM and boot disk."
+      }
+    ]
+  },
+  {
+    "id": "q-c9e5a2f8d164",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "The Sandboxes documentation lists several identifiers in its 'Core identifiers' table. Which one is described as 'a mutable name that points to an image'?",
+    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
+    "sources": [
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "Tag | A mutable name that points to an image."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Image UUID",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes an Image UUID as identifying an immutable stored filesystem state, not a mutable name."
+      },
+      {
+        "id": "b",
+        "text": "Tag",
+        "correct": true,
+        "explanation": "Correct. The documentation's identifiers table defines a tag as a mutable name that points to an image."
+      },
+      {
+        "id": "c",
+        "text": "Operation ID",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes an Operation ID as identifying one asynchronous service operation, not a name that points to an image."
+      },
+      {
+        "id": "d",
+        "text": "Client session name",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes a client session name as client-side workflow state, such as the CLI's selected image and history, not a mutable pointer to an image."
+      }
+    ]
+  },
+  {
     "id": "q-cc01a1b2c3d4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -2637,7 +2862,7 @@
       {
         "title": "InfiniBand networking for Compute virtual machines with GPUs",
         "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
-        "excerpt": "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids GPUs to this cluster"
+        "excerpt": "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids to this cluster"
       }
     ],
     "options": [
@@ -4369,6 +4594,52 @@
     ]
   },
   {
+    "id": "q-d4f8a2c6e193",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/gpu-orchestration",
+    "stem": "A team needs to train or fine-tune a model and run batch inference as a one-time task that should terminate automatically once it completes. Which Serverless AI deployment type fits this workload?",
+    "objectiveTitle": "Sizing GPU nodes and orchestration for model size, workload, cost and completion time",
+    "sources": [
+      {
+        "title": "About Serverless AI",
+        "url": "https://docs.nebius.com/serverless/overview.md",
+        "excerpt": "Train or fine-tune a model, preprocess data, run batch inference or evaluation → **Job**"
+      },
+      {
+        "title": "About Serverless AI",
+        "url": "https://docs.nebius.com/serverless/overview.md",
+        "excerpt": "Non-interactive, terminates upon task completion or timeout"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Devlab",
+        "correct": false,
+        "explanation": "Wrong. A Devlab is an interactive, long-lived session that you start and stop yourself, intended for coding and prototyping, not a task that terminates on its own."
+      },
+      {
+        "id": "b",
+        "text": "Job",
+        "correct": true,
+        "explanation": "Correct. A Job is for training or fine-tuning models, preprocessing data, or running batch inference, and it is non-interactive: it terminates upon task completion or timeout."
+      },
+      {
+        "id": "c",
+        "text": "Endpoint",
+        "correct": false,
+        "explanation": "Wrong. An Endpoint is interactive and responds to requests until you terminate it; it is meant for serving models, not for a one-time task that finishes on its own."
+      },
+      {
+        "id": "d",
+        "text": "A GPU cluster created directly in Compute, outside Serverless AI",
+        "correct": false,
+        "explanation": "Wrong. Serverless AI runs containerized workloads like this without the user creating or managing virtual machines or clusters directly."
+      }
+    ]
+  },
+  {
     "id": "q-de01a1b2c3d4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -4906,6 +5177,47 @@
     ]
   },
   {
+    "id": "q-e2a9c7f4b816",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/supervised-fine-tuning",
+    "stem": "By default, which layers of the LM expert does PEFT target when parameter-efficiently fine-tuning a pre-trained SmolVLA policy in LeRobot with LoRA?",
+    "objectiveTitle": "Running supervised fine-tuning jobs for language, vision-language and vision-language-action models",
+    "sources": [
+      {
+        "title": "Parameter efficient fine-tuning with PEFT",
+        "url": "https://huggingface.co/docs/lerobot/peft_training.md",
+        "excerpt": "By default, PEFT will target the `q_proj` and `v_proj` layers of the LM expert in SmolVLA."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`q_proj` and `v_proj`",
+        "correct": true,
+        "explanation": "Correct. By default, PEFT targets the `q_proj` and `v_proj` layers of the LM expert in SmolVLA."
+      },
+      {
+        "id": "b",
+        "text": "`k_proj` and `o_proj`",
+        "correct": false,
+        "explanation": "Wrong. The documentation names `q_proj` and `v_proj` as the default targets, not `k_proj` and `o_proj`."
+      },
+      {
+        "id": "c",
+        "text": "Every projection layer in the LM expert, with no default restriction",
+        "correct": false,
+        "explanation": "Wrong. PEFT has a specific default target (`q_proj` and `v_proj`); targeting different or additional layers requires explicitly setting `--peft.target_modules`."
+      },
+      {
+        "id": "d",
+        "text": "Only the embedding and output head layers",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes targeting `q_proj`/`v_proj` and the state and action projection matrices, not the embedding or output head layers."
+      }
+    ]
+  },
+  {
     "id": "q-e9a2c651f03d",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -5285,6 +5597,47 @@
     ]
   },
   {
+    "id": "q-f4a8e1c6d935",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/agent-sandboxes",
+    "stem": "According to the Sandboxes documentation's state model, what does a saved image contain, and what does it not retain from the operation that produced it?",
+    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
+    "sources": [
+      {
+        "title": "Sandboxes",
+        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
+        "excerpt": "A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Filesystem state only; it does not retain a running process, process memory, open file handles, network connections, or a live terminal.",
+        "correct": true,
+        "explanation": "Correct. The documentation states a saved image contains filesystem state and does not retain a running process, process memory, open file handles, network connections, or a live terminal."
+      },
+      {
+        "id": "b",
+        "text": "The complete process state, including open network connections and a live terminal, so the image can resume an interactive session.",
+        "correct": false,
+        "explanation": "Wrong. The documentation lists network connections and a live terminal among what a saved image does not retain."
+      },
+      {
+        "id": "c",
+        "text": "Environment values, which persist automatically into every later operation once an image is saved.",
+        "correct": false,
+        "explanation": "Wrong. The documentation's survival table says environment values persist only when the interface explicitly saves both the image and supported environment metadata, not automatically."
+      },
+      {
+        "id": "d",
+        "text": "Only the stdout and stderr produced during the run, without any filesystem changes.",
+        "correct": false,
+        "explanation": "Wrong. The documentation describes a saved image as containing filesystem state; stdout and stderr are available through the operation result, a separate item in the survival table."
+      }
+    ]
+  },
+  {
     "id": "q-f62d0a9c3b57",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -5322,6 +5675,47 @@
         "text": "Both are automatically doubled to match the larger effective batch size from more GPUs",
         "correct": false,
         "explanation": "The effective batch size does grow with more GPUs, but LeRobot does not automatically adjust the learning rate or step count in response."
+      }
+    ]
+  },
+  {
+    "id": "q-f7c3a9e5d268",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-capacity",
+    "stem": "After creating a new Serverless AI endpoint or job, roughly how long does the documentation say it takes before usage data appears on the Metrics dashboard?",
+    "objectiveTitle": "Sizing inference capacity for quality, latency, throughput and cost",
+    "sources": [
+      {
+        "title": "Metrics for endpoints and jobs",
+        "url": "https://docs.nebius.com/serverless/monitoring.md",
+        "excerpt": "Usage data for endpoints and jobs becomes available 5–10 minutes after a resource is created."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5-10 minutes",
+        "correct": true,
+        "explanation": "Correct. Usage data for endpoints and jobs becomes available 5-10 minutes after a resource is created."
+      },
+      {
+        "id": "b",
+        "text": "Immediately, within the first few seconds",
+        "correct": false,
+        "explanation": "Wrong. The documentation states a 5-10 minute delay before usage data becomes available, not an immediate appearance."
+      },
+      {
+        "id": "c",
+        "text": "Only once every 15 seconds, starting the moment the endpoint is created",
+        "correct": false,
+        "explanation": "Wrong. The 15-second interval is how often already-available data is refreshed; it is not the initial delay before data first appears."
+      },
+      {
+        "id": "d",
+        "text": "Only after the first stop-and-restart cycle",
+        "correct": false,
+        "explanation": "Wrong. No restart requirement for usage data to appear is documented; the only documented delay is the 5-10 minutes after creation."
       }
     ]
   },
@@ -6222,7 +6616,7 @@
       {
         "title": "Inference Overview",
         "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
-        "excerpt": "<Card title=\"Vision\" icon=\"eye\" href=\"https://tokenfactory.nebius.com/endpoints?modality=image2text\" />"
+        "excerpt": "**[Vision](https://tokenfactory.nebius.com/endpoints?modality=image2text)**"
       }
     ],
     "options": [

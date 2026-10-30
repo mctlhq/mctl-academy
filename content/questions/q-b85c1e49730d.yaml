@@ -32,12 +32,12 @@ evidence:
   - source_id: src-pa-serverless-failure
     excerpt: "Serverless AI deletes the underlying virtual machine (VM) and boot
       disk to avoid costs."
-    source_sha256: 4dad00e1fdadae0869840b76d6aa07f0fe9d2393cbb8a150e29b8745ccece7c4
+    source_sha256: 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: 6ceb6d1cef9ca53025d8a6958fc1e071fdb496e75d4dbdc3ca8b5c437ff7a07c
+  at: 2026-10-30T15:23:08Z
+  content_sha256: becd88cfa26d8c3092edb025155654f36d033b17705c3d73c79cba417301ce44

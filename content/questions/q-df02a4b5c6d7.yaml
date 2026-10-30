@@ -30,11 +30,12 @@ evidence:
   - source_id: src-dataset-formats
     excerpt: Each training example can optionally include a `tools` field that
       defines the tools available in that conversation.
-    source_sha256: 2e72d96c06b674289198930421019ac70579fef07224c27fe509571f80d2032f
+    source_sha256: 85722b2677ef9bfc772256754df8a362cb841ff27ac49f56bddc40803acb1033
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
-reviewed:
-  by: mashkovd
-  at: 2026-08-06T06:17:17Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 09688cd2595df82c2fb942909a92a3723e737a433ac0d3e77298efb0022d87db

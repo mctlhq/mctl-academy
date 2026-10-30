@@ -31,7 +31,7 @@ options:
 evidence:
   - source_id: src-pa-registry-quickstart
     excerpt: "Assign the image a tag:"
-    source_sha256: a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
+    source_sha256: a36409ce80f86008f70176f9116cd02cea20bca1ee02e8de04737d8a0fc2f73f
     locator: "Push and run a Docker image, step 2"
 authored:
   by: agent:claude-author
@@ -39,5 +39,5 @@ authored:
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: a427902aaa905a84203fb76aa7315f85c5a951ca20a626b8953ac23860766390
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 135891c922eb8bf86618e7ecaea0fb5871adb2ab13214fbbc59d6e6adf47722d

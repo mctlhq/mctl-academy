@@ -28,12 +28,12 @@ options:
 evidence:
   - source_id: src-co-manage-projects
     excerpt: If you try to create a project in a private region, you receive an error.
-    source_sha256: 8164ebc1567338a0e5e3fcf322266253b34002dd58d9570fe2c9b7aa11115108
+    source_sha256: 8c7ca6398842fe640af364022464165e75d658a8477fb1c9664497922ca1af40
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
-  by: agent:deepseek-reviewer
-  at: 2026-09-13T05:40:54Z
-  content_sha256: 4c3608176ffb91822798bfecce62cc20e5b371c8f6a404527fd724783f973620
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 87494a30528dba5edad705659f3813ae95df570867d89405436962bd717c5f9c
