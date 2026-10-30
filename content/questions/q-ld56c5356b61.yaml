@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld56c5356b61
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: Why do dedicated endpoints report two separate status types rather than one?
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: f3569cebb34a36513970d9230c69dd8082ecffebbfce9a3c2f1c3caab1e30eeb

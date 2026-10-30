@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-8f1a3d6e9c52
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/experiment-tracking
 stem: "Together with an MLflow cluster, Managed Service for MLflow creates an
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 4261ed7d2645e26e380aa734f3a9749518db2452b496fdd8e4690682dbc961f2

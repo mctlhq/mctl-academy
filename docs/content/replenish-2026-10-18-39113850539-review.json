@@ -3,13 +3,6 @@
   "reviewed_at": "2026-10-18T09:29:20Z",
   "questions": [
     {
-      "id": "q-1b6d9f3a8e47",
-      "content_sha256": "2c51ce46e80f256ecb3ebf108f39545b87151764f094d8f93b67bfd12455c838",
-      "approved": true,
-      "reason": "The captured overview states verbatim that \"Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results and tuned hyperparameters in a single interface\", which establishes option b; the separate-dashboard, auto-selection and hyperparameters-only options all contradict that sentence.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
       "id": "q-1f4b8e3a6c97",
       "content_sha256": "3d977683bf518ce5ef7b7be0d7525c1e1fefc7abd57cf6f6544a32d29a5523cc",
       "approved": false,
@@ -73,31 +66,10 @@
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
-      "id": "q-5d3b8a1f6c94",
-      "content_sha256": "cde65dc5c469946cee2c3db42eec9e3de76fb7c5564438701ae68471235f35d0",
-      "approved": true,
-      "reason": "Both excerpts are verbatim section text: \"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\" and \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely\", which matches option b and makes option c the exact reversal.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
       "id": "q-6b9c4e1a7f32",
       "content_sha256": "eec86a603a9aee1125b50a9841d8eb727b25f5776ffec5f80ba6e687b55b2837",
       "approved": true,
       "reason": "Verbatim under Common Issues: \"Without calling `finalize()`, your parquet files will be incomplete and the dataset won't load properly\", and the same section says you \"**must** call `dataset.finalize()`\" before `push_to_hub()`, so the automatic-call distractor fails.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
-      "id": "q-6e2f4c9a1d78",
-      "content_sha256": "242bd0401272f74f8bdcc8f691b8e80a7c42ed80f70e8742686f80e23c31ea1c",
-      "approved": true,
-      "reason": "The opening sentence reads \"If you share a capacity block group between a Soperator cluster and an inference node group, you can move GPU capacity between them without stopping the entire Soperator cluster\", and the page explicitly covers both separate clusters and node groups in one cluster, plus moving capacity back, ruling out a, b and d.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
-      "id": "q-7c4a9f1d3e85",
-      "content_sha256": "fc0f01d09003bb1eee157c0bf65c82167c9d71f66d8614c6f9437ce81bf01749",
-      "approved": true,
-      "reason": "Verbatim: \"When you delete an endpoint, Serverless AI automatically deletes its VM and container (boot) disk\", while the stop section says the endpoint is preserved and \"Computing resources of stopped endpoints aren't charged\" — exactly option a.",
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
@@ -115,20 +87,6 @@
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
-      "id": "q-8f1a3d6e9c52",
-      "content_sha256": "4a3b7a348ed017d825a0364dbd61d1dc88c46cc91475a0175707dff4c6e2d16e",
-      "approved": true,
-      "reason": "The quickstart says verbatim \"This bucket is not deleted automatically after you delete the cluster\" and adds \"You are still charged for the bucket until you delete it\", which supports option d and defeats the free read-only distractor.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
-      "id": "q-9c4e7b2a5f16",
-      "content_sha256": "43ab7de69b0290135c6800e9d5f1052105c531bc8a947379419d6f2e83449f3d",
-      "approved": true,
-      "reason": "The prerequisites require being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\" (verbatim), so only the admin option is defensible.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
       "id": "q-9d3a5e7c1f46",
       "content_sha256": "3385bfd9209c9ec020a391529002fb47694b5345303dacb5d6899caa7d114494",
       "approved": true,
@@ -141,6 +99,56 @@
       "approved": true,
       "reason": "Verbatim: \"Intervals are half-open (`[start, end)`). They may touch, but must not overlap, and every frame in every exported episode must be covered\", and the troubleshooting table confirms \"the default export requires complete non-overlapping coverage\", excluding the overlap, endpoints-only and gap options.",
       "reviewed_at": "2026-10-18T09:29:20Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-1b6d9f3a8e47",
+      "content_sha256": "2c51ce46e80f256ecb3ebf108f39545b87151764f094d8f93b67bfd12455c838",
+      "approved": true,
+      "reason": "The captured overview states verbatim that \"Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results and tuned hyperparameters in a single interface\", which establishes option b; the separate-dashboard, auto-selection and hyperparameters-only options all contradict that sentence.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-5d3b8a1f6c94",
+      "content_sha256": "cde65dc5c469946cee2c3db42eec9e3de76fb7c5564438701ae68471235f35d0",
+      "approved": true,
+      "reason": "Both excerpts are verbatim section text: \"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\" and \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely\", which matches option b and makes option c the exact reversal.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-6e2f4c9a1d78",
+      "content_sha256": "242bd0401272f74f8bdcc8f691b8e80a7c42ed80f70e8742686f80e23c31ea1c",
+      "approved": true,
+      "reason": "The opening sentence reads \"If you share a capacity block group between a Soperator cluster and an inference node group, you can move GPU capacity between them without stopping the entire Soperator cluster\", and the page explicitly covers both separate clusters and node groups in one cluster, plus moving capacity back, ruling out a, b and d.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-7c4a9f1d3e85",
+      "content_sha256": "fc0f01d09003bb1eee157c0bf65c82167c9d71f66d8614c6f9437ce81bf01749",
+      "approved": true,
+      "reason": "Verbatim: \"When you delete an endpoint, Serverless AI automatically deletes its VM and container (boot) disk\", while the stop section says the endpoint is preserved and \"Computing resources of stopped endpoints aren't charged\" — exactly option a.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-8f1a3d6e9c52",
+      "content_sha256": "4a3b7a348ed017d825a0364dbd61d1dc88c46cc91475a0175707dff4c6e2d16e",
+      "approved": true,
+      "reason": "The quickstart says verbatim \"This bucket is not deleted automatically after you delete the cluster\" and adds \"You are still charged for the bucket until you delete it\", which supports option d and defeats the free read-only distractor.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-9c4e7b2a5f16",
+      "content_sha256": "43ab7de69b0290135c6800e9d5f1052105c531bc8a947379419d6f2e83449f3d",
+      "approved": true,
+      "reason": "The prerequisites require being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\" (verbatim), so only the admin option is defensible.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
     }
   ]
 }

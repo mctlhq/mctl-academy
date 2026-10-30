@@ -17,31 +17,10 @@
       "reviewed_at": "2026-10-18T08:51:12Z"
     },
     {
-      "id": "q-2f9b53d8c164",
-      "content_sha256": "f6d94c776cf7afe8cfb444956c95f1b26784965d96bbca9602459ef247db5319",
-      "approved": true,
-      "reason": "The overview states \"SecretStash allows you to avoid hardcoding sensitive data, for example, in [Terraform manifests](/terraform-provider/index) or cloud-init scripts. As a result, you eliminate vulnerabilities and maintain compliance with security.\" The page contradicts the distractors: a version \"cannot modify this snapshot once it is created\", other authentication methods exist, and the primary version changes only by explicit setting.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
       "id": "q-3d8e6a21f974",
       "content_sha256": "4b3250e6eb8047399f431fb8452ab9af9c6ef35b3af6ffa8676cc7a368fc5ab5",
       "approved": true,
       "reason": "The cookbook says of this workflow \"It uses managed Kubernetes and torchrun, **not Slurm**\", which rules out the Slurm distractor on the same page; Colab and Hugging Face Jobs appear nowhere as this workflow's infrastructure.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
-      "id": "q-4210b8e6c3a7",
-      "content_sha256": "1af42ff221714c7d1805bc8cb2c04a631a2cc0a52c1dbaf5b55288503fea3063",
-      "approved": true,
-      "reason": "The overview states \"The agent opens an outbound TLS connection to a regional Nebius edge endpoint\" and \"The VM or private network doesn't need to accept inbound connections from the internet for this traffic\", which is option a. The page makes services.name a service name rather than a port and makes protocol: h2 a traffic-type setting, so neither distractor implies an inbound requirement.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
-      "id": "q-5c8f2b0491ea",
-      "content_sha256": "88fab3401b49cacadca5c2c547efce9319e593b2c556280f6c70ec3277aa73f6",
-      "approved": true,
-      "reason": "The iterations section states \"If the object is less than 100 MB, it makes a single `GetObject` request to the source bucket and a single `PutObject` request to the destination bucket\", with the multipart sequence reserved \"For larger objects\". The CopyObject and skip paths are conditioned on identical data with differing metadata and on the last-modified time, not on object size.",
       "reviewed_at": "2026-10-18T08:51:12Z"
     },
     {
@@ -59,13 +38,6 @@
       "reviewed_at": "2026-10-18T08:51:12Z"
     },
     {
-      "id": "q-82e5d1c4930b",
-      "content_sha256": "c1b500dc9fc883c2d9c5b101992a6608f5cd1e8370047b50107e0f7c4ffe9af7",
-      "approved": true,
-      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\" for the vllm/vllm-openai endpoint image. The MLflow, Container Registry and Slurm options belong to other services and are not offered by this container.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
       "id": "q-9d6e2a805cf1",
       "content_sha256": "36ec19b80fa5c5237a0f5d4a429d634f0ec453d697d0190ac3200de6dd69856a",
       "approved": false,
@@ -77,20 +49,6 @@
       "content_sha256": "d41aeed79d97f41fead27df2ccfb815b866ea4cc325645963a74bd2f720a3e1f",
       "approved": true,
       "reason": "The reproduction section states \"These results are consistent with the [original results](https://github.com/Physical-Intelligence/openpi/tree/main/examples/libero#results) reported by Physical Intelligence\", and the adjacent tables (97.5 against 96.85) rule out the exact-match option as well as the substantially-lower and single-suite options.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
-      "id": "q-b291d47ea6c3",
-      "content_sha256": "3959eaa772aaa73c07a07c796571b63ccd842e87fef2a8ea9e5c334239d4f2b8",
-      "approved": true,
-      "reason": "The tutorial states the LoRA adapter weights \"are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket.\" It also says \"Serverless AI deletes the job after its completion. Thus, the bucket preserves the job data\", which excludes the container-disk option.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
-      "id": "q-b85c1e49730d",
-      "content_sha256": "6ceb6d1cef9ca53025d8a6958fc1e071fdb496e75d4dbdc3ca8b5c437ff7a07c",
-      "approved": true,
-      "reason": "The debugging guide states that when such a resource \"fails, gets canceled or returns an error, Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs.\" The 24-hour window is explicitly a consequence of adding the \"sleep-on-fail\" wrapper, not the default.",
       "reviewed_at": "2026-10-18T08:51:12Z"
     },
     {
@@ -115,13 +73,6 @@
       "reviewed_at": "2026-10-18T08:51:12Z"
     },
     {
-      "id": "q-e9a2c651f03d",
-      "content_sha256": "b2e9bc998fb9abf7b77ff28f239ec0cc3f810f7da5d82ad208c0471f683a980f",
-      "approved": true,
-      "reason": "For the \"Public and private\" option the quickstart states \"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network).\" That sentence distinguishes the two endpoints and scopes private reachability to the network, not the project.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
       "id": "q-eac06372819f",
       "content_sha256": "a6a45092ee3136a00a8cabb410170d8d49121ac4bd3e2f7f0bc0a33988ab5e9d",
       "approved": true,
@@ -134,13 +85,72 @@
       "approved": true,
       "reason": "The guide states \"LeRobot does **NOT** automatically scale learning rates or training steps based on the number of GPUs. This gives you full control over your training hyperparameters\", and presents both LR and step scaling as things \"you should do it manually\".",
       "reviewed_at": "2026-10-18T08:51:12Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-2f9b53d8c164",
+      "content_sha256": "f6d94c776cf7afe8cfb444956c95f1b26784965d96bbca9602459ef247db5319",
+      "approved": true,
+      "reason": "The overview states \"SecretStash allows you to avoid hardcoding sensitive data, for example, in [Terraform manifests](/terraform-provider/index) or cloud-init scripts. As a result, you eliminate vulnerabilities and maintain compliance with security.\" The page contradicts the distractors: a version \"cannot modify this snapshot once it is created\", other authentication methods exist, and the primary version changes only by explicit setting.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-4210b8e6c3a7",
+      "content_sha256": "1af42ff221714c7d1805bc8cb2c04a631a2cc0a52c1dbaf5b55288503fea3063",
+      "approved": true,
+      "reason": "The overview states \"The agent opens an outbound TLS connection to a regional Nebius edge endpoint\" and \"The VM or private network doesn't need to accept inbound connections from the internet for this traffic\", which is option a. The page makes services.name a service name rather than a port and makes protocol: h2 a traffic-type setting, so neither distractor implies an inbound requirement.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-5c8f2b0491ea",
+      "content_sha256": "88fab3401b49cacadca5c2c547efce9319e593b2c556280f6c70ec3277aa73f6",
+      "approved": true,
+      "reason": "The iterations section states \"If the object is less than 100 MB, it makes a single `GetObject` request to the source bucket and a single `PutObject` request to the destination bucket\", with the multipart sequence reserved \"For larger objects\". The CopyObject and skip paths are conditioned on identical data with differing metadata and on the last-modified time, not on object size.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "c1b500dc9fc883c2d9c5b101992a6608f5cd1e8370047b50107e0f7c4ffe9af7",
+      "approved": true,
+      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\" for the vllm/vllm-openai endpoint image. The MLflow, Container Registry and Slurm options belong to other services and are not offered by this container.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "3959eaa772aaa73c07a07c796571b63ccd842e87fef2a8ea9e5c334239d4f2b8",
+      "approved": true,
+      "reason": "The tutorial states the LoRA adapter weights \"are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket.\" It also says \"Serverless AI deletes the job after its completion. Thus, the bucket preserves the job data\", which excludes the container-disk option.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-b85c1e49730d",
+      "content_sha256": "6ceb6d1cef9ca53025d8a6958fc1e071fdb496e75d4dbdc3ca8b5c437ff7a07c",
+      "approved": true,
+      "reason": "The debugging guide states that when such a resource \"fails, gets canceled or returns an error, Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs.\" The 24-hour window is explicitly a consequence of adding the \"sleep-on-fail\" wrapper, not the default.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "b2e9bc998fb9abf7b77ff28f239ec0cc3f810f7da5d82ad208c0471f683a980f",
+      "approved": true,
+      "reason": "For the \"Public and private\" option the quickstart states \"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network).\" That sentence distinguishes the two endpoints and scopes private reachability to the network, not the project.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
     },
     {
       "id": "q-fb709a3c61e4",
       "content_sha256": "a427902aaa905a84203fb76aa7315f85c5a951ca20a626b8953ac23860766390",
       "approved": true,
       "reason": "In \"Push and run a Docker image\", step 2 between pulling and pushing is \"Assign the image a tag:\" followed by `docker tag hello-world cr.$REGION_ID.nebius.cloud/$REGISTRY_PATH/hello-world:hello`. Creating a registry, `nebius profile create` and `nebius registry configure-helper` are one-time setup steps earlier in the guide.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
     }
   ]
 }

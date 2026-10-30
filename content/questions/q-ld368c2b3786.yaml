@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld368c2b3786
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/product-outcomes
 stem: In the Playground, which control is intended for the instructions that
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 351170e108e2470342c5cf8ce6d32649303ba42bf444f262e515601db071eb11

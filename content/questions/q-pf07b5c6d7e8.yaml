@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf07b5c6d7e8
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/playground
 stem: What does the Token Factory Playground let you do?
@@ -36,3 +36,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 3964454245f2ac3f35665a36a7e7f9bfa2c567dcc003e833e6576b96a43ec4ce

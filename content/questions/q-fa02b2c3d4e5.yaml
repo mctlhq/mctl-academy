@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fa02b2c3d4e5
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/files-api
 stem: Which `purpose` value is used when uploading a JSONL dataset for
@@ -32,3 +32,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: ba5c6ae18d2dc85dca3f6f1ac36a02002b00065e2d7a2f08beff17f7700d2380

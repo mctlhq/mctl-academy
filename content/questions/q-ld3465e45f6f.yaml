@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld3465e45f6f
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
 stem: An application repeatedly sends requests that share a long common prefix.
@@ -33,3 +33,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 5b312a3503059dcfb060cde6e5f44af9f1477b45f4dc6389da5ec1e7cacdd765

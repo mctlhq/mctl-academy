@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co51437baad6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: A Managed Kubernetes node group fails to grow because of a quota limit,
@@ -35,3 +35,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 31f26b34932e83be6333c519069db5c640b6a2c3f17581f76c79e5bc56c63d2d

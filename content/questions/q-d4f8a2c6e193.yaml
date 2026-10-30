@@ -1,29 +1,40 @@
 schema_version: 1
 id: q-d4f8a2c6e193
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/gpu-orchestration
-stem: "A team needs to train or fine-tune a model and run batch inference as a one-time task that should terminate automatically once it completes. Which Serverless AI deployment type fits this workload?"
+stem: "A team needs to train or fine-tune a model and run batch inference as a
+  one-time task that should terminate automatically once it completes. Which
+  Serverless AI deployment type fits this workload?"
 options:
   - id: a
     text: "Devlab"
     correct: false
-    explanation: "Wrong. A Devlab is an interactive, long-lived session that you start and stop yourself, intended for coding and prototyping, not a task that terminates on its own."
+    explanation: "Wrong. A Devlab is an interactive, long-lived session that you
+      start and stop yourself, intended for coding and prototyping, not a task
+      that terminates on its own."
   - id: b
     text: "Job"
     correct: true
-    explanation: "Correct. A Job is for training or fine-tuning models, preprocessing data, or running batch inference, and it is non-interactive: it terminates upon task completion or timeout."
+    explanation: "Correct. A Job is for training or fine-tuning models,
+      preprocessing data, or running batch inference, and it is non-interactive:
+      it terminates upon task completion or timeout."
   - id: c
     text: "Endpoint"
     correct: false
-    explanation: "Wrong. An Endpoint is interactive and responds to requests until you terminate it; it is meant for serving models, not for a one-time task that finishes on its own."
+    explanation: "Wrong. An Endpoint is interactive and responds to requests until
+      you terminate it; it is meant for serving models, not for a one-time task
+      that finishes on its own."
   - id: d
     text: "A GPU cluster created directly in Compute, outside Serverless AI"
     correct: false
-    explanation: "Wrong. Serverless AI runs containerized workloads like this without the user creating or managing virtual machines or clusters directly."
+    explanation: "Wrong. Serverless AI runs containerized workloads like this
+      without the user creating or managing virtual machines or clusters
+      directly."
 evidence:
   - source_id: src-pa-serverless-overview
-    excerpt: "Train or fine-tune a model, preprocess data, run batch inference or evaluation → **Job**"
+    excerpt: "Train or fine-tune a model, preprocess data, run batch inference or
+      evaluation → **Job**"
     source_sha256: 26ad526e01397e3e2e612bfd23837fde3c805bd3c1fc2b22279ef46a5c60d7ee
   - source_id: src-pa-serverless-overview
     excerpt: "Non-interactive, terminates upon task completion or timeout"
@@ -32,3 +43,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 9ea9c274a2a724fe16da67162c1fec7f469db640c0e78437ce546722c89abe5a

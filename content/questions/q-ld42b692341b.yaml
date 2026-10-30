@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld42b692341b
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/product-outcomes
 stem: A developer has finished tuning a chat setup in the Playground and needs
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 081a02de08a5f6ba03d68843bb7b87fbeef6b80ca2e69b8d6e02a130935598db

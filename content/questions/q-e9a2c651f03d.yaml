@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-e9a2c651f03d
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/experiment-tracking
 stem: "A team creates a Managed Service for MLflow cluster in Nebius AI Cloud
@@ -42,3 +42,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 5089b5744f44e1af8a53ba33a15827ebe766b434ac6eccdfa8c42d4853cf16bd

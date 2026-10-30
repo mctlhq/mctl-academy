@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9c4e7b2a5f16
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/experiment-tracking
 stem: "Before creating a Managed Service for MLflow cluster, what access level
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 981dbf927ad870f005b67165059294607b9b583a8e0fbbc7f25aee4fde883fd6

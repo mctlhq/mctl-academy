@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el03c3d4e5f6
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: What is the difference between an endpoint's deployment lifecycle state
@@ -39,3 +39,7 @@ authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 74057c3b7ba75ff1d88f0fc6597791a48e1b53edf737585a4896b14b160e7d55

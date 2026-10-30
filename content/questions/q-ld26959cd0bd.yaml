@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld26959cd0bd
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
 stem: Comparing two candidate models on their cards in the UI, a team wants a
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: ea575c2c7c049494fb2693703c083c02acd0426de6751fb09bb5de6fa29ab991

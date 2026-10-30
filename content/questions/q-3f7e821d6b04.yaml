@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-3f7e821d6b04
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/data-lab
 stem: A team wants to build a training dataset from the chat completions their
@@ -51,3 +51,7 @@ authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1d2bae0343cf626973d1ac9a7a3c205c4c90ff2ec00ec698e0e41cf770f5623e

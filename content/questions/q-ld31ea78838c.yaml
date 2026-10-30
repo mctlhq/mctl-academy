@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld31ea78838c
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
 stem: A developer asks how to send traffic to the Fast flavor of a model from
@@ -30,3 +30,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 5f64e82d7d5de55186673021335360a58eee942f5bce809c7012737da7f69599

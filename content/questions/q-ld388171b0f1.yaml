@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld388171b0f1
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
 stem: An application must keep inference inside a particular jurisdiction. Which
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 4e2b9848be65fc3fece4e1479fa187f2368acf992faf7d05160ccddb6c726c17

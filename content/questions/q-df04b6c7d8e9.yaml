@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-df04b6c7d8e9
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/dataset-formats
 stem: When fine-tuning for tool calling, how are the tool definitions supplied
@@ -39,3 +39,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 461f5d0ced01b5446b2585e74de6d244641e919df307ec8f02528febb9bbe22b

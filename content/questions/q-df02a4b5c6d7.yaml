@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-df02a4b5c6d7
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/dataset-formats
 stem: You want a fine-tuned model to be better at calling your tools. What can a
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 09688cd2595df82c2fb942909a92a3723e737a433ac0d3e77298efb0022d87db

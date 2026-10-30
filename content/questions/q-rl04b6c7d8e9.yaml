@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rl04b6c7d8e9
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limits
 stem: How does automatic rate limit growth operate when a user consistently
@@ -36,3 +36,7 @@ authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: dd781482117f95426a8550b21cc50ad478a902234350c0ca509c92543008e1d2

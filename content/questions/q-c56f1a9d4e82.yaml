@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c56f1a9d4e82
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: According to the Reranking API reference, which fields are required in a
@@ -34,3 +34,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 323dbfe9d00f490fad828651646c54ec7d4828e702c275d0af8744be12c9929a

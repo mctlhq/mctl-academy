@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc01a2b3c4d5
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/function-calling
 stem: Your application defines a `get_weather` tool and the model returns a tool
@@ -37,3 +37,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1c11b739dfd7da68b3551e2a86cfcd548687bb4cbd4ce388879097a880e74ad1

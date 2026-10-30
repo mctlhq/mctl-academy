@@ -1,26 +1,36 @@
 schema_version: 1
 id: q-a3d7f2c9e618
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/workflow-security
-stem: "A service account in one Nebius AI Cloud region needs to read a SecretStash secret created in a different region. According to the documentation, can it do so?"
+stem: "A service account in one Nebius AI Cloud region needs to read a
+  SecretStash secret created in a different region. According to the
+  documentation, can it do so?"
 options:
   - id: a
-    text: "No, user and service accounts in a different region from the secret cannot access it, even with correct permissions"
+    text: "No, user and service accounts in a different region from the secret
+      cannot access it, even with correct permissions"
     correct: true
-    explanation: "Correct. The documentation states user and service accounts of different regions cannot access the secret."
+    explanation: "Correct. The documentation states user and service accounts of
+      different regions cannot access the secret."
   - id: b
-    text: "Yes, as long as the service account has the correct IAM permissions, regardless of region"
+    text: "Yes, as long as the service account has the correct IAM permissions,
+      regardless of region"
     correct: false
-    explanation: "Wrong. The documentation treats region as a separate constraint from permissions: accounts in a different region cannot access the secret even with the right permissions."
+    explanation: "Wrong. The documentation treats region as a separate constraint
+      from permissions: accounts in a different region cannot access the secret
+      even with the right permissions."
   - id: c
-    text: "Yes, but only after the secret is manually copied to the target region by an administrator"
+    text: "Yes, but only after the secret is manually copied to the target region by
+      an administrator"
     correct: false
-    explanation: "Wrong. The documentation describes no manual region-copy mechanism for secrets; it simply states cross-region access is not possible."
+    explanation: "Wrong. The documentation describes no manual region-copy mechanism
+      for secrets; it simply states cross-region access is not possible."
   - id: d
     text: "Yes, but only for the secret's primary version, not other versions"
     correct: false
-    explanation: "Wrong. The version distinction is unrelated to the region rule; the documented region restriction applies to the secret as a whole."
+    explanation: "Wrong. The version distinction is unrelated to the region rule;
+      the documented region restriction applies to the secret as a whole."
 evidence:
   - source_id: src-pa-mysterybox-overview
     excerpt: "User and service accounts of different regions cannot access the secret."
@@ -29,3 +39,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 9f7ef7bbed8101e513c5287d6f2bbf92159ade6f1bc1c97f197418fea69dbd1f

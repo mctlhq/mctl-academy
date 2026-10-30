@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf01b9c0d1e2
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: Latency matters more than token cost for your chat feature. How do you
@@ -33,3 +33,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 05ef90040a3c33c92609ec01cfdaee669d9a80c253abf021aa96cc6db1a55c95

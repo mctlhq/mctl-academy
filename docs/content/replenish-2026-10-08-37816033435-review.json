@@ -8,48 +8,6 @@
       "approved": true,
       "reason": "The overview states verbatim \"Unlike traditional containers, Sandboxes supports Git-like branching — fork from any checkpoint, run parallel explorations, and roll back instantly\", which is the correct option; OCI images, resource metrics and async operations are listed as separate key features and none is framed as the contrast with containers.",
       "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-46c9e2a7b815",
-      "content_sha256": "e680a005091335d65b450374016be18204dd5f9c6e8fe6462161e978efe02ae1",
-      "approved": true,
-      "reason": "\"Key fields to watch during a run\" lists \"`status`: `validating_files` → `queued` → `running` → `succeeded` / `failed`\", so `validating_files` is unambiguously the first status and each distractor is explicitly later in the same chain.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-71e4b9c2a5f3",
-      "content_sha256": "d131b03328a4e7090e3caa841f5922df2255984c00c568a8c6e53fde51337f64",
-      "approved": true,
-      "reason": "Step 7 \"Download file contents\" calls `curl \"https://api.tokenfactory.nebius.com/v1/files/<file_ID>/content\"`, while step 6 \"Inspect file metadata\" uses `/v1/files/<file_ID>` and returns `filename`, `bytes`, `purpose`, so only the `/content` path yields the contents.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-8b2e5f1a9c34",
-      "content_sha256": "54ea9ae5fa6772c495e8b5cdc4ffecdcfb65c22ef9548995c125e2f6960fe763",
-      "approved": true,
-      "reason": "The model card list reads \"**Quality** — MMLU score reported by the model provider.\" verbatim, and the three distractors correspond to the separately named \"Tokens per second\", \"Input tokens\" and \"Output tokens\" entries on the same list.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-9d1f7a4c3e68",
-      "content_sha256": "cc809feca287c6ed746394851379fde83da4bdbe981f6a536b572ab1d853fb74",
-      "approved": true,
-      "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\" supports the key; the same page releases the allocation when the endpoint stops, confines reclaim risk to scaling above the minimum, and says self-service endpoints have no formal SLA, so no distractor survives.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-c71b4f9a3d85",
-      "content_sha256": "8b496bd747f5774609cd2156bddb6d78955a075c534c734cc883cafecd59f826",
-      "approved": true,
-      "reason": "The Quickstart's Third-party integrations card reads \"Build inference into applications that are based on supported third-party integrations\" verbatim; the Inference, Fine-tuning and API cards each carry the other option texts, and the API card is the path the stem excludes.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
-    },
-    {
-      "id": "q-f3a8d1c6e924",
-      "content_sha256": "5b2004cf33fb23df9a899bc9ee6ebc752f9b1e8df7e6b26687b0439d60fcf90c",
-      "approved": true,
-      "reason": "\"When to use pretokenized datasets\" says to use the Pretokenized format if you want to \"Have full control over **tokenization, packing, loss masking, and attention masking**\", both excerpts verbatim; conversational, instruction and text formats are described purely as `messages`, prompt/completion and `text` shapes with no such control.",
-      "reviewed_at": "2026-10-08T17:42:33Z"
     }
   ],
   "superseded": [
@@ -92,6 +50,54 @@
       "reason": "EmbeddingRequest documents `dimensions` (type integer, examples 4096 and 8192) as \"The dimensions to use for the request\", found verbatim; `encoding_format` is documented as float or base64 only, and `service_tier`/`model` have no bearing on vector size.",
       "reviewed_at": "2026-10-08T17:42:33Z",
       "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-46c9e2a7b815",
+      "content_sha256": "e680a005091335d65b450374016be18204dd5f9c6e8fe6462161e978efe02ae1",
+      "approved": true,
+      "reason": "\"Key fields to watch during a run\" lists \"`status`: `validating_files` → `queued` → `running` → `succeeded` / `failed`\", so `validating_files` is unambiguously the first status and each distractor is explicitly later in the same chain.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-71e4b9c2a5f3",
+      "content_sha256": "d131b03328a4e7090e3caa841f5922df2255984c00c568a8c6e53fde51337f64",
+      "approved": true,
+      "reason": "Step 7 \"Download file contents\" calls `curl \"https://api.tokenfactory.nebius.com/v1/files/<file_ID>/content\"`, while step 6 \"Inspect file metadata\" uses `/v1/files/<file_ID>` and returns `filename`, `bytes`, `purpose`, so only the `/content` path yields the contents.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-8b2e5f1a9c34",
+      "content_sha256": "54ea9ae5fa6772c495e8b5cdc4ffecdcfb65c22ef9548995c125e2f6960fe763",
+      "approved": true,
+      "reason": "The model card list reads \"**Quality** — MMLU score reported by the model provider.\" verbatim, and the three distractors correspond to the separately named \"Tokens per second\", \"Input tokens\" and \"Output tokens\" entries on the same list.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-9d1f7a4c3e68",
+      "content_sha256": "cc809feca287c6ed746394851379fde83da4bdbe981f6a536b572ab1d853fb74",
+      "approved": true,
+      "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\" supports the key; the same page releases the allocation when the endpoint stops, confines reclaim risk to scaling above the minimum, and says self-service endpoints have no formal SLA, so no distractor survives.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-c71b4f9a3d85",
+      "content_sha256": "8b496bd747f5774609cd2156bddb6d78955a075c534c734cc883cafecd59f826",
+      "approved": true,
+      "reason": "The Quickstart's Third-party integrations card reads \"Build inference into applications that are based on supported third-party integrations\" verbatim; the Inference, Fine-tuning and API cards each carry the other option texts, and the API card is the path the stem excludes.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-f3a8d1c6e924",
+      "content_sha256": "5b2004cf33fb23df9a899bc9ee6ebc752f9b1e8df7e6b26687b0439d60fcf90c",
+      "approved": true,
+      "reason": "\"When to use pretokenized datasets\" says to use the Pretokenized format if you want to \"Have full control over **tokenization, packing, loss masking, and attention masking**\", both excerpts verbatim; conversational, instruction and text formats are described purely as `messages`, prompt/completion and `text` shapes with no such control.",
+      "reviewed_at": "2026-10-08T17:42:33Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
     }
   ]
 }

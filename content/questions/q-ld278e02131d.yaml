@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld278e02131d
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
 stem: A finance stakeholder asks how per-token pricing is presented when
@@ -31,3 +31,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 54624a98a807920844b5850639ba995f8c9c05df5a9eeaa9b39a55c690d61b26

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld537a96b931
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: A team stops a dedicated endpoint overnight to save money and expects the
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 40236fa40baa5323eb992ddaba2d1b9689ced0661227f3c95586f809ae5da361

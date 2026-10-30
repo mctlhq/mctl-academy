@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el02b1c2d3e4
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: An endpoint reports readiness "Partially ready". What does that tell you?
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1efc4cb61cd565d0c587ba1c211720956bc7f1239ef52c4846ffd74a0e3613ac

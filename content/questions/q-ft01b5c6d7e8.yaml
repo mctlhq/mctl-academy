@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ft01b5c6d7e8
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
 stem: A completed fine-tuning job produced several checkpoints. What is a checkpoint?
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 00a40ddfa1ad7e5b5365311cbc18c6a692ab60aaf89ec881281589e3771dec2b

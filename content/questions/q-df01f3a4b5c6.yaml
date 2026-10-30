@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-df01f3a4b5c6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/dataset-formats
 stem: You are preparing chat-style training data. How should a single training
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: d8b40d16a8876412c3068ed1ab1210ccd9cfa760c9fcf9c1b89ad52869fb3d6c

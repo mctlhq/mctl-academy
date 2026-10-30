@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld25f6d73083
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A team plans an application that must read screenshots and answer
@@ -28,9 +28,14 @@ options:
       be interpreted.
 evidence:
   - source_id: src-inference-overview
-    excerpt: "**[Vision](https://tokenfactory.nebius.com/endpoints?modality=image2text)**"
+    excerpt: "**[Vision](https://tokenfactory.nebius.com/endpoints?modality=image2t\
+      ext)**"
     source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 6ad39a16de79dae0fb02a7c3b6c4c1d367a309ab8f8b7593ba180c57457b14ee

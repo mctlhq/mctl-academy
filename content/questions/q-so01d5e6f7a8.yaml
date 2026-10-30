@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-so01d5e6f7a8
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/structured-output
 stem: You need a model to return data your code can parse without a
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 154da7369270e31b6f1d4f4bdd49d580333e4f9fa2336413cecc667c2cd6d6f4

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fj01a9b0c1d2
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/fine-tuning-jobs
 stem: What is a fine-tuning checkpoint artifact?
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1805192cbdcc898f7f571a4b0ecce4ccc7d2d261ac9ed3d93735ab1c2fae16fa

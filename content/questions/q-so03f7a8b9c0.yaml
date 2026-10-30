@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-so03f7a8b9c0
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/structured-output
 stem: You already pass a JSON schema in `response_format` but output quality is
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: c239160f41c4fe92d7631be5c3e06ef445c74ec3ae28214b8885794cc6bd0fcd

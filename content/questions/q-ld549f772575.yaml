@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld549f772575
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: A business continuity plan assumes a dedicated endpoint will return to
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 7e02c4061539a1e07e5b0928aa08169760181301c11f662e4536e0de7a86d005

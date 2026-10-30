@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld4146dd5675
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/product-outcomes
 stem: After settling on a prompt and parameters in the Playground, a team wants
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: cf297749e7943247da09f9e670df79f9e27e1bfc947ce8ab06cfdde03ad8dbad

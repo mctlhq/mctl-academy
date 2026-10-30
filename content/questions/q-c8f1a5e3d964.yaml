@@ -1,34 +1,54 @@
 schema_version: 1
 id: q-c8f1a5e3d964
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability-tracing
-stem: "By default, with no special configuration, what happens to the underlying VM when a Serverless AI job, endpoint, or Devlab created from a custom image fails or returns an error, and how can a team keep it available for debugging?"
+stem: "By default, with no special configuration, what happens to the underlying
+  VM when a Serverless AI job, endpoint, or Devlab created from a custom image
+  fails or returns an error, and how can a team keep it available for
+  debugging?"
 options:
   - id: a
-    text: "By default, Serverless AI deletes the VM and boot disk to avoid costs; to keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper"
+    text: "By default, Serverless AI deletes the VM and boot disk to avoid costs; to
+      keep the VM alive for debugging, run the deployment with a
+      \"sleep-on-fail\" wrapper"
     correct: true
-    explanation: "Correct. Serverless AI deletes the underlying VM and boot disk to avoid costs on failure, and the documented way to keep the VM alive for debugging is to run the deployment with a \"sleep-on-fail\" wrapper."
+    explanation: "Correct. Serverless AI deletes the underlying VM and boot disk to
+      avoid costs on failure, and the documented way to keep the VM alive for
+      debugging is to run the deployment with a \"sleep-on-fail\" wrapper."
   - id: b
-    text: "By default, the VM keeps running for 24 hours before deletion, giving time to debug without any special configuration"
+    text: "By default, the VM keeps running for 24 hours before deletion, giving
+      time to debug without any special configuration"
     correct: false
-    explanation: "Wrong. The 24-hour window only happens if you add the documented \"sleep-on-fail\" wrapper; by default, with no special configuration, Serverless AI deletes the VM and boot disk."
+    explanation: "Wrong. The 24-hour window only happens if you add the documented
+      \"sleep-on-fail\" wrapper; by default, with no special configuration,
+      Serverless AI deletes the VM and boot disk."
   - id: c
-    text: "By default, Serverless AI pauses the VM in a stopped state so you can restart it later and inspect the failure"
+    text: "By default, Serverless AI pauses the VM in a stopped state so you can
+      restart it later and inspect the failure"
     correct: false
-    explanation: "Wrong. The documentation states the VM and boot disk are deleted on failure, not paused or stopped."
+    explanation: "Wrong. The documentation states the VM and boot disk are deleted
+      on failure, not paused or stopped."
   - id: d
-    text: "By default, Serverless AI automatically restarts the failed command up to three times before giving up"
+    text: "By default, Serverless AI automatically restarts the failed command up to
+      three times before giving up"
     correct: false
-    explanation: "Wrong. No automatic retry of the failed command is documented; the default behavior is deletion of the VM and boot disk."
+    explanation: "Wrong. No automatic retry of the failed command is documented; the
+      default behavior is deletion of the VM and boot disk."
 evidence:
   - source_id: src-pa-serverless-failure
-    excerpt: "Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs."
+    excerpt: "Serverless AI deletes the underlying virtual machine (VM) and boot
+      disk to avoid costs."
     source_sha256: 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
   - source_id: src-pa-serverless-failure
-    excerpt: "To keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper."
+    excerpt: "To keep the VM alive for debugging, run the deployment with a
+      \"sleep-on-fail\" wrapper."
     source_sha256: 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 7bf405b52defe5ac4af3d7ecd81561cd4ac3d7475ae3a6a005250b46da7c7956

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld458c2b9572
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/structured-output
 stem: A downstream service needs the model's answer in a fixed shape it can
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 63943a5c08774a69d83cb0a7b93e1e6ee592fdbdc72373c2b91fcd3184bccefe

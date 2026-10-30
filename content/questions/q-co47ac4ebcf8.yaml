@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co47ac4ebcf8
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-recovery
 stem: A node has been reporting the `NodeReady` condition as `False` for eight
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 1b211166152f3b9473f080034fee5eec9cdd163131b93d10bc95666514db46ed

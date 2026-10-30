@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-el01a0b1c2d3
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/endpoint-lifecycle
 stem: Your load balancer must decide whether to route traffic to a dedicated
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 29ccb7fa1336bd47ba4283b86abeaaa8f917c527ae5efc9848780e005aa6805d

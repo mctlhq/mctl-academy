@@ -1,22 +1,7 @@
 {
   "reviewer": "agent:claude-reviewer",
   "reviewed_at": "2026-10-12T15:59:31Z",
-  "questions": [
-    {
-      "id": "q-7f3a92c6e158",
-      "content_sha256": "97802082c5eb8d5a97eaa3f519663368e8a5e15aebb46831e7e0138fe8763352",
-      "approved": true,
-      "reason": "Under \"## AI Application Frameworks\" the captured overview lists exactly \"<Card title=\\\"Langchain\\\" icon=\\\"boxes-stacked\\\" href=\\\"/integrations/frameworks/langchain\\\" />\" (and Llama-Index); Postman sits under Developer Tools, Helicone under Observability, Tavily under Agentic Search, so only option c is defensible.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
-    },
-    {
-      "id": "q-b4de81f9a062",
-      "content_sha256": "f08c85882904613b4f27b81d39bd71ac8b2ce2cd15b523228af9ecc48bd14eef",
-      "approved": true,
-      "reason": "The capacity page states \"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", listing both \"You stop the endpoint manually\" and \"The endpoint is stopped for scheduled or emergency maintenance\", and rules out the distractors by adding that the minimum replicas guarantee \"applies only while the endpoint is running\", that scaling above minimum depends on burst capacity, and that reservation requires contacting Sales.",
-      "reviewed_at": "2026-10-12T15:59:31Z"
-    }
-  ],
+  "questions": [],
   "superseded": [
     {
       "id": "q-6b9e2f4a17c3",
@@ -73,6 +58,22 @@
       "reason": "The excerpt \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\" is the documented description of `temperature`, and the remaining options are transport, scheduling, and display settings that the page never describes as model parameters.",
       "reviewed_at": "2026-10-12T15:59:31Z",
       "superseded_at": "2026-10-18T01:33:33Z"
+    },
+    {
+      "id": "q-7f3a92c6e158",
+      "content_sha256": "97802082c5eb8d5a97eaa3f519663368e8a5e15aebb46831e7e0138fe8763352",
+      "approved": true,
+      "reason": "Under \"## AI Application Frameworks\" the captured overview lists exactly \"<Card title=\\\"Langchain\\\" icon=\\\"boxes-stacked\\\" href=\\\"/integrations/frameworks/langchain\\\" />\" (and Llama-Index); Postman sits under Developer Tools, Helicone under Observability, Tavily under Agentic Search, so only option c is defensible.",
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-b4de81f9a062",
+      "content_sha256": "f08c85882904613b4f27b81d39bd71ac8b2ce2cd15b523228af9ecc48bd14eef",
+      "approved": true,
+      "reason": "The capacity page states \"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", listing both \"You stop the endpoint manually\" and \"The endpoint is stopped for scheduled or emergency maintenance\", and rules out the distractors by adding that the minimum replicas guarantee \"applies only while the endpoint is running\", that scaling above minimum depends on burst capacity, and that reservation requires contacting Sales.",
+      "reviewed_at": "2026-10-12T15:59:31Z",
+      "superseded_at": "2026-10-30T15:23:08Z"
     }
   ]
 }

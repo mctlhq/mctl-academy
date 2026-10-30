@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld217205c155
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A product lead asks whether choosing the Fast flavor of a model will
@@ -34,3 +34,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 20c62066d6ff2d9903ef6e593380ad0763a8883beb76f56c0c2ed3607c68aa71

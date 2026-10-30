@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld35ee35be7d
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/product-outcomes
 stem: A non-technical product manager wants to try a model and shape its
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 8fadfded2cb0b861228020e56ef560606f632bc57bb398f5104fc5660e9f535f

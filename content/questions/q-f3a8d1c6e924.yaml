@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f3a8d1c6e924
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/datasets
 stem: Which dataset format should you choose for fine-tuning when you need full
@@ -42,3 +42,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: c697920e43e5e523cfae58c8cde9c9ea865b5b9d57f6ce602c86cf736e4a1142

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3981dd0ddc
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/organization-hierarchy
 stem: An automation script uses the Nebius AI Cloud CLI to create a project in a
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 87494a30528dba5edad705659f3813ae95df570867d89405436962bd717c5f9c

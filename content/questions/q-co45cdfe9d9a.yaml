@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co45cdfe9d9a
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: A brief utilization spike keeps paging the team. Which alert setting is
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 06bf4cb945ecf64419ff056c101538c00bda4faefb9a613bd35def1c83e26afb

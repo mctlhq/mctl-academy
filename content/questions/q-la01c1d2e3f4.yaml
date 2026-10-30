@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-la01c1d2e3f4
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/lora-adapters
 stem: "When a fine-tuning job is created with `lora: true`, which weights are
@@ -33,3 +33,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-30T15:23:08Z
+  content_sha256: 386c9210ee6bd1ca83a2f917f2cb42ddbad96589c12c75f0499125550fd7079a
