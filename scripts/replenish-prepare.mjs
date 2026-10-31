@@ -256,7 +256,17 @@ export function boundaryProblems({ base, cwd = process.cwd(), strict = false, al
   return problems;
 }
 
+/**
+ * Whether a path existed at the base. An unresolvable base throws instead of
+ * answering "no": that answer would make every file look newly created, and
+ * set-aside-unverified deletes what it believes is new.
+ */
 export function existsAtRef({ base, file, cwd = process.cwd() }) {
+  try {
+    git(["rev-parse", "--verify", "--quiet", `${base}^{commit}`], cwd);
+  } catch {
+    throw new Error(`base ${base} does not resolve to a commit`);
+  }
   try {
     git(["cat-file", "-e", `${base}:${file}`], cwd);
     return true;

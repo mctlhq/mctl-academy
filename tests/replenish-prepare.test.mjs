@@ -2947,6 +2947,10 @@ test("existsAtRef tells a file created since the base from one that was there", 
     );
     assert.equal(existsAtRef({ base, file: "content/questions/q-old000000001.yaml", cwd: dir }), true);
     assert.equal(existsAtRef({ base, file: "content/questions/q-new000000001.yaml", cwd: dir }), false);
+    assert.throws(
+      () => existsAtRef({ base: "0".repeat(40), file: "content/questions/q-old000000001.yaml", cwd: dir }),
+      /does not resolve to a commit/,
+    );
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
