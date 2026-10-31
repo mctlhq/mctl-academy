@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
+import { ref } from "vue";
 import UserNav from "./UserNav.vue";
 
 const signInMocks = vi.hoisted(() => ({ social: vi.fn(), oauth2: vi.fn() }));
@@ -151,6 +152,25 @@ describe("UserNav", () => {
     syncStatus.value = "synced";
     await flushPromises();
     expect(wrapper.get("[data-testid=sync-status]").text()).toContain("Progress synced");
+    setSyncEnabled(false);
+  });
+
+  it("Retry re-runs the sync and refreshes dependants when it succeeds", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => ({
+        ok: true,
+        json: async () => (String(url).includes("attempts") ? { attempts: [] } : { zitadel: null }),
+      })),
+    );
+    setSyncEnabled(true);
+    syncStatus.value = "failed";
+    const syncVersion = ref(0);
+    const wrapper = mount(UserNav, { props: { user, loading: false }, global: { provide: { syncVersion } } });
+    await wrapper.get(".sync-retry").trigger("click");
+    await flushPromises();
+    expect(syncStatus.value).toBe("synced");
+    expect(syncVersion.value).toBe(1);
     setSyncEnabled(false);
   });
 });
