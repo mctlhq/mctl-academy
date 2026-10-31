@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
 import UserNav from "./UserNav.vue";
+
+const signInMocks = vi.hoisted(() => ({ social: vi.fn(), oauth2: vi.fn() }));
+vi.mock("../authClient", () => ({
+  authClient: { signIn: signInMocks, signOut: vi.fn() },
+}));
+import { setSyncEnabled, syncStatus } from "../services/progressStore";
 import type { UserProfile } from "../types/user";
 
 const user: UserProfile = {
@@ -21,6 +27,7 @@ function stubSignInOptions(body: unknown, ok = true) {
 describe("UserNav", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   it("offers a login action to guests", () => {
@@ -72,5 +79,59 @@ describe("UserNav", () => {
     expect(wrapper.get("summary").attributes("aria-label")).toContain("mashkovd");
     expect(wrapper.text()).toContain("Log out");
     expect(wrapper.text()).toContain("Delete account");
+  });
+
+  it("returns sign-in to the page it started from, once, and shows a failure instead of only logging it", async () => {
+    stubSignInOptions({ zitadel: null });
+    window.history.pushState({}, "", "/practice?domain=domain-2");
+    let resolveStart!: (value: unknown) => void;
+    const social = signInMocks.social.mockImplementation(
+      () => new Promise((resolve) => (resolveStart = resolve)),
+    );
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const wrapper = mount(UserNav, { props: { user: null, loading: false } });
+    await flushPromises();
+
+    await wrapper.get(".signin-github").trigger("click");
+    await wrapper.get(".signin-github").trigger("click");
+    expect(social).toHaveBeenCalledTimes(1);
+    expect(social).toHaveBeenCalledWith({ provider: "github", callbackURL: "/practice?domain=domain-2" });
+    expect(wrapper.text()).toContain("Opening sign-in");
+
+    resolveStart({ error: { message: "boom" } });
+    await flushPromises();
+    expect(wrapper.get("[role=alert]").text()).toMatch(/Could not open GitHub sign-in/);
+    expect(wrapper.get(".signin-github").attributes("disabled")).toBeUndefined();
+    window.history.pushState({}, "", "/");
+  });
+
+  it("asks for confirmation in a dialog before deleting the account, and keeps it on failure", async () => {
+    const fetchMock = vi.fn(async () => ({ ok: false, json: async () => ({}) }));
+    vi.stubGlobal("fetch", fetchMock);
+    const wrapper = mount(UserNav, { props: { user, loading: false }, attachTo: document.body });
+
+    await wrapper.get(".user-nav-delete").trigger("click");
+    await flushPromises();
+    expect(fetchMock).not.toHaveBeenCalledWith("/api/account", expect.anything());
+    expect(document.body.textContent).toMatch(/cannot be undone/i);
+
+    document.body.querySelector<HTMLButtonElement>(".confirm-submit")!.click();
+    await flushPromises();
+    expect(fetchMock).toHaveBeenCalledWith("/api/account", { method: "DELETE" });
+    expect(document.body.textContent).toMatch(/Account deletion failed/);
+    wrapper.unmount();
+  });
+
+  it("reports sync status from the store, never from sign-in alone", async () => {
+    stubSignInOptions({ zitadel: null });
+    setSyncEnabled(true);
+    syncStatus.value = "failed";
+    const wrapper = mount(UserNav, { props: { user, loading: false } });
+    expect(wrapper.get("[data-testid=sync-status]").text()).toContain("Could not sync progress");
+    expect(wrapper.get("[data-testid=sync-status]").text()).toContain("Retry");
+    syncStatus.value = "synced";
+    await flushPromises();
+    expect(wrapper.get("[data-testid=sync-status]").text()).toContain("Progress synced");
+    setSyncEnabled(false);
   });
 });

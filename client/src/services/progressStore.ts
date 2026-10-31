@@ -68,6 +68,31 @@ const ATTEMPTS_ENDPOINT = "/api/attempts";
 let syncEnabled = false;
 
 /**
+ * What the learner can truthfully be told about server sync. "synced" is
+ * only ever set by a syncFromServer() that read the server AND had every
+ * backfill write confirmed; a failed attempt POST afterwards downgrades it to
+ * "failed" (the row stays unsynced until the next successful sync). "off"
+ * means sync is disabled: progress lives on this device only.
+ */
+export type SyncStatus = "off" | "syncing" | "synced" | "failed";
+export const syncStatus = ref<SyncStatus>("off");
+
+/** Outcome of one syncFromServer() call. "deferred": a clear was in flight, nothing was learned. */
+export type SyncOutcome = "disabled" | "deferred" | "failed" | "synced";
+
+/**
+ * Bumped on every setSyncEnabled() call, i.e. every sign-in, sign-out or
+ * account change. Status updates carry the epoch they started under and are
+ * dropped if it has moved on, so a slow request made for account A can never
+ * paint "synced" (or "failed") onto account B's session.
+ */
+let syncEpoch = 0;
+
+function setSyncStatusFor(epoch: number, status: SyncStatus): void {
+  if (epoch === syncEpoch) syncStatus.value = status;
+}
+
+/**
  * Bumped once per clearProgress() call, never compared to a timestamp.
  * syncFromServer() snapshots this before its GET and re-checks it after —
  * a mismatch means a clear started (and possibly already finished) while
@@ -113,6 +138,8 @@ export function resetMemoryFallback(): void {
   clearGeneration = 0;
   clearInFlight = null;
   pendingWrites.clear();
+  syncEpoch += 1;
+  syncStatus.value = "off";
   progressVersion.value += 1;
   progressEpoch.value = "0";
 }
@@ -165,6 +192,8 @@ export function calculateStudyStreak(
  */
 export function setSyncEnabled(enabled: boolean): void {
   syncEnabled = enabled;
+  syncEpoch += 1;
+  syncStatus.value = enabled ? "syncing" : "off";
 }
 
 /**
@@ -224,8 +253,10 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
   }
 
   if (syncEnabled) {
+    const epoch = syncEpoch;
     trackWrite(postAttemptToServer(questionId, domain, correct)).then((ok) => {
       if (ok) markAttemptSynced(questionId, attemptedAt);
+      else setSyncStatusFor(epoch, "failed");
     });
   }
 }
@@ -257,23 +288,38 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
  * response wholesale if a clear started while the GET was in flight (see
  * `clearGeneration`) — either way, pre-clear data never gets merged back in.
  */
-export async function syncFromServer(): Promise<void> {
-  if (!syncEnabled) return;
-  if (clearInFlight) return;
+export async function syncFromServer(): Promise<SyncOutcome> {
+  if (!syncEnabled) return "disabled";
+  if (clearInFlight) return "deferred";
 
   const startGeneration = clearGeneration;
+  const epoch = syncEpoch;
+  const statusBefore = syncStatus.value;
+  setSyncStatusFor(epoch, "syncing");
 
   let serverAttempts: QuestionAttempt[];
   try {
     const res = await fetch(ATTEMPTS_ENDPOINT, { credentials: "same-origin" });
-    if (!res.ok) return;
+    if (!res.ok) {
+      setSyncStatusFor(epoch, "failed");
+      return "failed";
+    }
     const data = await res.json();
-    serverAttempts = Array.isArray(data?.attempts) ? data.attempts : [];
+    // A body without an attempts array is a failed read, not an empty history.
+    if (!Array.isArray(data?.attempts)) {
+      setSyncStatusFor(epoch, "failed");
+      return "failed";
+    }
+    serverAttempts = data.attempts;
   } catch {
-    return;
+    setSyncStatusFor(epoch, "failed");
+    return "failed";
   }
 
-  if (clearGeneration !== startGeneration) return;
+  if (clearGeneration !== startGeneration) {
+    setSyncStatusFor(epoch, statusBefore);
+    return "deferred";
+  }
 
   const local = getStoredAttempts();
   const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
@@ -294,6 +340,7 @@ export async function syncFromServer(): Promise<void> {
   }
 
   const serverLatestByQuestion = new Map(serverAttempts.map((a) => [a.questionId, a]));
+  const backfills: Promise<boolean>[] = [];
   for (const a of localLatestByQuestion.values()) {
     if (a.synced) continue;
 
@@ -305,10 +352,18 @@ export async function syncFromServer(): Promise<void> {
       continue;
     }
 
-    trackWrite(postAttemptToServer(a.questionId, a.domain, a.correct)).then((ok) => {
-      if (ok) markAttemptSynced(a.questionId, a.attemptedAt);
-    });
+    backfills.push(
+      trackWrite(postAttemptToServer(a.questionId, a.domain, a.correct)).then((ok) => {
+        if (ok) markAttemptSynced(a.questionId, a.attemptedAt);
+        return ok;
+      }),
+    );
   }
+
+  const results = await Promise.all(backfills);
+  const outcome: SyncOutcome = results.every(Boolean) ? "synced" : "failed";
+  setSyncStatusFor(epoch, outcome);
+  return outcome;
 }
 
 export function getMistakeQuestionIds(): string[] {

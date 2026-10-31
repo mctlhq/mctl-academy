@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import { nextTick, ref } from "vue";
 
 vi.mock("../../services/courseStore", () => ({
@@ -15,7 +15,7 @@ vi.mock("../../services/contentBundle", () => ({
 
 vi.mock("../../services/courseCatalog", () => ({
   domainTitlesFor: () => ({ "domain-1": "Domain 1" }),
-  findCourse: () => ({ mock: { domains: [{ id: "domain-1", weight: 100 }] } }),
+  findCourse: () => ({ title: "Course Alpha", mock: { domains: [{ id: "domain-1", weight: 100 }] } }),
 }));
 
 import DashboardScreen from "../DashboardScreen.vue";
@@ -50,39 +50,74 @@ describe("DashboardScreen", () => {
     expect(wrapper.text()).toMatch(/1\/2/);
   });
 
+  async function confirmClear(wrapper: ReturnType<typeof mountDashboard>) {
+    await wrapper.find(".reset-progress").trigger("click");
+    await nextTick();
+    const confirm = document.body.querySelector<HTMLButtonElement>(".confirm-submit");
+    expect(confirm).not.toBeNull();
+    confirm!.click();
+    await flushPromises();
+  }
+
+  it("names the all-courses scope before clearing, and cancel changes nothing", async () => {
+    recordAttempt("q-1", "domain-1", true);
+    const wrapper = mountDashboard();
+
+    expect(wrapper.find(".reset-progress").text()).toMatch(/all courses/i);
+    await wrapper.find(".reset-progress").trigger("click");
+    await nextTick();
+    expect(document.body.textContent).toMatch(/every course/i);
+    expect(document.body.textContent).toMatch(/cannot be undone/i);
+
+    const cancel = [...document.body.querySelectorAll<HTMLButtonElement>(".m-modal button")].find(
+      (b) => b.textContent?.trim() === "Cancel",
+    );
+    cancel!.click();
+    await flushPromises();
+
+    expect(wrapper.text()).toMatch(/1\/2/);
+    expect(document.body.querySelector(".confirm-submit")).toBeNull();
+    wrapper.unmount();
+  });
+
   it("clearing history immediately zeroes the displayed stats", async () => {
     recordAttempt("q-1", "domain-1", true);
     const wrapper = mountDashboard();
     expect(wrapper.text()).toMatch(/1\/2/);
 
-    vi.spyOn(window, "confirm").mockReturnValue(true);
-    await wrapper.find(".reset-progress").trigger("click");
-    await nextTick();
-    // clearProgress() is awaited inside the handler before the local state
-    // bump; flush the microtask queue so the reactive update lands.
-    await Promise.resolve();
-    await nextTick();
+    await confirmClear(wrapper);
 
     expect(wrapper.text()).toMatch(/0\/2/);
+    expect(wrapper.text()).toMatch(/History cleared for all courses/);
+    wrapper.unmount();
   });
 
-  it("warns via window.alert when the server-side delete fails, without claiming a permanent deletion", async () => {
+  it("warns inline with a retry when the server-side delete fails, without claiming a permanent deletion", async () => {
     recordAttempt("q-1", "domain-1", true);
     const wrapper = mountDashboard();
 
     setSyncEnabled(true);
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
-    vi.spyOn(window, "confirm").mockReturnValue(true);
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+    vi.stubGlobal("fetch", fetchMock);
 
-    await wrapper.find(".reset-progress").trigger("click");
-    await nextTick();
-    await Promise.resolve();
-    await nextTick();
+    await confirmClear(wrapper);
 
     // Local history is gone regardless — only the server-side confirmation failed.
     expect(wrapper.text()).toMatch(/0\/2/);
-    expect(alertSpy).toHaveBeenCalledTimes(1);
-    expect(alertSpy.mock.calls[0][0]).toMatch(/could not confirm the server copy was deleted/i);
+    expect(wrapper.text()).toMatch(/could not confirm the server copy was deleted/i);
+    expect(wrapper.text()).not.toMatch(/History cleared for all courses/);
+
+    fetchMock.mockResolvedValue({ ok: true, status: 204 });
+    const retry = wrapper.findAll("button").find((b) => b.text().includes("Retry server deletion"));
+    await retry!.trigger("click");
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      "/api/attempts",
+      expect.objectContaining({ method: "DELETE" }),
+    );
+    expect(wrapper.text()).toMatch(/History cleared for all courses/);
+    vi.unstubAllGlobals();
+    wrapper.unmount();
   });
 });

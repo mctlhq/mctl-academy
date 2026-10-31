@@ -10,6 +10,7 @@ import {
   saveRawAttempts,
   setSyncEnabled,
   syncFromServer,
+  syncStatus,
 } from "../progressStore";
 
 describe("progressStore service", () => {
@@ -598,5 +599,84 @@ describe("progressStore service", () => {
     expect(postCalls[0][1].body).toBe(
       JSON.stringify({ questionId: "q-local-only", domain: "domain-1", correct: true }),
     );
+  });
+
+  describe("sync status", () => {
+    it("is off while sync is disabled and never claims synced", async () => {
+      expect(syncStatus.value).toBe("off");
+      expect(await syncFromServer()).toBe("disabled");
+      expect(syncStatus.value).toBe("off");
+    });
+
+    it("reports failed, not synced, when the server read fails", async () => {
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 503 }));
+      setSyncEnabled(true);
+      expect(await syncFromServer()).toBe("failed");
+      expect(syncStatus.value).toBe("failed");
+    });
+
+    it("treats a body without an attempts array as a failed read, not an empty history", async () => {
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) }));
+      setSyncEnabled(true);
+      expect(await syncFromServer()).toBe("failed");
+      expect(syncStatus.value).toBe("failed");
+    });
+
+    it("reports failed when a backfill write is rejected", async () => {
+      recordAttempt("q-local", "domain-1", true);
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) =>
+          Promise.resolve(
+            init?.method === "POST"
+              ? { ok: false, status: 500 }
+              : { ok: true, json: async () => ({ attempts: [] }) },
+          ),
+        ),
+      );
+      setSyncEnabled(true);
+      expect(await syncFromServer()).toBe("failed");
+      expect(syncStatus.value).toBe("failed");
+    });
+
+    it("reports synced only after the read and every backfill write succeed", async () => {
+      recordAttempt("q-local", "domain-1", true);
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) =>
+          Promise.resolve(
+            init?.method === "POST" ? { ok: true } : { ok: true, json: async () => ({ attempts: [] }) },
+          ),
+        ),
+      );
+      setSyncEnabled(true);
+      expect(await syncFromServer()).toBe("synced");
+      expect(syncStatus.value).toBe("synced");
+    });
+
+    it("drops a status update from a previous account's request", async () => {
+      let resolveGet!: (value: unknown) => void;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(() => new Promise((resolve) => (resolveGet = resolve))),
+      );
+      setSyncEnabled(true); // account A
+      const pending = syncFromServer();
+      setSyncEnabled(false); // signed out before A's read came back
+      resolveGet({ ok: false, status: 500 });
+      await pending;
+      expect(syncStatus.value).toBe("off");
+    });
+
+    it("downgrades to failed when a later attempt write fails", async () => {
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) }));
+      setSyncEnabled(true);
+      expect(await syncFromServer()).toBe("synced");
+      vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+      recordAttempt("q-1", "domain-1", true);
+      await vi.waitFor(() => expect(syncStatus.value).toBe("failed"));
+      // The answer itself is kept locally regardless.
+      expect(getStoredAttempts()).toHaveLength(1);
+    });
   });
 });
