@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-toolkit-tools-ref
+url: https://docs.tavily.com/examples/agent-toolkit/tools.md
+title: "Agent Toolkit: Tools Reference"
+retrieved_at: 2026-10-31T09:01:56Z
+sha256: ca71eebfbe559675e1986d32a9d43e120e0606421b52ae6fd227aaf21bf9479e
+objectives:
+  - domain-3/endpoint-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: ca71eebfbe559675e1986d32a9d43e120e0606421b52ae6fd227aaf21bf9479e
+status: current

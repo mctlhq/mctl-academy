@@ -719,3 +719,28 @@ sources:
     objectives:
       - domain-4/api-key-auth
       - domain-4/key-rotation-secrets
+  - id: src-tv-toolkit-chatbot
+    url: https://docs.tavily.com/examples/agent-toolkit/chatbot.md
+    title: "Agent Toolkit: Chatbot"
+    objectives:
+      - domain-1/agent-tool-selection
+  - id: src-tv-toolkit-company-intel
+    url: https://docs.tavily.com/examples/agent-toolkit/company-intelligence.md
+    title: "Agent Toolkit: Company Intelligence"
+    objectives:
+      - domain-1/web-access-operations
+  - id: src-tv-toolkit-social-media
+    url: https://docs.tavily.com/examples/agent-toolkit/social-media-research.md
+    title: "Agent Toolkit: Social Media Research"
+    objectives:
+      - domain-1/source-quality
+  - id: src-tv-toolkit-tools-ref
+    url: https://docs.tavily.com/examples/agent-toolkit/tools.md
+    title: "Agent Toolkit: Tools Reference"
+    objectives:
+      - domain-3/endpoint-selection
+  - id: src-tv-toolkit-crawl-rag
+    url: https://docs.tavily.com/examples/use-cases/crawl-to-rag.md
+    title: Crawl to RAG
+    objectives:
+      - domain-1/blended-rag

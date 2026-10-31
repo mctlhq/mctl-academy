@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-toolkit-social-media
+url: https://docs.tavily.com/examples/agent-toolkit/social-media-research.md
+title: "Agent Toolkit: Social Media Research"
+retrieved_at: 2026-10-31T09:01:55Z
+sha256: ed64b5f561d938eec20f140997ffa50f5fbbfeda7d730da089f9bfb109d7ccfc
+objectives:
+  - domain-1/source-quality
+snapshot:
+  bucket: academy-source-snapshots
+  key: ed64b5f561d938eec20f140997ffa50f5fbbfeda7d730da089f9bfb109d7ccfc
+status: current
