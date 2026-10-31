@@ -120,6 +120,30 @@ let clearInFlight: Promise<void> | null = null;
  */
 const pendingWrites = new Set<Promise<unknown>>();
 
+/**
+ * Attempt POSTs for answers recorded while a clear's DELETE is unresolved.
+ * They are held back until that DELETE has resolved and only then sent: a
+ * POST issued alongside the DELETE could reach the server first and be
+ * erased by it, while this device marks the row synced and never re-sends
+ * it (#397). Each entry carries the sync epoch it was recorded under, so an
+ * answer from account A is never sent on account B's session.
+ */
+let queuedWrites: Array<{ epoch: number; send: () => void }> = [];
+
+/** The clear whose DELETE is still unresolved, holding new writes back (null otherwise). */
+let writesHeldBy: Promise<void> | null = null;
+
+/** Sends the writes held back by `clear`, unless a later overlapping clear has taken over. */
+function releaseQueuedWrites(clear: Promise<void>): void {
+  if (writesHeldBy !== clear) return;
+  writesHeldBy = null;
+  const queued = queuedWrites;
+  queuedWrites = [];
+  for (const write of queued) {
+    if (syncEnabled && write.epoch === syncEpoch) write.send();
+  }
+}
+
 function trackWrite<T>(promise: Promise<T>): Promise<T> {
   pendingWrites.add(promise);
   const untrack = () => pendingWrites.delete(promise);
@@ -138,6 +162,8 @@ export function resetMemoryFallback(): void {
   clearGeneration = 0;
   clearInFlight = null;
   pendingWrites.clear();
+  queuedWrites = [];
+  writesHeldBy = null;
   syncEpoch += 1;
   syncStatus.value = "off";
   progressVersion.value += 1;
@@ -254,10 +280,14 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
 
   if (syncEnabled) {
     const epoch = syncEpoch;
-    trackWrite(postAttemptToServer(questionId, domain, correct)).then((ok) => {
-      if (ok) markAttemptSynced(questionId, attemptedAt);
-      else setSyncStatusFor(epoch, "failed");
-    });
+    const send = () => {
+      trackWrite(postAttemptToServer(questionId, domain, correct)).then((ok) => {
+        if (ok) markAttemptSynced(questionId, attemptedAt);
+        else setSyncStatusFor(epoch, "failed");
+      });
+    };
+    if (writesHeldBy) queuedWrites.push({ epoch, send });
+    else send();
   }
 }
 
@@ -387,10 +417,15 @@ export function getMistakeQuestionIds(): string[] {
  * flight (see `pendingWrites`) — otherwise a write that started just before
  * Clear could complete just after the DELETE and recreate the very row the
  * learner asked to erase. `clearInFlight` is set for the whole round-trip so
- * syncFromServer() does not race a concurrent GET against it either.
+ * syncFromServer() does not race a concurrent GET against it either, and an
+ * answer recorded before the DELETE resolves is queued (see `queuedWrites`)
+ * and sent after it, so the DELETE cannot erase it on the server.
  */
 export async function clearProgress(): Promise<{ serverCleared: boolean }> {
   clearGeneration += 1;
+  // Answers held back by an earlier, overlapping clear belong to rows this
+  // clear is about to wipe locally; sending them later would resurrect them.
+  queuedWrites = [];
   try {
     removeItem(STORAGE_KEY);
     progressVersion.value += 1;
@@ -416,6 +451,7 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
     markDone = resolve;
   });
   clearInFlight = thisClear;
+  writesHeldBy = thisClear;
 
   try {
     // A while loop, not a one-time snapshot: recordAttempt() can add a new
@@ -427,6 +463,9 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
       await Promise.allSettled([...pendingWrites]);
     }
     const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
+    // The server has now ordered the DELETE, so answers recorded during the
+    // clear can be sent without being erased by it.
+    releaseQueuedWrites(thisClear);
     // An answer recorded during the clear whose POST failed is still only on
     // this device, so a confirmed DELETE alone does not mean "synced". Writes
     // still in flight are waited for first, so one that is merely slow is not
@@ -451,6 +490,8 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
     if (clearInFlight === thisClear) {
       clearInFlight = null;
     }
+    // A DELETE that threw never reached the release above.
+    releaseQueuedWrites(thisClear);
   }
 }
 
