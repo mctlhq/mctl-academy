@@ -47,4 +47,39 @@ describe("MockStartScreen", () => {
     expect(wrapper.find('[data-testid="not-enough-content"]').exists()).toBe(true);
     expect(wrapper.text()).not.toContain("Start mock exam");
   });
+
+  it("names each domain with its question count and share instead of a bare weighting string", async () => {
+    const wrapper = mount(MockStartScreen, { props: { dataSource: makeDataSource([], 0) } });
+    await flushPromises();
+    const rows = wrapper
+      .findAll(".mock-start-domains li")
+      .map((li) => [li.find(".domain-title").text(), li.find(".domain-count").text().replace(/\s+/g, " ")]);
+    expect(rows).toEqual([
+      ["D1", "6 · 20%"],
+      ["D2", "10 · 33%"],
+      ["D3", "6 · 20%"],
+      ["D4", "8 · 27%"],
+    ]);
+    expect(wrapper.text()).not.toMatch(/four domains/);
+  });
+
+  it("offers Retry after a load failure and recovers", async () => {
+    let fail = true;
+    const dataSource = makeDataSource([], 0);
+    const getMockConfig = dataSource.getMockConfig;
+    dataSource.getMockConfig = async () => {
+      if (fail) throw new Error("offline");
+      return getMockConfig();
+    };
+    const wrapper = mount(MockStartScreen, { props: { dataSource } });
+    await flushPromises();
+    expect(wrapper.find('[data-testid="mock-start-error"]').exists()).toBe(true);
+    fail = false;
+    await wrapper
+      .findAll("button")
+      .find((b) => b.text() === "Retry")!
+      .trigger("click");
+    await flushPromises();
+    expect(wrapper.find('[data-testid="mock-start"]').exists()).toBe(true);
+  });
 });

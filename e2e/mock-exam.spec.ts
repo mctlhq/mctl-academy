@@ -17,8 +17,9 @@ test("mock exam: start, answer one, submit early, see results", async ({ page })
   await page.locator(".mock-exam-option input[type=radio]").first().click();
   await page.getByRole("button", { name: "Submit exam" }).click();
 
-  const confirm = page.getByTestId("submit-confirm");
-  await expect(confirm).toBeVisible();
+  // The confirmation is a modal dialog; its body names the counts.
+  const confirm = page.getByRole("dialog", { name: "Submit the exam?" });
+  await expect(confirm.getByTestId("submit-confirm")).toContainText("1 of");
   await confirm.getByRole("button", { name: "Submit anyway" }).click();
 
   const results = page.getByTestId("mock-results");

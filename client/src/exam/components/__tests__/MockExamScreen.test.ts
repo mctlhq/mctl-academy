@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 import MockExamScreen from "../MockExamScreen.vue";
 import { startSession } from "../../session";
 import type { Question } from "../../types";
@@ -45,14 +46,55 @@ describe("MockExamScreen", () => {
 
   it("prompts for confirmation before submitting with unanswered questions", async () => {
     const session = makeSession();
-    const wrapper = mount(MockExamScreen, { props: { session } });
+    const wrapper = mount(MockExamScreen, { props: { session }, attachTo: document.body });
     const submitButton = wrapper.findAll("button").find((b) => b.text() === "Submit exam")!;
     await submitButton.trigger("click");
-    expect(wrapper.find('[data-testid="submit-confirm"]').exists()).toBe(true);
+    expect(document.body.querySelector('[data-testid="submit-confirm"]')).not.toBeNull();
+    expect(document.body.textContent).toMatch(/0 of 1 answered/);
     expect(wrapper.emitted("submit")).toBeUndefined();
-    const submitAnyway = wrapper.findAll("button").find((b) => b.text() === "Submit anyway")!;
-    await submitAnyway.trigger("click");
+    document.body.querySelector<HTMLButtonElement>(".confirm-submit")!.click();
+    await nextTick();
     expect(wrapper.emitted("submit")).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it("returns to the first unanswered question from the submit dialog", async () => {
+    const base = makeSession();
+    const second = { ...base.questions[0], id: "q-2", stem: "Second stem" };
+    const session = { ...base, questions: [base.questions[0], second], answers: { "q-1": "a" } };
+    const wrapper = mount(MockExamScreen, { props: { session }, attachTo: document.body });
+    await wrapper
+      .findAll("button")
+      .find((b) => b.text() === "Submit exam")!
+      .trigger("click");
+    document.body.querySelector<HTMLButtonElement>(".mock-exam-return")!.click();
+    await nextTick();
+    await nextTick();
+    expect(wrapper.text()).toContain("Question 2 of 2");
+    expect(wrapper.emitted("navigate")).toEqual([[1]]);
+    expect(document.activeElement?.classList.contains("mock-exam-stem")).toBe(true);
+    expect(wrapper.emitted("submit")).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  it("resumes on the saved question", () => {
+    const base = makeSession();
+    const session = { ...base, questions: [base.questions[0], { ...base.questions[0], id: "q-2" }] };
+    const wrapper = mount(MockExamScreen, { props: { session, initialIndex: 1 } });
+    expect(wrapper.text()).toContain("Question 2 of 2");
+    wrapper.unmount();
+  });
+
+  it("does not make the ticking timer a live region; it announces milestones only", async () => {
+    const base = makeSession();
+    const now = Date.now();
+    const session = { ...base, expiresAt: now + 5 * 60_000 + 400 };
+    const wrapper = mount(MockExamScreen, { props: { session } });
+    expect(wrapper.find('[data-testid="timer"]').attributes("aria-live")).toBeUndefined();
+    const live = wrapper.find('[aria-live="polite"]');
+    expect(live.text()).toBe("");
+    await new Promise((r) => setTimeout(r, 900));
+    expect(live.text()).toBe("5 minutes remaining");
     wrapper.unmount();
   });
 });

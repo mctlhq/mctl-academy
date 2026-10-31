@@ -12,6 +12,8 @@ export interface ExamSessionState {
   startedAt: number | null;
   expiresAt: number | null;
   submittedAt: number | null;
+  /** Question the learner was on, so a reload resumes there. Absent in sessions saved before it existed. */
+  currentIndex?: number;
 }
 
 export function createSessionId(): string {
