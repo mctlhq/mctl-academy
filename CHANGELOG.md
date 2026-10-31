@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.1.63](https://github.com/mctlhq/mctl-academy/compare/0.1.62...0.1.63) (2026-10-31)
+
+
+### Features
+
+* **client:** course breadcrumb nav, 404 page, titles and focus ([2500be0](https://github.com/mctlhq/mctl-academy/commit/2500be00bbe1f38788a3ea1348e7abe725c70282))
+* **client:** course breadcrumb nav, 404 page, titles and focus ([5708013](https://github.com/mctlhq/mctl-academy/commit/57080139208054c0606f295529a8d54d1973eb3f))
+* **home:** first-visit intro, linked domains and plain metric labels ([0c42afe](https://github.com/mctlhq/mctl-academy/commit/0c42afe4ddd9537831fa57341387b48e88c8d482))
+* **home:** first-visit intro, linked domains, plain metric labels ([bc2de0d](https://github.com/mctlhq/mctl-academy/commit/bc2de0d744176824c74444326f229d37aa9b87e2))
+* **mock:** clearer start, calmer exam and outcome-based results ([c551222](https://github.com/mctlhq/mctl-academy/commit/c551222eabc492eea6cc8fdb1ac67b87a13fd594))
+* **mock:** clearer start, calmer exam screen and outcome-based results ([8b51cf9](https://github.com/mctlhq/mctl-academy/commit/8b51cf944b4bd0678641e12a2e1f3b7e7eb39d9f))
+* **practice:** context line, first-answer rule and calmer actions ([ddbb84a](https://github.com/mctlhq/mctl-academy/commit/ddbb84a507a858e33ba32b52be3bc1f49740d321))
+* **practice:** context line, first-answer rule and calmer actions ([1bc256c](https://github.com/mctlhq/mctl-academy/commit/1bc256c1bea58f32255470dd4e86b4e4d8f679a3))
+
+
+### Bug Fixes
+
+* **client:** honest reset scope, sync status and sign-in return ([7e1c35d](https://github.com/mctlhq/mctl-academy/commit/7e1c35d9cae8ca983622b8d8f4d61d5284d85062))
+* **client:** honest reset scope, sync status and sign-in return ([5b00c22](https://github.com/mctlhq/mctl-academy/commit/5b00c22ecf15b689333bd49170aa2877aa16ada8))
+* **client:** let a clear own sync status during backfill and mid-clear ([f7de731](https://github.com/mctlhq/mctl-academy/commit/f7de731d1487c36aa31968aa6fee2cd1370dd1f1))
+* **client:** reset sign-in after bfcache Back; settle sync on clear ([3ca1ea1](https://github.com/mctlhq/mctl-academy/commit/3ca1ea17c681736bfcf876c4c6f0d1aa1dbf8c1a))
+* **client:** wait for in-flight answers before settling a clear ([5049b1e](https://github.com/mctlhq/mctl-academy/commit/5049b1e3cdf0ad8b1f5ddd1bde3d74d802a9a197))
+* **mock:** show how-it-works as a section on wide screens ([a5d0718](https://github.com/mctlhq/mctl-academy/commit/a5d0718df0c6045056adc431eca7304c4f7acbbf))
+* **practice:** address agy review of shortcuts and source dedup ([2f1b5c9](https://github.com/mctlhq/mctl-academy/commit/2f1b5c9c6b344b4b31dd7bc7a6fab38f28d7e316))
+* **practice:** let N advance after a mouse answer; keep mode on clear ([d49aa54](https://github.com/mctlhq/mctl-academy/commit/d49aa548734d8b5311c987a94fd17ae6f34e555c))
+* **shell:** keep the skip link from remounting the page ([16d43a7](https://github.com/mctlhq/mctl-academy/commit/16d43a74ea936433329757e8011d6e34d469c94d))
+
 ## [0.1.62](https://github.com/mctlhq/mctl-academy/compare/0.1.61...0.1.62) (2026-10-31)
 
 
