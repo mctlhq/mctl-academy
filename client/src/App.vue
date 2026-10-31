@@ -12,8 +12,12 @@ import { setProgressOwner, setSyncEnabled, syncFromServer } from "./services/pro
 const sessionState = authClient.useSession();
 const route = useRoute();
 const focusedPractice = computed(() => route.name === "practice" || route.name === "mistakes");
+// Every surface that restores learner-scoped state on mount. The mock exam is
+// one too: its in-progress session is keyed per owner, and rendering it as the
+// guest first would show the start screen instead of the exam being taken.
+const waitsForSession = computed(() => focusedPractice.value || route.name === "mock");
 const authLoading = computed(() => sessionState.value?.isPending ?? true);
-// Practice and Mistakes wait for the session so the per-account storage key is
+// Practice, Mistakes and Mock wait for the session so the per-account storage key is
 // known before a persisted session is restored. That wait must not become a
 // blank screen: if the session request hangs (API restart, proxy timeout), the
 // learning surfaces render for a guest after this many milliseconds and remount
@@ -105,7 +109,7 @@ watch(
     <main id="main-content" class="app-main" tabindex="-1">
       <RouterView v-slot="{ Component, route: currentRoute }">
         <component
-          v-if="!focusedPractice || authSettled"
+          v-if="!waitsForSession || authSettled"
           :is="Component"
           :key="`${currentRoute.fullPath}-${currentCourseId}-${user?.id ?? 'guest'}`"
         />
