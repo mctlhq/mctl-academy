@@ -1,15 +1,28 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
+import { createServer } from "node:net";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const CONTAINER = "mctl-academy-readyz-live-test";
-const APP_PORT = 55080;
-// Docker picks a free host port; a fixed one collided with a port already in
-// use on the CI runner ("address already in use") and failed unrelated PRs.
+// Both ports are picked free at run time; a fixed one collided with a port
+// already in use on the CI runner ("address already in use") and failed
+// unrelated PRs.
+let APP_PORT;
 let PG_PORT;
+
+function freePort() {
+  return new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.once("error", reject);
+    probe.listen(0, "127.0.0.1", () => {
+      const { port } = /** @type {import("node:net").AddressInfo} */ (probe.address());
+      probe.close(() => resolve(port));
+    });
+  });
+}
 
 function dockerAvailable() {
   try {
@@ -73,19 +86,48 @@ describe(
         "127.0.0.1::5432",
         "postgres:17-alpine",
       ]);
-      PG_PORT = execFileSync("docker", ["port", CONTAINER, "5432/tcp"], { encoding: "utf8" })
-        .trim()
-        .split("\n")[0]
-        .split(":")
-        .pop();
+      // `docker port` can answer empty right after `docker run -d`, before
+      // the binding is published. An empty PG_PORT made DATABASE_URL fall
+      // back to localhost:5432 — nothing on a laptop (memory-store fallback),
+      // and on CI the job's shared service Postgres, where this boot could
+      // wait on another suite's migration lock until "server never came up".
+      const portPublished = await waitFor(() => {
+        try {
+          PG_PORT = execFileSync("docker", ["port", CONTAINER, "5432/tcp"], { encoding: "utf8" })
+            .trim()
+            .split("\n")[0]
+            .split(":")
+            .pop();
+        } catch {
+          PG_PORT = "";
+        }
+        return /^\d+$/.test(PG_PORT);
+      });
+      assert.ok(portPublished, `docker never published a host port for ${CONTAINER}`);
 
       let serverProcess;
       try {
+        // Over TCP (-h 127.0.0.1), not the default Unix socket: the image's
+        // entrypoint first runs a temporary socket-only server for initdb,
+        // then restarts. A socket check can pass against that temporary
+        // server, and the app's TCP connection then lands in the restart.
         const pgReady = await waitFor(() => {
           try {
             execFileSync(
               "docker",
-              ["exec", CONTAINER, "psql", "-U", "postgres", "-d", "readyz_live", "-c", "select 1"],
+              [
+                "exec",
+                CONTAINER,
+                "psql",
+                "-h",
+                "127.0.0.1",
+                "-U",
+                "postgres",
+                "-d",
+                "readyz_live",
+                "-c",
+                "select 1",
+              ],
               {
                 stdio: "ignore",
               },
@@ -110,6 +152,8 @@ describe(
           "exec",
           CONTAINER,
           "psql",
+          "-h",
+          "127.0.0.1",
           "-U",
           "postgres",
           "-d",
@@ -118,45 +162,58 @@ describe(
           "CREATE ROLE academy_readonly LOGIN;",
         ]);
 
+        APP_PORT = await freePort();
         serverProcess = spawn(process.execPath, ["server/index.mjs"], {
           cwd: repoRoot,
           env: {
             ...process.env,
-            DATABASE_URL: `postgresql://postgres:test@localhost:${PG_PORT}/readyz_live`,
+            DATABASE_URL: `postgresql://postgres:test@127.0.0.1:${PG_PORT}/readyz_live`,
             PORT: String(APP_PORT),
           },
         });
+        // Kept for the failure message: without it a boot that never
+        // answered left no trace of why.
+        let serverOutput = "";
+        serverProcess.stdout.on("data", (chunk) => (serverOutput += chunk));
+        serverProcess.stderr.on("data", (chunk) => (serverOutput += chunk));
+        let exitCode = null;
+        serverProcess.once("exit", (code, signal) => (exitCode = code ?? signal));
 
-        const serverUp = await waitFor(async () => {
-          try {
-            const { status } = await httpGetJson(`http://localhost:${APP_PORT}/livez`);
-            return status === 200;
-          } catch {
-            return false;
-          }
-        });
-        assert.ok(serverUp, "server never came up");
+        const serverUp = await waitFor(
+          async () => {
+            if (exitCode !== null) return true; // stop waiting; asserted below
+            try {
+              const { status } = await httpGetJson(`http://127.0.0.1:${APP_PORT}/livez`);
+              return status === 200;
+            } catch {
+              return false;
+            }
+          },
+          { timeoutMs: 45000 },
+        );
+        assert.equal(exitCode, null, `server exited (${exitCode}) during boot:\n${serverOutput}`);
+        assert.ok(serverUp, `server never came up on port ${APP_PORT}:\n${serverOutput}`);
 
-        const readyBefore = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
+        const readyBefore = await httpGetJson(`http://127.0.0.1:${APP_PORT}/readyz`);
         assert.equal(readyBefore.status, 200);
-        assert.equal(readyBefore.body.db, "postgres");
+        assert.equal(readyBefore.body.db, "postgres", `server did not use Postgres:\n${serverOutput}`);
 
         execFileSync("docker", ["stop", CONTAINER]);
 
         const readyAfter = await waitFor(async () => {
-          const { status } = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
+          const { status } = await httpGetJson(`http://127.0.0.1:${APP_PORT}/readyz`);
           return status === 503;
         });
         assert.ok(readyAfter, "/readyz never reported the database as unreachable");
 
-        const finalCheck = await httpGetJson(`http://localhost:${APP_PORT}/readyz`);
+        const finalCheck = await httpGetJson(`http://127.0.0.1:${APP_PORT}/readyz`);
         assert.equal(finalCheck.status, 503);
         assert.equal(finalCheck.body.error, "database unreachable");
 
         // The whole point of pool.on('error', ...): an idle-connection drop is
         // not an unhandled exception. If it were, the process would already be
         // dead and this would fail to connect at all.
-        const stillAlive = await httpGetJson(`http://localhost:${APP_PORT}/livez`);
+        const stillAlive = await httpGetJson(`http://127.0.0.1:${APP_PORT}/livez`);
         assert.equal(stillAlive.status, 200, "the process must survive a database outage, not crash");
       } finally {
         serverProcess?.kill();
