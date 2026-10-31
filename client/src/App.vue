@@ -96,9 +96,10 @@ watch(
 
 <template>
   <div class="app-shell" :class="{ 'focused-practice': focusedPractice }">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <AppNav :user="user" :loading="authLoading" />
 
-    <main class="app-main">
+    <main id="main-content" class="app-main" tabindex="-1">
       <RouterView v-slot="{ Component, route: currentRoute }">
         <component
           v-if="!focusedPractice || authSettled"
