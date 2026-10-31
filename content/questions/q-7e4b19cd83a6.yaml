@@ -1,42 +1,46 @@
 schema_version: 1
 id: q-7e4b19cd83a6
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/blended-rag
-stem: "In Tavily's Hybrid Research pattern, when should an agent use
-  Multi-Agent mode instead of Fast mode to blend its internal knowledge base
-  with web results?"
+stem: "In Tavily's Hybrid Research pattern, when should an agent use Multi-Agent
+  mode instead of Fast mode to blend its internal knowledge base with web
+  results?"
 options:
   - id: a
-    text: "When accuracy matters more than speed, for comprehensive research
-      on complex topics"
+    text: "When accuracy matters more than speed, for comprehensive research on
+      complex topics"
     correct: true
-    explanation: "Correct. The documentation describes Multi-Agent mode as
-      best for comprehensive research, complex topics, and when accuracy
-      matters more than speed."
+    explanation: "Correct. The documentation describes Multi-Agent mode as best for
+      comprehensive research, complex topics, and when accuracy matters more
+      than speed."
   - id: b
     text: "When it needs quick answers at lower latency in a cost-sensitive
       application"
     correct: false
-    explanation: "That is the documentation's description of Fast mode, the
-      opposite of what this scenario calls for."
+    explanation: "That is the documentation's description of Fast mode, the opposite
+      of what this scenario calls for."
   - id: c
     text: "When it wants structured output instead of a plain-text report"
     correct: false
-    explanation: "Structured output is controlled by the `output_schema`
-      parameter, which is independent of the `mode` choice."
+    explanation: "Structured output is controlled by the `output_schema` parameter,
+      which is independent of the `mode` choice."
   - id: d
     text: "When it wants to customize how the report is structured"
     correct: false
     explanation: "Custom report structure is controlled by the
-      `research_synthesis_prompt` parameter, which is independent of the
-      `mode` choice."
+      `research_synthesis_prompt` parameter, which is independent of the `mode`
+      choice."
 evidence:
   - source_id: src-tv-hybrid-research
-    excerpt: "Best for comprehensive research, complex topics, and when
-      accuracy matters more than speed."
+    excerpt: "Best for comprehensive research, complex topics, and when accuracy
+      matters more than speed."
     source_sha256: cbabaf9c2a6c52d4e3ef5f6aa476114181c0e8b7258476a4fcaa10c0d722e9d5
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:24:19Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:35:45Z
+  content_sha256: aa6b3441a675355a319b9e28cbd34290f9ae21cec912822379f64cb63791e24c

@@ -39,7 +39,7 @@
   {
     "id": "agentic-web-search",
     "title": "Agentic Web Search",
-    "publishedQuestionCount": 56,
+    "publishedQuestionCount": 60,
     "available": true,
     "mock": {
       "questionCount": 20,

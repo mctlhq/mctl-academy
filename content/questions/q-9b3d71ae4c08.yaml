@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9b3d71ae4c08
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/source-quality
 stem: "An agent wants Tavily Search to prioritize trusted sources such as
@@ -8,8 +8,8 @@ stem: "An agent wants Tavily Search to prioritize trusted sources such as
   cover the query. Per Tavily's Search best practices, what should it do?"
 options:
   - id: a
-    text: "Set `include_domains` to those domains and set
-      `include_domains_mode` to \"prefer\""
+    text: "Set `include_domains` to those domains and set `include_domains_mode` to
+      \"prefer\""
     correct: true
     explanation: "Correct. The documentation states that `include_domains_mode:
       \"prefer\"` prioritizes trusted sources without risking empty results if
@@ -20,12 +20,11 @@ options:
     explanation: "`exclude_domains` filters those domains out of the results
       entirely; it does not prioritize them."
   - id: c
-    text: "Set `include_domains` to those domains and leave
-      `include_domains_mode` at its default"
+    text: "Set `include_domains` to those domains and leave `include_domains_mode`
+      at its default"
     correct: false
-    explanation: "The default `include_domains_mode` is a hard filter
-      (`restrict`), which is exactly the empty-result risk this scenario asks
-      to avoid."
+    explanation: "The default `include_domains_mode` is a hard filter (`restrict`),
+      which is exactly the empty-result risk this scenario asks to avoid."
   - id: d
     text: "Set `language` to \"english\""
     correct: false
@@ -41,3 +40,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:24:19Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:35:45Z
+  content_sha256: d7cf4fb6f98ca988b7e5bfb77c871c0abea74fcca8d6c14c113f6d7d0777cd8e

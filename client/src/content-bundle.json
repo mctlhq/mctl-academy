@@ -533,6 +533,47 @@
     ]
   },
   {
+    "id": "q-2d8f6a19c5e3",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/agent-tool-selection",
+    "stem": "An agent knows a site's domain but not which specific page holds the content it needs. Per Tavily's Agent Skills documentation, which tool-selection pattern should it use?",
+    "objectiveTitle": "Choosing the web-access tool an agent should call for a task",
+    "sources": [
+      {
+        "title": "Tavily Agent Skills",
+        "url": "https://docs.tavily.com/documentation/agent-skills.md",
+        "excerpt": "Use the **map + extract** pattern: map to find the right page, then extract its content."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Map to find the right page, then Extract its content",
+        "correct": true,
+        "explanation": "Correct. The documentation recommends this exact map + extract pattern for this case."
+      },
+      {
+        "id": "b",
+        "text": "Crawl to find the right page, then Map its content",
+        "correct": false,
+        "explanation": "The documentation pairs Map with Extract for this case, not Crawl with Map."
+      },
+      {
+        "id": "c",
+        "text": "Extract to find the right page, then Map its content",
+        "correct": false,
+        "explanation": "The documentation puts Map first to find the page and Extract second to read it, not the reverse order."
+      },
+      {
+        "id": "d",
+        "text": "Search to find the right page, then Crawl its content",
+        "correct": false,
+        "explanation": "Search is for when sources are unknown and Crawl reads many pages across a site; the documented pattern for this exact case pairs Map with Extract instead."
+      }
+    ]
+  },
+  {
     "id": "q-2e8c5a1f7d94",
     "course_id": "agentic-web-search",
     "domain": "domain-4",
@@ -1813,6 +1854,47 @@
     ]
   },
   {
+    "id": "q-7e4b19cd83a6",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/blended-rag",
+    "stem": "In Tavily's Hybrid Research pattern, when should an agent use Multi-Agent mode instead of Fast mode to blend its internal knowledge base with web results?",
+    "objectiveTitle": "Blending live web results with a private knowledge base in RAG pipelines",
+    "sources": [
+      {
+        "title": "Agent Toolkit: Hybrid Research",
+        "url": "https://docs.tavily.com/examples/agent-toolkit/hybrid-research.md",
+        "excerpt": "Best for comprehensive research, complex topics, and when accuracy matters more than speed."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "When accuracy matters more than speed, for comprehensive research on complex topics",
+        "correct": true,
+        "explanation": "Correct. The documentation describes Multi-Agent mode as best for comprehensive research, complex topics, and when accuracy matters more than speed."
+      },
+      {
+        "id": "b",
+        "text": "When it needs quick answers at lower latency in a cost-sensitive application",
+        "correct": false,
+        "explanation": "That is the documentation's description of Fast mode, the opposite of what this scenario calls for."
+      },
+      {
+        "id": "c",
+        "text": "When it wants structured output instead of a plain-text report",
+        "correct": false,
+        "explanation": "Structured output is controlled by the `output_schema` parameter, which is independent of the `mode` choice."
+      },
+      {
+        "id": "d",
+        "text": "When it wants to customize how the report is structured",
+        "correct": false,
+        "explanation": "Custom report structure is controlled by the `research_synthesis_prompt` parameter, which is independent of the `mode` choice."
+      }
+    ]
+  },
+  {
     "id": "q-7fa13c2e9b84",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -2055,6 +2137,47 @@
         "text": "key.crawl_usage, since Crawl combines Search with extraction internally",
         "correct": false,
         "explanation": "key.crawl_usage reports Crawl endpoint credits for the key; it does not report Search spending, and Crawl does not fold Search into itself."
+      }
+    ]
+  },
+  {
+    "id": "q-9b3d71ae4c08",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/source-quality",
+    "stem": "An agent wants Tavily Search to prioritize trusted sources such as bloomberg.com and reuters.com, without risking zero results if none of them cover the query. Per Tavily's Search best practices, what should it do?",
+    "objectiveTitle": "Judging returned sources for relevance, recency and credibility",
+    "sources": [
+      {
+        "title": "Tavily Search best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-search.md",
+        "excerpt": "`include_domains_mode: \"prefer\"` is useful when you want to prioritize trusted sources without risking empty results if none of them cover the query."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Set `include_domains` to those domains and set `include_domains_mode` to \"prefer\"",
+        "correct": true,
+        "explanation": "Correct. The documentation states that `include_domains_mode: \"prefer\"` prioritizes trusted sources without risking empty results if none of them cover the query."
+      },
+      {
+        "id": "b",
+        "text": "Set `exclude_domains` to those domains",
+        "correct": false,
+        "explanation": "`exclude_domains` filters those domains out of the results entirely; it does not prioritize them."
+      },
+      {
+        "id": "c",
+        "text": "Set `include_domains` to those domains and leave `include_domains_mode` at its default",
+        "correct": false,
+        "explanation": "The default `include_domains_mode` is a hard filter (`restrict`), which is exactly the empty-result risk this scenario asks to avoid."
+      },
+      {
+        "id": "d",
+        "text": "Set `language` to \"english\"",
+        "correct": false,
+        "explanation": "`language` boosts results in a specific language; it has no connection to prioritizing specific trusted domains."
       }
     ]
   },
@@ -7617,6 +7740,47 @@
         "text": "Only the stdout and stderr produced during the run, without any filesystem changes.",
         "correct": false,
         "explanation": "Wrong. The documentation describes a saved image as containing filesystem state; stdout and stderr are available through the operation result, a separate item in the survival table."
+      }
+    ]
+  },
+  {
+    "id": "q-f4c82e916b3a",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/web-access-operations",
+    "stem": "Per Tavily's Map tutorial, how does Map's output differ from a Crawl's output as web-access operations?",
+    "objectiveTitle": "Distinguishing searching, extracting, mapping and crawling as web-access operations",
+    "sources": [
+      {
+        "title": "Site Structure Discovery with Map",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/map-api.md",
+        "excerpt": "Unlike Crawl, it does not extract page content -- it only discovers the structure."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Map returns a URL list only; Crawl returns URLs plus full page content",
+        "correct": true,
+        "explanation": "Correct. The tutorial states that, unlike Crawl, Map does not extract page content and only discovers the structure."
+      },
+      {
+        "id": "b",
+        "text": "Map returns full page content; Crawl returns a URL list only",
+        "correct": false,
+        "explanation": "That reverses the tutorial's description; Map discovers structure without content, and Crawl is the one that extracts full page content."
+      },
+      {
+        "id": "c",
+        "text": "Map and Crawl both return identical full-page content",
+        "correct": false,
+        "explanation": "The tutorial draws a contrast between Map's URL-only output and Crawl's full-page content; they are not identical."
+      },
+      {
+        "id": "d",
+        "text": "Map extracts page content faster than Crawl, but returns the same content",
+        "correct": false,
+        "explanation": "The tutorial says Map does not extract page content at all, so it cannot return the same content as Crawl."
       }
     ]
   },

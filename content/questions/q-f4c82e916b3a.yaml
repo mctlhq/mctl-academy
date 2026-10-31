@@ -1,40 +1,41 @@
 schema_version: 1
 id: q-f4c82e916b3a
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/web-access-operations
 stem: "Per Tavily's Map tutorial, how does Map's output differ from a Crawl's
   output as web-access operations?"
 options:
   - id: a
-    text: "Map returns a URL list only; Crawl returns URLs plus full page
-      content"
+    text: "Map returns a URL list only; Crawl returns URLs plus full page content"
     correct: true
     explanation: "Correct. The tutorial states that, unlike Crawl, Map does not
       extract page content and only discovers the structure."
   - id: b
     text: "Map returns full page content; Crawl returns a URL list only"
     correct: false
-    explanation: "That reverses the tutorial's description; Map discovers
-      structure without content, and Crawl is the one that extracts full page
-      content."
+    explanation: "That reverses the tutorial's description; Map discovers structure
+      without content, and Crawl is the one that extracts full page content."
   - id: c
     text: "Map and Crawl both return identical full-page content"
     correct: false
-    explanation: "The tutorial draws a contrast between Map's URL-only output
-      and Crawl's full-page content; they are not identical."
+    explanation: "The tutorial draws a contrast between Map's URL-only output and
+      Crawl's full-page content; they are not identical."
   - id: d
-    text: "Map extracts page content faster than Crawl, but returns the same
-      content"
+    text: "Map extracts page content faster than Crawl, but returns the same content"
     correct: false
-    explanation: "The tutorial says Map does not extract page content at all,
-      so it cannot return the same content as Crawl."
+    explanation: "The tutorial says Map does not extract page content at all, so it
+      cannot return the same content as Crawl."
 evidence:
   - source_id: src-tv-tut-map
-    excerpt: "Unlike Crawl, it does not extract page content -- it only
-      discovers the structure."
+    excerpt: "Unlike Crawl, it does not extract page content -- it only discovers
+      the structure."
     source_sha256: 339cc791a66d5946134ca479d31d591647246a73353577f7cedbcbe6951288b9
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:24:19Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:35:45Z
+  content_sha256: 0052ca097215b8965cd74b0ea3257e953cde7402a6aadabe57132d8b901f1686
