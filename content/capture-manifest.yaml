@@ -744,3 +744,8 @@ sources:
     title: Crawl to RAG
     objectives:
       - domain-1/blended-rag
+  - id: src-tv-toolkit-overview
+    url: https://docs.tavily.com/examples/agent-toolkit/overview.md
+    title: Agent Toolkit
+    objectives:
+      - domain-1/agent-tool-selection
