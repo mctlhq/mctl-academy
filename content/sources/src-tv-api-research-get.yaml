@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-api-research-get
+url: https://docs.tavily.com/documentation/api-reference/endpoint/research-get.md
+title: Get Research Task Status
+retrieved_at: 2026-10-31T08:43:48Z
+sha256: f68cf65aa117a83a56b69f5a05c6911d95132028de46ced1d504ff07c78631cc
+objectives:
+  - domain-3/call-error-handling
+snapshot:
+  bucket: academy-source-snapshots
+  key: f68cf65aa117a83a56b69f5a05c6911d95132028de46ced1d504ff07c78631cc
+status: current

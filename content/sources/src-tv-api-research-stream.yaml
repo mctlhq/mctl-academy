@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-api-research-stream
+url: https://docs.tavily.com/documentation/api-reference/endpoint/research-streaming.md
+title: Streaming
+retrieved_at: 2026-10-31T08:43:49Z
+sha256: a35da399132e231b59ca4814712959a643450b71eb3f2288d9627fdb031b84a9
+objectives:
+  - domain-2/response-fields
+snapshot:
+  bucket: academy-source-snapshots
+  key: a35da399132e231b59ca4814712959a643450b71eb3f2288d9627fdb031b84a9
+status: current

@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-bp-research
+url: https://docs.tavily.com/documentation/best-practices/best-practices-research.md
+title: Research
+retrieved_at: 2026-10-31T08:43:50Z
+sha256: 442529a48507d4fd48c9ff5f867565ef467b4426203bc3c7b4bb22da4bd52aa9
+objectives:
+  - domain-3/endpoint-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 442529a48507d4fd48c9ff5f867565ef467b4426203bc3c7b4bb22da4bd52aa9
+status: current

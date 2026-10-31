@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-b86d4f1a3c97
+status: published
+domain: domain-2
+objective: domain-2/search-extract-pipelines
+stem: "A pipeline runs several Search calls, deduplicates the result URLs, and
+  submits the deduplicated list to a single Extract call. Per Tavily's Extract
+  best practices, how many of those URLs can one Extract call accept?"
+options:
+  - id: a
+    text: "Up to 20 URLs"
+    correct: true
+    explanation: "Correct. The best practices state Extract accepts up to 20 URLs in
+      one request."
+  - id: b
+    text: "Up to 5 URLs"
+    correct: false
+    explanation: "5 is the batch size tied to Extract's per-credit cost (successful
+      extractions per credit), not the per-request URL limit."
+  - id: c
+    text: "Up to 50 URLs"
+    correct: false
+    explanation: "50 is not the documented Extract batch limit; the best practices
+      state the limit is 20 URLs per request."
+  - id: d
+    text: "An unlimited number of URLs, since Extract paginates automatically"
+    correct: false
+    explanation: "The best practices state a fixed cap of 20 URLs per request, not
+      automatic pagination for unlimited batches."
+evidence:
+  - source_id: src-tv-bp-extract
+    excerpt: "Extract accepts up to 20 URLs in one request."
+    source_sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:55:13Z
+  content_sha256: 4639969b04a2bddb53200e128e7c88aa4ae09a7ac4934288205d488f6ff18289

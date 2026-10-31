@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-f1c3a9d62b84
+status: published
+domain: domain-1
+objective: domain-1/realtime-search-fundamentals
+stem: "Per Tavily's FAQ, which description does it give for the Tavily Search
+  API specifically, as distinct from its other two endpoints?"
+options:
+  - id: a
+    text: "A search engine designed for AI agents, combining search and scraping
+      capabilities"
+    correct: true
+    explanation: "Correct. The FAQ describes the Tavily Search API exactly this way
+      among the three endpoints it lists."
+  - id: b
+    text: "Scrape up to 20 URLs in a single API call"
+    correct: false
+    explanation: "That line describes the Extract API in the same FAQ entry, not the
+      Search API."
+  - id: c
+    text: "Map and crawl domains efficiently"
+    correct: false
+    explanation: "That line describes the Crawl API in the same FAQ entry, not the
+      Search API."
+  - id: d
+    text: "Real-time search, scraping, and structured data retrieval in a single API
+      call"
+    correct: false
+    explanation: "That line describes what Tavily overall supercharges an agent
+      with, not the Search API's own entry among the three endpoints."
+evidence:
+  - source_id: src-tv-faq
+    excerpt: "A search engine designed for AI agents, combining search and scraping
+      capabilities."
+    source_sha256: 9898da380dd7ebace34e0b4e58f62f30c9efd4c499c90af0922d68c351acfaf3
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:55:13Z
+  content_sha256: 8558f10edd1f6221abee652f6cb27e9c852226267b5726b678d3b6eb98aa1e2b

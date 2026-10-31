@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-api-research
+url: https://docs.tavily.com/documentation/api-reference/endpoint/research.md
+title: Create Research Task
+retrieved_at: 2026-10-31T08:43:47Z
+sha256: 32f79d6c93fe82dae298b03a5f4cc565040ad42bd4aed4d4c45aab3bdeed9e20
+objectives:
+  - domain-2/search-extract-pipelines
+  - domain-3/endpoint-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 32f79d6c93fe82dae298b03a5f4cc565040ad42bd4aed4d4c45aab3bdeed9e20
+status: current

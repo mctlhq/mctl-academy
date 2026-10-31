@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-agent-skills
+url: https://docs.tavily.com/documentation/agent-skills.md
+title: Tavily Agent Skills
+retrieved_at: 2026-10-31T08:43:45Z
+sha256: 1f70cad875995608e441e5070af9568692bcb1eb8a750e101b08d0f1eab47c0d
+objectives:
+  - domain-3/mcp-integration
+  - domain-1/agent-tool-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 1f70cad875995608e441e5070af9568692bcb1eb8a750e101b08d0f1eab47c0d
+status: current

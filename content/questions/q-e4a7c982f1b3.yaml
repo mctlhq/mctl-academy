@@ -1,0 +1,37 @@
+schema_version: 1
+id: q-e4a7c982f1b3
+status: published
+domain: domain-2
+objective: domain-2/response-fields
+stem: "In a Tavily Search response, what does each result's `score` field represent?"
+options:
+  - id: a
+    text: "The number of credits consumed by returning this result"
+    correct: false
+    explanation: "Credit consumption is reported in the top-level usage.credits
+      field, not in each result's score."
+  - id: b
+    text: "The relevance score of the search result"
+    correct: true
+    explanation: "Correct. The API reference describes score exactly this way."
+  - id: c
+    text: "The time in seconds it took to complete the request"
+    correct: false
+    explanation: "That describes the top-level response_time field, not a per-result
+      field like score."
+  - id: d
+    text: "Tavily's best estimate of when the source was published"
+    correct: false
+    explanation: "That describes the published_date field, not score."
+evidence:
+  - source_id: src-tv-api-search
+    excerpt: "The relevance score of the search result."
+    source_sha256: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:55:13Z
+  content_sha256: c96967b50ff2023d361723ba4470bdae11eb2cf16f417952e3f4770f4884c3b4

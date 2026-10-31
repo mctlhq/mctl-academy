@@ -246,7 +246,8 @@ sources:
 
   - id: src-pa-serverless-fine-tuning
     url: https://docs.nebius.com/serverless/tutorials/fine-tuning.md
-    title: "Fine-tuning a large language model by using a Serverless AI job and Axolotl"
+    title: "Fine-tuning a large language model by using a Serverless AI job and
+      Axolotl"
     objectives:
       - domain-1/supervised-fine-tuning
 
@@ -265,7 +266,8 @@ sources:
 
   - id: src-pa-serverless-deploy-model
     url: https://docs.nebius.com/serverless/tutorials/deploy-model.md
-    title: "Deploying a large language model and chatting with it by using Serverless AI endpoints"
+    title: "Deploying a large language model and chatting with it by using
+      Serverless AI endpoints"
     objectives:
       - domain-3/inference-setup
 
@@ -290,7 +292,8 @@ sources:
 
   - id: src-pa-mlflow-quickstart
     url: https://docs.nebius.com/mlflow/quickstart.md
-    title: "Getting started with Managed Service for MLflow: create your first cluster"
+    title: "Getting started with Managed Service for MLflow: create your first
+      cluster"
     objectives:
       - domain-1/experiment-tracking
 
@@ -303,7 +306,8 @@ sources:
 
   - id: src-pa-registry-quickstart
     url: https://docs.nebius.com/container-registry/quickstart.md
-    title: "Getting started with Container Registry: Create your first registry and manage a Docker image in it"
+    title: "Getting started with Container Registry: Create your first registry and
+      manage a Docker image in it"
     objectives:
       - domain-3/release-management
       - domain-4/application-integration
@@ -677,3 +681,41 @@ sources:
     title: "Agent Toolkit: Hybrid Research"
     objectives:
       - domain-1/blended-rag
+  - id: src-tv-agent-skills
+    url: https://docs.tavily.com/documentation/agent-skills.md
+    title: Tavily Agent Skills
+    objectives:
+      - domain-3/mcp-integration
+      - domain-1/agent-tool-selection
+  - id: src-tv-api-logs
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/logs.md
+    title: Logs
+    objectives:
+      - domain-4/credit-monitoring
+  - id: src-tv-api-research
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/research.md
+    title: Create Research Task
+    objectives:
+      - domain-2/search-extract-pipelines
+      - domain-3/endpoint-selection
+  - id: src-tv-api-research-get
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/research-get.md
+    title: Get Research Task Status
+    objectives:
+      - domain-3/call-error-handling
+  - id: src-tv-api-research-stream
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/research-streaming.md
+    title: Streaming
+    objectives:
+      - domain-2/response-fields
+  - id: src-tv-bp-research
+    url: https://docs.tavily.com/documentation/best-practices/best-practices-research.md
+    title: Research
+    objectives:
+      - domain-3/endpoint-selection
+  - id: src-tv-enterprise-keys
+    url: https://docs.tavily.com/documentation/enterprise/generate-keys.md
+    title: Generate Keys
+    objectives:
+      - domain-4/api-key-auth
+      - domain-4/key-rotation-secrets
