@@ -1323,15 +1323,7 @@ seen:
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/documentation/tavily-cli.md
     first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/agent-toolkit/chatbot.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/agent-toolkit/company-intelligence.md
-    first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/agent-toolkit/overview.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/agent-toolkit/social-media-research.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/agent-toolkit/tools.md
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/hub.md
     first_seen: 2026-10-31
@@ -1346,8 +1338,6 @@ seen:
   - url: https://docs.tavily.com/examples/use-cases/chat.md
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/use-cases/company-research.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/use-cases/crawl-to-rag.md
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/use-cases/data-enrichment.md
     first_seen: 2026-10-31

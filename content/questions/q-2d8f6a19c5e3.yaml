@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-2d8f6a19c5e3
+status: published
+domain: domain-1
+objective: domain-1/agent-tool-selection
+stem: "An agent knows a site's domain but not which specific page holds the
+  content it needs. Per Tavily's Agent Skills documentation, which
+  tool-selection pattern should it use?"
+options:
+  - id: a
+    text: "Map to find the right page, then Extract its content"
+    correct: true
+    explanation: "Correct. The documentation recommends this exact map + extract
+      pattern for this case."
+  - id: b
+    text: "Crawl to find the right page, then Map its content"
+    correct: false
+    explanation: "The documentation pairs Map with Extract for this case, not Crawl
+      with Map."
+  - id: c
+    text: "Extract to find the right page, then Map its content"
+    correct: false
+    explanation: "The documentation puts Map first to find the page and Extract
+      second to read it, not the reverse order."
+  - id: d
+    text: "Search to find the right page, then Crawl its content"
+    correct: false
+    explanation: "Search is for when sources are unknown and Crawl reads many pages
+      across a site; the documented pattern for this exact case pairs Map with
+      Extract instead."
+evidence:
+  - source_id: src-tv-agent-skills
+    excerpt: "Use the **map + extract** pattern: map to find the right page, then
+      extract its content."
+    source_sha256: 1f70cad875995608e441e5070af9568692bcb1eb8a750e101b08d0f1eab47c0d
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:24:19Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:35:45Z
+  content_sha256: 317027da44056bd8ba01612bd761a41a9147ff48e2fa2fe5ee14cc2e4c8eb684

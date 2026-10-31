@@ -1,0 +1,34 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-31T09:35:45Z",
+  "questions": [
+    {
+      "id": "q-2d8f6a19c5e3",
+      "content_sha256": "317027da44056bd8ba01612bd761a41a9147ff48e2fa2fe5ee14cc2e4c8eb684",
+      "approved": true,
+      "reason": "The captured Map section carries the excerpt verbatim as a tip: \"Use the **map + extract** pattern: map to find the right page, then extract its content.\", and the same accordion frames Map as \"useful for finding the right page before extracting\", so option a is uniquely supported; the reversed orders and the Search-then-Crawl option are not documented for a known domain.",
+      "reviewed_at": "2026-10-31T09:35:45Z"
+    },
+    {
+      "id": "q-7e4b19cd83a6",
+      "content_sha256": "aa6b3441a675355a319b9e28cbd34290f9ae21cec912822379f64cb63791e24c",
+      "approved": true,
+      "reason": "The Multi-Agent Mode tab states verbatim \"Best for comprehensive research, complex topics, and when accuracy matters more than speed.\", while the Fast Mode tab's \"Best for quick answers, lower latency, and cost-sensitive applications\" rules out the latency distractor; the parameter table lists `output_schema` and `research_synthesis_prompt` separately from `mode`, so the other two cannot be mode-selection reasons.",
+      "reviewed_at": "2026-10-31T09:35:45Z"
+    },
+    {
+      "id": "q-9b3d71ae4c08",
+      "content_sha256": "d7cf4fb6f98ca988b7e5bfb77c871c0abea74fcca8d6c14c113f6d7d0777cd8e",
+      "approved": true,
+      "reason": "The page note reads verbatim \"`include_domains_mode: \"prefer\"` is useful when you want to prioritize trusted sources without risking empty results if none of them cover the query.\", and the domain table confirms the mode \"Defaults to `restrict`: `include_domains` is a hard filter\", which eliminates the leave-at-default option; `exclude_domains` and `language` do not prioritize named domains.",
+      "reviewed_at": "2026-10-31T09:35:45Z"
+    },
+    {
+      "id": "q-f4c82e916b3a",
+      "content_sha256": "0052ca097215b8965cd74b0ea3257e953cde7402a6aadabe57132d8b901f1686",
+      "approved": true,
+      "reason": "The tutorial's \"How Does It Work?\" paragraph contains the excerpt verbatim -- \"Unlike Crawl, it does not extract page content -- it only discovers the structure.\" -- and the adjacent comparison table's Returns row gives \"URL list only\" for Map against \"URLs + full page content\" for Crawl, matching option a exactly and leaving no defensible alternative.",
+      "reviewed_at": "2026-10-31T09:35:45Z"
+    }
+  ]
+}
