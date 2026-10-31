@@ -65,6 +65,13 @@ Two workflows in this repository run every Monday:
    rebuilt and the PR is opened with the `mctl-agents` App token so the usual
    `pull_request` checks (CI, Content evidence) run on it.
 
+   A rejected re-validation is not sent back on the next re-capture of its
+   source unless something the reviewer judged has changed: `revalidation-ids`
+   skips a `needs_review` item when some receipt in `docs/content/` rejected
+   exactly its current fingerprint (text, options, excerpts and pins) and none
+   approved it. Edit the item, or retire it, to move it on. When any receipt
+   cannot be read in full nothing is skipped, and the step log says why.
+
 What stays manual: merging the PR (CODEOWNER), the exam-provenance attestation
 in the PR body, allowlisting a new host, and any `ignored` entry in
 `content/discovery-state.yaml` (a page that should never be proposed again).
