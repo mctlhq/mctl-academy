@@ -1,0 +1,78 @@
+schema_version: 1
+id: agentic-web-search
+prepares_for: "Nebius Agentic Web Search"
+title: "Agentic Web Search"
+description: "Practice for the Nebius Agentic Web Search certification. Scenario questions on connecting agents and RAG pipelines to live web data with the Tavily API: Search and Extract, Map and Crawl, agent integrations, and running web access reliably in production."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius or Tavily."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius or Tavily. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 20
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+domains:
+  - id: domain-1
+    title: "Foundations of agentic web search"
+    weight: 15
+    mock_questions: 3
+    objectives:
+      - id: realtime-search-fundamentals
+        title: "Explaining why agents need real-time web search alongside a static knowledge base"
+      - id: web-access-operations
+        title: "Distinguishing searching, extracting, mapping and crawling as web-access operations"
+      - id: source-quality
+        title: "Judging returned sources for relevance, recency and credibility"
+      - id: agent-tool-selection
+        title: "Choosing the web-access tool an agent should call for a task"
+      - id: blended-rag
+        title: "Blending live web results with a private knowledge base in RAG pipelines"
+
+  - id: domain-2
+    title: "Search and Extract"
+    weight: 35
+    mock_questions: 7
+    objectives:
+      - id: search-parameters
+        title: "Tuning Search parameters for relevance, latency and cost"
+      - id: search-extract-pipelines
+        title: "Combining Search with Extract to retrieve and clean page content"
+      - id: response-fields
+        title: "Reading and using Search and Extract response fields"
+      - id: extraction-recovery
+        title: "Recovering from failed extractions and partial results"
+
+  - id: domain-3
+    title: "Crawl, Map and agent integrations"
+    weight: 25
+    mock_questions: 5
+    objectives:
+      - id: map-usage
+        title: "Using Map to discover a site's structure"
+      - id: crawl-parameters
+        title: "Configuring Crawl parameters for focused content collection"
+      - id: crawl-scope
+        title: "Constraining crawl scope and depth"
+      - id: mcp-integration
+        title: "Connecting agents to web access through the MCP server and SDKs"
+      - id: endpoint-selection
+        title: "Selecting the right endpoint for a retrieval requirement"
+      - id: call-error-handling
+        title: "Handling errors and recovering around web-access API calls"
+
+  - id: domain-4
+    title: "Production operations and reliability"
+    weight: 25
+    mock_questions: 5
+    objectives:
+      - id: api-key-auth
+        title: "Authenticating requests with API keys"
+      - id: credit-monitoring
+        title: "Monitoring credit consumption and usage"
+      - id: rate-limit-handling
+        title: "Handling rate limits and HTTP 429 responses"
+      - id: budget-and-forecasting
+        title: "Managing credit budgets and forecasting cost"
+      - id: key-rotation-secrets
+        title: "Rotating keys and handling secrets safely"

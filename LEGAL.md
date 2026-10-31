@@ -22,6 +22,7 @@ Official Nebius certification names — specifically:
 - "Nebius AI CloudOps Engineer"
 - "Nebius Agentic AI Builder"
 - "Nebius Physical AI"
+- "Nebius Agentic Web Search"
 
 appear strictly in course descriptions as nominative statements of what each course prepares for — naming a thing in order to refer to it.
 
