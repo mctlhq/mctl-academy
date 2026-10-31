@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-9b3d71ae4c08
+status: review_ready
+domain: domain-1
+objective: domain-1/source-quality
+stem: "An agent wants Tavily Search to prioritize trusted sources such as
+  bloomberg.com and reuters.com, without risking zero results if none of them
+  cover the query. Per Tavily's Search best practices, what should it do?"
+options:
+  - id: a
+    text: "Set `include_domains` to those domains and set
+      `include_domains_mode` to \"prefer\""
+    correct: true
+    explanation: "Correct. The documentation states that `include_domains_mode:
+      \"prefer\"` prioritizes trusted sources without risking empty results if
+      none of them cover the query."
+  - id: b
+    text: "Set `exclude_domains` to those domains"
+    correct: false
+    explanation: "`exclude_domains` filters those domains out of the results
+      entirely; it does not prioritize them."
+  - id: c
+    text: "Set `include_domains` to those domains and leave
+      `include_domains_mode` at its default"
+    correct: false
+    explanation: "The default `include_domains_mode` is a hard filter
+      (`restrict`), which is exactly the empty-result risk this scenario asks
+      to avoid."
+  - id: d
+    text: "Set `language` to \"english\""
+    correct: false
+    explanation: "`language` boosts results in a specific language; it has no
+      connection to prioritizing specific trusted domains."
+evidence:
+  - source_id: src-tv-bp-search
+    excerpt: "`include_domains_mode: \"prefer\"` is useful when you want to
+      prioritize trusted sources without risking empty results if none of them
+      cover the query."
+    source_sha256: e68ed528e037a62638367faebd53116f287b63fb87b7a0c98635a5e0bb282a6d
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:24:19Z"
+course_id: agentic-web-search
