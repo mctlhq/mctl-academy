@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, inject, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { authClient } from "../authClient";
 import type { UserProfile } from "../types/user";
+import { syncFromServer, syncStatus } from "../services/progressStore";
+import ConfirmDialog from "./ConfirmDialog.vue";
+import { currentReturnPath } from "./returnPath";
 
 defineProps<{
   /** Resolved auth state, owned by App via authClient.useSession(). */
@@ -29,14 +32,77 @@ onMounted(async () => {
   }
 });
 
-async function signInWithZitadel() {
-  if (!zitadel.value) return;
+/**
+ * One sign-in at a time, returning to the page it was started from (a
+ * validated same-origin path, see returnPath.ts) instead of always "/".
+ * A provider that fails to start is reported on screen, not only in the
+ * console, and the buttons come back so the learner can retry.
+ */
+const signInPending = ref(false);
+const signInError = ref<string | null>(null);
+
+async function startSignIn(label: string, start: (callbackURL: string) => Promise<unknown>) {
+  if (signInPending.value) return;
+  signInPending.value = true;
+  signInError.value = null;
   try {
-    const res = await authClient.signIn.oauth2({ providerId: zitadel.value.providerId, callbackURL: "/" });
-    if (res?.error) console.error("ZITADEL sign-in could not start:", res.error);
+    const res = (await start(currentReturnPath())) as { error?: unknown } | undefined;
+    if (res?.error) {
+      console.error(`${label} sign-in could not start:`, res.error);
+      signInError.value = `Could not open ${label} sign-in. Please try again.`;
+      signInPending.value = false;
+    }
+    // On success the browser is navigating to the provider; stay pending.
   } catch (err) {
-    console.error("ZITADEL sign-in could not start:", err);
+    console.error(`${label} sign-in could not start:`, err);
+    signInError.value = `Could not open ${label} sign-in. Check your connection and try again.`;
+    signInPending.value = false;
   }
+}
+
+// Back from the provider's authorize page usually restores this page from
+// the back/forward cache with its JS state intact; without this the sign-in
+// buttons would stay disabled until a manual reload.
+function onPageShow(event: PageTransitionEvent) {
+  if (event.persisted) {
+    signInPending.value = false;
+    signInError.value = null;
+  }
+}
+onMounted(() => window.addEventListener("pageshow", onPageShow));
+onUnmounted(() => window.removeEventListener("pageshow", onPageShow));
+
+function signInWithGitHub() {
+  return startSignIn("GitHub", (callbackURL) =>
+    authClient.signIn.social({ provider: "github", callbackURL }),
+  );
+}
+
+function signInWithZitadel() {
+  const provider = zitadel.value;
+  if (!provider) return;
+  return startSignIn(provider.label, (callbackURL) =>
+    authClient.signIn.oauth2({ providerId: provider.providerId, callbackURL }),
+  );
+}
+
+// Sync status as the store actually knows it — never inferred from sign-in.
+const syncVersion = inject<Ref<number> | undefined>("syncVersion", undefined);
+const syncLabel = computed(() => {
+  switch (syncStatus.value) {
+    case "syncing":
+      return "Syncing progress…";
+    case "synced":
+      return "Progress synced";
+    case "failed":
+      return "Could not sync progress";
+    default:
+      return "Progress saved on this device";
+  }
+});
+async function retrySync() {
+  const outcome = await syncFromServer();
+  if (outcome === "synced" && syncVersion) syncVersion.value += 1;
 }
 
 async function handleLogout() {
@@ -44,14 +110,19 @@ async function handleLogout() {
   window.location.reload();
 }
 
+const confirmingDelete = ref(false);
+const deletePending = ref(false);
+const deleteError = ref<string | null>(null);
+
+function openDeleteConfirm() {
+  deleteError.value = null;
+  confirmingDelete.value = true;
+}
+
 async function handleDeleteAccount() {
-  if (
-    !window.confirm(
-      "Delete your Academy account? This permanently removes your Academy sign-in, attempts, and stored reports. GitHub issues are managed by your GitHub account and are not deleted here. This cannot be undone.",
-    )
-  ) {
-    return;
-  }
+  if (deletePending.value) return;
+  deletePending.value = true;
+  deleteError.value = null;
   // Not a better-auth client call — this is this app's own endpoint (see
   // server/routes/account.mjs), since better-auth's own deleteUser()
   // requires email verification, which OAuth-only accounts don't have.
@@ -64,12 +135,14 @@ async function handleDeleteAccount() {
   try {
     const res = await fetch("/api/account", { method: "DELETE" });
     if (!res.ok) {
-      window.alert("Account deletion failed. Please try again, or contact support if this continues.");
+      deleteError.value = "Account deletion failed. Please try again, or contact support if this continues.";
+      deletePending.value = false;
       return;
     }
     window.location.reload();
   } catch {
-    window.alert("Account deletion failed — check your connection and try again.");
+    deleteError.value = "Account deletion failed. Check your connection and try again.";
+    deletePending.value = false;
   }
 }
 </script>
@@ -89,7 +162,9 @@ async function handleDeleteAccount() {
       variant="ghost"
       class="signin-github"
       :aria-label="zitadel ? 'Log in with GitHub' : 'Log in'"
-      @click="authClient.signIn.social({ provider: 'github', callbackURL: '/' })"
+      title="Sign in to sync your progress across devices"
+      :disabled="signInPending"
+      @click="signInWithGitHub"
     >
       <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
         <path
@@ -104,6 +179,8 @@ async function handleDeleteAccount() {
       variant="ghost"
       class="signin-zitadel"
       :aria-label="`Log in with ${zitadel.label}`"
+      title="Sign in to sync your progress across devices"
+      :disabled="signInPending"
       @click="signInWithZitadel"
     >
       <span class="signin-label">Log in with {{ zitadel.label }}</span>
@@ -119,6 +196,8 @@ async function handleDeleteAccount() {
       Google stays configured server-side (server/auth.mjs); this is a
       UI-only toggle, not a provider removal.
     -->
+    <span v-if="signInPending" class="signin-status" role="status">Opening sign-in…</span>
+    <p v-if="signInError" class="signin-error" role="alert">{{ signInError }}</p>
   </div>
 
   <details v-else class="user-nav-signed-in">
@@ -135,11 +214,36 @@ async function handleDeleteAccount() {
         <strong>{{ user.name }}</strong>
         <span v-if="user.githubLogin">@{{ user.githubLogin }}</span>
       </div>
+      <p class="sync-status" :class="`sync-${syncStatus}`" role="status" data-testid="sync-status">
+        <span>{{ syncLabel }}</span>
+        <button v-if="syncStatus === 'failed'" type="button" class="sync-retry" @click="retrySync">
+          Retry
+        </button>
+      </p>
       <MButton type="button" variant="ghost" size="sm" class="user-nav-signout" @click="handleLogout">
         Log out
       </MButton>
-      <button type="button" class="user-nav-delete" @click="handleDeleteAccount">Delete account</button>
+      <div class="account-danger">
+        <button type="button" class="user-nav-delete" @click="openDeleteConfirm">Delete account…</button>
+      </div>
     </div>
+    <ConfirmDialog
+      :open="confirmingDelete"
+      title="Delete your Academy account?"
+      confirm-label="Delete account permanently"
+      pending-label="Deleting…"
+      danger
+      :pending="deletePending"
+      :error="deleteError"
+      @confirm="handleDeleteAccount"
+      @cancel="confirmingDelete = false"
+    >
+      <p>
+        This permanently removes your Academy sign-in, attempts in every course, and stored reports. GitHub
+        issues are managed by your GitHub account and are not deleted here.
+      </p>
+      <p><strong>This cannot be undone.</strong></p>
+    </ConfirmDialog>
   </details>
 </template>
 
@@ -237,9 +341,71 @@ async function handleDeleteAccount() {
   justify-content: flex-start;
 }
 
-.user-nav-delete {
-  padding: 0.3rem 0.6rem;
+.sync-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.25rem 0.4rem;
+  color: var(--surface-fg-subtle);
   font-size: 0.75rem;
+}
+
+.sync-status.sync-synced {
+  color: var(--status-ok);
+}
+
+.sync-status.sync-failed {
+  color: var(--status-bad);
+}
+
+.sync-retry {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--surface-line-strong);
+  border-radius: var(--mctl-radius-md);
+  background: transparent;
+  color: var(--surface-fg);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.signin-status,
+.signin-error {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: min(18rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--status-bad);
+  border-radius: var(--mctl-radius-md);
+  background: var(--surface-elevated);
+  color: var(--surface-fg);
+  font-size: 0.8rem;
+  z-index: 1;
+}
+
+.signin-status {
+  border-color: var(--surface-line-strong);
+  color: var(--surface-fg-muted);
+}
+
+.user-nav-signin {
+  position: relative;
+}
+
+.account-danger {
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--surface-line);
+}
+
+.user-nav-delete {
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
   background: transparent;
   border: none;
   color: var(--surface-fg-subtle);
