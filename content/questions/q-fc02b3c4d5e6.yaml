@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc02b3c4d5e6
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/function-calling
 stem: You send a request with several tools defined but do not set
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-function-calling
     excerpt: The model automatically selects the most appropriate function based on
       the context of the prompt. This is the default behavior
-    source_sha256: e3bb6c330048d66059012799f2efda935f13cbc7a133b63712bc1b080bf7fa82
+    source_sha256: 3c770506260f162039fbed5fedba4859b91c27573f5f01b9f5013ac8cfcd4a2d
 authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 854758fb3879095d5d5c5c2af7850e729283151a56d8b8e0e857c14219da30e6

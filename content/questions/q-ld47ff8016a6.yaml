@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld47ff8016a6
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/structured-output
 stem: Which `response_format` setting should be used when the response must
@@ -28,12 +28,8 @@ evidence:
   - source_id: src-structured-output
     excerpt: '**JSON schema following.** Follows the specific schema you provide -
       `{"type": "json_schema"}` in `response_format `parameter.'
-    source_sha256: 2aa65140a13a0ccbac9613b891f0a1eba6418f6129408f084b8885e05c2f99f9
+    source_sha256: 486ddc93150b148fab7f3a667fcd096839b3971ca2daf896c44cd795422c4493
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 44a085141ebe3eba1589af08a2af341cb05a753bf03cb910dca952308439b60e

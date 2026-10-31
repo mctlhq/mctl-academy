@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld49a9908b5d
-status: published
+status: review_ready
 domain: domain-3
 objective: domain-3/tool-use
 stem: A model returns a tool call for a function your application defined. Who
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-function-calling
     excerpt: The model **does not execute** the functions itself. Instead, it
       outputs tool invocation instructions
-    source_sha256: e3bb6c330048d66059012799f2efda935f13cbc7a133b63712bc1b080bf7fa82
+    source_sha256: 3c770506260f162039fbed5fedba4859b91c27573f5f01b9f5013ac8cfcd4a2d
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 346858c2a18b22646e24be0904c457fcfa9817369070db5480e3136e8585ceea

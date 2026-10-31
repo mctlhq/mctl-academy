@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co29b9f076dc
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: A workload writes intermediate shards to a local SSD disk. The VM is
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-co-storage-types
     excerpt: 'Local SSD disks are ephemeral, meaning temporary: their data is erased
       when the VM is stopped or deleted.'
-    source_sha256: 5490f69ecc74bde28f2eace2089e9af2ae0fbac2f5d2f8df7d005d565f045b50
+    source_sha256: 79a494137f6a9864bb08b91eeb76a2356e658c8ac020b6d92166362ab8fc2a78
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 03e45bb010cae5de7427814904520a62487918f400483e862b6f3845613b928d

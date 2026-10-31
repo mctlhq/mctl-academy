@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld448ca61125
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/workflow-design
 stem: An architect asks how much control a dedicated endpoint gives over the
@@ -27,12 +27,8 @@ evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: Select GPU type and GPUs per replica to match your performance and
       throughput needs.
-    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
+    source_sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: d61866d0dc41909be7df9cbc55fa850a6f0b09ab6e14412c2ae9b74a86e20f4f

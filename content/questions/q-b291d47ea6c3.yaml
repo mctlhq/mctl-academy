@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b291d47ea6c3
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/supervised-fine-tuning
 stem: "After an Axolotl LoRA fine-tuning job on Nebius Serverless AI completes,
@@ -33,12 +33,8 @@ evidence:
   - source_id: src-pa-serverless-fine-tuning
     excerpt: "They are stored as files in the `output` directory, in the
       `fine-tuning-axolotl` bucket."
-    source_sha256: c0c45188041e47656be1ff97030b8766e7480447bc7b1c91bcb113105fc27636
+    source_sha256: 2c122b3f88484789a0a98ddb16d82ac261e64dc61dc1a78dcb61cd42a0aeb2c3
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: f97ed9f850a0cd6f34f75f124ef62aea5d0de5a4c900dead49d165b78c488fcf

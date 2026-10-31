@@ -2,15 +2,16 @@ schema_version: 1
 id: src-co-storage-manage
 url: https://docs.nebius.com/compute/storage/manage.md
 title: Managing Compute volumes
-retrieved_at: 2026-10-30T14:50:42Z
-sha256: d98febd2a2f7eeee8c55d35b291984f4e8bbcddef3837682a617a692d88e6fbb
+retrieved_at: 2026-10-31T01:34:03Z
+sha256: 4216decbf4110152e67697c00966e49ad6eda431216734ff3c8c85841222776d
 objectives:
   - domain-1/storage-volumes
 snapshot:
   bucket: academy-source-snapshots
-  key: d98febd2a2f7eeee8c55d35b291984f4e8bbcddef3837682a617a692d88e6fbb
+  key: 4216decbf4110152e67697c00966e49ad6eda431216734ff3c8c85841222776d
 status: current
 versions:
   - 515964839bc48c4e1571dda0c94247b73d183a2932c151faf5d16f201452730b
   - 481b636ee6e5dbda595d298c4e36b21be9acf0453fd67c48ea968b75161efd63
   - 366225c658d17d32d9a57b648aec42830802564479d1f922949f79ac5d00cee4
+  - d98febd2a2f7eeee8c55d35b291984f4e8bbcddef3837682a617a692d88e6fbb

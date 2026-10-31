@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld25f6d73083
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A team plans an application that must read screenshots and answer

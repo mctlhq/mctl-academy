@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld39cd7b5510
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/workflow-design
 stem: How is a dedicated endpoint deployment managed versus how inference
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: Use the control plane to create and manage deployments, and the data
       plane to run inference through OpenAI-compatible APIs.
-    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
+    source_sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: d80ba650256cc561fdbaad8024a3fe81fecbf554305f2140ad16d5b50343f6f8

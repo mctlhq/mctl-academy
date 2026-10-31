@@ -2,14 +2,15 @@ schema_version: 1
 id: src-recovery-quickstart
 url: https://docs.tokenfactory.nebius.com/quickstart.md
 title: Quickstart
-retrieved_at: 2026-10-30T14:51:32Z
-sha256: c5cd2fedff5f96353b54925393a78f6306a011b49a3b4009cb0c0a1601191747
+retrieved_at: 2026-10-31T01:34:27Z
+sha256: f59ae66f965fb0d6479e3445d0bbfb7ba541aba00b2869a26aac72501f743c4c
 objectives:
   - domain-1/api-authentication
   - domain-1/openai-compatibility
 snapshot:
   bucket: academy-source-snapshots
-  key: c5cd2fedff5f96353b54925393a78f6306a011b49a3b4009cb0c0a1601191747
+  key: f59ae66f965fb0d6479e3445d0bbfb7ba541aba00b2869a26aac72501f743c4c
 status: current
 versions:
   - 0f19649b34136e8368bfc617dbfd9e595dc21568f25d05315f63600b3eaa4765
+  - c5cd2fedff5f96353b54925393a78f6306a011b49a3b4009cb0c0a1601191747

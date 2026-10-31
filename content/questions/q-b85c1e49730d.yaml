@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b85c1e49730d
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/observability-tracing
 stem: "By default, what happens to the underlying VM when a Serverless AI job,
@@ -32,12 +32,8 @@ evidence:
   - source_id: src-pa-serverless-failure
     excerpt: "Serverless AI deletes the underlying virtual machine (VM) and boot
       disk to avoid costs."
-    source_sha256: 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
+    source_sha256: 3d60391ecac64db39de0b79c22881f0611bc7a53ae94acc1072deca9a5ae48a1
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: becd88cfa26d8c3092edb025155654f36d033b17705c3d73c79cba417301ce44

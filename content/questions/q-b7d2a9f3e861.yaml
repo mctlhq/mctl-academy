@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b7d2a9f3e861
-status: published
+status: review_ready
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: "Sandboxes lets you choose to save or discard filesystem changes before an
@@ -37,12 +37,8 @@ evidence:
     excerpt: "Choose whether to save filesystem changes before submitting an
       operation. Every operation starts fresh compute, regardless of that
       choice."
-    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+    source_sha256: a36a9f7b537bc69420647ae4a9bcb66a2fcc06f00dba100cc9d444de2d8460eb
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: a3ac223a8ce636fe4269d29bee6ab9008b33ac90bcde517200dbdeed0db3b6bb

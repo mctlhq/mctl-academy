@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co285d098105
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/network-vpc
 stem: Two security rules in one group match the same packet with conflicting
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-co-vpc-security-groups
     excerpt: '`.spec.priority`: Priority of the rule. 1 is the highest priority,
       1000 is the lowest.'
-    source_sha256: 44d350603697ea635267c7a4cd362b43e06d637c8e6df8a2c365a9c31ce22422
+    source_sha256: 6911c3fce9dafe694208091b7e334dbc59512811d65843e51706d6d86ee83a5f
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: ba8daaae654be9d8675d5884c44d794cc5ec24e0258467d1e5d7f8260d2c2ba0

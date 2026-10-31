@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld31ea78838c
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/inference-basics
 stem: A developer asks how to send traffic to the Fast flavor of a model from
@@ -25,12 +25,8 @@ options:
 evidence:
   - source_id: src-inference-overview
     excerpt: To use the Fast flavor, append `-fast` to the model name in the
-    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
+    source_sha256: 809f09767c6e191014dde70b0f6028661704d3d8edadd291ec0b4c3a836a4b4d
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 5f64e82d7d5de55186673021335360a58eee942f5bce809c7012737da7f69599

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sb03c1d2e3f4
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: How should environment variables containing secret API keys be passed to
@@ -28,7 +28,7 @@ evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
+    source_sha256: 809f09767c6e191014dde70b0f6028661704d3d8edadd291ec0b4c3a836a4b4d
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z

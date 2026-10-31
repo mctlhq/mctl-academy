@@ -2,14 +2,15 @@ schema_version: 1
 id: src-recovery-endpoint
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md
 title: Dedicated endpoints
-retrieved_at: 2026-10-30T14:51:24Z
-sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
+retrieved_at: 2026-10-31T01:34:23Z
+sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
 objectives:
   - domain-4/dedicated-endpoints
 snapshot:
   bucket: academy-source-snapshots
-  key: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
+  key: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
 status: current
 versions:
   - c6d5d66b98f54c5d3434ec287211d926df4b4e44aa1c7f0165640c6376af4785
   - f5a18af6f4da8470c7021c6727675a0aea7b465750f62a2f1a794f9e4e490db3
+  - 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d

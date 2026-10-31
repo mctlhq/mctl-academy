@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co2738f2a8fd
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/network-vpc
 stem: An engineer created a security group with the intended rules, but the VM's
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-co-vpc-security-groups
     excerpt: For a security group to apply to a VM, you need to add a VM's network
       interface to the security group.
-    source_sha256: 44d350603697ea635267c7a4cd362b43e06d637c8e6df8a2c365a9c31ce22422
+    source_sha256: 6911c3fce9dafe694208091b7e334dbc59512811d65843e51706d6d86ee83a5f
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 091c8c8e117031412fa22e28efbb64104412daa4fd53f460eefc1cffb301f706

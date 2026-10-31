@@ -2,13 +2,14 @@ schema_version: 1
 id: src-supervised-fine-tuning
 url: https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md
 title: Supervised Fine-Tuning
-retrieved_at: 2026-10-30T14:51:37Z
-sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+retrieved_at: 2026-10-31T01:34:31Z
+sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
 objectives:
   - domain-3/supervised-fine-tuning
 snapshot:
   bucket: academy-source-snapshots
-  key: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+  key: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
 status: current
 versions:
   - aa7525c6e063377138a15f2998debdce1acce187fa1e3b684cc65f49639c89da
+  - 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96

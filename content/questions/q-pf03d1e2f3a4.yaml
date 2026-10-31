@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf03d1e2f3a4
-status: published
+status: review_ready
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: How do Fast model flavors differ from standard model flavors in Nebius
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
+    source_sha256: 809f09767c6e191014dde70b0f6028661704d3d8edadd291ec0b4c3a836a4b4d
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 849ace8a983635ed33306fe32ecc3725f307ed2c1d1e523dc4488e85764797ce

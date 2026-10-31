@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7c4a9f1d3e85
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/inference-setup
 stem: "What is the difference between stopping a Serverless AI endpoint and
@@ -36,7 +36,7 @@ evidence:
   - source_id: src-pa-serverless-endpoints
     excerpt: "When you delete an endpoint, Serverless AI automatically deletes its
       VM and container (boot) disk."
-    source_sha256: 32d1fc4dfc86d9ef59f6e4f465dedfa036aa2b58a2365944c7ce79d3c54da5a9
+    source_sha256: 10e090bf9fefb439a8f6fc340bfd203f0fc83bb001ae3e570f4fd34ce4c72cc5
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z

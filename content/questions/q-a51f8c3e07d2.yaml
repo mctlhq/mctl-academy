@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a51f8c3e07d2
-status: published
+status: review_ready
 domain: domain-4
 objective: domain-4/billing-and-consumption
 stem: With a bank card as the payment method, when is the card automatically charged?
@@ -29,15 +29,11 @@ options:
 evidence:
   - source_id: src-recovery-consumption
     excerpt: At the start of the month, if your balance is negative
-    source_sha256: 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e
+    source_sha256: efdc0dc2c9fe02d1cd408f9389217723b6e0c789ba95676457ce7b62c7744666
   - source_id: src-recovery-consumption
     excerpt: When the configured billing threshold is reached
-    source_sha256: 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e
+    source_sha256: efdc0dc2c9fe02d1cd408f9389217723b6e0c789ba95676457ce7b62c7744666
 authored:
   by: agent:claude-author
   at: 2026-09-12T22:44:56Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: eee99b798eb9a86383fcfcab8373142e86f2c88139f354701a307eda59348a0f
