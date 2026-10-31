@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.68](https://github.com/mctlhq/mctl-academy/compare/0.1.67...0.1.68) (2026-10-31)
+
+
+### Bug Fixes
+
+* **deps:** bump @mctlhq/ui to 0.19.0 ([2fc3166](https://github.com/mctlhq/mctl-academy/commit/2fc316694f5a85b9ca038114d5871ad4470a084e))
+* **deps:** bump @mctlhq/ui to 0.19.0 ([6f237bf](https://github.com/mctlhq/mctl-academy/commit/6f237bfcc0ccdfbc61fe98a3a8b2ec31f5ce8f33))
+
 ## [0.1.67](https://github.com/mctlhq/mctl-academy/compare/0.1.66...0.1.67) (2026-10-31)
 
 
