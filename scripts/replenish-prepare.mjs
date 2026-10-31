@@ -41,19 +41,25 @@
  *       the decisions scoped to them. With --base the scope is recomputed from
  *       the diff rather than read from a file an agent ran beside; given both,
  *       a disagreement between them is itself an error.
+ *   set-aside-unverified --base <git ref> [--out set-aside.json]
+ *       Delete each question file created since the base whose evidence fails
+ *       verification for a reason of its own (see unverifiedNewItems), so one
+ *       bad excerpt costs that item and not the whole batch. Anything else the
+ *       verifier reports is left in place for the gate that runs next.
  *   demote <q-id> ...
  *       status -> needs_review and drop `reviewed` (a rejected re-validation).
  *   pr-body --candidates c.json --receipt r.json --captured <id,...> [--selected s.json]
  *           [--dropped d.json] [--before b.json --after a.json] [--max n]
  *       Print the generated section of the pull request body.
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, parseDocument, isSeq } from "yaml";
 import { courseObjectives, loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
 import { storeFromEnv } from "./lib/snapshot-store.mjs";
+import { verifyEvidence } from "./verify-evidence.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT = process.env.ACADEMY_CONTENT_DIR
@@ -248,6 +254,57 @@ export function boundaryProblems({ base, cwd = process.cwd(), strict = false, al
     problems.push(`${f} was created outside ${area}`);
   }
   return problems;
+}
+
+/**
+ * Whether a path existed at the base. An unresolvable base throws instead of
+ * answering "no": that answer would make every file look newly created, and
+ * set-aside-unverified deletes what it believes is new.
+ */
+export function existsAtRef({ base, file, cwd = process.cwd() }) {
+  try {
+    git(["rev-parse", "--verify", "--quiet", `${base}^{commit}`], cwd);
+  } catch {
+    throw new Error(`base ${base} does not resolve to a commit`);
+  }
+  try {
+    git(["cat-file", "-e", `${base}:${file}`], cwd);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Which evidence failures may be settled by setting the item aside.
+ *
+ * Only a file this run CREATED, and only when every failure on it is a
+ * "citation" failure -- the item's own fault. A file that existed at the base
+ * is someone's earlier work (a re-validated needs_review item, a rewrite), and
+ * deleting it would lose that work rather than decline new work; a "store"
+ * failure says the snapshot could not be read, which proves nothing about the
+ * item and must keep failing the run. A failure with no file (an unconfigured
+ * store) is never settled here either.
+ *
+ * @param {object} args
+ * @param {{file?: string, kind: string, message: string}[]} args.failures
+ * @param {(file: string) => boolean} args.created
+ * @returns {{file: string, reasons: string[]}[]} sorted by file
+ */
+export function unverifiedNewItems({ failures, created }) {
+  const byFile = new Map();
+  for (const f of failures) {
+    if (!f.file) continue;
+    if (!byFile.has(f.file)) byFile.set(f.file, []);
+    byFile.get(f.file).push(f);
+  }
+  return [...byFile.entries()]
+    .filter(
+      ([file, fs]) =>
+        file.startsWith("content/questions/") && fs.every((f) => f.kind === "citation") && created(file),
+    )
+    .map(([file, fs]) => ({ file, reasons: fs.map((f) => f.message) }))
+    .sort((a, b) => a.file.localeCompare(b.file));
 }
 
 export function statusAtRef({ base, file, cwd = process.cwd() }) {
@@ -685,6 +742,21 @@ async function main(argv) {
     if (problems.length) process.exit(1);
     writeFileSync(opt(args, "out"), JSON.stringify(decisions, null, 2));
     console.log(`${decisions.length} decision(s) scoped to the items under review`);
+    return;
+  }
+  if (cmd === "set-aside-unverified") {
+    const base = opt(args, "base");
+    if (!base) throw new Error("set-aside-unverified needs --base");
+    const store = storeFromEnv();
+    if (!store) throw new Error("snapshot store is not configured");
+    const { failures } = await verifyEvidence({ contentDir: CONTENT, store });
+    const setAside = unverifiedNewItems({ failures, created: (file) => !existsAtRef({ base, file }) });
+    for (const { file, reasons } of setAside) {
+      rmSync(join(CONTENT, file.slice("content/".length)));
+      console.error(`::warning::set aside ${file}: ${reasons.join("; ")}`);
+    }
+    writeFileSync(opt(args, "out") ?? "set-aside.json", JSON.stringify(setAside, null, 2));
+    console.log(`${setAside.length} newly authored item(s) set aside for unverifiable evidence`);
     return;
   }
   if (cmd === "demote") {

@@ -2809,6 +2809,19 @@ jobs:
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
           node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now --author "$AUTHOR_ID"
+          # One excerpt that is not verbatim in its snapshot used to discard the
+          # whole batch: runs 41154427966 and 41182515452 (2026-10-31) each lost
+          # 19 good items to one bad citation. A NEW item whose own citation
+          # fails is deleted here instead; everything else the verifier can
+          # report -- an unreadable snapshot, a failing item that existed at the
+          # base -- still fails the run on the verify-evidence call below.
+          node scripts/replenish-prepare.mjs set-aside-unverified --base "${{ steps.base.outputs.sha }}" --out _run/set-aside.json
+          if [ "$(jq length _run/set-aside.json)" != "0" ]; then
+            {
+              echo "### Set aside for unverifiable evidence"
+              jq -r '.[] | "- `\(.file)`: \(.reasons | join("; "))"' _run/set-aside.json
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
           bun run lint:content
           node scripts/verify-evidence.mjs
           bun run test:content

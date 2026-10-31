@@ -31,6 +31,8 @@ import {
   demote,
   prBody,
   knownObjectives,
+  unverifiedNewItems,
+  existsAtRef,
 } from "../scripts/replenish-prepare.mjs";
 import {
   mergeVersions,
@@ -2898,5 +2900,58 @@ test("fetchSource refuses a redirect onto a pinned commit it did not verify", as
       (url) => (url.startsWith("https://api.github.com/") ? url : other),
     );
     assert.match(String(result), /redirected to .* unverified commit/, from);
+  }
+});
+
+test("unverifiedNewItems sets aside only new items whose own citations fail", () => {
+  const created = (file) => file.includes("new");
+  const failures = [
+    {
+      file: "content/questions/q-new000000001.yaml",
+      kind: "citation",
+      message: "excerpt not found verbatim",
+    },
+    {
+      file: "content/questions/q-new000000002.yaml",
+      kind: "citation",
+      message: "excerpt not found verbatim",
+    },
+    { file: "content/questions/q-new000000002.yaml", kind: "store", message: "snapshot unreachable" },
+    {
+      file: "content/questions/q-nrv000000001.yaml",
+      kind: "citation",
+      message: "excerpt not found verbatim",
+    },
+    { file: "content/lessons/l-new000000001.yaml", kind: "citation", message: "excerpt not found verbatim" },
+    { kind: "store", message: "snapshot store is not configured" },
+  ];
+  assert.deepEqual(unverifiedNewItems({ failures, created }), [
+    { file: "content/questions/q-new000000001.yaml", reasons: ["excerpt not found verbatim"] },
+  ]);
+  assert.deepEqual(unverifiedNewItems({ failures: [], created }), []);
+});
+
+test("existsAtRef tells a file created since the base from one that was there", () => {
+  const { dir, run } = gitRepo();
+  try {
+    writeFileSync(
+      join(dir, "content", "questions", "q-old000000001.yaml"),
+      yaml(q("q-old000000001", "needs_review", "src-a")),
+    );
+    run(["add", "-A"]);
+    run(["commit", "-q", "-m", "base"]);
+    const base = run(["rev-parse", "HEAD"]).trim();
+    writeFileSync(
+      join(dir, "content", "questions", "q-new000000001.yaml"),
+      yaml(q("q-new000000001", "review_ready", "src-a")),
+    );
+    assert.equal(existsAtRef({ base, file: "content/questions/q-old000000001.yaml", cwd: dir }), true);
+    assert.equal(existsAtRef({ base, file: "content/questions/q-new000000001.yaml", cwd: dir }), false);
+    assert.throws(
+      () => existsAtRef({ base: "0".repeat(40), file: "content/questions/q-old000000001.yaml", cwd: dir }),
+      /does not resolve to a commit/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });

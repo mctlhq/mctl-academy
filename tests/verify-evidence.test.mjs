@@ -228,3 +228,25 @@ test("normalize collapses whitespace without folding case or punctuation", () =>
   assert.equal(normalize("A-B"), "A-B");
   assert.equal(normalize("Abc"), "Abc");
 });
+
+test("charges a bad excerpt to the item and an unreadable snapshot to the store", async () => {
+  const bad = await run({
+    items: [
+      item({
+        evidence: [
+          { source_id: "src-fn-calling", source_sha256: DOC_HASH, excerpt: "lets a model invent tools" },
+        ],
+      }),
+    ],
+  });
+  assert.deepEqual(
+    bad.failures.map((f) => [f.file, f.kind]),
+    [["content/questions/q0.yaml", "citation"]],
+  );
+  const unreadable = await run({ objects: { [DOC_HASH]: new Error("store unreachable") } });
+  assert.deepEqual(
+    unreadable.failures.map((f) => [f.file, f.kind]),
+    [["content/questions/q0.yaml", "store"]],
+  );
+  assert.equal(unreadable.errors.length, unreadable.failures.length);
+});
