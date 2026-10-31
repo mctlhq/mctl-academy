@@ -37,6 +37,43 @@
     }
   },
   {
+    "id": "agentic-web-search",
+    "title": "Agentic Web Search",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 20,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Foundations of agentic web search",
+          "weight": 15,
+          "mockQuestions": 3
+        },
+        {
+          "id": "domain-2",
+          "title": "Search and Extract",
+          "weight": 35,
+          "mockQuestions": 7
+        },
+        {
+          "id": "domain-3",
+          "title": "Crawl, Map and agent integrations",
+          "weight": 25,
+          "mockQuestions": 5
+        },
+        {
+          "id": "domain-4",
+          "title": "Production operations and reliability",
+          "weight": 25,
+          "mockQuestions": 5
+        }
+      ]
+    }
+  },
+  {
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
     "publishedQuestionCount": 40,
