@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.66](https://github.com/mctlhq/mctl-academy/compare/0.1.65...0.1.66) (2026-10-31)
+
+
+### Bug Fixes
+
+* **app:** wait for the session before rendering the mock exam ([8562600](https://github.com/mctlhq/mctl-academy/commit/856260028f4d595f927d20bd9a64ccd9be4208cf))
+* **progress:** keep the attempt log per account on the device ([e51f99a](https://github.com/mctlhq/mctl-academy/commit/e51f99a6ee9353b16823d2cca4cd29142803e110))
+* **progress:** keep the attempt log per account on the device ([47aad5b](https://github.com/mctlhq/mctl-academy/commit/47aad5b0f679f385a826895af5323167d3292808)), closes [#403](https://github.com/mctlhq/mctl-academy/issues/403)
+
 ## [0.1.65](https://github.com/mctlhq/mctl-academy/compare/0.1.64...0.1.65) (2026-10-31)
 
 
