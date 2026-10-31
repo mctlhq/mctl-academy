@@ -564,6 +564,12 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font-family: var(--font-mono);
   font-size: 0.75rem;
 }
+/* A flex item will not shrink below its min-content width by default, so a
+   long unbroken code span (an API path) would be clipped by the li's
+   overflow: hidden instead of wrapping. */
+.option-text {
+  min-width: 0;
+}
 .options.answered li:not(.correct):not(.incorrect) {
   opacity: 0.6;
   transition: opacity 0.15s;

@@ -168,3 +168,25 @@ test("a fully solved bank offers repetition instead of claiming content is missi
   await page.getByRole("link", { name: "Repeat all", exact: true }).click();
   await expect(page.locator(".stem")).toBeVisible();
 });
+
+test("long inline code in an option wraps instead of being clipped at 375px", async ({ page }) => {
+  // The option button is a flex row (keycap + text); without min-width: 0
+  // on the text, an unbroken API path is cut off by the li's overflow: hidden.
+  await page.setViewportSize({ width: 375, height: 844 });
+  await page.goto("/practice?mode=all");
+  for (let i = 0; i < bank.length; i++) {
+    await expect(page.locator(".stem")).toBeVisible();
+    const clipped = await page
+      .locator(".options button")
+      .evaluateAll(
+        (buttons) =>
+          buttons.filter((b) =>
+            [...b.querySelectorAll(".option-text")].some(
+              (t) => t.getBoundingClientRect().right > b.getBoundingClientRect().right + 1,
+            ),
+          ).length,
+      );
+    expect(clipped, `question ${i + 1}`).toBe(0);
+    await page.getByRole("button", { name: /^Skip/ }).click();
+  }
+});
