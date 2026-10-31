@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-tv-api-search
+url: https://docs.tavily.com/documentation/api-reference/endpoint/search.md
+title: Tavily Search API reference
+retrieved_at: 2026-10-31T01:11:34Z
+sha256: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
+objectives:
+  - domain-2/search-parameters
+  - domain-2/response-fields
+  - domain-3/call-error-handling
+snapshot:
+  bucket: academy-source-snapshots
+  key: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
+status: current

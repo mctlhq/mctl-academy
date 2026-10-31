@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-tv-bp-crawl
+url: https://docs.tavily.com/documentation/best-practices/best-practices-crawl.md
+title: Tavily Crawl best practices
+retrieved_at: 2026-10-31T01:11:42Z
+sha256: c1bb581747d2e632300c2691fd931478fa0918d7a923b818c10883059de8ed43
+objectives:
+  - domain-3/crawl-parameters
+  - domain-3/crawl-scope
+  - domain-3/endpoint-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: c1bb581747d2e632300c2691fd931478fa0918d7a923b818c10883059de8ed43
+status: current

@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-bp-search
+url: https://docs.tavily.com/documentation/best-practices/best-practices-search.md
+title: Tavily Search best practices
+retrieved_at: 2026-10-31T01:11:40Z
+sha256: e68ed528e037a62638367faebd53116f287b63fb87b7a0c98635a5e0bb282a6d
+objectives:
+  - domain-2/search-parameters
+  - domain-1/source-quality
+snapshot:
+  bucket: academy-source-snapshots
+  key: e68ed528e037a62638367faebd53116f287b63fb87b7a0c98635a5e0bb282a6d
+status: current

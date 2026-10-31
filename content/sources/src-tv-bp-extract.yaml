@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-bp-extract
+url: https://docs.tavily.com/documentation/best-practices/best-practices-extract.md
+title: Tavily Extract best practices
+retrieved_at: 2026-10-31T01:11:41Z
+sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
+objectives:
+  - domain-2/search-extract-pipelines
+  - domain-2/extraction-recovery
+snapshot:
+  bucket: academy-source-snapshots
+  key: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
+status: current

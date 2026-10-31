@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-tut-extract
+url: https://docs.tavily.com/examples/quick-tutorials/extract-api.md
+title: Clean Content Extraction
+retrieved_at: 2026-10-31T01:11:49Z
+sha256: 2aee3dfcc57cf52c91b7124a0e0f7ba6cf5d117968052a444c4f049830d145eb
+objectives:
+  - domain-2/search-extract-pipelines
+  - domain-2/extraction-recovery
+snapshot:
+  bucket: academy-source-snapshots
+  key: 2aee3dfcc57cf52c91b7124a0e0f7ba6cf5d117968052a444c4f049830d145eb
+status: current

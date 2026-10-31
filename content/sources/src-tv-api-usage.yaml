@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-api-usage
+url: https://docs.tavily.com/documentation/api-reference/endpoint/usage.md
+title: Tavily Usage API reference
+retrieved_at: 2026-10-31T01:11:39Z
+sha256: 23185c233be1e68ca143a408e3d91c1cc74584857ceebef5d1f3fd31cd1d249f
+objectives:
+  - domain-4/credit-monitoring
+snapshot:
+  bucket: academy-source-snapshots
+  key: 23185c233be1e68ca143a408e3d91c1cc74584857ceebef5d1f3fd31cd1d249f
+status: current

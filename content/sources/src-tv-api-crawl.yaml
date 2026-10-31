@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-api-crawl
+url: https://docs.tavily.com/documentation/api-reference/endpoint/crawl.md
+title: Tavily Crawl API reference
+retrieved_at: 2026-10-31T01:11:36Z
+sha256: 9d66f4d92a844a2e2579ecb3e63e29db39bec22b4728abb87c58e6b61e927778
+objectives:
+  - domain-3/crawl-parameters
+  - domain-3/crawl-scope
+snapshot:
+  bucket: academy-source-snapshots
+  key: 9d66f4d92a844a2e2579ecb3e63e29db39bec22b4728abb87c58e6b61e927778
+status: current

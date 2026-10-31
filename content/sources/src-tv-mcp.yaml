@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-mcp
+url: https://docs.tavily.com/documentation/mcp.md
+title: Connect to Tavily via MCP
+retrieved_at: 2026-10-31T01:11:45Z
+sha256: b001ca6c15cc540e002419e0c8e4fdb15861113cd620f66ee2b6777c55b5f034
+objectives:
+  - domain-3/mcp-integration
+snapshot:
+  bucket: academy-source-snapshots
+  key: b001ca6c15cc540e002419e0c8e4fdb15861113cd620f66ee2b6777c55b5f034
+status: current

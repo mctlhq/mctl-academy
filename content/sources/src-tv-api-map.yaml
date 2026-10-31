@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-api-map
+url: https://docs.tavily.com/documentation/api-reference/endpoint/map.md
+title: Tavily Map API reference
+retrieved_at: 2026-10-31T01:11:38Z
+sha256: ffcb4bbf4b1c25055660e81be8c806d4ff601a8b58633c41566e9c71914cb773
+objectives:
+  - domain-3/map-usage
+  - domain-3/crawl-scope
+snapshot:
+  bucket: academy-source-snapshots
+  key: ffcb4bbf4b1c25055660e81be8c806d4ff601a8b58633c41566e9c71914cb773
+status: current

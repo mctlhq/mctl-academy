@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-api-headers
+url: https://docs.tavily.com/documentation/api-headers.md
+title: Tavily Headers and Authentication
+retrieved_at: 2026-10-31T01:11:33Z
+sha256: 7bf893aed5d020d3df2a0edf08a65b20b1e027a6996659cc8779fab69353bbb4
+objectives:
+  - domain-4/api-key-auth
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7bf893aed5d020d3df2a0edf08a65b20b1e027a6996659cc8779fab69353bbb4
+status: current
