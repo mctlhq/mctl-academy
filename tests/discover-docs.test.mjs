@@ -11,9 +11,12 @@ import {
   rankPages,
   discover,
   fetchText,
+  isFetchableUrl,
+  LLMS_INDICES,
   DISCOVERY_STATE_HEADER,
 } from "../scripts/discover-docs.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
+import { isAllowedSourceUrl } from "../scripts/lib/content-model.mjs";
 
 const OLD = "# Quotas\n\nDefault limit is 10 GPUs per project.\n";
 const NEW = "# Quotas\n\nDefault limit is 20 GPUs per project.\n";
@@ -113,6 +116,27 @@ test("parseLlmsIndex keeps allowlisted .md pages once, drops other hosts and non
   );
   assert.equal(pages[0].description, "Welcome");
   assert.equal(pages[1].description, "");
+});
+
+// The Tavily index lists its own pages next to third-party integration and
+// partnership pages; only the reviewed scope may be offered as a source.
+test("parseLlmsIndex keeps in-scope Tavily pages and drops its integrations", () => {
+  const pages = parseLlmsIndex(
+    [
+      "- [Rate Limits](https://docs.tavily.com/documentation/rate-limits.md): Limits",
+      "- [Search](https://docs.tavily.com/documentation/api-reference/endpoint/search.md)",
+      "- [LangChain](https://docs.tavily.com/documentation/integrations/langchain.md): Integration",
+      "- [Azure](https://docs.tavily.com/documentation/partnerships/azure.md): Partner",
+      "- [Changelog](https://docs.tavily.com/changelog.md)",
+    ].join("\n"),
+  );
+  assert.deepEqual(
+    pages.map((p) => p.url),
+    [
+      "https://docs.tavily.com/documentation/rate-limits.md",
+      "https://docs.tavily.com/documentation/api-reference/endpoint/search.md",
+    ],
+  );
 });
 
 test("newPages excludes known and ignored urls and orders by first-seen date", () => {
@@ -535,6 +559,38 @@ function fetchLandingOn(url) {
   Object.defineProperty(res, "url", { value: url });
   return /** @type {typeof fetch} */ (/** @type {unknown} */ (async () => res));
 }
+
+// docs.tavily.com's pathPattern admits only scoped `.md` pages, so its own
+// llms.txt is not an allowlisted source; discovery must still be able to
+// fetch every index it polls, and only those exact URLs.
+test("every polled index passes the fetch guard without becoming a citable source", async () => {
+  for (const index of LLMS_INDICES) assert.ok(isFetchableUrl(index), index);
+  assert.ok(!isAllowedSourceUrl("https://docs.tavily.com/llms.txt"));
+  assert.ok(!isFetchableUrl("https://docs.tavily.com/llms-full.txt"));
+  const real = globalThis.fetch;
+  try {
+    globalThis.fetch = fetchLandingOn("https://docs.tavily.com/llms.txt");
+    assert.equal(await fetchText("https://docs.tavily.com/llms.txt"), "body");
+    globalThis.fetch = fetchLandingOn("https://docs.tavily.com/llms-full.txt");
+    await assert.rejects(fetchText("https://docs.tavily.com/llms.txt"), /outside the SOURCES.md allowlist/);
+  } finally {
+    globalThis.fetch = real;
+  }
+});
+
+test("rankPages puts Tavily pages first for an Agentic Web Search gap", () => {
+  const pages = [
+    { url: "https://docs.nebius.com/compute/gpus.md", host: "docs.nebius.com", first_seen: "2026-09-01" },
+    { url: "https://docs.tavily.com/faq/faq.md", host: "docs.tavily.com", first_seen: "2026-10-31" },
+  ];
+  const gaps = [
+    { course: "agentic-web-search", kind: "objective", objective: "domain-4/x", published: 0, needed: 3 },
+  ];
+  assert.deepEqual(
+    rankPages(pages, gaps).map((p) => p.host),
+    ["docs.tavily.com", "docs.nebius.com"],
+  );
+});
 
 test("fetchText refuses a redirect out of the allowlisted path prefix", async () => {
   const real = globalThis.fetch;

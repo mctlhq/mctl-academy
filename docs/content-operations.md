@@ -21,7 +21,7 @@ Two workflows in this repository run every Monday:
 
 `Content replenish` (`.github/workflows/content-replenish.yml`) has three jobs:
 
-1. **discover** — `scripts/discover-docs.mjs` parses both `llms.txt` indices,
+1. **discover** — `scripts/discover-docs.mjs` parses the three `llms.txt` indices (Token Factory, AI Cloud, Tavily),
    lists pages nothing in `content/` cites (ranked toward objectives with gaps
    and each course's primary host), re-checks recorded sources against their
    live bytes, classifies each drifted one with `scripts/detect-docs-delta.mjs`

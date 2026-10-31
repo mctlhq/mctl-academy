@@ -12,6 +12,7 @@ unpublished rather than being covered from general knowledge.
 | `docs.nebius.com` | Public AI Cloud documentation — GPU compute and clusters, Managed Service for Kubernetes, block/shared/object storage, VPC networking and security groups, IAM, projects and federations, Observability (metrics, dashboards, alerts, logs), quotas and limits, node lifecycle and troubleshooting | Snapshot to private R2 | 2026-08-06 |
 | `huggingface.co/docs/lerobot/` (this path prefix only) | Public LeRobot documentation — dataset format and recording, teleoperation, training and fine-tuning robot policies (including VLA policies and PEFT), simulation environments, policy evaluation and deployment. The rest of `huggingface.co` (other libraries' docs, model and dataset cards, the blog, forums) is out of scope | Snapshot to private R2 | 2026-10-18 |
 | `raw.githubusercontent.com/nebius/nebius-physical-ai/<commit>/docs/` (pinned commit; listed pages only) | Nebius-published Physical AI workbench guides and cookbooks — simulation assets and digital twins, scan-to-simulation and neural reconstruction, synthetic and augmented robot data, robot policy training and serving, composing AI Cloud with Token Factory. In scope: `docs/quickstart.md`, `docs/workbench/guides/*.md`, `docs/workbench/cookbooks/*.md` (one level) and `docs/workbench/composing-cloud-and-token-factory.md`. Out of scope: everything else in the repository, including `evidence/` trees, dated results and validation reports, architecture plans and the CLI reference | Snapshot to private R2 | 2026-10-18 |
+| `docs.tavily.com` (scoped paths only) | Public Tavily documentation — Search, Extract, Crawl, Map and Research API reference, headers and authentication, credits and pricing, rate limits, keyless use, API key management and enterprise key endpoints, best practices, MCP server, CLI and agent skills, Python and JavaScript SDK references, examples and tutorials, FAQ. Out of scope: third-party integration and partnership pages, machine payments, the changelog and the OpenAPI JSON | Snapshot to private R2 | 2026-10-31 |
 
 The LeRobot row was added 2026-10-18 for robotics and robot-learning
 workflows that no Nebius page documents. Its retention review: the
@@ -51,13 +52,29 @@ source `deprecated`, not for waiting. Questions from these pages test the workfl
 describe, not flags of the repository's `npa` CLI, which is unversioned and
 changes without notice.
 
+The `docs.tavily.com` row was added 2026-10-31 for the Agentic Web Search
+course, whose certification is built on the Tavily API. **Its retention review
+did not pass on the terms alone; the row is an owner risk acceptance.** The
+Tavily Website Terms of Use (updated 2025-11-24) cover the site's subdomains,
+which includes `docs.tavily.com`, and they forbid copying site content without
+prior written consent; a private snapshot is a copy. The owner accepted that
+residual risk on 2026-10-31, on the reasoning `LEGAL.md` already applies to
+Nebius: excerpts are at most 25 words with attribution, snapshots are private
+and never served, Tavily publishes an `llms.txt` index addressed to agents and
+describes itself there as part of the Nebius product portfolio, and the Nebius
+certification page lists this documentation as recommended learning. If Tavily
+objects, every `docs.tavily.com` source is marked `deprecated`, which withdraws
+its questions on the next deploy. The site serves a `.md` twin of every page
+and its `llms.txt` is polled by discovery like the two Nebius indices. Scope is
+enforced by `pathPattern` in `ALLOWED_SOURCES`, so an out-of-scope page fails
+the lint and is never offered by discovery.
+
 Scope widened 2026-08-16 (no new hosts) to cover the page families the CloudOps
 and Leader banks are authored from. Retention terms were re-confirmed for both
 hosts at that time; the pages captured are the same public documentation already
 covered by the original 2026-08-06 review.
 
 ### Candidates under review
-- `docs.tavily.com`: Recommended learning on public certification pages for web search tool integration. Currently **pending retention review** before any content cites it.
 - `docs.nvidia.com` (Cosmos, OSMO) and `docs.isaacsim.omniverse.nvidia.com` / `isaac-sim.github.io/IsaacLab` (Isaac Sim, Isaac Lab): simulation, synthetic data and robot training tooling. Currently **pending retention review**: the pages are marked "All rights reserved" rather than openly licensed, and the Isaac sites serve no `.md` twin, so a snapshot would hash navigation chrome as well as content.
 
 ## Course-specific source priority matrix
@@ -66,12 +83,14 @@ Source priorities are scoped per course, reflecting the public exam bounds:
 
 | Course | Primary Source | Secondary Source | Excluded by default |
 |---|---|---|---|
-| **Agentic AI Builder** (`agentic-ai-builder`) | `docs.tokenfactory.nebius.com` | `docs.tavily.com` (pending review) | `docs.nebius.com` infrastructure details |
+| **Agentic AI Builder** (`agentic-ai-builder`) | `docs.tokenfactory.nebius.com` | `docs.tavily.com` | `docs.nebius.com` infrastructure details |
 | **AI CloudOps Engineer** (`ai-cloudops-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Non-cloud developer SDKs |
 | **AI Leader** (`ai-leader`) | `docs.tokenfactory.nebius.com` | `docs.nebius.com` (high-level only) | AI Cloud deployment details |
+| **Agentic Web Search** (`agentic-web-search`) | `docs.tavily.com` | `docs.tokenfactory.nebius.com` | `docs.nebius.com` infrastructure details |
 | **Physical AI** (`physical-ai`) | `docs.nebius.com` | `huggingface.co/docs/lerobot/`, `nebius/nebius-physical-ai` (pinned guides), `docs.tokenfactory.nebius.com` | Other `huggingface.co` docs; the rest of `nebius/nebius-physical-ai` |
 
 `huggingface.co/docs/lerobot/` and `nebius/nebius-physical-ai` are sources for the Physical AI course only.
+`docs.tavily.com` is primary for Agentic Web Search and secondary for Agentic AI Builder.
 
 ## Discovery & Change Sync (`Nebius Docs Sync`)
 
@@ -79,10 +98,11 @@ Discovery of canonical documentation is driven directly by official Nebius endpo
 
 1. **`https://docs.tokenfactory.nebius.com/llms.txt`**: Canonical index for Token Factory documentation.
 2. **`https://docs.nebius.com/llms.txt`**: Canonical index for AI Cloud documentation.
-3. **`https://docs.nebius.com/changelog`**: High-signal secondary trigger for major feature additions, deprecations, and breaking changes (read by people; not polled).
+3. **`https://docs.tavily.com/llms.txt`**: Canonical index for Tavily documentation (pages outside the allowlisted scope are dropped).
+4. **`https://docs.nebius.com/changelog`**: High-signal secondary trigger for major feature additions, deprecations, and breaking changes (read by people; not polled).
 
 `scripts/discover-docs.mjs` (run weekly by the **Content replenish** workflow, see
-`docs/content-operations.md`) parses the two indices, fetches each page in its raw
+`docs/content-operations.md`) parses the three indices, fetches each page in its raw
 Markdown representation (`.md`) only when it is captured, and proposes pages that no
 source record, manifest row or `ignored` entry in `content/discovery-state.yaml`
 names. A proposed page becomes a source only through the capture path below; the

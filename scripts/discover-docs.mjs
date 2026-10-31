@@ -50,6 +50,7 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
 export const LLMS_INDICES = [
   "https://docs.tokenfactory.nebius.com/llms.txt",
   "https://docs.nebius.com/llms.txt",
+  "https://docs.tavily.com/llms.txt",
 ];
 const FETCH_TIMEOUT_MS = 30_000;
 
@@ -64,8 +65,18 @@ export const DISCOVERY_STATE_HEADER = `# Watermark for scripts/discover-docs.mjs
 # Content replenish workflow and reviewed like any other change under content/.
 `;
 
+/**
+ * What discovery may fetch: an allowlisted page, or one of the indices
+ * themselves. An index is not a citable source, and a host's pathPattern
+ * (docs.tavily.com admits only scoped `.md` pages) need not admit it, so it is
+ * matched by exact URL here rather than widened into the allowlist.
+ */
+export function isFetchableUrl(url) {
+  return LLMS_INDICES.includes(String(url)) || isAllowedSourceUrl(url);
+}
+
 export async function fetchText(url) {
-  if (!isAllowedSourceUrl(url)) throw new Error(`refusing to fetch ${url}: not on the SOURCES.md allowlist`);
+  if (!isFetchableUrl(url)) throw new Error(`refusing to fetch ${url}: not on the SOURCES.md allowlist`);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -78,8 +89,8 @@ export async function fetchText(url) {
       throw Object.assign(new Error(`fetch ${url}: HTTP ${res.status}`), { status: res.status });
     }
     // Same redirect rule as fetchSource() in capture-source.mjs: the final URL
-    // must still be inside the allowlist.
-    if (!isAllowedSourceUrl(res.url)) {
+    // must still be inside the allowlist (an index may only land on itself).
+    if (!(res.url === url && isFetchableUrl(url)) && !isAllowedSourceUrl(res.url)) {
       throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
     }
     return await res.text();
@@ -153,6 +164,7 @@ export const COURSE_PRIMARY_HOST = {
   "ai-cloudops-engineer": "docs.nebius.com",
   "ai-leader": "docs.tokenfactory.nebius.com",
   "physical-ai": "docs.nebius.com",
+  "agentic-web-search": "docs.tavily.com",
 };
 
 export function rankPages(pages, gaps) {
