@@ -18,7 +18,7 @@ function freePort() {
     const probe = createServer();
     probe.once("error", reject);
     probe.listen(0, "127.0.0.1", () => {
-      const { port } = probe.address();
+      const { port } = /** @type {import("node:net").AddressInfo} */ (probe.address());
       probe.close(() => resolve(port));
     });
   });
