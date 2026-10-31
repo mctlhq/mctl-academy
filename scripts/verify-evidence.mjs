@@ -78,10 +78,22 @@ function loadYamlDir(contentDir, dir) {
  * @param {object} opts
  * @param {string} opts.contentDir
  * @param {{get(key: string): Promise<string|null>}|null} opts.store
- * @returns {Promise<{errors: string[], checked: number, skipped: number}>}
+ * @returns {Promise<{errors: string[], failures: {file: string, kind: "citation"|"store", message: string}[], checked: number, skipped: number}>}
+ *
+ * `failures` repeats every per-file error with its file and a kind. A
+ * "citation" failure is the item's own fault (an unknown source, a hash that
+ * is not the source's, an excerpt the snapshot does not contain); a "store"
+ * failure means the snapshot could not be read, which says nothing about the
+ * item. Only the first kind may ever be charged to an item: the replenish
+ * workflow sets aside newly authored items on it and still fails on the other.
  */
 export async function verifyEvidence({ contentDir, store }) {
   const errors = [];
+  const failures = [];
+  const fail = (file, kind, message) => {
+    errors.push(`${file}: ${message}`);
+    failures.push({ file, kind, message });
+  };
   let checked = 0;
   let skipped = 0;
 
@@ -100,7 +112,7 @@ export async function verifyEvidence({ contentDir, store }) {
           "R2_SECRET_ACCESS_KEY. Refusing to pass unverified content.",
       );
     }
-    return { errors, checked, skipped: items.length };
+    return { errors, failures, checked, skipped: items.length };
   }
 
   // One fetch per unique snapshot hash, cached in memory
@@ -132,12 +144,12 @@ export async function verifyEvidence({ contentDir, store }) {
     for (const ev of data.evidence) {
       const src = byId.get(ev.source_id);
       if (!src) {
-        errors.push(`${file}: cites unknown source ${ev.source_id}`);
+        fail(file, "citation", `cites unknown source ${ev.source_id}`);
         continue;
       }
 
       if (!ev.source_sha256) {
-        errors.push(`${file}: citation for ${ev.source_id} missing mandatory source_sha256`);
+        fail(file, "citation", `citation for ${ev.source_id} missing mandatory source_sha256`);
         continue;
       }
 
@@ -147,29 +159,33 @@ export async function verifyEvidence({ contentDir, store }) {
       );
 
       if (!validHashes.has(targetHash)) {
-        errors.push(
-          `${file}: evidence source_sha256 ${targetHash.slice(0, 12)}... does not belong to declared source ${ev.source_id}`,
+        fail(
+          file,
+          "citation",
+          `evidence source_sha256 ${targetHash.slice(0, 12)}... does not belong to declared source ${ev.source_id}`,
         );
         continue;
       }
 
       const { text, reason } = await fetchSnapshotByHash(targetHash, ev.source_id);
       if (!text) {
-        errors.push(`${file}: ${reason}`);
+        fail(file, "store", reason);
         continue;
       }
 
       checked += 1;
       if (!normalize(text).includes(normalize(ev.excerpt))) {
-        errors.push(
-          `${file}: excerpt not found verbatim in ${ev.source_id} (hash ${targetHash.slice(0, 12)}...): "${ev.excerpt.slice(0, 80)}"` +
+        fail(
+          file,
+          "citation",
+          `excerpt not found verbatim in ${ev.source_id} (hash ${targetHash.slice(0, 12)}...): "${ev.excerpt.slice(0, 80)}"` +
             (ev.excerpt.length > 80 ? "..." : ""),
         );
       }
     }
   }
 
-  return { errors, checked, skipped };
+  return { errors, failures, checked, skipped };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -44,7 +44,12 @@ Two workflows in this repository run every Monday:
    touch `published` or `retired` files, sources, courses or the manifest; the
    deterministic gates (`lint:content`, `verify:evidence`, the change cap
    counting new files, `test:content`) run after it regardless of what it
-   reports.
+   reports. Before them, `replenish-prepare.mjs set-aside-unverified` deletes
+   each item the agent *created* whose own citation fails verification (an
+   excerpt not verbatim in its snapshot, an unknown source, a foreign hash), so
+   one bad excerpt costs that item and not the batch; the set-aside items are
+   listed in the job summary. An unreadable snapshot, or a failing item that
+   existed at the base, is never set aside and still fails `verify:evidence`.
 3. **review** — a separate job, fresh checkout, different model
    (`agent:claude-reviewer`, `claude-opus-5`). It sees the final YAML and
    `_run/captured/*.md`, judges each item on the two CONTENT-POLICY criteria and
