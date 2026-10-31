@@ -1,10 +1,10 @@
 schema_version: 1
 id: q-c9a3f62d18b5
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/search-parameters
-stem: "An agent sets `include_domains_mode=prefer` on a Search request but does not
-  also set `include_domains`. Per the Search API reference, what happens?"
+stem: "An agent sets `include_domains_mode=prefer` on a Search request but does
+  not also set `include_domains`. Per the Search API reference, what happens?"
 options:
   - id: a
     text: "The request returns a 400 error"
@@ -15,7 +15,8 @@ options:
     text: "`restrict` limits results to only the listed domains"
     correct: false
     explanation: "That describes what restrict does when domains are listed; the
-      scenario uses prefer with no domains listed, which is a 400 error instead."
+      scenario uses prefer with no domains listed, which is a 400 error
+      instead."
   - id: c
     text: "`prefer` also searches the rest of the web, so results outside
       include_domains can still surface"
@@ -36,3 +37,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:41:51Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:55:13Z
+  content_sha256: 4aada4191f8e1dab620ed99f31675badcefef306964e82e5ab548b277b406f6c

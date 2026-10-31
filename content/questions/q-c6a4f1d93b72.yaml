@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c6a4f1d93b72
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limit-handling
 stem: "A Search request on a non-paying plan sets `max_age_hours`, and Tavily is
@@ -8,8 +8,8 @@ stem: "A Search request on a non-paying plan sets `max_age_hours`, and Tavily is
   agent expect, and what can it do?"
 options:
   - id: a
-    text: "`429 Too Many Requests`; wait the number of seconds in Retry-After
-      before retrying"
+    text: "`429 Too Many Requests`; wait the number of seconds in Retry-After before
+      retrying"
     correct: false
     explanation: "429 with Retry-After is the standard rate-limit response; this
       flex-tier scenario is documented separately as a 434 response."
@@ -17,21 +17,21 @@ options:
     text: "`434 Flex tier capacity exceeded`; retry shortly, or omit max_age_hours
       to be served from cache"
     correct: true
-    explanation: "Correct. The documentation states these requests are refused
-      with 434 Flex tier capacity exceeded, and to retry shortly or omit
+    explanation: "Correct. The documentation states these requests are refused with
+      434 Flex tier capacity exceeded, and to retry shortly or omit
       max_age_hours."
   - id: c
     text: "`433 PayGo limit exceeded`; upgrade the plan or raise the PayGo limit"
     correct: false
-    explanation: "433 PayGo limit exceeded is a documented response for a
-      different condition (exceeding the pay-as-you-go limit), not this
-      flex-tier scenario."
+    explanation: "433 PayGo limit exceeded is a documented response for a different
+      condition (exceeding the pay-as-you-go limit), not this flex-tier
+      scenario."
   - id: d
     text: "`432 Key limit or Plan Limit exceeded`; contact support to raise the
       usage limit"
     correct: false
-    explanation: "432 Key limit or Plan Limit exceeded is a documented response
-      for a different condition (exceeding the plan's set usage limit), not this
+    explanation: "432 Key limit or Plan Limit exceeded is a documented response for
+      a different condition (exceeding the plan's set usage limit), not this
       flex-tier scenario."
 evidence:
   - source_id: src-tv-rate-limits
@@ -42,3 +42,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:41:51Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:55:13Z
+  content_sha256: 8635c18c8da01087fa9177a1a04d5602a9e2ad6be1a62718b704952df44de12b

@@ -2320,6 +2320,47 @@
     ]
   },
   {
+    "id": "q-a7c1e9f4b382",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/crawl-parameters",
+    "stem": "A Crawl request sets `extract_depth=advanced`. Per the Crawl API reference, how does this change the credit cost compared to leaving it at the `basic` default?",
+    "objectiveTitle": "Configuring Crawl parameters for focused content collection",
+    "sources": [
+      {
+        "title": "Tavily Crawl API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/crawl.md",
+        "excerpt": "`basic` extraction costs 1 credit per 5 successful extractions, while `advanced` extraction costs 2 credits per 5 successful extractions."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Cost is unaffected by extract_depth; only chunks_per_source changes the cost",
+        "correct": false,
+        "explanation": "The reference prices advanced extraction higher than basic; cost is affected by extract_depth, not only by chunks_per_source."
+      },
+      {
+        "id": "b",
+        "text": "advanced costs 2 credits per 5 successful extractions, instead of basic's 1 credit per 5",
+        "correct": true,
+        "explanation": "Correct. The reference states basic extraction costs 1 credit per 5 successful extractions, while advanced costs 2 credits per 5."
+      },
+      {
+        "id": "c",
+        "text": "advanced triggers the same increase to 2 credits per 10 successful pages that specifying instructions causes",
+        "correct": false,
+        "explanation": "That per-10-pages pricing is what instructions triggers; extract_depth has its own separate per-5-extractions pricing."
+      },
+      {
+        "id": "d",
+        "text": "advanced extraction is only available when instructions are also provided",
+        "correct": false,
+        "explanation": "That availability condition applies to chunks_per_source, not to extract_depth, which can be set independently of instructions."
+      }
+    ]
+  },
+  {
     "id": "q-a83c5e2f9b17",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -2837,6 +2878,47 @@
     ]
   },
   {
+    "id": "q-b86d4f1a3c97",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/search-extract-pipelines",
+    "stem": "A pipeline runs several Search calls, deduplicates the result URLs, and submits the deduplicated list to a single Extract call. Per Tavily's Extract best practices, how many of those URLs can one Extract call accept?",
+    "objectiveTitle": "Combining Search with Extract to retrieve and clean page content",
+    "sources": [
+      {
+        "title": "Tavily Extract best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-extract.md",
+        "excerpt": "Extract accepts up to 20 URLs in one request."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Up to 20 URLs",
+        "correct": true,
+        "explanation": "Correct. The best practices state Extract accepts up to 20 URLs in one request."
+      },
+      {
+        "id": "b",
+        "text": "Up to 5 URLs",
+        "correct": false,
+        "explanation": "5 is the batch size tied to Extract's per-credit cost (successful extractions per credit), not the per-request URL limit."
+      },
+      {
+        "id": "c",
+        "text": "Up to 50 URLs",
+        "correct": false,
+        "explanation": "50 is not the documented Extract batch limit; the best practices state the limit is 20 URLs per request."
+      },
+      {
+        "id": "d",
+        "text": "An unlimited number of URLs, since Extract paginates automatically",
+        "correct": false,
+        "explanation": "The best practices state a fixed cap of 20 URLs per request, not automatic pagination for unlimited batches."
+      }
+    ]
+  },
+  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -3083,6 +3165,47 @@
     ]
   },
   {
+    "id": "q-c6a4f1d93b72",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limit-handling",
+    "stem": "A Search request on a non-paying plan sets `max_age_hours`, and Tavily is under heavy load. Per Tavily's Rate Limits documentation, what should the agent expect, and what can it do?",
+    "objectiveTitle": "Handling rate limits and HTTP 429 responses",
+    "sources": [
+      {
+        "title": "Tavily Rate Limits",
+        "url": "https://docs.tavily.com/documentation/rate-limits.md",
+        "excerpt": "these requests are refused with `434 Flex tier capacity exceeded`. Retry shortly, or omit `max_age_hours` to be served from cache."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`429 Too Many Requests`; wait the number of seconds in Retry-After before retrying",
+        "correct": false,
+        "explanation": "429 with Retry-After is the standard rate-limit response; this flex-tier scenario is documented separately as a 434 response."
+      },
+      {
+        "id": "b",
+        "text": "`434 Flex tier capacity exceeded`; retry shortly, or omit max_age_hours to be served from cache",
+        "correct": true,
+        "explanation": "Correct. The documentation states these requests are refused with 434 Flex tier capacity exceeded, and to retry shortly or omit max_age_hours."
+      },
+      {
+        "id": "c",
+        "text": "`433 PayGo limit exceeded`; upgrade the plan or raise the PayGo limit",
+        "correct": false,
+        "explanation": "433 PayGo limit exceeded is a documented response for a different condition (exceeding the pay-as-you-go limit), not this flex-tier scenario."
+      },
+      {
+        "id": "d",
+        "text": "`432 Key limit or Plan Limit exceeded`; contact support to raise the usage limit",
+        "correct": false,
+        "explanation": "432 Key limit or Plan Limit exceeded is a documented response for a different condition (exceeding the plan's set usage limit), not this flex-tier scenario."
+      }
+    ]
+  },
+  {
     "id": "q-c71b4f9a3d85",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -3207,6 +3330,47 @@
         "text": "It must inspect the `score` field for entries below 0.5",
         "correct": false,
         "explanation": "score is a Search relevance field; Extract reports failures in failed_results, not via a score."
+      }
+    ]
+  },
+  {
+    "id": "q-c9a3f62d18b5",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/search-parameters",
+    "stem": "An agent sets `include_domains_mode=prefer` on a Search request but does not also set `include_domains`. Per the Search API reference, what happens?",
+    "objectiveTitle": "Tuning Search parameters for relevance, latency and cost",
+    "sources": [
+      {
+        "title": "Tavily Search API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search.md",
+        "excerpt": "Setting it without `include_domains` returns a 400 error."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The request returns a 400 error",
+        "correct": true,
+        "explanation": "Correct. The reference states that setting include_domains_mode without include_domains returns a 400 error."
+      },
+      {
+        "id": "b",
+        "text": "`restrict` limits results to only the listed domains",
+        "correct": false,
+        "explanation": "That describes what restrict does when domains are listed; the scenario uses prefer with no domains listed, which is a 400 error instead."
+      },
+      {
+        "id": "c",
+        "text": "`prefer` also searches the rest of the web, so results outside include_domains can still surface",
+        "correct": false,
+        "explanation": "That is prefer's normal effect when include_domains is set; it does not describe what happens when include_domains is left unset."
+      },
+      {
+        "id": "d",
+        "text": "Defaults to `restrict`, so include_domains acts as a hard filter unless set to prefer",
+        "correct": false,
+        "explanation": "That describes the parameter's default behavior in general, not the specific 400 error that results from omitting include_domains."
       }
     ]
   },
@@ -5204,6 +5368,47 @@
     ]
   },
   {
+    "id": "q-d2f9b4c6a187",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/map-usage",
+    "stem": "An agent wants Map to only discover URLs under a particular path, like `/docs/`, without restricting which domains it explores. Per the Map API reference, which parameter should it set?",
+    "objectiveTitle": "Using Map to discover a site's structure",
+    "sources": [
+      {
+        "title": "Tavily Map API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/map.md",
+        "excerpt": "Regex patterns to select only URLs with specific path patterns (e.g., `/docs/.*`, `/api/v1.*`)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`select_paths`",
+        "correct": true,
+        "explanation": "Correct. The reference describes select_paths as regex patterns to select only URLs with specific path patterns."
+      },
+      {
+        "id": "b",
+        "text": "`select_domains`",
+        "correct": false,
+        "explanation": "select_domains restricts which domains or subdomains are crawled, not which paths on a domain are selected."
+      },
+      {
+        "id": "c",
+        "text": "`exclude_paths`",
+        "correct": false,
+        "explanation": "exclude_paths removes URLs matching given path patterns, which is the opposite of selecting only a particular path."
+      },
+      {
+        "id": "d",
+        "text": "`max_depth`",
+        "correct": false,
+        "explanation": "max_depth controls how far from the base URL the crawler can explore; it does not filter by path pattern."
+      }
+    ]
+  },
+  {
     "id": "q-d49a1e7f3c82",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -6033,6 +6238,47 @@
     ]
   },
   {
+    "id": "q-e4a7c982f1b3",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/response-fields",
+    "stem": "In a Tavily Search response, what does each result's `score` field represent?",
+    "objectiveTitle": "Reading and using Search and Extract response fields",
+    "sources": [
+      {
+        "title": "Tavily Search API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search.md",
+        "excerpt": "The relevance score of the search result."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The number of credits consumed by returning this result",
+        "correct": false,
+        "explanation": "Credit consumption is reported in the top-level usage.credits field, not in each result's score."
+      },
+      {
+        "id": "b",
+        "text": "The relevance score of the search result",
+        "correct": true,
+        "explanation": "Correct. The API reference describes score exactly this way."
+      },
+      {
+        "id": "c",
+        "text": "The time in seconds it took to complete the request",
+        "correct": false,
+        "explanation": "That describes the top-level response_time field, not a per-result field like score."
+      },
+      {
+        "id": "d",
+        "text": "Tavily's best estimate of when the source was published",
+        "correct": false,
+        "explanation": "That describes the published_date field, not score."
+      }
+    ]
+  },
+  {
     "id": "q-e4b8d1a6f293",
     "course_id": "agentic-web-search",
     "domain": "domain-1",
@@ -6699,6 +6945,47 @@
     ]
   },
   {
+    "id": "q-f1c3a9d62b84",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/realtime-search-fundamentals",
+    "stem": "Per Tavily's FAQ, which description does it give for the Tavily Search API specifically, as distinct from its other two endpoints?",
+    "objectiveTitle": "Explaining why agents need real-time web search alongside a static knowledge base",
+    "sources": [
+      {
+        "title": "Tavily Frequently Asked Questions",
+        "url": "https://docs.tavily.com/faq/faq.md",
+        "excerpt": "A search engine designed for AI agents, combining search and scraping capabilities."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A search engine designed for AI agents, combining search and scraping capabilities",
+        "correct": true,
+        "explanation": "Correct. The FAQ describes the Tavily Search API exactly this way among the three endpoints it lists."
+      },
+      {
+        "id": "b",
+        "text": "Scrape up to 20 URLs in a single API call",
+        "correct": false,
+        "explanation": "That line describes the Extract API in the same FAQ entry, not the Search API."
+      },
+      {
+        "id": "c",
+        "text": "Map and crawl domains efficiently",
+        "correct": false,
+        "explanation": "That line describes the Crawl API in the same FAQ entry, not the Search API."
+      },
+      {
+        "id": "d",
+        "text": "Real-time search, scraping, and structured data retrieval in a single API call",
+        "correct": false,
+        "explanation": "That line describes what Tavily overall supercharges an agent with, not the Search API's own entry among the three endpoints."
+      }
+    ]
+  },
+  {
     "id": "q-f23d6b8a1c95",
     "course_id": "agentic-web-search",
     "domain": "domain-2",
@@ -6869,6 +7156,47 @@
         "text": "Text",
         "correct": false,
         "explanation": "Text datasets are a single `text` field per line; tokenization is handled for you, not controlled directly."
+      }
+    ]
+  },
+  {
+    "id": "q-f3b8d6a92c41",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/api-key-auth",
+    "stem": "Per Tavily's Headers & Authentication documentation, which HTTP header carries the Tavily API key on a request, and in what format?",
+    "objectiveTitle": "Authenticating requests with API keys",
+    "sources": [
+      {
+        "title": "Tavily Headers and Authentication",
+        "url": "https://docs.tavily.com/documentation/api-headers.md",
+        "excerpt": "\"Authorization: Bearer tvly-YOUR_API_KEY\""
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`Authorization`, formatted as `Bearer tvly-YOUR_API_KEY`",
+        "correct": true,
+        "explanation": "Correct. The documentation's example request sends the API key in the Authorization header as \"Authorization: Bearer tvly-YOUR_API_KEY\"."
+      },
+      {
+        "id": "b",
+        "text": "`X-Project-ID`, formatted as `Bearer tvly-YOUR_API_KEY`",
+        "correct": false,
+        "explanation": "X-Project-ID attaches a project to the request; it does not carry the API key."
+      },
+      {
+        "id": "c",
+        "text": "`X-Session-Id`, formatted as `Bearer tvly-YOUR_API_KEY`",
+        "correct": false,
+        "explanation": "X-Session-Id groups related requests into a session; it does not carry the API key."
+      },
+      {
+        "id": "d",
+        "text": "`X-Human-Id`, formatted as `Bearer tvly-YOUR_API_KEY`",
+        "correct": false,
+        "explanation": "X-Human-Id identifies the end user behind a request; it does not carry the API key."
       }
     ]
   },

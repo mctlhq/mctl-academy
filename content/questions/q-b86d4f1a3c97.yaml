@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b86d4f1a3c97
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/search-extract-pipelines
 stem: "A pipeline runs several Search calls, deduplicates the result URLs, and
@@ -10,13 +10,13 @@ options:
   - id: a
     text: "Up to 20 URLs"
     correct: true
-    explanation: "Correct. The best practices state Extract accepts up to 20 URLs
-      in one request."
+    explanation: "Correct. The best practices state Extract accepts up to 20 URLs in
+      one request."
   - id: b
     text: "Up to 5 URLs"
     correct: false
-    explanation: "5 is the batch size tied to Extract's per-credit cost
-      (successful extractions per credit), not the per-request URL limit."
+    explanation: "5 is the batch size tied to Extract's per-credit cost (successful
+      extractions per credit), not the per-request URL limit."
   - id: c
     text: "Up to 50 URLs"
     correct: false
@@ -35,3 +35,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:41:51Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:55:13Z
+  content_sha256: 4639969b04a2bddb53200e128e7c88aa4ae09a7ac4934288205d488f6ff18289
