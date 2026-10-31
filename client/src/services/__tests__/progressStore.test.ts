@@ -360,11 +360,11 @@ describe("progressStore service", () => {
     await secondClear;
   });
 
-  it("clearProgress drains a recordAttempt POST added after its initial pendingWrites snapshot", async () => {
-    // A learner answers a question while clearProgress() is already awaiting
-    // its first batch of pending writes — that new write must be waited on
-    // too, not just the writes that existed at the moment clearProgress()
-    // started, or its POST could land on the server after the DELETE.
+  it("clearProgress holds back an answer recorded while it waits for pending writes until after the DELETE", async () => {
+    // A learner answers a question while clearProgress() is still awaiting
+    // the writes that predate it. That answer is post-clear data: its POST
+    // must not be sent before the DELETE (which would erase it on the
+    // server while the device marks it synced), only after it.
     const callOrder: string[] = [];
     let resolveFirstPost!: (value: unknown) => void;
     const firstPostPromise = new Promise((resolve) => {
@@ -406,25 +406,62 @@ describe("progressStore service", () => {
     recordAttempt("q-2", "domain-1", false);
     resolveFirstPost({ ok: true });
 
-    // Give the drain loop several microtask turns to pick up the new
-    // pending write and start its POST — the DELETE still must not fire
-    // until that second write also settles.
-    for (let i = 0; i < 5; i++) {
-      await Promise.resolve();
-    }
-    expect(callOrder).toContain("POST-2-start");
-    expect(callOrder).not.toContain("DELETE");
-
+    await vi.waitFor(() => expect(callOrder).toContain("POST-2-start"));
     resolveSecondPost({ ok: true });
     await clearPromise;
 
-    // Both writes' start/resolve events must all precede the DELETE — their
-    // relative order with each other isn't the point, only that neither can
-    // still be pending when the DELETE fires.
-    expect(callOrder.indexOf("DELETE")).toBe(callOrder.length - 1);
-    expect(callOrder).toEqual(
-      expect.arrayContaining(["POST-1-start", "POST-1-resolve", "POST-2-start", "POST-2-resolve"]),
+    expect(callOrder).toEqual(["POST-1-start", "POST-1-resolve", "DELETE", "POST-2-start", "POST-2-resolve"]);
+    expect(getStoredAttempts()).toEqual([expect.objectContaining({ questionId: "q-2", synced: true })]);
+    expect(syncStatus.value).toBe("synced");
+  });
+
+  it("does not send an answer recorded during the DELETE until the DELETE has resolved (#397)", async () => {
+    const callOrder: string[] = [];
+    let resolveDelete!: (value: unknown) => void;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url: string, init?: RequestInit) => {
+        callOrder.push(init?.method ?? "GET");
+        if (init?.method === "DELETE") return new Promise((resolve) => (resolveDelete = resolve));
+        return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+      }),
     );
+    setSyncEnabled(true);
+    const clearing = clearProgress();
+    await vi.waitFor(() => expect(resolveDelete).toBeTypeOf("function"));
+
+    recordAttempt("q-1", "domain-1", true); // answered while the DELETE is in flight
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+    expect(callOrder).toEqual(["DELETE"]);
+
+    resolveDelete({ ok: true });
+    await clearing;
+    expect(callOrder).toEqual(["DELETE", "POST"]);
+    expect(syncStatus.value).toBe("synced");
+  });
+
+  it("drops an answer held back by a clear when another clear wipes it, and never sends it on another account", async () => {
+    const posts: string[] = [];
+    const deletes: Array<(value: unknown) => void> = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url: string, init?: RequestInit) => {
+        if (init?.method === "DELETE") return new Promise((resolve) => deletes.push(resolve));
+        if (init?.method === "POST") posts.push(JSON.parse(String(init.body)).questionId);
+        return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+      }),
+    );
+    setSyncEnabled(true);
+    const first = clearProgress();
+    await vi.waitFor(() => expect(deletes).toHaveLength(1));
+    recordAttempt("q-wiped", "domain-1", true);
+    const second = clearProgress(); // wipes q-wiped locally
+    await vi.waitFor(() => expect(deletes).toHaveLength(2));
+    recordAttempt("q-other-account", "domain-1", true);
+    setSyncEnabled(true); // account change while the DELETEs are in flight
+    deletes.forEach((resolve) => resolve({ ok: true }));
+    await Promise.all([first, second]);
+    expect(posts).toEqual([]);
   });
 
   it("makes no network call when sync is disabled (the default)", () => {
@@ -741,7 +778,7 @@ describe("progressStore service", () => {
       await vi.waitFor(() => expect(releaseDelete).toBeTypeOf("function"));
       recordAttempt("q-1", "domain-1", true); // answered while the DELETE is in flight
       releaseDelete();
-      await Promise.resolve();
+      await vi.waitFor(() => expect(releasePost).toBeTypeOf("function"));
       releasePost();
       await clearing;
       expect(syncStatus.value).toBe("synced");
