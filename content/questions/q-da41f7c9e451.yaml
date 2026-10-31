@@ -1,40 +1,44 @@
 schema_version: 1
 id: q-da41f7c9e451
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/map-usage
-stem: "Per Tavily's Map tutorial, what distinguishes Map's output from
-  Crawl's output?"
+stem: "Per Tavily's Map tutorial, what distinguishes Map's output from Crawl's
+  output?"
 options:
   - id: a
-    text: "Map returns a list of URLs discovered from a starting URL, and
-      unlike Crawl does not extract page content"
+    text: "Map returns a list of URLs discovered from a starting URL, and unlike
+      Crawl does not extract page content"
     correct: true
-    explanation: "Correct. The tutorial states Map returns a URL list and,
-      unlike Crawl, does not extract page content."
+    explanation: "Correct. The tutorial states Map returns a URL list and, unlike
+      Crawl, does not extract page content."
   - id: b
-    text: "Map returns full page content for every URL; Crawl returns only a
-      URL list"
+    text: "Map returns full page content for every URL; Crawl returns only a URL
+      list"
     correct: false
-    explanation: "That reverses the actual distinction: Crawl extracts full
-      content, Map does not."
+    explanation: "That reverses the actual distinction: Crawl extracts full content,
+      Map does not."
   - id: c
-    text: "Map and Crawl return identical output, differing only in the
-      request's HTTP method"
+    text: "Map and Crawl return identical output, differing only in the request's
+      HTTP method"
     correct: false
     explanation: "The tutorial explicitly contrasts Map's URL-only output with
       Crawl's full-content output; they are not identical."
   - id: d
     text: "Map returns a ranked relevance score for each discovered URL"
     correct: false
-    explanation: "Map's results are plain URL strings; a relevance score is a
-      Search response field, not a Map one."
+    explanation: "Map's results are plain URL strings; a relevance score is a Search
+      response field, not a Map one."
 evidence:
   - source_id: src-tv-tut-map
-    excerpt: "Tavily Map returns a list of URLs discovered from a starting
-      URL. Unlike Crawl, it does not extract page content"
+    excerpt: "Tavily Map returns a list of URLs discovered from a starting URL.
+      Unlike Crawl, it does not extract page content"
     source_sha256: 339cc791a66d5946134ca479d31d591647246a73353577f7cedbcbe6951288b9
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 09e020e5706f3e6972fbe9a025c338952cf48f8189df6a3a00760971dd5468ca

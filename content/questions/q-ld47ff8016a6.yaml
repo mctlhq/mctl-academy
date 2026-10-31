@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld47ff8016a6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/structured-output
 stem: Which `response_format` setting should be used when the response must
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 24fd8372efbb57fcc5e6a1556f7b21fec09dfe5df960d3bf992c91c863c7cdaf

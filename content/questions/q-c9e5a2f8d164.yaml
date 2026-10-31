@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c9e5a2f8d164
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: "The Sandboxes documentation lists several identifiers in its 'Core
@@ -36,3 +36,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 18dcc3399b4f0731b9974dc1166fb57fd4eb628d1a8e55e6725a185d7858d6c1

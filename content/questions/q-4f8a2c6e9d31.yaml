@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4f8a2c6e9d31
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/application-integration
 stem: "A robot application's CI pipeline needs to push container images to
@@ -39,3 +39,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: b7d55b463c87aee2b1aed1b69f412826d1688369b6d6047b18875ce50b86e320

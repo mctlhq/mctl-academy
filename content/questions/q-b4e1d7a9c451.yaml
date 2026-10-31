@@ -1,21 +1,20 @@
 schema_version: 1
 id: q-b4e1d7a9c451
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/key-rotation-secrets
-stem: "Per Tavily's API key management guidance, where should an
-  application's API key live?"
+stem: "Per Tavily's API key management guidance, where should an application's
+  API key live?"
 options:
   - id: a
     text: "Hardcoded directly in the application's source code for simplicity"
     correct: false
-    explanation: "The guidance explicitly says never to hardcode API keys in
-      source code."
+    explanation: "The guidance explicitly says never to hardcode API keys in source code."
   - id: b
     text: "In an environment variable or a secure secrets manager"
     correct: true
-    explanation: "Correct. The guidance states to always use environment
-      variables or a secure secrets manager to store credentials."
+    explanation: "Correct. The guidance states to always use environment variables
+      or a secure secrets manager to store credentials."
   - id: c
     text: "Embedded in client-side JavaScript so the browser can call Tavily
       directly"
@@ -25,15 +24,18 @@ options:
   - id: d
     text: "In a public repository's README so teammates can find it easily"
     correct: false
-    explanation: "Committing a key to a public repository is the leak scenario
-      the guidance treats as an emergency, not a storage recommendation."
+    explanation: "Committing a key to a public repository is the leak scenario the
+      guidance treats as an emergency, not a storage recommendation."
 evidence:
   - source_id: src-tv-bp-api-keys
-    excerpt: "Never hardcode API keys in your source code. Always use
-      environment variables or a secure secrets manager to store your
-      credentials."
+    excerpt: "Never hardcode API keys in your source code. Always use environment
+      variables or a secure secrets manager to store your credentials."
     source_sha256: b2e17dc380bc3f6e2fbfe5aa2070bd9baf1a4e43875b84ff9c2d6e260a26797d
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 651f21cf33a3895561620775fe4a0d7dca84c5074d3af2687799eef6598cdc6e

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf08c6d7e8f9
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: Which base URL does the Quickstart use to configure an OpenAI SDK client
@@ -31,3 +31,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0d0450cb5809713a77ae934ddb888df1e1cbecbfe774831959b69a9082c0db09

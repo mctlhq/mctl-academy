@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f29ae7c1b4d6
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/api-authentication
 stem: Per the Token Factory Quickstart guide, what does the documentation
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: ec696e130a7451f29b6b015e1661853409917364422a07e906218fa013fa1b08

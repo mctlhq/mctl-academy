@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fi01c7d8e9f0
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/framework-integrations
 stem: In the Quickstart, which two constructor parameters are set on the OpenAI
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 16c7a53395748a93695699f5cb9f4b609dcff195a78b7482dd7f119f59d64be1

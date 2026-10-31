@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co33486f6ab7
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/iam-roles
 stem: A new engineer appears on the tenant user list but cannot see any
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 00586e2070c31f6dd4f91df1a6c9f67c9d9a90acf6e83cb46e65c0e5eb1f7a68

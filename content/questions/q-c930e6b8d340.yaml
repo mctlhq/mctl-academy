@@ -1,18 +1,18 @@
 schema_version: 1
 id: q-c930e6b8d340
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/extraction-recovery
 stem: "A batch Extract call for 10 URLs returns HTTP 200, but 2 of the URLs
-  could not be processed. Per the Extract API reference, how does an agent
-  find out which ones failed?"
+  could not be processed. Per the Extract API reference, how does an agent find
+  out which ones failed?"
 options:
   - id: a
     text: "It cannot find out; an HTTP 200 guarantees every URL in the batch
       succeeded"
     correct: false
-    explanation: "The reference explicitly says per-URL failures can appear
-      even on a 200 response."
+    explanation: "The reference explicitly says per-URL failures can appear even on
+      a 200 response."
   - id: b
     text: "It must retry the whole batch, since a partial failure forces a 400
       response"
@@ -20,17 +20,17 @@ options:
     explanation: "A batch with some successes returns 200 with both arrays
       populated, not a 400."
   - id: c
-    text: "It must check failed_results, since per-URL failures appear there
-      even on a 200 response"
+    text: "It must check failed_results, since per-URL failures appear there even on
+      a 200 response"
     correct: true
     explanation: "Correct. The reference states per-URL failures appear in
-      failed_results, and to check both arrays even when the response is
-      HTTP 200."
+      failed_results, and to check both arrays even when the response is HTTP
+      200."
   - id: d
     text: "It must inspect the `score` field for entries below 0.5"
     correct: false
-    explanation: "score is a Search relevance field; Extract reports failures
-      in failed_results, not via a score."
+    explanation: "score is a Search relevance field; Extract reports failures in
+      failed_results, not via a score."
 evidence:
   - source_id: src-tv-api-extract
     excerpt: "Successful URLs appear in results; per-URL failures appear in
@@ -40,3 +40,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 8623b1829ceb6fe284209eef9a7f7991665f649f4936c38a1d0eea26264983db

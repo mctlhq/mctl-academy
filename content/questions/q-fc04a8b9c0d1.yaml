@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc04a8b9c0d1
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/function-calling
 stem: A workflow must always call `read_file` first, regardless of what the user
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 3ddd935b6b8012a1aa1bb7d6666fd439124d733683da539170cfa88d74128f53

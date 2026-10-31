@@ -1,43 +1,44 @@
 schema_version: 1
 id: q-a718c4f6b128
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/search-extract-pipelines
 stem: "An agent wants to curate and filter candidate URLs before extracting
-  their content, rather than extracting from every Search result
-  automatically. Per Tavily's best practices, which approach fits?"
+  their content, rather than extracting from every Search result automatically.
+  Per Tavily's best practices, which approach fits?"
 options:
   - id: a
-    text: "The direct Extract API, since it lets you choose exactly which URLs
-      to extract from"
+    text: "The direct Extract API, since it lets you choose exactly which URLs to
+      extract from"
     correct: true
-    explanation: "Correct. The documentation states the key difference is
-      control: Extract lets you choose exactly which URLs to extract from."
+    explanation: "Correct. The documentation states the key difference is control:
+      Extract lets you choose exactly which URLs to extract from."
   - id: b
-    text: "Search with `include_raw_content=true`, since it extracts from all
-      search results automatically"
+    text: "Search with `include_raw_content=true`, since it extracts from all search
+      results automatically"
     correct: false
-    explanation: "That approach extracts from every result automatically,
-      which is the opposite of curating URLs first."
+    explanation: "That approach extracts from every result automatically, which is
+      the opposite of curating URLs first."
   - id: c
-    text: "The Map API, since it extracts full page content from discovered
-      URLs"
+    text: "The Map API, since it extracts full page content from discovered URLs"
     correct: false
-    explanation: "Map only discovers URLs; it does not extract page content at
-      all."
+    explanation: "Map only discovers URLs; it does not extract page content at all."
   - id: d
-    text: "The Crawl API, since it is the fastest way to curate individual
-      URLs"
+    text: "The Crawl API, since it is the fastest way to curate individual URLs"
     correct: false
-    explanation: "Crawl follows links automatically from a starting URL; it
-      does not let you hand-pick individual URLs to extract."
+    explanation: "Crawl follows links automatically from a starting URL; it does not
+      let you hand-pick individual URLs to extract."
 evidence:
   - source_id: src-tv-bp-extract
-    excerpt: "The main distinction is control, with Extract you choose exactly
-      which URLs to extract from, while Search with `include_raw_content`
-      extracts from all search results."
+    excerpt: "The main distinction is control, with Extract you choose exactly which
+      URLs to extract from, while Search with `include_raw_content` extracts
+      from all search results."
     source_sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: bcdb5165c57039479dd694fd24e0df0e9a941dc9f08996c1cd62d11f9d853990

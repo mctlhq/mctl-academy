@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc03c4d5e6f7
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/function-calling
 stem: How is each available tool described to the model?
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 83c07f8ee93312d63d3e4e5fe7c86eca393000afc07ef1ead7650d6e7d318217

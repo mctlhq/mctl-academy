@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-so02e6f7a8b9
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/structured-output
 stem: You want valid JSON but do not care about the exact field names. Which
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a117f7d85aa3d7c6ea35490617995a6bd9e577c7b588e44ae00b063a6a81fab5

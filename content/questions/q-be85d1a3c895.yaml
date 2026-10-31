@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-be85d1a3c895
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/endpoint-selection
 stem: "A team needs a single finished answer with citations synthesized from
@@ -10,31 +10,33 @@ options:
   - id: a
     text: "Search, since it always returns a synthesized final answer"
     correct: false
-    explanation: "The guide says to use Search when you need raw source URLs
-      and content to process yourself, not a finished synthesized answer."
+    explanation: "The guide says to use Search when you need raw source URLs and
+      content to process yourself, not a finished synthesized answer."
   - id: b
     text: "Crawl, since reading more pages always produces better citations"
     correct: false
-    explanation: "Crawl returns raw page content for you to process; it does
-      not produce a synthesized, cited answer by itself."
+    explanation: "Crawl returns raw page content for you to process; it does not
+      produce a synthesized, cited answer by itself."
   - id: c
     text: "Map, since it discovers which sources exist before synthesis"
     correct: false
-    explanation: "Map only lists URLs; it does not synthesize an answer at
-      all."
+    explanation: "Map only lists URLs; it does not synthesize an answer at all."
   - id: d
-    text: "Research, since it is for a finished, multi-source answer with
-      citations"
+    text: "Research, since it is for a finished, multi-source answer with citations"
     correct: true
-    explanation: "Correct. The guide states to use Research for exactly this:
-      a finished, multi-source answer with citations."
+    explanation: "Correct. The guide states to use Research for exactly this: a
+      finished, multi-source answer with citations."
 evidence:
   - source_id: src-tv-agents
     excerpt: "Use Search when you need raw source URLs and content to process
-      yourself. Use Research when you need a finished, multi-source answer
-      with citations."
+      yourself. Use Research when you need a finished, multi-source answer with
+      citations."
     source_sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 9a21f0261c87838daa9f1cf1a46c2b7c8869b1608c3dae36a96c70fb1c9549e2

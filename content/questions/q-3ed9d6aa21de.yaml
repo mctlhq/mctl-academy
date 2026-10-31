@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-3ed9d6aa21de
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
 stem: What does the `learning_rate` fine-tuning hyperparameter control, and what
@@ -33,3 +33,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 833b37e29d4bc5bceb177bfcec80e64bf8f693beeb4e0447c3c387f3f0a3c1e2

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co37d7aa468e
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/organization-hierarchy
 stem: A project was created in the wrong region. What can be changed on it
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 18413c424f5e8a3b2382ac26f0c4029e0d1346618a235d3d698c2c7e1408a5e3

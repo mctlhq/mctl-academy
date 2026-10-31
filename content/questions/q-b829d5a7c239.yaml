@@ -1,17 +1,16 @@
 schema_version: 1
 id: q-b829d5a7c239
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/response-fields
 stem: "In a Tavily Search response, which field is only present when
   `include_raw_content` is set to true?"
 options:
   - id: a
-    text: "`content`, since it always appears, being required in every
-      response"
+    text: "`content`, since it always appears, being required in every response"
     correct: false
-    explanation: "content is always present (it's in the required list), so it
-      isn't the field gated by include_raw_content."
+    explanation: "content is always present (it's in the required list), so it isn't
+      the field gated by include_raw_content."
   - id: b
     text: "`score`, since it always appears, being required in every response"
     correct: false
@@ -20,20 +19,23 @@ options:
   - id: c
     text: "`raw_content`, which appears only if include_raw_content is true"
     correct: true
-    explanation: "Correct. The API reference states raw_content is the
-      cleaned and parsed HTML content, only present if include_raw_content is
-      true."
+    explanation: "Correct. The API reference states raw_content is the cleaned and
+      parsed HTML content, only present if include_raw_content is true."
   - id: d
     text: "`favicon`, which appears only if include_raw_content is true"
     correct: false
-    explanation: "favicon is controlled by its own flag, include_favicon, not
-      by include_raw_content."
+    explanation: "favicon is controlled by its own flag, include_favicon, not by
+      include_raw_content."
 evidence:
   - source_id: src-tv-api-search
-    excerpt: "The cleaned and parsed HTML content of the search result. Only
-      if `include_raw_content` is true."
+    excerpt: "The cleaned and parsed HTML content of the search result. Only if
+      `include_raw_content` is true."
     source_sha256: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: d7d6c69603a9bc77c245bf413b442f62d9d34080d3f75b6ed374e44dbf445628

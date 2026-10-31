@@ -1,0 +1,895 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-31T01:59:27Z",
+  "questions": [
+    {
+      "id": "q-1b6d9f3a8e47",
+      "content_sha256": "085515e6471490699a9f663e8ef30f3563f66c858af53b1891ea83d7e646828b",
+      "approved": true,
+      "reason": "The page states \"Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results and tuned hyperparameters in a single interface\", which is exactly option b; no other option is defensible from that sentence.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-1d28809ed6da",
+      "content_sha256": "a7b9f0c0ba2ce36e45049e34fbc8a787d76e35a898e85e706896e4d5dd7c02c3",
+      "approved": true,
+      "reason": "The prerequisites give \"A typical split is: * 80–90% of examples → training * 10–20% of examples → validation\", so only the 80–90/10–20 option matches.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-3ed9d6aa21de",
+      "content_sha256": "833b37e29d4bc5bceb177bfcec80e64bf8f693beeb4e0447c3c387f3f0a3c1e2",
+      "approved": true,
+      "reason": "The hyperparameter list says \"`learning_rate` (float, optional) Step size for gradient descent ... Typical values: `1e-6`–`5e-5`\"; the distractors describe n_epochs, lora_r and warmup_ratio, which the same list defines separately.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-3f7e821d6b04",
+      "content_sha256": "72859aada9495e918698e81dbe563e403c9c83caa350fc298d25d4d8816f11ae",
+      "approved": true,
+      "reason": "The overview lists \"Inference Logs: automatically collected chat completions generated via API or Playground\" and \"Filtered Datasets: datasets created from inference logs using sql queries\", which together establish option b and exclude the manual/export alternatives.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-3f9c2a8e61d7",
+      "content_sha256": "6dde4239d288fb30e3c0814b71c28afa1b259ea95272ff52a0a50bf2d12cc824",
+      "approved": true,
+      "reason": "Verbatim: \"automatically collected chat completions generated via API or Playground (unless Zero Data Retention is enabled)\"; SQL queries are documented as producing filtered datasets, not as the arrival path for logs.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-46c9e2a7b815",
+      "content_sha256": "be081caaa1c0d587a17d75849c5ae7123d4ec8e29acfbd248bf397fcde0d40ed",
+      "approved": true,
+      "reason": "\"`status`: `validating_files` → `queued` → `running` → `succeeded` / `failed`\" puts validating_files first, making exactly one option correct.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-4f8a2c6e9d31",
+      "content_sha256": "b7d55b463c87aee2b1aed1b69f412826d1688369b6d6047b18875ce50b86e320",
+      "approved": true,
+      "reason": "The quickstart says the credential helper \"lets you use registries in Container Registry without running the `docker login`\"; registry creation, Docker Engine install and the no-root warning are separate documented steps.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-71e4b9c2a5f3",
+      "content_sha256": "c13f3325ee0e346f0348b949ddaa2ddcb713a1fed49ea79b58e92b2fe8017e28",
+      "approved": true,
+      "reason": "Step 7 \"Download file contents\" uses `curl \"https://api.tokenfactory.nebius.com/v1/files/<file_ID>/content\"`, and the metadata step uses the bare file endpoint, so only option a fits.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-7c4a9f1d3e85",
+      "content_sha256": "8ccfead1c357854e4877b96f23a54b76e232d07fb5caed585e9bec2b6ed07e72",
+      "approved": false,
+      "reason": "The captured page only establishes the delete half (\"When you delete an endpoint, Serverless AI automatically deletes its VM and container (boot) disk\"); nothing on the page says stopping leaves the VM and disk in place or that it is \"uncharged for compute\" — stop/start is a separate linked page — so the correct option over-claims beyond the cited text.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "411d98547c608d81b666bc64b00bad5b0fcb3fb6c47784241754c0d5eafd9162",
+      "approved": true,
+      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\"; the other options name unrelated Nebius services.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-8f1a3d6e9c52",
+      "content_sha256": "dbfb872dda2df129eefcc76e174c9ad0fc2b930fb5108652fe209efbd6c4d846",
+      "approved": true,
+      "reason": "\"This bucket is not deleted automatically after you delete the cluster. You are still charged for the bucket until you delete it\" supports option d and rules out the free read-only distractor.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-9c4e7b2a5f16",
+      "content_sha256": "aba953bed5c2046092cb8f7b4f0419e264c6a6c2a1e5fb2782bc3a7e6cb01473",
+      "approved": true,
+      "reason": "The quickstart prerequisites require a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", so only the admin option is correct.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-a1f3c8d92b56",
+      "content_sha256": "c3de04fd7bfb521bc5389a55e399dfa1e2836c83bbdbe3d91a0fba709c770933",
+      "approved": true,
+      "reason": "\"Tavily is the web layer for AI agents: real-time search, page extraction, site crawling and mapping, and cited research, returned as clean, LLM-ready content\" is restated only by option a; keyless access, session headers and the docs MCP server are other features of the same page.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-a3d0c6f8b340",
+      "content_sha256": "a80482610e94f1a7e46ff074276840a4263d89848ef1dbb94be1d2bec7549ab7",
+      "approved": true,
+      "reason": "Credits page: \"Tavily Crawl combines both mapping and extraction operations, so the cost is the sum of both: Crawl Cost = Mapping Cost + Extraction Cost\", which excludes a flat per-job rate or free mapping.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-a51f8c3e07d2",
+      "content_sha256": "208f627d551c7a5b525e421aced98b6fbf0e74249949359ff9193f2ccb0bb6a4",
+      "approved": true,
+      "reason": "The automatic-charging section lists exactly \"At the start of the month, if your balance is negative\" and \"When the configured billing threshold is reached\", matching option a alone.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-a718c4f6b128",
+      "content_sha256": "bcdb5165c57039479dd694fd24e0df0e9a941dc9f08996c1cd62d11f9d853990",
+      "approved": true,
+      "reason": "\"The main distinction is control, with Extract you choose exactly which URLs to extract from, while Search with `include_raw_content` extracts from all search results\", and the same section lists curating URLs before extraction as an Extract use case.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ad74c0f2b784",
+      "content_sha256": "a3d5ff783044edf604d9c0ea03f1f2350a6d2df4b74ac0f01f63a5353628540b",
+      "approved": true,
+      "reason": "For the same `claude mcp add tavily` command the guide says \"No API key needed in the URL — authentication is handled automatically via OAuth\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "cbfb0c2aa09eccbb71e9015fe3a7ef348a519ac4b57e9b38bc5bc19be4fc5b0e",
+      "approved": true,
+      "reason": "\"Download LoRA adapter weights of the fine-tuning job. They are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket\" supports only option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-b2e4d9a1c673",
+      "content_sha256": "f3b74f31bc0644384901f0820d4e1948eef883fcc9e28fac5e9d89f548918591",
+      "approved": true,
+      "reason": "The quickstart's Crawl card reads \"Read many pages across a site\", while the other three one-liners on the same page belong to Search, Extract and Map.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-b4e1d7a9c451",
+      "content_sha256": "651f21cf33a3895561620775fe4a0d7dca84c5074d3af2687799eef6598cdc6e",
+      "approved": true,
+      "reason": "\"Never hardcode API keys in your source code. Always use environment variables or a secure secrets manager to store your credentials\" makes option b the only recommendation.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-b7d2a9f3e861",
+      "content_sha256": "e731cb5491f7e829c3ee378af3db8449cfddef734557e27c55fa0b0d21c64328",
+      "approved": true,
+      "reason": "\"Choose whether to save filesystem changes before submitting an operation. Every operation starts fresh compute, regardless of that choice\" supports option a and contradicts the reuse/resume distractors.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-b829d5a7c239",
+      "content_sha256": "d7d6c69603a9bc77c245bf413b442f62d9d34080d3f75b6ed374e44dbf445628",
+      "approved": true,
+      "reason": "The Search response schema describes raw_content as \"The cleaned and parsed HTML content of the search result. Only if `include_raw_content` is true\"; favicon has its own include_favicon flag.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-b85c1e49730d",
+      "content_sha256": "406d3243a2e6b755cb1b18e322bf07a82485c228e149be8ad5ac4515b6ce0dd1",
+      "approved": true,
+      "reason": "\"If a job, endpoint or Devlab created from a custom image fails, gets canceled or returns an error, Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\" — deletion, not stop-and-retain or keep-running.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-bc01b0c1d2e3",
+      "content_sha256": "35ff8e3e22e231e77c2a5e4deb99338e8e99d4bb8d66943d3a397c345747e178",
+      "approved": true,
+      "reason": "The comparison table row \"| Pricing | Per GPU/hour, billed with per-minute granularity | Per token |\" matches option b exactly.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-be85d1a3c895",
+      "content_sha256": "9a21f0261c87838daa9f1cf1a46c2b7c8869b1608c3dae36a96c70fb1c9549e2",
+      "approved": true,
+      "reason": "\"Use Search when you need raw source URLs and content to process yourself. Use Research when you need a finished, multi-source answer with citations\" makes Research the single best fit.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-c3f5e0b2d784",
+      "content_sha256": "d8c8cb60f06ff84a5c1347220d0569e97c9b43fa41dcd0c4eee9d550477ab7a9",
+      "approved": true,
+      "reason": "Production notes: \"Quality filtering: Use `score` from the response to filter low-relevance results (e.g., discard results below 0.5)\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-c71b4f9a3d85",
+      "content_sha256": "c70d0bd2f2ce9d7ffea8b66e6e512fb4f9c3c591f4a20d2edd0dda663ed13efa",
+      "approved": true,
+      "reason": "The Third-party integrations card reads \"Build inference into applications that are based on supported third-party integrations\"; the other options quote the Inference, API and Fine-tuning cards.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-c8f1a5e3d964",
+      "content_sha256": "183b1e88cfa66e2648cdb6759a42822332bcb1effee2d126dcc8e5fb1bae90b6",
+      "approved": true,
+      "reason": "Both halves are verbatim on the page: \"Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\" and \"To keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-c930e6b8d340",
+      "content_sha256": "8623b1829ceb6fe284209eef9a7f7991665f649f4936c38a1d0eea26264983db",
+      "approved": true,
+      "reason": "The Extract reference states \"Successful URLs appear in results; per-URL failures appear in failed_results. Check both arrays even when the response is HTTP 200\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-c9e5a2f8d164",
+      "content_sha256": "18dcc3399b4f0731b9974dc1166fb57fd4eb628d1a8e55e6725a185d7858d6c1",
+      "approved": true,
+      "reason": "The Core identifiers table row \"| Tag | A mutable name that points to an image. |\" names Tag, while Image UUID is \"An immutable stored filesystem state\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-cf96e2b4d906",
+      "content_sha256": "1e808b4e218f996f022c431c704c4af81a3dd3268ca2bc9436c1f187e9488d39",
+      "approved": true,
+      "reason": "Operational checklist: \"Tag each result `ok` / `error` and retry only the failed ones with backoff, so a single error never sinks the whole batch\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "8871220a51cf83659bb8345783f1b202ce9defbf4066a8b072e120658c1e4259",
+      "approved": true,
+      "reason": "\"Each GPU cluster is assigned a unique P-Key ... nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\" supports the partition-key answer.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "ae6715cee2b6c6bd36f627b31714d4f7b8f5ad5c5cb6db94b24147a5cb1dd433",
+      "approved": true,
+      "reason": "GPUDirect RDMA \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\", which is option c and excludes the host-memory bounce.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co2331c8572e",
+      "content_sha256": "2afbfcdcf69a9e1739e6499f88c824d266c3457f203cbad09dc327861e97bb7e",
+      "approved": true,
+      "reason": "\"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids to this cluster\" shows the fabric constrains the GPU platform, not node count or project.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co24917d1a57",
+      "content_sha256": "c77e195803b5bf1be9ea1cff728da2eda824e64bf713c0fbcb9aedb14cf035c7",
+      "approved": true,
+      "reason": "\"Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "3edcfdc4ef571cf598b39457daf6e189478d2e169690f10958194398279d3085",
+      "approved": true,
+      "reason": "Warning: \"You cannot move a resource to another network or subnet after creation\", so recreation is the only route.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "fc05d5373c4683a9e28be12d2983fd9cc3b15a2f265aa60c7079ca1372683102",
+      "approved": true,
+      "reason": "\"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources ... create separate networks for them\" matches option c; option d violates the same-region requirement.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co2738f2a8fd",
+      "content_sha256": "0730fe0471f06c7151637f2d435f5f8efb49b249a422cef27b77135962f0d23a",
+      "approved": true,
+      "reason": "\"For a security group to apply to a VM, you need to add a VM's network interface to the security group\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co285d098105",
+      "content_sha256": "b4772ebfd6cc83cded9194cd71e6d0461cbce569ad77affaf09456c03f3157df",
+      "approved": true,
+      "reason": "\"`.spec.priority`: Priority of the rule. 1 is the highest priority, 1000 is the lowest\", and lookup runs from 1 upward, so priority 1 wins.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "fa5b94b550522f49731dab02278d2dedc66780da500b1efd2a07e921276367c2",
+      "approved": true,
+      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "7fd4b223348ef1bd5e0f793acc1b6aafed5fb357e96985535751e915e7199812",
+      "approved": true,
+      "reason": "\"One shared filesystem can be attached to multiple VMs at once\", while a network SSD disk \"can only be added to one running VM at a time\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "922ee9fa55a77675b35a7adf3e3274ee1727b0d3dc32ad14be7d530a535d8411",
+      "approved": true,
+      "reason": "\"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB\" explains the rejection of 100 GiB.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "1f5522c684ece0faa7a0126f80e68a9bd44e69169fc173d257f2f58759c4e2b8",
+      "approved": true,
+      "reason": "\"All VMs that the filesystem is attached to must belong to the same project. Sharing a filesystem across projects is not supported, even if the projects are in the same region\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co33486f6ab7",
+      "content_sha256": "00586e2070c31f6dd4f91df1a6c9f67c9d9a90acf6e83cb46e65c0e5eb1f7a68",
+      "approved": true,
+      "reason": "\"Being on the tenant user list does not grant access to resources. Each account should be assigned to a group that specifies the level of access\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co3467c7f2ed",
+      "content_sha256": "0d8aebcdf013a73b06e4404f2faab8eabf7056db6b84d9990a50315b8c58f8ef",
+      "approved": true,
+      "reason": "\"A service account belongs to the project where it was created, but its access to resources is defined by the groups that it's added to ... can be granted access to any resource in the tenant regardless of the project\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co37d7aa468e",
+      "content_sha256": "18413c424f5e8a3b2382ac26f0c4029e0d1346618a235d3d698c2c7e1408a5e3",
+      "approved": true,
+      "reason": "\"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co38a7131e83",
+      "content_sha256": "0ad8b6e16b250f22f7654baeaeb68be31ae0e6832265541e96cf5a0b3e93d5ed",
+      "approved": true,
+      "reason": "The IAM overview states plainly \"You cannot delete a tenant\", so emptying it or removing accounts does not help.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co3981dd0ddc",
+      "content_sha256": "b0bad6de6f02f4e86d337c9e26bf420bc04d6722cbddd41b83bf393d8e42c20f",
+      "approved": true,
+      "reason": "\"You can only create a project via the Nebius AI Cloud CLI in public regions. If you try to create a project in a private region, you receive an error\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co40c9898d9e",
+      "content_sha256": "3fb2da77b8e00181d4d135d7fc046490d9ebbecbd40bb8ab8649a624b64bb2d9",
+      "approved": true,
+      "reason": "\"you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates\", plus the warning that a federation needs at least one valid certificate, supports replacing it in place.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co41d66f720d",
+      "content_sha256": "5e66fc77618de5002c8c128e52f85e93be320567163e11b1a1d19e0f17fcdbf6",
+      "approved": true,
+      "reason": "Every prerequisite tab on the federations page requires a group \"that has the `admin` role within your tenant or project\", which `editor` does not confer.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co427b99b29e",
+      "content_sha256": "487336f8f5d64f718fa3cb51b5a11dd3999a4f74002a6ac7ca43cbbaa703a667",
+      "approved": true,
+      "reason": "\"Make sure that you have access to your IdP admin portal and can get the SAML application metadata (login URL, identifier, certificate) required to create a federation\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "9269fc1a1f29f447cb3309e012ef7f8cafea4d5c5ab280bc45c09a79adb950d9",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co5387b84806",
+      "content_sha256": "c333de0618d536fdbf046e4b51173cd92aa82f36a4946c38a7e2c2cf6d7921d7",
+      "approved": true,
+      "reason": "The possible-cause section says the `nvidia-fabricmanager` service \"does not initialize on VM startup because of a race condition or other timing issues\"; the quoted error itself states the driver is present, ruling out the missing-driver option.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co546c4c3ecd",
+      "content_sha256": "21787f0cb156da590691d5997480fb055b81180793b0c2276ccc6f86e9970be8",
+      "approved": true,
+      "reason": "\"You can resolve this issue by restarting the NVIDIA Fabric Manager service, the GPUs on the VM or the entire VM\", matching the three remedies in option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-co55ed4440ca",
+      "content_sha256": "aed6545d7d3a28bf89fe4aeddf7bfbc2f27e1ae061da1bd831603c7d6700c2e5",
+      "approved": true,
+      "reason": "\"This can occur on any VM with GPUs, regardless of the specific platform, number of GPUs or boot disk image\" refutes the platform-specific reasoning.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-cs02a5b6c7d8",
+      "content_sha256": "39c246451ff7e1888aa8560b29427df6214ddb554b17bfcf4ebc7a9187a24165",
+      "approved": true,
+      "reason": "\"Set minimum and maximum replicas to automatically scale capacity with traffic\" plus \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely\" together support only option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-d0a7f3c5e017",
+      "content_sha256": "8f8240f786715545ea85af8ac140697c9f6e176bb3958d8edae67e4bdb09673f",
+      "approved": true,
+      "reason": "Authentication section: \"All Tavily endpoints are authenticated using API keys\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-d4a6f1c3e895",
+      "content_sha256": "6a95fc7ff888a2e78d39a5b9858aaf019baff68d31a89b5cfc9606dd3a260b88",
+      "approved": true,
+      "reason": "\"Lead with Search when sources are unknown; move to the others once you have URLs or a site to work through\", and the table calls Search \"the default start\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-da41f7c9e451",
+      "content_sha256": "09e020e5706f3e6972fbe9a025c338952cf48f8189df6a3a00760971dd5468ca",
+      "approved": true,
+      "reason": "\"Tavily Map returns a list of URLs discovered from a starting URL. Unlike Crawl, it does not extract page content\", confirmed by the table row \"Returns | URL list only | URLs + full page content\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-de01a1b2c3d4",
+      "content_sha256": "93632211c9ebcad71020498e1ffceb320ae1f4b6354982d71418fb52b311960b",
+      "approved": true,
+      "reason": "Table row \"| Capacity | Capacity reserved for your organization | Shared multi-tenant capacity |\", and the capacity page's \"it is not a long-term reservation\" rules out the permanent-reservation option.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-de02b2c3d4e5",
+      "content_sha256": "a6f7eed202440e439eb916166e4aacbee2816ebf83d460ae22f1a664b830db00",
+      "approved": true,
+      "reason": "\"| routing_key | The model identifier you pass to inference calls. Returned when you create an endpoint. |\" versus \"| endpoint_id | Identifier used for update/delete operations. |\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-de03c5d6e7f8",
+      "content_sha256": "70fbfcffccdcd8eefb5445e6a1ed90cedccf9a9b19b79ae68d844419fb44b573",
+      "approved": true,
+      "reason": "\"| Custom weights support | Supported for eligible models | Base models only |\" supports option b; the SLA and pricing distractors are contradicted by the capacity and pricing rows.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-dl01a3b4c5d6",
+      "content_sha256": "486fdc57d2558a70d7c0b0130832e22829d9be8e4b44db297dc40854541727ab",
+      "approved": true,
+      "reason": "Data Lab \"is the unified workspace inside Nebius Token Factory for working with inference logs (chat completions) and datasets\", with \"preparing datasets via SQL queries\" and \"Reusable datasets for batch inference and fine-tuning\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-dl02b4c5d6e7",
+      "content_sha256": "98bb8afe40472b406ae8a37d9b1dff89a6c68f878c7c75b902cba02dba7526ff",
+      "approved": false,
+      "reason": "The only evidence is \"Events help you understand the lifecycle (file validation, dataset processing, training progress).\", which says nothing about token-length truncation or maximum context length; the excerpt does not establish the keyed answer.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-dl03c5d6e7f8",
+      "content_sha256": "31156cf1b4021018fc11c71ba13a3461cb531764c32a108fa0ac58417ede69e7",
+      "approved": false,
+      "reason": "The cited excerpt about job events (\"file validation, dataset processing, training progress\") contains nothing about semantic deduplication or near-duplicate removal, so the evidence does not support the correct option.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ds01c3d4e5f6",
+      "content_sha256": "10e71a486e5c1572749b4e3973f54b14f2af44398c003edc13dc95528aed9f47",
+      "approved": false,
+      "reason": "The evidence quotes only the job-events sentence \"Events help you understand the lifecycle (file validation, dataset processing, training progress).\"; out-of-sample loss and overfitting detection are not established by it.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-e1b8a4d6f128",
+      "content_sha256": "e39869ca62de3e921f5e29cafe1a9034a8bad4df96a542d9a1a51e0fde65089b",
+      "approved": true,
+      "reason": "The Usage schema documents key.usage as \"Total credits used for this API key during the current billing cycle\", while limit/plan_limit are plan limits.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-e5b7a2d4f906",
+      "content_sha256": "8fe45965dc6514c6af845bcbf35b345d54e7bbae73ae21ba9b3d875b88964a06",
+      "approved": true,
+      "reason": "\"You provide a simple RAG function — the agent identifies gaps in your internal knowledge and fills them with web data, producing a comprehensive report with citations\" matches option d and contradicts replacing or uploading internal data.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "cbf5cfc9337789bf0fdf40a723ed6a1b93d88ef29f1a15f763d4327b536e50fa",
+      "approved": true,
+      "reason": "\"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-eb52a8d0f562",
+      "content_sha256": "0d90a47e883b416e95fa924b490550290d0ef05446c813a55aa2cb8efb28f5d6",
+      "approved": true,
+      "reason": "The `instructions` parameter description: \"When specified, the mapping cost increases to 2 API credits per 10 successful pages instead of 1 API credit per 10 pages\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-er02d4e5f6a7",
+      "content_sha256": "4138506f49c098b4fa45d1d53f3f57e5b1780b9063da3013df40dcb4984a5c41",
+      "approved": false,
+      "reason": "The cited excerpt (\"Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations.\") is about Base vs Fast model flavors and says nothing about cosine similarity or vector distance metrics.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-f29ae7c1b4d6",
+      "content_sha256": "ec696e130a7451f29b6b015e1661853409917364422a07e906218fa013fa1b08",
+      "approved": true,
+      "reason": "The setup steps read \"For authentication, [get an API key]\", while the Cookbook, playground and integrations are separate cards on the same page.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-f2c9b5e7a239",
+      "content_sha256": "9a0ff78ae251e207611d37989b44498992b40a39c348b603e38c67c54003e314",
+      "approved": true,
+      "reason": "\"If the response includes `Retry-After`, wait the indicated number of seconds before retrying\" — the 60 in the sample response is illustrative, so option c is the only fit.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-f4a8e1c6d935",
+      "content_sha256": "38099f9723e03fc2ccf8dcc0de973bc55e23e57f980e5a140afc57ca0cc3e9b4",
+      "approved": true,
+      "reason": "\"A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal.\"",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-f607b3e5a017",
+      "content_sha256": "317fb2f80f9b87edde05742c46dcc11b7ae7eb477e89f2c12d58c49f20ec9515",
+      "approved": true,
+      "reason": "\"`advanced` searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency. Reach for it when coverage matters most: niche topics ...\"",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fb709a3c61e4",
+      "content_sha256": "ed9211c1a6824389d9870b48b35cba20c94ba7fef5e467564a7c1d19fb81c579",
+      "approved": true,
+      "reason": "In \"Push and run a Docker image\", step 2 between pulling and pushing is \"Assign the image a tag:\" with `docker tag cr.$REGION_ID.nebius.cloud/...`.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fc01a2b3c4d5",
+      "content_sha256": "e808778328b682a51f87d4016a95b6d0eb722b8cbe1de8b04b9c7ccc0737eefe",
+      "approved": true,
+      "reason": "\"The model does not execute the functions itself ... You are responsible for parsing these outputs and executing the corresponding functions on your backend or client side\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fc02b3c4d5e6",
+      "content_sha256": "0fef5ef143c7d1d77730a594344dbe2ad07146403311ea223e08c35fa4355dcc",
+      "approved": true,
+      "reason": "For `tool_choice` \"auto\": \"The model automatically selects the most appropriate function based on the context of the prompt. This is the default behavior\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fc03c4d5e6f7",
+      "content_sha256": "83c07f8ee93312d63d3e4e5fe7c86eca393000afc07ef1ead7650d6e7d318217",
+      "approved": true,
+      "reason": "\"Each tool is described using a JSON Schema that defines its name, input parameters, and expected data types\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fc04a8b9c0d1",
+      "content_sha256": "3ddd935b6b8012a1aa1bb7d6666fd439124d733683da539170cfa88d74128f53",
+      "approved": true,
+      "reason": "After the explicit tool_choice example: \"This forces the model to call the `read_file` function regardless of context, overriding its own tool selection logic\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fc05d2e3f4a5",
+      "content_sha256": "d9ea4347dd3d9416ebe84a8bf03fa1dd06eb8a18aebfcb8e2721e144670b7833",
+      "approved": true,
+      "reason": "The page assigns execution to you (\"executing the corresponding functions on your backend or client side\") and shows the follow-up message \"role\": \"tool\", \"content\": result, \"tool_call_id\": call.id.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fc63b9e1a673",
+      "content_sha256": "cdb3ee17849a8953aad37e9e5fa2a701cf007db715025bf0862537b2d8d12e80",
+      "approved": true,
+      "reason": "Performance tip: \"Each level of depth increases crawl time exponentially. Start with `max_depth=1` and increase as needed\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fi01c7d8e9f0",
+      "content_sha256": "16c7a53395748a93695699f5cb9f4b609dcff195a78b7482dd7f119f59d64be1",
+      "approved": true,
+      "reason": "The quickstart client is built with base_url=\"https://api.tokenfactory.nebius.com/v1/\" and api_key=os.environ.get(\"NEBIUS_API_KEY\").",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fi02d8e9f0a1",
+      "content_sha256": "674834b2f71b27e75cf12d5093e197e62e4d3bba148a8f87b38f2732d46f2941",
+      "approved": false,
+      "reason": "The cited excerpt is the Base/Fast flavor sentence about pricing, latency and optimizations; it never mentions MCP or tool discovery, so it does not support the keyed answer.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fj01a9b0c1d2",
+      "content_sha256": "0ed1a42415691ebdc43224603ed60f186141891997077a308e49b39112b4fc11",
+      "approved": true,
+      "reason": "\"Each checkpoint represents the model after a certain number of training steps (often per epoch)\", which only the weight-snapshot option describes.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-fj02b0c1d2e3",
+      "content_sha256": "46d1ab0bf5df7d0b39c820c92f516043dcf2780b3d7e6384318461525ea15f77",
+      "approved": true,
+      "reason": "Step 6 shows `events = client.fine_tuning.jobs.list_events(job.id)` with \"Events help you understand the lifecycle (file validation, dataset processing, training progress)\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ft01b5c6d7e8",
+      "content_sha256": "7e1e71d286d971c1383194122e8756ce74a607d570dcf2bc5cc7fb2ff5a25a27",
+      "approved": true,
+      "reason": "\"Each checkpoint represents the model after a certain number of training steps (often per epoch)\" matches option b and excludes a dataset snapshot or log entry.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ft02c6d7e8f9",
+      "content_sha256": "a23fb4eb7eb5e4e194c976bbb5fe76c518dccad76097dfd672ebca51e9b7eb3d",
+      "approved": true,
+      "reason": "\"Events help you understand the lifecycle (file validation, dataset processing, training progress)\" covers exactly the three things the stem asks about.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ft03c7d8e9f0",
+      "content_sha256": "4d8d291b2e5fa0644719ce131198ff243ac5c1e87f5ecd2c958ce925f50cde48",
+      "approved": true,
+      "reason": "\"`n_epochs` (integer, optional) Number of passes over the entire dataset\", with learning_rate documented separately as the gradient step size.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ft04d8e9f0a1",
+      "content_sha256": "4d4e5fb1fb918080d0becaaac664b748d03b8321db1ca1ebcd3c7c2a8675ead3",
+      "approved": false,
+      "reason": "The only cited text is the job-events sentence about lifecycle; the page's learning_rate entry gives ranges but nothing about loss divergence or oscillation, so the excerpt does not establish the correct option.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-la01c1d2e3f4",
+      "content_sha256": "53c6f5710e044c66e53d8f8c1b6a7cc380103bcb7098395184f4b86dbcf5ee18",
+      "approved": true,
+      "reason": "For the `lora` hyperparameter: \"`true`: only LoRA adapter weights are trained; base model weights stay frozen\" and \"`false`: full fine-tuning is applied\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-la03d6e7f8a9",
+      "content_sha256": "b9e3bb13b7e4627ca73a37bec4fef8fea9fef3dce50f7e441548ee4aa1419d69",
+      "approved": true,
+      "reason": "\"`lora_r` (integer, optional) Rank of LoRA matrices. Higher values increase capacity but also overfitting and cost\"; lora_dropout, weight_decay and context_length are defined separately.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld217205c155",
+      "content_sha256": "a2408795c498779732ad9af1c62353acc463fc20e40dd347efe0b0d0363e84d8",
+      "approved": true,
+      "reason": "\"Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations\"; option d is excluded by the next sentence describing real runtime differences.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld2298670345",
+      "content_sha256": "76468ca714e8897c795fa89ac75610162878a6986cb6d493133fcf8b93a3404c",
+      "approved": true,
+      "reason": "\"The Fast flavor uses smaller batch sizes, increased compute allocation, and techniques such as speculative decoding to reduce latency and improve responsiveness\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld235c9164e4",
+      "content_sha256": "acb3c0b3225b11697cbafb7fa08a108928ee1bf8d4ab806df3e488f2633d693f",
+      "approved": true,
+      "reason": "Speculative decoding \"uses auxiliary models to pre-generate likely next tokens. The main model verifies these predictions, reducing the number of forward passes required and improving throughput without degrading output quality\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld2443c1b29d",
+      "content_sha256": "e21163b2f7f70a6ba771f316b98694b4c3789384b4b2e07060cb90dea96c587a",
+      "approved": true,
+      "reason": "Quantization is \"A technique that reduces the precision of model weights and activations, decreasing memory usage and computation\"; the other three cards describe memory layout, batching and KV caching.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld31ea78838c",
+      "content_sha256": "4abd5c1424d5aef04366cd4b2bbb35e97abda5bdb621494334ad78b34d4120de",
+      "approved": true,
+      "reason": "\"To use the Fast flavor, append `-fast` to the model name in the API\" — no separate parameter or base URL.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld3211bef699",
+      "content_sha256": "a36903032621005d84fc68f0cdf4ef050db4307d48772f484e21f69815cd2418",
+      "approved": true,
+      "reason": "The overview lists endpoint performance factors as \"Batch size / GPU type (L40, H100, H200, B200) / GPU count / Inference-time optimizations (e.g., speculative decoding)\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld3465e45f6f",
+      "content_sha256": "6652da333d7ea849a85da7d261a749822c647421543d26624a065f0abd5f3105",
+      "approved": true,
+      "reason": "The Context Caching card: \"A caching mechanism that stores the context (i.e., the output of previous layers) for each input sequence\"; Flash Attention and Continuous Batching have distinct descriptions on the same page.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld388171b0f1",
+      "content_sha256": "1828aab53f202fd3536349349d7ff27cef2a1fb41d2283f7deffee131a4a514a",
+      "approved": true,
+      "reason": "The Region control: \"Choose where your deployment runs to optimize latency and meet data residency requirements\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld39cd7b5510",
+      "content_sha256": "7b03adb1128e2f704724eb7126824aad98421503a5c377fcef743f45b5f867a6",
+      "approved": true,
+      "reason": "\"Use the control plane to create and manage deployments, and the data plane to run inference through OpenAI-compatible APIs\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld403e852cea",
+      "content_sha256": "2d54151b9e8adf255fe90f7a194defa853270cf4989ccc818bb85161196da316",
+      "approved": true,
+      "reason": "The Autoscaling control: \"Set minimum and maximum replicas to automatically scale capacity with traffic\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld43c53921d4",
+      "content_sha256": "1eeee9f5db8055d63d8c0cf32bc869c08f1018eaee33fe9dc52e80344fc25cce",
+      "approved": true,
+      "reason": "\"Key use cases: predictable capacity / finetuned base model with custom weights / compliance / private infra / bigger control over deployment\" matches option d.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld448ca61125",
+      "content_sha256": "f9c5344674f672cf6eb5723477066e69bc057f7667e2f3ef942f679a9a78bf1c",
+      "approved": true,
+      "reason": "The GPU configuration control: \"Select GPU type and GPUs per replica to match your performance and throughput needs\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld458c2b9572",
+      "content_sha256": "5927402fccf36a00ec80946b9c7f3d78fcc0b2199fa54bc028bfa73a0611b988",
+      "approved": true,
+      "reason": "\"By default, a text generation model responds to your requests with a text in natural language. You can also force the model to respond with JSON instead\", via the `response_format` parameter.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld4664d9a3a6",
+      "content_sha256": "eca51f9808abe24874e3059041b7da01f74cfaa699cca3b243b958f79c670422",
+      "approved": true,
+      "reason": "\"Arbitrary JSON object. Forces arbitrary JSON output, the model will decide on the schema by itself `{\"type\": \"json_object\"}`\" explains the varying field names.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld47ff8016a6",
+      "content_sha256": "24fd8372efbb57fcc5e6a1556f7b21fec09dfe5df960d3bf992c91c863c7cdaf",
+      "approved": true,
+      "reason": "\"JSON schema following. Follows the specific schema you provide - `{\"type\": \"json_schema\"}` in `response_format` parameter\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld48bb71c2de",
+      "content_sha256": "f342ba6cfece20ba9a09362226046f18030ce292ca5b0a31d689e6c6e1d50037",
+      "approved": true,
+      "reason": "The tip \"Many practical tests show that it's always better to provide the schema both in text prompt for the model and \"json_schema\" parameter\" supports option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld49a9908b5d",
+      "content_sha256": "dce1ad13d9fc39ffa83f61c393cd916bf7353626728143bd2a1a1047e4fbe0e7",
+      "approved": true,
+      "reason": "\"The model does not execute the functions itself. Instead, it outputs tool invocation instructions ... You are responsible for parsing these outputs and executing the corresponding functions\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld5098b0009c",
+      "content_sha256": "07da216bff54c950598b5e05f3cfa17d3cc735dc3bf7651602f712f69a70b1da",
+      "approved": true,
+      "reason": "\"Each tool is described using a JSON Schema that defines its name, input parameters, and expected data types. This schema informs the model how each tool should be invoked.\"",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld5108ea0df2",
+      "content_sha256": "e58ca130295be5abe87db98af82652341152ef5a0fe08e47174dab637f800724",
+      "approved": true,
+      "reason": "The capability list for function calling includes \"Retrieve real-time data\" and \"Interact with third-party services\"; context window and billing are untouched by it.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld52897530eb",
+      "content_sha256": "b88d3e41bc5013f98ab089508d753dcffbb72fd6f265844d8cf67f51610e8104",
+      "approved": true,
+      "reason": "The model \"may: Respond conversationally, or Propose a function call by selecting a relevant tool and filling in the required arguments according to the schema\" — exactly option b.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld597b79ce73",
+      "content_sha256": "3ae11449fe54644e46610032c5b5f7d8d30b5aafe083b7b8535fa052cc700a83",
+      "approved": true,
+      "reason": "\"If a card charge fails, your account is suspended. To avoid service interruptions, ensure that your payment method remains valid and up to date.\"",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-ld6022d95b1b",
+      "content_sha256": "0a28fcaa7c015b69b715465ac24ed7c26f3daa0a810eb5edfd544bda89c6a886",
+      "approved": true,
+      "reason": "Automatic charging happens \"At the start of the month, if your balance is negative\" or \"When the configured billing threshold is reached\", with the charge bringing the balance to zero.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-pf01b9c0d1e2",
+      "content_sha256": "06bbb048950cad0896f29a8ed766a4fd5ea8ae39c0e7c2cf2964d3cab2964995",
+      "approved": true,
+      "reason": "\"To use the Fast flavor, append `-fast` to the model name in the API\", so no flavor parameter, base URL change or dedicated endpoint is involved.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-pf02c0d1e2f3",
+      "content_sha256": "2bb58821c2929f248bdab797012d6558ef541887cf39c01b77abc1016cf5b798",
+      "approved": true,
+      "reason": "\"Both deliver identical model outputs. Differences lie in token pricing, latency, and the level of applied optimizations\"; speculative decoding is documented as improving throughput \"without degrading output quality\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-pf03d1e2f3a4",
+      "content_sha256": "11821a52c5a98d7fdd99d6d4c3d5cd2e849de70e2e307538c7d90812b5f294d4",
+      "approved": true,
+      "reason": "Same sentence — identical outputs, differences in pricing, latency and optimization level — supports only option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-pf04e2f3a4b5",
+      "content_sha256": "ff207052c5a9b0419bf282f10825e66ee51795b6f8c78aa6d87ce1c58bbd4799",
+      "approved": true,
+      "reason": "\"To use the Fast flavor, append `-fast` to the model name in the API\": a suffix on the model name, not a header, port or namespace prefix.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-pf05f3a4b5c6",
+      "content_sha256": "a6cbcc547ca359cefb573dfda742e3419416b186f884030b18daeb7e14c62282",
+      "approved": true,
+      "reason": "The quickstart cURL sends `-H \"Authorization: Bearer $NEBIUS_API_KEY\"`, and the SDK example passes the same key as api_key.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-pf08c6d7e8f9",
+      "content_sha256": "0d0450cb5809713a77ae934ddb888df1e1cbecbfe774831959b69a9082c0db09",
+      "approved": true,
+      "reason": "The quickstart client sets base_url=\"https://api.tokenfactory.nebius.com/v1/\"; the other URLs appear nowhere on the page.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-rp01a5b6c7d8",
+      "content_sha256": "5462c3cf2dcbce0e14853c1eafdc7a3055f1277ac7047c0eca0a866aa4f2fd26",
+      "approved": false,
+      "reason": "The cited excerpt is the Base/Fast flavor sentence about pricing, latency and optimizations; the captured source says nothing about chunking or chunk overlap, so the evidence does not support the answer.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-rp02b6c7d8e9",
+      "content_sha256": "fa3c291299a9a5b1b51f82f08c608307d3ab0cb4df1620f4ce2bb18c1544474a",
+      "approved": false,
+      "reason": "The evidence quotes the inference-overview sentence on identical model outputs and flavor differences; it contains no mention of hybrid search, dense vectors or BM25.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-sb03c1d2e3f4",
+      "content_sha256": "34c6a6cd6d35d08c1bcb6cb2f5921c1d7d1127bfc199391646863c78727d3074",
+      "approved": false,
+      "reason": "The cited inference-overview sentence about flavors (pricing, latency, optimizations) has no bearing on how secrets should be injected into a sandbox, so the excerpt does not establish the correct option.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-so01d5e6f7a8",
+      "content_sha256": "533b25522cac50ef018a7ef0076ccc5cbc64fd5b53e457570cf51440113a7620",
+      "approved": true,
+      "reason": "\"Use `response_format` parameter to get JSON output\", and the page's two modes are selected through its type field; no other named parameter exists.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-so02e6f7a8b9",
+      "content_sha256": "a117f7d85aa3d7c6ea35490617995a6bd9e577c7b588e44ae00b063a6a81fab5",
+      "approved": true,
+      "reason": "\"Arbitrary JSON object. Forces arbitrary JSON output, the model will decide on the schema by itself\" — JSON is guaranteed, the shape is not.",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-so03f7a8b9c0",
+      "content_sha256": "1eac22fc8843e4996e21fa6f784f8f5e606af35f4b176cd23a0f03a9207e522d",
+      "approved": true,
+      "reason": "\"It's always better to provide the instruction to follow JSON output and the schema to your model's system or user prompt to increase output quality and consistency\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-so04a3b4c5d6",
+      "content_sha256": "dc57ebe135ab66664cd2fe62583d8b0073117dd0099b5b91159df22bd4db4b53",
+      "approved": true,
+      "reason": "\"Use JSON schema instead of JSON objects whenever you need strict JSON structure\", since json_object \"forces arbitrary JSON output, the model will decide on the schema by itself\".",
+      "reviewed_at": "2026-10-31T01:59:27Z"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de01a1b2c3d4
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/dedicated-endpoints
 stem: According to the comparison table, how does capacity differ between
@@ -42,3 +42,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 93632211c9ebcad71020498e1ffceb320ae1f4b6354982d71418fb52b311960b

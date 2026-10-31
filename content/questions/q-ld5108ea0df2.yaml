@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld5108ea0df2
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/tool-use
 stem: A product manager asks what function calling makes possible that a bare
@@ -31,3 +31,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: e58ca130295be5abe87db98af82652341152ef5a0fe08e47174dab637f800724

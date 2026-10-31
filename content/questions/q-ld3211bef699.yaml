@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld3211bef699
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/inference-basics
 stem: Which set of endpoint configuration factors does the inference overview
@@ -34,3 +34,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a36903032621005d84fc68f0cdf4ef050db4307d48772f484e21f69815cd2418

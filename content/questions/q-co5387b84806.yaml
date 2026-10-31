@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co5387b84806
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: PyTorch on a multi-GPU VM fails with `system not yet initialized (error
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: c333de0618d536fdbf046e4b51173cd92aa82f36a4946c38a7e2c2cf6d7921d7

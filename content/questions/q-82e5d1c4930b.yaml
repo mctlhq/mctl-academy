@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-82e5d1c4930b
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/inference-setup
 stem: "You deploy an open-source LLM through a Nebius Serverless AI endpoint
@@ -36,3 +36,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 411d98547c608d81b666bc64b00bad5b0fcb3fb6c47784241754c0d5eafd9162

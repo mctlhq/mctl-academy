@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c8f1a5e3d964
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability-tracing
 stem: "By default, with no special configuration, what happens to the underlying
@@ -48,3 +48,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 183b1e88cfa66e2648cdb6759a42822332bcb1effee2d126dcc8e5fb1bae90b6

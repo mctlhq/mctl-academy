@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-dl01a3b4c5d6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/data-lab
 stem: What is Data Lab in Token Factory?
@@ -39,3 +39,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 486fdc57d2558a70d7c0b0130832e22829d9be8e4b44db297dc40854541727ab

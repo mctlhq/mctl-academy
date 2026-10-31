@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld5098b0009c
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/tool-use
 stem: How is each available tool described to the model?
@@ -31,3 +31,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 07da216bff54c950598b5e05f3cfa17d3cc735dc3bf7651602f712f69a70b1da

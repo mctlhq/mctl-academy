@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-46c9e2a7b815
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/fine-tuning-jobs
 stem: According to the documented fine-tuning job status progression, which
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: be081caaa1c0d587a17d75849c5ae7123d4ec8e29acfbd248bf397fcde0d40ed

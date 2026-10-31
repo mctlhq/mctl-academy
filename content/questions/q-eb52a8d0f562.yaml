@@ -1,42 +1,45 @@
 schema_version: 1
 id: q-eb52a8d0f562
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/crawl-parameters
-stem: "An agent adds natural-language `instructions` to a Crawl request to
-  focus it on specific content. Per the Crawl API reference, what happens to
-  the cost?"
+stem: "An agent adds natural-language `instructions` to a Crawl request to focus
+  it on specific content. Per the Crawl API reference, what happens to the
+  cost?"
 options:
   - id: a
-    text: "The cost is unaffected; instructions are free to add to any Crawl
-      request"
+    text: "The cost is unaffected; instructions are free to add to any Crawl request"
     correct: false
-    explanation: "The reference states the cost increases when instructions
-      are specified, so it is not free."
+    explanation: "The reference states the cost increases when instructions are
+      specified, so it is not free."
   - id: b
     text: "The cost moves from a per-page basis to a flat per-crawl fee"
     correct: false
-    explanation: "The reference still prices by successful pages; it does not
-      switch to a flat fee."
+    explanation: "The reference still prices by successful pages; it does not switch
+      to a flat fee."
   - id: c
-    text: "The cost is cut in half, since instructions reduce the number of
-      pages crawled"
+    text: "The cost is cut in half, since instructions reduce the number of pages
+      crawled"
     correct: false
-    explanation: "The reference describes a cost increase for using
-      instructions, not a reduction."
+    explanation: "The reference describes a cost increase for using instructions,
+      not a reduction."
   - id: d
-    text: "The cost increases to 2 API credits per 10 successful pages instead
-      of 1 API credit per 10 pages"
+    text: "The cost increases to 2 API credits per 10 successful pages instead of 1
+      API credit per 10 pages"
     correct: true
-    explanation: "Correct. The reference states the mapping cost increases to
-      2 credits per 10 successful pages (instead of 1) when instructions are
+    explanation: "Correct. The reference states the mapping cost increases to 2
+      credits per 10 successful pages (instead of 1) when instructions are
       specified."
 evidence:
   - source_id: src-tv-api-crawl
-    excerpt: "When specified, the mapping cost increases to 2 API credits per
-      10 successful pages instead of 1 API credit per 10 pages."
+    excerpt: "When specified, the mapping cost increases to 2 API credits per 10
+      successful pages instead of 1 API credit per 10 pages."
     source_sha256: 9d66f4d92a844a2e2579ecb3e63e29db39bec22b4728abb87c58e6b61e927778
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0d90a47e883b416e95fa924b490550290d0ef05446c813a55aa2cb8efb28f5d6

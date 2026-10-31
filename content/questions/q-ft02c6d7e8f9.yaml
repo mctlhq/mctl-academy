@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ft02c6d7e8f9
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/supervised-fine-tuning
 stem: A fine-tuning job is running and you want to know whether the dataset was
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a23fb4eb7eb5e4e194c976bbb5fe76c518dccad76097dfd672ebca51e9b7eb3d

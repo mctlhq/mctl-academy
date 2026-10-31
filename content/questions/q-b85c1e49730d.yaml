@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b85c1e49730d
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/observability-tracing
 stem: "By default, what happens to the underlying VM when a Serverless AI job,
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 406d3243a2e6b755cb1b18e322bf07a82485c228e149be8ad5ac4515b6ce0dd1

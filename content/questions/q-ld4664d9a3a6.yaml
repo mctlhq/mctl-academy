@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld4664d9a3a6
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/structured-output
 stem: 'A team sets `response_format` to `{"type": "json_object"}` and is
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: eca51f9808abe24874e3059041b7da01f74cfaa699cca3b243b958f79c670422

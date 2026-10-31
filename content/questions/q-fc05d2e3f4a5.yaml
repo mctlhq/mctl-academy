@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc05d2e3f4a5
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/function-calling
 stem: When a model returns a `tool_calls` payload in a Chat Completions
@@ -40,3 +40,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: d9ea4347dd3d9416ebe84a8bf03fa1dd06eb8a18aebfcb8e2721e144670b7833

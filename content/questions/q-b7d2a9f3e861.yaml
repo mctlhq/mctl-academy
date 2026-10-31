@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b7d2a9f3e861
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: "Sandboxes lets you choose to save or discard filesystem changes before an
@@ -42,3 +42,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: e731cb5491f7e829c3ee378af3db8449cfddef734557e27c55fa0b0d21c64328

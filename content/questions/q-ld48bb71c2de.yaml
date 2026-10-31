@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld48bb71c2de
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/structured-output
 stem: A team already passes a JSON schema in the request. What additional
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: f342ba6cfece20ba9a09362226046f18030ce292ca5b0a31d689e6c6e1d50037

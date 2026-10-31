@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld52897530eb
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/tool-use
 stem: Given a user query and a set of available tools, what are the model's two
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: b88d3e41bc5013f98ab089508d753dcffbb72fd6f265844d8cf67f51610e8104

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf05f3a4b5c6
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/api-authentication
 stem: How is an API request to Token Factory authenticated?
@@ -30,3 +30,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a6cbcc547ca359cefb573dfda742e3419416b186f884030b18daeb7e14c62282

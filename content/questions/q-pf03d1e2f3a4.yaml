@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf03d1e2f3a4
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/openai-compatibility
 stem: How do Fast model flavors differ from standard model flavors in Nebius
@@ -35,3 +35,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 11821a52c5a98d7fdd99d6d4c3d5cd2e849de70e2e307538c7d90812b5f294d4

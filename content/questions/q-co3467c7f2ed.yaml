@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3467c7f2ed
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/iam-roles
 stem: A service account was created in the tooling project. It now needs to
@@ -36,3 +36,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0d8aebcdf013a73b06e4404f2faab8eabf7056db6b84d9990a50315b8c58f8ef

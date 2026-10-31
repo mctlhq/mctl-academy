@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co3128de5d55
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: An engineer tries to create a 100 GiB Network SSD Non-replicated disk and
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 922ee9fa55a77675b35a7adf3e3274ee1727b0d3dc32ad14be7d530a535d8411

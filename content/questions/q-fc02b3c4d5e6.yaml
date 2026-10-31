@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fc02b3c4d5e6
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/function-calling
 stem: You send a request with several tools defined but do not set
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0fef5ef143c7d1d77730a594344dbe2ad07146403311ea223e08c35fa4355dcc

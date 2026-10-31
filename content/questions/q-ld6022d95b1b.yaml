@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld6022d95b1b
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/cost-and-billing
 stem: Under which conditions is a bank card charged automatically?
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0a28fcaa7c015b69b715465ac24ed7c26f3daa0a810eb5edfd544bda89c6a886

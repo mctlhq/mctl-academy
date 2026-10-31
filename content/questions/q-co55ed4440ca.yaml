@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co55ed4440ca
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: A team believes CUDA initialization failures only affect one GPU platform,
@@ -33,3 +33,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: aed6545d7d3a28bf89fe4aeddf7bfbc2f27e1ae061da1bd831603c7d6700c2e5

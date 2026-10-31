@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f4a8e1c6d935
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: "According to the Sandboxes documentation's state model, what does a saved
@@ -44,3 +44,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 38099f9723e03fc2ccf8dcc0de973bc55e23e57f980e5a140afc57ca0cc3e9b4

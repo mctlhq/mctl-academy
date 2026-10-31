@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co38a7131e83
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/organization-hierarchy
 stem: During a cleanup, a team asks you to delete an unused tenant along with
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0ad8b6e16b250f22f7654baeaeb68be31ae0e6832265541e96cf5a0b3e93d5ed

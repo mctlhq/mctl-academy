@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1d28809ed6da
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/datasets
 stem: What split between training and validation examples does the fine-tuning
@@ -32,3 +32,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a7b9f0c0ba2ce36e45049e34fbc8a787d76e35a898e85e706896e4d5dd7c02c3

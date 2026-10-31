@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld2443c1b29d
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ai-concepts
 stem: A stakeholder asks which optimization reduces memory usage by lowering the
@@ -34,3 +34,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: e21163b2f7f70a6ba771f316b98694b4c3789384b4b2e07060cb90dea96c587a

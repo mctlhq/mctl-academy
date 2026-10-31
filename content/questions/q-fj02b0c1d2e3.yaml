@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fj02b0c1d2e3
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/fine-tuning-jobs
 stem: How can a developer inspect what happened during a fine-tuning job, such
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 46d1ab0bf5df7d0b39c820c92f516043dcf2780b3d7e6384318461525ea15f77

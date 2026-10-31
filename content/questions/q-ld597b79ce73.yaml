@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld597b79ce73
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/cost-and-billing
 stem: What happens to an account when an automatic card charge fails?
@@ -30,3 +30,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 3ae11449fe54644e46610032c5b5f7d8d30b5aafe083b7b8535fa052cc700a83

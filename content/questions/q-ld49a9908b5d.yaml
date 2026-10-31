@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld49a9908b5d
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/tool-use
 stem: A model returns a tool call for a function your application defined. Who
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: dce1ad13d9fc39ffa83f61c393cd916bf7353626728143bd2a1a1047e4fbe0e7

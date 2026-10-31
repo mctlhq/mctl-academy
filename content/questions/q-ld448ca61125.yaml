@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld448ca61125
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/workflow-design
 stem: An architect asks how much control a dedicated endpoint gives over the
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: f9c5344674f672cf6eb5723477066e69bc057f7667e2f3ef942f679a9a78bf1c
