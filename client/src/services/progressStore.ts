@@ -428,7 +428,14 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
     }
     const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
     // An answer recorded during the clear whose POST failed is still only on
-    // this device, so a confirmed DELETE alone does not mean "synced".
+    // this device, so a confirmed DELETE alone does not mean "synced". Writes
+    // still in flight are waited for first, so one that is merely slow is not
+    // reported as a failure.
+    if (res.ok) {
+      while (pendingWrites.size > 0) {
+        await Promise.allSettled([...pendingWrites]);
+      }
+    }
     const unsyncedLeft = getStoredAttempts().some((a) => !a.synced);
     setSyncStatusFor(epoch, res.ok && !unsyncedLeft ? "synced" : "failed");
     return { serverCleared: res.ok };
