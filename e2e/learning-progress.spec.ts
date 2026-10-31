@@ -90,7 +90,6 @@ for (const width of [375, 390, 768, 1440]) {
     await expect(page.locator("#practice-context")).toBeVisible();
     await info.click();
     await page.locator(".options button").first().click();
-    await page.getByText("Sources and evidence", { exact: true }).click();
     const source = page.locator(".answer-sources a").first();
     await source.scrollIntoViewIfNeeded();
     await expect(source).toBeVisible();

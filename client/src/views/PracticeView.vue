@@ -5,6 +5,7 @@ import { practiceStorageKey } from "../practice/usePracticeSession";
 import type { UserProfile } from "../types/user";
 import PracticeContent from "../practice/PracticeContent.vue";
 import { useCourseStore } from "../services/courseStore";
+import { domainTitlesFor } from "../services/courseCatalog";
 import { questionsForCourse } from "../services/contentBundle";
 
 // Course scoping happens here, before a session exists: PracticeContent (and
@@ -17,6 +18,9 @@ const domain = computed(() => (typeof route.query.domain === "string" ? route.qu
 const bundle = computed(() =>
   questionsForCourse(currentCourseId.value).filter((q) => !domain.value || q.domain === domain.value),
 );
+const domainLabel = computed(() =>
+  domain.value ? (domainTitlesFor(currentCourseId.value)[domain.value] ?? domain.value) : "",
+);
 const sessionKey = computed(() =>
   practiceStorageKey(user?.value?.id ?? null, currentCourseId.value ?? "", mode.value, domain.value),
 );
@@ -28,6 +32,7 @@ const sessionKey = computed(() =>
     :storage-key="sessionKey"
     :mode="mode"
     :bundle="bundle"
+    :domain-label="domainLabel"
     title="Practice"
   />
 </template>

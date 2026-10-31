@@ -122,6 +122,8 @@ describe("course scoping", () => {
   it("Review Mistakes shows its empty state when the mistakes belong to another course", () => {
     recordAttempt("b-1", "domain-1", false);
     const wrapper = mount(MistakesView);
-    expect(wrapper.text()).toMatch(/no recorded mistakes in this course/i);
+    expect(wrapper.text()).toMatch(
+      /Questions you answer incorrectly in Practice or a Mock exam appear here/i,
+    );
   });
 });
