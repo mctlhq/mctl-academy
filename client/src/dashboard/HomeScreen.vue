@@ -4,7 +4,7 @@ import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
 import { questionsForCourse } from "../services/contentBundle";
-import { domainTitlesFor } from "../services/courseCatalog";
+import { domainTitlesFor, findCourse } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 
 defineProps<{
@@ -37,8 +37,11 @@ const practiceLabel = computed(() =>
       ? "Continue practice"
       : "Start practice",
 );
+const courseTitle = computed(() => findCourse(currentCourseId.value)?.title ?? "");
+const firstVisit = computed(() => stats.value.totalAttempted === 0);
 const practiceDescription = computed(() => {
-  if (stats.value.totalAttempted === 0) return "Build your baseline with evidence-backed practice questions.";
+  if (firstVisit.value)
+    return `${stats.value.totalBankQuestions} questions, one at a time. Your first answer counts, and every option comes with an explanation and a source.`;
   return `${stats.value.totalCorrect} of ${stats.value.totalBankQuestions} questions solved. ${stats.value.totalUnseen} not answered; ${stats.value.totalMistakes} to review.`;
 });
 </script>
@@ -48,8 +51,13 @@ const practiceDescription = computed(() => {
     <p class="section-marker">Recommended next step</p>
     <div class="next-card">
       <div>
+        <p v-if="courseTitle" class="next-course">{{ courseTitle }}</p>
         <h1>{{ practiceLabel }}</h1>
         <p>{{ practiceDescription }}</p>
+        <p v-if="firstVisit" class="next-secondary">
+          When you want a timed run, the <RouterLink to="/mock">Mock exam</RouterLink> mirrors the full
+          format.
+        </p>
       </div>
       <MButton type="button" @click="onStartPractice"
         >{{ practiceLabel }} <span aria-hidden="true">→</span></MButton
@@ -66,6 +74,7 @@ const practiceDescription = computed(() => {
             :label="domain.domainTitle"
             :value="domain.solvedPercent"
             :detail="`${domain.correctQuestions}/${domain.totalQuestions} solved`"
+            :to="`/practice?domain=${encodeURIComponent(domain.domainId)}`"
           />
         </div>
       </section>
@@ -95,10 +104,7 @@ const practiceDescription = computed(() => {
           <span>{{ stats.totalMistakes }} mistakes ready for review</span>
           <strong>Review now <span aria-hidden="true">→</span></strong>
         </button>
-        <div v-else class="mistakes-callout mistakes-callout-clear">
-          <span>No mistakes waiting for review.</span>
-          <strong>Keep going</strong>
-        </div>
+        <p v-else class="mistakes-clear"><span aria-hidden="true">✓</span> No mistakes waiting for review.</p>
       </aside>
     </div>
   </section>
@@ -109,9 +115,9 @@ const practiceDescription = computed(() => {
 .section-heading,
 .stat-list dt {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -151,9 +157,23 @@ const practiceDescription = computed(() => {
 
 .next-card p {
   margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.9rem;
+}
+
+.next-card .next-course {
+  margin-bottom: 0.35rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
+}
+
+.next-card .next-secondary {
+  margin-top: 0.5rem;
+}
+
+.next-secondary a {
+  color: var(--accent);
 }
 
 .home-grid {
@@ -222,14 +242,12 @@ const practiceDescription = computed(() => {
   font-size: 0.75rem;
 }
 
-.mistakes-callout-clear {
-  border-color: var(--status-ok);
-  background: color-mix(in srgb, var(--status-ok) 8%, transparent);
-  cursor: default;
-}
-
-.mistakes-callout-clear strong {
-  color: var(--status-ok);
+/* Zero mistakes is a neutral fact, not an achievement to celebrate: plain
+   text in the summary column, no tinted card competing with the next step. */
+.mistakes-clear {
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.9rem;
 }
 
 /* This screen's own content rarely fills a desktop viewport tall enough for
@@ -246,7 +264,7 @@ const practiceDescription = computed(() => {
   }
 
   .next-card p {
-    font-size: 0.92rem;
+    font-size: 0.95rem;
   }
 
   .stat-list dd {
@@ -292,7 +310,7 @@ const practiceDescription = computed(() => {
   }
 
   .next-card p {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
   }
 
   .home-grid {

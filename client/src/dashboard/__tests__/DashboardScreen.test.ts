@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { flushPromises, mount } from "@vue/test-utils";
+import { RouterLinkStub, flushPromises, mount } from "@vue/test-utils";
 import { nextTick, ref } from "vue";
 
 vi.mock("../../services/courseStore", () => ({
@@ -24,9 +24,25 @@ import { recordAttempt, resetMemoryFallback, setSyncEnabled } from "../../servic
 function mountDashboard(syncVersion = ref(0)) {
   return mount(DashboardScreen, {
     props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
-    global: { provide: { syncVersion } },
+    global: { stubs: { RouterLink: RouterLinkStub }, provide: { syncVersion } },
   });
 }
+
+describe("DashboardScreen progress readout", () => {
+  beforeEach(() => {
+    resetMemoryFallback();
+    setSyncEnabled(false);
+  });
+
+  it("labels the headline number before it, links domains, and defines its metrics", () => {
+    const wrapper = mountDashboard();
+    const marker = wrapper.find(".section-marker-top");
+    expect(marker.text()).toBe("Questions solved");
+    expect(marker.element.nextElementSibling?.classList.contains("readiness-heading")).toBe(true);
+    expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/practice?domain=domain-1");
+    expect(wrapper.find(".metric-definitions").text()).toMatch(/latest answer to the question is correct/);
+  });
+});
 
 describe("DashboardScreen", () => {
   beforeEach(() => {
@@ -84,7 +100,10 @@ describe("DashboardScreen", () => {
     recordAttempt("q-1", "domain-1", true);
     const guest = mount(DashboardScreen, {
       props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
-      global: { provide: { syncVersion: ref(0), currentUser: ref(null) } },
+      global: {
+        stubs: { RouterLink: RouterLinkStub },
+        provide: { syncVersion: ref(0), currentUser: ref(null) },
+      },
       attachTo: document.body,
     });
     expect(guest.text()).toMatch(/at once on this device\./);
@@ -96,7 +115,10 @@ describe("DashboardScreen", () => {
 
     const member = mount(DashboardScreen, {
       props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
-      global: { provide: { syncVersion: ref(0), currentUser: ref({ id: "u-1" }) } },
+      global: {
+        stubs: { RouterLink: RouterLinkStub },
+        provide: { syncVersion: ref(0), currentUser: ref({ id: "u-1" }) },
+      },
     });
     expect(member.text()).toMatch(/on this device and on the server/);
     member.unmount();
