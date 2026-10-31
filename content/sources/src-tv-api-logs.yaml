@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-api-logs
+url: https://docs.tavily.com/documentation/api-reference/endpoint/logs.md
+title: Logs
+retrieved_at: 2026-10-31T08:43:46Z
+sha256: 4e4f934934d723998ccb652d883d1b4cb138a634284676b55595c347abd0374b
+objectives:
+  - domain-4/credit-monitoring
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4e4f934934d723998ccb652d883d1b4cb138a634284676b55595c347abd0374b
+status: current

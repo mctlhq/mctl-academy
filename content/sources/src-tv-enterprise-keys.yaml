@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-enterprise-keys
+url: https://docs.tavily.com/documentation/enterprise/generate-keys.md
+title: Generate Keys
+retrieved_at: 2026-10-31T08:43:51Z
+sha256: ec9f52964887c76fc64c945181b5cac414ad9e2d83e645df19831b0280581e69
+objectives:
+  - domain-4/api-key-auth
+  - domain-4/key-rotation-secrets
+snapshot:
+  bucket: academy-source-snapshots
+  key: ec9f52964887c76fc64c945181b5cac414ad9e2d83e645df19831b0280581e69
+status: current
