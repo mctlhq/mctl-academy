@@ -38,6 +38,13 @@ function handleAnswer(questionId: string, optionId: string) {
   session.value = updated;
 }
 
+function handleNavigate(index: number) {
+  if (!session.value || session.value.status !== "in_progress") return;
+  const updated = { ...session.value, currentIndex: index };
+  saveSession(props.courseId, updated);
+  session.value = updated;
+}
+
 function handleSubmit() {
   if (!session.value) return;
   const submitted = submitSession(session.value, Date.now());
@@ -70,26 +77,12 @@ function handleStartOver() {
   <MockExamScreen
     v-else-if="session.status === 'in_progress'"
     :session="session"
+    :initial-index="session.currentIndex ?? 0"
     @answer="handleAnswer"
+    @navigate="handleNavigate"
     @submit="handleSubmit"
     @time-expired="handleSubmit"
   />
 
-  <template v-else>
-    <MockResultsScreen :session="session" />
-    <button type="button" class="mock-restart" @click="handleStartOver">Start a new mock exam</button>
-  </template>
+  <MockResultsScreen v-else :session="session" :course-id="courseId" @restart="handleStartOver" />
 </template>
-
-<style scoped>
-/* .app-main is a flex column with the default align-items:stretch, so a
-   plain <button> with no width of its own stretches to the full app-main
-   width. MockResultsScreen.vue's `.mock-results` caps itself at 43rem, so
-   without this the restart button would be a full-width bar underneath a
-   centered, much narrower results column at desktop sizes. */
-.mock-restart {
-  align-self: center;
-  width: min(100%, 43rem);
-  margin-top: 1.5rem;
-}
-</style>

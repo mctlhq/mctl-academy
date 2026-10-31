@@ -5,20 +5,33 @@
  * cannot leak through this component regardless of what the session object
  * carries (see requirements.md's "SHALL NOT reveal" acceptance criterion).
  */
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import ConfirmDialog from "../../components/ConfirmDialog.vue";
 import type { ExamSessionState } from "../session";
 import { remainingMs, unansweredCount } from "../session";
 import RestrictedMarkdown from "./RestrictedMarkdown.vue";
 import { formatRemaining } from "./formatTime";
 
-const props = defineProps<{ session: ExamSessionState }>();
+const props = defineProps<{ session: ExamSessionState; initialIndex?: number }>();
 const emit = defineEmits<{
   answer: [questionId: string, optionId: string];
   submit: [];
   timeExpired: [];
+  navigate: [index: number];
 }>();
 
-const currentIndex = ref(0);
+const lastIndex = computed(() => props.session.questions.length - 1);
+const currentIndex = ref(Math.min(Math.max(props.initialIndex ?? 0, 0), Math.max(lastIndex.value, 0)));
+const stemRef = ref<HTMLElement | null>(null);
+
+// The position is reported up so a reload resumes on the same question, and
+// focus moves to the new stem so screen-reader and keyboard users hear the
+// question rather than staying on the control they pressed.
+function goTo(index: number, focusStem = true) {
+  currentIndex.value = Math.min(Math.max(index, 0), lastIndex.value);
+  emit("navigate", currentIndex.value);
+  if (focusStem) void nextTick(() => stemRef.value?.focus());
+}
 const now = ref(Date.now());
 const confirmingSubmit = ref(false);
 
@@ -40,27 +53,53 @@ watch(remaining, () => {
   }
 });
 
+// The visible timer changes every second and must not be a live region (it
+// would interrupt the learner constantly). A separate polite region speaks
+// only when a milestone is crossed.
+const MILESTONES_MINUTES = [10, 5, 1];
+const timeAnnouncement = ref("");
+watch(remaining, (now, before) => {
+  if (before === undefined) return;
+  for (const minutes of MILESTONES_MINUTES) {
+    const mark = minutes * 60_000;
+    if (before > mark && now <= mark) {
+      timeAnnouncement.value = `${minutes} minute${minutes === 1 ? "" : "s"} remaining`;
+    }
+  }
+});
+
 const question = computed(() => props.session.questions[currentIndex.value]);
 const selectedOptionId = computed(() => props.session.answers[question.value.id]);
 const unanswered = computed(() => unansweredCount(props.session));
+const answered = computed(() => props.session.questions.length - unanswered.value);
 
 function goSubmit() {
-  if (unanswered.value > 0 && !confirmingSubmit.value) {
+  if (unanswered.value > 0) {
     confirmingSubmit.value = true;
     return;
   }
   emit("submit");
+}
+
+function returnToFirstUnanswered() {
+  confirmingSubmit.value = false;
+  const index = props.session.questions.findIndex((q) => props.session.answers[q.id] === undefined);
+  if (index >= 0) goTo(index);
 }
 </script>
 
 <template>
   <section class="mock-exam" data-testid="mock-exam">
     <header class="mock-exam-header">
-      <span class="mock-exam-timer" data-testid="timer" aria-live="polite">
-        {{ formatRemaining(remaining) }}
+      <span class="mock-exam-timer" data-testid="timer">
+        <span class="sr-only">Time remaining: </span>{{ formatRemaining(remaining) }}
       </span>
-      <span>Question {{ currentIndex + 1 }} of {{ session.questions.length }}</span>
+      <span class="mock-exam-position"
+        >Question {{ currentIndex + 1 }} of {{ session.questions.length }}</span
+      >
+      <span class="mock-exam-answered">{{ answered }} answered</span>
     </header>
+    <p class="sr-only" aria-live="polite" aria-atomic="true">{{ timeAnnouncement }}</p>
 
     <nav class="mock-exam-nav" aria-label="Question navigator">
       <button
@@ -73,16 +112,16 @@ function goSubmit() {
           unanswered: session.answers[q.id] === undefined,
           current: index === currentIndex,
         }"
-        :aria-current="index === currentIndex"
+        :aria-current="index === currentIndex ? 'step' : undefined"
         :aria-label="`Question ${index + 1}${session.answers[q.id] !== undefined ? ', answered' : ', unanswered'}`"
-        @click="currentIndex = index"
+        @click="goTo(index)"
       >
         {{ index + 1 }}
       </button>
     </nav>
 
     <article class="mock-exam-question">
-      <p class="mock-exam-stem">
+      <p ref="stemRef" class="mock-exam-stem" tabindex="-1">
         <RestrictedMarkdown :text="question.stem" />
       </p>
       <fieldset>
@@ -103,28 +142,43 @@ function goSubmit() {
     <footer class="mock-exam-footer">
       <button
         type="button"
+        class="mock-exam-step"
         :disabled="currentIndex === 0"
-        @click="currentIndex = Math.max(0, currentIndex - 1)"
+        @click="goTo(currentIndex - 1)"
       >
         Previous
       </button>
       <button
         type="button"
-        :disabled="currentIndex === session.questions.length - 1"
-        @click="currentIndex = Math.min(session.questions.length - 1, currentIndex + 1)"
+        class="mock-exam-step mock-exam-next"
+        :disabled="currentIndex === lastIndex"
+        @click="goTo(currentIndex + 1)"
       >
         Next
       </button>
-      <button type="button" @click="goSubmit">Submit exam</button>
+      <button type="button" class="mock-exam-submit" @click="goSubmit">Submit exam</button>
     </footer>
 
-    <div v-if="confirmingSubmit" class="mock-exam-confirm" role="alertdialog" data-testid="submit-confirm">
-      <p>
-        {{ unanswered }} question{{ unanswered === 1 ? " is" : "s are" }} still unanswered. Submit anyway?
-      </p>
-      <button type="button" @click="emit('submit')">Submit anyway</button>
-      <button type="button" @click="confirmingSubmit = false">Keep going</button>
-    </div>
+    <ConfirmDialog
+      :open="confirmingSubmit"
+      title="Submit the exam?"
+      confirm-label="Submit anyway"
+      cancel-label="Keep going"
+      @confirm="emit('submit')"
+      @cancel="confirmingSubmit = false"
+    >
+      <div data-testid="submit-confirm">
+        <p>
+          {{ answered }} of {{ session.questions.length }} answered; {{ unanswered }} question{{
+            unanswered === 1 ? " is" : "s are"
+          }}
+          still unanswered and will count as incorrect.
+        </p>
+        <button type="button" class="mock-exam-return" @click="returnToFirstUnanswered">
+          Return to first unanswered
+        </button>
+      </div>
+    </ConfirmDialog>
   </section>
 </template>
 
@@ -143,9 +197,20 @@ function goSubmit() {
 
 .mock-exam-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
   padding: 0.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.mock-exam-position {
+  margin-right: auto;
+}
+
+.mock-exam-answered {
+  color: var(--surface-fg-muted);
 }
 
 .mock-exam-timer {
@@ -193,6 +258,7 @@ function goSubmit() {
 
 .mock-exam-stem {
   overflow-wrap: break-word;
+  outline: none;
 }
 
 .mock-exam-footer {
@@ -202,15 +268,32 @@ function goSubmit() {
 }
 
 .mock-exam-footer button,
-.mock-exam-confirm button {
+.mock-exam-return {
   min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--surface-line-strong);
+  border-radius: var(--mctl-radius-md, 6px);
+  background: transparent;
+  color: var(--surface-fg);
+  font: inherit;
+  cursor: pointer;
 }
 
-.mock-exam-confirm {
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-md, 6px);
-  padding: 0.75rem 1rem;
-  margin-top: 1rem;
+.mock-exam-footer button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mock-exam-next {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* Submit is final, so it sits apart from the stepping controls and does not
+   share Next's weight. */
+.mock-exam-submit {
+  margin-left: auto;
 }
 
 /* .mock-exam-nav-item's 44px floor needs to hold everywhere the app's own
@@ -239,16 +322,7 @@ function goSubmit() {
 
   .mock-exam-footer button:last-child {
     grid-column: 1 / -1;
-  }
-
-  .mock-exam-confirm {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-  }
-
-  .mock-exam-confirm p {
-    grid-column: 1 / -1;
+    margin-left: 0;
   }
 }
 </style>
