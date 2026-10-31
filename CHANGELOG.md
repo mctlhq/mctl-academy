@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.1.59](https://github.com/mctlhq/mctl-academy/compare/0.1.58...0.1.59) (2026-10-31)
+
+
+### Features
+
+* **sources:** allowlist scoped docs.tavily.com pages ([4f05282](https://github.com/mctlhq/mctl-academy/commit/4f0528242dee6d64fdc93d2b9d2ef21b062c5727))
+* **sources:** allowlist scoped docs.tavily.com pages ([2a91497](https://github.com/mctlhq/mctl-academy/commit/2a91497bf986e69093d3103a43026909ede16a75))
+
+
+### Bug Fixes
+
+* **client:** cap the course select width in the nav ([5b02a20](https://github.com/mctlhq/mctl-academy/commit/5b02a209587b4d956a9386d639beb3da8a4f448d))
+* **replenish:** fail closed when the set-aside base does not resolve ([e67df24](https://github.com/mctlhq/mctl-academy/commit/e67df245f87de64772dad65d3056c92827268f92))
+* **replenish:** set aside an item whose citation fails, not the batch ([2695c51](https://github.com/mctlhq/mctl-academy/commit/2695c51e4cf9d58ac5a06b621046cd88463dee38))
+* **replenish:** set aside an item whose citation fails, not the batch ([918f047](https://github.com/mctlhq/mctl-academy/commit/918f047f6d9a4f47e28fdff9949ca58b3fef1578))
+* **sources:** let discovery fetch the Tavily index; tighten scope ([3a5ac3a](https://github.com/mctlhq/mctl-academy/commit/3a5ac3a970b0193d1f7d13400a277c75108aeabb))
+
+
+### Content
+
+* **courses:** add the Agentic Web Search course map ([a457996](https://github.com/mctlhq/mctl-academy/commit/a4579965cab41768e42175e5077680083a199b8f))
+* **replenish:** author 20 question file(s) from 0 captured source(s) ([bee4818](https://github.com/mctlhq/mctl-academy/commit/bee48185b04c2fced1eb12a9477d915d0704a8b3))
+* **replenish:** author 20 question file(s) from 35 captured source(s) ([0c3cbba](https://github.com/mctlhq/mctl-academy/commit/0c3cbba28fb7f21396168134d15dc7f3c2ce7214))
+* **replenish:** promote 117 reviewed question(s) ([3ec6348](https://github.com/mctlhq/mctl-academy/commit/3ec6348183d08ad525b85aabcece413d46baf254))
+* **replenish:** promote 20 reviewed question(s) ([f063842](https://github.com/mctlhq/mctl-academy/commit/f063842fdf5585a69946cb31faad584e6d25d98a))
+* **sources:** add Tavily pages to the capture manifest ([fcd5828](https://github.com/mctlhq/mctl-academy/commit/fcd58287a0f226c2e0ebf4f584f2c560359a2daa))
+
 ## [0.1.58](https://github.com/mctlhq/mctl-academy/compare/0.1.57...0.1.58) (2026-10-30)
 
 
