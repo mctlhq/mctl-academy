@@ -38,4 +38,10 @@ describe("isExcerptInExplanation", () => {
     expect(isExcerptInExplanation("Basic is faster.", "Advanced searches more broadly.")).toBe(false);
     expect(isExcerptInExplanation("", "Anything")).toBe(false);
   });
+
+  it("matches whole words only", () => {
+    expect(isExcerptInExplanation("port", "Use the export command.")).toBe(false);
+    expect(isExcerptInExplanation("rate limit", "An accurate limit applies.")).toBe(false);
+    expect(isExcerptInExplanation("port", "Set the port first.")).toBe(true);
+  });
 });

@@ -21,8 +21,12 @@ const normalize = (text: string) =>
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 
-/** True when the explanation already quotes the excerpt (ignoring case and punctuation). */
+/**
+ * True when the explanation already quotes the excerpt (ignoring case and
+ * punctuation). Matches whole words only, so a short excerpt such as "port"
+ * is not taken as quoted inside "export".
+ */
 export function isExcerptInExplanation(excerpt: string, explanation: string): boolean {
   const e = normalize(excerpt);
-  return e.length > 0 && normalize(explanation).includes(e);
+  return e.length > 0 && ` ${normalize(explanation)} `.includes(` ${e} `);
 }

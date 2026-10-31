@@ -176,7 +176,8 @@ function toggleContext() {
 }
 
 function handleShortcut(event: KeyboardEvent) {
-  if (!shortcutsEnabled.value) return;
+  // No active question (empty or summary state): no key has anything to act on.
+  if (!shortcutsEnabled.value || !current.value) return;
   if (event.defaultPrevented || event.isComposing || event.repeat) return;
   if (event.ctrlKey || event.metaKey || event.altKey) return;
   // A dialog (the report form, any confirmation) owns the keyboard: typing
@@ -187,7 +188,7 @@ function handleShortcut(event: KeyboardEvent) {
   // with the mouse and then pressing N still advances.
   const target = event.target instanceof Element ? event.target : null;
   if (target?.closest("input, textarea, select, [contenteditable]:not([contenteditable='false'])")) return;
-  if (/^[1-4]$/.test(event.key) && current.value) {
+  if (/^[1-4]$/.test(event.key)) {
     const option = current.value.options[Number(event.key) - 1];
     if (option) selectOption(option.id);
     return;
@@ -240,7 +241,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
     </p>
     <p v-else-if="emptyMessage">{{ emptyMessage }}</p>
     <p v-else>All published questions in this selection are solved.</p>
-    <p v-if="bundle.length > 0 && remaining === 0" class="queue-note">
+    <p v-if="bundle.length > 0 && remaining === 0 && mode !== 'mistakes'" class="queue-note">
       Practice shows unsolved questions first. Repeat all goes through every question again; solved ones stay
       solved.
     </p>

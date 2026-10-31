@@ -240,6 +240,14 @@ describe("PracticeContent", () => {
     expect(wrapper.find("a.clear-filter").attributes("href")).toBe("/practice?mode=all");
   });
 
+  it("does not show the Practice queue note in an empty Review mistakes view", () => {
+    const wrapper = mount(PracticeContent, {
+      props: { bundle: [question("q-1")], mode: "mistakes", emptyMessage: "No mistakes yet." },
+    });
+    expect(wrapper.text()).toContain("No mistakes yet.");
+    expect(wrapper.find(".queue-note").exists()).toBe(false);
+  });
+
   describe("keyboard shortcuts", () => {
     afterEach(() => resetStorage());
     const press = (key: string, init: KeyboardEventInit = {}) =>
@@ -263,6 +271,29 @@ describe("PracticeContent", () => {
       option.dispatchEvent(new KeyboardEvent("keydown", { key: "n", bubbles: true }));
       await nextTick();
       expect(wrapper.find(".progress").text()).toContain("Question 3");
+      wrapper.unmount();
+    });
+
+    it("ignores keys typed into a text-entry control", async () => {
+      const wrapper = mount(PracticeContent, {
+        props: { bundle: [question("q-1"), question("q-2")] },
+        attachTo: document.body,
+      });
+      for (const tag of ["input", "textarea", "select"]) {
+        const field = document.createElement(tag);
+        document.body.appendChild(field);
+        for (const key of ["1", "s"])
+          field.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
+        field.remove();
+      }
+      const editable = document.createElement("div");
+      editable.setAttribute("contenteditable", "true");
+      document.body.appendChild(editable);
+      editable.dispatchEvent(new KeyboardEvent("keydown", { key: "1", bubbles: true }));
+      editable.remove();
+      await nextTick();
+      expect(wrapper.find(".feedback").exists()).toBe(false);
+      expect(wrapper.find(".progress").text()).toContain("Question 1");
       wrapper.unmount();
     });
 
