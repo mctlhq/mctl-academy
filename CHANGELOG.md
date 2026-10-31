@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.65](https://github.com/mctlhq/mctl-academy/compare/0.1.64...0.1.65) (2026-10-31)
+
+
+### Bug Fixes
+
+* **client:** bump @mctlhq/ui to 0.15.0 for button contrast ([4e796ab](https://github.com/mctlhq/mctl-academy/commit/4e796ab57d1086d82408e2da778a746c671e82a5))
+* **client:** bump @mctlhq/ui to 0.15.0 for button contrast ([21d456a](https://github.com/mctlhq/mctl-academy/commit/21d456aa220c370120fcb0b2f717318b0b05fb04))
+* **progress:** send answers recorded mid-clear after the DELETE ([58ee22e](https://github.com/mctlhq/mctl-academy/commit/58ee22e68e6a64bbf217535c53a12d6bd1406a2e))
+* **progress:** send answers recorded mid-clear after the DELETE ([e786de9](https://github.com/mctlhq/mctl-academy/commit/e786de90c8b0fd21a3831909f19673991ac39120)), closes [#397](https://github.com/mctlhq/mctl-academy/issues/397)
+
 ## [0.1.64](https://github.com/mctlhq/mctl-academy/compare/0.1.63...0.1.64) (2026-10-31)
 
 
