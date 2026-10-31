@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-10d7a4c2e958
+status: review_ready
+domain: domain-4
+objective: domain-4/budget-and-forecasting
+stem: "A team is forecasting the credit cost of extracting 100 URLs with basic extract depth, assuming all succeed. Per Tavily's Credits & Pricing documentation, how is basic Extract priced?"
+options:
+  - id: a
+    text: "1 API credit per URL regardless of extract depth, so 100 URLs cost 100 credits"
+    correct: false
+    explanation: "The documentation prices basic Extract per 5 successful extractions, not per individual URL."
+  - id: b
+    text: "Every 5 successful URL extractions cost 1 API credit, so 100 URLs cost 20 credits"
+    correct: true
+    explanation: "Correct. The documentation states every 5 successful URL extractions cost 1 API credit under basic extraction."
+  - id: c
+    text: "1 API credit for the whole request regardless of how many URLs succeed"
+    correct: false
+    explanation: "Extract cost scales with the number of successful URL extractions, not a flat per-request rate."
+  - id: d
+    text: "2 API credits per 5 successful URL extractions, the same as advanced depth"
+    correct: false
+    explanation: "2 credits per 5 successful extractions is the documented rate for advanced depth; basic costs 1 credit per 5."
+evidence:
+  - source_id: src-tv-api-credits
+    excerpt: "Every 5 successful URL extractions cost **1 API credit**"
+    source_sha256: 5389452e88381c1d50fcb222a24982ec4946a352dadddb03b2309b6ce55426ff
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search

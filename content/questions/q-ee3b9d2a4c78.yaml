@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-ee3b9d2a4c78
+status: review_ready
+domain: domain-2
+objective: domain-2/search-extract-pipelines
+stem: "An agent wants Extract to return only the portions of a page most relevant to its question, instead of the full page. Per Tavily's Extract tutorial, what should it pass?"
+options:
+  - id: a
+    text: "`extract_depth=advanced`, since that is what filters content by relevance"
+    correct: false
+    explanation: "extract_depth controls extraction thoroughness (tables, JS-rendered content), not relevance-based chunk reranking."
+  - id: b
+    text: "A `query` parameter, so Extract reranks the content chunks by relevance to the question"
+    correct: true
+    explanation: "Correct. The tutorial states that when you pass a query parameter, Extract reranks the content chunks by relevance to your question."
+  - id: c
+    text: "`include_images=true`, since that focuses extraction on the most relevant sections"
+    correct: false
+    explanation: "include_images only adds extracted image URLs to the response; it does not rerank content by relevance."
+  - id: d
+    text: "`format=text`, since plain text is reranked while markdown is not"
+    correct: false
+    explanation: "format only controls markdown versus plain-text output; it has no effect on relevance reranking."
+evidence:
+  - source_id: src-tv-tut-extract
+    excerpt: "When you pass a `query` parameter, Extract reranks the content chunks by relevance to your question."
+    source_sha256: 2aee3dfcc57cf52c91b7124a0e0f7ba6cf5d117968052a444c4f049830d145eb
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search

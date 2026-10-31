@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-0c5d2a8f1e46
+status: review_ready
+domain: domain-4
+objective: domain-4/credit-monitoring
+stem: "An agent wants to know whether its API key has a usage cap, and how high it is. Per the Usage API reference, which field should it read?"
+options:
+  - id: a
+    text: "`key.limit`, the usage limit for the API key, which returns null if unlimited"
+    correct: true
+    explanation: "Correct. The reference describes key.limit exactly this way: usage limit for the API key, returns null if unlimited."
+  - id: b
+    text: "`key.usage`, since it reports the limit set for the key"
+    correct: false
+    explanation: "key.usage reports credits already used, not the cap; key.limit reports the cap."
+  - id: c
+    text: "`account.plan_limit`, since it reports the limit for this specific key"
+    correct: false
+    explanation: "account.plan_limit reports the limit for the whole plan, not for this individual key."
+  - id: d
+    text: "`account.paygo_limit`, since every key shares the pay-as-you-go limit"
+    correct: false
+    explanation: "paygo_limit is the account's pay-as-you-go usage limit, a different scope from an individual key's usage limit."
+evidence:
+  - source_id: src-tv-api-usage
+    excerpt: "Usage limit for the API key. Returns null if unlimited"
+    source_sha256: 23185c233be1e68ca143a408e3d91c1cc74584857ceebef5d1f3fd31cd1d249f
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search

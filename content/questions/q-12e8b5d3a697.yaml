@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-12e8b5d3a697
+status: review_ready
+domain: domain-4
+objective: domain-4/key-rotation-secrets
+stem: "A team is rotating its Tavily API key and wants to avoid downtime. Per Tavily's API Key Management guidance, when should it revoke the old key?"
+options:
+  - id: a
+    text: "Only once it has confirmed the new key is in use and everything is functioning as expected"
+    correct: true
+    explanation: "Correct. The guidance states to revoke the old key once confirmed the new key is in use and everything is functioning as expected."
+  - id: b
+    text: "Immediately, before deploying the application with the new key"
+    correct: false
+    explanation: "Revoking first is the documented emergency response to a leaked key, not the safe no-downtime rotation order, which deploys and verifies the new key first."
+  - id: c
+    text: "Every 7 days on a fixed schedule, regardless of whether the new key is verified"
+    correct: false
+    explanation: "The guidance recommends rotating periodically on the order of every 90 days, not a fixed 7-day schedule, and still ties revocation to verifying the new key first."
+  - id: d
+    text: "Never, since once a key works it should keep working indefinitely"
+    correct: false
+    explanation: "The guidance recommends periodic rotation as a security best practice, not leaving a key in place indefinitely."
+evidence:
+  - source_id: src-tv-bp-api-keys
+    excerpt: "Once you are confirmed that the new key is in use and everything is functioning as expected, delete the old API key from the dashboard."
+    source_sha256: b2e17dc380bc3f6e2fbfe5aa2070bd9baf1a4e43875b84ff9c2d6e260a26797d
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search

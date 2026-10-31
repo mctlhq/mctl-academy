@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-e4b8d1a6f293
+status: review_ready
+domain: domain-1
+objective: domain-1/web-access-operations
+stem: "Per Tavily's Crawl tutorial, what is the rule of thumb for choosing between Map and Crawl as web-access operations?"
+options:
+  - id: a
+    text: "Use Map when you need to find pages; use Crawl when you need to read pages"
+    correct: true
+    explanation: "Correct. The tutorial states this exact rule of thumb."
+  - id: b
+    text: "Use Crawl when you need to find pages; use Map when you need to read pages"
+    correct: false
+    explanation: "That reverses the tutorial's rule of thumb; Map is for finding, Crawl is for reading."
+  - id: c
+    text: "Use Extract when you need to find pages; use Search when you need to read them"
+    correct: false
+    explanation: "Extract pulls content from known URLs and Search finds sources for a query; neither matches this find-vs-read distinction between Map and Crawl."
+  - id: d
+    text: "Use Map and Crawl interchangeably, since they return identical output"
+    correct: false
+    explanation: "The tutorial contrasts Map's URL-only output with Crawl's full-page content; they are not interchangeable."
+evidence:
+  - source_id: src-tv-tut-crawl
+    excerpt: "Use Map when you need to *find* pages. Use Crawl when you need to *read* pages."
+    source_sha256: 81fc02aa2d38904276f79a73a2d4c90b4353f1734acb776d758c5a053fde1609
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search

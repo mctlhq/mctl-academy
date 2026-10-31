@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-fe3a1c6d8b27
+status: review_ready
+domain: domain-3
+objective: domain-3/call-error-handling
+stem: "An agent's Search call with `max_age_hours` set returns `434 Flex tier capacity exceeded` on a non-paying plan. Per Tavily's Rate Limits documentation, what should it do?"
+options:
+  - id: a
+    text: "Wait exactly the number of seconds in the `Retry-After` header before retrying"
+    correct: false
+    explanation: "Retry-After guidance applies to 429 rate-limit responses; the documented 434 remedy is to retry shortly or drop max_age_hours."
+  - id: b
+    text: "Upgrade to an Enterprise plan immediately, since only paying plans can ever succeed"
+    correct: false
+    explanation: "The documentation's remedy is retrying shortly or omitting max_age_hours, not an immediate required upgrade."
+  - id: c
+    text: "Switch `search_depth` to `advanced` to bypass the flex tier"
+    correct: false
+    explanation: "search_depth controls the relevance/latency tradeoff; the documented remedy for flex tier capacity is unrelated to search_depth."
+  - id: d
+    text: "Retry shortly, or omit `max_age_hours` to be served from cache"
+    correct: true
+    explanation: "Correct. The documentation states this exact remedy for a 434 Flex tier capacity response."
+evidence:
+  - source_id: src-tv-rate-limits
+    excerpt: "Retry shortly, or omit `max_age_hours` to be served from cache."
+    source_sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search
