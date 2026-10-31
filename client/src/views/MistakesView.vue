@@ -33,6 +33,6 @@ const mistakesBundle = computed(() => {
     mode="mistakes"
     :bundle="mistakesBundle"
     title="Review Mistakes"
-    empty-message="You have no recorded mistakes in this course. Practice questions to log areas for review."
+    empty-message="Questions you answer incorrectly in Practice or a Mock exam appear here. Answer one correctly on the first try in a new pass to clear it."
   />
 </template>

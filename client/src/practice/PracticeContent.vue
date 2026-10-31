@@ -8,6 +8,9 @@ import RestrictedMarkdown from "../exam/components/RestrictedMarkdown.vue";
 import ReportModal from "../components/ReportModal.vue";
 import { castVote, fetchVoteSummary, removeVote, type VoteValue } from "../services/questionVotes";
 import type { UserProfile } from "../types/user";
+import { useCourseStore } from "../services/courseStore";
+import { findCourse } from "../services/courseCatalog";
+import { explanationBody, isExcerptInExplanation } from "./answerText";
 
 /**
  * Renders one practice session over the questions it is handed. The bundle is
@@ -21,8 +24,18 @@ const props = withDefaults(
     emptyMessage?: string;
     storageKey?: string;
     mode?: PracticeMode;
+    /** Human title of the active domain filter, when the route has one. */
+    domainLabel?: string;
   }>(),
-  { title: "Practice" },
+  { title: "Practice", domainLabel: "" },
+);
+
+// Context line: which course, which mode, which filter. The nav select can
+// truncate a long course title on a phone; this line carries it in full.
+const { currentCourseId } = useCourseStore();
+const courseTitle = computed(() => findCourse(currentCourseId.value)?.title ?? "");
+const modeLabel = computed(() =>
+  props.mode === "mistakes" ? "Review mistakes" : props.mode === "all" ? "Repeat all" : "Practice",
 );
 
 const {
@@ -129,7 +142,30 @@ async function onVoteClick(direction: VoteValue) {
 }
 
 const CONTEXT_STORAGE_KEY = "academy.practice-context-open";
+// Single-key shortcuts can collide with assistive tech and voice control
+// (WCAG 2.1.4), so learners can turn them off; the choice is remembered.
+const SHORTCUTS_STORAGE_KEY = "academy.practice-shortcuts";
+const shortcutsEnabled = ref(getItem(SHORTCUTS_STORAGE_KEY) !== "off");
+function toggleShortcuts() {
+  shortcutsEnabled.value = !shortcutsEnabled.value;
+  setItem(SHORTCUTS_STORAGE_KEY, shortcutsEnabled.value ? "on" : "off");
+}
+
+// The first revealed option is the learner's scored answer; later reveals
+// are exploration and never change the score (usePracticeSession).
+const firstAnswerId = computed(() => [...revealed.value][0]);
+// Shown once per session, before the first answer, so the scoring rule is
+// known before it applies rather than discovered afterwards.
+const showFirstAnswerRule = computed(() => attempted.value === 0 && revealed.value.size === 0);
 const contextOpen = ref(getItem(CONTEXT_STORAGE_KEY) === "true");
+// Excerpts already quoted inside the correct option's explanation are not
+// repeated; the link alone carries them.
+const quotedSources = computed(() => {
+  const q = current.value;
+  if (!q?.sources) return [];
+  const explanation = q.options.find((o) => o.correct)?.explanation ?? "";
+  return q.sources.filter((source) => !isExcerptInExplanation(source.excerpt, explanation));
+});
 const progressPercent = computed(() =>
   total.value === 0 ? 0 : Math.round(((index.value + 1) / total.value) * 100),
 );
@@ -140,13 +176,26 @@ function toggleContext() {
 }
 
 function handleShortcut(event: KeyboardEvent) {
-  const target = event.target as HTMLElement | null;
-  if (target?.matches("input, textarea, select, button, a")) return;
-  if (/^[1-4]$/.test(event.key) && current.value) {
+  // No active question (empty or summary state): no key has anything to act on.
+  if (!shortcutsEnabled.value || !current.value) return;
+  if (event.defaultPrevented || event.isComposing || event.repeat) return;
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  // A dialog (the report form, any confirmation) owns the keyboard: typing
+  // there must never answer or advance the question behind it.
+  if (isReporting.value || document.querySelector('[aria-modal="true"]')) return;
+  // Only text-entry controls own letter and digit keys. A focused button or
+  // link does not (browsers focus an option button on click), so answering
+  // with the mouse and then pressing N still advances.
+  const target = event.target instanceof Element ? event.target : null;
+  if (target?.closest("input, textarea, select, [contenteditable]:not([contenteditable='false'])")) return;
+  if (/^[1-4]$/.test(event.key)) {
     const option = current.value.options[Number(event.key) - 1];
     if (option) selectOption(option.id);
+    return;
   }
-  if (event.key.toLowerCase() === "n") next();
+  const key = event.key.toLowerCase();
+  if (key === "n" && revealed.value.size > 0) next();
+  else if (key === "s" && revealed.value.size === 0) next();
 }
 
 onMounted(() => window.addEventListener("keydown", handleShortcut));
@@ -184,7 +233,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 </script>
 
 <template>
-  <section v-if="total === 0" class="practice practice-empty">
+  <section v-if="total === 0" class="practice practice-empty practice-card">
     <h1>{{ title }}</h1>
     <p v-if="bundle.length === 0">There are no published questions in this selection yet.</p>
     <p v-else-if="remaining > 0">
@@ -192,13 +241,20 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
     </p>
     <p v-else-if="emptyMessage">{{ emptyMessage }}</p>
     <p v-else>All published questions in this selection are solved.</p>
-    <MButton v-if="remaining > 0" type="button" @click="restart">Continue practice</MButton>
-    <p v-if="bundle.length > 0" class="completion-links">
-      <a href="/practice?mode=all">Repeat all</a> · <a href="/mock">Mock exam</a>
+    <p v-if="bundle.length > 0 && remaining === 0 && mode !== 'mistakes'" class="queue-note">
+      Practice shows unsolved questions first. Repeat all goes through every question again; solved ones stay
+      solved.
     </p>
+    <div class="completion-actions">
+      <MButton v-if="remaining > 0" type="button" @click="restart">Continue practice</MButton>
+      <template v-if="bundle.length > 0">
+        <a href="/practice?mode=all" class="link-button" :class="{ primary: remaining === 0 }">Repeat all</a>
+        <a href="/mock" class="link-button">Mock exam</a>
+      </template>
+    </div>
   </section>
 
-  <section v-else-if="!current" class="practice practice-summary">
+  <section v-else-if="!current" class="practice practice-summary practice-card">
     <h1>Session complete</h1>
     <p class="score">{{ score }} / {{ attempted }} correct on first try</p>
     <p class="meta">{{ attempted }} questions attempted; {{ skipped }} skipped this pass.</p>
@@ -211,19 +267,46 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
           : `${remaining} questions remain in this selection.`
       }}
     </p>
-    <MButton v-if="remaining > 0" type="button" @click="restart">{{
-      mode === "all" ? "Repeat all again" : "Continue practice"
-    }}</MButton>
-    <p class="completion-links">
-      <a href="/practice?mode=all">Repeat all</a> · <a href="/mock">Mock exam</a>
-    </p>
+    <div class="completion-actions">
+      <MButton v-if="remaining > 0" type="button" @click="restart">{{
+        mode === "all" ? "Repeat all again" : "Continue practice"
+      }}</MButton>
+      <a href="/practice?mode=all" class="link-button" :class="{ primary: remaining === 0 }">Repeat all</a>
+      <a href="/mock" class="link-button">Mock exam</a>
+    </div>
   </section>
 
   <section v-else class="practice-shell" :class="{ 'context-open': contextOpen }">
     <div class="practice-stage">
       <div class="practice">
+        <div class="practice-context-line">
+          <p class="practice-crumbs" data-testid="practice-context">
+            <span v-if="courseTitle" class="crumb-course">{{ courseTitle }}</span>
+            <span v-if="courseTitle" class="crumb-sep" aria-hidden="true">/</span>
+            <span class="crumb-mode">{{ modeLabel }}</span>
+            <template v-if="domainLabel">
+              <span class="crumb-sep" aria-hidden="true">/</span>
+              <span class="crumb-domain">{{ domainLabel }}</span>
+              <a :href="mode === 'all' ? '/practice?mode=all' : '/practice'" class="clear-filter"
+                >Clear filter</a
+              >
+            </template>
+          </p>
+        </div>
         <div class="practice-header">
-          <p class="progress">Question {{ index + 1 }} of {{ total }} this pass</p>
+          <div class="progress-wrap">
+            <p class="progress">Question {{ index + 1 }} of {{ total }}</p>
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-label="Position in this pass"
+              aria-valuemin="1"
+              :aria-valuemax="total"
+              :aria-valuenow="index + 1"
+            >
+              <span :style="{ width: `${progressPercent}%` }" />
+            </div>
+          </div>
           <div class="header-actions">
             <button
               type="button"
@@ -233,7 +316,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
               aria-label="Toggle practice context"
               @click="toggleContext"
             >
-              Info
+              <span class="icon" aria-hidden="true">ⓘ</span> Info
             </button>
             <div v-if="currentUser" class="vote-widget" role="group" aria-label="Vote on this question">
               <button
@@ -260,7 +343,14 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
                 <span class="vote-icon" aria-hidden="true">▲</span>
               </button>
             </div>
-            <button type="button" class="report-button" @click="isReporting = true">Report question</button>
+            <button
+              type="button"
+              class="report-button"
+              aria-label="Report question"
+              @click="isReporting = true"
+            >
+              <span class="icon" aria-hidden="true">⚑</span> Report
+            </button>
           </div>
         </div>
 
@@ -268,18 +358,30 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
           {{ current.objectiveTitle ?? current.objective.split("/").at(-1)?.replaceAll("-", " ") }}
         </p>
         <h1 class="stem"><RestrictedMarkdown :text="current.stem" /></h1>
-        <ul :key="current.id" class="options">
+        <p v-if="showFirstAnswerRule" class="first-answer-rule">
+          Your first answer counts. After that you can open the other options to read their explanations.
+        </p>
+        <ul :key="current.id" class="options" :class="{ answered: revealed.size > 0 }">
           <li
-            v-for="option in current.options"
+            v-for="(option, optionIndex) in current.options"
             :key="option.id"
-            :class="revealed.has(option.id) ? (option.correct ? 'correct' : 'incorrect') : ''"
+            :class="[
+              revealed.has(option.id) ? (option.correct ? 'correct' : 'incorrect') : '',
+              { 'first-answer': option.id === firstAnswerId },
+            ]"
           >
             <button type="button" @click="selectOption(option.id)">
+              <span class="option-key" aria-hidden="true">{{ optionIndex + 1 }}</span>
               <span class="option-text"><RestrictedMarkdown :text="option.text" /></span>
             </button>
             <div v-if="revealed.has(option.id)" class="feedback">
-              <p class="verdict">{{ option.correct ? "Correct" : "Incorrect" }}</p>
-              <p class="explanation"><RestrictedMarkdown :text="option.explanation" /></p>
+              <p class="verdict">
+                {{ option.correct ? "Correct" : "Incorrect" }}
+                <span v-if="option.id === firstAnswerId && revealed.size > 1" class="first-answer-tag"
+                  >· your first answer</span
+                >
+              </p>
+              <p class="explanation"><RestrictedMarkdown :text="explanationBody(option.explanation)" /></p>
             </div>
           </li>
         </ul>
@@ -287,16 +389,30 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
           <p v-if="firstCorrect === false" class="retry-note">
             This question stays in review. Answer correctly on the first try in a new pass to solve it.
           </p>
-          <details v-if="current.sources?.length" class="answer-sources">
-            <summary>Sources and evidence</summary>
-            <div v-for="(source, sourceIndex) in current.sources" :key="sourceIndex">
+          <div v-if="current.sources?.length" class="answer-sources">
+            <p v-for="(source, sourceIndex) in current.sources" :key="sourceIndex" class="source-link">
+              <span aria-hidden="true">↗</span> Source:
               <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
-              <blockquote><RestrictedMarkdown :text="source.excerpt" /></blockquote>
-            </div>
-          </details>
+            </p>
+            <details v-if="quotedSources.length" class="source-quotes">
+              <summary>Quoted evidence</summary>
+              <blockquote v-for="(source, sourceIndex) in quotedSources" :key="sourceIndex">
+                <RestrictedMarkdown :text="source.excerpt" />
+              </blockquote>
+            </details>
+          </div>
         </div>
         <div class="practice-actions">
-          <MButton type="button" class="next" @click="next">
+          <p v-if="shortcutsEnabled" class="shortcut-hint" aria-hidden="true">
+            <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>{{ revealed.size === 0 ? "S" : "N" }}</kbd>
+            {{ revealed.size === 0 ? "skip" : "next" }}
+          </p>
+          <MButton
+            type="button"
+            class="next"
+            :variant="revealed.size === 0 ? 'ghost' : 'primary'"
+            @click="next"
+          >
             {{ revealed.size === 0 ? "Skip" : index + 1 === total ? "Finish" : "Next question" }}
           </MButton>
         </div>
@@ -304,19 +420,23 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
       </div>
 
       <aside v-if="contextOpen" id="practice-context" class="practice-context">
-        <div v-if="contextOpen" class="context-content">
+        <div class="context-content">
           <section>
-            <h2>Session</h2>
-            <div class="context-progress"><span :style="{ width: `${progressPercent}%` }" /></div>
-            <p>{{ index + 1 }} of {{ total }} questions</p>
+            <h2>How scoring works</h2>
+            <p>
+              Your first answer to a question counts. A question is solved once you answer it correctly on the
+              first try; wrong first answers go to Mistakes.
+            </p>
           </section>
           <section>
-            <h2>Objective</h2>
-            <p>{{ current.objectiveTitle ?? current.objective }}</p>
-          </section>
-          <section>
-            <h2>Shortcuts</h2>
-            <p><kbd>1–4</kbd> select<br /><kbd>N</kbd> next</p>
+            <h2>Keyboard</h2>
+            <p v-if="shortcutsEnabled">
+              <kbd>1</kbd>–<kbd>4</kbd> answer<br /><kbd>S</kbd> skip<br /><kbd>N</kbd> next
+            </p>
+            <label class="shortcut-toggle">
+              <input type="checkbox" :checked="shortcutsEnabled" @change="toggleShortcuts" />
+              Single-key shortcuts
+            </label>
           </section>
         </div>
       </aside>
@@ -344,8 +464,148 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 .answer-sources blockquote {
   margin: 0.5rem 0;
 }
-.completion-links a {
+.practice-card {
+  margin-top: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-lg);
+  background: var(--surface-elevated);
+}
+.practice-card h1 {
+  margin-top: 0;
+}
+.queue-note {
+  font-size: 0.9rem;
+}
+.completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+/* Navigations stay links (they change the URL); they only borrow the
+   button shape so the card's actions read as one row. */
+.link-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  padding: 0 1rem;
+  border: 1px solid var(--surface-line-strong);
+  border-radius: var(--mctl-radius-md, 0.5rem);
+  color: var(--surface-fg);
+  text-decoration: none;
+}
+.link-button:hover {
+  border-color: var(--accent);
+}
+.link-button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.practice-context-line {
+  margin-bottom: 0.75rem;
+}
+.practice-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.8rem;
+}
+.crumb-course {
+  color: var(--surface-fg);
+  font-weight: 600;
+}
+.crumb-sep {
+  color: var(--surface-fg-subtle);
+}
+.clear-filter {
+  margin-left: 0.4rem;
   color: var(--accent);
+}
+.progress-wrap {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 8rem;
+}
+.progress-track {
+  width: 8rem;
+  height: 3px;
+  overflow: hidden;
+  border-radius: var(--mctl-radius-pill);
+  background: var(--surface-line);
+}
+.progress-track span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+.icon {
+  font-family: var(--font-mono);
+}
+.first-answer-rule {
+  margin: -0.5rem 0 1rem;
+  color: var(--surface-fg-muted);
+  font-size: 0.85rem;
+}
+.option-key {
+  display: inline-grid;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border: 1px solid var(--surface-line-strong);
+  border-radius: 0.3rem;
+  color: var(--surface-fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.options.answered li:not(.correct):not(.incorrect) {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.options.answered li:not(.correct):not(.incorrect):hover,
+.options.answered li:not(.correct):not(.incorrect):focus-within {
+  opacity: 1;
+}
+.options li.first-answer {
+  border-width: 2px;
+}
+.first-answer-tag {
+  color: var(--surface-fg-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.source-link {
+  margin: 0.25rem 0;
+}
+.source-link a {
+  color: var(--accent);
+}
+.shortcut-hint {
+  margin: 0 auto 0 0;
+  align-self: center;
+  color: var(--surface-fg-subtle);
+  font-size: 0.75rem;
+}
+/* Touch-only devices have no keys to press; the hint would be noise. */
+@media (hover: none) {
+  .shortcut-hint {
+    display: none;
+  }
+}
+.shortcut-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  min-height: 2.75rem;
+  cursor: pointer;
 }
 .practice-empty,
 .practice-summary {
@@ -374,13 +634,6 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 
 .practice-shell.context-open .practice-stage {
   grid-template-columns: minmax(0, 1fr) 15rem;
-}
-
-.context-progress span {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  transition: width var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
 }
 
 .practice-stage > .practice {
@@ -420,27 +673,24 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   min-height: 2.75rem;
   padding: 0.5rem 0.25rem;
   border: 0;
-  border-bottom: 1px solid currentColor;
   background: transparent;
-  color: var(--surface-fg-subtle);
+  color: var(--surface-fg-muted);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   white-space: nowrap;
   cursor: pointer;
 }
 
-/* Un-boxed by design: it's a two-way toggle over one running count, not a
-   distinct control that needs its own frame — every other in-line action at
-   this scale (.report-button) is bare text/glyph with no border or fill, so
-   a bordered pill here was the odd one out. .vote-button keeps its 44px
-   touch target (WCAG 2.5.5) but paints nothing of its own; .vote-icon is
-   the small glyph that actually carries color, and "active" is communicated
-   the same way .report-button and nav links already do it in this app —
-   with color and weight, not a filled shape. */
+/* A 1px pill groups the two arrows with the running count they change, so
+   the score reads as part of the control. .vote-button keeps its 44px touch
+   target (WCAG 2.5.5); "active" is carried by .vote-icon's color and weight,
+   not a filled shape. */
 .vote-widget {
   display: inline-flex;
   align-items: center;
   gap: 0.1rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-pill);
 }
 
 .vote-button {
@@ -512,7 +762,9 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 
 .options button {
-  display: block;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
   width: 100%;
   text-align: left;
   background: transparent;
@@ -586,12 +838,15 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 
 .context-toggle {
-  display: grid;
+  display: inline-flex;
+  gap: 0.35rem;
   min-width: 2.75rem;
   min-height: 2.75rem;
-  padding: 0;
-  place-items: center;
-  border: 0;
+  padding: 0 0.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-pill);
   background: transparent;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
@@ -624,14 +879,6 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   line-height: 1.7;
-}
-
-.context-progress {
-  height: 4px;
-  margin-bottom: 0.45rem;
-  overflow: hidden;
-  border-radius: var(--mctl-radius-pill);
-  background: var(--surface-card);
 }
 
 kbd {
