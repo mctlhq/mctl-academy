@@ -105,6 +105,25 @@ describe("UserNav", () => {
     window.history.pushState({}, "", "/");
   });
 
+  it("re-enables sign-in when the page is restored from the back/forward cache", async () => {
+    stubSignInOptions({ zitadel: null });
+    signInMocks.social.mockImplementation(() => new Promise(() => {}));
+    const wrapper = mount(UserNav, { props: { user: null, loading: false } });
+    await flushPromises();
+
+    await wrapper.get(".signin-github").trigger("click");
+    expect(wrapper.get(".signin-github").attributes("disabled")).toBeDefined();
+
+    const restored = new Event("pageshow") as PageTransitionEvent;
+    Object.defineProperty(restored, "persisted", { value: true });
+    window.dispatchEvent(restored);
+    await flushPromises();
+
+    expect(wrapper.get(".signin-github").attributes("disabled")).toBeUndefined();
+    expect(wrapper.text()).not.toContain("Opening sign-in");
+    wrapper.unmount();
+  });
+
   it("asks for confirmation in a dialog before deleting the account, and keeps it on failure", async () => {
     const fetchMock = vi.fn(async () => ({ ok: false, json: async () => ({}) }));
     vi.stubGlobal("fetch", fetchMock);

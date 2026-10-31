@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref, type Ref } from "vue";
+import { computed, inject, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import { authClient } from "../authClient";
 import type { UserProfile } from "../types/user";
@@ -59,6 +59,18 @@ async function startSignIn(label: string, start: (callbackURL: string) => Promis
     signInPending.value = false;
   }
 }
+
+// Back from the provider's authorize page usually restores this page from
+// the back/forward cache with its JS state intact; without this the sign-in
+// buttons would stay disabled until a manual reload.
+function onPageShow(event: PageTransitionEvent) {
+  if (event.persisted) {
+    signInPending.value = false;
+    signInError.value = null;
+  }
+}
+onMounted(() => window.addEventListener("pageshow", onPageShow));
+onUnmounted(() => window.removeEventListener("pageshow", onPageShow));
 
 function signInWithGitHub() {
   return startSignIn("GitHub", (callbackURL) =>

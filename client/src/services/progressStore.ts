@@ -294,7 +294,6 @@ export async function syncFromServer(): Promise<SyncOutcome> {
 
   const startGeneration = clearGeneration;
   const epoch = syncEpoch;
-  const statusBefore = syncStatus.value;
   setSyncStatusFor(epoch, "syncing");
 
   let serverAttempts: QuestionAttempt[];
@@ -316,10 +315,10 @@ export async function syncFromServer(): Promise<SyncOutcome> {
     return "failed";
   }
 
-  if (clearGeneration !== startGeneration) {
-    setSyncStatusFor(epoch, statusBefore);
-    return "deferred";
-  }
+  // A clear started while this read was in flight. Its own result decides
+  // the status (clearProgress sets synced/failed when it settles), so this
+  // stale read must not touch it.
+  if (clearGeneration !== startGeneration) return "deferred";
 
   const local = getStoredAttempts();
   const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
@@ -402,6 +401,13 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
     return { serverCleared: true };
   }
 
+  // The clear's outcome is the status: once the server copy is deleted,
+  // device and server agree (both empty); if not, the server may still hold
+  // rows the next sync would bring back. This also settles a "syncing" left
+  // by a sync that deferred to this clear.
+  const epoch = syncEpoch;
+  setSyncStatusFor(epoch, "syncing");
+
   let markDone!: () => void;
   const thisClear = new Promise<void>((resolve) => {
     markDone = resolve;
@@ -418,8 +424,10 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
       await Promise.allSettled([...pendingWrites]);
     }
     const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
+    setSyncStatusFor(epoch, res.ok ? "synced" : "failed");
     return { serverCleared: res.ok };
   } catch {
+    setSyncStatusFor(epoch, "failed");
     return { serverCleared: false };
   } finally {
     markDone();

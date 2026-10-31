@@ -668,6 +668,22 @@ describe("progressStore service", () => {
       expect(syncStatus.value).toBe("off");
     });
 
+    it("settles a sync that deferred to a clear, using the clear's own result", async () => {
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) }));
+      setSyncEnabled(true);
+      const clearing = clearProgress();
+      expect(await syncFromServer()).toBe("deferred");
+      await clearing;
+      expect(syncStatus.value).toBe("synced");
+    });
+
+    it("reports failed when the server copy could not be cleared", async () => {
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
+      setSyncEnabled(true);
+      await clearProgress();
+      expect(syncStatus.value).toBe("failed");
+    });
+
     it("downgrades to failed when a later attempt write fails", async () => {
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) }));
       setSyncEnabled(true);
