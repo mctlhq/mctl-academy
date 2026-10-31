@@ -1,0 +1,48 @@
+schema_version: 1
+id: q-1c9e4a7f3d62
+status: published
+domain: domain-3
+objective: domain-3/call-error-handling
+stem: "An agent's error-handling code inspects the exact text of a 429
+  response's `detail.error` message to decide how to react, instead of the HTTP
+  status and headers. Per Tavily's Rate Limits documentation, what is wrong with
+  that approach?"
+options:
+  - id: a
+    text: "Nothing; the message text is the documented, stable way to detect a 429"
+    correct: false
+    explanation: "The documentation says error messages can vary by the limit
+      reached, so matching on message text is not a stable way to detect a 429."
+  - id: b
+    text: "Error messages can vary by the limit reached, so retry handling should
+      key off the HTTP status and header instead"
+    correct: true
+    explanation: "Correct. The documentation states exactly this: error messages can
+      vary by the limit reached, so use the HTTP status and header for retry
+      handling rather than matching the message text."
+  - id: c
+    text: "429 responses never include a Retry-After header, so message text is the
+      only usable signal"
+    correct: false
+    explanation: "The documentation shows a 429 example that does include a
+      Retry-After header; it is not true that the header is never present."
+  - id: d
+    text: "Keyless access returns the same error format as a keyed request, so
+      message matching works identically either way"
+    correct: false
+    explanation: "The documentation states keyless access uses a different error
+      format and separate limits, so message matching would not work identically
+      either way."
+evidence:
+  - source_id: src-tv-rate-limits
+    excerpt: "Error messages can vary by the limit reached; use the HTTP status and
+      header for retry handling rather than matching the message text."
+    source_sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:00:04Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: 9a93f1e97ae556d838ef69fc485bef8febfe183b96029aa9550dc0f3345fd566

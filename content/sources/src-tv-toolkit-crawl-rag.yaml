@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-toolkit-crawl-rag
+url: https://docs.tavily.com/examples/use-cases/crawl-to-rag.md
+title: Crawl to RAG
+retrieved_at: 2026-10-31T09:01:57Z
+sha256: 6bbddabfdad3ba25ad96c8fd33ea42b4c3adf625a90ff00649c7592175266416
+objectives:
+  - domain-1/blended-rag
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6bbddabfdad3ba25ad96c8fd33ea42b4c3adf625a90ff00649c7592175266416
+status: current

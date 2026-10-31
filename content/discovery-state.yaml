@@ -1309,23 +1309,9 @@ seen:
     first_seen: 2026-10-30
   - url: https://docs.tokenfactory.nebius.com/sandboxes/sdk/python_sdk/troubleshooting.md
     first_seen: 2026-10-30
-  - url: https://docs.tavily.com/documentation/agent-skills.md
-    first_seen: 2026-10-31
   - url: https://docs.tavily.com/documentation/api-reference/endpoint/feedback.md
     first_seen: 2026-10-31
-  - url: https://docs.tavily.com/documentation/api-reference/endpoint/logs.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/documentation/api-reference/endpoint/research-get.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/documentation/api-reference/endpoint/research-streaming.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/documentation/api-reference/endpoint/research.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/documentation/best-practices/best-practices-research.md
-    first_seen: 2026-10-31
   - url: https://docs.tavily.com/documentation/enterprise/deactivate-keys.md
-    first_seen: 2026-10-31
-  - url: https://docs.tavily.com/documentation/enterprise/generate-keys.md
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/documentation/enterprise/key-info.md
     first_seen: 2026-10-31

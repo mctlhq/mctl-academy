@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-toolkit-company-intel
+url: https://docs.tavily.com/examples/agent-toolkit/company-intelligence.md
+title: "Agent Toolkit: Company Intelligence"
+retrieved_at: 2026-10-31T09:01:54Z
+sha256: f622beea7f98a30f9996c1ee388e2fe0a85d4fa7051e140d94ea02083897d8c1
+objectives:
+  - domain-1/web-access-operations
+snapshot:
+  bucket: academy-source-snapshots
+  key: f622beea7f98a30f9996c1ee388e2fe0a85d4fa7051e140d94ea02083897d8c1
+status: current

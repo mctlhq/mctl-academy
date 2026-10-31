@@ -1,0 +1,53 @@
+schema_version: 1
+id: q-e3c8b1f49a52
+status: published
+domain: domain-3
+objective: domain-3/crawl-scope
+stem: "A team wants a Crawl to stay under `/docs/` while never following links
+  into `/admin/`. Per the Crawl API reference, which two parameters give that
+  scope?"
+options:
+  - id: a
+    text: "select_domains to restrict to /docs/, and exclude_domains to block
+      /admin/"
+    correct: false
+    explanation: "select_domains and exclude_domains match domains or subdomains,
+      not path patterns like /docs/ or /admin/."
+  - id: b
+    text: "select_paths with a /docs/.* pattern, and exclude_paths with a /admin/.*
+      pattern"
+    correct: true
+    explanation: "Correct. The reference describes select_paths as regex patterns to
+      select specific path patterns like /docs/.*, and exclude_paths as regex
+      patterns to exclude path patterns like /admin/.*."
+  - id: c
+    text: "max_depth set to 1 to stay inside /docs/, and allow_external set to false
+      to block /admin/"
+    correct: false
+    explanation: "max_depth bounds how many levels deep the crawl explores and
+      allow_external controls external-domain links; neither targets a path
+      pattern."
+  - id: d
+    text: "limit set low enough that the crawler never reaches /admin/, with no way
+      to target /docs/ directly"
+    correct: false
+    explanation: "limit caps the total number of links processed; it does not select
+      or exclude specific path patterns the way select_paths and exclude_paths
+      do."
+evidence:
+  - source_id: src-tv-api-crawl
+    excerpt: "Regex patterns to select only URLs with specific path patterns (e.g.,
+      `/docs/.*`, `/api/v1.*`)."
+    source_sha256: 9d66f4d92a844a2e2579ecb3e63e29db39bec22b4728abb87c58e6b61e927778
+  - source_id: src-tv-api-crawl
+    excerpt: "Regex patterns to exclude URLs with specific path patterns (e.g.,
+      `/private/.*`, `/admin/.*`)."
+    source_sha256: 9d66f4d92a844a2e2579ecb3e63e29db39bec22b4728abb87c58e6b61e927778
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:00:04Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: 9be21bd5fbce3c70ec76fe720109e82faea51ec5c699c390462eb75686ad54df

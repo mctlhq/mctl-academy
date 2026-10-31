@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-toolkit-chatbot
+url: https://docs.tavily.com/examples/agent-toolkit/chatbot.md
+title: "Agent Toolkit: Chatbot"
+retrieved_at: 2026-10-31T09:01:53Z
+sha256: 7cd000016722f3493717347342be027a8a79e9c5a6d75118906c251dba61be29
+objectives:
+  - domain-1/agent-tool-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7cd000016722f3493717347342be027a8a79e9c5a6d75118906c251dba61be29
+status: current

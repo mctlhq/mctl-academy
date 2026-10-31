@@ -1,0 +1,46 @@
+schema_version: 1
+id: q-9a3f6c1e8b45
+status: published
+domain: domain-4
+objective: domain-4/credit-monitoring
+stem: "An agent wants to know how many of its API key's credits were spent on
+  Search calls specifically this billing cycle, not its total usage across every
+  endpoint. Per the Usage API reference, which field should it read?"
+options:
+  - id: a
+    text: "key.usage, since it already breaks usage down by endpoint"
+    correct: false
+    explanation: "key.usage is the total credits used for the API key across all
+      endpoints during the cycle, not a per-endpoint breakdown."
+  - id: b
+    text: "key.search_usage, the Search endpoint credits used for this API key
+      during the current billing cycle"
+    correct: true
+    explanation: "Correct. The reference describes key.search_usage exactly this
+      way: Search endpoint credits used for this API key during the current
+      billing cycle."
+  - id: c
+    text: "account.search_usage, since it reports this specific key's Search
+      spending"
+    correct: false
+    explanation: "account.search_usage reports Search credits for the whole plan,
+      not for this individual key."
+  - id: d
+    text: "key.crawl_usage, since Crawl combines Search with extraction internally"
+    correct: false
+    explanation: "key.crawl_usage reports Crawl endpoint credits for the key; it
+      does not report Search spending, and Crawl does not fold Search into
+      itself."
+evidence:
+  - source_id: src-tv-api-usage
+    excerpt: "Search endpoint credits used for this API key during the current
+      billing cycle"
+    source_sha256: 23185c233be1e68ca143a408e3d91c1cc74584857ceebef5d1f3fd31cd1d249f
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:00:04Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: d65cadbf2373fb19e9adf765fe2e98389f5bb48621accded568b0be5166092e2

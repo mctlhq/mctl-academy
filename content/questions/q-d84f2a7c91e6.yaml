@@ -1,0 +1,49 @@
+schema_version: 1
+id: q-d84f2a7c91e6
+status: published
+domain: domain-2
+objective: domain-2/extraction-recovery
+stem: "A batch Extract call for 25 URLs is rejected, and separately a batch
+  where every URL fails validation also comes back as an error. Per the Extract
+  API reference, how can an agent recover enough detail to act on the second
+  case?"
+options:
+  - id: a
+    text: "It cannot; a validation-failure response carries only a generic error
+      with no per-URL detail"
+    correct: false
+    explanation: "The reference states that when all URLs fail validation,
+      detail.failed_results describes the individual failures, not just a
+      generic error."
+  - id: b
+    text: "detail.failed_results in the 400 response describes the individual URL
+      failures"
+    correct: true
+    explanation: "Correct. The reference states that when all URLs fail validation,
+      detail.failed_results describes the individual failures."
+  - id: c
+    text: "It must resend each URL one at a time until it finds the one that caused
+      the error"
+    correct: false
+    explanation: "The reference documents failed_results inside the error detail for
+      this exact case, so resending URLs one at a time is not needed."
+  - id: d
+    text: "The results array lists which URLs failed validation, since
+      failed_results only covers successful batches"
+    correct: false
+    explanation: "failed_results appears in the error detail for an all-invalid
+      batch; results is for successfully processed URLs, not validation
+      failures."
+evidence:
+  - source_id: src-tv-api-extract
+    excerpt: "When all URLs fail validation, detail.failed_results describes the
+      individual failures."
+    source_sha256: 200fb5074a7131a24105c09eeb756c1e6deee7db35cc640244c9ecf36d4c06db
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:00:04Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: c2b05cdcb5ead1345cc0e3a29a57177b04a9babf0289e3308e2c22a1bd601313
