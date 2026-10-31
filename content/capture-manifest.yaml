@@ -523,3 +523,157 @@ sources:
     objectives:
       - domain-1/gpu-orchestration
       - domain-1/training-results
+
+  # Agentic Web Search (docs.tavily.com, allowlisted 2026-10-31 for the
+  # scoped API, SDK, best-practice and example pages; see SOURCES.md).
+  - id: src-tv-agents
+    url: https://docs.tavily.com/agents.md
+    title: "Tavily setup and tool-choice guide for agents"
+    objectives:
+      - domain-1/agent-tool-selection
+      - domain-3/endpoint-selection
+      - domain-3/mcp-integration
+
+  - id: src-tv-quickstart
+    url: https://docs.tavily.com/index.md
+    title: "Tavily Quickstart"
+    objectives:
+      - domain-1/realtime-search-fundamentals
+      - domain-1/web-access-operations
+
+  - id: src-tv-faq
+    url: https://docs.tavily.com/faq/faq.md
+    title: "Tavily Frequently Asked Questions"
+    objectives:
+      - domain-1/realtime-search-fundamentals
+      - domain-1/blended-rag
+
+  - id: src-tv-api-credits
+    url: https://docs.tavily.com/documentation/api-credits.md
+    title: "Tavily Credits and Pricing"
+    objectives:
+      - domain-4/credit-monitoring
+      - domain-4/budget-and-forecasting
+
+  - id: src-tv-rate-limits
+    url: https://docs.tavily.com/documentation/rate-limits.md
+    title: "Tavily Rate Limits"
+    objectives:
+      - domain-4/rate-limit-handling
+      - domain-3/call-error-handling
+
+  - id: src-tv-api-headers
+    url: https://docs.tavily.com/documentation/api-headers.md
+    title: "Tavily Headers and Authentication"
+    objectives:
+      - domain-4/api-key-auth
+
+  - id: src-tv-api-search
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/search.md
+    title: "Tavily Search API reference"
+    objectives:
+      - domain-2/search-parameters
+      - domain-2/response-fields
+      - domain-3/call-error-handling
+
+  - id: src-tv-api-extract
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/extract.md
+    title: "Tavily Extract API reference"
+    objectives:
+      - domain-2/response-fields
+      - domain-2/extraction-recovery
+
+  - id: src-tv-api-crawl
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/crawl.md
+    title: "Tavily Crawl API reference"
+    objectives:
+      - domain-3/crawl-parameters
+      - domain-3/crawl-scope
+
+  - id: src-tv-api-map
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/map.md
+    title: "Tavily Map API reference"
+    objectives:
+      - domain-3/map-usage
+      - domain-3/crawl-scope
+
+  - id: src-tv-api-usage
+    url: https://docs.tavily.com/documentation/api-reference/endpoint/usage.md
+    title: "Tavily Usage API reference"
+    objectives:
+      - domain-4/credit-monitoring
+
+  - id: src-tv-bp-search
+    url: https://docs.tavily.com/documentation/best-practices/best-practices-search.md
+    title: "Tavily Search best practices"
+    objectives:
+      - domain-2/search-parameters
+      - domain-1/source-quality
+
+  - id: src-tv-bp-extract
+    url: https://docs.tavily.com/documentation/best-practices/best-practices-extract.md
+    title: "Tavily Extract best practices"
+    objectives:
+      - domain-2/search-extract-pipelines
+      - domain-2/extraction-recovery
+
+  - id: src-tv-bp-crawl
+    url: https://docs.tavily.com/documentation/best-practices/best-practices-crawl.md
+    title: "Tavily Crawl best practices"
+    objectives:
+      - domain-3/crawl-parameters
+      - domain-3/crawl-scope
+      - domain-3/endpoint-selection
+
+  - id: src-tv-bp-api-keys
+    url: https://docs.tavily.com/documentation/best-practices/api-key-management.md
+    title: "Tavily API key management"
+    objectives:
+      - domain-4/key-rotation-secrets
+      - domain-4/api-key-auth
+
+  - id: src-tv-mcp
+    url: https://docs.tavily.com/documentation/mcp.md
+    title: "Connect to Tavily via MCP"
+    objectives:
+      - domain-3/mcp-integration
+
+  - id: src-tv-sdk-python
+    url: https://docs.tavily.com/sdk/python/reference.md
+    title: "Tavily Python SDK reference"
+    objectives:
+      - domain-3/mcp-integration
+      - domain-1/blended-rag
+
+  - id: src-tv-tut-search
+    url: https://docs.tavily.com/examples/quick-tutorials/search-api.md
+    title: "Web Search Essentials"
+    objectives:
+      - domain-2/search-parameters
+      - domain-1/source-quality
+
+  - id: src-tv-tut-extract
+    url: https://docs.tavily.com/examples/quick-tutorials/extract-api.md
+    title: "Clean Content Extraction"
+    objectives:
+      - domain-2/search-extract-pipelines
+      - domain-2/extraction-recovery
+
+  - id: src-tv-tut-map
+    url: https://docs.tavily.com/examples/quick-tutorials/map-api.md
+    title: "Site Structure Discovery with Map"
+    objectives:
+      - domain-3/map-usage
+
+  - id: src-tv-tut-crawl
+    url: https://docs.tavily.com/examples/quick-tutorials/crawl-api.md
+    title: "Website Crawling and Content Extraction"
+    objectives:
+      - domain-3/crawl-parameters
+      - domain-1/web-access-operations
+
+  - id: src-tv-hybrid-research
+    url: https://docs.tavily.com/examples/agent-toolkit/hybrid-research.md
+    title: "Agent Toolkit: Hybrid Research"
+    objectives:
+      - domain-1/blended-rag

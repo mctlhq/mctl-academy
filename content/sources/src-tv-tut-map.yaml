@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-tv-tut-map
+url: https://docs.tavily.com/examples/quick-tutorials/map-api.md
+title: Site Structure Discovery with Map
+retrieved_at: 2026-10-31T01:11:50Z
+sha256: 339cc791a66d5946134ca479d31d591647246a73353577f7cedbcbe6951288b9
+objectives:
+  - domain-3/map-usage
+snapshot:
+  bucket: academy-source-snapshots
+  key: 339cc791a66d5946134ca479d31d591647246a73353577f7cedbcbe6951288b9
+status: current

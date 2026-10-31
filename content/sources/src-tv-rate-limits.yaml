@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-rate-limits
+url: https://docs.tavily.com/documentation/rate-limits.md
+title: Tavily Rate Limits
+retrieved_at: 2026-10-31T01:11:31Z
+sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+objectives:
+  - domain-4/rate-limit-handling
+  - domain-3/call-error-handling
+snapshot:
+  bucket: academy-source-snapshots
+  key: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+status: current

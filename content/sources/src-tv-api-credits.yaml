@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-api-credits
+url: https://docs.tavily.com/documentation/api-credits.md
+title: Tavily Credits and Pricing
+retrieved_at: 2026-10-31T01:11:30Z
+sha256: 5389452e88381c1d50fcb222a24982ec4946a352dadddb03b2309b6ce55426ff
+objectives:
+  - domain-4/credit-monitoring
+  - domain-4/budget-and-forecasting
+snapshot:
+  bucket: academy-source-snapshots
+  key: 5389452e88381c1d50fcb222a24982ec4946a352dadddb03b2309b6ce55426ff
+status: current

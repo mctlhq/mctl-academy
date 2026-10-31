@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-faq
+url: https://docs.tavily.com/faq/faq.md
+title: Tavily Frequently Asked Questions
+retrieved_at: 2026-10-31T01:11:29Z
+sha256: 9898da380dd7ebace34e0b4e58f62f30c9efd4c499c90af0922d68c351acfaf3
+objectives:
+  - domain-1/realtime-search-fundamentals
+  - domain-1/blended-rag
+snapshot:
+  bucket: academy-source-snapshots
+  key: 9898da380dd7ebace34e0b4e58f62f30c9efd4c499c90af0922d68c351acfaf3
+status: current

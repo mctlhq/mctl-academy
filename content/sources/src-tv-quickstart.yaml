@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-quickstart
+url: https://docs.tavily.com/index.md
+title: Tavily Quickstart
+retrieved_at: 2026-10-31T01:11:27Z
+sha256: 3b09f433e0e37e32726da10bfa4c0095cf490a227aafb51e8249d102302dd06d
+objectives:
+  - domain-1/realtime-search-fundamentals
+  - domain-1/web-access-operations
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3b09f433e0e37e32726da10bfa4c0095cf490a227aafb51e8249d102302dd06d
+status: current

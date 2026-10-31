@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-bp-api-keys
+url: https://docs.tavily.com/documentation/best-practices/api-key-management.md
+title: Tavily API key management
+retrieved_at: 2026-10-31T01:11:44Z
+sha256: b2e17dc380bc3f6e2fbfe5aa2070bd9baf1a4e43875b84ff9c2d6e260a26797d
+objectives:
+  - domain-4/key-rotation-secrets
+  - domain-4/api-key-auth
+snapshot:
+  bucket: academy-source-snapshots
+  key: b2e17dc380bc3f6e2fbfe5aa2070bd9baf1a4e43875b84ff9c2d6e260a26797d
+status: current

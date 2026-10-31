@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-tv-tut-search
+url: https://docs.tavily.com/examples/quick-tutorials/search-api.md
+title: Web Search Essentials
+retrieved_at: 2026-10-31T01:11:48Z
+sha256: 06ac6bd1f1f5dfe3f9e7d4938359dc4012769f77e24e1b7119601cc223bdd0fb
+objectives:
+  - domain-2/search-parameters
+  - domain-1/source-quality
+snapshot:
+  bucket: academy-source-snapshots
+  key: 06ac6bd1f1f5dfe3f9e7d4938359dc4012769f77e24e1b7119601cc223bdd0fb
+status: current

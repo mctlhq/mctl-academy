@@ -1,0 +1,14 @@
+schema_version: 1
+id: src-tv-agents
+url: https://docs.tavily.com/agents.md
+title: Tavily setup and tool-choice guide for agents
+retrieved_at: 2026-10-31T01:11:26Z
+sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+objectives:
+  - domain-1/agent-tool-selection
+  - domain-3/endpoint-selection
+  - domain-3/mcp-integration
+snapshot:
+  bucket: academy-source-snapshots
+  key: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+status: current
