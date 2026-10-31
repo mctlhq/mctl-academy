@@ -30,7 +30,7 @@ describe("AppNav component", () => {
     });
 
     const navLinks = wrapper.findAll(".app-nav-link");
-    const labels = navLinks.map((link) => link.text().trim());
+    const labels = navLinks.map((link) => link.find("span").text().trim());
 
     // Unified labels: Home, Practice, Mock exam, Mistakes, Progress
     expect(labels).toEqual(["Home", "Practice", "Mock exam", "Mistakes", "Progress"]);
@@ -66,5 +66,27 @@ describe("AppNav component", () => {
     const optionTexts = options.map((opt) => opt.text().trim());
     const expected = courseCatalog.map((c) => (c.available ? c.title : `${c.title} — Coming soon`));
     expect(optionTexts).toEqual(expected);
+  });
+
+  test("always shows the mistakes count, muted when there is nothing to review", async () => {
+    const router = createRouter({ history: createMemoryHistory(), routes });
+    const wrapper = mount(AppNav, { props: { user: null, loading: false }, global: { plugins: [router] } });
+
+    const badge = wrapper.get('[data-testid="mistake-badge"]');
+    expect(badge.text()).toBe("0");
+    expect(badge.classes()).toContain("mistake-badge-empty");
+    expect(wrapper.get('a[href="/mistakes"]').attributes("aria-label")).toBe("Mistakes, 0 to review");
+  });
+
+  test("keeps the course next to the brand, with the full title available", async () => {
+    const router = createRouter({ history: createMemoryHistory(), routes });
+    const wrapper = mount(AppNav, { props: { user: null, loading: false }, global: { plugins: [router] } });
+
+    const context = wrapper.get(".app-nav-context");
+    expect(context.find(".app-brand").exists()).toBe(true);
+    const select = context.get('[data-testid="course-select"]');
+    const selected = courseCatalog.find((c) => c.id === (select.element as HTMLSelectElement).value);
+    expect(select.attributes("title")).toBe(selected?.title);
+    expect(wrapper.get('label[for="course-select"]').text()).toBe("Course");
   });
 });

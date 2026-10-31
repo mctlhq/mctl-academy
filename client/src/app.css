@@ -96,16 +96,45 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
 button:focus-visible,
 a:focus-visible,
 summary:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* <main> receives programmatic focus after navigation (router/index.ts); it
+   is a landing point, not a control, so it shows no ring. */
+.app-main:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: calc(var(--mctl-z-index-nav) + 1);
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--mctl-radius-md);
+  background: var(--surface-elevated);
+  color: var(--surface-fg);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
 }
 
 .app-main {
@@ -143,7 +172,9 @@ input:focus-visible {
 
 code {
   background: var(--surface-card);
-  padding: 0.1em 0.35em;
+  /* Horizontal padding kept small: it sits inside the inline box, so with
+     0.35em a following comma or period read as a stray space ("advanced ,"). */
+  padding: 0.1em 0.2em;
   border-radius: var(--mctl-radius-sm, 4px);
   font-size: 0.9em;
   /* Question/option/explanation text can contain long unbroken inline code
