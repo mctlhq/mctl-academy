@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.67](https://github.com/mctlhq/mctl-academy/compare/0.1.66...0.1.67) (2026-10-31)
+
+
+### Bug Fixes
+
+* **client:** pin theme CSS to @mctlhq/css 0.19.0 ([dda4258](https://github.com/mctlhq/mctl-academy/commit/dda4258fc75bdabb20f0436f5cf48adda185c378))
+* **client:** pin theme CSS to @mctlhq/css 0.19.0 ([47f65cb](https://github.com/mctlhq/mctl-academy/commit/47f65cb53f8f83eda92f976fefc8790c5b90d981))
+
 ## [0.1.66](https://github.com/mctlhq/mctl-academy/compare/0.1.65...0.1.66) (2026-10-31)
 
 
