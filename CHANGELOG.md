@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.1.60](https://github.com/mctlhq/mctl-academy/compare/0.1.59...0.1.60) (2026-10-31)
+
+
+### Bug Fixes
+
+* **content:** retire duplicate q-rl05c7d8e9f0 ([9295cd9](https://github.com/mctlhq/mctl-academy/commit/9295cd999fa953d9e97f072943c68b20a672cfb5))
+* **content:** retire duplicate q-rl05c7d8e9f0 ([cb0a3a6](https://github.com/mctlhq/mctl-academy/commit/cb0a3a621138c8a4d6f09cf3238272a729e1a882))
+* **replenish:** do not retry a turn-cap stop on the fallback token ([747f50c](https://github.com/mctlhq/mctl-academy/commit/747f50cf2846b4751cf84690c7cd2c576367fd61))
+* **replenish:** do not retry a turn-cap stop on the fallback token ([df800dc](https://github.com/mctlhq/mctl-academy/commit/df800dc1cdd4294df6ff0091ee5825b6c3e60875))
+
+
+### Content
+
+* **replenish:** author 4 question file(s) from 1 captured source(s) ([7c8d648](https://github.com/mctlhq/mctl-academy/commit/7c8d6482df4e26fa02ac8117d435130f00996b7e))
+* **replenish:** author 8 question file(s) from 5 captured source(s) ([8512a2a](https://github.com/mctlhq/mctl-academy/commit/8512a2a4eb6e2722352e69e512a305e97dee7652))
+* **replenish:** author 8 question file(s) from 7 captured source(s) ([cab1332](https://github.com/mctlhq/mctl-academy/commit/cab1332d65ecdb32a0f76a9644cc699c2b882397))
+* **replenish:** promote 4 reviewed question(s) ([4819d6d](https://github.com/mctlhq/mctl-academy/commit/4819d6dbd4bbfe5028a7550a16afcc633c8eb95d))
+* **replenish:** promote 8 reviewed question(s) ([1d3afce](https://github.com/mctlhq/mctl-academy/commit/1d3afce835e0274d68f92e67984cb40b254a69ca))
+* **replenish:** promote 8 reviewed question(s) ([5be9d3e](https://github.com/mctlhq/mctl-academy/commit/5be9d3e5276fc6310ec2c56f71467bd7cddf5c83))
+
 ## [0.1.59](https://github.com/mctlhq/mctl-academy/compare/0.1.58...0.1.59) (2026-10-31)
 
 
