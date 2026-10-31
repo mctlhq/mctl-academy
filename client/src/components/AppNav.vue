@@ -230,9 +230,15 @@ const links = [
   white-space: nowrap;
 }
 
+/* A native select is as wide as its longest option, so every new course
+   title (and its "Coming soon" suffix) widened the actions group until it
+   covered the Progress link. Capping the width keeps the nav layout
+   independent of the catalog; the open dropdown still shows full titles. */
 .course-select {
+  max-width: 13rem;
   height: 2rem;
   padding: 0 0.6rem;
+  text-overflow: ellipsis;
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-md);
   background: var(--surface-bg);
