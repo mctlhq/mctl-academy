@@ -45,7 +45,10 @@ const domains = computed(() => {
   return [...byDomain.values()];
 });
 
-/** Lowest share correct; ties keep course order. Undefined when every domain is perfect. */
+/**
+ * Lowest share correct; a tie goes to the domain that appears first in this
+ * exam's questions. Undefined when every domain is perfect.
+ */
 const weakestDomain = computed(() => {
   let weakest: (typeof domains.value)[number] | undefined;
   for (const d of domains.value) {
