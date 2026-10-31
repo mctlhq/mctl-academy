@@ -1,4 +1,5 @@
 import type { ExamSessionState } from "./session";
+import { getProgressOwner } from "../services/progressStore";
 
 // sessionStorage (tab/session-scoped), not localStorage: a reload mid-exam
 // restores answers and remaining time for that browser session only, per
@@ -9,7 +10,9 @@ import type { ExamSessionState } from "./session";
 // restored session must never resurface under a different course.
 const STORAGE_PREFIX = "academy.mock.session.v1";
 
-const storageKey = (courseId: string) => `${STORAGE_PREFIX}.${courseId}`;
+// Keyed per owner too: sign-out reloads the page, which keeps sessionStorage,
+// so an exam left running must not resurface for the guest or the next account.
+const storageKey = (courseId: string) => `${STORAGE_PREFIX}.${getProgressOwner()}.${courseId}`;
 
 export function saveSession(courseId: string, session: ExamSessionState): void {
   try {

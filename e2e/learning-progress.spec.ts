@@ -38,7 +38,7 @@ test("unanswered-first selection, feedback and cursor survive navigation, reload
       localStorage.setItem("e2e.seeded", "true");
       localStorage.setItem("mctl_academy_course_id", "agentic-ai-builder");
       localStorage.setItem(
-        "mctl_academy_progress_v1",
+        "mctl_academy_progress_v1:guest",
         JSON.stringify([
           {
             questionId: solved.id,
@@ -105,7 +105,7 @@ test("progress denominator and recommended domain link agree", async ({ page }) 
     (questions) => {
       localStorage.setItem("mctl_academy_course_id", "agentic-ai-builder");
       localStorage.setItem(
-        "mctl_academy_progress_v1",
+        "mctl_academy_progress_v1:guest",
         JSON.stringify(
           questions.map((q) => ({
             questionId: q.id,
@@ -152,7 +152,7 @@ test("a short bank explains the mock shortfall and a complete bank starts a mock
 test("a fully solved bank offers repetition instead of claiming content is missing", async ({ page }) => {
   await page.addInitScript((questions) => {
     localStorage.setItem(
-      "mctl_academy_progress_v1",
+      "mctl_academy_progress_v1:guest",
       JSON.stringify(
         questions.map((q) => ({
           questionId: q.id,
@@ -189,4 +189,38 @@ test("long inline code in an option wraps instead of being clipped at 375px", as
     expect(clipped, `question ${i + 1}`).toBe(0);
     await page.getByRole("button", { name: /^Skip/ }).click();
   }
+});
+
+test("a signed-in learner's mock in progress survives a reload without the guest start screen", async ({
+  page,
+}) => {
+  const mockCourse = catalog.find(mockComplete);
+  test.skip(!mockCourse, "no course can fill its own mock");
+  let sessionDelayMs = 0;
+  await page.unroute("**/api/auth/get-session**");
+  await page.route("**/api/auth/get-session**", async (route) => {
+    if (sessionDelayMs) await new Promise((resolve) => setTimeout(resolve, sessionDelayMs));
+    await route.fulfill({
+      json: {
+        session: { id: "s-1", userId: "u-1", expiresAt: "2099-01-01T00:00:00Z" },
+        user: { id: "u-1", name: "Learner", email: "learner@example.com" },
+      },
+    });
+  });
+  await page.route("**/api/attempts**", (route) => route.fulfill({ json: { attempts: [] } }));
+  await page.addInitScript((id) => localStorage.setItem("mctl_academy_course_id", id), mockCourse!.id);
+
+  await page.goto("/mock");
+  await page.getByRole("button", { name: "Start mock exam" }).click();
+  await expect(page.getByTestId("mock-exam")).toBeVisible();
+  await page.locator(".mock-exam-option input[type=radio]").first().click();
+
+  // The exam is keyed per account: until the session settles, the guest key
+  // would restore nothing and show the start screen instead.
+  sessionDelayMs = 1500;
+  await page.reload();
+  await expect(page.getByText("Loading your session…")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start mock exam" })).toHaveCount(0);
+  await expect(page.getByTestId("mock-exam")).toBeVisible();
+  await expect(page.locator(".mock-exam-option input[type=radio]").first()).toBeChecked();
 });

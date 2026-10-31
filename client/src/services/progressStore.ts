@@ -62,7 +62,31 @@ export interface OverallProgress {
   domainProgress: DomainProgress[];
 }
 
-const STORAGE_KEY = "mctl_academy_progress_v1";
+/**
+ * The attempt log is kept per owner: one log for the guest and one per
+ * signed-in account, under `<base>:guest` and `<base>:user:<id>`. A single
+ * log per browser showed one account's answers to the guest after sign-out
+ * and to the next account, and backfilled the first account's unsynced
+ * answers into the second account's server history (#403).
+ */
+const LEGACY_STORAGE_KEY = "mctl_academy_progress_v1";
+const GUEST_OWNER = "guest";
+let progressOwner = GUEST_OWNER;
+
+function logKey(owner: string = progressOwner): string {
+  return `${LEGACY_STORAGE_KEY}:${owner}`;
+}
+
+function readLog(key: string): QuestionAttempt[] {
+  try {
+    const raw = getItem(key);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as QuestionAttempt[]) : [];
+  } catch {
+    return [];
+  }
+}
 const ATTEMPTS_ENDPOINT = "/api/attempts";
 
 let syncEnabled = false;
@@ -152,7 +176,7 @@ function trackWrite<T>(promise: Promise<T>): Promise<T> {
 }
 
 export function saveRawAttempts(attempts: QuestionAttempt[]): void {
-  setItem(STORAGE_KEY, JSON.stringify(attempts));
+  setItem(logKey(), JSON.stringify(attempts));
   progressVersion.value += 1;
 }
 
@@ -164,6 +188,7 @@ export function resetMemoryFallback(): void {
   pendingWrites.clear();
   queuedWrites = [];
   writesHeldBy = null;
+  progressOwner = GUEST_OWNER;
   syncEpoch += 1;
   syncStatus.value = "off";
   progressVersion.value += 1;
@@ -172,12 +197,58 @@ export function resetMemoryFallback(): void {
 
 export function getStoredAttempts(): QuestionAttempt[] {
   void progressVersion.value;
-  try {
-    const raw = getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as QuestionAttempt[];
-  } catch {
-    return [];
+  return readLog(logKey());
+}
+
+/** The owner segment of every learner-scoped storage key: "guest" or "user:<id>". */
+export function getProgressOwner(): string {
+  return progressOwner;
+}
+
+/**
+ * The single pre-#403 log has no known owner. Rows a server already holds
+ * (`synced`) are dropped: the account they belong to pulls them back on its
+ * next sign-in, and keeping them would show them to whoever is here now.
+ * Rows never synced exist nowhere else, so they become guest rows and are
+ * adopted by the next sign-in, like any other guest answer.
+ */
+function migrateLegacyLog(): void {
+  const raw = getItem(LEGACY_STORAGE_KEY);
+  if (raw === null) return;
+  const unsynced = readLog(LEGACY_STORAGE_KEY).filter((a) => !a.synced);
+  if (unsynced.length > 0) {
+    setItem(logKey(GUEST_OWNER), JSON.stringify([...readLog(logKey(GUEST_OWNER)), ...unsynced]));
+  }
+  removeItem(LEGACY_STORAGE_KEY);
+  progressVersion.value += 1;
+}
+// Before the first render reads the guest log, not only at the first sign-in.
+migrateLegacyLog();
+
+/**
+ * Switches the attempt log to `userId`'s (null: the guest's). Call it on
+ * every sign-in, sign-out and account change, before setSyncEnabled().
+ *
+ * Signing in adopts the guest log into the account once — answers given
+ * before signing in count for that account and are backfilled by the next
+ * sync — and empties it, so a later guest or account never sees them.
+ * Signing out switches to the (empty) guest log; the account's own log
+ * stays on this device but is not shown until that account signs in again.
+ */
+export function setProgressOwner(userId: string | null): void {
+  migrateLegacyLog();
+  const owner = userId ? `user:${userId}` : GUEST_OWNER;
+  if (owner !== GUEST_OWNER) {
+    const guestRows = readLog(logKey(GUEST_OWNER));
+    if (guestRows.length > 0) {
+      const adopted = guestRows.map((a) => ({ ...a, synced: false }));
+      setItem(logKey(owner), JSON.stringify([...readLog(logKey(owner)), ...adopted]));
+      removeItem(logKey(GUEST_OWNER));
+    }
+  }
+  if (owner !== progressOwner) {
+    progressOwner = owner;
+    progressVersion.value += 1;
   }
 }
 
@@ -245,13 +316,13 @@ function postAttemptToServer(questionId: string, domain: string, correct: boolea
 }
 
 /** Flips one stored row to synced once the server has confirmed it, so it is never reconsidered. */
-function markAttemptSynced(questionId: string, attemptedAt: string): void {
+function markAttemptSynced(key: string, questionId: string, attemptedAt: string): void {
   try {
-    const attempts = getStoredAttempts();
+    const attempts = readLog(key);
     const row = attempts.find((a) => a.questionId === questionId && a.attemptedAt === attemptedAt);
     if (row && !row.synced) {
       row.synced = true;
-      setItem(STORAGE_KEY, JSON.stringify(attempts));
+      setItem(key, JSON.stringify(attempts));
     }
   } catch {
     // Ignore storage errors
@@ -269,10 +340,13 @@ function markAttemptSynced(questionId: string, attemptedAt: string): void {
  */
 export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
   const attemptedAt = new Date().toISOString();
+  // The row belongs to whoever is signed in now, even if its POST settles
+  // after a switch to another owner's log.
+  const key = logKey();
   try {
-    const attempts = getStoredAttempts();
+    const attempts = readLog(key);
     attempts.push({ questionId, domain, correct, attemptedAt });
-    setItem(STORAGE_KEY, JSON.stringify(attempts));
+    setItem(key, JSON.stringify(attempts));
     progressVersion.value += 1;
   } catch {
     // Ignore storage errors
@@ -282,7 +356,7 @@ export function recordAttempt(questionId: string, domain: string, correct: boole
     const epoch = syncEpoch;
     const send = () => {
       trackWrite(postAttemptToServer(questionId, domain, correct)).then((ok) => {
-        if (ok) markAttemptSynced(questionId, attemptedAt);
+        if (ok) markAttemptSynced(key, questionId, attemptedAt);
         else setSyncStatusFor(epoch, "failed");
       });
     };
@@ -324,6 +398,7 @@ export async function syncFromServer(): Promise<SyncOutcome> {
 
   const startGeneration = clearGeneration;
   const epoch = syncEpoch;
+  const key = logKey();
   setSyncStatusFor(epoch, "syncing");
 
   let serverAttempts: QuestionAttempt[];
@@ -349,8 +424,12 @@ export async function syncFromServer(): Promise<SyncOutcome> {
   // the status (clearProgress sets synced/failed when it settles), so this
   // stale read must not touch it.
   if (clearGeneration !== startGeneration) return "deferred";
+  // The account changed while this read was in flight: its rows belong to
+  // the previous account's log, and backfilling now would post that log's
+  // rows on the new account's session.
+  if (epoch !== syncEpoch) return "deferred";
 
-  const local = getStoredAttempts();
+  const local = readLog(key);
   const localLatestByQuestion = new Map(latestPerQuestion(local).map((a) => [a.questionId, a]));
 
   const newFromServer = serverAttempts.filter((a) => {
@@ -361,7 +440,7 @@ export async function syncFromServer(): Promise<SyncOutcome> {
   if (newFromServer.length > 0) {
     try {
       const withServerRows = [...local, ...newFromServer.map((a) => ({ ...a, synced: true }))];
-      setItem(STORAGE_KEY, JSON.stringify(withServerRows));
+      setItem(key, JSON.stringify(withServerRows));
       progressVersion.value += 1;
     } catch {
       // Ignore storage errors; fall through so backfill still gets attempted.
@@ -377,13 +456,13 @@ export async function syncFromServer(): Promise<SyncOutcome> {
     const serverIsUpToDate =
       serverRecord && new Date(serverRecord.attemptedAt).getTime() >= new Date(a.attemptedAt).getTime();
     if (serverIsUpToDate) {
-      markAttemptSynced(a.questionId, a.attemptedAt);
+      markAttemptSynced(key, a.questionId, a.attemptedAt);
       continue;
     }
 
     backfills.push(
       trackWrite(postAttemptToServer(a.questionId, a.domain, a.correct)).then((ok) => {
-        if (ok) markAttemptSynced(a.questionId, a.attemptedAt);
+        if (ok) markAttemptSynced(key, a.questionId, a.attemptedAt);
         return ok;
       }),
     );
@@ -427,7 +506,7 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
   // clear is about to wipe locally; sending them later would resurrect them.
   queuedWrites = [];
   try {
-    removeItem(STORAGE_KEY);
+    removeItem(logKey());
     progressVersion.value += 1;
     progressEpoch.value = String(Date.now());
     setItem("academy.progress.epoch", progressEpoch.value);

@@ -56,6 +56,8 @@ not an estimate of exam readiness. Exploring a correct option after a wrong firs
 answer does not clear the mistake: solve it on the first try in a new pass.
 Practice position is saved on this device per account, course and mode; Repeat all
 is available without resetting history. Signed-out progress remains device-local.
+The answer log is also kept per account on the device: answers given signed out
+move into the account that signs in next, and signing out shows an empty guest log.
 
 See [`client/README.md`](client/README.md) for local client development, and
 [`PLAN.md`](PLAN.md#7-application) section 7 for the application design.

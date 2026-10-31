@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { getItem, setItem } from "../storage";
 import {
   calculateProgressStats,
   calculateStudyStreak,
@@ -8,6 +9,7 @@ import {
   recordAttempt,
   resetMemoryFallback,
   saveRawAttempts,
+  setProgressOwner,
   setSyncEnabled,
   syncFromServer,
   syncStatus,
@@ -801,5 +803,169 @@ describe("progressStore service", () => {
       // The answer itself is kept locally regardless.
       expect(getStoredAttempts()).toHaveLength(1);
     });
+  });
+});
+
+describe("progress log per owner (#403)", () => {
+  beforeEach(() => {
+    resetMemoryFallback();
+  });
+
+  afterEach(() => {
+    setSyncEnabled(false);
+    vi.unstubAllGlobals();
+  });
+
+  const ids = () => getStoredAttempts().map((a) => a.questionId);
+
+  function stubServer(posts: string[], postOk: () => boolean) {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url: string, init?: RequestInit) => {
+        if (init?.method === "POST") {
+          posts.push(JSON.parse(String(init.body)).questionId);
+          return Promise.resolve({ ok: postOk() });
+        }
+        return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+      }),
+    );
+  }
+
+  it("does not show an account's history to the guest after sign-out, nor to the next account", async () => {
+    const posts: string[] = [];
+    let online = false;
+    stubServer(posts, () => online);
+
+    setProgressOwner("user-a");
+    setSyncEnabled(true);
+    recordAttempt("q-a", "domain-1", false); // its POST fails: unsynced
+    await vi.waitFor(() => expect(posts).toEqual(["q-a"]));
+
+    setProgressOwner(null);
+    setSyncEnabled(false);
+    expect(ids()).toEqual([]);
+
+    online = true;
+    posts.length = 0;
+    setProgressOwner("user-b");
+    setSyncEnabled(true);
+    await syncFromServer();
+    expect(ids()).toEqual([]);
+    expect(posts).toEqual([]); // A's unsynced answer is never uploaded into B
+
+    setProgressOwner("user-a");
+    expect(ids()).toEqual(["q-a"]); // still on this device for A
+  });
+
+  it("adopts guest answers into the account that signs in, once, and backfills them", async () => {
+    const posts: string[] = [];
+    stubServer(posts, () => true);
+    recordAttempt("q-guest", "domain-1", true);
+
+    setProgressOwner("user-a");
+    setSyncEnabled(true);
+    expect(ids()).toEqual(["q-guest"]);
+    expect(await syncFromServer()).toBe("synced");
+    expect(posts).toEqual(["q-guest"]);
+
+    setProgressOwner(null);
+    setSyncEnabled(false);
+    expect(ids()).toEqual([]);
+    setProgressOwner("user-b");
+    expect(ids()).toEqual([]);
+  });
+
+  it("does not merge or backfill a read that settles after the account changed", async () => {
+    const posts: string[] = [];
+    let resolveGet!: (value: unknown) => void;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url: string, init?: RequestInit) => {
+        if (init?.method === "POST") {
+          posts.push(JSON.parse(String(init.body)).questionId);
+          return Promise.resolve({ ok: true });
+        }
+        return new Promise((resolve) => (resolveGet = resolve));
+      }),
+    );
+    setProgressOwner("user-a");
+    saveRawAttempts([
+      { questionId: "q-a", domain: "domain-1", correct: true, attemptedAt: "2026-09-01T00:00:00Z" },
+    ]);
+    setSyncEnabled(true);
+    const pending = syncFromServer();
+    await vi.waitFor(() => expect(resolveGet).toBeTypeOf("function"));
+
+    setProgressOwner("user-b");
+    setSyncEnabled(true);
+    resolveGet({
+      ok: true,
+      json: async () => ({
+        attempts: [
+          {
+            questionId: "q-server-a",
+            domain: "domain-1",
+            correct: true,
+            attemptedAt: "2026-09-02T00:00:00Z",
+          },
+        ],
+      }),
+    });
+    expect(await pending).toBe("deferred");
+    expect(posts).toEqual([]);
+    expect(ids()).toEqual([]);
+  });
+
+  it("keeps a POST that settles after an account switch on the log it was recorded in", async () => {
+    let resolvePost!: (value: unknown) => void;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise((resolve) => (resolvePost = resolve))),
+    );
+    setProgressOwner("user-a");
+    setSyncEnabled(true);
+    recordAttempt("q-a", "domain-1", true);
+    setProgressOwner("user-b");
+    setSyncEnabled(true);
+    resolvePost({ ok: true });
+    await new Promise((resolve) => setTimeout(resolve, 0)); // the POST settles while B is signed in
+    expect(ids()).toEqual([]);
+    setProgressOwner("user-a");
+    expect(getStoredAttempts()).toEqual([expect.objectContaining({ questionId: "q-a", synced: true })]);
+  });
+
+  it("clear history erases only the signed-in account's log", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) }));
+    recordAttempt("q-guest", "domain-1", true);
+    setProgressOwner("user-a");
+    setProgressOwner(null);
+    recordAttempt("q-guest-2", "domain-1", true);
+    setProgressOwner("user-b");
+    setSyncEnabled(true);
+    await clearProgress();
+    expect(ids()).toEqual([]);
+    setProgressOwner("user-a");
+    expect(ids()).toEqual(["q-guest"]);
+  });
+
+  it("migrates the pre-#403 shared log: unsynced rows become guest rows, synced rows are dropped", async () => {
+    setItem(
+      "mctl_academy_progress_v1",
+      JSON.stringify([
+        {
+          questionId: "q-synced",
+          domain: "domain-1",
+          correct: true,
+          attemptedAt: "2026-09-01T00:00:00Z",
+          synced: true,
+        },
+        { questionId: "q-offline", domain: "domain-1", correct: false, attemptedAt: "2026-09-01T00:00:00Z" },
+      ]),
+    );
+    setProgressOwner(null);
+    expect(ids()).toEqual(["q-offline"]);
+    expect(getItem("mctl_academy_progress_v1")).toBeNull();
+    setProgressOwner(null); // idempotent
+    expect(ids()).toEqual(["q-offline"]);
   });
 });

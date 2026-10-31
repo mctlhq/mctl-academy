@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { answerQuestion, remainingMs, scoreSession, startSession, submitSession, tick } from "../session";
 import { clearSession, loadSession, saveSession } from "../persistence";
+import { setProgressOwner } from "../../services/progressStore";
 import type { Question } from "../types";
 
 function makeQuestions(): Question[] {
@@ -84,5 +85,18 @@ describe("session persistence", () => {
 
   it("returns null when nothing was saved", () => {
     expect(loadSession(COURSE_ID)).toBeNull();
+  });
+
+  it("does not restore one owner's exam for the guest or another account (#403)", () => {
+    setProgressOwner("user-a");
+    saveSession(COURSE_ID, startSession(makeQuestions(), 60, 0));
+    setProgressOwner(null);
+    expect(loadSession(COURSE_ID)).toBeNull();
+    setProgressOwner("user-b");
+    expect(loadSession(COURSE_ID)).toBeNull();
+    setProgressOwner("user-a");
+    expect(loadSession(COURSE_ID)).not.toBeNull();
+    clearSession(COURSE_ID);
+    setProgressOwner(null);
   });
 });
