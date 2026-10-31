@@ -37,6 +37,15 @@ export const ALLOWED_SOURCES = [
   { host: "docs.nebius.com", pathPrefix: "/" },
   { host: "huggingface.co", pathPrefix: "/docs/lerobot/" },
   {
+    host: "docs.tavily.com",
+    pathPrefix: "/",
+    // The API, SDK, best-practice and example pages only. Third-party
+    // integration and partnership pages, machine payments and the changelog
+    // are outside the reviewed scope (SOURCES.md).
+    pathPattern:
+      /^\/((agents|index)\.md|faq\/[a-z0-9-]+\.md|documentation\/(?!integrations\/|partnerships\/|machine-payments\/)[a-z0-9-]+(\/[a-z0-9-]+)*\.md|sdk\/(python|javascript)\/[a-z0-9-]+\.md|examples\/[a-z0-9-]+(\/[a-z0-9-]+)*\.md)$/,
+  },
+  {
     host: "raw.githubusercontent.com",
     pathPrefix: "/nebius/nebius-physical-ai/",
     pathPattern:

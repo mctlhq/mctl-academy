@@ -50,6 +50,7 @@ const CONTENT = process.env.ACADEMY_CONTENT_DIR
 export const LLMS_INDICES = [
   "https://docs.tokenfactory.nebius.com/llms.txt",
   "https://docs.nebius.com/llms.txt",
+  "https://docs.tavily.com/llms.txt",
 ];
 const FETCH_TIMEOUT_MS = 30_000;
 
@@ -153,6 +154,7 @@ export const COURSE_PRIMARY_HOST = {
   "ai-cloudops-engineer": "docs.nebius.com",
   "ai-leader": "docs.tokenfactory.nebius.com",
   "physical-ai": "docs.nebius.com",
+  "agentic-web-search": "docs.tavily.com",
 };
 
 export function rankPages(pages, gaps) {

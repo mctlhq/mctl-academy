@@ -115,6 +115,27 @@ test("parseLlmsIndex keeps allowlisted .md pages once, drops other hosts and non
   assert.equal(pages[1].description, "");
 });
 
+// The Tavily index lists its own pages next to third-party integration and
+// partnership pages; only the reviewed scope may be offered as a source.
+test("parseLlmsIndex keeps in-scope Tavily pages and drops its integrations", () => {
+  const pages = parseLlmsIndex(
+    [
+      "- [Rate Limits](https://docs.tavily.com/documentation/rate-limits.md): Limits",
+      "- [Search](https://docs.tavily.com/documentation/api-reference/endpoint/search.md)",
+      "- [LangChain](https://docs.tavily.com/documentation/integrations/langchain.md): Integration",
+      "- [Azure](https://docs.tavily.com/documentation/partnerships/azure.md): Partner",
+      "- [Changelog](https://docs.tavily.com/changelog.md)",
+    ].join("\n"),
+  );
+  assert.deepEqual(
+    pages.map((p) => p.url),
+    [
+      "https://docs.tavily.com/documentation/rate-limits.md",
+      "https://docs.tavily.com/documentation/api-reference/endpoint/search.md",
+    ],
+  );
+});
+
 test("newPages excludes known and ignored urls and orders by first-seen date", () => {
   const pages = parseLlmsIndex(INDEX);
   const known = new Set(["https://docs.nebius.com/compute/resources/quotas-limits.md"]);

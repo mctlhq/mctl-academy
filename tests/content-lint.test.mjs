@@ -323,6 +323,40 @@ test("accepts a page inside the LeRobot docs tree", () => {
   assert.equal(ok, true, output);
 });
 
+test("accepts Tavily API, SDK, best-practice and example pages", () => {
+  for (const url of [
+    "https://docs.tavily.com/agents.md",
+    "https://docs.tavily.com/documentation/rate-limits.md",
+    "https://docs.tavily.com/documentation/api-reference/endpoint/search.md",
+    "https://docs.tavily.com/documentation/best-practices/api-key-management.md",
+    "https://docs.tavily.com/sdk/python/reference.md",
+    "https://docs.tavily.com/examples/quick-tutorials/crawl-api.md",
+  ]) {
+    const { ok, output } = lint({ sources: [source({ url })] });
+    assert.equal(ok, true, `${url}\n${output}`);
+  }
+});
+
+// docs.tavily.com is allowlisted for its own API documentation only; the
+// third-party integration and partnership pages were never reviewed.
+test("rejects Tavily pages outside the reviewed scope", () => {
+  for (const url of [
+    "https://docs.tavily.com/documentation/integrations/langchain.md",
+    "https://docs.tavily.com/documentation/partnerships/azure.md",
+    "https://docs.tavily.com/documentation/machine-payments/x402.md",
+    "https://docs.tavily.com/documentation/api-reference/../integrations/openai.md",
+    "https://docs.tavily.com/changelog.md",
+    "https://docs.tavily.com/documentation/api-reference/openapi.json",
+    "https://docs.tavily.com/llms-full.txt",
+    "https://app.tavily.com/playground",
+    "https://tavily.com/blog",
+  ]) {
+    const { ok, output } = lint({ sources: [source({ url })] });
+    assert.equal(ok, false, url);
+    assert.match(output, /allowlist/);
+  }
+});
+
 // huggingface.co is allowlisted for one path prefix only; the rest of the
 // host (other libraries' docs, model cards, the blog) was never reviewed.
 test("rejects a page on an allowlisted host but outside its path prefix", () => {
