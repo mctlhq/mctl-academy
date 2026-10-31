@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.64](https://github.com/mctlhq/mctl-academy/compare/0.1.63...0.1.64) (2026-10-31)
+
+
+### Bug Fixes
+
+* **practice:** wrap long inline code in options on narrow screens ([0e358cc](https://github.com/mctlhq/mctl-academy/commit/0e358cc915345eaa6e553e49a79d471b85011da9))
+* **practice:** wrap long inline code in options on narrow screens ([ff79d25](https://github.com/mctlhq/mctl-academy/commit/ff79d25db0e51ccc7be32f3377a1a8de3727c97b))
+
 ## [0.1.63](https://github.com/mctlhq/mctl-academy/compare/0.1.62...0.1.63) (2026-10-31)
 
 
