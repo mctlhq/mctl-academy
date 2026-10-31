@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-d2f9b4c6a187
+status: review_ready
+domain: domain-3
+objective: domain-3/map-usage
+stem: "An agent wants Map to only discover URLs under a particular path, like
+  `/docs/`, without restricting which domains it explores. Per the Map API
+  reference, which parameter should it set?"
+options:
+  - id: a
+    text: "`select_paths`"
+    correct: true
+    explanation: "Correct. The reference describes select_paths as regex patterns
+      to select only URLs with specific path patterns."
+  - id: b
+    text: "`select_domains`"
+    correct: false
+    explanation: "select_domains restricts which domains or subdomains are
+      crawled, not which paths on a domain are selected."
+  - id: c
+    text: "`exclude_paths`"
+    correct: false
+    explanation: "exclude_paths removes URLs matching given path patterns, which
+      is the opposite of selecting only a particular path."
+  - id: d
+    text: "`max_depth`"
+    correct: false
+    explanation: "max_depth controls how far from the base URL the crawler can
+      explore; it does not filter by path pattern."
+evidence:
+  - source_id: src-tv-api-map
+    excerpt: "Regex patterns to select only URLs with specific path patterns
+      (e.g., `/docs/.*`, `/api/v1.*`)."
+    source_sha256: ffcb4bbf4b1c25055660e81be8c806d4ff601a8b58633c41566e9c71914cb773
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search

@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-c6a4f1d93b72
+status: review_ready
+domain: domain-4
+objective: domain-4/rate-limit-handling
+stem: "A Search request on a non-paying plan sets `max_age_hours`, and Tavily is
+  under heavy load. Per Tavily's Rate Limits documentation, what should the
+  agent expect, and what can it do?"
+options:
+  - id: a
+    text: "`429 Too Many Requests`; wait the number of seconds in Retry-After
+      before retrying"
+    correct: false
+    explanation: "429 with Retry-After is the standard rate-limit response; this
+      flex-tier scenario is documented separately as a 434 response."
+  - id: b
+    text: "`434 Flex tier capacity exceeded`; retry shortly, or omit max_age_hours
+      to be served from cache"
+    correct: true
+    explanation: "Correct. The documentation states these requests are refused
+      with 434 Flex tier capacity exceeded, and to retry shortly or omit
+      max_age_hours."
+  - id: c
+    text: "`433 PayGo limit exceeded`; upgrade the plan or raise the PayGo limit"
+    correct: false
+    explanation: "433 PayGo limit exceeded is a documented response for a
+      different condition (exceeding the pay-as-you-go limit), not this
+      flex-tier scenario."
+  - id: d
+    text: "`432 Key limit or Plan Limit exceeded`; contact support to raise the
+      usage limit"
+    correct: false
+    explanation: "432 Key limit or Plan Limit exceeded is a documented response
+      for a different condition (exceeding the plan's set usage limit), not this
+      flex-tier scenario."
+evidence:
+  - source_id: src-tv-rate-limits
+    excerpt: "these requests are refused with `434 Flex tier capacity exceeded`.
+      Retry shortly, or omit `max_age_hours` to be served from cache."
+    source_sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search

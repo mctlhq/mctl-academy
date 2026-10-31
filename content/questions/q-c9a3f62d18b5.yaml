@@ -1,0 +1,38 @@
+schema_version: 1
+id: q-c9a3f62d18b5
+status: review_ready
+domain: domain-2
+objective: domain-2/search-parameters
+stem: "An agent sets `include_domains_mode=prefer` on a Search request but does not
+  also set `include_domains`. Per the Search API reference, what happens?"
+options:
+  - id: a
+    text: "The request returns a 400 error"
+    correct: true
+    explanation: "Correct. The reference states that setting include_domains_mode
+      without include_domains returns a 400 error."
+  - id: b
+    text: "`restrict` limits results to only the listed domains"
+    correct: false
+    explanation: "That describes what restrict does when domains are listed; the
+      scenario uses prefer with no domains listed, which is a 400 error instead."
+  - id: c
+    text: "`prefer` also searches the rest of the web, so results outside
+      include_domains can still surface"
+    correct: false
+    explanation: "That is prefer's normal effect when include_domains is set; it
+      does not describe what happens when include_domains is left unset."
+  - id: d
+    text: "Defaults to `restrict`, so include_domains acts as a hard filter unless
+      set to prefer"
+    correct: false
+    explanation: "That describes the parameter's default behavior in general, not
+      the specific 400 error that results from omitting include_domains."
+evidence:
+  - source_id: src-tv-api-search
+    excerpt: "Setting it without `include_domains` returns a 400 error."
+    source_sha256: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search

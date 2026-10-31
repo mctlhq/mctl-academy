@@ -1,0 +1,42 @@
+schema_version: 1
+id: q-a7c1e9f4b382
+status: review_ready
+domain: domain-3
+objective: domain-3/crawl-parameters
+stem: "A Crawl request sets `extract_depth=advanced`. Per the Crawl API reference,
+  how does this change the credit cost compared to leaving it at the `basic`
+  default?"
+options:
+  - id: a
+    text: "Cost is unaffected by extract_depth; only chunks_per_source changes the
+      cost"
+    correct: false
+    explanation: "The reference prices advanced extraction higher than basic; cost
+      is affected by extract_depth, not only by chunks_per_source."
+  - id: b
+    text: "advanced costs 2 credits per 5 successful extractions, instead of
+      basic's 1 credit per 5"
+    correct: true
+    explanation: "Correct. The reference states basic extraction costs 1 credit
+      per 5 successful extractions, while advanced costs 2 credits per 5."
+  - id: c
+    text: "advanced triggers the same increase to 2 credits per 10 successful
+      pages that specifying instructions causes"
+    correct: false
+    explanation: "That per-10-pages pricing is what instructions triggers; extract_depth
+      has its own separate per-5-extractions pricing."
+  - id: d
+    text: "advanced extraction is only available when instructions are also
+      provided"
+    correct: false
+    explanation: "That availability condition applies to chunks_per_source, not to
+      extract_depth, which can be set independently of instructions."
+evidence:
+  - source_id: src-tv-api-crawl
+    excerpt: "`basic` extraction costs 1 credit per 5 successful extractions,
+      while `advanced` extraction costs 2 credits per 5 successful extractions."
+    source_sha256: 9d66f4d92a844a2e2579ecb3e63e29db39bec22b4728abb87c58e6b61e927778
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search

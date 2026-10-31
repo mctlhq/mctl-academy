@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-f3b8d6a92c41
+status: review_ready
+domain: domain-4
+objective: domain-4/api-key-auth
+stem: "Per Tavily's Headers & Authentication documentation, which HTTP header
+  carries the Tavily API key on a request, and in what format?"
+options:
+  - id: a
+    text: "`Authorization`, formatted as `Bearer tvly-YOUR_API_KEY`"
+    correct: true
+    explanation: "Correct. The documentation's example request sends the API key
+      in the Authorization header as \"Authorization: Bearer tvly-YOUR_API_KEY\"."
+  - id: b
+    text: "`X-Project-ID`, formatted as `Bearer tvly-YOUR_API_KEY`"
+    correct: false
+    explanation: "X-Project-ID attaches a project to the request; it does not
+      carry the API key."
+  - id: c
+    text: "`X-Session-Id`, formatted as `Bearer tvly-YOUR_API_KEY`"
+    correct: false
+    explanation: "X-Session-Id groups related requests into a session; it does not
+      carry the API key."
+  - id: d
+    text: "`X-Human-Id`, formatted as `Bearer tvly-YOUR_API_KEY`"
+    correct: false
+    explanation: "X-Human-Id identifies the end user behind a request; it does not
+      carry the API key."
+evidence:
+  - source_id: src-tv-api-headers
+    excerpt: "\"Authorization: Bearer tvly-YOUR_API_KEY\""
+    source_sha256: 7bf893aed5d020d3df2a0edf08a65b20b1e027a6996659cc8779fab69353bbb4
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:41:51Z"
+course_id: agentic-web-search
