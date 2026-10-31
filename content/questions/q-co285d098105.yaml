@@ -29,12 +29,12 @@ evidence:
   - source_id: src-co-vpc-security-groups
     excerpt: '`.spec.priority`: Priority of the rule. 1 is the highest priority,
       1000 is the lowest.'
-    source_sha256: 44d350603697ea635267c7a4cd362b43e06d637c8e6df8a2c365a9c31ce22422
+    source_sha256: 6911c3fce9dafe694208091b7e334dbc59512811d65843e51706d6d86ee83a5f
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: ba8daaae654be9d8675d5884c44d794cc5ec24e0258467d1e5d7f8260d2c2ba0
+  at: 2026-10-31T01:59:27Z
+  content_sha256: b4772ebfd6cc83cded9194cd71e6d0461cbce569ad77affaf09456c03f3157df

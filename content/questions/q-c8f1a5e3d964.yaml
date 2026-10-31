@@ -39,16 +39,16 @@ evidence:
   - source_id: src-pa-serverless-failure
     excerpt: "Serverless AI deletes the underlying virtual machine (VM) and boot
       disk to avoid costs."
-    source_sha256: 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
+    source_sha256: 3d60391ecac64db39de0b79c22881f0611bc7a53ae94acc1072deca9a5ae48a1
   - source_id: src-pa-serverless-failure
     excerpt: "To keep the VM alive for debugging, run the deployment with a
       \"sleep-on-fail\" wrapper."
-    source_sha256: 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
+    source_sha256: 3d60391ecac64db39de0b79c22881f0611bc7a53ae94acc1072deca9a5ae48a1
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 7bf405b52defe5ac4af3d7ecd81561cd4ac3d7475ae3a6a005250b46da7c7956
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 183b1e88cfa66e2648cdb6759a42822332bcb1effee2d126dcc8e5fb1bae90b6

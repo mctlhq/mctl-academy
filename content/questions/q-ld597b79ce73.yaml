@@ -25,12 +25,12 @@ options:
 evidence:
   - source_id: src-ld-billing
     excerpt: If a card charge fails, your account is **suspended**.
-    source_sha256: 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e
+    source_sha256: efdc0dc2c9fe02d1cd408f9389217723b6e0c789ba95676457ce7b62c7744666
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 4fad70b0cb56d82529277eb34b2aea8ef1e333c1428211b209d5855d8a5908f5
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 3ae11449fe54644e46610032c5b5f7d8d30b5aafe083b7b8535fa052cc700a83

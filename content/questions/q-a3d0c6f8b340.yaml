@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-a3d0c6f8b340
+status: published
+domain: domain-4
+objective: domain-4/budget-and-forecasting
+stem: "A team is forecasting the credit cost of a planned Crawl job. Per
+  Tavily's Credits & Pricing documentation, how is Crawl priced?"
+options:
+  - id: a
+    text: "Tavily Crawl combines both mapping and extraction operations, so the cost
+      is the sum of both"
+    correct: true
+    explanation: "Correct. The documentation states Crawl's cost is the sum of its
+      mapping cost and its extraction cost."
+  - id: b
+    text: "At a flat rate per crawl job, regardless of how many pages are processed"
+    correct: false
+    explanation: "The documentation prices Crawl by combining per-page mapping and
+      extraction costs, not a flat per-job rate."
+  - id: c
+    text: "Only by extraction depth, since mapping is always free within a Crawl
+      request"
+    correct: false
+    explanation: "The documentation states Crawl cost sums both mapping and
+      extraction costs; mapping is not free within a crawl."
+  - id: d
+    text: "By the number of credits the Research endpoint used for the same query"
+    correct: false
+    explanation: "Research pricing is a separate, unrelated cost model from Crawl;
+      they are not linked."
+evidence:
+  - source_id: src-tv-api-credits
+    excerpt: "Tavily Crawl combines both mapping and extraction operations, so the
+      cost is the sum of both"
+    source_sha256: 5389452e88381c1d50fcb222a24982ec4946a352dadddb03b2309b6ce55426ff
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a80482610e94f1a7e46ff074276840a4263d89848ef1dbb94be1d2bec7549ab7

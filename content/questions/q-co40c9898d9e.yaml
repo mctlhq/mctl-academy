@@ -36,16 +36,16 @@ evidence:
   - source_id: src-co-iam-federations
     excerpt: you can create, activate, deactivate and delete federations, change
       their settings, and upload or delete attached certificates.
-    source_sha256: b2f68e63cf1496c7e631778662dcb8959fe983ad303cd0abc8a3ae132c6fe0af
+    source_sha256: caec0f6766bdb457fa6a14ab1b0c6ab0c02fe0612c5da306d1ca17889d8d7664
   - source_id: src-co-iam-federations
     excerpt: A federation cannot function correctly without at least one valid
       certificate.
-    source_sha256: b2f68e63cf1496c7e631778662dcb8959fe983ad303cd0abc8a3ae132c6fe0af
+    source_sha256: caec0f6766bdb457fa6a14ab1b0c6ab0c02fe0612c5da306d1ca17889d8d7664
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 9aa6342016fb3e88e71ac19545fc7c4245e5dfb309bbbb330016d37b95688793
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 3fb2da77b8e00181d4d135d7fc046490d9ebbecbd40bb8ab8649a624b64bb2d9

@@ -1,0 +1,45 @@
+schema_version: 1
+id: q-e5b7a2d4f906
+status: published
+domain: domain-1
+objective: domain-1/blended-rag
+stem: "In Tavily's Hybrid Research pattern, how does an agent combine a private
+  knowledge base with live web search?"
+options:
+  - id: a
+    text: "It replaces the internal RAG function entirely with Tavily's search once
+      initialized"
+    correct: false
+    explanation: "The pattern keeps calling your internal RAG function; it
+      supplements rather than replaces it."
+  - id: b
+    text: "It uploads all internal data to Tavily's servers before running any
+      search"
+    correct: false
+    explanation: "The pattern calls your own RAG function locally; Tavily does not
+      require internal data to be uploaded to it."
+  - id: c
+    text: "It discards internal data whenever a web result has a higher relevance
+      score"
+    correct: false
+    explanation: "The documentation describes merging internal data with web
+      findings, not discarding it based on score."
+  - id: d
+    text: "It identifies gaps in internal knowledge and fills them with web data,
+      producing a comprehensive report with citations"
+    correct: true
+    explanation: "Correct. That is exactly how the Hybrid Research pattern is
+      described in the documentation."
+evidence:
+  - source_id: src-tv-hybrid-research
+    excerpt: "the agent identifies gaps in your internal knowledge and fills them
+      with web data, producing a comprehensive report with citations"
+    source_sha256: cbabaf9c2a6c52d4e3ef5f6aa476114181c0e8b7258476a4fcaa10c0d722e9d5
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 8fe45965dc6514c6af845bcbf35b345d54e7bbae73ae21ba9b3d875b88964a06

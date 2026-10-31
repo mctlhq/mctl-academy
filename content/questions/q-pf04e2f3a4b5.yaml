@@ -26,12 +26,12 @@ options:
 evidence:
   - source_id: src-inference-overview
     excerpt: To use the Fast flavor, append `-fast` to the model name in the
-    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
+    source_sha256: 809f09767c6e191014dde70b0f6028661704d3d8edadd291ec0b4c3a836a4b4d
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 650ba65c4ca36f9514199fac0b1cb5c7574c10f3414f52e7ec793910b91ecb5f
+  at: 2026-10-31T01:59:27Z
+  content_sha256: ff207052c5a9b0419bf282f10825e66ee51795b6f8c78aa6d87ce1c58bbd4799

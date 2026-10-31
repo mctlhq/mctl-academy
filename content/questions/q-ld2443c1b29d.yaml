@@ -29,12 +29,12 @@ evidence:
   - source_id: src-inference-overview
     excerpt: A technique that reduces the precision of model weights and
       activations, decreasing memory usage and computation.
-    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
+    source_sha256: 809f09767c6e191014dde70b0f6028661704d3d8edadd291ec0b4c3a836a4b4d
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 2feb0c4830e72cdb7af07ebe6c38458e049b59998a1d43b5dde3ec66457e3309
+  at: 2026-10-31T01:59:27Z
+  content_sha256: e21163b2f7f70a6ba771f316b98694b4c3789384b4b2e07060cb90dea96c587a

@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-ld-billing
     excerpt: At the start of the month, if your balance is negative
-    source_sha256: 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e
+    source_sha256: efdc0dc2c9fe02d1cd408f9389217723b6e0c789ba95676457ce7b62c7744666
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 1e5ad8ea8cc2d1f6ed4da1a030aa82259fe377a5044cf407c6712536c6954e8a
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0a28fcaa7c015b69b715465ac24ed7c26f3daa0a810eb5edfd544bda89c6a886

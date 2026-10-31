@@ -41,12 +41,12 @@ evidence:
     excerpt: "Managed MLflow in Nebius AI Cloud enables you to access model
       artifacts, training results and tuned hyperparameters in a single
       interface."
-    source_sha256: e3c5c60f8835b8d9bf228f2a5a6276c633ab6018f9d5355da600c9e3564a19ea
+    source_sha256: 2e701f0f6677bf4b765048bcc19bcf305db77729bcfc503a1bf386a117fb900a
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: a9f6943937fd704ce4533389376fa24aaa6139515932b9433ec07d0fd773369b
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 085515e6471490699a9f663e8ef30f3563f66c858af53b1891ea83d7e646828b

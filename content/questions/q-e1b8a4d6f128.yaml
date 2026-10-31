@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-e1b8a4d6f128
+status: published
+domain: domain-4
+objective: domain-4/credit-monitoring
+stem: "An agent wants to check how many credits its API key has consumed so far
+  this billing cycle. Per the Usage API reference, which field should it read?"
+options:
+  - id: a
+    text: "The top-level `credits` field returned by a single Search call with
+      include_usage=true"
+    correct: false
+    explanation: "include_usage on Search reports that single call's cost, not the
+      account's cumulative usage for the cycle."
+  - id: b
+    text: "The `failed_results` count returned by an Extract call"
+    correct: false
+    explanation: "failed_results lists URLs that could not be processed; it has
+      nothing to do with credit usage."
+  - id: c
+    text: "`account.plan_limit`, the credits used for this API key this cycle"
+    correct: false
+    explanation: "plan_limit is the usage limit for the current plan, not the
+      credits used so far."
+  - id: d
+    text: "`key.usage`, the total credits used for this API key during the current
+      billing cycle"
+    correct: true
+    explanation: "Correct. The Usage API reference describes key.usage exactly this way."
+evidence:
+  - source_id: src-tv-api-usage
+    excerpt: "Total credits used for this API key during the current billing cycle"
+    source_sha256: 23185c233be1e68ca143a408e3d91c1cc74584857ceebef5d1f3fd31cd1d249f
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: e39869ca62de3e921f5e29cafe1a9034a8bad4df96a542d9a1a51e0fde65089b

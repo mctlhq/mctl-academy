@@ -27,12 +27,12 @@ options:
 evidence:
   - source_id: src-co-iam-overview
     excerpt: You cannot delete a tenant.
-    source_sha256: 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
+    source_sha256: d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 29fa21091148d8f3e1e14a25e1cb54f711c463fa2c581fb7730578277cf99c3e
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0ad8b6e16b250f22f7654baeaeb68be31ae0e6832265541e96cf5a0b3e93d5ed

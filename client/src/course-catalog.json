@@ -2,7 +2,7 @@
   {
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
-    "publishedQuestionCount": 92,
+    "publishedQuestionCount": 89,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -39,8 +39,8 @@
   {
     "id": "agentic-web-search",
     "title": "Agentic Web Search",
-    "publishedQuestionCount": 0,
-    "available": false,
+    "publishedQuestionCount": 20,
+    "available": true,
     "mock": {
       "questionCount": 20,
       "timeLimitMinutes": 60,
@@ -113,7 +113,7 @@
   {
     "id": "ai-leader",
     "title": "AI Leader",
-    "publishedQuestionCount": 39,
+    "publishedQuestionCount": 38,
     "available": true,
     "mock": {
       "questionCount": 30,

@@ -29,12 +29,12 @@ evidence:
   - source_id: src-co-iam-overview
     excerpt: Being on the tenant user list does not grant access to resources. Each
       account should be assigned to a group
-    source_sha256: 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
+    source_sha256: d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: d8f9bbb35c9357f9f627c2f1a59b0de6a220e25adaa1adf6d9863f384e2e497b
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 00586e2070c31f6dd4f91df1a6c9f67c9d9a90acf6e83cb46e65c0e5eb1f7a68

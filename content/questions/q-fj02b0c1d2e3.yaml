@@ -29,15 +29,15 @@ evidence:
   - source_id: src-supervised-fine-tuning
     excerpt: Events help you understand the lifecycle (file validation, dataset
       processing, training progress).
-    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
   - source_id: src-supervised-fine-tuning
     excerpt: events = client.fine_tuning.jobs.list_events(job.id)
-    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 69e160896804133d47714774db84681b3d136bad6ac502001ddbd40e19a3d7c0
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 46d1ab0bf5df7d0b39c820c92f516043dcf2780b3d7e6384318461525ea15f77

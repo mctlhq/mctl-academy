@@ -2,13 +2,14 @@ schema_version: 1
 id: src-ld-billing
 url: https://docs.tokenfactory.nebius.com/other-capabilities/billing-new.md
 title: Billing and consumption
-retrieved_at: 2026-10-30T14:50:55Z
-sha256: 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e
+retrieved_at: 2026-10-31T01:34:10Z
+sha256: efdc0dc2c9fe02d1cd408f9389217723b6e0c789ba95676457ce7b62c7744666
 objectives:
   - domain-4/cost-and-billing
 snapshot:
   bucket: academy-source-snapshots
-  key: 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e
+  key: efdc0dc2c9fe02d1cd408f9389217723b6e0c789ba95676457ce7b62c7744666
 status: current
 versions:
   - 4c7e391a50f276908d8fd240edf85dd94c8705c93d80a2de50f43eea6b240b74
+  - 870619c4f4de82318e33e73b45087a538e64bade810b957c2cd04575be04e03e

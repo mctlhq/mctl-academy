@@ -30,15 +30,15 @@ evidence:
   - source_id: src-recovery-planes
     excerpt: "| **routing\\_key** | The model identifier you pass to inference
       calls. Returned when you create an endpoint. |"
-    source_sha256: d4db1f3fedee50c64e96f460f467de414adcd4015f3d82ffbe5ee6c21bb957a7
+    source_sha256: eb535561f26e4edc7d825b7c0a16c0cc77860c1726bded3e9e345878f5bb2a45
   - source_id: src-recovery-planes
     excerpt: "| **endpoint\\_id** | Identifier used for update/delete operations."
-    source_sha256: d4db1f3fedee50c64e96f460f467de414adcd4015f3d82ffbe5ee6c21bb957a7
+    source_sha256: eb535561f26e4edc7d825b7c0a16c0cc77860c1726bded3e9e345878f5bb2a45
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 0e4bbaded412edb6d9b850d171c056e2918c46db04ae67dd9648ad7866cf5500
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a6f7eed202440e439eb916166e4aacbee2816ebf83d460ae22f1a664b830db00

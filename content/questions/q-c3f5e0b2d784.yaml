@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-c3f5e0b2d784
+status: published
+domain: domain-1
+objective: domain-1/source-quality
+stem: "An agent is filtering Tavily Search results to drop low-relevance sources
+  before using them. Per Tavily's documentation, which response field should it
+  filter on?"
+options:
+  - id: a
+    text: "`score`, discarding results below a threshold such as 0.5"
+    correct: true
+    explanation: "Correct. The documentation recommends using score to filter
+      low-relevance results, e.g., discarding results below 0.5."
+  - id: b
+    text: "`published_date`, requiring it to be above a date threshold"
+    correct: false
+    explanation: "published_date supports recency filtering, not the relevance-based
+      filtering this scenario calls for."
+  - id: c
+    text: "`favicon`, preferring sources with a recognizable icon"
+    correct: false
+    explanation: "favicon is just the site icon URL; it carries no relevance signal."
+  - id: d
+    text: "`raw_content`, preferring whichever result has the longest extracted text"
+    correct: false
+    explanation: "raw_content is the extracted page text; length is not a documented
+      relevance measure."
+evidence:
+  - source_id: src-tv-tut-search
+    excerpt: "Use `score` from the response to filter low-relevance results (e.g.,
+      discard results below 0.5)."
+    source_sha256: 06ac6bd1f1f5dfe3f9e7d4938359dc4012769f77e24e1b7119601cc223bdd0fb
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: d8c8cb60f06ff84a5c1347220d0569e97c9b43fa41dcd0c4eee9d550477ab7a9

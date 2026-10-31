@@ -25,12 +25,12 @@ options:
 evidence:
   - source_id: src-recovery-quickstart
     excerpt: '-H "Authorization: Bearer $NEBIUS_API_KEY"'
-    source_sha256: c5cd2fedff5f96353b54925393a78f6306a011b49a3b4009cb0c0a1601191747
+    source_sha256: f59ae66f965fb0d6479e3445d0bbfb7ba541aba00b2869a26aac72501f743c4c
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 20246712ad5411553e3bea5e530a3fc422d901118f16a081303e530954b2042e
+  at: 2026-10-31T01:59:27Z
+  content_sha256: a6cbcc547ca359cefb573dfda742e3419416b186f884030b18daeb7e14c62282

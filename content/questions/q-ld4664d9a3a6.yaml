@@ -27,12 +27,12 @@ evidence:
   - source_id: src-structured-output
     excerpt: '**Arbitrary JSON object.** Forces arbitrary JSON output, the model
       will decide on the schema by itself'
-    source_sha256: 2aa65140a13a0ccbac9613b891f0a1eba6418f6129408f084b8885e05c2f99f9
+    source_sha256: 486ddc93150b148fab7f3a667fcd096839b3971ca2daf896c44cd795422c4493
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: af545406e6b087bd6c5694e804fe35cf64660a0b75ae90c151da014da2e54953
+  at: 2026-10-31T01:59:27Z
+  content_sha256: eca51f9808abe24874e3059041b7da01f74cfaa699cca3b243b958f79c670422

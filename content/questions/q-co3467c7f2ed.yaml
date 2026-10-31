@@ -31,12 +31,12 @@ evidence:
   - source_id: src-co-iam-overview
     excerpt: a service account can be granted access to any resource in the tenant
       regardless of the project
-    source_sha256: 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
+    source_sha256: d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: bf5fe4e0ab0b8473e05a61bac7ce3d4254ed355cd1902fee8e53b093bb76299d
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 0d8aebcdf013a73b06e4404f2faab8eabf7056db6b84d9990a50315b8c58f8ef

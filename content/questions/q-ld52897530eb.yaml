@@ -28,12 +28,12 @@ evidence:
   - source_id: src-function-calling
     excerpt: Propose a function call by selecting a relevant tool and filling in the
       required arguments according to the schema.
-    source_sha256: e3bb6c330048d66059012799f2efda935f13cbc7a133b63712bc1b080bf7fa82
+    source_sha256: 3c770506260f162039fbed5fedba4859b91c27573f5f01b9f5013ac8cfcd4a2d
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 2deb6cf3e78d79dc30c494ea2199643aa7ee4eab4a88ba1cba0563bed6cdbc6f
+  at: 2026-10-31T01:59:27Z
+  content_sha256: b88d3e41bc5013f98ab089508d753dcffbb72fd6f265844d8cf67f51610e8104

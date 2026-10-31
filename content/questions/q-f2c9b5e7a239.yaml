@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-f2c9b5e7a239
+status: published
+domain: domain-4
+objective: domain-4/rate-limit-handling
+stem: "An agent's request to Tavily returns `429 Too Many Requests` with a
+  `Retry-After: 60` header. Per Tavily's Rate Limits documentation, what should
+  the agent do?"
+options:
+  - id: a
+    text: "Ignore Retry-After and retry immediately in a tight loop"
+    correct: false
+    explanation: "The documentation instructs waiting the indicated number of
+      seconds before retrying, not retrying immediately."
+  - id: b
+    text: "Switch permanently to the Development rate-limit tier, which has a higher
+      RPM"
+    correct: false
+    explanation: "Production keys have a higher RPM than Development, not the other
+      way around; switching tiers is not the documented 429 response."
+  - id: c
+    text: "Wait the number of seconds indicated by Retry-After before retrying"
+    correct: true
+    explanation: "Correct. The documentation states to wait the indicated number of
+      seconds before retrying when Retry-After is present."
+  - id: d
+    text: "Always wait exactly 60 seconds, regardless of the header's value"
+    correct: false
+    explanation: "The documentation treats the 60-second example as illustrative; it
+      says to use the value actually returned in the response."
+evidence:
+  - source_id: src-tv-rate-limits
+    excerpt: "If the response includes `Retry-After`, wait the indicated number of
+      seconds before retrying."
+    source_sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 9a0ff78ae251e207611d37989b44498992b40a39c348b603e38c67c54003e314

@@ -29,12 +29,12 @@ evidence:
   - source_id: src-ld-dedicated-overview
     excerpt: Set minimum and maximum replicas to automatically scale capacity with
       traffic.
-    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
+    source_sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 8d4c1c85b2a73164bf164eec45516577352efc05d15411d31ebf126db758b31c
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 2d54151b9e8adf255fe90f7a194defa853270cf4989ccc818bb85161196da316

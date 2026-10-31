@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-b2e4d9a1c673
+status: published
+domain: domain-1
+objective: domain-1/web-access-operations
+stem: "Tavily's quickstart describes four web-access operations in one line
+  each. Which one-line description matches Crawl?"
+options:
+  - id: a
+    text: "Search the web for current, relevant sources"
+    correct: false
+    explanation: "That one-line description is for Search, not Crawl."
+  - id: b
+    text: "Pull clean content from one or more URLs"
+    correct: false
+    explanation: "That one-line description is for Extract, not Crawl."
+  - id: c
+    text: "Discover a site's structure"
+    correct: false
+    explanation: "That one-line description is for Map, not Crawl."
+  - id: d
+    text: "Read many pages across a site"
+    correct: true
+    explanation: "Correct. The quickstart describes Crawl this way."
+evidence:
+  - source_id: src-tv-quickstart
+    excerpt: "Read many pages across a site."
+    source_sha256: 3b09f433e0e37e32726da10bfa4c0095cf490a227aafb51e8249d102302dd06d
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: f3b74f31bc0644384901f0820d4e1948eef883fcc9e28fac5e9d89f548918591

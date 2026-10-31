@@ -30,16 +30,16 @@ evidence:
   - source_id: src-recovery-data-lab
     excerpt: is the unified workspace inside Nebius Token Factory for working with
       inference logs (chat completions) and datasets.
-    source_sha256: d3f90865d2c232b6f508246af4df7e448e9ae6cf7db22b7619bfeb9fda8c38c8
+    source_sha256: 52a3b1ecbbec34b921d9103a1cf15046b3328a14c363a76233dfbbe915b48c75
   - source_id: src-recovery-data-lab
     excerpt: A unified interface for **preparing datasets via SQL queries.** *
       Reusable datasets for **batch inference and fine-tuning.**
-    source_sha256: d3f90865d2c232b6f508246af4df7e448e9ae6cf7db22b7619bfeb9fda8c38c8
+    source_sha256: 52a3b1ecbbec34b921d9103a1cf15046b3328a14c363a76233dfbbe915b48c75
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 8943e7f5ad1bfa13dfa5707e339747cda66fe64d904025789c3dacbbe7606cd5
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 486fdc57d2558a70d7c0b0130832e22829d9be8e4b44db297dc40854541727ab

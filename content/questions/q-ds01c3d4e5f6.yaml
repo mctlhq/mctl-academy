@@ -30,7 +30,7 @@ evidence:
   - source_id: src-supervised-fine-tuning
     excerpt: Events help you understand the lifecycle (file validation, dataset
       processing, training progress).
-    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
 authored:
   by: agent:claude
   at: 2026-08-07T14:40:00Z

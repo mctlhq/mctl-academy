@@ -28,12 +28,12 @@ evidence:
   - source_id: src-supervised-fine-tuning
     excerpt: "`learning_rate` (float, optional) Step size for gradient descent. *
       Must be `>= 0` * Typical values: `1e-6`–`5e-5`"
-    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:56:35Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: adc0692b8728d7e5617666ccc8c8bb8e028a4aa7bfffca7da8f9c16772db6ad6
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 833b37e29d4bc5bceb177bfcec80e64bf8f693beeb4e0447c3c387f3f0a3c1e2

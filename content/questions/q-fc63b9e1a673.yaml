@@ -1,0 +1,45 @@
+schema_version: 1
+id: q-fc63b9e1a673
+status: published
+domain: domain-3
+objective: domain-3/crawl-scope
+stem: "A team is configuring a Crawl's scope and is unsure how deep to set
+  `max_depth`. Per Tavily's Crawl best practices, what should guide that
+  choice?"
+options:
+  - id: a
+    text: "Set max_depth as high as possible immediately, since deeper crawls are
+      always more complete"
+    correct: false
+    explanation: "The best practices warn that depth increases crawl time
+      exponentially and recommend starting low."
+  - id: b
+    text: "max_depth has no effect on crawl time, only on the number of credits
+      charged"
+    correct: false
+    explanation: "The best practices tie max_depth directly to crawl time
+      (exponential growth), not just credits."
+  - id: c
+    text: "Each level of depth increases crawl time exponentially; start with
+      max_depth=1 and increase as needed"
+    correct: true
+    explanation: "Correct. The best practices state this exact guidance: start
+      conservative and increase depth only as needed."
+  - id: d
+    text: "max_depth must always equal max_breadth for the crawl to succeed"
+    correct: false
+    explanation: "max_depth and max_breadth are independent parameters; the
+      documentation does not require them to match."
+evidence:
+  - source_id: src-tv-bp-crawl
+    excerpt: "Each level of depth increases crawl time exponentially. Start with
+      `max_depth=1` and increase as needed."
+    source_sha256: c1bb581747d2e632300c2691fd931478fa0918d7a923b818c10883059de8ed43
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: cdb3ee17849a8953aad37e9e5fa2a701cf007db715025bf0862537b2d8d12e80

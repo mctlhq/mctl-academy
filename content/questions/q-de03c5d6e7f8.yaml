@@ -33,7 +33,7 @@ evidence:
   - source_id: src-recovery-endpoint
     excerpt: "| Custom weights support | Supported for eligible models | Base models
       only |"
-    source_sha256: 45c8d4defc715d1fca5f93f2633a0674483f6c8e6f2c2e7904304c253a358f8d
+    source_sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
   - source_id: src-recovery-capacity
     excerpt: Self-service dedicated endpoints do not include a formal SLA unless
       covered by contract.
@@ -44,5 +44,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: d9ca0261f351fe0f7b952d615fc4109fac7a51d0ea66e0bf68fefdb24542bfc3
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 70fbfcffccdcd8eefb5445e6a1ed90cedccf9a9b19b79ae68d844419fb44b573

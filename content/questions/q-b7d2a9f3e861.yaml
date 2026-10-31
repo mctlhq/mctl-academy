@@ -37,12 +37,12 @@ evidence:
     excerpt: "Choose whether to save filesystem changes before submitting an
       operation. Every operation starts fresh compute, regardless of that
       choice."
-    source_sha256: ab50cd811944a30592da62183ec0a8979057baa0e3df2bde6c626c9a81f00859
+    source_sha256: a36a9f7b537bc69420647ae4a9bcb66a2fcc06f00dba100cc9d444de2d8460eb
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: a3ac223a8ce636fe4269d29bee6ab9008b33ac90bcde517200dbdeed0db3b6bb
+  at: 2026-10-31T01:59:27Z
+  content_sha256: e731cb5491f7e829c3ee378af3db8449cfddef734557e27c55fa0b0d21c64328

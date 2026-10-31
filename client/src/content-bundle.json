@@ -1398,52 +1398,6 @@
     ]
   },
   {
-    "id": "q-7f3a92c6e158",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/framework-integrations",
-    "stem": "In the Token Factory third-party integrations overview, which framework is listed under the \"AI Application Frameworks\" category?",
-    "objectiveTitle": "Third-party framework integrations",
-    "sources": [
-      {
-        "title": "Overview",
-        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "## AI Application Frameworks"
-      },
-      {
-        "title": "Overview",
-        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "**[Langchain](https://docs.tokenfactory.nebius.com/integrations/frameworks/langchain)**"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Postman",
-        "correct": false,
-        "explanation": "Postman is listed under the overview's Developer Tools category, not AI Application Frameworks."
-      },
-      {
-        "id": "b",
-        "text": "Helicone",
-        "correct": false,
-        "explanation": "Helicone is listed under the overview's Observability category, not AI Application Frameworks."
-      },
-      {
-        "id": "c",
-        "text": "Langchain",
-        "correct": true,
-        "explanation": "The overview's AI Application Frameworks category lists Llama-Index and Langchain."
-      },
-      {
-        "id": "d",
-        "text": "Tavily",
-        "correct": false,
-        "explanation": "Tavily is listed under the overview's Agentic Search category, not AI Application Frameworks."
-      }
-    ]
-  },
-  {
     "id": "q-7fa13c2e9b84",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -1910,6 +1864,88 @@
     ]
   },
   {
+    "id": "q-a1f3c8d92b56",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/realtime-search-fundamentals",
+    "stem": "An agent's base model stops learning about the world at its training cutoff. Per Tavily's documentation, which capability does Tavily describe itself as adding to such an agent?",
+    "objectiveTitle": "Explaining why agents need real-time web search alongside a static knowledge base",
+    "sources": [
+      {
+        "title": "Tavily Quickstart",
+        "url": "https://docs.tavily.com/index.md",
+        "excerpt": "Tavily is the web layer for AI agents: real-time **search**, page **extraction**, site **crawling** and **mapping**, and cited **research**, returned as clean, LLM-ready content."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Real-time search, page extraction, site crawling and mapping, and cited research, returned as clean, LLM-ready content",
+        "correct": true,
+        "explanation": "Correct. Tavily describes itself as the web layer for AI agents, providing exactly this live data."
+      },
+      {
+        "id": "b",
+        "text": "Keyless access, which lets an agent call Search and Extract with no API key",
+        "correct": false,
+        "explanation": "That describes the no-key access path, not what closes the knowledge-cutoff gap."
+      },
+      {
+        "id": "c",
+        "text": "Session tracking via an X-Session-Id header that groups related API calls",
+        "correct": false,
+        "explanation": "Session tracking is for attribution and analytics across calls, not for supplying live information."
+      },
+      {
+        "id": "d",
+        "text": "A documentation MCP server that lets an agent search Tavily's own docs",
+        "correct": false,
+        "explanation": "That server searches Tavily's documentation pages, not the live web the agent is missing."
+      }
+    ]
+  },
+  {
+    "id": "q-a3d0c6f8b340",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/budget-and-forecasting",
+    "stem": "A team is forecasting the credit cost of a planned Crawl job. Per Tavily's Credits & Pricing documentation, how is Crawl priced?",
+    "objectiveTitle": "Managing credit budgets and forecasting cost",
+    "sources": [
+      {
+        "title": "Tavily Credits and Pricing",
+        "url": "https://docs.tavily.com/documentation/api-credits.md",
+        "excerpt": "Tavily Crawl combines both mapping and extraction operations, so the cost is the sum of both"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Tavily Crawl combines both mapping and extraction operations, so the cost is the sum of both",
+        "correct": true,
+        "explanation": "Correct. The documentation states Crawl's cost is the sum of its mapping cost and its extraction cost."
+      },
+      {
+        "id": "b",
+        "text": "At a flat rate per crawl job, regardless of how many pages are processed",
+        "correct": false,
+        "explanation": "The documentation prices Crawl by combining per-page mapping and extraction costs, not a flat per-job rate."
+      },
+      {
+        "id": "c",
+        "text": "Only by extraction depth, since mapping is always free within a Crawl request",
+        "correct": false,
+        "explanation": "The documentation states Crawl cost sums both mapping and extraction costs; mapping is not free within a crawl."
+      },
+      {
+        "id": "d",
+        "text": "By the number of credits the Research endpoint used for the same query",
+        "correct": false,
+        "explanation": "Research pricing is a separate, unrelated cost model from Crawl; they are not linked."
+      }
+    ]
+  },
+  {
     "id": "q-a3d7f2c9e618",
     "course_id": "physical-ai",
     "domain": "domain-4",
@@ -2038,6 +2074,47 @@
     ]
   },
   {
+    "id": "q-a718c4f6b128",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/search-extract-pipelines",
+    "stem": "An agent wants to curate and filter candidate URLs before extracting their content, rather than extracting from every Search result automatically. Per Tavily's best practices, which approach fits?",
+    "objectiveTitle": "Combining Search with Extract to retrieve and clean page content",
+    "sources": [
+      {
+        "title": "Tavily Extract best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-extract.md",
+        "excerpt": "The main distinction is control, with Extract you choose exactly which URLs to extract from, while Search with `include_raw_content` extracts from all search results."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The direct Extract API, since it lets you choose exactly which URLs to extract from",
+        "correct": true,
+        "explanation": "Correct. The documentation states the key difference is control: Extract lets you choose exactly which URLs to extract from."
+      },
+      {
+        "id": "b",
+        "text": "Search with `include_raw_content=true`, since it extracts from all search results automatically",
+        "correct": false,
+        "explanation": "That approach extracts from every result automatically, which is the opposite of curating URLs first."
+      },
+      {
+        "id": "c",
+        "text": "The Map API, since it extracts full page content from discovered URLs",
+        "correct": false,
+        "explanation": "Map only discovers URLs; it does not extract page content at all."
+      },
+      {
+        "id": "d",
+        "text": "The Crawl API, since it is the fastest way to curate individual URLs",
+        "correct": false,
+        "explanation": "Crawl follows links automatically from a starting URL; it does not let you hand-pick individual URLs to extract."
+      }
+    ]
+  },
+  {
     "id": "q-a83c5e2f9b17",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -2120,6 +2197,47 @@
     ]
   },
   {
+    "id": "q-ad74c0f2b784",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/mcp-integration",
+    "stem": "An agent connects to Tavily through the remote MCP server in Claude Code using `claude mcp add tavily --transport http https://mcp.tavily.com/mcp/`. Per the MCP guide, how is the connection authenticated?",
+    "objectiveTitle": "Connecting agents to web access through the MCP server and SDKs",
+    "sources": [
+      {
+        "title": "Connect to Tavily via MCP",
+        "url": "https://docs.tavily.com/documentation/mcp.md",
+        "excerpt": "No API key needed in the URL — authentication is handled automatically via OAuth."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "No API key is needed in the URL; authentication is handled automatically via OAuth",
+        "correct": true,
+        "explanation": "Correct. The guide states exactly this: no API key in the URL, with OAuth handling authentication automatically."
+      },
+      {
+        "id": "b",
+        "text": "An API key must be pasted directly into the MCP server URL",
+        "correct": false,
+        "explanation": "The guide states no API key is needed in the URL; OAuth handles it instead."
+      },
+      {
+        "id": "c",
+        "text": "The agent must set a `TAVILY_API_KEY` environment variable before the first tool call",
+        "correct": false,
+        "explanation": "That environment variable pattern is shown for the local Claude Desktop server, not for this OAuth-based remote connection."
+      },
+      {
+        "id": "d",
+        "text": "Authentication happens by including the key in a `DEFAULT_PARAMETERS` header",
+        "correct": false,
+        "explanation": "DEFAULT_PARAMETERS configures default request parameters like search_depth, not authentication."
+      }
+    ]
+  },
+  {
     "id": "q-b291d47ea6c3",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -2157,6 +2275,47 @@
         "text": "In the Nebius Container Registry, alongside the job's container image",
         "correct": false,
         "explanation": "Container Registry stores container images, not job output; the fine-tuning results go to the mounted Object Storage bucket."
+      }
+    ]
+  },
+  {
+    "id": "q-b2e4d9a1c673",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/web-access-operations",
+    "stem": "Tavily's quickstart describes four web-access operations in one line each. Which one-line description matches Crawl?",
+    "objectiveTitle": "Distinguishing searching, extracting, mapping and crawling as web-access operations",
+    "sources": [
+      {
+        "title": "Tavily Quickstart",
+        "url": "https://docs.tavily.com/index.md",
+        "excerpt": "Read many pages across a site."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Search the web for current, relevant sources",
+        "correct": false,
+        "explanation": "That one-line description is for Search, not Crawl."
+      },
+      {
+        "id": "b",
+        "text": "Pull clean content from one or more URLs",
+        "correct": false,
+        "explanation": "That one-line description is for Extract, not Crawl."
+      },
+      {
+        "id": "c",
+        "text": "Discover a site's structure",
+        "correct": false,
+        "explanation": "That one-line description is for Map, not Crawl."
+      },
+      {
+        "id": "d",
+        "text": "Read many pages across a site",
+        "correct": true,
+        "explanation": "Correct. The quickstart describes Crawl this way."
       }
     ]
   },
@@ -2258,6 +2417,47 @@
     ]
   },
   {
+    "id": "q-b4e1d7a9c451",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/key-rotation-secrets",
+    "stem": "Per Tavily's API key management guidance, where should an application's API key live?",
+    "objectiveTitle": "Rotating keys and handling secrets safely",
+    "sources": [
+      {
+        "title": "Tavily API key management",
+        "url": "https://docs.tavily.com/documentation/best-practices/api-key-management.md",
+        "excerpt": "Never hardcode API keys in your source code. Always use environment variables or a secure secrets manager to store your credentials."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Hardcoded directly in the application's source code for simplicity",
+        "correct": false,
+        "explanation": "The guidance explicitly says never to hardcode API keys in source code."
+      },
+      {
+        "id": "b",
+        "text": "In an environment variable or a secure secrets manager",
+        "correct": true,
+        "explanation": "Correct. The guidance states to always use environment variables or a secure secrets manager to store credentials."
+      },
+      {
+        "id": "c",
+        "text": "Embedded in client-side JavaScript so the browser can call Tavily directly",
+        "correct": false,
+        "explanation": "The guidance treats client-side exposure as a leak scenario requiring revocation, not a recommended storage location."
+      },
+      {
+        "id": "d",
+        "text": "In a public repository's README so teammates can find it easily",
+        "correct": false,
+        "explanation": "Committing a key to a public repository is the leak scenario the guidance treats as an emergency, not a storage recommendation."
+      }
+    ]
+  },
+  {
     "id": "q-b58e3f9a2c71",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -2350,6 +2550,47 @@
     ]
   },
   {
+    "id": "q-b829d5a7c239",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/response-fields",
+    "stem": "In a Tavily Search response, which field is only present when `include_raw_content` is set to true?",
+    "objectiveTitle": "Reading and using Search and Extract response fields",
+    "sources": [
+      {
+        "title": "Tavily Search API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search.md",
+        "excerpt": "The cleaned and parsed HTML content of the search result. Only if `include_raw_content` is true."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`content`, since it always appears, being required in every response",
+        "correct": false,
+        "explanation": "content is always present (it's in the required list), so it isn't the field gated by include_raw_content."
+      },
+      {
+        "id": "b",
+        "text": "`score`, since it always appears, being required in every response",
+        "correct": false,
+        "explanation": "score is always present on each result; it isn't tied to include_raw_content."
+      },
+      {
+        "id": "c",
+        "text": "`raw_content`, which appears only if include_raw_content is true",
+        "correct": true,
+        "explanation": "Correct. The API reference states raw_content is the cleaned and parsed HTML content, only present if include_raw_content is true."
+      },
+      {
+        "id": "d",
+        "text": "`favicon`, which appears only if include_raw_content is true",
+        "correct": false,
+        "explanation": "favicon is controlled by its own flag, include_favicon, not by include_raw_content."
+      }
+    ]
+  },
+  {
     "id": "q-b85c1e49730d",
     "course_id": "physical-ai",
     "domain": "domain-4",
@@ -2432,6 +2673,47 @@
     ]
   },
   {
+    "id": "q-be85d1a3c895",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/endpoint-selection",
+    "stem": "A team needs a single finished answer with citations synthesized from several sources, rather than raw source URLs to process themselves. Per Tavily's agent setup guide, which endpoint fits?",
+    "objectiveTitle": "Selecting the right endpoint for a retrieval requirement",
+    "sources": [
+      {
+        "title": "Tavily setup and tool-choice guide for agents",
+        "url": "https://docs.tavily.com/agents.md",
+        "excerpt": "Use Search when you need raw source URLs and content to process yourself. Use Research when you need a finished, multi-source answer with citations."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Search, since it always returns a synthesized final answer",
+        "correct": false,
+        "explanation": "The guide says to use Search when you need raw source URLs and content to process yourself, not a finished synthesized answer."
+      },
+      {
+        "id": "b",
+        "text": "Crawl, since reading more pages always produces better citations",
+        "correct": false,
+        "explanation": "Crawl returns raw page content for you to process; it does not produce a synthesized, cited answer by itself."
+      },
+      {
+        "id": "c",
+        "text": "Map, since it discovers which sources exist before synthesis",
+        "correct": false,
+        "explanation": "Map only lists URLs; it does not synthesize an answer at all."
+      },
+      {
+        "id": "d",
+        "text": "Research, since it is for a finished, multi-source answer with citations",
+        "correct": true,
+        "explanation": "Correct. The guide states to use Research for exactly this: a finished, multi-source answer with citations."
+      }
+    ]
+  },
+  {
     "id": "q-c04b7fe2918a",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -2510,6 +2792,47 @@
         "text": "`episodic`",
         "correct": false,
         "explanation": "`episodic` mirrors `lerobot-record`'s fixed episode/reset structure, not an on-demand ring buffer."
+      }
+    ]
+  },
+  {
+    "id": "q-c3f5e0b2d784",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/source-quality",
+    "stem": "An agent is filtering Tavily Search results to drop low-relevance sources before using them. Per Tavily's documentation, which response field should it filter on?",
+    "objectiveTitle": "Judging returned sources for relevance, recency and credibility",
+    "sources": [
+      {
+        "title": "Web Search Essentials",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/search-api.md",
+        "excerpt": "Use `score` from the response to filter low-relevance results (e.g., discard results below 0.5)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`score`, discarding results below a threshold such as 0.5",
+        "correct": true,
+        "explanation": "Correct. The documentation recommends using score to filter low-relevance results, e.g., discarding results below 0.5."
+      },
+      {
+        "id": "b",
+        "text": "`published_date`, requiring it to be above a date threshold",
+        "correct": false,
+        "explanation": "published_date supports recency filtering, not the relevance-based filtering this scenario calls for."
+      },
+      {
+        "id": "c",
+        "text": "`favicon`, preferring sources with a recognizable icon",
+        "correct": false,
+        "explanation": "favicon is just the site icon URL; it carries no relevance signal."
+      },
+      {
+        "id": "d",
+        "text": "`raw_content`, preferring whichever result has the longest extracted text",
+        "correct": false,
+        "explanation": "raw_content is the extracted page text; length is not a documented relevance measure."
       }
     ]
   },
@@ -2642,6 +2965,47 @@
     ]
   },
   {
+    "id": "q-c930e6b8d340",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/extraction-recovery",
+    "stem": "A batch Extract call for 10 URLs returns HTTP 200, but 2 of the URLs could not be processed. Per the Extract API reference, how does an agent find out which ones failed?",
+    "objectiveTitle": "Recovering from failed extractions and partial results",
+    "sources": [
+      {
+        "title": "Tavily Extract API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/extract.md",
+        "excerpt": "Successful URLs appear in results; per-URL failures appear in failed_results. Check both arrays even when the response is HTTP 200."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It cannot find out; an HTTP 200 guarantees every URL in the batch succeeded",
+        "correct": false,
+        "explanation": "The reference explicitly says per-URL failures can appear even on a 200 response."
+      },
+      {
+        "id": "b",
+        "text": "It must retry the whole batch, since a partial failure forces a 400 response",
+        "correct": false,
+        "explanation": "A batch with some successes returns 200 with both arrays populated, not a 400."
+      },
+      {
+        "id": "c",
+        "text": "It must check failed_results, since per-URL failures appear there even on a 200 response",
+        "correct": true,
+        "explanation": "Correct. The reference states per-URL failures appear in failed_results, and to check both arrays even when the response is HTTP 200."
+      },
+      {
+        "id": "d",
+        "text": "It must inspect the `score` field for entries below 0.5",
+        "correct": false,
+        "explanation": "score is a Search relevance field; Extract reports failures in failed_results, not via a score."
+      }
+    ]
+  },
+  {
     "id": "q-c9e5a2f8d164",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -2766,6 +3130,47 @@
         "text": "Every repeated request is guaranteed to return byte-identical text",
         "correct": false,
         "explanation": "The reference describes the output as more focused and deterministic; it does not promise identical output across requests."
+      }
+    ]
+  },
+  {
+    "id": "q-cf96e2b4d906",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/call-error-handling",
+    "stem": "An agent runs a batch of 20 async Search calls and one of them raises an exception. Per Tavily's Search best practices, what pattern keeps the rest of the batch from failing?",
+    "objectiveTitle": "Handling errors and recovering around web-access API calls",
+    "sources": [
+      {
+        "title": "Tavily Search best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-search.md",
+        "excerpt": "Tag each result `ok` / `error` and retry only the failed ones with backoff, so a single error never sinks the whole batch."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Abort the entire batch immediately whenever any single call raises an exception",
+        "correct": false,
+        "explanation": "The best practices recommend tagging and retrying failures individually, not aborting the whole batch."
+      },
+      {
+        "id": "b",
+        "text": "Lower max_results to 1 for every call in the batch to avoid errors",
+        "correct": false,
+        "explanation": "max_results controls how many results come back per call; it does not address per-call failures in a batch."
+      },
+      {
+        "id": "c",
+        "text": "Tag each result ok or error and retry only the failed ones with backoff",
+        "correct": true,
+        "explanation": "Correct. The best practices state exactly this: tag each result and retry only failed ones with backoff, so one error never sinks the whole batch."
+      },
+      {
+        "id": "d",
+        "text": "Switch every call in the batch to `search_depth=ultra-fast` to avoid timeouts",
+        "correct": false,
+        "explanation": "Changing search_depth trades relevance for speed; it is not the documented pattern for handling per-query failures in a batch."
       }
     ]
   },
@@ -4512,6 +4917,47 @@
     ]
   },
   {
+    "id": "q-d0a7f3c5e017",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/api-key-auth",
+    "stem": "Per Tavily's Headers & Authentication documentation, what mechanism authenticates every request to the Tavily API?",
+    "objectiveTitle": "Authenticating requests with API keys",
+    "sources": [
+      {
+        "title": "Tavily Headers and Authentication",
+        "url": "https://docs.tavily.com/documentation/api-headers.md",
+        "excerpt": "All Tavily endpoints are authenticated using API keys."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "API keys",
+        "correct": true,
+        "explanation": "Correct. The documentation states all Tavily endpoints are authenticated using API keys."
+      },
+      {
+        "id": "b",
+        "text": "OAuth tokens issued per end user",
+        "correct": false,
+        "explanation": "OAuth is the authentication method for the remote MCP server, not the documented mechanism for direct REST calls."
+      },
+      {
+        "id": "c",
+        "text": "A signed JWT minted by the calling agent itself",
+        "correct": false,
+        "explanation": "The documentation does not describe self-minted JWTs; it names API keys as the authentication mechanism."
+      },
+      {
+        "id": "d",
+        "text": "mTLS client certificates",
+        "correct": false,
+        "explanation": "Client certificates are not part of Tavily's documented authentication scheme; API keys are."
+      }
+    ]
+  },
+  {
     "id": "q-d1b647a9e820",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -4594,6 +5040,47 @@
     ]
   },
   {
+    "id": "q-d4a6f1c3e895",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/agent-tool-selection",
+    "stem": "An agent doesn't yet know which URLs are relevant to its task. Per Tavily's agent setup guide, which capability should it reach for first?",
+    "objectiveTitle": "Choosing the web-access tool an agent should call for a task",
+    "sources": [
+      {
+        "title": "Tavily setup and tool-choice guide for agents",
+        "url": "https://docs.tavily.com/agents.md",
+        "excerpt": "Lead with **Search** when sources are unknown; move to the others once you have URLs or a site to work through."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Crawl, since it reads the most pages and finds everything automatically",
+        "correct": false,
+        "explanation": "Crawl reads pages you already intend to visit; it does not replace an initial Search when sources are unknown."
+      },
+      {
+        "id": "b",
+        "text": "Map, since it must always run before any other capability",
+        "correct": false,
+        "explanation": "Map discovers a site's structure, but the guide does not say it must run before Search."
+      },
+      {
+        "id": "c",
+        "text": "Search, since it is the right starting point when sources are unknown",
+        "correct": true,
+        "explanation": "Correct. The guide says to lead with Search when sources are unknown, moving to the other capabilities once URLs are known."
+      },
+      {
+        "id": "d",
+        "text": "Research, since it always consumes the fewest credits",
+        "correct": false,
+        "explanation": "Research is for cited synthesis; the guide does not describe it as the cheapest capability."
+      }
+    ]
+  },
+  {
     "id": "q-d4f8a2c6e193",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -4636,6 +5123,47 @@
         "text": "A GPU cluster created directly in Compute, outside Serverless AI",
         "correct": false,
         "explanation": "Wrong. Serverless AI runs containerized workloads like this without the user creating or managing virtual machines or clusters directly."
+      }
+    ]
+  },
+  {
+    "id": "q-da41f7c9e451",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/map-usage",
+    "stem": "Per Tavily's Map tutorial, what distinguishes Map's output from Crawl's output?",
+    "objectiveTitle": "Using Map to discover a site's structure",
+    "sources": [
+      {
+        "title": "Site Structure Discovery with Map",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/map-api.md",
+        "excerpt": "Tavily Map returns a list of URLs discovered from a starting URL. Unlike Crawl, it does not extract page content"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Map returns a list of URLs discovered from a starting URL, and unlike Crawl does not extract page content",
+        "correct": true,
+        "explanation": "Correct. The tutorial states Map returns a URL list and, unlike Crawl, does not extract page content."
+      },
+      {
+        "id": "b",
+        "text": "Map returns full page content for every URL; Crawl returns only a URL list",
+        "correct": false,
+        "explanation": "That reverses the actual distinction: Crawl extracts full content, Map does not."
+      },
+      {
+        "id": "c",
+        "text": "Map and Crawl return identical output, differing only in the request's HTTP method",
+        "correct": false,
+        "explanation": "The tutorial explicitly contrasts Map's URL-only output with Crawl's full-content output; they are not identical."
+      },
+      {
+        "id": "d",
+        "text": "Map returns a ranked relevance score for each discovered URL",
+        "correct": false,
+        "explanation": "Map's results are plain URL strings; a relevance score is a Search response field, not a Map one."
       }
     ]
   },
@@ -5177,6 +5705,47 @@
     ]
   },
   {
+    "id": "q-e1b8a4d6f128",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/credit-monitoring",
+    "stem": "An agent wants to check how many credits its API key has consumed so far this billing cycle. Per the Usage API reference, which field should it read?",
+    "objectiveTitle": "Monitoring credit consumption and usage",
+    "sources": [
+      {
+        "title": "Tavily Usage API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/usage.md",
+        "excerpt": "Total credits used for this API key during the current billing cycle"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The top-level `credits` field returned by a single Search call with include_usage=true",
+        "correct": false,
+        "explanation": "include_usage on Search reports that single call's cost, not the account's cumulative usage for the cycle."
+      },
+      {
+        "id": "b",
+        "text": "The `failed_results` count returned by an Extract call",
+        "correct": false,
+        "explanation": "failed_results lists URLs that could not be processed; it has nothing to do with credit usage."
+      },
+      {
+        "id": "c",
+        "text": "`account.plan_limit`, the credits used for this API key this cycle",
+        "correct": false,
+        "explanation": "plan_limit is the usage limit for the current plan, not the credits used so far."
+      },
+      {
+        "id": "d",
+        "text": "`key.usage`, the total credits used for this API key during the current billing cycle",
+        "correct": true,
+        "explanation": "Correct. The Usage API reference describes key.usage exactly this way."
+      }
+    ]
+  },
+  {
     "id": "q-e2a9c7f4b816",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -5214,6 +5783,47 @@
         "text": "Only the embedding and output head layers",
         "correct": false,
         "explanation": "Wrong. The documentation describes targeting `q_proj`/`v_proj` and the state and action projection matrices, not the embedding or output head layers."
+      }
+    ]
+  },
+  {
+    "id": "q-e5b7a2d4f906",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/blended-rag",
+    "stem": "In Tavily's Hybrid Research pattern, how does an agent combine a private knowledge base with live web search?",
+    "objectiveTitle": "Blending live web results with a private knowledge base in RAG pipelines",
+    "sources": [
+      {
+        "title": "Agent Toolkit: Hybrid Research",
+        "url": "https://docs.tavily.com/examples/agent-toolkit/hybrid-research.md",
+        "excerpt": "the agent identifies gaps in your internal knowledge and fills them with web data, producing a comprehensive report with citations"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It replaces the internal RAG function entirely with Tavily's search once initialized",
+        "correct": false,
+        "explanation": "The pattern keeps calling your internal RAG function; it supplements rather than replaces it."
+      },
+      {
+        "id": "b",
+        "text": "It uploads all internal data to Tavily's servers before running any search",
+        "correct": false,
+        "explanation": "The pattern calls your own RAG function locally; Tavily does not require internal data to be uploaded to it."
+      },
+      {
+        "id": "c",
+        "text": "It discards internal data whenever a web result has a higher relevance score",
+        "correct": false,
+        "explanation": "The documentation describes merging internal data with web findings, not discarding it based on score."
+      },
+      {
+        "id": "d",
+        "text": "It identifies gaps in internal knowledge and fills them with web data, producing a comprehensive report with citations",
+        "correct": true,
+        "explanation": "Correct. That is exactly how the Hybrid Research pattern is described in the documentation."
       }
     ]
   },
@@ -5296,6 +5906,47 @@
         "text": "Memory footprint depends only on `chunk_size_threshold`, not on which policy is deployed",
         "correct": false,
         "explanation": "`chunk_size_threshold` tunes how often the client sends observations; it does not change which policy's weights must fit in memory."
+      }
+    ]
+  },
+  {
+    "id": "q-eb52a8d0f562",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/crawl-parameters",
+    "stem": "An agent adds natural-language `instructions` to a Crawl request to focus it on specific content. Per the Crawl API reference, what happens to the cost?",
+    "objectiveTitle": "Configuring Crawl parameters for focused content collection",
+    "sources": [
+      {
+        "title": "Tavily Crawl API reference",
+        "url": "https://docs.tavily.com/documentation/api-reference/endpoint/crawl.md",
+        "excerpt": "When specified, the mapping cost increases to 2 API credits per 10 successful pages instead of 1 API credit per 10 pages."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The cost is unaffected; instructions are free to add to any Crawl request",
+        "correct": false,
+        "explanation": "The reference states the cost increases when instructions are specified, so it is not free."
+      },
+      {
+        "id": "b",
+        "text": "The cost moves from a per-page basis to a flat per-crawl fee",
+        "correct": false,
+        "explanation": "The reference still prices by successful pages; it does not switch to a flat fee."
+      },
+      {
+        "id": "c",
+        "text": "The cost is cut in half, since instructions reduce the number of pages crawled",
+        "correct": false,
+        "explanation": "The reference describes a cost increase for using instructions, not a reduction."
+      },
+      {
+        "id": "d",
+        "text": "The cost increases to 2 API credits per 10 successful pages instead of 1 API credit per 10 pages",
+        "correct": true,
+        "explanation": "Correct. The reference states the mapping cost increases to 2 credits per 10 successful pages (instead of 1) when instructions are specified."
       }
     ]
   },
@@ -5551,6 +6202,47 @@
     ]
   },
   {
+    "id": "q-f2c9b5e7a239",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limit-handling",
+    "stem": "An agent's request to Tavily returns `429 Too Many Requests` with a `Retry-After: 60` header. Per Tavily's Rate Limits documentation, what should the agent do?",
+    "objectiveTitle": "Handling rate limits and HTTP 429 responses",
+    "sources": [
+      {
+        "title": "Tavily Rate Limits",
+        "url": "https://docs.tavily.com/documentation/rate-limits.md",
+        "excerpt": "If the response includes `Retry-After`, wait the indicated number of seconds before retrying."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Ignore Retry-After and retry immediately in a tight loop",
+        "correct": false,
+        "explanation": "The documentation instructs waiting the indicated number of seconds before retrying, not retrying immediately."
+      },
+      {
+        "id": "b",
+        "text": "Switch permanently to the Development rate-limit tier, which has a higher RPM",
+        "correct": false,
+        "explanation": "Production keys have a higher RPM than Development, not the other way around; switching tiers is not the documented 429 response."
+      },
+      {
+        "id": "c",
+        "text": "Wait the number of seconds indicated by Retry-After before retrying",
+        "correct": true,
+        "explanation": "Correct. The documentation states to wait the indicated number of seconds before retrying when Retry-After is present."
+      },
+      {
+        "id": "d",
+        "text": "Always wait exactly 60 seconds, regardless of the header's value",
+        "correct": false,
+        "explanation": "The documentation treats the 60-second example as illustrative; it says to use the value actually returned in the response."
+      }
+    ]
+  },
+  {
     "id": "q-f3a8d1c6e924",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -5638,6 +6330,47 @@
     ]
   },
   {
+    "id": "q-f607b3e5a017",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/search-parameters",
+    "stem": "A team wants the highest relevance for a niche query, and latency is not a concern. Which `search_depth` value does Tavily's best-practices guide recommend?",
+    "objectiveTitle": "Tuning Search parameters for relevance, latency and cost",
+    "sources": [
+      {
+        "title": "Tavily Search best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-search.md",
+        "excerpt": "`advanced` searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`ultra-fast`, since it prioritizes speed over relevance",
+        "correct": false,
+        "explanation": "ultra-fast trades relevance for the lowest latency, the opposite of what this scenario needs."
+      },
+      {
+        "id": "b",
+        "text": "`fast`, since it returns results in reranked chunk format",
+        "correct": false,
+        "explanation": "fast favors lower latency over relevance, not the deeper coverage this scenario needs."
+      },
+      {
+        "id": "c",
+        "text": "`basic`, since it is tuned for short, focused lookups",
+        "correct": false,
+        "explanation": "basic is the lower-latency default for general lookups, not for a niche query needing the highest relevance."
+      },
+      {
+        "id": "d",
+        "text": "`advanced`, since it searches more broadly and reaches more sources per query",
+        "correct": true,
+        "explanation": "Correct. The guide states advanced searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency."
+      }
+    ]
+  },
+  {
     "id": "q-f62d0a9c3b57",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -5716,93 +6449,6 @@
         "text": "Only after the first stop-and-restart cycle",
         "correct": false,
         "explanation": "Wrong. No restart requirement for usage data to appear is documented; the only documented delay is the 5-10 minutes after creation."
-      }
-    ]
-  },
-  {
-    "id": "q-fa01a1b2c3d4",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/files-api",
-    "stem": "In the fine-tuning walkthrough, how is a training dataset made available to a fine-tuning job?",
-    "objectiveTitle": "Uploading, retrieving, and deleting files",
-    "sources": [
-      {
-        "title": "Supervised Fine-Tuning",
-        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
-        "excerpt": "training_file = client.files.create( file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\", )"
-      },
-      {
-        "title": "Supervised Fine-Tuning",
-        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
-        "excerpt": "`training_file` (string, **required**) ID of the file with the training dataset (`purpose = \"fine-tune\"`)."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Upload the JSONL file with the Files API using `purpose=\"fine-tune\"` and pass the returned file ID as `training_file`",
-        "correct": true,
-        "explanation": "The walkthrough calls `client.files.create` with the JSONL file and `purpose=\"fine-tune\"`; the required `training_file` parameter is the ID of that file."
-      },
-      {
-        "id": "b",
-        "text": "Stream the JSONL rows inline in the fine-tuning job request body",
-        "correct": false,
-        "explanation": "The job references a file ID; the dataset is not embedded in the job request."
-      },
-      {
-        "id": "c",
-        "text": "Upload the file with `purpose=\"assistants\"` and reference its name",
-        "correct": false,
-        "explanation": "The documented purpose value for fine-tuning datasets is `fine-tune`, and the job takes an ID, not a name."
-      },
-      {
-        "id": "d",
-        "text": "Point the job at a public HTTPS URL of the dataset",
-        "correct": false,
-        "explanation": "The walkthrough uploads the file through the Files API; URLs are not a documented input."
-      }
-    ]
-  },
-  {
-    "id": "q-fa02b2c3d4e5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/files-api",
-    "stem": "Which `purpose` value is used when uploading a JSONL dataset for supervised fine-tuning?",
-    "objectiveTitle": "Uploading, retrieving, and deleting files",
-    "sources": [
-      {
-        "title": "Supervised Fine-Tuning",
-        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
-        "excerpt": "file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\","
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "`purpose: \"user_avatar\"`",
-        "correct": false,
-        "explanation": "Not a documented purpose for dataset files."
-      },
-      {
-        "id": "b",
-        "text": "`purpose: \"fine-tune\"`",
-        "correct": true,
-        "explanation": "The walkthrough uploads training and validation files with `purpose=\"fine-tune\"`, and `training_file` must reference a file with that purpose."
-      },
-      {
-        "id": "c",
-        "text": "`purpose: \"web_search\"`",
-        "correct": false,
-        "explanation": "Not a documented purpose for dataset files."
-      },
-      {
-        "id": "d",
-        "text": "`purpose: \"cache_backup\"`",
-        "correct": false,
-        "explanation": "Not a documented purpose for dataset files."
       }
     ]
   },
@@ -6054,6 +6700,47 @@
         "text": "Execute the function yourself and append a `role: tool` message with the result and `tool_call_id`",
         "correct": true,
         "explanation": "The model does not execute functions. Your backend or client runs them and appends a `tool` message carrying the result and the matching `tool_call_id`."
+      }
+    ]
+  },
+  {
+    "id": "q-fc63b9e1a673",
+    "course_id": "agentic-web-search",
+    "domain": "domain-3",
+    "objective": "domain-3/crawl-scope",
+    "stem": "A team is configuring a Crawl's scope and is unsure how deep to set `max_depth`. Per Tavily's Crawl best practices, what should guide that choice?",
+    "objectiveTitle": "Constraining crawl scope and depth",
+    "sources": [
+      {
+        "title": "Tavily Crawl best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-crawl.md",
+        "excerpt": "Each level of depth increases crawl time exponentially. Start with `max_depth=1` and increase as needed."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Set max_depth as high as possible immediately, since deeper crawls are always more complete",
+        "correct": false,
+        "explanation": "The best practices warn that depth increases crawl time exponentially and recommend starting low."
+      },
+      {
+        "id": "b",
+        "text": "max_depth has no effect on crawl time, only on the number of credits charged",
+        "correct": false,
+        "explanation": "The best practices tie max_depth directly to crawl time (exponential growth), not just credits."
+      },
+      {
+        "id": "c",
+        "text": "Each level of depth increases crawl time exponentially; start with max_depth=1 and increase as needed",
+        "correct": true,
+        "explanation": "Correct. The best practices state this exact guidance: start conservative and increase depth only as needed."
+      },
+      {
+        "id": "d",
+        "text": "max_depth must always equal max_breadth for the crawl to succeed",
+        "correct": false,
+        "explanation": "max_depth and max_breadth are independent parameters; the documentation does not require them to match."
       }
     ]
   },
@@ -6602,47 +7289,6 @@
         "text": "Quantization",
         "correct": true,
         "explanation": "Correct. It reduces the precision of model weights and activations, lowering memory use and computation."
-      }
-    ]
-  },
-  {
-    "id": "q-ld25f6d73083",
-    "course_id": "ai-leader",
-    "domain": "domain-1",
-    "objective": "domain-1/ai-concepts",
-    "stem": "A team plans an application that must read screenshots and answer questions about them. Which model type do they need?",
-    "objectiveTitle": "Generative model families, capabilities, and where each fits",
-    "sources": [
-      {
-        "title": "Inference Overview",
-        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
-        "excerpt": "**[Vision](https://tokenfactory.nebius.com/endpoints?modality=image2text)**"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Embedding",
-        "correct": false,
-        "explanation": "Embedding models turn inputs into vectors for search and similarity, not into answers about an image."
-      },
-      {
-        "id": "b",
-        "text": "Vision",
-        "correct": true,
-        "explanation": "Correct. Vision is the supported modality for turning image input into text."
-      },
-      {
-        "id": "c",
-        "text": "Text-to-text",
-        "correct": false,
-        "explanation": "Text-to-text covers generative language tasks and does not accept image input."
-      },
-      {
-        "id": "d",
-        "text": "Any text-to-text model configured with a longer context window",
-        "correct": false,
-        "explanation": "Context length governs how much text fits, not whether images can be interpreted."
       }
     ]
   },

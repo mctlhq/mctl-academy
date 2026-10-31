@@ -32,12 +32,12 @@ options:
 evidence:
   - source_id: src-pa-mlflow-quickstart
     excerpt: "This bucket is not deleted automatically after you delete the cluster."
-    source_sha256: 300af1791bf2fab45c7c152ed40e056b453442e71787b936cb8c5b789ccd55df
+    source_sha256: 3e717d2841f6be3de59894489ca6dfd6553bca3da6ed1dd4679debd6a6cb9782
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 4261ed7d2645e26e380aa734f3a9749518db2452b496fdd8e4690682dbc961f2
+  at: 2026-10-31T01:59:27Z
+  content_sha256: dbfb872dda2df129eefcc76e174c9ad0fc2b930fb5108652fe209efbd6c4d846

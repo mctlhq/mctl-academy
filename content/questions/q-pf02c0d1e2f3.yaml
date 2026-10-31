@@ -28,12 +28,12 @@ evidence:
   - source_id: src-inference-overview
     excerpt: Both deliver identical model outputs. Differences lie in token pricing,
       latency, and the level of applied optimizations.
-    source_sha256: 37cddb2aa72b8908d415bc777ad11a6b683a41d75b9de79137edbcd925b6e4e2
+    source_sha256: 809f09767c6e191014dde70b0f6028661704d3d8edadd291ec0b4c3a836a4b4d
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 40ca090151f7b7c6162fc745ebfcf1fbb6f8c7b743f3dec4f6e76ddbf1a03335
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 2bb58821c2929f248bdab797012d6558ef541887cf39c01b77abc1016cf5b798

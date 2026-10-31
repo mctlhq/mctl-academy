@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-d0a7f3c5e017
+status: published
+domain: domain-4
+objective: domain-4/api-key-auth
+stem: "Per Tavily's Headers & Authentication documentation, what mechanism
+  authenticates every request to the Tavily API?"
+options:
+  - id: a
+    text: "API keys"
+    correct: true
+    explanation: "Correct. The documentation states all Tavily endpoints are
+      authenticated using API keys."
+  - id: b
+    text: "OAuth tokens issued per end user"
+    correct: false
+    explanation: "OAuth is the authentication method for the remote MCP server, not
+      the documented mechanism for direct REST calls."
+  - id: c
+    text: "A signed JWT minted by the calling agent itself"
+    correct: false
+    explanation: "The documentation does not describe self-minted JWTs; it names API
+      keys as the authentication mechanism."
+  - id: d
+    text: "mTLS client certificates"
+    correct: false
+    explanation: "Client certificates are not part of Tavily's documented
+      authentication scheme; API keys are."
+evidence:
+  - source_id: src-tv-api-headers
+    excerpt: "All Tavily endpoints are authenticated using API keys."
+    source_sha256: 7bf893aed5d020d3df2a0edf08a65b20b1e027a6996659cc8779fab69353bbb4
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 8f8240f786715545ea85af8ac140697c9f6e176bb3958d8edae67e4bdb09673f

@@ -1,0 +1,45 @@
+schema_version: 1
+id: q-cf96e2b4d906
+status: published
+domain: domain-3
+objective: domain-3/call-error-handling
+stem: "An agent runs a batch of 20 async Search calls and one of them raises an
+  exception. Per Tavily's Search best practices, what pattern keeps the rest of
+  the batch from failing?"
+options:
+  - id: a
+    text: "Abort the entire batch immediately whenever any single call raises an
+      exception"
+    correct: false
+    explanation: "The best practices recommend tagging and retrying failures
+      individually, not aborting the whole batch."
+  - id: b
+    text: "Lower max_results to 1 for every call in the batch to avoid errors"
+    correct: false
+    explanation: "max_results controls how many results come back per call; it does
+      not address per-call failures in a batch."
+  - id: c
+    text: "Tag each result ok or error and retry only the failed ones with backoff"
+    correct: true
+    explanation: "Correct. The best practices state exactly this: tag each result
+      and retry only failed ones with backoff, so one error never sinks the
+      whole batch."
+  - id: d
+    text: "Switch every call in the batch to `search_depth=ultra-fast` to avoid
+      timeouts"
+    correct: false
+    explanation: "Changing search_depth trades relevance for speed; it is not the
+      documented pattern for handling per-query failures in a batch."
+evidence:
+  - source_id: src-tv-bp-search
+    excerpt: "Tag each result `ok` / `error` and retry only the failed ones with
+      backoff, so a single error never sinks the whole batch."
+    source_sha256: e68ed528e037a62638367faebd53116f287b63fb87b7a0c98635a5e0bb282a6d
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T01:59:27Z
+  content_sha256: 1e808b4e218f996f022c431c704c4af81a3dd3268ca2bc9436c1f187e9488d39
