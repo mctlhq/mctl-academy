@@ -3,6 +3,7 @@ import { computed, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import AppNav from "./components/AppNav.vue";
 import AppFooter from "./components/AppFooter.vue";
+import SkipLink from "./components/SkipLink.vue";
 import { authClient } from "./authClient";
 import type { UserProfile } from "./types/user";
 import { useCourseStore } from "./services/courseStore";
@@ -96,7 +97,7 @@ watch(
 
 <template>
   <div class="app-shell" :class="{ 'focused-practice': focusedPractice }">
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SkipLink target="main-content" />
     <AppNav :user="user" :loading="authLoading" />
 
     <main id="main-content" class="app-main" tabindex="-1">

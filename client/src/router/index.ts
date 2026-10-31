@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 import PracticeView from "../views/PracticeView.vue";
 import MistakesView from "../views/MistakesView.vue";
 import MockView from "../views/MockView.vue";
@@ -27,14 +27,33 @@ export const router = createRouter({
       meta: { title: "Page not found" },
     },
   ],
-  // A new page starts at the top; a query-only change (a practice domain
-  // filter) or back/forward keeps the browser's own position.
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition;
-    if (to.path !== from.path) return { top: 0 };
-    return false;
-  },
+  scrollBehavior: scrollPosition,
 });
+
+type Location = Pick<RouteLocationNormalized, "path" | "matched">;
+
+/**
+ * A new page starts at the top; a query-only change (a practice domain
+ * filter) or back/forward keeps the browser's own position.
+ */
+export function scrollPosition(
+  to: Pick<Location, "path">,
+  from: Pick<Location, "path">,
+  savedPosition: { left: number; top: number } | null,
+) {
+  if (savedPosition) return savedPosition;
+  if (to.path !== from.path) return { top: 0 };
+  return false as const;
+}
+
+/**
+ * After an in-app navigation (not the first load), focus moves to the main
+ * region so keyboard and screen-reader users start at the new page rather
+ * than on the link they just activated. Query-only changes keep focus.
+ */
+export function shouldFocusMain(to: Location, from: Location): boolean {
+  return from.matched.length > 0 && to.path !== from.path;
+}
 
 export function pageTitle(title: unknown): string {
   return typeof title === "string" && title ? `${title} · ${SITE_NAME}` : SITE_NAME;
@@ -43,10 +62,7 @@ export function pageTitle(title: unknown): string {
 router.afterEach((to, from) => {
   if (typeof document === "undefined") return;
   document.title = pageTitle(to.meta.title);
-  // After an in-app navigation (not the first load), move focus to the main
-  // region so keyboard and screen-reader users start at the new page rather
-  // than on the link they just activated. Query-only changes keep focus.
-  if (from.matched.length > 0 && to.path !== from.path) {
+  if (shouldFocusMain(to, from)) {
     requestAnimationFrame(() => document.getElementById("main-content")?.focus({ preventScroll: true }));
   }
 });
