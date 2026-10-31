@@ -1295,6 +1295,200 @@ test("an exhausted token is retried on the second one and never read as an answe
   }
 });
 
+test("a turn-cap stop fails the job instead of retrying on the second token", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  // Run 40329844597: the reviewer finished its work in 279 turns against a
+  // 120-turn ceiling, the action failed the step for passing it, and the check
+  // read that as a spent token. The retry asked the identical question under
+  // the identical --max-turns and was cancelled by the job limit 12 minutes in:
+  // a full paid attempt that could not succeed. A turn cap is not a token
+  // problem, so it ends the job at the check, naming the budget to raise. Only
+  // a POSITIVELY identified one may: every other failure, and every state the
+  // execution output cannot speak to, still reaches the retry.
+  //
+  // `result` is what the action writes to $RUNNER_TEMP, as in the token test
+  // above: null means the file is absent, a string is written raw.
+  const attempt = (run, env, result) => {
+    const dir = mkdtempSync(join(tmpdir(), "academy-turn-cap-"));
+    try {
+      if (result !== null)
+        writeFileSync(
+          join(dir, "claude-execution-output.json"),
+          typeof result === "string" ? result : JSON.stringify(result),
+        );
+      const output = join(dir, "out.txt");
+      const proc = spawnSync("bash", ["-c", run], {
+        cwd: dir,
+        env: { ...process.env, RUNNER_TEMP: dir, GITHUB_OUTPUT: output, EXEC_TAG: "fixture", ...env },
+        encoding: "utf8",
+      });
+      const failed = existsSync(output) ? /failed=(\w+)/.exec(readFileSync(output, "utf8"))?.[1] : undefined;
+      return { status: proc.status, stdout: proc.stdout, failed };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  // The two shapes a turn cap takes at the action's pin. The first is run
+  // 40329844597's own result, as its exec-review artifact recorded it: the
+  // action fails a success whose num_turns passes --max-turns
+  // (run-claude-sdk.ts). The second is the SDK stopping at the ceiling itself.
+  const overCeiling = [
+    { type: "result", subtype: "success", is_error: false, num_turns: 279, total_cost_usd: 11.33 },
+  ];
+  const atCeiling = [{ type: "result", subtype: "error_max_turns", is_error: true, num_turns: 121 }];
+  // What the retry exists for: an exhausted token is is_error with one turn
+  // and no cost.
+  const spent = [{ type: "result", subtype: "success", is_error: true, num_turns: 1, total_cost_usd: 0 }];
+  const blocks = new Set();
+  let checked = 0;
+  for (const job of ["author", "review"]) {
+    const steps = workflow.jobs[job].steps;
+    for (const { step, first, last } of agentRuns(steps)) {
+      const check = steps[first + 1];
+      const retry = steps[last];
+      const closed = steps[last + 1];
+      assert.equal(check.id, `${step.id}-check`);
+      assert.equal(closed.name, "Neither token could run this agent");
+      // The ceiling a decision compares against is the one its agent ran
+      // under, read from the same variable, for the primary and the retry
+      // alike: a copy pointed at another agent's budget misjudges every stop.
+      const turnsVar = /--max-turns \$\{\{ env\.(\w+_TURNS) \}\}/.exec(step.with.claude_args)?.[1];
+      assert.ok(turnsVar, `${step.name} takes its --max-turns from no *_TURNS variable`);
+      assert.ok(
+        retry.with.claude_args.includes(`--max-turns \${{ env.${turnsVar} }}`),
+        `${retry.name} runs under another ceiling`,
+      );
+      for (const s of [check, closed]) {
+        assert.equal(
+          s.env.MAX_TURNS,
+          `\${{ env.${turnsVar} }}`,
+          `${s.name} compares against another ceiling`,
+        );
+        assert.equal(s.env.TURNS_VAR, turnsVar, `${s.name} names another budget`);
+      }
+      // The check's exit is what keeps the retry from running, so it has to
+      // fail the job, and nothing between it and the retry may run after a
+      // failure: a check allowed to fail, or a reset or retry that runs
+      // regardless, would carry a turn-capped attempt on.
+      assert.equal(check["continue-on-error"], undefined, `${check.name} cannot fail the job`);
+      for (const s of steps.slice(first + 2, last + 1)) {
+        assert.doesNotMatch(
+          s.if ?? "",
+          /\b(always|failure|cancelled)\(\)/,
+          `${s.name} runs after a failed check`,
+        );
+      }
+
+      const ceiling = { MAX_TURNS: "120", TURNS_VAR: turnsVar };
+      // A whole line from its start, matched literally: the count can be "?".
+      const literal = (text) => new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "m");
+      for (const [shape, result, turns] of [
+        ["a success over the ceiling", overCeiling, "279"],
+        ["error_max_turns", atCeiling, "121"],
+        // The subtype alone identifies the stop; the count is only reported.
+        [
+          "error_max_turns with no turn count",
+          [{ type: "result", subtype: "error_max_turns", is_error: true }],
+          "?",
+        ],
+      ]) {
+        const primary = attempt(check.run, { ...ceiling, OUTCOME: "failure" }, result);
+        assert.equal(primary.status, 1, `${check.name}: ${shape} must fail the job`);
+        assert.notEqual(primary.failed, "true", `${check.name}: ${shape} must not ask for the retry`);
+        assert.match(
+          primary.stdout,
+          literal(`::error::turn cap 120 reached after ${turns} turns; raise ${turnsVar}. Not retried`),
+          `${check.name}: ${shape} does not name the budget to raise`,
+        );
+        // The retry's own stop fails the job either way; what changes is that
+        // it is not reported as a token neither attempt could use.
+        const fallback = attempt(
+          closed.run,
+          { ...ceiling, HAS_FALLBACK: "true", FALLBACK_OUTCOME: "failure" },
+          result,
+        );
+        assert.equal(fallback.status, 1, `${closed.name}: ${shape} must fail the job`);
+        assert.match(
+          fallback.stdout,
+          literal(
+            `::error::turn cap 120 reached after ${turns} turns on the fallback token; raise ${turnsVar}\n`,
+          ),
+          `${closed.name}: ${shape} is reported as something else`,
+        );
+        assert.doesNotMatch(fallback.stdout, /neither token/);
+      }
+
+      // Everything that is not positively a turn cap still retries, exactly as
+      // before: the token problems the retry exists for, failures of unknown
+      // cause, and every state in which the output cannot tell.
+      for (const [why, OUTCOME, result, MAX_TURNS = "120"] of [
+        ["an exhausted token on a green step", "success", spent],
+        ["an exhausted token on a failed step", "failure", spent],
+        // Only the two shapes above identify a stop; a count past the ceiling
+        // on any other result does not.
+        [
+          "an execution error past the ceiling",
+          "failure",
+          [{ type: "result", subtype: "error_during_execution", is_error: true, num_turns: 279 }],
+        ],
+        [
+          "an is_error success past the ceiling",
+          "failure",
+          [{ type: "result", subtype: "success", is_error: true, num_turns: 279 }],
+        ],
+        [
+          "a failed success at the ceiling, not past it",
+          "failure",
+          [{ type: "result", subtype: "success", is_error: false, num_turns: 120 }],
+        ],
+        [
+          "a failed success with no turn count",
+          "failure",
+          [{ type: "result", subtype: "success", is_error: false }],
+        ],
+        ["an absent execution output", "failure", null],
+        ["an unparseable execution output", "failure", "{ truncated"],
+        ["an execution output that is not an array", "failure", overCeiling[0]],
+        ["an execution output with no result entry", "failure", []],
+        ["an empty ceiling", "failure", overCeiling, ""],
+        // jq reads "nan" as NaN, which every count exceeds.
+        ["a ceiling that is not a number", "failure", overCeiling, "nan"],
+      ]) {
+        const r = attempt(check.run, { ...ceiling, MAX_TURNS, OUTCOME }, result);
+        assert.equal(r.status, 0, `${check.name}: ${why} must reach the retry, not end the job`);
+        assert.equal(r.failed, "true", `${check.name}: ${why} must retry on the fallback`);
+        assert.doesNotMatch(r.stdout, /turn cap/, `${check.name}: ${why} is reported as a turn cap`);
+      }
+      // ... a token problem on the retry is still reported as one ...
+      const exhausted = attempt(
+        closed.run,
+        { ...ceiling, HAS_FALLBACK: "true", FALLBACK_OUTCOME: "success" },
+        spent,
+      );
+      assert.equal(exhausted.status, 1);
+      assert.match(exhausted.stdout, /::error::neither token could run the agent/);
+      // ... and an agent that finished within its ceiling passes untouched.
+      const clean = attempt(check.run, { ...ceiling, OUTCOME: "success" }, [
+        { type: "result", subtype: "success", is_error: false, num_turns: 119 },
+      ]);
+      assert.equal(clean.status, 0);
+      assert.equal(clean.failed, "false");
+
+      // Six hand-copied blocks: one edited copy must fail here, not in a run.
+      const block = (run) => run.match(/# A turn-cap stop[\s\S]*?\nfi\n/)?.[0];
+      for (const s of [check, closed]) {
+        assert.ok(block(s.run), `${s.name} has no turn-cap block`);
+        blocks.add(block(s.run));
+      }
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 3);
+  assert.equal(blocks.size, 1, "the turn-cap copies have drifted apart");
+});
+
 test("a silent agent fails the run instead of degrading quietly", () => {
   const workflow = parseYaml(
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
@@ -2646,9 +2840,10 @@ test("the review job has time for two full reviewer attempts", () => {
     readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
   );
   // Run 40329844597: Opus took 1051 s for 279 turns. The job's 30-minute
-  // limit then cancelled the fallback attempt 12 minutes in. Primary plus
-  // fallback at the full turn budget must fit, with a few minutes for the
-  // steps around them.
+  // limit then cancelled the fallback attempt 12 minutes in. A turn-cap stop
+  // like that one no longer retries, but a primary that fails late for any
+  // other reason still does, so primary plus fallback at the full turn
+  // budget must fit, with a few minutes for the steps around them.
   const secondsPerTurn = 1051 / 279;
   const attemptMinutes = (Number(workflow.env.REVIEWER_TURNS) * secondsPerTurn) / 60;
   assert.ok(
