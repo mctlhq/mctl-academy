@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-e8d4b2a7f619
+status: published
+domain: domain-1
+objective: domain-1/agent-tool-selection
+stem: "An agent already has a specific URL, picked from an earlier Search
+  result, and wants that page's content. Per Tavily's agent setup guide, which
+  capability fits?"
+options:
+  - id: a
+    text: "Extract, since it fits when you already have the URL or picked one from
+      Search"
+    correct: true
+    explanation: "Correct. The guide places Extract here: you already have the URL,
+      or picked one from Search."
+  - id: b
+    text: "Map, since it fits when you need a site's structure before crawling it"
+    correct: false
+    explanation: "The guide reserves Map for discovering a site's structure, not for
+      extracting a URL you already have."
+  - id: c
+    text: "Crawl, since it fits when many pages on a site must be read"
+    correct: false
+    explanation: "The guide reserves Crawl for reading many pages across a site, not
+      a single known URL."
+  - id: d
+    text: "Research, since it fits when the output should be a cited, multi-source
+      answer"
+    correct: false
+    explanation: "The guide reserves Research for synthesized, multi-source answers,
+      not extracting one known URL's content."
+evidence:
+  - source_id: src-tv-agents
+    excerpt: "**Extract** | You already have the URL, or picked one from Search."
+    source_sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: db6943a8b4376690eab10b08b6e37063ae01b54b5e5080e8bb81f0119f636079

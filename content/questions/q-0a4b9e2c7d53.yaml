@@ -1,0 +1,41 @@
+schema_version: 1
+id: q-0a4b9e2c7d53
+status: published
+domain: domain-4
+objective: domain-4/api-key-auth
+stem: "An agent authenticates with its Tavily API key and also wants to tag the
+  request so usage can be filtered by project in the dashboard. Per Tavily's
+  Headers & Authentication documentation, which header should it add?"
+options:
+  - id: a
+    text: "`X-Session-Id`, since it groups related requests into one session"
+    correct: false
+    explanation: "X-Session-Id groups related calls into a session; it does not tag
+      a request's project for dashboard filtering."
+  - id: b
+    text: "`X-Human-Id`, since it identifies the end user behind the request"
+    correct: false
+    explanation: "X-Human-Id identifies the end user; it is not the header for
+      tagging a request's project."
+  - id: c
+    text: "`X-Project-ID`, added to attach a project to the request"
+    correct: true
+    explanation: "Correct. The documentation states to add the X-Project-ID header
+      to attach a project to the request."
+  - id: d
+    text: "`Authorization`, since that is the header that carries the API key"
+    correct: false
+    explanation: "Authorization carries the API key for authentication; project
+      tagging uses the separate X-Project-ID header."
+evidence:
+  - source_id: src-tv-api-headers
+    excerpt: "To attach a project to your request, add the `X-Project-ID` header"
+    source_sha256: 7bf893aed5d020d3df2a0edf08a65b20b1e027a6996659cc8779fab69353bbb4
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T08:10:42Z"
+course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: a3672e03266cb3c63ea42a69de7d9fbaf3575b4be74665767b24af30d90b2d80
