@@ -1,11 +1,11 @@
 schema_version: 1
 id: q-5f2a8c3e1d97
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/endpoint-selection
-stem: "An agent needs to understand how a site is organized before deciding
-  how to scope a later Crawl of it. Per the Agents setup guide's capability
-  table, which capability fits this need?"
+stem: "An agent needs to understand how a site is organized before deciding how
+  to scope a later Crawl of it. Per the Agents setup guide's capability table,
+  which capability fits this need?"
 options:
   - id: a
     text: "Search, since sources are unknown or current web context is needed"
@@ -14,8 +14,7 @@ options:
       sources are unknown, not for understanding an already-known site's
       structure."
   - id: b
-    text: "Map, since it is for when a site's structure is needed before
-      crawling it"
+    text: "Map, since it is for when a site's structure is needed before crawling it"
     correct: true
     explanation: "Correct. The guide states to use Map when you need a site's
       structure before crawling it."
@@ -25,11 +24,10 @@ options:
     explanation: "The guide lists that criterion for Crawl itself, which reads
       pages; Map is the step that discovers structure before that read."
   - id: d
-    text: "Research, since the output should be cited synthesis across
-      sources"
+    text: "Research, since the output should be cited synthesis across sources"
     correct: false
-    explanation: "The guide lists that criterion for Research, which produces
-      a synthesized answer, not a map of a site's structure."
+    explanation: "The guide lists that criterion for Research, which produces a
+      synthesized answer, not a map of a site's structure."
 evidence:
   - source_id: src-tv-agents
     excerpt: "**Map** | You need a site's structure before crawling it."
@@ -38,3 +36,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: 081e5267da5cc457fdb49f1126db632c45eeec36ff2d86c2dad96aea3eee2fca

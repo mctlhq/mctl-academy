@@ -1,51 +1,54 @@
 schema_version: 1
 id: q-6d1b9f4a2c87
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/budget-and-forecasting
 stem: "A team is forecasting the credit cost of a Map request that specifies
-  natural-language `instructions`. Per Tavily's Credits & Pricing
-  documentation, how does that compare to a Map request without
-  instructions?"
+  natural-language `instructions`. Per Tavily's Credits & Pricing documentation,
+  how does that compare to a Map request without instructions?"
 options:
   - id: a
-    text: "Instructions double the per-page rate: every 10 successful pages
-      costs 2 credits with instructions instead of 1"
+    text: "Instructions double the per-page rate: every 10 successful pages costs 2
+      credits with instructions instead of 1"
     correct: true
-    explanation: "Correct. The documentation states regular mapping costs 1
-      credit per 10 successful pages, while Map with instructions costs 2
-      credits per 10 successful pages."
+    explanation: "Correct. The documentation states regular mapping costs 1 credit
+      per 10 successful pages, while Map with instructions costs 2 credits per
+      10 successful pages."
   - id: b
-    text: "Instructions have no effect on cost; Map is always priced per
-      request regardless of pages returned"
+    text: "Instructions have no effect on cost; Map is always priced per request
+      regardless of pages returned"
     correct: false
-    explanation: "The documentation prices Map by successful pages returned,
-      and instructions change that per-page rate; it is not a flat
-      per-request cost."
+    explanation: "The documentation prices Map by successful pages returned, and
+      instructions change that per-page rate; it is not a flat per-request
+      cost."
   - id: c
     text: "Instructions make Map use Crawl's combined mapping-plus-extraction
       formula instead"
     correct: false
     explanation: "Crawl's combined formula is a separate pricing model for a
-      different endpoint; Map with instructions still prices per successful
-      page mapped, just at double the rate."
+      different endpoint; Map with instructions still prices per successful page
+      mapped, just at double the rate."
   - id: d
-    text: "Instructions are only available when extract_depth is set to
-      advanced, which is what raises the cost"
+    text: "Instructions are only available when extract_depth is set to advanced,
+      which is what raises the cost"
     correct: false
     explanation: "The documentation ties Map's cost increase to specifying
       instructions directly; it does not condition instructions on
       extract_depth."
 evidence:
   - source_id: src-tv-api-credits
-    excerpt: "**Regular Mapping:** Every 10 successful pages returned cost
-      **1 API credit**"
+    excerpt: "**Regular Mapping:** Every 10 successful pages returned cost **1 API
+      credit**"
     source_sha256: 5389452e88381c1d50fcb222a24982ec4946a352dadddb03b2309b6ce55426ff
   - source_id: src-tv-api-credits
-    excerpt: "**Map with (`instructions`):** Every 10 successful pages
-      returned cost **2 API credits**"
+    excerpt: "**Map with (`instructions`):** Every 10 successful pages returned cost
+      **2 API credits**"
     source_sha256: 5389452e88381c1d50fcb222a24982ec4946a352dadddb03b2309b6ce55426ff
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: 7050b76209df5e625614f545b7143f1c787400d47811ed1ca2597866bacffb5f

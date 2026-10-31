@@ -1,23 +1,23 @@
 schema_version: 1
 id: q-2e8c5a1f7d94
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/key-rotation-secrets
-stem: "Per Tavily's API Key Management guidance, how often should a team
-  rotate its API keys as a general security best practice, separate from
-  reacting to a suspected leak?"
+stem: "Per Tavily's API Key Management guidance, how often should a team rotate
+  its API keys as a general security best practice, separate from reacting to a
+  suspected leak?"
 options:
   - id: a
     text: "Periodically, on the order of every 90 days"
     correct: true
-    explanation: "Correct. The guidance recommends rotating API keys
-      periodically, e.g., every 90 days, to minimize the impact if a key is
-      ever compromised without your knowledge."
+    explanation: "Correct. The guidance recommends rotating API keys periodically,
+      e.g., every 90 days, to minimize the impact if a key is ever compromised
+      without your knowledge."
   - id: b
     text: "Every 7 days on a fixed schedule"
     correct: false
-    explanation: "The guidance's recommended cadence is on the order of every
-      90 days, not a fixed 7-day schedule."
+    explanation: "The guidance's recommended cadence is on the order of every 90
+      days, not a fixed 7-day schedule."
   - id: c
     text: "Only when a leak is suspected or confirmed, otherwise never"
     correct: false
@@ -28,14 +28,17 @@ options:
     text: "Once, immediately after the key is first created, and never again
       afterward"
     correct: false
-    explanation: "The guidance recommends rotating periodically throughout the
-      key's life, not a single rotation right after creation."
+    explanation: "The guidance recommends rotating periodically throughout the key's
+      life, not a single rotation right after creation."
 evidence:
   - source_id: src-tv-bp-api-keys
-    excerpt: "we recommend rotating your API keys periodically (e.g., every
-      90 days)"
+    excerpt: "we recommend rotating your API keys periodically (e.g., every 90 days)"
     source_sha256: b2e17dc380bc3f6e2fbfe5aa2070bd9baf1a4e43875b84ff9c2d6e260a26797d
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T09:13:49Z
+  content_sha256: 6d95e950b459570a3556f32878f02666fd14673e87d054e414e8cba6fa2a439f
