@@ -41,6 +41,7 @@ import {
   parseCaptureArgs,
   fetchSource,
 } from "../scripts/capture-source.mjs";
+import { questionFingerprint } from "../scripts/lib/question-review.mjs";
 
 const CANDIDATES = {
   newPagesTotal: 3,
@@ -2201,6 +2202,125 @@ test("revalidationIds lists needs_review questions citing the re-captured source
     assert.deepEqual(revalidationIds({ contentDir: dir, sourceIds: ["src-quotas"] }), ["q-a1"]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// mctl-academy#388: a needs_review item the reviewer already rejected was sent
+// back on every re-capture of its source, with nothing it judged changed.
+const rejectedQ = (overrides = {}) => ({
+  ...q("q-rj01a2b3c4d5", "needs_review", "src-quotas"),
+  reviewed: undefined,
+  stem: "Which header reports the remaining request budget?",
+  ...overrides,
+});
+const receipt = (questions, extra = {}) => ({ reviewer: "agent:claude-reviewer", questions, ...extra });
+const verdict = (question, approved) => ({
+  id: question.id,
+  content_sha256: questionFingerprint(question),
+  approved,
+  reason: approved ? "ok" : "the excerpt does not establish the answer",
+  reviewed_at: "2026-10-30T15:23:08Z",
+});
+
+/** Selection for `question` (on disk) given receipts (file name -> object or raw string). */
+function selectWith(question, receipts) {
+  const { reviewed: _reviewed, ...onDisk } = question;
+  const dir = questionsDir([onDisk]);
+  const reviewDir = join(dir, "reviews");
+  mkdirSync(reviewDir);
+  for (const [name, body] of Object.entries(receipts)) {
+    writeFileSync(join(reviewDir, name), typeof body === "string" ? body : JSON.stringify(body));
+  }
+  const skipped = [];
+  const problems = [];
+  try {
+    const ids = revalidationIds({
+      contentDir: dir,
+      reviewDir,
+      sourceIds: ["src-quotas"],
+      onSkip: (id) => skipped.push(id),
+      onProblem: (p) => problems.push(p),
+    });
+    return { ids, skipped, problems };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test("revalidationIds holds back an item rejected with nothing it judged changed", () => {
+  const judged = rejectedQ();
+  const r = selectWith(judged, { "run-review.json": receipt([verdict(judged, false)]) });
+  assert.deepEqual(r.ids, []);
+  assert.deepEqual(r.skipped, [judged.id]);
+  assert.deepEqual(r.problems, []);
+});
+
+test("revalidationIds counts a rejection a later receipt superseded", () => {
+  const judged = rejectedQ();
+  const r = selectWith(judged, { "run-review.json": receipt([], { superseded: [verdict(judged, false)] }) });
+  assert.deepEqual(r.ids, []);
+});
+
+test("revalidationIds re-selects a rejected item once a cited excerpt changed", () => {
+  const judged = rejectedQ();
+  const now = rejectedQ({
+    evidence: [{ ...judged.evidence[0], excerpt: "x-ratelimit-remaining-tokens: tokens left this minute" }],
+  });
+  const r = selectWith(now, { "run-review.json": receipt([verdict(judged, false)]) });
+  assert.deepEqual(r.ids, [now.id]);
+  assert.deepEqual(r.skipped, []);
+});
+
+test("revalidationIds re-selects a rejected item once its text was rewritten", () => {
+  const judged = rejectedQ();
+  const now = rejectedQ({ stem: "Which response header reports the remaining token budget?" });
+  const r = selectWith(now, { "run-review.json": receipt([verdict(judged, false)]) });
+  assert.deepEqual(r.ids, [now.id]);
+});
+
+test("revalidationIds selects an item no receipt has ever judged", () => {
+  const other = rejectedQ({ id: "q-zz99a2b3c4d5" });
+  const r = selectWith(rejectedQ(), { "run-review.json": receipt([verdict(other, false)]) });
+  assert.deepEqual(r.ids, [rejectedQ().id]);
+  assert.deepEqual(selectWith(rejectedQ(), {}).ids, [rejectedQ().id]);
+});
+
+test("revalidationIds selects an item whose exact bytes were also approved", () => {
+  const judged = rejectedQ();
+  const r = selectWith(judged, {
+    "a-review.json": receipt([verdict(judged, false)]),
+    "b-review.json": receipt([verdict(judged, true)], { reviewer: "agent:other-reviewer" }),
+  });
+  assert.deepEqual(r.ids, [judged.id]);
+});
+
+test("revalidationIds skips nothing when the receipts cannot be read in full", () => {
+  const judged = rejectedQ();
+  const rejection = { "run-review.json": receipt([verdict(judged, false)]) };
+  const cases = {
+    "unparseable file": { "broken-review.json": "{ not json" },
+    "no reviewer": { "odd-review.json": { questions: [] } },
+    "questions not a list": { "odd-review.json": receipt({}) },
+    "superseded not a list": { "odd-review.json": receipt([], { superseded: "none" }) },
+    "entry without an id": { "odd-review.json": receipt([{ approved: true }]) },
+  };
+  for (const [name, extra] of Object.entries(cases)) {
+    const r = selectWith(judged, { ...rejection, ...extra });
+    assert.deepEqual(r.ids, [judged.id], name);
+    assert.equal(r.problems.length, 1, name);
+  }
+});
+
+test("revalidationIds selects an item one of whose own receipt entries is malformed", () => {
+  const judged = rejectedQ();
+  const good = verdict(judged, false);
+  for (const bad of [
+    { ...good, approved: "no" },
+    { ...good, content_sha256: undefined },
+    { ...good, content_sha256: "abc" },
+  ]) {
+    const r = selectWith(judged, { "a-review.json": receipt([good]), "b-review.json": receipt([bad]) });
+    assert.deepEqual(r.ids, [judged.id], JSON.stringify(bad));
   }
 });
 

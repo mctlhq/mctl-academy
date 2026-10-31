@@ -21,7 +21,8 @@
  *   stage [--dir <path>] [--all | <src-id> ...]
  *       Write <dir>/<id>.md from the R2 snapshot each record names.
  *   revalidation-ids --sources <id,id,...>
- *       Print the needs_review question ids citing any of those sources.
+ *       Print the needs_review question ids citing any of those sources,
+ *       except those a reviewer already rejected unchanged.
  *   guard --base <git ref> [--max <n>] [--forbid-published-now]
  *       Fail when more than <n> question files changed against the base
  *       (untracked files included; --max omitted disables the cap) or when
@@ -52,12 +53,19 @@
  *           [--dropped d.json] [--before b.json --after a.json] [--max n]
  *       Print the generated section of the pull request body.
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, parseDocument, isSeq } from "yaml";
-import { courseObjectives, loadCourses, loadSources, loadYamlDir } from "./lib/content-model.mjs";
+import {
+  courseObjectives,
+  defaultReviewDir,
+  loadCourses,
+  loadSources,
+  loadYamlDir,
+} from "./lib/content-model.mjs";
+import { questionFingerprint } from "./lib/question-review.mjs";
 import { storeFromEnv } from "./lib/snapshot-store.mjs";
 import { verifyEvidence } from "./verify-evidence.mjs";
 
@@ -149,11 +157,105 @@ const splitIds = (text) =>
     .map((s) => s.trim())
     .filter(Boolean);
 
-export function revalidationIds({ contentDir = CONTENT, sourceIds }) {
+const FINGERPRINT = /^[0-9a-f]{64}$/;
+
+/**
+ * Every recorded review verdict, per question id, from all *-review.json in
+ * reviewDir: the live `questions` entries AND the `superseded` ones, because
+ * a decision a later receipt moved aside was still made on those bytes.
+ *
+ * Returns `{ verdicts, problems }`. `verdicts` maps an id to a Map of
+ * content_sha256 -> Set of approved booleans, or to null when one of that id's
+ * entries is malformed, so nothing can be concluded about it. A non-empty
+ * `problems` means the history was NOT read in full -- an unreadable file, or
+ * an entry that names no id, could hold the very verdict that matters -- and
+ * the caller must then conclude nothing about any id. A missing directory is
+ * the one documented absence: no receipts, so no verdicts.
+ *
+ * @param {string} reviewDir
+ */
+export function reviewVerdicts(reviewDir) {
+  const verdicts = new Map();
+  const problems = [];
+  if (!existsSync(reviewDir)) return { verdicts, problems };
+  let files;
+  try {
+    files = readdirSync(reviewDir).filter((n) => n.endsWith("-review.json"));
+  } catch (e) {
+    return { verdicts, problems: [`${reviewDir}: unreadable: ${e.message}`] };
+  }
+  for (const f of files.sort()) {
+    let receipt;
+    try {
+      receipt = JSON.parse(readFileSync(join(reviewDir, f), "utf8"));
+    } catch (e) {
+      problems.push(`${f}: unreadable review receipt: ${e.message}`);
+      continue;
+    }
+    const sections = [receipt?.questions, receipt?.superseded ?? []];
+    if (typeof receipt?.reviewer !== "string" || !sections.every(Array.isArray)) {
+      problems.push(`${f}: not a review receipt (reviewer, questions[] and optional superseded[])`);
+      continue;
+    }
+    for (const entry of sections.flat()) {
+      if (typeof entry?.id !== "string") {
+        problems.push(`${f}: an entry names no question id`);
+        continue;
+      }
+      if (verdicts.has(entry.id) && verdicts.get(entry.id) === null) continue;
+      if (typeof entry.approved !== "boolean" || !FINGERPRINT.test(entry.content_sha256 ?? "")) {
+        verdicts.set(entry.id, null);
+        continue;
+      }
+      const bySha = verdicts.get(entry.id) ?? new Map();
+      if (!bySha.has(entry.content_sha256)) bySha.set(entry.content_sha256, new Set());
+      bySha.get(entry.content_sha256).add(entry.approved);
+      verdicts.set(entry.id, bySha);
+    }
+  }
+  return { verdicts, problems };
+}
+
+/**
+ * Whether a reviewer already rejected exactly these bytes and none ever
+ * approved them, in which case sending the item back changes nothing the
+ * reviewer judged and buys the same rejection again (mctl-academy#388). The
+ * fingerprint is the receipts' own: item text, options, answer and every
+ * cited excerpt and pin, so any edit to what was judged makes this false.
+ * Anything short of a clean, readable record of such a rejection is false.
+ */
+export function rejectedUnchanged(question, verdicts) {
+  const bySha = verdicts.get(question.id);
+  if (!bySha) return false;
+  const seen = bySha.get(questionFingerprint(question));
+  return Boolean(seen) && seen.has(false) && !seen.has(true);
+}
+
+/**
+ * The needs_review question ids citing any of the re-captured sources, minus
+ * those a reviewer already rejected unchanged (see rejectedUnchanged). When
+ * the receipts cannot be read in full nothing is held back: "could not tell"
+ * re-selects, it never skips.
+ */
+export function revalidationIds({
+  contentDir = CONTENT,
+  sourceIds,
+  reviewDir = defaultReviewDir(contentDir),
+  onSkip = null,
+  onProblem = null,
+}) {
   const wanted = new Set(sourceIds);
-  return loadYamlDir(contentDir, "questions")
+  const cited = loadYamlDir(contentDir, "questions")
     .map((e) => e.data)
-    .filter((q) => q.status === "needs_review" && (q.evidence ?? []).some((ev) => wanted.has(ev.source_id)))
+    .filter((q) => q.status === "needs_review" && (q.evidence ?? []).some((ev) => wanted.has(ev.source_id)));
+  const { verdicts, problems } = reviewVerdicts(reviewDir);
+  for (const p of problems) onProblem?.(p);
+  return cited
+    .filter((q) => {
+      if (problems.length || !rejectedUnchanged(q, verdicts)) return true;
+      onSkip?.(q.id);
+      return false;
+    })
     .map((q) => q.id)
     .sort();
 }
@@ -659,7 +761,13 @@ async function main(argv) {
     return;
   }
   if (cmd === "revalidation-ids") {
-    console.log(revalidationIds({ sourceIds: splitIds(opt(args, "sources")) }).join(" "));
+    const ids = revalidationIds({
+      sourceIds: splitIds(opt(args, "sources")),
+      // stderr: the workflow captures stdout as the id list.
+      onSkip: (id) => console.error(`::notice::${id}: already rejected unchanged; not sent back to review`),
+      onProblem: (p) => console.error(`::warning::review receipts not fully readable, nothing skipped: ${p}`),
+    });
+    console.log(ids.join(" "));
     return;
   }
   if (cmd === "guard") {
