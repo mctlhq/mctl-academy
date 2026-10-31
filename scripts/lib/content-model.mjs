@@ -43,7 +43,7 @@ export const ALLOWED_SOURCES = [
     // integration and partnership pages, machine payments and the changelog
     // are outside the reviewed scope (SOURCES.md).
     pathPattern:
-      /^\/((agents|index)\.md|faq\/[a-z0-9-]+\.md|documentation\/(?!integrations\/|partnerships\/|machine-payments\/)[a-z0-9-]+(\/[a-z0-9-]+)*\.md|sdk\/(python|javascript)\/[a-z0-9-]+\.md|examples\/[a-z0-9-]+(\/[a-z0-9-]+)*\.md)$/,
+      /^\/((agents|index)\.md|faq\/[a-z0-9-]+\.md|documentation\/(?!(integrations|partnerships|machine-payments)(\/|\.md$))[a-z0-9-]+(\/[a-z0-9-]+)*\.md|sdk\/(python|javascript)\/[a-z0-9-]+\.md|examples\/[a-z0-9-]+(\/[a-z0-9-]+)*\.md)$/,
   },
   {
     host: "raw.githubusercontent.com",

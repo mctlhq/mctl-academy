@@ -11,9 +11,12 @@ import {
   rankPages,
   discover,
   fetchText,
+  isFetchableUrl,
+  LLMS_INDICES,
   DISCOVERY_STATE_HEADER,
 } from "../scripts/discover-docs.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
+import { isAllowedSourceUrl } from "../scripts/lib/content-model.mjs";
 
 const OLD = "# Quotas\n\nDefault limit is 10 GPUs per project.\n";
 const NEW = "# Quotas\n\nDefault limit is 20 GPUs per project.\n";
@@ -556,6 +559,38 @@ function fetchLandingOn(url) {
   Object.defineProperty(res, "url", { value: url });
   return /** @type {typeof fetch} */ (/** @type {unknown} */ (async () => res));
 }
+
+// docs.tavily.com's pathPattern admits only scoped `.md` pages, so its own
+// llms.txt is not an allowlisted source; discovery must still be able to
+// fetch every index it polls, and only those exact URLs.
+test("every polled index passes the fetch guard without becoming a citable source", async () => {
+  for (const index of LLMS_INDICES) assert.ok(isFetchableUrl(index), index);
+  assert.ok(!isAllowedSourceUrl("https://docs.tavily.com/llms.txt"));
+  assert.ok(!isFetchableUrl("https://docs.tavily.com/llms-full.txt"));
+  const real = globalThis.fetch;
+  try {
+    globalThis.fetch = fetchLandingOn("https://docs.tavily.com/llms.txt");
+    assert.equal(await fetchText("https://docs.tavily.com/llms.txt"), "body");
+    globalThis.fetch = fetchLandingOn("https://docs.tavily.com/llms-full.txt");
+    await assert.rejects(fetchText("https://docs.tavily.com/llms.txt"), /outside the SOURCES.md allowlist/);
+  } finally {
+    globalThis.fetch = real;
+  }
+});
+
+test("rankPages puts Tavily pages first for an Agentic Web Search gap", () => {
+  const pages = [
+    { url: "https://docs.nebius.com/compute/gpus.md", host: "docs.nebius.com", first_seen: "2026-09-01" },
+    { url: "https://docs.tavily.com/faq/faq.md", host: "docs.tavily.com", first_seen: "2026-10-31" },
+  ];
+  const gaps = [
+    { course: "agentic-web-search", kind: "objective", objective: "domain-4/x", published: 0, needed: 3 },
+  ];
+  assert.deepEqual(
+    rankPages(pages, gaps).map((p) => p.host),
+    ["docs.tavily.com", "docs.nebius.com"],
+  );
+});
 
 test("fetchText refuses a redirect out of the allowlisted path prefix", async () => {
   const real = globalThis.fetch;
