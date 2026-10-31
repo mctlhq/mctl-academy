@@ -233,6 +233,13 @@ describe("PracticeContent", () => {
     expect(wrapper.find("a.clear-filter").attributes("href")).toBe("/practice");
   });
 
+  it("keeps the repeat-all mode when clearing a domain filter", () => {
+    const wrapper = mount(PracticeContent, {
+      props: { bundle: [question("q-1")], domainLabel: "Agent architecture", mode: "all" },
+    });
+    expect(wrapper.find("a.clear-filter").attributes("href")).toBe("/practice?mode=all");
+  });
+
   describe("keyboard shortcuts", () => {
     afterEach(() => resetStorage());
     const press = (key: string, init: KeyboardEventInit = {}) =>
@@ -249,7 +256,11 @@ describe("PracticeContent", () => {
       press("2");
       await nextTick();
       expect(wrapper.find(".feedback").exists()).toBe(true);
-      press("n");
+      // Answering with the mouse leaves focus on the option button; N must
+      // still advance from there.
+      const option = wrapper.find(".options button").element as HTMLButtonElement;
+      option.focus();
+      option.dispatchEvent(new KeyboardEvent("keydown", { key: "n", bubbles: true }));
       await nextTick();
       expect(wrapper.find(".progress").text()).toContain("Question 3");
       wrapper.unmount();

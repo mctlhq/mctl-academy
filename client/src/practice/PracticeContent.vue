@@ -182,9 +182,11 @@ function handleShortcut(event: KeyboardEvent) {
   // A dialog (the report form, any confirmation) owns the keyboard: typing
   // there must never answer or advance the question behind it.
   if (isReporting.value || document.querySelector('[aria-modal="true"]')) return;
+  // Only text-entry controls own letter and digit keys. A focused button or
+  // link does not (browsers focus an option button on click), so answering
+  // with the mouse and then pressing N still advances.
   const target = event.target instanceof Element ? event.target : null;
-  if (target?.closest("input, textarea, select, button, a, [contenteditable]:not([contenteditable='false'])"))
-    return;
+  if (target?.closest("input, textarea, select, [contenteditable]:not([contenteditable='false'])")) return;
   if (/^[1-4]$/.test(event.key) && current.value) {
     const option = current.value.options[Number(event.key) - 1];
     if (option) selectOption(option.id);
@@ -284,7 +286,9 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
             <template v-if="domainLabel">
               <span class="crumb-sep" aria-hidden="true">/</span>
               <span class="crumb-domain">{{ domainLabel }}</span>
-              <a href="/practice" class="clear-filter">Clear filter</a>
+              <a :href="mode === 'all' ? '/practice?mode=all' : '/practice'" class="clear-filter"
+                >Clear filter</a
+              >
             </template>
           </p>
         </div>
