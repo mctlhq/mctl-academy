@@ -38,7 +38,7 @@ test("unanswered-first selection, feedback and cursor survive navigation, reload
       localStorage.setItem("e2e.seeded", "true");
       localStorage.setItem("mctl_academy_course_id", "agentic-ai-builder");
       localStorage.setItem(
-        "mctl_academy_progress_v1",
+        "mctl_academy_progress_v1:guest",
         JSON.stringify([
           {
             questionId: solved.id,
@@ -105,7 +105,7 @@ test("progress denominator and recommended domain link agree", async ({ page }) 
     (questions) => {
       localStorage.setItem("mctl_academy_course_id", "agentic-ai-builder");
       localStorage.setItem(
-        "mctl_academy_progress_v1",
+        "mctl_academy_progress_v1:guest",
         JSON.stringify(
           questions.map((q) => ({
             questionId: q.id,
@@ -152,7 +152,7 @@ test("a short bank explains the mock shortfall and a complete bank starts a mock
 test("a fully solved bank offers repetition instead of claiming content is missing", async ({ page }) => {
   await page.addInitScript((questions) => {
     localStorage.setItem(
-      "mctl_academy_progress_v1",
+      "mctl_academy_progress_v1:guest",
       JSON.stringify(
         questions.map((q) => ({
           questionId: q.id,

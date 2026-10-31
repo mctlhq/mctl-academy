@@ -7,7 +7,7 @@ import SkipLink from "./components/SkipLink.vue";
 import { authClient } from "./authClient";
 import type { UserProfile } from "./types/user";
 import { useCourseStore } from "./services/courseStore";
-import { setSyncEnabled, syncFromServer } from "./services/progressStore";
+import { setProgressOwner, setSyncEnabled, syncFromServer } from "./services/progressStore";
 
 const sessionState = authClient.useSession();
 const route = useRoute();
@@ -70,6 +70,7 @@ watch(
         cancelled = true;
       });
 
+      setProgressOwner(user.value.id);
       setSyncEnabled(true);
       syncFromServer()
         .then(() => {
@@ -88,6 +89,7 @@ watch(
           console.error("[sync] Failed to sync progress from server:", err);
         });
     } else {
+      setProgressOwner(null);
       setSyncEnabled(false);
     }
   },
