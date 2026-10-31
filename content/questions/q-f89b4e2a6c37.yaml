@@ -1,26 +1,32 @@
 schema_version: 1
 id: q-f89b4e2a6c37
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/crawl-scope
-stem: "A team wants a hard ceiling on the total number of pages a Crawl processes, regardless of its depth or breadth settings. Per Tavily's Crawl best practices, which parameter provides that?"
+stem: "A team wants a hard ceiling on the total number of pages a Crawl
+  processes, regardless of its depth or breadth settings. Per Tavily's Crawl
+  best practices, which parameter provides that?"
 options:
   - id: a
     text: "`max_depth`, since it caps how many levels deep the crawl explores"
     correct: false
-    explanation: "max_depth bounds how many levels deep the crawl explores, not the total number of pages."
+    explanation: "max_depth bounds how many levels deep the crawl explores, not the
+      total number of pages."
   - id: b
     text: "`max_breadth`, since it caps how many links are followed per page"
     correct: false
-    explanation: "max_breadth bounds links per page level (horizontal spread), not the total page count."
+    explanation: "max_breadth bounds links per page level (horizontal spread), not
+      the total page count."
   - id: c
     text: "`limit`, the total maximum pages to crawl and a hard cap on pages"
     correct: true
-    explanation: "Correct. The best practices describe limit exactly this way: total maximum pages to crawl, a hard cap on pages."
+    explanation: "Correct. The best practices describe limit exactly this way: total
+      maximum pages to crawl, a hard cap on pages."
   - id: d
     text: "`extract_depth`, since it caps how thoroughly each page is extracted"
     correct: false
-    explanation: "extract_depth controls extraction thoroughness per page, not the total number of pages crawled."
+    explanation: "extract_depth controls extraction thoroughness per page, not the
+      total number of pages crawled."
 evidence:
   - source_id: src-tv-bp-crawl
     excerpt: "| `limit` | Total maximum pages to crawl | Hard cap on pages |"
@@ -29,3 +35,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: 443ab1371d357ff4e774af4361947c82fb220767ca0c3a50d498b01f9f4ae0be

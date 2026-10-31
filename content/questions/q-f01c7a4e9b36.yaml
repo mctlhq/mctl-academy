@@ -1,9 +1,10 @@
 schema_version: 1
 id: q-f01c7a4e9b36
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/response-fields
-stem: "Per the Extract API reference, what does the `favicon` field on a successful result contain?"
+stem: "Per the Extract API reference, what does the `favicon` field on a
+  successful result contain?"
 options:
   - id: a
     text: "The full content extracted from the page"
@@ -29,3 +30,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: 30e1c20aebc5d598aa66dc5f40909243f24e164baabce616f70a817c48679008

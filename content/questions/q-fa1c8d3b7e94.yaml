@@ -1,26 +1,34 @@
 schema_version: 1
 id: q-fa1c8d3b7e94
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/mcp-integration
-stem: "A team wants to standardize web access across everyone's Cursor and Claude Code setups, with governed, shared access. Per Tavily's agent setup guide, which connection method fits?"
+stem: "A team wants to standardize web access across everyone's Cursor and
+  Claude Code setups, with governed, shared access. Per Tavily's agent setup
+  guide, which connection method fits?"
 options:
   - id: a
-    text: "SDK / API, since it is for a production app or runtime that calls Tavily directly"
+    text: "SDK / API, since it is for a production app or runtime that calls Tavily
+      directly"
     correct: false
-    explanation: "The guide reserves SDK/API for a production app or runtime calling Tavily directly, not for standardizing access across a team."
+    explanation: "The guide reserves SDK/API for a production app or runtime calling
+      Tavily directly, not for standardizing access across a team."
   - id: b
     text: "CLI + Skills, since it is for a single developer's own local session"
     correct: false
-    explanation: "The guide reserves CLI + Skills for one developer's own local session, not team-wide standardization."
+    explanation: "The guide reserves CLI + Skills for one developer's own local
+      session, not team-wide standardization."
   - id: c
     text: "Keyless, since it requires no credentials or API key at all"
     correct: false
-    explanation: "Keyless is for agents with no credentials; it is not the guide's recommended path for governed, shared team access."
+    explanation: "Keyless is for agents with no credentials; it is not the guide's
+      recommended path for governed, shared team access."
   - id: d
-    text: "MCP, since it is for standardizing access across a team or org, even in Cursor or Claude Code"
+    text: "MCP, since it is for standardizing access across a team or org, even in
+      Cursor or Claude Code"
     correct: true
-    explanation: "Correct. The guide states MCP fits exactly this: standardizing across many agent clients, even in Cursor or Claude Code."
+    explanation: "Correct. The guide states MCP fits exactly this: standardizing
+      across many agent clients, even in Cursor or Claude Code."
 evidence:
   - source_id: src-tv-agents
     excerpt: "Shared across a team or org — even in Cursor or Claude Code → **MCP**."
@@ -29,3 +37,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: bf4515acca58479aa983a7dce1502221f706ca4cb1cd049866e5813b725c6834

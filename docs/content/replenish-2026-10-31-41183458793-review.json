@@ -1,0 +1,146 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-10-31T08:31:18Z",
+  "questions": [
+    {
+      "id": "q-0a4b9e2c7d53",
+      "content_sha256": "a3672e03266cb3c63ea42a69de7d9fbaf3575b4be74665767b24af30d90b2d80",
+      "approved": true,
+      "reason": "The captured Headers page states verbatim \"To attach a project to your request, add the `X-Project-ID` header\", and the same page assigns X-Session-Id to grouping related requests, X-Human-Id to the end user, and Authorization to the API key, so only one option fits project tagging.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-0c5d2a8f1e46",
+      "content_sha256": "b4cbf153d410cd91c3af72f0e4ab28ce3fa6862fdbac4cf9e473d732fa917ed5",
+      "approved": true,
+      "reason": "The Usage OpenAPI schema describes key.limit as \"Usage limit for the API key. Returns null if unlimited\", while key.usage is credits used and account.plan_limit/paygo_limit are account-scoped, leaving exactly one best option.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-0e6c3b9a4f78",
+      "content_sha256": "656922eaa1512bc0314a12a7843f9cdf0b5134d5b336bec876119d8388aae42f",
+      "approved": true,
+      "reason": "The Rate Limits page states \"The crawl endpoint has a separate rate limit that applies to both development and production keys\" with a table showing 100 RPM for both, which supports the separate-and-equal limit and rules out the 1,000 RPM, undocumented, and development-only distractors.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-10d7a4c2e958",
+      "content_sha256": "757aa6277f48179cbbe3040a606f5a8f99ab1c5482a94d235aeb9f4ba6b9e824",
+      "approved": true,
+      "reason": "Credits & Pricing states for Basic Extract \"Every 5 successful URL extractions cost **1 API credit**\", so 100 successful URLs is 20 credits; advanced is separately priced at 2 credits per 5, so no distractor is defensible.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-12e8b5d3a697",
+      "content_sha256": "cca8cc44e4a58a982075ac4dc16607ea1ae784bed53b6baf746d74b996f13e64",
+      "approved": true,
+      "reason": "The safe-rotation steps end \"Once you are confirmed that the new key is in use and everything is functioning as expected, delete the old API key from the dashboard\"; immediate revocation is the page's leak response, and the page recommends roughly every 90 days rather than 7.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-e2a7c4f918b3",
+      "content_sha256": "ceb8dc6b8b316bbb19b565a488c81fb7cbef0478fe8080ee439fd6060ad6d14c",
+      "approved": true,
+      "reason": "The FAQ's \"What is Tavily?\" entry reads \"Supercharge your AI agent with real-time search, scraping, and structured data retrieval in a single API call\"; the other options quote the Extract, Crawl, and credit-reset entries, which answer different questions.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-e4b8d1a6f293",
+      "content_sha256": "0dfbb8c7903e15adb403dc91b474bafe80cda1f138613e5bdda17388615ba36b",
+      "approved": true,
+      "reason": "The Crawl tutorial states \"**Rule of thumb**: Use Map when you need to *find* pages. Use Crawl when you need to *read* pages.\", and the same page contrasts Map's URL-only output with Crawl's full content, so the reversed and interchangeable options fail.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-e6c3a9f12d84",
+      "content_sha256": "74e790c6c99e40b6178a7cbf6744778062ba3c618699031a725f2cd9be230ede",
+      "approved": true,
+      "reason": "The Search best practices metadata table lists \"| `content` | Quick relevance check |\", with score for filtering/ranking by relevance score, title for keyword filtering on headlines, and raw_content for deep analysis and regex extraction.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-e8d4b2a7f619",
+      "content_sha256": "db6943a8b4376690eab10b08b6e37063ae01b54b5e5080e8bb81f0119f636079",
+      "approved": true,
+      "reason": "The agents guide's capability table reads \"**Extract** | You already have the URL, or picked one from Search.\", while Map, Crawl, and Research are assigned to site structure, many pages, and cited synthesis respectively.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-ea1f6c3d8b94",
+      "content_sha256": "7b2ef3a8e8c74aff01a6f2213f99db1d5e3f62fc3a180631f70aa3129296b8a1",
+      "approved": true,
+      "reason": "The Data Enrichment Pattern's step 4 is \"**Store those web results internally** for future queries\", with the following code storing sources in a knowledge base, which excludes discarding, context-only retention, and sending results to Tavily.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-ec2a8f4b916d",
+      "content_sha256": "25eabc88e42ef0641302a29cc67fea7bad4742de2cca6f9ae898928646bfbd7b",
+      "approved": true,
+      "reason": "The Search API reference's search_depth cost note states \"- `basic`, `fast`, `ultra-fast`: 1 API Credit\" and \"- `advanced`: 2 API Credits\", both found verbatim, so only the 2-versus-1 option is correct.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-ee3b9d2a4c78",
+      "content_sha256": "119bbd1f2e1302528d0b2fdaea1004a9fe11382df57265b148d51e55a0e3425d",
+      "approved": true,
+      "reason": "The Extract tutorial states \"When you pass a `query` parameter, Extract reranks the content chunks by relevance to your question\", while the same page ties extract_depth to JS/tables, include_images to image URLs, and format to markdown versus text.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-f01c7a4e9b36",
+      "content_sha256": "30e1c20aebc5d598aa66dc5f40909243f24e164baabce616f70a817c48679008",
+      "approved": true,
+      "reason": "The Extract response schema gives favicon the description \"The favicon URL for the result.\", with raw_content, images, and url described separately, so the three distractors name other fields.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-f23d6b8a1c95",
+      "content_sha256": "e872065da2abd56e2f395c6d69989f18da119bb90772289feee0ef052b2be65d",
+      "approved": true,
+      "reason": "Extract best practices state \"`results` contains successful extractions and `failed_results` contains per-URL failures\" and \"Authentication and network errors raise exceptions that the caller must handle\", which is exactly the split in the keyed option and rules out the reversed and merged variants.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-f45e2c9a7b18",
+      "content_sha256": "a3be2bfef81418b03376acdc093a7da856f16681d8c287ed4be531e50863f194",
+      "approved": true,
+      "reason": "The Map tutorial's comparison table reads \"| Best for | Site discovery, URL filtering | Content extraction, RAG pipelines |\", assigning the first to Map and the second to Crawl, so only site discovery and URL filtering answers the stem.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-f67a3d1c8e52",
+      "content_sha256": "46ece1207a2df319c5290971817b5723c1c640c2d22b471fb43d67ec36fb4d87",
+      "approved": true,
+      "reason": "Crawl best practices state \"`chunks_per_source` is only available when instructions are provided.\"; the page gates it on instructions alone, never on extract_depth, limit, or max_depth.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-f89b4e2a6c37",
+      "content_sha256": "443ab1371d357ff4e774af4361947c82fb220767ca0c3a50d498b01f9f4ae0be",
+      "approved": true,
+      "reason": "The depth-and-breadth table reads \"| `limit` | Total maximum pages to crawl | Hard cap on pages |\", while max_depth is levels deep, max_breadth is horizontal spread per page, and extract_depth is per-page thoroughness.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-fa1c8d3b7e94",
+      "content_sha256": "bf4515acca58479aa983a7dce1502221f706ca4cb1cd049866e5813b725c6834",
+      "approved": true,
+      "reason": "The agents guide's quick rules state \"Shared across a team or org — even in Cursor or Claude Code → **MCP**\", and the connection table gives MCP \"Governed, shared, reusable access\", while SDK/API, CLI + Skills, and Keyless are assigned to production runtimes, a single local session, and credential-less agents.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-fc2d9e4a1b68",
+      "content_sha256": "5a8b1b23e7199d29aaab6987ada0665358b56f7896fd8bb0705f0aff682475f3",
+      "approved": true,
+      "reason": "The Crawl vs Map table reads \"| **Best for** | RAG, analysis, documentation | Sitemap generation |\"; Map's sitemap row is true but does not supply full page content for RAG, so Crawl is the single best answer.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    },
+    {
+      "id": "q-fe3a1c6d8b27",
+      "content_sha256": "fe012db991d735e01b23a8cb070ca1188a9bda2fd9b4367a6cd20ac4f9ce0713",
+      "approved": true,
+      "reason": "The Flex Tier Capacity section says requests setting max_age_hours on non-paying plans are refused with 434 and to \"Retry shortly, or omit `max_age_hours` to be served from cache\"; the page's Retry-After guidance belongs to 429 responses, and no upgrade or search_depth remedy is stated.",
+      "reviewed_at": "2026-10-31T08:31:18Z"
+    }
+  ]
+}

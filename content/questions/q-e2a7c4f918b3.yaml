@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-e2a7c4f918b3
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/realtime-search-fundamentals
 stem: "Per Tavily's FAQ, what does Tavily say it supercharges an AI agent with?"
@@ -8,24 +8,34 @@ options:
   - id: a
     text: "Scrape up to 20 URLs in a single API call"
     correct: false
-    explanation: "That line describes the Extract API specifically, not what the FAQ says Tavily supercharges an agent with overall."
+    explanation: "That line describes the Extract API specifically, not what the FAQ
+      says Tavily supercharges an agent with overall."
   - id: b
-    text: "Real-time search, scraping, and structured data retrieval in a single API call"
+    text: "Real-time search, scraping, and structured data retrieval in a single API
+      call"
     correct: true
-    explanation: "Correct. The FAQ states Tavily supercharges an AI agent with exactly this."
+    explanation: "Correct. The FAQ states Tavily supercharges an AI agent with
+      exactly this."
   - id: c
     text: "Map and crawl domains efficiently"
     correct: false
-    explanation: "That line describes the Crawl API specifically, not the FAQ's overall description of what Tavily adds for an agent."
+    explanation: "That line describes the Crawl API specifically, not the FAQ's
+      overall description of what Tavily adds for an agent."
   - id: d
     text: "Credits that reset on the first day of each month"
     correct: false
-    explanation: "That describes the FAQ's billing-cycle reset policy, not what Tavily supercharges an agent with."
+    explanation: "That describes the FAQ's billing-cycle reset policy, not what
+      Tavily supercharges an agent with."
 evidence:
   - source_id: src-tv-faq
-    excerpt: "Supercharge your AI agent with real-time search, scraping, and structured data retrieval in a single API call."
+    excerpt: "Supercharge your AI agent with real-time search, scraping, and
+      structured data retrieval in a single API call."
     source_sha256: 9898da380dd7ebace34e0b4e58f62f30c9efd4c499c90af0922d68c351acfaf3
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: ceb8dc6b8b316bbb19b565a488c81fb7cbef0478fe8080ee439fd6060ad6d14c

@@ -1,22 +1,26 @@
 schema_version: 1
 id: q-ea1f6c3d8b94
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/blended-rag
-stem: "In Tavily's Hybrid Research pattern, what does the Data Enrichment Pattern do with web results used to fill a knowledge gap?"
+stem: "In Tavily's Hybrid Research pattern, what does the Data Enrichment
+  Pattern do with web results used to fill a knowledge gap?"
 options:
   - id: a
     text: "Discard them immediately once the report is generated"
     correct: false
-    explanation: "The pattern describes storing web results internally, not discarding them after the report."
+    explanation: "The pattern describes storing web results internally, not
+      discarding them after the report."
   - id: b
     text: "Send them to Tavily's servers for retraining its ranking model"
     correct: false
-    explanation: "The documentation describes storing results in your own knowledge base, not sending them to Tavily for retraining."
+    explanation: "The documentation describes storing results in your own knowledge
+      base, not sending them to Tavily for retraining."
   - id: c
     text: "Keep them only in the model's context window for the current request"
     correct: false
-    explanation: "The pattern describes persisting results in your knowledge base, not just holding them in-context for one request."
+    explanation: "The pattern describes persisting results in your knowledge base,
+      not just holding them in-context for one request."
   - id: d
     text: "Store those web results internally for future queries"
     correct: true
@@ -29,3 +33,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: 7b2ef3a8e8c74aff01a6f2213f99db1d5e3f62fc3a180631f70aa3129296b8a1

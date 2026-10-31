@@ -1,26 +1,33 @@
 schema_version: 1
 id: q-ec2a8f4b916d
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/search-parameters
-stem: "A team is tuning `search_depth` for cost. Per the Search API reference, how many credits does a single `advanced` request cost compared to `basic`, `fast`, or `ultra-fast`?"
+stem: "A team is tuning `search_depth` for cost. Per the Search API reference,
+  how many credits does a single `advanced` request cost compared to `basic`,
+  `fast`, or `ultra-fast`?"
 options:
   - id: a
     text: "1 API credit for all four depths, since depth only affects latency"
     correct: false
-    explanation: "The reference prices advanced at 2 credits, not the same 1 credit as the other three depths."
+    explanation: "The reference prices advanced at 2 credits, not the same 1 credit
+      as the other three depths."
   - id: b
-    text: "2 API credits for advanced, versus 1 API credit for basic, fast, or ultra-fast"
+    text: "2 API credits for advanced, versus 1 API credit for basic, fast, or
+      ultra-fast"
     correct: true
-    explanation: "Correct. The reference prices basic, fast, and ultra-fast at 1 API credit each, and advanced at 2 API credits."
+    explanation: "Correct. The reference prices basic, fast, and ultra-fast at 1 API
+      credit each, and advanced at 2 API credits."
   - id: c
     text: "4 API credits for advanced, double the 2-credit cost of the other depths"
     correct: false
-    explanation: "The reference prices basic, fast, and ultra-fast at 1 credit each, and advanced at 2, not 4."
+    explanation: "The reference prices basic, fast, and ultra-fast at 1 credit each,
+      and advanced at 2, not 4."
   - id: d
     text: "Cost depends only on `max_results`, not on `search_depth`"
     correct: false
-    explanation: "The reference ties cost to `search_depth`; `max_results` controls how many results come back, not the per-request credit cost."
+    explanation: "The reference ties cost to `search_depth`; `max_results` controls
+      how many results come back, not the per-request credit cost."
 evidence:
   - source_id: src-tv-api-search
     excerpt: "`basic`, `fast`, `ultra-fast`: 1 API Credit"
@@ -32,3 +39,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: 25eabc88e42ef0641302a29cc67fea7bad4742de2cca6f9ae898928646bfbd7b

@@ -1,34 +1,51 @@
 schema_version: 1
 id: q-f23d6b8a1c95
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/extraction-recovery
-stem: "An Extract call fails for some URLs in a batch and separately raises an authentication error. Per Tavily's Extract best practices, how should an agent's pipeline tell these apart?"
+stem: "An Extract call fails for some URLs in a batch and separately raises an
+  authentication error. Per Tavily's Extract best practices, how should an
+  agent's pipeline tell these apart?"
 options:
   - id: a
-    text: "Both kinds of failure appear in `failed_results`, with an `error_type` field distinguishing them"
+    text: "Both kinds of failure appear in `failed_results`, with an `error_type`
+      field distinguishing them"
     correct: false
-    explanation: "The best practices describe authentication and network errors as raised exceptions, not as entries added to failed_results."
+    explanation: "The best practices describe authentication and network errors as
+      raised exceptions, not as entries added to failed_results."
   - id: b
-    text: "Per-URL failures land in `failed_results`; authentication and network errors raise exceptions the caller must handle"
+    text: "Per-URL failures land in `failed_results`; authentication and network
+      errors raise exceptions the caller must handle"
     correct: true
-    explanation: "Correct. The best practices describe exactly this split: failed_results for per-URL failures, and raised exceptions for authentication and network errors."
+    explanation: "Correct. The best practices describe exactly this split:
+      failed_results for per-URL failures, and raised exceptions for
+      authentication and network errors."
   - id: c
-    text: "Both kinds of failure raise exceptions, so a single try/except block always suffices"
+    text: "Both kinds of failure raise exceptions, so a single try/except block
+      always suffices"
     correct: false
-    explanation: "Per-URL failures are reported in failed_results without raising, while only authentication and network errors raise exceptions."
+    explanation: "Per-URL failures are reported in failed_results without raising,
+      while only authentication and network errors raise exceptions."
   - id: d
-    text: "Per-URL failures raise exceptions, while authentication errors appear in failed_results"
+    text: "Per-URL failures raise exceptions, while authentication errors appear in
+      failed_results"
     correct: false
-    explanation: "This reverses the described split: per-URL failures go in failed_results, and authentication/network errors raise exceptions."
+    explanation: "This reverses the described split: per-URL failures go in
+      failed_results, and authentication/network errors raise exceptions."
 evidence:
   - source_id: src-tv-bp-extract
-    excerpt: "`results` contains successful extractions and `failed_results` contains per-URL failures."
+    excerpt: "`results` contains successful extractions and `failed_results`
+      contains per-URL failures."
     source_sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
   - source_id: src-tv-bp-extract
-    excerpt: "Authentication and network errors raise exceptions that the caller must handle."
+    excerpt: "Authentication and network errors raise exceptions that the caller
+      must handle."
     source_sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: e872065da2abd56e2f395c6d69989f18da119bb90772289feee0ef052b2be65d

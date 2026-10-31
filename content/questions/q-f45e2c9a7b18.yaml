@@ -1,31 +1,41 @@
 schema_version: 1
 id: q-f45e2c9a7b18
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/map-usage
-stem: "A team wants to quickly see every URL on a large site to filter before deciding what to extract. Per Tavily's Map tutorial, what is Map best suited for?"
+stem: "A team wants to quickly see every URL on a large site to filter before
+  deciding what to extract. Per Tavily's Map tutorial, what is Map best suited
+  for?"
 options:
   - id: a
     text: "Content extraction and RAG pipelines"
     correct: false
-    explanation: "The tutorial lists content extraction and RAG pipelines as Crawl's best-for use case, not Map's."
+    explanation: "The tutorial lists content extraction and RAG pipelines as Crawl's
+      best-for use case, not Map's."
   - id: b
     text: "Monitoring credit consumption across endpoints"
     correct: false
-    explanation: "That is a credit-monitoring concern documented elsewhere, not Map's use case in this tutorial."
+    explanation: "That is a credit-monitoring concern documented elsewhere, not
+      Map's use case in this tutorial."
   - id: c
     text: "Site discovery and URL filtering"
     correct: true
-    explanation: "Correct. The tutorial lists site discovery and URL filtering as Map's best-for use case."
+    explanation: "Correct. The tutorial lists site discovery and URL filtering as
+      Map's best-for use case."
   - id: d
     text: "Producing a cited, multi-source synthesized answer"
     correct: false
     explanation: "That describes the Research endpoint's purpose, not Map's."
 evidence:
   - source_id: src-tv-tut-map
-    excerpt: "| Best for | Site discovery, URL filtering | Content extraction, RAG pipelines |"
+    excerpt: "| Best for | Site discovery, URL filtering | Content extraction, RAG
+      pipelines |"
     source_sha256: 339cc791a66d5946134ca479d31d591647246a73353577f7cedbcbe6951288b9
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-10-31T08:31:18Z
+  content_sha256: a3be2bfef81418b03376acdc093a7da856f16681d8c287ed4be531e50863f194
