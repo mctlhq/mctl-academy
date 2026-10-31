@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.61](https://github.com/mctlhq/mctl-academy/compare/0.1.60...0.1.61) (2026-10-31)
+
+
+### Content
+
+* retire duplicate question q-de06a7b8c9d0 ([cdeec8a](https://github.com/mctlhq/mctl-academy/commit/cdeec8a9d20ebed071f9af29a4483941c99c0fd9))
+
 ## [0.1.60](https://github.com/mctlhq/mctl-academy/compare/0.1.59...0.1.60) (2026-10-31)
 
 
