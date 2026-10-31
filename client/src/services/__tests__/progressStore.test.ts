@@ -677,6 +677,76 @@ describe("progressStore service", () => {
       expect(syncStatus.value).toBe("synced");
     });
 
+    it("lets a clear that starts during backfill writes own the status", async () => {
+      recordAttempt("q-local", "domain-1", true);
+      let releasePost!: () => void;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) => {
+          if (init?.method === "POST")
+            return new Promise((resolve) => (releasePost = () => resolve({ ok: true })));
+          if (init?.method === "DELETE") return Promise.resolve({ ok: false, status: 500 });
+          return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+        }),
+      );
+      setSyncEnabled(true);
+      const syncing = syncFromServer();
+      await vi.waitFor(() => expect(releasePost).toBeTypeOf("function"));
+      const clearing = clearProgress(); // waits for the backfill, then DELETE fails
+      releasePost();
+      expect(await syncing).toBe("deferred");
+      await clearing;
+      expect(syncStatus.value).toBe("failed");
+    });
+
+    it("does not report synced after a clear while an answer recorded mid-clear failed to upload", async () => {
+      let releaseFirst!: () => void;
+      let posts = 0;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) => {
+          if (init?.method === "POST") {
+            posts += 1;
+            if (posts === 1) return new Promise((resolve) => (releaseFirst = () => resolve({ ok: true })));
+            return Promise.reject(new Error("offline"));
+          }
+          return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+        }),
+      );
+      setSyncEnabled(true);
+      recordAttempt("q-1", "domain-1", true); // POST in flight
+      const clearing = clearProgress(); // waits for it
+      recordAttempt("q-2", "domain-1", false); // recorded after the local wipe; its POST fails
+      releaseFirst();
+      await clearing;
+      expect(getStoredAttempts().map((a) => a.questionId)).toEqual(["q-2"]);
+      expect(syncStatus.value).toBe("failed");
+    });
+
+    it("waits for an answer still uploading when the clear finishes instead of reporting failed", async () => {
+      let releaseDelete!: () => void;
+      let releasePost!: () => void;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) => {
+          if (init?.method === "DELETE")
+            return new Promise((resolve) => (releaseDelete = () => resolve({ ok: true })));
+          if (init?.method === "POST")
+            return new Promise((resolve) => (releasePost = () => resolve({ ok: true })));
+          return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+        }),
+      );
+      setSyncEnabled(true);
+      const clearing = clearProgress();
+      await vi.waitFor(() => expect(releaseDelete).toBeTypeOf("function"));
+      recordAttempt("q-1", "domain-1", true); // answered while the DELETE is in flight
+      releaseDelete();
+      await Promise.resolve();
+      releasePost();
+      await clearing;
+      expect(syncStatus.value).toBe("synced");
+    });
+
     it("reports failed when the server copy could not be cleared", async () => {
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
       setSyncEnabled(true);

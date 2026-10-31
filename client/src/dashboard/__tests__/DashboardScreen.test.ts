@@ -80,6 +80,28 @@ describe("DashboardScreen", () => {
     wrapper.unmount();
   });
 
+  it("tells a guest only about this device, and a signed-in learner about the server copy too", async () => {
+    recordAttempt("q-1", "domain-1", true);
+    const guest = mount(DashboardScreen, {
+      props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
+      global: { provide: { syncVersion: ref(0), currentUser: ref(null) } },
+      attachTo: document.body,
+    });
+    expect(guest.text()).toMatch(/at once on this device\./);
+    expect(guest.text()).not.toMatch(/server/);
+    await guest.find(".reset-progress").trigger("click");
+    await nextTick();
+    expect(document.body.textContent).not.toMatch(/copy stored with your account/);
+    guest.unmount();
+
+    const member = mount(DashboardScreen, {
+      props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
+      global: { provide: { syncVersion: ref(0), currentUser: ref({ id: "u-1" }) } },
+    });
+    expect(member.text()).toMatch(/on this device and on the server/);
+    member.unmount();
+  });
+
   it("clearing history immediately zeroes the displayed stats", async () => {
     recordAttempt("q-1", "domain-1", true);
     const wrapper = mountDashboard();

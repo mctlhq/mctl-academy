@@ -360,6 +360,9 @@ export async function syncFromServer(): Promise<SyncOutcome> {
   }
 
   const results = await Promise.all(backfills);
+  // A clear may have started while the backfills were in flight; its own
+  // result owns the status from then on.
+  if (clearGeneration !== startGeneration) return "deferred";
   const outcome: SyncOutcome = results.every(Boolean) ? "synced" : "failed";
   setSyncStatusFor(epoch, outcome);
   return outcome;
@@ -424,7 +427,17 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
       await Promise.allSettled([...pendingWrites]);
     }
     const res = await fetch(ATTEMPTS_ENDPOINT, { method: "DELETE", credentials: "same-origin" });
-    setSyncStatusFor(epoch, res.ok ? "synced" : "failed");
+    // An answer recorded during the clear whose POST failed is still only on
+    // this device, so a confirmed DELETE alone does not mean "synced". Writes
+    // still in flight are waited for first, so one that is merely slow is not
+    // reported as a failure.
+    if (res.ok) {
+      while (pendingWrites.size > 0) {
+        await Promise.allSettled([...pendingWrites]);
+      }
+    }
+    const unsyncedLeft = getStoredAttempts().some((a) => !a.synced);
+    setSyncStatusFor(epoch, res.ok && !unsyncedLeft ? "synced" : "failed");
     return { serverCleared: res.ok };
   } catch {
     setSyncStatusFor(epoch, "failed");
