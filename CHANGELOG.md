@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.62](https://github.com/mctlhq/mctl-academy/compare/0.1.61...0.1.62) (2026-10-31)
+
+
+### Bug Fixes
+
+* **replenish:** skip re-validation of items rejected unchanged ([a853cf6](https://github.com/mctlhq/mctl-academy/commit/a853cf6ad934991274ee3f121d88e43c30b5bd4e))
+* **replenish:** skip re-validation of items rejected unchanged ([da04b33](https://github.com/mctlhq/mctl-academy/commit/da04b3338822c19720094f04aca92038413142df))
+
 ## [0.1.61](https://github.com/mctlhq/mctl-academy/compare/0.1.60...0.1.61) (2026-10-31)
 
 
