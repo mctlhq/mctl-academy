@@ -124,6 +124,18 @@ the agent, the job fails rather than promoting a partial result. With no second
 token configured the workflow still runs — and still fails closed, with a
 warning naming the missing secret.
 
+A stop at the turn ceiling is the one failure the retry cannot repair. The
+action fails an agent that finished past its `--max-turns`, and the SDK stops
+one that reaches it with `error_max_turns`; either way the second token would
+redo the same work under the same ceiling. Run 40329844597 did exactly that:
+the reviewer finished in 279 turns against 120, and the retry spent twelve
+minutes on the second token before the job limit cancelled it. So when the
+execution output positively shows a turn cap, the job fails at the check with
+`turn cap N reached after M turns; raise REVIEWER_TURNS` (or `SELECTOR_TURNS`,
+`AUTHOR_TURNS`); only the artifact uploads run after it, and they keep the
+execution output. Anything the output cannot identify as a turn cap, from an
+exhausted token to a missing or unreadable file, still retries.
+
 ### Running the agents on Nebius Token Factory
 
 `workflow_dispatch` takes a `provider` input. The default, `anthropic`, is what

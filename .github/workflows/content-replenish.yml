@@ -118,7 +118,10 @@ env:
   # 37762971241) and Opus 104 turns to review them (run 37783427034). All three
   # take the Nebius budgets on every provider. The reviewer then needed 279
   # turns for the 71 items of run 40329844597 and failed against 120; 400
-  # leaves room for a batch that size to grow by about 40%.
+  # leaves room for a batch that size to grow by about 40%. A stop at the
+  # line is not retried on the second token: the check after each agent
+  # fails the job naming the variable to raise, because a retry would ask
+  # the same question under the same ceiling.
   SELECTOR_TURNS: "60"
   AUTHOR_TURNS: "160"
   REVIEWER_TURNS: "400"
@@ -595,6 +598,11 @@ jobs:
         env:
           EXEC_TAG: selector-primary
           OUTCOME: ${{ steps.selector-agent.outcome }}
+          # The ceiling this agent ran under, from the same variable as its
+          # --max-turns: what tells a turn-cap stop from a token problem, and
+          # what the error tells the operator to raise.
+          MAX_TURNS: ${{ env.SELECTOR_TURNS }}
+          TURNS_VAR: SELECTOR_TURNS
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
           # line of this script, and a step-level env: outranks $GITHUB_ENV.
@@ -650,7 +658,37 @@ jobs:
           else
             echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
+          # A turn-cap stop is the one failure the second token cannot repair:
+          # the retry asks the identical question under the identical
+          # --max-turns, so it stops the same way or runs out of job time first.
+          # Run 40329844597 paid for 279 reviewer turns against a 120-turn
+          # ceiling, read the stop as a spent token, and lost the retry to the
+          # job limit 12 minutes in. Only a POSITIVE identification counts, in
+          # the two shapes the action produces at its pin: the SDK's own
+          # error_max_turns result, and a successful result over the ceiling,
+          # which the action then fails itself (run-claude-sdk.ts compares
+          # num_turns with --max-turns -- the value MAX_TURNS carries). Anything
+          # else leaves this empty -- an absent, unparseable or result-less
+          # output, the spent-token is_error, a successful result with no
+          # readable ceiling to compare it with -- and empty keeps the retry:
+          # "could not read" is never "turn cap".
+          turns=""
+          if [ -f "$out" ]; then
+            turns=$("$JQ" -r 'if type != "array" then ""
+              else ([.[] | select(.type == "result")] | last // {}
+                | if .subtype == "error_max_turns" then
+                    (if (.num_turns | type) == "number" then (.num_turns | tostring) else "?" end)
+                  elif .subtype == "success" and .is_error == false and (.num_turns | type) == "number"
+                    and (env.MAX_TURNS // "" | test("^[0-9]+$")) and .num_turns > (env.MAX_TURNS | tonumber)
+                  then (.num_turns | tostring)
+                  else "" end)
+              end' "$out" 2>/dev/null || true)
+          fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
+            if [ -n "$turns" ]; then
+              echo "::error::turn cap $MAX_TURNS reached after $turns turns; raise $TURNS_VAR. Not retried on the fallback token, which would repeat the same work under the same cap"
+              exit 1
+            fi
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
             echo "failed=true" >> "$GITHUB_OUTPUT"
           else
@@ -977,6 +1015,11 @@ jobs:
           EXEC_TAG: selector-fallback
           FALLBACK_OUTCOME: ${{ steps.selector-agent-2.outcome }}
           HAS_FALLBACK: ${{ steps.fallback-token.outputs.available }}
+          # The ceiling this agent ran under, from the same variable as its
+          # --max-turns: what tells a turn-cap stop from a token problem, and
+          # what the error tells the operator to raise.
+          MAX_TURNS: ${{ env.SELECTOR_TURNS }}
+          TURNS_VAR: SELECTOR_TURNS
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
           # line of this script, and a step-level env: outranks $GITHUB_ENV.
@@ -1035,7 +1078,37 @@ jobs:
           else
             echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
+          # A turn-cap stop is the one failure the second token cannot repair:
+          # the retry asks the identical question under the identical
+          # --max-turns, so it stops the same way or runs out of job time first.
+          # Run 40329844597 paid for 279 reviewer turns against a 120-turn
+          # ceiling, read the stop as a spent token, and lost the retry to the
+          # job limit 12 minutes in. Only a POSITIVE identification counts, in
+          # the two shapes the action produces at its pin: the SDK's own
+          # error_max_turns result, and a successful result over the ceiling,
+          # which the action then fails itself (run-claude-sdk.ts compares
+          # num_turns with --max-turns -- the value MAX_TURNS carries). Anything
+          # else leaves this empty -- an absent, unparseable or result-less
+          # output, the spent-token is_error, a successful result with no
+          # readable ceiling to compare it with -- and empty keeps the retry:
+          # "could not read" is never "turn cap".
+          turns=""
+          if [ -f "$out" ]; then
+            turns=$("$JQ" -r 'if type != "array" then ""
+              else ([.[] | select(.type == "result")] | last // {}
+                | if .subtype == "error_max_turns" then
+                    (if (.num_turns | type) == "number" then (.num_turns | tostring) else "?" end)
+                  elif .subtype == "success" and .is_error == false and (.num_turns | type) == "number"
+                    and (env.MAX_TURNS // "" | test("^[0-9]+$")) and .num_turns > (env.MAX_TURNS | tonumber)
+                  then (.num_turns | tostring)
+                  else "" end)
+              end' "$out" 2>/dev/null || true)
+          fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
+            if [ -n "$turns" ]; then
+              echo "::error::turn cap $MAX_TURNS reached after $turns turns on the fallback token; raise $TURNS_VAR"
+              exit 1
+            fi
             echo "::error::neither token could run the agent"
             exit 1
           fi
@@ -1903,6 +1976,11 @@ jobs:
         env:
           EXEC_TAG: author-primary
           OUTCOME: ${{ steps.author-agent.outcome }}
+          # The ceiling this agent ran under, from the same variable as its
+          # --max-turns: what tells a turn-cap stop from a token problem, and
+          # what the error tells the operator to raise.
+          MAX_TURNS: ${{ env.AUTHOR_TURNS }}
+          TURNS_VAR: AUTHOR_TURNS
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
           # line of this script, and a step-level env: outranks $GITHUB_ENV.
@@ -1958,7 +2036,37 @@ jobs:
           else
             echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
+          # A turn-cap stop is the one failure the second token cannot repair:
+          # the retry asks the identical question under the identical
+          # --max-turns, so it stops the same way or runs out of job time first.
+          # Run 40329844597 paid for 279 reviewer turns against a 120-turn
+          # ceiling, read the stop as a spent token, and lost the retry to the
+          # job limit 12 minutes in. Only a POSITIVE identification counts, in
+          # the two shapes the action produces at its pin: the SDK's own
+          # error_max_turns result, and a successful result over the ceiling,
+          # which the action then fails itself (run-claude-sdk.ts compares
+          # num_turns with --max-turns -- the value MAX_TURNS carries). Anything
+          # else leaves this empty -- an absent, unparseable or result-less
+          # output, the spent-token is_error, a successful result with no
+          # readable ceiling to compare it with -- and empty keeps the retry:
+          # "could not read" is never "turn cap".
+          turns=""
+          if [ -f "$out" ]; then
+            turns=$("$JQ" -r 'if type != "array" then ""
+              else ([.[] | select(.type == "result")] | last // {}
+                | if .subtype == "error_max_turns" then
+                    (if (.num_turns | type) == "number" then (.num_turns | tostring) else "?" end)
+                  elif .subtype == "success" and .is_error == false and (.num_turns | type) == "number"
+                    and (env.MAX_TURNS // "" | test("^[0-9]+$")) and .num_turns > (env.MAX_TURNS | tonumber)
+                  then (.num_turns | tostring)
+                  else "" end)
+              end' "$out" 2>/dev/null || true)
+          fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
+            if [ -n "$turns" ]; then
+              echo "::error::turn cap $MAX_TURNS reached after $turns turns; raise $TURNS_VAR. Not retried on the fallback token, which would repeat the same work under the same cap"
+              exit 1
+            fi
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
             echo "failed=true" >> "$GITHUB_OUTPUT"
           else
@@ -2330,6 +2438,11 @@ jobs:
           EXEC_TAG: author-fallback
           FALLBACK_OUTCOME: ${{ steps.author-agent-2.outcome }}
           HAS_FALLBACK: ${{ steps.fallback-token.outputs.available }}
+          # The ceiling this agent ran under, from the same variable as its
+          # --max-turns: what tells a turn-cap stop from a token problem, and
+          # what the error tells the operator to raise.
+          MAX_TURNS: ${{ env.AUTHOR_TURNS }}
+          TURNS_VAR: AUTHOR_TURNS
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
           # line of this script, and a step-level env: outranks $GITHUB_ENV.
@@ -2388,7 +2501,37 @@ jobs:
           else
             echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
+          # A turn-cap stop is the one failure the second token cannot repair:
+          # the retry asks the identical question under the identical
+          # --max-turns, so it stops the same way or runs out of job time first.
+          # Run 40329844597 paid for 279 reviewer turns against a 120-turn
+          # ceiling, read the stop as a spent token, and lost the retry to the
+          # job limit 12 minutes in. Only a POSITIVE identification counts, in
+          # the two shapes the action produces at its pin: the SDK's own
+          # error_max_turns result, and a successful result over the ceiling,
+          # which the action then fails itself (run-claude-sdk.ts compares
+          # num_turns with --max-turns -- the value MAX_TURNS carries). Anything
+          # else leaves this empty -- an absent, unparseable or result-less
+          # output, the spent-token is_error, a successful result with no
+          # readable ceiling to compare it with -- and empty keeps the retry:
+          # "could not read" is never "turn cap".
+          turns=""
+          if [ -f "$out" ]; then
+            turns=$("$JQ" -r 'if type != "array" then ""
+              else ([.[] | select(.type == "result")] | last // {}
+                | if .subtype == "error_max_turns" then
+                    (if (.num_turns | type) == "number" then (.num_turns | tostring) else "?" end)
+                  elif .subtype == "success" and .is_error == false and (.num_turns | type) == "number"
+                    and (env.MAX_TURNS // "" | test("^[0-9]+$")) and .num_turns > (env.MAX_TURNS | tonumber)
+                  then (.num_turns | tostring)
+                  else "" end)
+              end' "$out" 2>/dev/null || true)
+          fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
+            if [ -n "$turns" ]; then
+              echo "::error::turn cap $MAX_TURNS reached after $turns turns on the fallback token; raise $TURNS_VAR"
+              exit 1
+            fi
             echo "::error::neither token could run the agent"
             exit 1
           fi
@@ -3373,6 +3516,11 @@ jobs:
         env:
           EXEC_TAG: reviewer-primary
           OUTCOME: ${{ steps.reviewer-agent.outcome }}
+          # The ceiling this agent ran under, from the same variable as its
+          # --max-turns: what tells a turn-cap stop from a token problem, and
+          # what the error tells the operator to raise.
+          MAX_TURNS: ${{ env.REVIEWER_TURNS }}
+          TURNS_VAR: REVIEWER_TURNS
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
           # line of this script, and a step-level env: outranks $GITHUB_ENV.
@@ -3428,7 +3576,37 @@ jobs:
           else
             echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
+          # A turn-cap stop is the one failure the second token cannot repair:
+          # the retry asks the identical question under the identical
+          # --max-turns, so it stops the same way or runs out of job time first.
+          # Run 40329844597 paid for 279 reviewer turns against a 120-turn
+          # ceiling, read the stop as a spent token, and lost the retry to the
+          # job limit 12 minutes in. Only a POSITIVE identification counts, in
+          # the two shapes the action produces at its pin: the SDK's own
+          # error_max_turns result, and a successful result over the ceiling,
+          # which the action then fails itself (run-claude-sdk.ts compares
+          # num_turns with --max-turns -- the value MAX_TURNS carries). Anything
+          # else leaves this empty -- an absent, unparseable or result-less
+          # output, the spent-token is_error, a successful result with no
+          # readable ceiling to compare it with -- and empty keeps the retry:
+          # "could not read" is never "turn cap".
+          turns=""
+          if [ -f "$out" ]; then
+            turns=$("$JQ" -r 'if type != "array" then ""
+              else ([.[] | select(.type == "result")] | last // {}
+                | if .subtype == "error_max_turns" then
+                    (if (.num_turns | type) == "number" then (.num_turns | tostring) else "?" end)
+                  elif .subtype == "success" and .is_error == false and (.num_turns | type) == "number"
+                    and (env.MAX_TURNS // "" | test("^[0-9]+$")) and .num_turns > (env.MAX_TURNS | tonumber)
+                  then (.num_turns | tostring)
+                  else "" end)
+              end' "$out" 2>/dev/null || true)
+          fi
           if [ "$OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
+            if [ -n "$turns" ]; then
+              echo "::error::turn cap $MAX_TURNS reached after $turns turns; raise $TURNS_VAR. Not retried on the fallback token, which would repeat the same work under the same cap"
+              exit 1
+            fi
             echo "::warning::the primary token did not complete this agent; retrying on the fallback"
             echo "failed=true" >> "$GITHUB_OUTPUT"
           else
@@ -3759,6 +3937,11 @@ jobs:
           EXEC_TAG: reviewer-fallback
           FALLBACK_OUTCOME: ${{ steps.reviewer-agent-2.outcome }}
           HAS_FALLBACK: ${{ steps.fallback-token.outputs.available }}
+          # The ceiling this agent ran under, from the same variable as its
+          # --max-turns: what tells a turn-cap stop from a token problem, and
+          # what the error tells the operator to raise.
+          MAX_TURNS: ${{ env.REVIEWER_TURNS }}
+          TURNS_VAR: REVIEWER_TURNS
           # Same reason as every other shell step between an agent and the
           # verified digest: BASH_ENV and its siblings are read before the first
           # line of this script, and a step-level env: outranks $GITHUB_ENV.
@@ -3817,7 +4000,37 @@ jobs:
           else
             echo '{"note":"this attempt wrote no execution output"}' > "$RUNNER_TEMP/exec/$EXEC_TAG.json"
           fi
+          # A turn-cap stop is the one failure the second token cannot repair:
+          # the retry asks the identical question under the identical
+          # --max-turns, so it stops the same way or runs out of job time first.
+          # Run 40329844597 paid for 279 reviewer turns against a 120-turn
+          # ceiling, read the stop as a spent token, and lost the retry to the
+          # job limit 12 minutes in. Only a POSITIVE identification counts, in
+          # the two shapes the action produces at its pin: the SDK's own
+          # error_max_turns result, and a successful result over the ceiling,
+          # which the action then fails itself (run-claude-sdk.ts compares
+          # num_turns with --max-turns -- the value MAX_TURNS carries). Anything
+          # else leaves this empty -- an absent, unparseable or result-less
+          # output, the spent-token is_error, a successful result with no
+          # readable ceiling to compare it with -- and empty keeps the retry:
+          # "could not read" is never "turn cap".
+          turns=""
+          if [ -f "$out" ]; then
+            turns=$("$JQ" -r 'if type != "array" then ""
+              else ([.[] | select(.type == "result")] | last // {}
+                | if .subtype == "error_max_turns" then
+                    (if (.num_turns | type) == "number" then (.num_turns | tostring) else "?" end)
+                  elif .subtype == "success" and .is_error == false and (.num_turns | type) == "number"
+                    and (env.MAX_TURNS // "" | test("^[0-9]+$")) and .num_turns > (env.MAX_TURNS | tonumber)
+                  then (.num_turns | tostring)
+                  else "" end)
+              end' "$out" 2>/dev/null || true)
+          fi
           if [ "$FALLBACK_OUTCOME" = "failure" ] || [ "$is_error" = "true" ]; then
+            if [ -n "$turns" ]; then
+              echo "::error::turn cap $MAX_TURNS reached after $turns turns on the fallback token; raise $TURNS_VAR"
+              exit 1
+            fi
             echo "::error::neither token could run the agent"
             exit 1
           fi
