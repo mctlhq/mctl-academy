@@ -723,6 +723,30 @@ describe("progressStore service", () => {
       expect(syncStatus.value).toBe("failed");
     });
 
+    it("waits for an answer still uploading when the clear finishes instead of reporting failed", async () => {
+      let releaseDelete!: () => void;
+      let releasePost!: () => void;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) => {
+          if (init?.method === "DELETE")
+            return new Promise((resolve) => (releaseDelete = () => resolve({ ok: true })));
+          if (init?.method === "POST")
+            return new Promise((resolve) => (releasePost = () => resolve({ ok: true })));
+          return Promise.resolve({ ok: true, json: async () => ({ attempts: [] }) });
+        }),
+      );
+      setSyncEnabled(true);
+      const clearing = clearProgress();
+      await vi.waitFor(() => expect(releaseDelete).toBeTypeOf("function"));
+      recordAttempt("q-1", "domain-1", true); // answered while the DELETE is in flight
+      releaseDelete();
+      await Promise.resolve();
+      releasePost();
+      await clearing;
+      expect(syncStatus.value).toBe("synced");
+    });
+
     it("reports failed when the server copy could not be cleared", async () => {
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
       setSyncEnabled(true);
