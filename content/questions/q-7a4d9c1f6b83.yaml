@@ -1,0 +1,45 @@
+schema_version: 1
+id: q-7a4d9c1f6b83
+status: review_ready
+domain: domain-3
+objective: domain-3/mcp-integration
+stem: "A team names a key `mcp_auth_default` in their shared Tavily team
+  account, and no key in any individual's personal account carries that name.
+  Per Tavily's MCP guide, which key is used for OAuth-authenticated requests?"
+options:
+  - id: a
+    text: "The team's mcp_auth_default key, since a team key by that name is
+      used for all OAuth-authenticated requests"
+    correct: true
+    explanation: "Correct. The guide states that if your team has a key named
+      mcp_auth_default, it will be used for all OAuth-authenticated
+      requests."
+  - id: b
+    text: "A personal key always takes priority over the team's
+      mcp_auth_default key, even if no personal key has that name"
+    correct: false
+    explanation: "The guide only gives the personal key priority when both a
+      personal and a team key are named mcp_auth_default; here no personal
+      key has that name."
+  - id: c
+    text: "The default key in the first available personal account, since
+      neither a personal nor a team mcp_auth_default key exists"
+    correct: false
+    explanation: "That fallback applies when neither a personal nor a team
+      mcp_auth_default key exists; here the team does have one."
+  - id: d
+    text: "The first available key in the personal account, the fallback used
+      when no mcp_auth_default key exists anywhere"
+    correct: false
+    explanation: "That fallback is for when no mcp_auth_default key exists at
+      all; here the team does have one, so its key is used instead."
+evidence:
+  - source_id: src-tv-mcp
+    excerpt: "**Team account**: If your team has a key named
+      `mcp_auth_default`, it will be used for all OAuth-authenticated
+      requests."
+    source_sha256: b001ca6c15cc540e002419e0c8e4fdb15861113cd620f66ee2b6777c55b5f034
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:00:04Z"
+course_id: agentic-web-search

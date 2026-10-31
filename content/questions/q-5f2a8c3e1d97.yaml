@@ -1,0 +1,40 @@
+schema_version: 1
+id: q-5f2a8c3e1d97
+status: review_ready
+domain: domain-3
+objective: domain-3/endpoint-selection
+stem: "An agent needs to understand how a site is organized before deciding
+  how to scope a later Crawl of it. Per the Agents setup guide's capability
+  table, which capability fits this need?"
+options:
+  - id: a
+    text: "Search, since sources are unknown or current web context is needed"
+    correct: false
+    explanation: "The guide lists that criterion for Search, which is for when
+      sources are unknown, not for understanding an already-known site's
+      structure."
+  - id: b
+    text: "Map, since it is for when a site's structure is needed before
+      crawling it"
+    correct: true
+    explanation: "Correct. The guide states to use Map when you need a site's
+      structure before crawling it."
+  - id: c
+    text: "Crawl, since it is for when many pages on a site must be read"
+    correct: false
+    explanation: "The guide lists that criterion for Crawl itself, which reads
+      pages; Map is the step that discovers structure before that read."
+  - id: d
+    text: "Research, since the output should be cited synthesis across
+      sources"
+    correct: false
+    explanation: "The guide lists that criterion for Research, which produces
+      a synthesized answer, not a map of a site's structure."
+evidence:
+  - source_id: src-tv-agents
+    excerpt: "**Map** | You need a site's structure before crawling it."
+    source_sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T09:00:04Z"
+course_id: agentic-web-search
