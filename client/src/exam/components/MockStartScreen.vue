@@ -115,14 +115,27 @@ function handleStart() {
       </ul>
     </section>
 
-    <details class="mock-start-details">
-      <summary>How the mock exam works</summary>
-      <h2 class="mock-start-details-title">How the mock exam works</h2>
+    <!-- A closed <details> does not render its content in current browsers,
+         whatever CSS says, so desktop gets a plain section and only narrow
+         screens get the disclosure. Exactly one is displayed at a time. -->
+    <section class="mock-start-how mock-start-how-wide" aria-labelledby="mock-start-how-title">
+      <h2 id="mock-start-how-title">How the mock exam works</h2>
       <p>
         Answer, skip, revisit and change any of the {{ loaded.config.questionCount }} questions before you
         submit. Results and explanations appear only after submission or when time runs out.
       </p>
       <p v-if="loaded.config.discloseBankSize" class="mock-start-disclosure">
+        A repeat mock exam may include questions you have already seen; it is not guaranteed to be entirely
+        fresh.
+      </p>
+    </section>
+    <details class="mock-start-how mock-start-how-narrow">
+      <summary>How the mock exam works</summary>
+      <p>
+        Answer, skip, revisit and change any of the {{ loaded.config.questionCount }} questions before you
+        submit. Results and explanations appear only after submission or when time runs out.
+      </p>
+      <p v-if="loaded.config.discloseBankSize">
         A repeat mock exam may include questions you have already seen; it is not guaranteed to be entirely
         fresh.
       </p>
@@ -237,29 +250,28 @@ function handleStart() {
   text-decoration: none;
 }
 
-.mock-start-details {
+.mock-start-how {
   margin: 0 0 1.25rem;
   color: var(--surface-fg-muted);
 }
 
-.mock-start-details summary {
+.mock-start-how h2 {
+  color: var(--surface-fg);
+}
+
+.mock-start-how p:last-child {
+  margin-bottom: 0;
+}
+
+.mock-start-how-narrow {
   display: none;
+}
+
+.mock-start-how-narrow summary {
   color: var(--surface-fg);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   cursor: pointer;
-}
-
-.mock-start-details:not([open]) > :not(summary) {
-  display: block;
-}
-
-.mock-start-details-title {
-  display: block;
-}
-
-.mock-start-details p:last-child {
-  margin-bottom: 0;
 }
 
 .mock-start-shortfall {
@@ -272,16 +284,12 @@ function handleStart() {
 }
 
 @media (max-width: 620px) {
-  .mock-start-details summary {
-    display: list-item;
-  }
-
-  .mock-start-details .mock-start-details-title {
+  .mock-start-how-wide {
     display: none;
   }
 
-  .mock-start-details:not([open]) > :not(summary) {
-    display: none;
+  .mock-start-how-narrow {
+    display: block;
   }
 
   .mock-start-facts {
