@@ -87,6 +87,7 @@ async function handleClearHistory() {
   <section class="progress-screen page-shell">
     <div class="progress-grid">
       <div>
+        <p class="section-marker section-marker-top">Questions solved</p>
         <div class="readiness-heading">
           <strong>{{ stats.solvedPercent }}%</strong>
           <span>{{
@@ -95,8 +96,6 @@ async function handleClearHistory() {
               : "Start practicing to solve your first question"
           }}</span>
         </div>
-        <p class="section-marker">Questions solved</p>
-
         <h1>Progress by domain</h1>
         <div class="domain-bars">
           <DomainBar
@@ -105,6 +104,7 @@ async function handleClearHistory() {
             :label="domain.domainTitle"
             :value="domain.solvedPercent"
             :detail="`${domain.correctQuestions}/${domain.totalQuestions} solved`"
+            :to="`/practice?domain=${encodeURIComponent(domain.domainId)}`"
           />
         </div>
       </div>
@@ -132,6 +132,17 @@ async function handleClearHistory() {
               : "—"
           }}
         </p>
+        <details class="metric-definitions">
+          <summary>What these numbers mean</summary>
+          <dl>
+            <dt>Solved</dt>
+            <dd>Your latest answer to the question is correct.</dd>
+            <dt>Open mistakes</dt>
+            <dd>Your latest answer to the question is wrong.</dd>
+            <dt>Accuracy</dt>
+            <dd>Solved questions as a share of the questions you have answered at least once.</dd>
+          </dl>
+        </details>
         <p class="accuracy-detail">Progress tracks this question bank, not exam readiness.</p>
 
         <div v-if="recommendedDomain" class="weakest-card">
@@ -141,9 +152,15 @@ async function handleClearHistory() {
             Continue practice <span aria-hidden="true">→</span>
           </button>
         </div>
-        <button v-if="stats.totalMistakes > 0" type="button" @click="onReviewMistakes">
+        <MButton
+          v-if="stats.totalMistakes > 0"
+          type="button"
+          variant="ghost"
+          class="review-mistakes"
+          @click="onReviewMistakes"
+        >
           Review {{ stats.totalMistakes }} {{ stats.totalMistakes === 1 ? "mistake" : "mistakes" }}
-        </button>
+        </MButton>
         <p v-if="stats.totalBankQuestions > 0 && stats.totalCorrect === stats.totalBankQuestions">
           All published questions solved. Open Practice to repeat the bank or take a mock exam.
         </p>
@@ -227,15 +244,47 @@ async function handleClearHistory() {
 .progress-summary dt,
 .weakest-card > span {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .section-marker {
   margin: 0.6rem 0 2rem;
   color: var(--surface-fg-subtle);
+}
+
+.section-marker-top {
+  margin: 0 0 0.5rem;
+}
+
+.readiness-heading {
+  margin-bottom: 2rem;
+}
+
+.metric-definitions {
+  margin: 0.75rem 0 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.85rem;
+}
+
+.metric-definitions summary {
+  cursor: pointer;
+}
+
+.metric-definitions dt {
+  margin-top: 0.5rem;
+  color: var(--surface-fg);
+  font-weight: 600;
+}
+
+.metric-definitions dd {
+  margin: 0;
+}
+
+.review-mistakes {
+  margin-top: 0.75rem;
 }
 
 .progress-screen h1 {

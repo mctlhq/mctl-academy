@@ -3,13 +3,18 @@ defineProps<{
   label: string;
   value: number;
   detail?: string;
+  /** When set, the domain title links there (a domain-filtered Practice). */
+  to?: string;
 }>();
 </script>
 
 <template>
   <div class="domain-bar">
     <div class="domain-bar-labels">
-      <span>{{ label }}</span>
+      <RouterLink v-if="to" :to="to" class="domain-bar-link"
+        >{{ label }} <span aria-hidden="true">→</span></RouterLink
+      >
+      <span v-else>{{ label }}</span>
       <span class="domain-bar-value">
         <span>{{ value }}%</span><small v-if="detail">{{ detail }}</small>
       </span>
@@ -36,6 +41,17 @@ defineProps<{
   margin-bottom: 0.4rem;
   color: var(--surface-fg-muted);
   font-size: 0.9rem;
+}
+
+.domain-bar-link {
+  color: var(--surface-fg);
+  text-decoration: none;
+}
+
+.domain-bar-link:hover,
+.domain-bar-link:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .domain-bar-value {

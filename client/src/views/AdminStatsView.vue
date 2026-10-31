@@ -34,8 +34,9 @@ onMounted(async () => {
 
 <template>
   <section class="admin-stats page-shell">
-    <div v-if="loading">Loading…</div>
-    <div v-else-if="!stats">Not available.</div>
+    <h1>Stats</h1>
+    <p v-if="loading" role="status">Loading…</p>
+    <p v-else-if="!stats" role="status">Not available.</p>
     <dl v-else class="admin-stats-grid">
       <div>
         <dt>Total sign-ups</dt>
