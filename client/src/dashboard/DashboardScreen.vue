@@ -2,6 +2,8 @@
 import { computed, inject, ref, type Ref } from "vue";
 import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
+import ConfirmDialog from "../components/ConfirmDialog.vue";
+import type { UserProfile } from "../types/user";
 import { calculateProgressStats, clearProgress } from "../services/progressStore";
 import { questionsForCourse } from "../services/contentBundle";
 import { domainTitlesFor, findCourse } from "../services/courseCatalog";
@@ -46,10 +48,23 @@ const recommendedDomain = computed(() => {
   );
 });
 
+// The attempt log is shared by every course (progressStore.ts keeps one log
+// and DELETE /api/attempts takes no course), so this control says so: it is
+// labelled and confirmed as an all-courses erasure, not a reset of the
+// course whose numbers sit above it.
+const currentUser = inject<Ref<UserProfile | null>>("currentUser", ref(null));
+const courseTitle = computed(() => findCourse(currentCourseId.value)?.title ?? "this course");
+const confirmingClear = ref(false);
+const clearPending = ref(false);
+const clearOutcome = ref<"none" | "cleared" | "server-failed">("none");
+
+function openClearConfirm() {
+  confirmingClear.value = true;
+}
+
 async function handleClearHistory() {
-  if (!window.confirm("Are you sure you want to clear your learning progress and mistake history?")) {
-    return;
-  }
+  if (clearPending.value) return;
+  clearPending.value = true;
 
   // clearProgress() clears localStorage synchronously before it ever awaits
   // anything — bumping clearedAt right after calling it (not after awaiting
@@ -59,15 +74,12 @@ async function handleClearHistory() {
   clearedAt.value += 1;
 
   const { serverCleared } = await clearPromise;
-  if (!serverCleared) {
-    // Local storage is already clear, but the server still holds the old
-    // history — the next sync would otherwise pull it straight back in.
-    // Say so rather than implying the deletion is permanent.
-    window.alert(
-      "Your local history was cleared, but we could not confirm the server copy was deleted. " +
-        "It may reappear next time your progress syncs — please try again.",
-    );
-  }
+  clearPending.value = false;
+  confirmingClear.value = false;
+  // Local storage is already clear either way. When the server copy is not
+  // confirmed deleted, the next sync would pull it straight back in — say so
+  // rather than implying the deletion is permanent, and offer a retry.
+  clearOutcome.value = serverCleared ? "cleared" : "server-failed";
 }
 </script>
 
@@ -135,12 +147,49 @@ async function handleClearHistory() {
         <p v-if="stats.totalBankQuestions > 0 && stats.totalCorrect === stats.totalBankQuestions">
           All published questions solved. Open Practice to repeat the bank or take a mock exam.
         </p>
-
-        <MButton type="button" variant="ghost" size="sm" class="reset-progress" @click="handleClearHistory">
-          Reset progress history
-        </MButton>
       </aside>
     </div>
+
+    <section class="data-section" aria-labelledby="your-data-title">
+      <h2 id="your-data-title">Your data</h2>
+      <p>
+        Your answer history is shared by every course. Clearing it resets progress and mistakes in all courses
+        at once{{ currentUser ? ", on this device and on the server" : " on this device" }}.
+      </p>
+      <p v-if="clearOutcome === 'cleared'" class="data-status" role="status">
+        History cleared for all courses.
+      </p>
+      <div v-else-if="clearOutcome === 'server-failed'" class="data-status data-status-bad" role="alert">
+        <p>
+          History was cleared on this device, but we could not confirm the server copy was deleted. It may
+          reappear the next time your progress syncs.
+        </p>
+        <MButton type="button" variant="ghost" size="sm" :disabled="clearPending" @click="handleClearHistory">
+          {{ clearPending ? "Retrying…" : "Retry server deletion" }}
+        </MButton>
+      </div>
+      <MButton type="button" variant="ghost" size="sm" class="reset-progress" @click="openClearConfirm">
+        Clear history for all courses…
+      </MButton>
+    </section>
+
+    <ConfirmDialog
+      :open="confirmingClear"
+      title="Clear history for all courses?"
+      confirm-label="Clear all history"
+      pending-label="Clearing…"
+      danger
+      :pending="clearPending"
+      @confirm="handleClearHistory"
+      @cancel="confirmingClear = false"
+    >
+      <p>
+        This deletes your answers and mistake history in <strong>every course</strong>, not only
+        {{ courseTitle }}.
+      </p>
+      <p v-if="currentUser">It also deletes the copy stored with your account on the server.</p>
+      <p><strong>This cannot be undone.</strong></p>
+    </ConfirmDialog>
   </section>
 </template>
 
@@ -258,9 +307,45 @@ async function handleClearHistory() {
   cursor: pointer;
 }
 
+.data-section {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-line);
+  max-width: 43rem;
+}
+
+.data-section h2 {
+  margin: 0 0 0.5rem;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.data-section p {
+  margin: 0 0 0.75rem;
+  color: var(--surface-fg-muted);
+  font-size: 0.875rem;
+}
+
+.data-status {
+  margin-bottom: 0.75rem;
+}
+
+.data-status-bad {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--status-bad);
+  border-radius: var(--mctl-radius-md);
+}
+
 .reset-progress {
-  margin-top: 1.25rem;
-  color: var(--surface-fg-subtle) !important;
+  color: var(--surface-fg-muted) !important;
+}
+
+.reset-progress:hover {
+  border-color: var(--status-bad) !important;
+  color: var(--status-bad) !important;
 }
 
 @media (max-width: 800px) {
@@ -316,8 +401,8 @@ async function handleClearHistory() {
     padding: 0.625rem;
   }
 
-  .reset-progress {
-    margin-top: 0.5rem;
+  .data-section {
+    margin-top: 1.5rem;
   }
 }
 </style>
