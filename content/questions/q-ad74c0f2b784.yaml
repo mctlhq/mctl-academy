@@ -1,0 +1,42 @@
+schema_version: 1
+id: q-ad74c0f2b784
+status: review_ready
+domain: domain-3
+objective: domain-3/mcp-integration
+stem: "An agent connects to Tavily through the remote MCP server in Claude
+  Code using `claude mcp add tavily --transport http
+  https://mcp.tavily.com/mcp/`. Per the MCP guide, how is the connection
+  authenticated?"
+options:
+  - id: a
+    text: "No API key is needed in the URL; authentication is handled
+      automatically via OAuth"
+    correct: true
+    explanation: "Correct. The guide states exactly this: no API key in the
+      URL, with OAuth handling authentication automatically."
+  - id: b
+    text: "An API key must be pasted directly into the MCP server URL"
+    correct: false
+    explanation: "The guide states no API key is needed in the URL; OAuth
+      handles it instead."
+  - id: c
+    text: "The agent must set a `TAVILY_API_KEY` environment variable before
+      the first tool call"
+    correct: false
+    explanation: "That environment variable pattern is shown for the local
+      Claude Desktop server, not for this OAuth-based remote connection."
+  - id: d
+    text: "Authentication happens by including the key in a
+      `DEFAULT_PARAMETERS` header"
+    correct: false
+    explanation: "DEFAULT_PARAMETERS configures default request parameters
+      like search_depth, not authentication."
+evidence:
+  - source_id: src-tv-mcp
+    excerpt: "No API key needed in the URL — authentication is handled
+      automatically via OAuth."
+    source_sha256: b001ca6c15cc540e002419e0c8e4fdb15861113cd620f66ee2b6777c55b5f034
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search

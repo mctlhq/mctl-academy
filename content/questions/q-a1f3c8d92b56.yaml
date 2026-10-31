@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-a1f3c8d92b56
+status: review_ready
+domain: domain-1
+objective: domain-1/realtime-search-fundamentals
+stem: "An agent's base model stops learning about the world at its training
+  cutoff. Per Tavily's documentation, which capability does Tavily describe
+  itself as adding to such an agent?"
+options:
+  - id: a
+    text: "Real-time search, page extraction, site crawling and mapping, and
+      cited research, returned as clean, LLM-ready content"
+    correct: true
+    explanation: "Correct. Tavily describes itself as the web layer for AI
+      agents, providing exactly this live data."
+  - id: b
+    text: "Keyless access, which lets an agent call Search and Extract with no
+      API key"
+    correct: false
+    explanation: "That describes the no-key access path, not what closes the
+      knowledge-cutoff gap."
+  - id: c
+    text: "Session tracking via an X-Session-Id header that groups related API
+      calls"
+    correct: false
+    explanation: "Session tracking is for attribution and analytics across calls,
+      not for supplying live information."
+  - id: d
+    text: "A documentation MCP server that lets an agent search Tavily's own
+      docs"
+    correct: false
+    explanation: "That server searches Tavily's documentation pages, not the
+      live web the agent is missing."
+evidence:
+  - source_id: src-tv-quickstart
+    excerpt: "Tavily is the web layer for AI agents: real-time **search**, page
+      **extraction**, site **crawling** and **mapping**, and cited
+      **research**, returned as clean, LLM-ready content."
+    source_sha256: 3b09f433e0e37e32726da10bfa4c0095cf490a227aafb51e8249d102302dd06d
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search

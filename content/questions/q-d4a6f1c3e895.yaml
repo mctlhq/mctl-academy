@@ -1,0 +1,39 @@
+schema_version: 1
+id: q-d4a6f1c3e895
+status: review_ready
+domain: domain-1
+objective: domain-1/agent-tool-selection
+stem: "An agent doesn't yet know which URLs are relevant to its task. Per
+  Tavily's agent setup guide, which capability should it reach for first?"
+options:
+  - id: a
+    text: "Crawl, since it reads the most pages and finds everything
+      automatically"
+    correct: false
+    explanation: "Crawl reads pages you already intend to visit; it does not
+      replace an initial Search when sources are unknown."
+  - id: b
+    text: "Map, since it must always run before any other capability"
+    correct: false
+    explanation: "Map discovers a site's structure, but the guide does not say
+      it must run before Search."
+  - id: c
+    text: "Search, since it is the right starting point when sources are
+      unknown"
+    correct: true
+    explanation: "Correct. The guide says to lead with Search when sources are
+      unknown, moving to the other capabilities once URLs are known."
+  - id: d
+    text: "Research, since it always consumes the fewest credits"
+    correct: false
+    explanation: "Research is for cited synthesis; the guide does not describe
+      it as the cheapest capability."
+evidence:
+  - source_id: src-tv-agents
+    excerpt: "Lead with **Search** when sources are unknown; move to the others
+      once you have URLs or a site to work through."
+    source_sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+authored:
+  by: "agent:claude-author"
+  at: "2026-10-31T01:33:39Z"
+course_id: agentic-web-search
