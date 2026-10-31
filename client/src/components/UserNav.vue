@@ -321,7 +321,7 @@ async function handleDeleteAccount() {
   border: 1px solid var(--surface-line-strong);
   border-radius: var(--mctl-radius-lg);
   background: var(--surface-elevated);
-  box-shadow: var(--mctl-shadow-overlay);
+  box-shadow: var(--shadow-overlay);
 }
 
 .account-identity {

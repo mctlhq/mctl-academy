@@ -938,7 +938,7 @@ kbd {
     width: auto;
     border: 1px solid var(--surface-line-strong);
     border-radius: var(--mctl-radius-pill);
-    box-shadow: var(--mctl-shadow-overlay);
+    box-shadow: var(--shadow-overlay);
   }
 
   .context-open .practice-context {
