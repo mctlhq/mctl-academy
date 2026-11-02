@@ -1,26 +1,31 @@
 schema_version: 1
 id: q-9c3f6a1e85b4
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/framework-integrations
-stem: "In the Token Factory third-party integrations overview, which entry is listed under the \"Agent Frameworks\" category?"
+stem: "In the Token Factory third-party integrations overview, which entry is
+  listed under the \"Agent Frameworks\" category?"
 options:
   - id: a
     text: "CrewAI"
     correct: true
-    explanation: "Correct. The overview's Agent Frameworks category lists CrewAI alongside Agno, Camel AI, Google ADK, Llama-Index, Pydantic and Strands."
+    explanation: "Correct. The overview's Agent Frameworks category lists CrewAI
+      alongside Agno, Camel AI, Google ADK, Llama-Index, Pydantic and Strands."
   - id: b
     text: "Postman"
     correct: false
-    explanation: "Postman is listed under the overview's Developer Tools category, not Agent Frameworks."
+    explanation: "Postman is listed under the overview's Developer Tools category,
+      not Agent Frameworks."
   - id: c
     text: "Helicone"
     correct: false
-    explanation: "Helicone is listed under the overview's Observability category, not Agent Frameworks."
+    explanation: "Helicone is listed under the overview's Observability category,
+      not Agent Frameworks."
   - id: d
     text: "Tavily"
     correct: false
-    explanation: "Tavily is listed under the overview's Agentic Search category, not Agent Frameworks."
+    explanation: "Tavily is listed under the overview's Agentic Search category, not
+      Agent Frameworks."
 evidence:
   - source_id: src-integrations-overview
     excerpt: "## Agent Frameworks"
@@ -32,3 +37,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-02T16:21:44Z"
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-02T16:34:04Z
+  content_sha256: 39360399e495dbc47865bd125e78a3de9b95936fa28bd42ddad8ed5e6c3b8da5

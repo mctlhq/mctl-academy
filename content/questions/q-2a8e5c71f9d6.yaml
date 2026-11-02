@@ -1,31 +1,47 @@
 schema_version: 1
 id: q-2a8e5c71f9d6
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/edge-cloud-placement
-stem: "A team runs LeRobot's PolicyServer over a limited-bandwidth network link from the RobotClient. According to the async inference guide, what happens as they tune `chunk_size_threshold` closer to 1.0?"
+stem: "A team runs LeRobot's PolicyServer over a limited-bandwidth network link
+  from the RobotClient. According to the async inference guide, what happens as
+  they tune `chunk_size_threshold` closer to 1.0?"
 options:
   - id: a
-    text: "The client sends a new observation to the server on nearly every step, using more bandwidth and relying on a good world model"
+    text: "The client sends a new observation to the server on nearly every step,
+      using more bandwidth and relying on a good world model"
     correct: true
-    explanation: "Correct. The guide states that values of `chunk_size_threshold` closer to 1.0 mean the client sends an observation every step, at the cost of more bandwidth and reliance on a good world model."
+    explanation: "Correct. The guide states that values of `chunk_size_threshold`
+      closer to 1.0 mean the client sends an observation every step, at the cost
+      of more bandwidth and reliance on a good world model."
   - id: b
-    text: "The connection collapses to almost sequential behavior, sending a new observation only once the current chunk is exhausted"
+    text: "The connection collapses to almost sequential behavior, sending a new
+      observation only once the current chunk is exhausted"
     correct: false
-    explanation: "The guide describes that behavior for values closer to 0.0, the opposite end of the range from 1.0."
+    explanation: "The guide describes that behavior for values closer to 0.0, the
+      opposite end of the range from 1.0."
   - id: c
-    text: "PI0's inference-time memory footprint automatically drops from 14GB to match SmolVLA's ~2GB"
+    text: "PI0's inference-time memory footprint automatically drops from 14GB to
+      match SmolVLA's ~2GB"
     correct: false
-    explanation: "Memory footprint depends on which policy you choose to run, not on the `chunk_size_threshold` setting."
+    explanation: "Memory footprint depends on which policy you choose to run, not on
+      the `chunk_size_threshold` setting."
   - id: d
     text: "Inference is moved from the PolicyServer onto the robot's own controller"
     correct: false
-    explanation: "The guide assumes the PolicyServer, not the robot controller, has the better computational resources; tuning `chunk_size_threshold` does not relocate inference."
+    explanation: "The guide assumes the PolicyServer, not the robot controller, has
+      the better computational resources; tuning `chunk_size_threshold` does not
+      relocate inference."
 evidence:
   - source_id: src-pa-lerobot-async
-    excerpt: "Values closer to `1.0` → send observation every step (more bandwidth, relies on good world-model)."
+    excerpt: "Values closer to `1.0` → send observation every step (more bandwidth,
+      relies on good world-model)."
     source_sha256: e822df700612d3dd5003959b73b7e69334d1dc8ab19708b1bc050ba0fcd74738
 authored:
   by: "agent:claude-author"
   at: "2026-11-02T16:21:44Z"
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-02T16:34:04Z
+  content_sha256: a9cde2cb42e1daaa58197df8a9e3cc9b288977d0e4474b6c938e1f0f5e09e3cf

@@ -1,26 +1,33 @@
 schema_version: 1
 id: q-3b9e7c2f815a
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/files-api
-stem: "In the fine-tuning walkthrough's Python example, which call downloads the raw contents of a file given its file ID?"
+stem: "In the fine-tuning walkthrough's Python example, which call downloads the
+  raw contents of a file given its file ID?"
 options:
   - id: a
     text: "`client.files.content(file_id)`"
     correct: true
-    explanation: "Correct. The walkthrough's \"Download file contents\" step calls `client.files.content(file_id)` to get the raw bytes, which are then written to disk."
+    explanation: "Correct. The walkthrough's \"Download file contents\" step calls
+      `client.files.content(file_id)` to get the raw bytes, which are then
+      written to disk."
   - id: b
     text: "`client.files.retrieve(file_id)`"
     correct: false
-    explanation: "That call is used in the earlier \"Get file metadata\" step and returns the file object (including its `filename`), not the file's contents."
+    explanation: "That call is used in the earlier \"Get file metadata\" step and
+      returns the file object (including its `filename`), not the file's
+      contents."
   - id: c
     text: "`client.files.create(file=..., purpose=\"fine-tune\")`"
     correct: false
-    explanation: "That call uploads a new dataset file; it does not retrieve the contents of an existing one."
+    explanation: "That call uploads a new dataset file; it does not retrieve the
+      contents of an existing one."
   - id: d
     text: "`client.fine_tuning.jobs.retrieve(job.id)`"
     correct: false
-    explanation: "That call checks the status of a fine-tuning job; it has nothing to do with downloading a file's contents."
+    explanation: "That call checks the status of a fine-tuning job; it has nothing
+      to do with downloading a file's contents."
 evidence:
   - source_id: src-recovery-finetune
     excerpt: "Download file contents"
@@ -32,3 +39,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-02T16:21:44Z"
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-02T16:34:04Z
+  content_sha256: e43f0c40e8ea9708125f2418098e6251dad728aa5d58297b807c19b74ec02d26

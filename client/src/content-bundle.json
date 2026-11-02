@@ -533,6 +533,47 @@
     ]
   },
   {
+    "id": "q-2a8e5c71f9d6",
+    "course_id": "physical-ai",
+    "domain": "domain-4",
+    "objective": "domain-4/edge-cloud-placement",
+    "stem": "A team runs LeRobot's PolicyServer over a limited-bandwidth network link from the RobotClient. According to the async inference guide, what happens as they tune `chunk_size_threshold` closer to 1.0?",
+    "objectiveTitle": "Choosing cloud or edge execution for latency and deployment requirements",
+    "sources": [
+      {
+        "title": "Asynchronous Inference",
+        "url": "https://huggingface.co/docs/lerobot/async.md",
+        "excerpt": "Values closer to `1.0` → send observation every step (more bandwidth, relies on good world-model)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The client sends a new observation to the server on nearly every step, using more bandwidth and relying on a good world model",
+        "correct": true,
+        "explanation": "Correct. The guide states that values of `chunk_size_threshold` closer to 1.0 mean the client sends an observation every step, at the cost of more bandwidth and reliance on a good world model."
+      },
+      {
+        "id": "b",
+        "text": "The connection collapses to almost sequential behavior, sending a new observation only once the current chunk is exhausted",
+        "correct": false,
+        "explanation": "The guide describes that behavior for values closer to 0.0, the opposite end of the range from 1.0."
+      },
+      {
+        "id": "c",
+        "text": "PI0's inference-time memory footprint automatically drops from 14GB to match SmolVLA's ~2GB",
+        "correct": false,
+        "explanation": "Memory footprint depends on which policy you choose to run, not on the `chunk_size_threshold` setting."
+      },
+      {
+        "id": "d",
+        "text": "Inference is moved from the PolicyServer onto the robot's own controller",
+        "correct": false,
+        "explanation": "The guide assumes the PolicyServer, not the robot controller, has the better computational resources; tuning `chunk_size_threshold` does not relocate inference."
+      }
+    ]
+  },
+  {
     "id": "q-2d8f6a19c5e3",
     "course_id": "agentic-web-search",
     "domain": "domain-1",
@@ -693,6 +734,52 @@
         "text": "Because a secret's primary version updates automatically whenever the application runs",
         "correct": false,
         "explanation": "The primary version only changes when explicitly set to a different version; it does not update automatically on application use."
+      }
+    ]
+  },
+  {
+    "id": "q-3b9e7c2f815a",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "In the fine-tuning walkthrough's Python example, which call downloads the raw contents of a file given its file ID?",
+    "objectiveTitle": "Uploading, retrieving, and deleting files",
+    "sources": [
+      {
+        "title": "Supervised fine-tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "Download file contents"
+      },
+      {
+        "title": "Supervised fine-tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "file_content = client.files.content(file_id)"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`client.files.content(file_id)`",
+        "correct": true,
+        "explanation": "Correct. The walkthrough's \"Download file contents\" step calls `client.files.content(file_id)` to get the raw bytes, which are then written to disk."
+      },
+      {
+        "id": "b",
+        "text": "`client.files.retrieve(file_id)`",
+        "correct": false,
+        "explanation": "That call is used in the earlier \"Get file metadata\" step and returns the file object (including its `filename`), not the file's contents."
+      },
+      {
+        "id": "c",
+        "text": "`client.files.create(file=..., purpose=\"fine-tune\")`",
+        "correct": false,
+        "explanation": "That call uploads a new dataset file; it does not retrieve the contents of an existing one."
+      },
+      {
+        "id": "d",
+        "text": "`client.fine_tuning.jobs.retrieve(job.id)`",
+        "correct": false,
+        "explanation": "That call checks the status of a fine-tuning job; it has nothing to do with downloading a file's contents."
       }
     ]
   },
@@ -1077,6 +1164,47 @@
         "text": "Yes, but only if the session also has X11 forwarding enabled",
         "correct": false,
         "explanation": "The documented behavior covers X11, Wayland, and headless/SSH sessions without requiring X11 forwarding specifically."
+      }
+    ]
+  },
+  {
+    "id": "q-4e7b2d9f61c8",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-setup",
+    "stem": "In the Serverless AI endpoint-creation tutorial, which web console setting makes the deployed endpoint require a bearer token on every request?",
+    "objectiveTitle": "Setting up managed model inference in the cloud",
+    "sources": [
+      {
+        "title": "Deploying a large language model and chatting with it by using Serverless AI endpoints",
+        "url": "https://docs.nebius.com/serverless/tutorials/deploy-model.md",
+        "excerpt": "**Bearer token authentication**: Enabled. Copy and save the generated token."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Bearer token authentication: Enabled",
+        "correct": true,
+        "explanation": "Correct. The tutorial sets \"Bearer token authentication\" to Enabled when creating the endpoint and has you copy the generated token to authenticate requests."
+      },
+      {
+        "id": "b",
+        "text": "Network: Public static IP",
+        "correct": false,
+        "explanation": "That setting controls how the endpoint is exposed on the network; it does not require a bearer token on requests."
+      },
+      {
+        "id": "c",
+        "text": "Computing resources: With GPU",
+        "correct": false,
+        "explanation": "That setting requests GPU-backed compute for the endpoint; it is unrelated to request authentication."
+      },
+      {
+        "id": "d",
+        "text": "Available platform: NVIDIA® L40S Intel",
+        "correct": false,
+        "explanation": "That setting selects the hardware platform for the endpoint; it does not control authentication."
       }
     ]
   },
@@ -1644,6 +1772,47 @@
     ]
   },
   {
+    "id": "q-6f1a8c4e92d5",
+    "course_id": "physical-ai",
+    "domain": "domain-3",
+    "objective": "domain-3/inference-setup",
+    "stem": "Within Nebius Serverless AI, which deployment type is designed to host a model or application at a URL for real-time inference requests?",
+    "objectiveTitle": "Setting up managed model inference in the cloud",
+    "sources": [
+      {
+        "title": "About Serverless AI",
+        "url": "https://docs.nebius.com/serverless/overview.md",
+        "excerpt": "Host a model or application at a URL for real-time inference → **Endpoint**"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Endpoint",
+        "correct": true,
+        "explanation": "Correct. The deployment-type comparison lists serving requests by hosting a model or application at a URL for real-time inference under Endpoint."
+      },
+      {
+        "id": "b",
+        "text": "Job",
+        "correct": false,
+        "explanation": "A Job is non-interactive and terminates on completion or timeout; it is meant for tasks like training or batch inference, not for serving requests at a URL."
+      },
+      {
+        "id": "c",
+        "text": "Devlab",
+        "correct": false,
+        "explanation": "A Devlab is an interactive, browser-based IDE or notebook for coding and prototyping, not a way to serve real-time inference requests."
+      },
+      {
+        "id": "d",
+        "text": "Managed Service for MLflow",
+        "correct": false,
+        "explanation": "Managed Service for MLflow is a separate Nebius service for logging experiments, not a Serverless AI deployment type for serving inference."
+      }
+    ]
+  },
+  {
     "id": "q-71e4b9c2a5f3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -2018,6 +2187,47 @@
     ]
   },
   {
+    "id": "q-8d4f261b9c73",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-3",
+    "objective": "domain-3/files-api",
+    "stem": "After a fine-tuning job succeeds, which field on a checkpoint object lists the IDs of the files you can retrieve through the Files API?",
+    "objectiveTitle": "Uploading, retrieving, and deleting files",
+    "sources": [
+      {
+        "title": "Supervised fine-tuning",
+        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
+        "excerpt": "The `result_files` array contains IDs of all files that belong to this checkpoint."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`result_files`",
+        "correct": true,
+        "explanation": "Correct. The checkpoints walkthrough states the `result_files` array contains the IDs of all files belonging to that checkpoint, which you then fetch with the Files API."
+      },
+      {
+        "id": "b",
+        "text": "`trained_tokens`",
+        "correct": false,
+        "explanation": "`trained_tokens` reports how many tokens have been processed during training; it is not a list of file IDs."
+      },
+      {
+        "id": "c",
+        "text": "`hyperparameters`",
+        "correct": false,
+        "explanation": "`hyperparameters` holds the training configuration for the job, such as `batch_size` and `learning_rate`, not file references."
+      },
+      {
+        "id": "d",
+        "text": "`estimated_finish`",
+        "correct": false,
+        "explanation": "`estimated_finish` is a timing field on the job object; it does not reference any files."
+      }
+    ]
+  },
+  {
     "id": "q-8e4f1a6c9b32",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -2219,6 +2429,52 @@
         "text": "Because the dashboards exist mainly to help the Nebius support team investigate issues, not to show resources to customers",
         "correct": false,
         "explanation": "The dashboards are for the customer to monitor utilization and schedule quota increases; support-team investigation is a secondary use, not the reason the VM is hidden from Compute."
+      }
+    ]
+  },
+  {
+    "id": "q-9c3f6a1e85b4",
+    "course_id": "agentic-ai-builder",
+    "domain": "domain-2",
+    "objective": "domain-2/framework-integrations",
+    "stem": "In the Token Factory third-party integrations overview, which entry is listed under the \"Agent Frameworks\" category?",
+    "objectiveTitle": "Third-party framework integrations",
+    "sources": [
+      {
+        "title": "Overview",
+        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
+        "excerpt": "## Agent Frameworks"
+      },
+      {
+        "title": "Overview",
+        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
+        "excerpt": "[CrewAI](https://docs.tokenfactory.nebius.com/integrations/agents/crewai)"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "CrewAI",
+        "correct": true,
+        "explanation": "Correct. The overview's Agent Frameworks category lists CrewAI alongside Agno, Camel AI, Google ADK, Llama-Index, Pydantic and Strands."
+      },
+      {
+        "id": "b",
+        "text": "Postman",
+        "correct": false,
+        "explanation": "Postman is listed under the overview's Developer Tools category, not Agent Frameworks."
+      },
+      {
+        "id": "c",
+        "text": "Helicone",
+        "correct": false,
+        "explanation": "Helicone is listed under the overview's Observability category, not Agent Frameworks."
+      },
+      {
+        "id": "d",
+        "text": "Tavily",
+        "correct": false,
+        "explanation": "Tavily is listed under the overview's Agentic Search category, not Agent Frameworks."
       }
     ]
   },
