@@ -1267,8 +1267,6 @@ seen:
     first_seen: 2026-10-30
   - url: https://docs.tokenfactory.nebius.com/cached-tokens.md
     first_seen: 2026-10-30
-  - url: https://docs.tokenfactory.nebius.com/model-deprecations-november-2026.md
-    first_seen: 2026-10-30
   - url: https://docs.tokenfactory.nebius.com/sandboxes/sdk/contributing.md
     first_seen: 2026-10-30
   - url: https://docs.tokenfactory.nebius.com/sandboxes/sdk/python_sdk/advanced.md
@@ -1323,8 +1321,6 @@ seen:
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/documentation/tavily-cli.md
     first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/agent-toolkit/overview.md
-    first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/hub.md
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/open-sources/projects.md
@@ -1353,4 +1349,6 @@ seen:
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/sdk/python/quick-start.md
     first_seen: 2026-10-31
+  - url: https://docs.tokenfactory.nebius.com/november-2026-deprecation-notice.md
+    first_seen: 2026-11-02
 ignored: []
