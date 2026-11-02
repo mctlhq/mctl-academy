@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-8d4f261b9c73
+status: review_ready
+domain: domain-3
+objective: domain-3/files-api
+stem: "After a fine-tuning job succeeds, which field on a checkpoint object lists the IDs of the files you can retrieve through the Files API?"
+options:
+  - id: a
+    text: "`result_files`"
+    correct: true
+    explanation: "Correct. The checkpoints walkthrough states the `result_files` array contains the IDs of all files belonging to that checkpoint, which you then fetch with the Files API."
+  - id: b
+    text: "`trained_tokens`"
+    correct: false
+    explanation: "`trained_tokens` reports how many tokens have been processed during training; it is not a list of file IDs."
+  - id: c
+    text: "`hyperparameters`"
+    correct: false
+    explanation: "`hyperparameters` holds the training configuration for the job, such as `batch_size` and `learning_rate`, not file references."
+  - id: d
+    text: "`estimated_finish`"
+    correct: false
+    explanation: "`estimated_finish` is a timing field on the job object; it does not reference any files."
+evidence:
+  - source_id: src-recovery-finetune
+    excerpt: "The `result_files` array contains IDs of all files that belong to this checkpoint."
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-02T16:21:44Z"
+course_id: agentic-ai-builder

@@ -1,0 +1,31 @@
+schema_version: 1
+id: q-6f1a8c4e92d5
+status: review_ready
+domain: domain-3
+objective: domain-3/inference-setup
+stem: "Within Nebius Serverless AI, which deployment type is designed to host a model or application at a URL for real-time inference requests?"
+options:
+  - id: a
+    text: "Endpoint"
+    correct: true
+    explanation: "Correct. The deployment-type comparison lists serving requests by hosting a model or application at a URL for real-time inference under Endpoint."
+  - id: b
+    text: "Job"
+    correct: false
+    explanation: "A Job is non-interactive and terminates on completion or timeout; it is meant for tasks like training or batch inference, not for serving requests at a URL."
+  - id: c
+    text: "Devlab"
+    correct: false
+    explanation: "A Devlab is an interactive, browser-based IDE or notebook for coding and prototyping, not a way to serve real-time inference requests."
+  - id: d
+    text: "Managed Service for MLflow"
+    correct: false
+    explanation: "Managed Service for MLflow is a separate Nebius service for logging experiments, not a Serverless AI deployment type for serving inference."
+evidence:
+  - source_id: src-pa-serverless-overview
+    excerpt: "Host a model or application at a URL for real-time inference → **Endpoint**"
+    source_sha256: 26ad526e01397e3e2e612bfd23837fde3c805bd3c1fc2b22279ef46a5c60d7ee
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-02T16:21:44Z"
+course_id: physical-ai
