@@ -5,24 +5,24 @@ your progress, and nothing else.
 
 ## What is stored
 
-| Data | Why | Source |
-|---|---|---|
-| Your email address | Required by the account system (better-auth); this application itself never emails you or displays it | GitHub or Google OAuth, or MCTL's ZITADEL sign-in where offered |
-| GitHub login (username), if you sign in with GitHub | Shown in the interface so you know who you are signed in as | GitHub OAuth |
-| Your name and profile image, as provided by the sign-in provider | Shown in the interface | GitHub or Google OAuth |
-| Your name, if you sign in with ZITADEL (no profile image; a name that is an e-mail address is replaced by "Learner") | Shown in the interface | MCTL's ZITADEL sign-in, where offered |
-| Your ZITADEL user id, if you sign in with ZITADEL | Identifies your account; the e-mail address is never used for that | ZITADEL (OpenID Connect) |
-| Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app |
-| Question reports you file | So a reported question can be fixed | Your use of the app |
-| Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app |
-| Page view telemetry | Anonymously counting visits via self-hosted Umami at `stats.mctl.ai` (no cookies, daily salted IP hash) | Browser page loads |
+| Data | Why | Source | Retention |
+|---|---|---|---|
+| Your email address | Required by the account system (better-auth); this application itself never emails you or displays it | GitHub or Google OAuth, or MCTL's ZITADEL sign-in where offered | Until account deletion |
+| GitHub login (username), if you sign in with GitHub | Shown in the interface so you know who you are signed in as | GitHub OAuth | Until account deletion |
+| Your name and profile image, as provided by the sign-in provider | Shown in the interface | GitHub or Google OAuth | Until account deletion |
+| Your name, if you sign in with ZITADEL (no profile image; a name that is an e-mail address is replaced by "Learner") | Shown in the interface | MCTL's ZITADEL sign-in, where offered | Until account deletion |
+| Your ZITADEL user id, if you sign in with ZITADEL | Identifies your account; the e-mail address is never used for that | ZITADEL (OpenID Connect) | Until account deletion |
+| Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app | Until account deletion |
+| Question reports you file | So a reported question can be fixed | Your use of the app | Permanent (anonymized) |
+| Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app | Until account deletion |
+| Page view telemetry | Anonymously counting visits via self-hosted Umami at `stats.mctl.ai` (cookieless, daily salted hash in memory; raw IP not stored) | Browser page loads | 2 years (automated retention cleanup) |
 
 That is the complete list.
 
-## What is not stored
+## Analytics & Tracking
 
-- **No third-party tracking scripts, no advertising pixels.** Page views are counted using our self-hosted Umami instance at `https://stats.mctl.ai` (cookieless, anonymized via daily salted IP hash; no personal data or IP addresses are stored or shared with third parties).
-- **No advertising identifiers**, and no data is sold or shared with anyone.
+- **Cookieless, privacy-friendly analytics only.** Page views are counted using our self-hosted Umami instance at `https://stats.mctl.ai`. Umami processes visitor IP addresses and user agents purely in memory into an anonymized daily salted hash; no IP addresses or personal identifiers are stored or shared with any third party. Data older than 2 years is automatically pruned by the platform's retention schedule.
+- **No third-party advertising scripts or tracking pixels.** No data is sold or shared with commercial brokers or ad networks.
 - **No password.** Authentication is GitHub or Google OAuth, or MCTL's
   ZITADEL sign-in where offered; this application never sees or stores a
   credential.

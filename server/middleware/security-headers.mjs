@@ -12,8 +12,9 @@
  * those hosts are allow-listed on style-src, font-src, and img-src (CSS
  * url() assets on the CDN).
  *
- * script-src has no such constraint — the client ships no inline scripts,
- * only the hashed Vite bundle — so it stays strict.
+ * script-src ships no inline scripts, only the hashed Vite bundle and the
+ * single documented exception for self-hosted cookieless analytics at
+ * stats.mctl.ai. connect-src similarly permits beacon events to stats.mctl.ai.
  */
 const CSP = [
   "default-src 'self'",
