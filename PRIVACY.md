@@ -15,13 +15,13 @@ your progress, and nothing else.
 | Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app |
 | Question reports you file | So a reported question can be fixed | Your use of the app |
 | Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app |
+| Page view telemetry | Anonymously counting visits via self-hosted Umami at `stats.mctl.ai` (no cookies, daily salted IP hash) | Browser page loads |
 
 That is the complete list.
 
 ## What is not stored
 
-- **No analytics, no tracking pixels, no third-party scripts.** There is no
-  analytics provider at MVP.
+- **No third-party tracking scripts, no advertising pixels.** Page views are counted using our self-hosted Umami instance at `https://stats.mctl.ai` (cookieless, anonymized via daily salted IP hash; no personal data or IP addresses are stored or shared with third parties).
 - **No advertising identifiers**, and no data is sold or shared with anyone.
 - **No password.** Authentication is GitHub or Google OAuth, or MCTL's
   ZITADEL sign-in where offered; this application never sees or stores a

@@ -17,11 +17,11 @@
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  "script-src 'self' https://stats.mctl.ai",
   "style-src 'self' 'unsafe-inline' https://ui.mctl.ai https://fonts.googleapis.com",
   "img-src 'self' data: https://ui.mctl.ai https://avatars.githubusercontent.com https://*.googleusercontent.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "connect-src 'self'",
+  "connect-src 'self' https://stats.mctl.ai",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
