@@ -12,16 +12,17 @@
  * those hosts are allow-listed on style-src, font-src, and img-src (CSS
  * url() assets on the CDN).
  *
- * script-src has no such constraint — the client ships no inline scripts,
- * only the hashed Vite bundle — so it stays strict.
+ * script-src ships no inline scripts, only the hashed Vite bundle and the
+ * single documented exception for self-hosted cookieless analytics at
+ * stats.mctl.ai. connect-src similarly permits beacon events to stats.mctl.ai.
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  "script-src 'self' https://stats.mctl.ai",
   "style-src 'self' 'unsafe-inline' https://ui.mctl.ai https://fonts.googleapis.com",
   "img-src 'self' data: https://ui.mctl.ai https://avatars.githubusercontent.com https://*.googleusercontent.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "connect-src 'self'",
+  "connect-src 'self' https://stats.mctl.ai",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

@@ -143,6 +143,6 @@ cannot be forked and republished as a braindump.
 
 ## Privacy
 
-No analytics, no third-party scripts, no advertising identifiers, no data
+Cookieless self-hosted visit telemetry only (`stats.mctl.ai`), no third-party scripts, no advertising identifiers, no data
 sold or shared. Account deletion cascades to everything. See
 [`PRIVACY.md`](PRIVACY.md) for the complete list of what's stored.
