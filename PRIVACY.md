@@ -15,20 +15,20 @@ your progress, and nothing else.
 | Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app | Until account deletion |
 | Question reports you file | So a reported question can be fixed | Your use of the app | Permanent (anonymized) |
 | Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app | Until account deletion |
-| Page view telemetry | Anonymously counting visits via self-hosted Umami at `stats.mctl.ai` (cookieless, daily salted hash in memory; raw IP not stored) | Browser page loads | 2 years (automated retention cleanup) |
+| Page view telemetry | Anonymously counting aggregate visits via platform-hosted Umami at `stats.mctl.ai` (cookieless; daily salted hash in memory; raw IP not stored) | Browser page loads | 2 years (enforced by platform retention CronJob in `mctl-gitops`) |
 
-That is the complete list.
+That is the complete list of data collected.
 
 ## Analytics & Tracking
 
-- **Cookieless, privacy-friendly analytics only.** Page views are counted using our self-hosted Umami instance at `https://stats.mctl.ai`. Umami processes visitor IP addresses and user agents purely in memory into an anonymized daily salted hash; no IP addresses or personal identifiers are stored or shared with any third party. Data older than 2 years is automatically pruned by the platform's retention schedule.
-- **No third-party advertising scripts or tracking pixels.** No data is sold or shared with commercial brokers or ad networks.
+- **Cookieless, privacy-friendly visit telemetry (Maintainer Approved).** In accordance with maintainer sign-off (see `PLAN.md` decision 16), anonymous page views are measured using the platform's self-hosted Umami deployment at `https://stats.mctl.ai`. Umami processes visitor IP addresses and user agents purely in volatile memory into an anonymized daily salted hash; no raw IP addresses or personal identifiers are persisted or shared. A platform retention job prunes telemetry older than 2 years.
+- **No third-party trackers, pixels, or ad networks.** No commercial analytics (Google Analytics, Meta, etc.) are used; no data is ever sold or shared with third parties.
 - **No password.** Authentication is GitHub or Google OAuth, or MCTL's
   ZITADEL sign-in where offered; this application never sees or stores a
   credential.
 - **OAuth access and refresh tokens are encrypted at rest** and are never used
   to call the GitHub or Google API again after sign-in completes.
-- **No IP address or User-Agent.** The account system this application runs on
+- **No account IP address or User-Agent persisted by application.** The account system this application runs on
   (better-auth) captures both by default on every sign-in; this application
   explicitly discards them before they are written to the database, since it
   has no feature (no security dashboard, no "sign out other devices") that
