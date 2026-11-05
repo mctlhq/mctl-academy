@@ -63,6 +63,15 @@ export function applySecurityHeaders(c) {
   for (const [name, value] of securityHeaderEntries()) {
     c.header(name, value);
   }
+  const path = c.req?.path || "";
+  if (
+    path.startsWith("/mock") ||
+    path.startsWith("/dashboard") ||
+    path.startsWith("/mistakes") ||
+    path.startsWith("/admin")
+  ) {
+    c.header("X-Robots-Tag", "noindex, follow");
+  }
 }
 
 /**
@@ -73,9 +82,17 @@ export function applySecurityHeaders(c) {
  * getResponse() always builds via `new Response(...)` (see
  * hono/http-exception.js), never the immutable-header Response.redirect().
  */
-export function applySecurityHeadersToResponse(res) {
+export function applySecurityHeadersToResponse(res, path = "") {
   for (const [name, value] of securityHeaderEntries()) {
     res.headers.set(name, value);
+  }
+  if (
+    path.startsWith("/mock") ||
+    path.startsWith("/dashboard") ||
+    path.startsWith("/mistakes") ||
+    path.startsWith("/admin")
+  ) {
+    res.headers.set("X-Robots-Tag", "noindex, follow");
   }
   return res;
 }

@@ -122,4 +122,16 @@ describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
     assert.match(res.headers.get("content-security-policy") || "", /default-src 'self'/);
     assert.equal(res.headers.get("x-content-type-options"), "nosniff");
   });
+
+  test("private and utility routes carry X-Robots-Tag: noindex, follow to avoid brand cannibalization", async () => {
+    for (const path of ["/mock", "/dashboard", "/mistakes", "/admin/stats"]) {
+      const res = await app.request(path);
+      assert.equal(res.headers.get("x-robots-tag"), "noindex, follow", `expected noindex on ${path}`);
+    }
+
+    for (const path of ["/", "/practice", "/healthz"]) {
+      const res = await app.request(path);
+      assert.equal(res.headers.get("x-robots-tag"), null, `expected no X-Robots-Tag on ${path}`);
+    }
+  });
 });
