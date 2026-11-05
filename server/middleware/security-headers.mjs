@@ -52,6 +52,18 @@ function securityHeaderEntries() {
   return entries;
 }
 
+const NOINDEX_PREFIXES = ["/mock", "/dashboard", "/mistakes", "/admin"];
+
+/**
+ * Returns true if the requested route should be de-indexed from search engines
+ * to prevent brand cannibalization of the apex mctl domain.
+ */
+export function isNoindexRoute(path = "") {
+  return NOINDEX_PREFIXES.some(
+    (prefix) => path === prefix || path.startsWith(prefix + "/") || path.startsWith(prefix + "?"),
+  );
+}
+
 /**
  * Applies the baseline headers to whatever response `c` currently holds.
  * Shared between the middleware's success path and app.mjs's error handler
@@ -63,6 +75,9 @@ export function applySecurityHeaders(c) {
   for (const [name, value] of securityHeaderEntries()) {
     c.header(name, value);
   }
+  if (isNoindexRoute(c.req?.path)) {
+    c.header("X-Robots-Tag", "noindex, follow");
+  }
 }
 
 /**
@@ -73,9 +88,12 @@ export function applySecurityHeaders(c) {
  * getResponse() always builds via `new Response(...)` (see
  * hono/http-exception.js), never the immutable-header Response.redirect().
  */
-export function applySecurityHeadersToResponse(res) {
+export function applySecurityHeadersToResponse(res, path = "") {
   for (const [name, value] of securityHeaderEntries()) {
     res.headers.set(name, value);
+  }
+  if (isNoindexRoute(path)) {
+    res.headers.set("X-Robots-Tag", "noindex, follow");
   }
   return res;
 }
