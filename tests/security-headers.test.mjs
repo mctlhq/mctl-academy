@@ -129,9 +129,22 @@ describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
       assert.equal(res.headers.get("x-robots-tag"), "noindex, follow", `expected noindex on ${path}`);
     }
 
-    for (const path of ["/", "/practice", "/healthz"]) {
+    // Prefix without separator like /mockery or /dashboard-preview must not be falsely matched
+    for (const path of ["/", "/practice", "/healthz", "/mockery", "/dashboard-test"]) {
       const res = await app.request(path);
       assert.equal(res.headers.get("x-robots-tag"), null, `expected no X-Robots-Tag on ${path}`);
     }
+
+    // HTTPException on a noindex path also receives X-Robots-Tag: noindex, follow
+    const { Hono } = await import("hono");
+    const probe = new Hono();
+    probe.use("*", securityHeaders);
+    probe.onError(errorHandler);
+    probe.get("/mock/forbidden", () => {
+      throw new HTTPException(403, { message: "Forbidden" });
+    });
+    const errorRes = await probe.request("/mock/forbidden");
+    assert.equal(errorRes.status, 403);
+    assert.equal(errorRes.headers.get("x-robots-tag"), "noindex, follow");
   });
 });

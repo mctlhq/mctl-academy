@@ -57,7 +57,7 @@ export function errorHandler(err, c) {
     // c.header() has nothing to attach to here — headers go on that
     // Response object directly. See applySecurityHeadersToResponse's doc
     // comment for why mutating it is safe.
-    return applySecurityHeadersToResponse(err.getResponse());
+    return applySecurityHeadersToResponse(err.getResponse(), c?.req?.path || "");
   }
   console.error("[onError] Unhandled:", err.message);
   c.status(500);

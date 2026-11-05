@@ -1,9 +1,5 @@
 User-agent: *
 Allow: /
-Allow: /practice
-Disallow: /mock
-Disallow: /dashboard
-Disallow: /mistakes
 Disallow: /admin/
 Disallow: /api/
 
