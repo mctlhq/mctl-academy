@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.69](https://github.com/mctlhq/mctl-academy/compare/0.1.68...0.1.69) (2026-11-05)
+
+
+### Features
+
+* **analytics:** add self-hosted umami tracker and update CSP ([337f2a4](https://github.com/mctlhq/mctl-academy/commit/337f2a43ab6dd2e725b7b8487b131d607e751942))
+* **analytics:** add self-hosted umami tracker for academy.mctl.ai ([47deaec](https://github.com/mctlhq/mctl-academy/commit/47deaecf2be914c585094b35654c1dcfcd4b7209))
+
 ## [0.1.68](https://github.com/mctlhq/mctl-academy/compare/0.1.67...0.1.68) (2026-10-31)
 
 
