@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.70](https://github.com/mctlhq/mctl-academy/compare/0.1.69...0.1.70) (2026-11-05)
+
+
+### Bug Fixes
+
+* **seo:** de-index /mock, /dashboard and /mistakes to prevent brand cannibalization ([c5e7264](https://github.com/mctlhq/mctl-academy/commit/c5e726470b28814055c79e01a227f5e4b1b5fe2e))
+* **seo:** de-index /mock, /dashboard and /mistakes to prevent brand cannibalization ([0404a2e](https://github.com/mctlhq/mctl-academy/commit/0404a2ec4b06d8ca88689c0a6f3297ad05548638))
+* **seo:** keep /mock crawlable for header discovery, exact prefix match, pass path in errorHandler ([299fce8](https://github.com/mctlhq/mctl-academy/commit/299fce836c161386dad1fd07abfda5bf1723779b))
+
 ## [0.1.69](https://github.com/mctlhq/mctl-academy/compare/0.1.68...0.1.69) (2026-11-05)
 
 
