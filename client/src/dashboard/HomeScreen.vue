@@ -55,8 +55,8 @@ const practiceDescription = computed(() => {
         <h1>{{ practiceLabel }}</h1>
         <p>{{ practiceDescription }}</p>
         <p v-if="firstVisit" class="next-secondary">
-          When you want a timed run, the <RouterLink to="/mock">Mock exam</RouterLink> uses this
-          course's question mix.
+          When you want a timed run, the <RouterLink to="/mock">Mock exam</RouterLink> uses this course's
+          question mix.
         </p>
       </div>
       <MButton type="button" @click="onStartPractice"
