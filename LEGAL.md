@@ -9,8 +9,10 @@ not been reviewed by a lawyer.
 **mctl Academy is not affiliated with, endorsed by, or sponsored by Nebius, or
 by any other certification vendor.**
 
-This disclaimer appears in the application footer, in `README.md`, and on all
-course description pages. It is not buried in a settings screen.
+This disclaimer appears in the application footer, in `README.md`, and in the
+`disclaimer` field of every course file. It is not buried in a settings screen.
+The footer is hidden on the practice and mistakes screens at widths up to 680px,
+where it would sit under the floating toggle.
 
 ## Naming rules
 
