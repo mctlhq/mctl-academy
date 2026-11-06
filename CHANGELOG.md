@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.74](https://github.com/mctlhq/mctl-academy/compare/0.1.73...0.1.74) (2026-11-06)
+
+
+### Bug Fixes
+
+* **branding:** align title, OG description, and add ecosystem links ([8a410e1](https://github.com/mctlhq/mctl-academy/commit/8a410e1ba06152c4b498f4c016597ede1f3fca7c))
+* **branding:** align title, OG description, and add ecosystem links ([0e0bf72](https://github.com/mctlhq/mctl-academy/commit/0e0bf724b018d267512f5869435d3f746ed527e8))
+
 ## [0.1.73](https://github.com/mctlhq/mctl-academy/compare/0.1.72...0.1.73) (2026-11-06)
 
 
