@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.73](https://github.com/mctlhq/mctl-academy/compare/0.1.72...0.1.73) (2026-11-06)
+
+
+### Bug Fixes
+
+* **branding:** regenerate raster icons and favicon from terracotta badge ([71b49e5](https://github.com/mctlhq/mctl-academy/commit/71b49e5ad9c12cf7ad3fd93f34ff76dace561a5e))
+* **branding:** regenerate raster icons and favicon from terracotta badge ([95367c6](https://github.com/mctlhq/mctl-academy/commit/95367c61f0a6a4b080d9529b26cdbedcb4b61027))
+* **seo:** update OpenGraph image to 1200x630 terracotta card ([de3dddc](https://github.com/mctlhq/mctl-academy/commit/de3dddc3dd989d97cfdcf838274bff9e35a5867d))
+* **seo:** update OpenGraph image to 1200x630 terracotta card ([a8bfcd4](https://github.com/mctlhq/mctl-academy/commit/a8bfcd41cce4f12198a72f9781ed3032db3ec13c))
+
 ## [0.1.72](https://github.com/mctlhq/mctl-academy/compare/0.1.71...0.1.72) (2026-11-06)
 
 
