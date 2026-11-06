@@ -12,6 +12,10 @@ const links = [
 
 <template>
   <div class="app-footer-safe">
+    <p class="app-footer-disclaimer" data-testid="independence-disclaimer">
+      mctl Academy is not affiliated with, endorsed by, or sponsored by Nebius, or by any other certification
+      vendor.
+    </p>
     <MFooter :links="links" copyright="mctl Academy" />
   </div>
 </template>
@@ -21,5 +25,15 @@ const links = [
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
+}
+
+.app-footer-disclaimer {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 0.75rem 1rem 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
 }
 </style>
