@@ -24,6 +24,7 @@ export default [
     // written by scripts/build-content-bundle.mjs on every build.
     ignores: [
       "**/node_modules/**",
+      ".worktrees/**",
       "client/dist/**",
       "client/src/data/**",
       "coverage/**",

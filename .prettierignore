@@ -1,6 +1,7 @@
 # Generated or vendored -- rewriting these would either be undone by the next
 # build or churn a file nobody hand-edits.
 node_modules/
+.worktrees/
 client/dist/
 client/src/data/
 dist/
