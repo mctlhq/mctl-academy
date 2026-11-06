@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.72](https://github.com/mctlhq/mctl-academy/compare/0.1.71...0.1.72) (2026-11-06)
+
+
+### Bug Fixes
+
+* show the independence disclaimer in the footer ([27f8380](https://github.com/mctlhq/mctl-academy/commit/27f83802ba1e9cbbb86243933b6c81f5a763061e))
+* show the independence disclaimer in the footer ([e35e5b8](https://github.com/mctlhq/mctl-academy/commit/e35e5b835326b4d5b27e8d2e1522bab11961e442))
+
 ## [0.1.71](https://github.com/mctlhq/mctl-academy/compare/0.1.70...0.1.71) (2026-11-06)
 
 
