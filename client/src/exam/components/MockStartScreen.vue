@@ -61,7 +61,7 @@ function handleStart() {
   <section v-else class="mock-start" data-testid="mock-start">
     <h1>Mock exam</h1>
     <p class="mock-start-lede">
-      A timed, full-length simulation. No feedback is shown until you submit or time runs out.
+      A timed run with this course's question mix. No feedback is shown until you submit or time runs out.
       <span v-if="loaded.config.discloseBankSize" class="mock-start-bank">
         Drawn from a bank of <span data-testid="bank-size">{{ loaded.bankSize }} questions</span>.
       </span>

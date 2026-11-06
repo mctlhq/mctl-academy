@@ -1,7 +1,7 @@
 # Privacy
 
-mctl Academy is a free study tool. It collects the minimum needed to remember
-your progress, and nothing else.
+mctl Academy is a free study tool. It stores what it needs to remember your
+progress, and it counts page views. This page lists both.
 
 ## What is stored
 
@@ -15,14 +15,15 @@ your progress, and nothing else.
 | Your attempts and answers | Progress tracking, Review-mistakes, and the dashboard | Your use of the app | Until account deletion |
 | Question reports you file | So a reported question can be fixed | Your use of the app | Until account deletion (anonymous reports are kept) |
 | Your +1/-1 vote on a question, if you cast one | Surfacing a per-question quality signal to other learners as a net score | Your use of the app | Until account deletion |
-| Page view telemetry | Anonymously counting aggregate visits via platform-hosted Umami at `stats.mctl.ai` (cookieless; daily salted hash in memory; raw IP not stored) | Browser page loads | 2 years (enforced by platform retention CronJob in `mctl-gitops`) |
+| Page view telemetry: page address, referrer, browser, operating system, device type, screen size, language, and country, region and city derived from the IP address | Counting visits via platform-hosted Umami at `stats.mctl.ai` (cookieless; the visitor identifier is computed from the IP address and browser details with a salt that rotates monthly; the IP address itself is not stored) | Browser page loads | 2 years |
 
-That is the complete list of data collected.
+That is the complete list of data this application and its analytics store.
 
 ## Analytics & Tracking
 
-- **Cookieless, privacy-friendly visit telemetry (Maintainer Approved).** In accordance with maintainer sign-off (see `PLAN.md` decision 16), anonymous page views are measured using the platform's self-hosted Umami deployment at `https://stats.mctl.ai`. Umami processes visitor IP addresses and user agents purely in volatile memory into an anonymized daily salted hash; no raw IP addresses or personal identifiers are persisted or shared. A platform retention job prunes telemetry older than 2 years.
-- **No third-party trackers, pixels, or ad networks.** No commercial analytics (Google Analytics, Meta, etc.) are used; no data is ever sold or shared with third parties.
+- **Cookieless visit telemetry.** Page views are measured using the platform's self-hosted Umami deployment at `https://stats.mctl.ai`. Umami computes a visitor identifier from the IP address and browser details with a salt that rotates monthly, and stores that identifier with the fields listed above. It does not store the IP address itself. A platform retention job deletes telemetry older than 2 years.
+- **No third-party trackers, pixels, or ad networks.** No commercial analytics (Google Analytics, Meta, etc.) are used, and no data is sold.
+- **Services your browser and this application do reach.** Traffic to the site passes through Cloudflare. Pages load fonts from Google Fonts, so Google receives your IP address when it serves them. A profile image is loaded from GitHub or Google, whichever you signed in with. Sign-in goes through the provider you choose. Database backups go to Cloudflare R2.
 - **No password.** Authentication is GitHub or Google OAuth, or MCTL's
   ZITADEL sign-in where offered; this application never sees or stores a
   credential.
@@ -55,8 +56,8 @@ account deletion.
 
 Account deletion is available in the application and takes effect immediately.
 It removes your user record, every attempt and answer, any reports, and any
-question votes stored in the Academy database, by cascade. Nothing from that
-application data is retained in a shadow copy.
+question votes stored in the Academy database, by cascade. Database backups keep
+that data until they expire, after about 14 days.
 
 Question feedback that you choose to publish as a GitHub issue is managed by
 your GitHub account, not by your Academy account. Deleting your Academy account
@@ -70,7 +71,7 @@ are project content, not personal data.
 ## Where the data lives
 
 PostgreSQL on the mctl platform, hosted in Germany (Hetzner). Backups go to
-Cloudflare R2.
+Cloudflare R2 and are kept for about 14 days.
 
 ## Public repository
 
