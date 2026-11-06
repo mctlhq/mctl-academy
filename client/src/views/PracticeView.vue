@@ -10,8 +10,11 @@ import { questionsForCourse } from "../services/contentBundle";
 
 // Course scoping happens here, before a session exists: PracticeContent (and
 // the session engine underneath it) only ever sees one course's questions.
-const { currentCourseId } = useCourseStore();
+const { currentCourseId, setCourse } = useCourseStore();
 const route = useRoute();
+if (typeof route.query.course === "string" && route.query.course) {
+  setCourse(route.query.course);
+}
 const user = inject<Ref<UserProfile | null>>("currentUser");
 const mode = computed(() => (route.query.mode === "all" ? "all" : "remaining"));
 const domain = computed(() => (typeof route.query.domain === "string" ? route.query.domain : ""));

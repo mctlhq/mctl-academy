@@ -12,6 +12,16 @@ describe("router", () => {
     expect(router.resolve("/practice?domain=domain-1").name).toBe("practice");
   });
 
+  it("resolves course landing pages and certification aliases", () => {
+    const courseRoute = router.resolve("/courses/agentic-ai-builder");
+    expect(courseRoute.name).toBe("course");
+    expect(courseRoute.params.courseId).toBe("agentic-ai-builder");
+
+    const certRoute = router.resolve("/certifications/ai-cloudops-engineer");
+    expect(certRoute.name).toBe("course");
+    expect(certRoute.params.courseId).toBe("ai-cloudops-engineer");
+  });
+
   it("scrolls a new page to the top but keeps position for query-only changes and back/forward", () => {
     expect(scrollPosition({ path: "/mock" }, { path: "/practice" }, null)).toEqual({ top: 0 });
     expect(scrollPosition({ path: "/practice" }, { path: "/practice" }, null)).toBe(false);

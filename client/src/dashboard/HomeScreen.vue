@@ -51,7 +51,9 @@ const practiceDescription = computed(() => {
     <p class="section-marker">Recommended next step</p>
     <div class="next-card">
       <div>
-        <p v-if="courseTitle" class="next-course">{{ courseTitle }}</p>
+        <p v-if="courseTitle" class="next-course">
+          <RouterLink :to="`/courses/${currentCourseId}`">{{ courseTitle }}</RouterLink>
+        </p>
         <h1>{{ practiceLabel }}</h1>
         <p>{{ practiceDescription }}</p>
         <p v-if="firstVisit" class="next-secondary">
@@ -166,6 +168,17 @@ const practiceDescription = computed(() => {
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
   font-size: 0.75rem;
+}
+
+.next-card .next-course a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.next-card .next-course a:hover,
+.next-card .next-course a:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .next-card .next-secondary {

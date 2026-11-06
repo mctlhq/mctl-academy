@@ -4,6 +4,7 @@ import MistakesView from "../views/MistakesView.vue";
 import MockView from "../views/MockView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import HomeView from "../views/HomeView.vue";
+import CourseView from "../views/CourseView.vue";
 import AdminStatsView from "../views/AdminStatsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 
@@ -13,6 +14,13 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", name: "home", component: HomeView, meta: { title: "Home" } },
+    {
+      path: "/courses/:courseId",
+      alias: "/certifications/:courseId",
+      name: "course",
+      component: CourseView,
+      meta: { title: "Course" },
+    },
     { path: "/practice", name: "practice", component: PracticeView, meta: { title: "Practice" } },
     { path: "/mistakes", name: "mistakes", component: MistakesView, meta: { title: "Review mistakes" } },
     { path: "/mock", name: "mock", component: MockView, meta: { title: "Mock exam" } },
@@ -61,7 +69,9 @@ export function pageTitle(title: unknown): string {
 
 router.afterEach((to, from) => {
   if (typeof document === "undefined") return;
-  document.title = pageTitle(to.meta.title);
+  if (to.name !== "course") {
+    document.title = pageTitle(to.meta.title);
+  }
   if (shouldFocusMain(to, from)) {
     requestAnimationFrame(() => document.getElementById("main-content")?.focus({ preventScroll: true }));
   }
