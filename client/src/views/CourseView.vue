@@ -32,9 +32,7 @@ watch(
 );
 
 // Other available tracks for internal SEO cross-linking
-const otherCourses = computed(() =>
-  courseCatalog.filter((c) => c.available && c.id !== courseId.value),
-);
+const otherCourses = computed(() => courseCatalog.filter((c) => c.available && c.id !== courseId.value));
 
 function startPractice(domainId?: string) {
   if (!course.value) return;
@@ -97,37 +95,37 @@ function updateMeta() {
       {
         "@type": "Course",
         "@id": `${canonicalUrl}#course`,
-        "name": `${course.value.title} Practice Course`,
-        "description": description,
-        "provider": {
+        name: `${course.value.title} Practice Course`,
+        description: description,
+        provider: {
           "@type": "Organization",
-          "name": "mctl Academy",
-          "url": "https://academy.mctl.ai/"
+          name: "mctl Academy",
+          url: "https://academy.mctl.ai/",
         },
-        "isAccessibleForFree": true,
-        "inLanguage": "en",
-        "hasCourseInstance": {
+        isAccessibleForFree: true,
+        inLanguage: "en",
+        hasCourseInstance: {
           "@type": "CourseInstance",
-          "courseMode": "online",
-          "courseWorkload": "PT2H"
+          courseMode: "online",
+          courseWorkload: "PT2H",
         },
-        "numberOfCredits": 0,
-        "educationalLevel": "Intermediate"
+        numberOfCredits: 0,
+        educationalLevel: "Intermediate",
       },
       {
         "@type": "Quiz",
         "@id": `${canonicalUrl}#quiz`,
-        "name": `${course.value.title} Mock Exam & Practice Bank`,
-        "description": `${totalQuestions.value} scenario-based practice questions across ${course.value.mock.domains.length} domains.`,
-        "learningResourceType": "Practice Quiz",
-        "isAccessibleForFree": true,
-        "educationalLevel": "Advanced",
-        "about": {
+        name: `${course.value.title} Mock Exam & Practice Bank`,
+        description: `${totalQuestions.value} scenario-based practice questions across ${course.value.mock.domains.length} domains.`,
+        learningResourceType: "Practice Quiz",
+        isAccessibleForFree: true,
+        educationalLevel: "Advanced",
+        about: {
           "@type": "Thing",
-          "name": course.value.title
-        }
-      }
-    ]
+          name: course.value.title,
+        },
+      },
+    ],
   };
   scriptEl.textContent = JSON.stringify(structuredData);
 }
@@ -200,25 +198,15 @@ onUnmounted(() => {
       <section class="course-domains" aria-labelledby="domains-heading">
         <h2 id="domains-heading" class="section-heading">Exam domains & syllabus</h2>
         <div class="domain-cards-list">
-          <div
-            v-for="domain in course.mock.domains"
-            :key="domain.id"
-            class="domain-card"
-          >
+          <div v-for="domain in course.mock.domains" :key="domain.id" class="domain-card">
             <div class="domain-card-header">
               <span class="domain-card-tag">{{ domain.weight }}% exam weight</span>
               <span class="domain-card-count">{{ domainQuestionCount(domain.id) }} questions</span>
             </div>
             <h3 class="domain-card-title">{{ domain.title }}</h3>
-            <p class="domain-card-mock">
-              Mock distribution: {{ domain.mockQuestions }} questions
-            </p>
+            <p class="domain-card-mock">Mock distribution: {{ domain.mockQuestions }} questions</p>
             <div class="domain-card-action">
-              <button
-                type="button"
-                class="domain-btn-link"
-                @click="startPractice(domain.id)"
-              >
+              <button type="button" class="domain-btn-link" @click="startPractice(domain.id)">
                 Practice this domain <span aria-hidden="true">→</span>
               </button>
             </div>
@@ -226,11 +214,7 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section
-        v-if="otherCourses.length > 0"
-        class="other-courses"
-        aria-labelledby="other-courses-heading"
-      >
+      <section v-if="otherCourses.length > 0" class="other-courses" aria-labelledby="other-courses-heading">
         <h2 id="other-courses-heading" class="section-heading">Explore other certification tracks</h2>
         <div class="other-courses-grid">
           <RouterLink
@@ -249,7 +233,8 @@ onUnmounted(() => {
 
       <footer class="course-disclaimer">
         <p>
-          mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by any certification vendor.
+          mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by
+          any certification vendor.
         </p>
       </footer>
     </div>
