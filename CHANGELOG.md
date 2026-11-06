@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.71](https://github.com/mctlhq/mctl-academy/compare/0.1.70...0.1.71) (2026-11-06)
+
+
+### Bug Fixes
+
+* correct mock exam and privacy claims ([0b56f08](https://github.com/mctlhq/mctl-academy/commit/0b56f0824bf0fc04fdd1dc76cb2146d104ed5e97))
+* correct mock exam and privacy claims ([0bffe83](https://github.com/mctlhq/mctl-academy/commit/0bffe835dcff542d817b21c72d1b1012e64ad946))
+
 ## [0.1.70](https://github.com/mctlhq/mctl-academy/compare/0.1.69...0.1.70) (2026-11-05)
 
 
