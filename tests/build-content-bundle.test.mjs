@@ -71,10 +71,17 @@ const question = (id, status, over = {}) => ({
   ...over,
 });
 
-function build({ questions = [], sources = [source()], courses = [course()], receipts = [] } = {}) {
+function build({
+  questions = [],
+  sources = [source()],
+  courses = [course()],
+  receipts = [],
+  sitemap = false,
+} = {}) {
   const dir = mkdtempSync(join(tmpdir(), "academy-bundle-"));
   const out = join(dir, "out", "content-bundle.json");
   const catalogOut = join(dir, "out", "course-catalog.json");
+  const sitemapOut = join(dir, "out", "sitemap.xml");
   try {
     mkdirSync(join(dir, "questions"), { recursive: true });
     mkdirSync(join(dir, "sources"), { recursive: true });
@@ -85,19 +92,23 @@ function build({ questions = [], sources = [source()], courses = [course()], rec
     for (const s of sources) writeFileSync(join(dir, "sources", `${s.id}.yaml`), JSON.stringify(s));
     for (const q of questions) writeFileSync(join(dir, "questions", `${q.id}.yaml`), JSON.stringify(q));
 
+    const env = {
+      ...process.env,
+      ACADEMY_CONTENT_DIR: dir,
+      ACADEMY_REVIEW_DIR: join(dir, "reviews"),
+      ACADEMY_BUNDLE_OUT: out,
+      ACADEMY_CATALOG_OUT: catalogOut,
+      ...(sitemap ? { ACADEMY_SITEMAP_OUT: sitemapOut } : {}),
+    };
+
     execFileSync("node", [join(ROOT, "scripts", "build-content-bundle.mjs")], {
-      env: {
-        ...process.env,
-        ACADEMY_CONTENT_DIR: dir,
-        ACADEMY_REVIEW_DIR: join(dir, "reviews"),
-        ACADEMY_BUNDLE_OUT: out,
-        ACADEMY_CATALOG_OUT: catalogOut,
-      },
+      env,
       stdio: "ignore",
     });
     return {
       bundle: JSON.parse(readFileSync(out, "utf8")),
       catalog: JSON.parse(readFileSync(catalogOut, "utf8")),
+      sitemap: sitemap ? readFileSync(sitemapOut, "utf8") : null,
     };
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -295,4 +306,18 @@ test("no vendor certification naming leaks into the client catalog", () => {
   assert.ok(!serialized.includes("prepares_for"));
   assert.ok(!serialized.includes("description"));
   assert.ok(!serialized.includes("disclaimer"));
+});
+
+test("emits sitemap.xml with available courses when ACADEMY_SITEMAP_OUT is configured", () => {
+  const { sitemap } = build({
+    courses: [course(), course({ id: "ai-leader", title: "AI Leader" })],
+    questions: [question("q-published0001", "published")],
+    sitemap: true,
+  });
+  assert.match(sitemap, /<loc>https:\/\/academy\.mctl\.ai\/courses\/agentic-ai-builder<\/loc>/);
+  assert.doesNotMatch(
+    sitemap,
+    /<loc>https:\/\/academy\.mctl\.ai\/courses\/ai-leader<\/loc>/,
+    "unavailable courses must not be in sitemap",
+  );
 });

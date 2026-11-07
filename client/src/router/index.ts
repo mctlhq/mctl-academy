@@ -4,8 +4,10 @@ import MistakesView from "../views/MistakesView.vue";
 import MockView from "../views/MockView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import HomeView from "../views/HomeView.vue";
+import CourseView from "../views/CourseView.vue";
 import AdminStatsView from "../views/AdminStatsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import { useCourseStore } from "../services/courseStore";
 
 const SITE_NAME = "mctl academy";
 
@@ -13,6 +15,12 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", name: "home", component: HomeView, meta: { title: "Home" } },
+    {
+      path: "/courses/:courseId",
+      name: "course",
+      component: CourseView,
+      meta: { title: "Course" },
+    },
     { path: "/practice", name: "practice", component: PracticeView, meta: { title: "Practice" } },
     { path: "/mistakes", name: "mistakes", component: MistakesView, meta: { title: "Review mistakes" } },
     { path: "/mock", name: "mock", component: MockView, meta: { title: "Mock exam" } },
@@ -28,6 +36,19 @@ export const router = createRouter({
     },
   ],
   scrollBehavior: scrollPosition,
+});
+
+router.beforeEach((to) => {
+  const queryCourse = Array.isArray(to.query.course) ? to.query.course[0] : to.query.course;
+  if (typeof queryCourse === "string" && queryCourse) {
+    const { setCourse, canSelect } = useCourseStore();
+    if (canSelect(queryCourse)) {
+      setCourse(queryCourse);
+    }
+    const nextQuery = { ...to.query };
+    delete nextQuery.course;
+    return { path: to.path, query: nextQuery, hash: to.hash, replace: true };
+  }
 });
 
 type Location = Pick<RouteLocationNormalized, "path" | "matched">;
@@ -61,7 +82,9 @@ export function pageTitle(title: unknown): string {
 
 router.afterEach((to, from) => {
   if (typeof document === "undefined") return;
-  document.title = pageTitle(to.meta.title);
+  if (to.name !== "course") {
+    document.title = pageTitle(to.meta.title);
+  }
   if (shouldFocusMain(to, from)) {
     requestAnimationFrame(() => document.getElementById("main-content")?.focus({ preventScroll: true }));
   }

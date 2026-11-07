@@ -34,9 +34,10 @@ persisted.
 - `scripts/lib/content-model.mjs` — the shared bundle-eligibility rule, used by
   both the lint and the bundle builder.
 - `scripts/build-content-bundle.mjs` — generates `client/src/content-bundle.json`
-  (eligible published questions) and `client/src/course-catalog.json` (the
+  (eligible published questions), `client/src/course-catalog.json` (the
   vendor-neutral client course catalog, with each course's published question
-  count). Both are regenerated on every dev/build/test run.
+  count), and `client/public/sitemap.xml` (the public sitemap for search
+  engines). All are regenerated on every dev/build/test run.
 - `tests/content-lint.test.mjs` — proves the lint rejects, rule by rule.
 - `tests/build-content-bundle.test.mjs` — proves unsafe content cannot reach the
   client bundle.
