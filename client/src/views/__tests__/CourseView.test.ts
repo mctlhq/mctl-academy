@@ -69,6 +69,23 @@ describe("CourseView", () => {
     expect(mockPush).toHaveBeenCalledWith("/practice");
   });
 
+  it("calls setCourse and navigates to /mock when mock CTA is clicked", async () => {
+    const wrapper = mountCourseView();
+    const mockBtn = wrapper.findAll(".course-cta-row button")[1];
+    await mockBtn.trigger("click");
+    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
+    expect(mockPush).toHaveBeenCalledWith("/mock");
+  });
+
+  it("calls setCourse and navigates to domain filter when domain practice button is clicked", async () => {
+    const wrapper = mountCourseView();
+    const domainBtn = wrapper.find(".domain-btn-link");
+    expect(domainBtn.attributes("aria-label")).toContain("Practice");
+    await domainBtn.trigger("click");
+    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
+    expect(mockPush).toHaveBeenCalledWith(expect.stringContaining("/practice?domain="));
+  });
+
   it("injects Schema.org Course and Quiz structured data with free offers", () => {
     mountCourseView();
     const script = document.getElementById("schema-course-jsonld");

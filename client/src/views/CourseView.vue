@@ -108,15 +108,13 @@ function updateMeta() {
 
   if (!course.value) {
     document.title = "Course not found · mctl academy";
-    const scriptEl = document.getElementById("schema-course-jsonld");
-    if (scriptEl) scriptEl.remove();
+    restoreOriginalMeta();
     return;
   }
 
   if (!course.value.available) {
     document.title = `${course.value.title} — Coming Soon · mctl academy`;
-    const scriptEl = document.getElementById("schema-course-jsonld");
-    if (scriptEl) scriptEl.remove();
+    restoreOriginalMeta();
     return;
   }
 
@@ -261,7 +259,12 @@ onUnmounted(() => {
             <h3 class="domain-card-title">{{ domain.title }}</h3>
             <p class="domain-card-mock">Mock distribution: {{ domain.mockQuestions }} questions</p>
             <div class="domain-card-action">
-              <button type="button" class="domain-btn-link" @click="startPractice(domain.id)">
+              <button
+                type="button"
+                class="domain-btn-link"
+                :aria-label="`Practice ${domain.title}`"
+                @click="startPractice(domain.id)"
+              >
                 Practice this domain <span aria-hidden="true">→</span>
               </button>
             </div>

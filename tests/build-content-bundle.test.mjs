@@ -314,9 +314,10 @@ test("emits sitemap.xml with available courses when ACADEMY_SITEMAP_OUT is confi
     questions: [question("q-published0001", "published")],
     sitemap: true,
   });
-  assert.ok(sitemap.includes("https://academy.mctl.ai/courses/agentic-ai-builder"));
-  assert.ok(
-    !sitemap.includes("https://academy.mctl.ai/courses/ai-leader"),
+  assert.match(sitemap, /<loc>https:\/\/academy\.mctl\.ai\/courses\/agentic-ai-builder<\/loc>/);
+  assert.doesNotMatch(
+    sitemap,
+    /<loc>https:\/\/academy\.mctl\.ai\/courses\/ai-leader<\/loc>/,
     "unavailable courses must not be in sitemap",
   );
 });
