@@ -39,7 +39,6 @@ function startMock() {
   router.push("/mock");
 }
 
-let originalTitle: string | null = null;
 let originalDescription: string | null = null;
 let originalOgTitle: string | null = null;
 let originalOgDesc: string | null = null;
@@ -48,7 +47,6 @@ let originalCanonical: string | null = null;
 
 function saveOriginalMeta() {
   if (typeof document === "undefined") return;
-  if (originalTitle === null) originalTitle = document.title;
   if (originalDescription === null) {
     originalDescription = document.querySelector('meta[name="description"]')?.getAttribute("content") ?? null;
   }
@@ -69,7 +67,6 @@ function saveOriginalMeta() {
 
 function restoreOriginalMeta() {
   if (typeof document === "undefined") return;
-  if (originalTitle !== null) document.title = originalTitle;
 
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) {

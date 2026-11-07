@@ -50,6 +50,16 @@ describe("router", () => {
     expect(router.currentRoute.value.query).toEqual({ domain: "domain-2" });
   });
 
+  it("sets new page title when navigating away from course view", async () => {
+    document.title = "";
+    await router.push("/courses/agentic-ai-builder");
+    expect(router.currentRoute.value.name).toBe("course");
+
+    // Navigating away updates document.title via router.afterEach
+    await router.push("/practice");
+    expect(document.title).toBe("Practice · mctl academy");
+  });
+
   it("scrolls a new page to the top but keeps position for query-only changes and back/forward", () => {
     expect(scrollPosition({ path: "/mock" }, { path: "/practice" }, null)).toEqual({ top: 0 });
     expect(scrollPosition({ path: "/practice" }, { path: "/practice" }, null)).toBe(false);

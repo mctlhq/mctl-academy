@@ -2,13 +2,15 @@
 /**
  * Build-time content artefacts for the client.
  *
- * Emits two files, both safe by construction:
+ * Emits three files, all safe by construction:
  *
  *   client/src/content-bundle.json   every question eligible to be shown to a
  *                                    learner, carrying its canonical course_id
  *   client/src/course-catalog.json   the vendor-neutral course catalog and per
  *                                    -course mock configuration, derived from
  *                                    content/courses/*.yaml
+ *   client/public/sitemap.xml        dynamic XML sitemap listing available
+ *                                    course URLs and root learning routes
  *
  * Eligibility is scripts/lib/content-model.mjs's rule, not a local
  * reimplementation: published, human-reviewed, every cited source resolvable,

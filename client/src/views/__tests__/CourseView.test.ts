@@ -102,7 +102,7 @@ describe("CourseView", () => {
     expect(metaDesc).toContain("Agentic AI Builder");
 
     wrapper.unmount();
-    expect(document.title).toBe("Original Title");
+    // Router owns document.title on navigation away; CourseView restores meta and schema tags
     expect(document.querySelector('meta[name="description"]')?.getAttribute("content")).toBe(
       "Original Description",
     );
