@@ -203,7 +203,7 @@ jobs:
             node -e 'console.log(JSON.parse(require("fs").readFileSync("_run/candidates.json","utf8")).summary)'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: steps.guard.outputs.skip != 'true'
         with:
           name: candidates-${{ github.run_id }}
@@ -227,7 +227,7 @@ jobs:
     steps:
       - name: Generate mctl-agents App token
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.AGENTS_APP_CLIENT_ID }}
           private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
@@ -270,7 +270,7 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: candidates-${{ github.run_id }}
           path: _run/from-discover
@@ -554,7 +554,7 @@ jobs:
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
         if: steps.branch.outputs.new_pages != '0'
-        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242 (CLI 2.1.290, bun 1.3.14)
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.242 (CLI 2.1.290, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ env.PROVIDER != 'nebius' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
           anthropic_api_key: ${{ env.PROVIDER == 'nebius' && 'the-relay-ignores-this' || '' }}
@@ -973,7 +973,7 @@ jobs:
         id: selector-agent-2
         if: steps.branch.outputs.new_pages != '0' && steps.selector-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242 (CLI 2.1.290, bun 1.3.14)
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.242 (CLI 2.1.290, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ env.PROVIDER != 'nebius' && secrets.CLAUDE_CODE_OAUTH_TOKEN_2 || '' }}
           anthropic_api_key: ${{ env.PROVIDER == 'nebius' && 'the-relay-ignores-this' || '' }}
@@ -1904,7 +1904,7 @@ jobs:
         id: author-agent
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
-        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242 (CLI 2.1.290, bun 1.3.14)
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.242 (CLI 2.1.290, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ env.PROVIDER != 'nebius' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
           anthropic_api_key: ${{ env.PROVIDER == 'nebius' && 'the-relay-ignores-this' || '' }}
@@ -2367,7 +2367,7 @@ jobs:
         id: author-agent-2
         if: steps.author-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242 (CLI 2.1.290, bun 1.3.14)
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.242 (CLI 2.1.290, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ env.PROVIDER != 'nebius' && secrets.CLAUDE_CODE_OAUTH_TOKEN_2 || '' }}
           anthropic_api_key: ${{ env.PROVIDER == 'nebius' && 'the-relay-ignores-this' || '' }}
@@ -2978,7 +2978,7 @@ jobs:
       # possible.
       - name: Generate a fresh mctl-agents App token for the push
         id: push-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.AGENTS_APP_CLIENT_ID }}
           private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
@@ -3071,7 +3071,7 @@ jobs:
       # `authoring` holds _agent/CHANGES.md, the author agent's account of what it
       # wrote, and is downloaded by no job at all. It also carries content/questions/ so
       # that a failed push does not lose the authored files; nothing reads it back.
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: handoff-${{ github.run_id }}
@@ -3082,7 +3082,7 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: pr-inputs-${{ github.run_id }}
@@ -3092,7 +3092,7 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: authoring-${{ github.run_id }}
@@ -3108,7 +3108,7 @@ jobs:
       # upload-artifact roots the zip at their least common ancestor, so putting
       # $RUNNER_TEMP next to the workspace paths would re-root every entry and
       # flip the layout depending on whether exec/ happened to be empty.
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: exec-authoring-${{ github.run_id }}
@@ -3129,7 +3129,7 @@ jobs:
     steps:
       - name: Generate mctl-agents App token
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.AGENTS_APP_CLIENT_ID }}
           private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
@@ -3176,7 +3176,7 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: handoff-${{ github.run_id }}
           path: _run/from-author
@@ -3473,7 +3473,7 @@ jobs:
         # A failure here is handled by the fallback below, not by the job.
         continue-on-error: true
         if: steps.items.outputs.count != '0'
-        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242 (CLI 2.1.290, bun 1.3.14)
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.242 (CLI 2.1.290, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ env.PROVIDER != 'nebius' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
           anthropic_api_key: ${{ env.PROVIDER == 'nebius' && 'the-relay-ignores-this' || '' }}
@@ -3896,7 +3896,7 @@ jobs:
         id: reviewer-agent-2
         if: steps.items.outputs.count != '0' && steps.reviewer-agent-check.outputs.failed == 'true' && steps.fallback-token.outputs.available == 'true'
         continue-on-error: true
-        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242 (CLI 2.1.290, bun 1.3.14)
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.242 (CLI 2.1.290, bun 1.3.14)
         with:
           claude_code_oauth_token: ${{ env.PROVIDER != 'nebius' && secrets.CLAUDE_CODE_OAUTH_TOKEN_2 || '' }}
           anthropic_api_key: ${{ env.PROVIDER == 'nebius' && 'the-relay-ignores-this' || '' }}
@@ -4521,7 +4521,7 @@ jobs:
 
       # After the reviewer, never before: these two files carry the selector
       # agent's own strings, and the PR body is their only consumer.
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         if: steps.items.outputs.count != '0'
         with:
           name: pr-inputs-${{ github.run_id }}
@@ -4532,7 +4532,7 @@ jobs:
       # `gh pr create`.
       - name: Generate a fresh mctl-agents App token for the push
         id: push-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.AGENTS_APP_CLIENT_ID }}
           private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
@@ -4626,7 +4626,7 @@ jobs:
               || echo "::warning::could not add label '$label' to $pr_url"
           done
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: review-${{ github.run_id }}
@@ -4640,7 +4640,7 @@ jobs:
           if-no-files-found: ignore
 
       # Separate from review-<run_id> for the same layout reason as above.
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: exec-review-${{ github.run_id }}
