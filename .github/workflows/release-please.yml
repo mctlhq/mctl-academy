@@ -11,7 +11,13 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      # This bot mint still uses AGENTS_APP_PRIVATE_KEY until Stage 5 of
+      # mctl-gitops#1033 moves it to mctl-repo-bot.
+      #
       # release-please has to open the release PR as somebody. The default
       # GITHUB_TOKEN cannot: "Allow GitHub Actions to create and approve pull
       # requests" is off at the org level, and on mctl-telegram every push to
@@ -49,29 +55,36 @@ jobs:
       # No values_path override: this repo's gitops values.yaml already
       # lives at the default platform-gitops/services/labs/mctl-academy/
       # values.yaml the dispatch assumes.
-      # Uses mctl-agents, the backend-only automation App — deliberately
-      # NOT MCTL App (APP_CLIENT_ID). MCTL App is the App customers install
-      # themselves from mctl.ai/#request-access, and it is being narrowed to
-      # contents:read + metadata:read so its published least-privilege
-      # description is actually true (mctlhq/mctl-gitops#761). A GitHub App's
-      # permissions apply to every installation alike, so anything needing
-      # write — like actions:write on mctl-gitops to dispatch below — has to
-      # live on the internal App instead.
-      - name: Generate Platform App token
-        if: ${{ steps.release.outputs.release_created == 'true' }}
+
+  # Dispatch lives in its own job so it can carry a main-only environment and
+  # so the dispatch key is never in the same job as release-please. The
+  # environment `app-dispatch` is restricted to the default branch: on any
+  # other ref it yields no secret and the mint step fails closed. There is
+  # deliberately no fallback to AGENTS_APP_PRIVATE_KEY (mctl-gitops#1033).
+  dispatch:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    environment: app-dispatch
+    permissions: {}
+    steps:
+      # mctl-gitops-dispatch is the dispatch-only App: actions:write on
+      # mctl-gitops, nothing else. Deliberately NOT MCTL App (APP_CLIENT_ID,
+      # installed by customers) and no longer the broad mctl-agents App.
+      - name: Generate dispatch token
         id: app
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          client-id: ${{ vars.AGENTS_APP_CLIENT_ID }}
-          private-key: ${{ secrets.AGENTS_APP_PRIVATE_KEY }}
+          client-id: ${{ vars.DISPATCH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DISPATCH_APP_PRIVATE_KEY }}
           owner: mctlhq
           repositories: mctl-gitops
+          permission-actions: write
 
       - name: Dispatch centralized release-deploy
-        if: ${{ steps.release.outputs.release_created == 'true' }}
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
-          TAG: ${{ steps.release.outputs.tag_name }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
         run: |
           gh workflow run release-deploy.yaml \
             --repo mctlhq/mctl-gitops \
