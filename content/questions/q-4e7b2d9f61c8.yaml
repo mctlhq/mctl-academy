@@ -1,0 +1,42 @@
+schema_version: 1
+id: q-4e7b2d9f61c8
+status: published
+domain: domain-3
+objective: domain-3/inference-setup
+stem: "In the Serverless AI endpoint-creation tutorial, which web console
+  setting makes the deployed endpoint require a bearer token on every request?"
+options:
+  - id: a
+    text: "Bearer token authentication: Enabled"
+    correct: true
+    explanation: "Correct. The tutorial sets \"Bearer token authentication\" to
+      Enabled when creating the endpoint and has you copy the generated token to
+      authenticate requests."
+  - id: b
+    text: "Network: Public static IP"
+    correct: false
+    explanation: "That setting controls how the endpoint is exposed on the network;
+      it does not require a bearer token on requests."
+  - id: c
+    text: "Computing resources: With GPU"
+    correct: false
+    explanation: "That setting requests GPU-backed compute for the endpoint; it is
+      unrelated to request authentication."
+  - id: d
+    text: "Available platform: NVIDIA® L40S Intel"
+    correct: false
+    explanation: "That setting selects the hardware platform for the endpoint; it
+      does not control authentication."
+evidence:
+  - source_id: src-pa-serverless-deploy-model
+    excerpt: "**Bearer token authentication**: Enabled. Copy and save the generated
+      token."
+    source_sha256: 5f604a9f7f1a8c75a9aa118f4fb060d5023b6a682d5409ca4dd16d55abc47592
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-02T16:21:44Z"
+course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-02T16:34:04Z
+  content_sha256: 72c5c64591a2490fa09c27d2bfabed3ca4b9f31399c8580a500733e7f42cb7cb

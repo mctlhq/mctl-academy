@@ -1,0 +1,48 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-02T16:34:04Z",
+  "questions": [
+    {
+      "id": "q-2a8e5c71f9d6",
+      "content_sha256": "a9cde2cb42e1daaa58197df8a9e3cc9b288977d0e4474b6c938e1f0f5e09e3cf",
+      "approved": true,
+      "reason": "The tuning section states verbatim: \"Values closer to `1.0` -> send observation every step (more bandwidth, relies on good world-model).\" The sequential-collapse distractor is attributed by the same bullet to values closer to 0.0, and the memory-footprint and inference-location distractors are unrelated to this parameter, so exactly one option is best.",
+      "reviewed_at": "2026-11-02T16:34:04Z"
+    },
+    {
+      "id": "q-3b9e7c2f815a",
+      "content_sha256": "e43f0c40e8ea9708125f2418098e6251dad728aa5d58297b807c19b74ec02d26",
+      "approved": true,
+      "reason": "The Python example's step 7 contains the commented line \"# Download file contents\" immediately above \"file_content = client.files.content(file_id)\", while \"client.files.retrieve(file_id)\" sits under \"# Get file metadata\" and returns the file object's `filename`. Only one option downloads contents.",
+      "reviewed_at": "2026-11-02T16:34:04Z"
+    },
+    {
+      "id": "q-4e7b2d9f61c8",
+      "content_sha256": "72c5c64591a2490fa09c27d2bfabed3ca4b9f31399c8580a500733e7f42cb7cb",
+      "approved": true,
+      "reason": "The web console step lists \"**Bearer token authentication**: Enabled. Copy and save the generated token.\", and the tutorial's test requests then carry \"Authorization: Bearer <token>\". The other three options are settings from the same list governing network exposure, compute and platform, none of which concerns authentication.",
+      "reviewed_at": "2026-11-02T16:34:04Z"
+    },
+    {
+      "id": "q-6f1a8c4e92d5",
+      "content_sha256": "e8907593405d772cb58f2f1e12501f17d454da58c969f855a11158ed0e0b0d82",
+      "approved": true,
+      "reason": "The deployment-type list maps \"Host a model or application at a URL for real-time inference -> **Endpoint**\", and the comparison table confirms only Endpoint serves requests at a public URL (Job: \"Non-interactive, terminates upon task completion or timeout\"; Devlab: browser-based IDE). MLflow is not one of the page's three deployment types.",
+      "reviewed_at": "2026-11-02T16:34:04Z"
+    },
+    {
+      "id": "q-8d4f261b9c73",
+      "content_sha256": "cec91b88d550152b149b1befcca56d72eb5829b49d8dee1574d9d24210cb04f9",
+      "approved": true,
+      "reason": "The checkpoints step states \"The `result_files` array contains IDs of all files that belong to this checkpoint.\", and the walkthrough fetches each such id through the Files API. The distractors are job-object fields holding token counts, training configuration and a timestamp, none of which lists file ids.",
+      "reviewed_at": "2026-11-02T16:34:04Z"
+    },
+    {
+      "id": "q-9c3f6a1e85b4",
+      "content_sha256": "39360399e495dbc47865bd125e78a3de9b95936fa28bd42ddad8ed5e6c3b8da5",
+      "approved": true,
+      "reason": "Under the \"## Agent Frameworks\" heading the overview lists \"[CrewAI](https://docs.tokenfactory.nebius.com/integrations/agents/crewai)\" alongside Agno, Camel AI, Google ADK, Llama-Index, Pydantic and Strands. Postman, Helicone and Tavily each appear under different headings (Developer Tools, Observability, Agentic Search), so no distractor is defensible.",
+      "reviewed_at": "2026-11-02T16:34:04Z"
+    }
+  ]
+}
