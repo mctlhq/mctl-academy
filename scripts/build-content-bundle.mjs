@@ -41,6 +41,11 @@ const OUT = process.env.ACADEMY_BUNDLE_OUT
 const CATALOG_OUT = process.env.ACADEMY_CATALOG_OUT
   ? resolve(process.env.ACADEMY_CATALOG_OUT)
   : join(ROOT, "client", "src", "course-catalog.json");
+const SITEMAP_OUT = process.env.ACADEMY_SITEMAP_OUT
+  ? resolve(process.env.ACADEMY_SITEMAP_OUT)
+  : process.env.ACADEMY_BUNDLE_OUT
+    ? null
+    : join(ROOT, "client", "public", "sitemap.xml");
 
 const { eligible, excluded, total, sourcesById } = partitionQuestions(CONTENT, (file, msg) =>
   console.warn(`warn  ${file}: ${msg}`),
@@ -138,6 +143,35 @@ mkdirSync(join(OUT, ".."), { recursive: true });
 writeFileSync(OUT, JSON.stringify(bundle, null, 2) + "\n");
 mkdirSync(join(CATALOG_OUT, ".."), { recursive: true });
 writeFileSync(CATALOG_OUT, JSON.stringify(catalog, null, 2) + "\n");
+
+if (SITEMAP_OUT) {
+  const availableCourses = catalog.filter((c) => c.available);
+  const sitemapLines = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    "  <url>",
+    "    <loc>https://academy.mctl.ai/</loc>",
+    "    <changefreq>daily</changefreq>",
+    "    <priority>1.0</priority>",
+    "  </url>",
+    "  <url>",
+    "    <loc>https://academy.mctl.ai/practice</loc>",
+    "    <changefreq>weekly</changefreq>",
+    "    <priority>0.8</priority>",
+    "  </url>",
+    ...availableCourses.flatMap((c) => [
+      "  <url>",
+      `    <loc>https://academy.mctl.ai/courses/${c.id}</loc>`,
+      "    <changefreq>weekly</changefreq>",
+      "    <priority>0.9</priority>",
+      "  </url>",
+    ]),
+    "</urlset>",
+    "",
+  ];
+  mkdirSync(join(SITEMAP_OUT, ".."), { recursive: true });
+  writeFileSync(SITEMAP_OUT, sitemapLines.join("\n"));
+}
 
 for (const { file, reasons } of excluded) {
   console.log(`skip  ${file}: ${reasons.join("; ")}`);

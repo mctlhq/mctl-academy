@@ -7,6 +7,7 @@ import HomeView from "../views/HomeView.vue";
 import CourseView from "../views/CourseView.vue";
 import AdminStatsView from "../views/AdminStatsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import { useCourseStore } from "../services/courseStore";
 
 const SITE_NAME = "mctl academy";
 
@@ -16,7 +17,6 @@ export const router = createRouter({
     { path: "/", name: "home", component: HomeView, meta: { title: "Home" } },
     {
       path: "/courses/:courseId",
-      alias: "/certifications/:courseId",
       name: "course",
       component: CourseView,
       meta: { title: "Course" },
@@ -36,6 +36,19 @@ export const router = createRouter({
     },
   ],
   scrollBehavior: scrollPosition,
+});
+
+router.beforeEach((to) => {
+  const queryCourse = Array.isArray(to.query.course) ? to.query.course[0] : to.query.course;
+  if (typeof queryCourse === "string" && queryCourse) {
+    const { setCourse, canSelect } = useCourseStore();
+    if (canSelect(queryCourse)) {
+      setCourse(queryCourse);
+    }
+    const nextQuery = { ...to.query };
+    delete nextQuery.course;
+    return { path: to.path, query: nextQuery, hash: to.hash, replace: true };
+  }
 });
 
 type Location = Pick<RouteLocationNormalized, "path" | "matched">;

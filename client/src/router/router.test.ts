@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { pageTitle, router, scrollPosition, shouldFocusMain } from "./index";
+import { resetCourseStore, useCourseStore } from "../services/courseStore";
 
 describe("router", () => {
   it("names each page in the document title", () => {
@@ -12,14 +13,41 @@ describe("router", () => {
     expect(router.resolve("/practice?domain=domain-1").name).toBe("practice");
   });
 
-  it("resolves course landing pages and certification aliases", () => {
+  it("resolves course landing pages", () => {
     const courseRoute = router.resolve("/courses/agentic-ai-builder");
     expect(courseRoute.name).toBe("course");
     expect(courseRoute.params.courseId).toBe("agentic-ai-builder");
 
+    // Certifications alias was removed to comply with LEGAL.md search positioning
     const certRoute = router.resolve("/certifications/ai-cloudops-engineer");
-    expect(certRoute.name).toBe("course");
-    expect(certRoute.params.courseId).toBe("ai-cloudops-engineer");
+    expect(certRoute.name).toBe("not-found");
+  });
+
+  it("handles ?course= deep link parameter and strips it from query", async () => {
+    resetCourseStore();
+    const { currentCourseId, setCourse } = useCourseStore();
+
+    await router.push("/practice?course=ai-leader&domain=domain-1");
+    expect(currentCourseId.value).toBe("ai-leader");
+    expect(router.currentRoute.value.path).toBe("/practice");
+    expect(router.currentRoute.value.query).toEqual({ domain: "domain-1" });
+    expect(router.currentRoute.value.query.course).toBeUndefined();
+
+    // Course switcher works and is not reverted because ?course= is absent
+    setCourse("agentic-ai-builder");
+    expect(currentCourseId.value).toBe("agentic-ai-builder");
+    expect(router.currentRoute.value.query.course).toBeUndefined();
+  });
+
+  it("strips unavailable ?course= query param without switching course", async () => {
+    resetCourseStore();
+    const { currentCourseId } = useCourseStore();
+    const initialCourse = currentCourseId.value;
+
+    await router.push("/practice?course=non-existent-track&domain=domain-2");
+    expect(currentCourseId.value).toBe(initialCourse);
+    expect(router.currentRoute.value.path).toBe("/practice");
+    expect(router.currentRoute.value.query).toEqual({ domain: "domain-2" });
   });
 
   it("scrolls a new page to the top but keeps position for query-only changes and back/forward", () => {
