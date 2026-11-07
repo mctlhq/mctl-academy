@@ -27,7 +27,7 @@ jobs:
       # mctl-agents is the Tier 2 implementer (mctl_trigger_implementer):
       # it opens PRs from accepted agents-state proposals, e.g. #195. Same
       # failure mode as dependabot above until it's listed here too.
-      allowed-bots: "mctl-claude-remote,github-actions,dependabot,mctl-agents"
+      allowed-bots: "mctl-claude-remote,github-actions,dependabot,mctl-agents,mctl-codex"
       # The evidence gate and anything that can leak learner data or break
       # attempt immutability warrant the top model tier.
       sensitive-paths: '^(scripts/|content/schemas/|src/(db|routes|services|auth)/|\.github/workflows/)'
