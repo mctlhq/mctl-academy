@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.75](https://github.com/mctlhq/mctl-academy/compare/0.1.74...0.1.75) (2026-11-08)
+
+
+### Features
+
+* **client:** move the app header onto the shared mctl-design shell ([3f0f2a8](https://github.com/mctlhq/mctl-academy/commit/3f0f2a81856c2e88dd9369bc0cb0a0d27987bdb4))
+* **client:** move the app header onto the shared mctl-design shell ([1037610](https://github.com/mctlhq/mctl-academy/commit/1037610a0f9bda91fa9437fdd2af4b9d452b2d86))
+* **seo:** add course landing pages with schema structured data and sitemap ([85065ed](https://github.com/mctlhq/mctl-academy/commit/85065ed2139590cdad3ecdc487a2ea44c6d26962))
+* **seo:** add course landing pages with schema structured data and sitemap ([096cf1e](https://github.com/mctlhq/mctl-academy/commit/096cf1ec0fbfc43933d45d9cdb3fbc94a6b49259))
+
+
+### Bug Fixes
+
+* **client:** close the drawer at the 980px breakpoint, keep account sizing ([be5bcd7](https://github.com/mctlhq/mctl-academy/commit/be5bcd79796f381ec8282c6d201f89f23aac022f))
+* **security:** resolve CodeQL substring check and polish CourseView metadata ([8103e46](https://github.com/mctlhq/mctl-academy/commit/8103e4634dd13668ae111b5f6b22391fe8d7ccff))
+* **views:** address review findings on course pages and deep links ([361eb11](https://github.com/mctlhq/mctl-academy/commit/361eb11dda29f22fbe51f5d4b567c8e27bf809ef))
+* **views:** delegate document.title restoration to router and document sitemap artefact ([4a23d7d](https://github.com/mctlhq/mctl-academy/commit/4a23d7db829af10776ccea7f1f463b1890f0f115))
+
 ## [0.1.74](https://github.com/mctlhq/mctl-academy/compare/0.1.73...0.1.74) (2026-11-06)
 
 
