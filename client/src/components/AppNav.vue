@@ -81,7 +81,7 @@ function onPointerDown(e: PointerEvent) {
   if (navOpen.value && !nav?.contains(target) && !burger.value?.contains(target)) closeNav();
 }
 const wide =
-  typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(min-width: 768px)") : null;
+  typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(min-width: 981px)") : null;
 function onWide(e: MediaQueryListEvent) {
   if (e.matches) closeNav();
 }
@@ -274,9 +274,25 @@ const links = [
   .theme-toggle,
   .course-select,
   .mctl-site-burger,
-  .app-nav-link {
+  .app-nav-link,
+  .user-nav-signed-in :deep(summary),
+  .user-nav-signin :deep(.signin-github),
+  .user-nav-signin :deep(.signin-zitadel) {
     min-width: 2.75rem;
     min-height: 2.75rem;
+  }
+}
+
+/* The ZITADEL long label is operator text of any length: bound it so it cannot
+   squeeze the course picker (was 561-980px before the shared shell). */
+@media (min-width: 561px) and (max-width: 980px) {
+  .user-nav-signin :deep(.signin-zitadel .signin-label) {
+    display: inline-block;
+    max-width: 14rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
   }
 }
 
@@ -351,13 +367,6 @@ const links = [
 
   .mctl-site-burger {
     margin-left: 0;
-  }
-
-  .user-nav-signed-in :deep(summary),
-  .user-nav-signin :deep(.signin-github),
-  .user-nav-signin :deep(.signin-zitadel) {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
   }
 
   .user-nav-signin :deep(.signin-label) {

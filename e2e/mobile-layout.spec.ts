@@ -46,12 +46,11 @@ async function assertNavControlsInBounds(page: Page, viewportWidth: number) {
   }
 }
 
-// Pre-0.20 note: the header used to be a two-row grid below 980px; it is now
-// the shared mctl-design shell (one row, drawer below 768px).
 /**
- * Found on a real Pixel 7 during the real-device validation pass: at
- * <=980px `.app-nav` becomes a `minmax(0,1fr) auto` grid, and that `0`
- * track minimum lets `.app-brand`'s column shrink well past its own text's
+ * Found on a real Pixel 7 during the real-device validation pass (when the
+ * header was a two-row grid below 980px; it is now the shared mctl-design
+ * shell, one row with the drawer up to 980px): the brand's grid column could
+ * shrink well past its own text's
  * min-content width. Without `overflow: hidden` on `.app-brand`, the
  * "mctl academy" text doesn't clip at that shrunk box — it renders past its
  * own edge and visually overlaps `.course-select` next to it (reproduced

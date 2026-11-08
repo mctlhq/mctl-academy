@@ -129,4 +129,32 @@ describe("AppNav component", () => {
     expect(header.attributes("data-nav-open")).toBeUndefined();
     wrapper.unmount();
   });
+
+  test("closes the drawer when the viewport grows past the drawer range (981px)", async () => {
+    let listener: ((e: MediaQueryListEvent) => void) | undefined;
+    const queries: string[] = [];
+    const original = window.matchMedia;
+    window.matchMedia = ((q: string) => {
+      queries.push(q);
+      return {
+        matches: false,
+        media: q,
+        addEventListener: (_: string, l: (e: MediaQueryListEvent) => void) => (listener = l),
+        removeEventListener: () => {},
+      } as unknown as MediaQueryList;
+    }) as typeof window.matchMedia;
+    try {
+      const router = createRouter({ history: createMemoryHistory(), routes });
+      const wrapper = mount(AppNav, { props: { user: null, loading: false }, global: { plugins: [router] } });
+      expect(queries).toContain("(min-width: 981px)");
+      await wrapper.get(".mctl-site-burger").trigger("click");
+      expect(wrapper.get("header").attributes("data-nav-open")).toBeDefined();
+      listener?.({ matches: true } as MediaQueryListEvent);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.get("header").attributes("data-nav-open")).toBeUndefined();
+      wrapper.unmount();
+    } finally {
+      window.matchMedia = original;
+    }
+  });
 });
