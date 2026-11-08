@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.76](https://github.com/mctlhq/mctl-academy/compare/0.1.75...0.1.76) (2026-11-08)
+
+
+### Bug Fixes
+
+* ship mctl-design 0.20.2 header spacing ([2895a82](https://github.com/mctlhq/mctl-academy/commit/2895a822b637de813ec993cb2882f5260d630ea2))
+* ship mctl-design 0.20.2 header spacing ([b966e39](https://github.com/mctlhq/mctl-academy/commit/b966e39293db8d5e151ac8648ec0851648a195af))
+
 ## [0.1.75](https://github.com/mctlhq/mctl-academy/compare/0.1.74...0.1.75) (2026-11-08)
 
 
