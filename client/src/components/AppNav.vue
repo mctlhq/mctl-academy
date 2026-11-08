@@ -109,7 +109,7 @@ const links = [
 <template>
   <header
     ref="header"
-    class="mctl-site-header mctl-site-header--app app-nav"
+    class="mctl-site-header mctl-site-header--app mctl-site-header--drawer-wide app-nav"
     :data-nav-open="navOpen ? '' : null"
   >
     <div class="mctl-site-container mctl-site-header__inner">
@@ -296,70 +296,10 @@ const links = [
   }
 }
 
-/* 768-980px: brand, course, five tabs and the account control do not fit one
-   row (measured: the select collapsed to 16px at 768), so academy keeps the
-   drawer up to 980px. site.css only switches it on below 768px; this block
-   mirrors its drawer rules for the extra range.
-   TODO: drop it once mctl-design ships a wider drawer breakpoint (0.20.1+). */
-@media (min-width: 768px) and (max-width: 980px) {
-  .mctl-site-burger {
-    display: inline-block;
-    margin-left: 0;
-  }
-
-  .mctl-site-header__actions {
-    margin-left: auto;
-  }
-
-  .mctl-site-header--app .mctl-site-nav {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    box-sizing: border-box;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    width: 40%;
-    max-width: 300px;
-    height: 100dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    margin-left: 0;
-    padding: calc(var(--site-header-height) + 16px) 24px 24px;
-    background: var(--surface-bg);
-    border-left: 1px solid var(--surface-line);
-    visibility: hidden;
-    transform: translateX(100%);
-    transition:
-      transform var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard),
-      visibility 0s linear var(--mctl-motion-duration-base);
-  }
-
-  .mctl-site-header[data-nav-open] .mctl-site-nav {
-    visibility: visible;
-    transform: translateX(0);
-    transition-delay: 0s;
-  }
-
-  .mctl-site-header[data-nav-open]::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    background: var(--overlay-scrim);
-  }
-}
-
-@media (min-width: 768px) and (max-width: 980px) and (prefers-reduced-motion: reduce) {
-  .mctl-site-header--app .mctl-site-nav {
-    transition: none;
-  }
-}
-
-/* Below 768px the nav is the drawer: actions take the free space and the
-   burger sits at the right edge. */
-@media (max-width: 767px) {
+/* Up to 980px the nav is the drawer (.mctl-site-header--drawer-wide: brand,
+   course, five tabs and the account control do not fit one row below that).
+   Actions take the free space and the burger sits at the right edge. */
+@media (max-width: 980px) {
   .mctl-site-header__actions {
     margin-left: auto;
     gap: 8px;
@@ -368,7 +308,9 @@ const links = [
   .mctl-site-burger {
     margin-left: 0;
   }
+}
 
+@media (max-width: 767px) {
   .user-nav-signin :deep(.signin-label) {
     display: none;
   }
