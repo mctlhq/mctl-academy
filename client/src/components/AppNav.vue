@@ -298,17 +298,8 @@ const links = [
 
 /* Up to 980px the nav is the drawer (.mctl-site-header--drawer-wide: brand,
    course, five tabs and the account control do not fit one row below that).
-   Actions take the free space and the burger sits at the right edge. */
-@media (max-width: 980px) {
-  .mctl-site-header__actions {
-    margin-left: auto;
-    gap: 8px;
-  }
-
-  .mctl-site-burger {
-    margin-left: 0;
-  }
-}
+   The actions slot and the burger stay together at the right edge through
+   site.css 0.20.2. */
 
 @media (max-width: 767px) {
   .user-nav-signin :deep(.signin-label) {
