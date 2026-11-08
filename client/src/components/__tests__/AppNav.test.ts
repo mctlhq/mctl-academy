@@ -96,7 +96,7 @@ describe("AppNav component", () => {
     const wrapper = mount(AppNav, { props: { user: null, loading: false }, global: { plugins: [router] } });
 
     expect(wrapper.get("header").classes()).toEqual(
-      expect.arrayContaining(["mctl-site-header", "mctl-site-header--app"]),
+      expect.arrayContaining(["mctl-site-header", "mctl-site-header--app", "mctl-site-header--drawer-wide"]),
     );
     const burger = wrapper.get(".mctl-site-burger");
     expect(burger.attributes("aria-controls")).toBe(wrapper.get(".mctl-site-nav").attributes("id"));
