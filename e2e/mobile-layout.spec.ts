@@ -27,14 +27,18 @@ async function assertNoHorizontalOverflow(page: Page, viewportWidth: number) {
 }
 
 async function assertNavControlsInBounds(page: Page, viewportWidth: number) {
-  const boxes = await page
-    .locator(".app-nav-link, .theme-toggle, .course-select, .app-brand")
-    .evaluateAll((els) =>
-      els.map((el) => {
-        const rect = el.getBoundingClientRect();
-        return { left: rect.left, right: rect.right };
-      }),
-    );
+  // Up to 980px the nav links live in the closed off-canvas drawer, so only
+  // the always-visible controls (and the burger) are bounded there.
+  const selector =
+    viewportWidth > 980
+      ? ".app-nav-link, .theme-toggle, .course-select, .app-brand"
+      : ".theme-toggle, .course-select, .app-brand, .mctl-site-burger";
+  const boxes = await page.locator(selector).evaluateAll((els) =>
+    els.map((el) => {
+      const rect = el.getBoundingClientRect();
+      return { left: rect.left, right: rect.right };
+    }),
+  );
   expect(boxes.length).toBeGreaterThan(0);
   for (const box of boxes) {
     expect(box.left).toBeGreaterThanOrEqual(0);
@@ -42,6 +46,8 @@ async function assertNavControlsInBounds(page: Page, viewportWidth: number) {
   }
 }
 
+// Pre-0.20 note: the header used to be a two-row grid below 980px; it is now
+// the shared mctl-design shell (one row, drawer below 768px).
 /**
  * Found on a real Pixel 7 during the real-device validation pass: at
  * <=980px `.app-nav` becomes a `minmax(0,1fr) auto` grid, and that `0`
@@ -134,7 +140,7 @@ test.describe("touch targets", () => {
 
       test("AppNav controls meet the 44px touch-target convention", async ({ page }) => {
         await page.goto("/");
-        await assertTouchTargets(page, ".app-nav-link");
+        await assertTouchTargets(page, width > 980 ? ".app-nav-link" : ".mctl-site-burger");
         await assertTouchTargets(page, ".theme-toggle");
         await assertTouchTargets(page, ".course-select");
       });

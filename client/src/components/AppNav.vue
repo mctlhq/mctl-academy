@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch, type Ref } from "vue";
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { calculateStudyStreak, getMistakeQuestionIds, progressVersion } from "../services/progressStore";
 import { useCourseStore } from "../services/courseStore";
@@ -61,6 +61,42 @@ if (syncVersion) {
   watch(syncVersion, refreshLearningSummary);
 }
 
+// Mobile drawer (mctl-design 0.20.0 site.css owns the look; the behaviour is
+// ours): data-nav-open on the header, Escape / outside click / navigation /
+// viewport growth close it, focus returns to the burger.
+const header = ref<HTMLElement | null>(null);
+const burger = ref<HTMLButtonElement | null>(null);
+const navOpen = ref(false);
+function closeNav(returnFocus = false) {
+  if (!navOpen.value) return;
+  navOpen.value = false;
+  if (returnFocus) burger.value?.focus();
+}
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === "Escape") closeNav(true);
+}
+function onPointerDown(e: PointerEvent) {
+  const nav = header.value?.querySelector(".mctl-site-nav");
+  const target = e.target as Node;
+  if (navOpen.value && !nav?.contains(target) && !burger.value?.contains(target)) closeNav();
+}
+const wide =
+  typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(min-width: 768px)") : null;
+function onWide(e: MediaQueryListEvent) {
+  if (e.matches) closeNav();
+}
+onMounted(() => {
+  document.addEventListener("keydown", onKeydown);
+  document.addEventListener("pointerdown", onPointerDown);
+  wide?.addEventListener("change", onWide);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", onKeydown);
+  document.removeEventListener("pointerdown", onPointerDown);
+  wide?.removeEventListener("change", onWide);
+});
+router.afterEach(() => closeNav());
+
 const links = [
   { to: "/", label: "Home" },
   { to: "/practice", label: "Practice" },
@@ -71,13 +107,18 @@ const links = [
 </script>
 
 <template>
-  <nav class="app-nav" aria-label="Main">
-    <div class="app-nav-primary">
-      <div class="app-nav-context">
-        <RouterLink to="/" class="app-brand" aria-label="mctl Academy home"
-          >mctl<span class="app-brand-suffix"> academy</span></RouterLink
-        >
-        <span class="app-nav-separator" aria-hidden="true">/</span>
+  <header
+    ref="header"
+    class="mctl-site-header mctl-site-header--app app-nav"
+    :data-nav-open="navOpen ? '' : null"
+  >
+    <div class="mctl-site-container mctl-site-header__inner">
+      <RouterLink to="/" class="mctl-site-brand app-brand" aria-label="mctl Academy home"
+        ><span class="mctl-site-brand__accent">M</span>CTL<span class="app-brand-suffix"
+          >&nbsp;academy</span
+        ></RouterLink
+      >
+      <div class="mctl-site-header__context app-nav-context">
         <label class="sr-only" for="course-select">Course</label>
         <select
           id="course-select"
@@ -92,7 +133,7 @@ const links = [
           </option>
         </select>
       </div>
-      <div class="app-nav-links">
+      <nav id="site-nav" class="mctl-site-nav" aria-label="Main">
         <RouterLink
           v-for="link in links"
           :key="link.to"
@@ -103,163 +144,59 @@ const links = [
           <span>{{ link.label }}</span>
           <span
             v-if="link.isMistakes"
-            class="mistake-badge"
+            class="mctl-site-badge mistake-badge"
             :class="{ 'mistake-badge-empty': mistakeCount === 0 }"
             data-testid="mistake-badge"
             aria-hidden="true"
             >{{ mistakeCount }}</span
           >
         </RouterLink>
+      </nav>
+      <div class="mctl-site-header__actions">
+        <span v-if="streak > 0" class="streak">
+          <span aria-hidden="true">●</span> Practiced {{ streak }} {{ streak === 1 ? "day" : "days" }} in a
+          row
+        </span>
+        <button
+          type="button"
+          class="theme-toggle"
+          :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
+          @click="toggleTheme"
+        >
+          <svg v-if="theme === 'dark'" aria-hidden="true" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3.5" />
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
+            />
+          </svg>
+          <svg v-else aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z" />
+          </svg>
+        </button>
+        <UserNav :user="user" :loading="loading" />
       </div>
-    </div>
-
-    <div class="app-nav-actions">
-      <span v-if="streak > 0" class="streak">
-        <span aria-hidden="true">●</span> Practiced {{ streak }} {{ streak === 1 ? "day" : "days" }} in a row
-      </span>
       <button
+        ref="burger"
         type="button"
-        class="theme-toggle"
-        :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
-        @click="toggleTheme"
-      >
-        <svg v-if="theme === 'dark'" aria-hidden="true" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="3.5" />
-          <path
-            d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
-          />
-        </svg>
-        <svg v-else aria-hidden="true" viewBox="0 0 24 24">
-          <path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z" />
-        </svg>
-      </button>
-      <UserNav :user="user" :loading="loading" />
+        class="mctl-site-burger"
+        aria-label="Menu"
+        aria-controls="site-nav"
+        :aria-expanded="navOpen"
+        @click="navOpen = !navOpen"
+      ></button>
     </div>
-  </nav>
+  </header>
 </template>
 
 <style scoped>
-.app-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 3.5rem;
-  gap: 1.5rem;
-  padding-top: env(safe-area-inset-top);
-  padding-right: calc(var(--mctl-layout-page-padding, 1rem) + env(safe-area-inset-right));
-  padding-left: calc(var(--mctl-layout-page-padding, 1rem) + env(safe-area-inset-left));
-  border-bottom: 1px solid var(--surface-line);
-  background: var(--surface-elevated);
-  position: sticky;
-  top: 0;
-  z-index: var(--mctl-z-index-nav);
-}
-
-.app-nav-primary,
-.app-nav-context,
-.app-nav-links,
-.app-nav-actions {
-  display: flex;
-  align-items: center;
-}
-
-.app-nav-primary {
-  min-width: 0;
-  gap: 2rem;
-}
-
-/* Brand and course read as one breadcrumb, "mctl academy / Course": every
-   tab to the right is scoped to the course, so the course belongs with the
-   product name, not with account settings on the far side of the bar. */
-.app-nav-context {
-  min-width: 0;
-  gap: 0.5rem;
-}
-
-.app-brand {
-  flex: none;
-  color: var(--surface-fg);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.app-nav-separator {
-  flex: none;
-  color: var(--surface-fg-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-}
-
-.app-nav-links {
-  align-self: stretch;
-  gap: 1.5rem;
-}
-
-.app-nav-actions {
-  flex: none;
-  gap: 0.75rem;
-}
-
-.app-nav-link {
-  display: inline-flex;
-  align-items: center;
-  min-height: 3.5rem;
-  border-bottom: 2px solid transparent;
+/* Shell, active item, badge, burger and drawer come from ui.mctl.ai site.css
+   (0.20.0). What is left here is academy-only: the course select, the theme
+   toggle, the streak and the account control. */
+.app-brand-suffix {
   color: var(--surface-fg-muted);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
+  font-weight: 400;
 }
 
-.app-nav-link:hover {
-  color: var(--surface-fg);
-}
-
-.app-nav-link.router-link-active {
-  border-bottom-color: var(--accent);
-  color: var(--accent);
-}
-
-.mistake-badge {
-  display: inline-grid;
-  min-width: 1.25rem;
-  height: 1.25rem;
-  margin-left: 0.4rem;
-  padding: 0 0.3rem;
-  box-sizing: border-box;
-  place-items: center;
-  border: 1px solid var(--status-bad);
-  border-radius: var(--mctl-radius-pill);
-  color: var(--status-bad);
-  font-size: 0.7rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.mistake-badge-empty {
-  border-color: var(--surface-line);
-  color: var(--surface-fg-subtle);
-}
-
-.streak {
-  color: var(--surface-fg-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  white-space: nowrap;
-}
-
-.streak span {
-  color: var(--status-ok);
-}
-
-/* A native select is as wide as its longest option, so every new course
-   title (and its "Coming soon" suffix) would widen the bar without bound.
-   Capping it keeps the layout independent of the catalog; the open dropdown
-   still shows full titles, and the title attribute names the current one. */
 .course-select {
   min-width: 0;
   max-width: 14rem;
@@ -270,9 +207,8 @@ const links = [
   border-radius: var(--mctl-radius-md);
   background: var(--surface-bg);
   color: var(--surface-fg);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 500;
+  font: inherit;
+  font-size: 0.8rem;
   cursor: pointer;
 }
 
@@ -281,9 +217,22 @@ const links = [
 }
 
 .course-select:focus-visible {
-  border-color: var(--surface-line-strong);
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.mistake-badge-empty {
+  color: var(--surface-fg-subtle);
+}
+
+.streak {
+  color: var(--surface-fg-subtle);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.streak span {
+  color: var(--status-ok);
 }
 
 .theme-toggle {
@@ -314,79 +263,96 @@ const links = [
   stroke-width: 1.6;
 }
 
-/* 981-1120px: one row still, but tighter so the breadcrumb, five tabs and
-   the account control fit without the course select being squeezed. */
-@media (min-width: 981px) and (max-width: 1120px) {
-  .app-nav,
-  .app-nav-primary {
-    gap: 1.25rem;
-  }
-
-  .app-nav-links {
-    gap: 1.1rem;
-  }
-
-  .course-select {
-    max-width: 11rem;
-  }
-
+@media (max-width: 1120px) {
   .streak {
     display: none;
   }
 }
 
+/* 44px touch targets through tablet width. */
 @media (max-width: 980px) {
-  .app-nav {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: 3.25rem 2.75rem;
-    align-items: center;
-    column-gap: 0.75rem;
-    row-gap: 0;
-  }
-
-  .app-nav-primary {
-    display: contents;
-  }
-
-  /* Column 1 is minmax(0, 1fr) so it can shrink once the account control
-     needs room; min-width: 0 on the breadcrumb and the select lets the
-     select take the squeeze (ending in an ellipsis) instead of the brand
-     wrapping into a box narrower than its own words and overlapping it. */
-  .app-nav-context {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-  }
-
-  .course-select {
-    flex: 0 1 auto;
-  }
-
-  .app-nav-actions {
-    grid-column: 2;
-    grid-row: 1;
-    gap: 0.5rem;
-  }
-
-  .app-nav-links {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    width: 100%;
-    overflow-x: auto;
-    gap: 1.25rem;
-    scrollbar-width: none;
-  }
-
-  .app-nav-link {
-    min-height: 2.75rem;
-  }
-
-  /* 44px, the app's touch-target convention (.app-nav-link, .report-button
-     and the mock footer all use 2.75rem), for every control in the stacked,
-     touch-oriented layout. */
   .theme-toggle,
   .course-select,
+  .mctl-site-burger,
+  .app-nav-link {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+/* 768-980px: brand, course, five tabs and the account control do not fit one
+   row (measured: the select collapsed to 16px at 768), so academy keeps the
+   drawer up to 980px. site.css only switches it on below 768px; this block
+   mirrors its drawer rules for the extra range.
+   TODO: drop it once mctl-design ships a wider drawer breakpoint (0.20.1+). */
+@media (min-width: 768px) and (max-width: 980px) {
+  .mctl-site-burger {
+    display: inline-block;
+    margin-left: 0;
+  }
+
+  .mctl-site-header__actions {
+    margin-left: auto;
+  }
+
+  .mctl-site-header--app .mctl-site-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    width: 40%;
+    max-width: 300px;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin-left: 0;
+    padding: calc(var(--site-header-height) + 16px) 24px 24px;
+    background: var(--surface-bg);
+    border-left: 1px solid var(--surface-line);
+    visibility: hidden;
+    transform: translateX(100%);
+    transition:
+      transform var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard),
+      visibility 0s linear var(--mctl-motion-duration-base);
+  }
+
+  .mctl-site-header[data-nav-open] .mctl-site-nav {
+    visibility: visible;
+    transform: translateX(0);
+    transition-delay: 0s;
+  }
+
+  .mctl-site-header[data-nav-open]::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: var(--overlay-scrim);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 980px) and (prefers-reduced-motion: reduce) {
+  .mctl-site-header--app .mctl-site-nav {
+    transition: none;
+  }
+}
+
+/* Below 768px the nav is the drawer: actions take the free space and the
+   burger sits at the right edge. */
+@media (max-width: 767px) {
+  .mctl-site-header__actions {
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .mctl-site-burger {
+    margin-left: 0;
+  }
+
   .user-nav-signed-in :deep(summary),
   .user-nav-signin :deep(.signin-github),
   .user-nav-signin :deep(.signin-zitadel) {
@@ -394,39 +360,6 @@ const links = [
     min-height: 2.75rem;
   }
 
-  .streak {
-    display: none;
-  }
-}
-
-/* From 561px to the stacked layout's upper bound, the ZITADEL button still
-   shows its long label ("Log in with <name>"), and the name is operator text
-   (ZITADEL_DISPLAY_NAME) of any length. Unbounded, it widens the auto column
-   until the breadcrumb is squeezed to nothing, so it ends in an ellipsis. */
-@media (min-width: 561px) and (max-width: 980px) {
-  .user-nav-signin :deep(.signin-zitadel .signin-label) {
-    display: inline-block;
-    max-width: 14rem;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    vertical-align: bottom;
-  }
-}
-
-@media (max-width: 560px) {
-  .app-nav {
-    padding-right: calc(1rem + env(safe-area-inset-right));
-    padding-left: calc(1rem + env(safe-area-inset-left));
-  }
-
-  .course-select {
-    padding: 0 0.45rem;
-  }
-
-  /* "Log in" next to the GitHub icon is overhead once the icon alone (with
-     its aria-label) identifies the control; padding collapses to match so
-     the icon fills its 44px box like .theme-toggle. */
   .user-nav-signin :deep(.signin-label) {
     display: none;
   }
@@ -436,9 +369,6 @@ const links = [
     padding: 0;
   }
 
-  /* The ZITADEL button has no icon to fall back on, so it swaps its long
-     label for the short one (just the provider name), bounded like the
-     select so operator text of any length cannot squeeze the breadcrumb. */
   .user-nav-signin :deep(.signin-zitadel .signin-label-short) {
     display: inline-block;
     max-width: 6rem;
@@ -447,33 +377,32 @@ const links = [
     text-overflow: ellipsis;
     vertical-align: bottom;
   }
+}
 
-  .app-nav-links {
-    gap: 0.75rem;
+/* Phones: the course name is what changes every tab, so it keeps room. */
+@media (max-width: 560px) {
+  .mctl-site-header__inner {
+    gap: 4px;
   }
 
-  .app-nav-link {
-    font-size: 0.78rem;
+  .mctl-site-header__context {
+    padding-inline: 0 4px;
+  }
+
+  .course-select {
+    flex: 1 1 auto;
+    min-width: 5.5rem;
+    padding-inline: 0.4rem;
+  }
+
+  .mctl-site-header__actions {
+    gap: 4px;
   }
 }
 
-/* Smallest phones: the product name shortens to "mctl" so the course name,
-   the one that changes what every tab shows, keeps the room. */
 @media (max-width: 400px) {
   .app-brand-suffix {
     display: none;
-  }
-
-  .app-nav-context {
-    gap: 0.35rem;
-  }
-
-  .app-nav-links {
-    gap: 0.6rem;
-  }
-
-  .mistake-badge {
-    margin-left: 0.25rem;
   }
 }
 </style>
