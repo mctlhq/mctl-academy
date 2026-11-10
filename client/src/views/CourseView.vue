@@ -286,13 +286,6 @@ onUnmounted(() => {
           </RouterLink>
         </div>
       </section>
-
-      <footer class="course-disclaimer">
-        <p>
-          mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by
-          any certification vendor.
-        </p>
-      </footer>
     </div>
   </div>
 
@@ -534,14 +527,6 @@ onUnmounted(() => {
   color: var(--surface-fg-subtle);
   font-size: 0.75rem;
   font-family: var(--font-mono);
-}
-
-.course-disclaimer {
-  padding: 1.25rem 0;
-  border-top: 1px solid var(--surface-line);
-  color: var(--surface-fg-subtle);
-  font-size: 0.8rem;
-  line-height: 1.5;
 }
 
 .not-found-code {
