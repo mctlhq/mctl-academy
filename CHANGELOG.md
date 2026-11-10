@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.77](https://github.com/mctlhq/mctl-academy/compare/0.1.76...0.1.77) (2026-11-10)
+
+
+### Bug Fixes
+
+* **client:** remove duplicate disclaimer from course landing page ([7ff5720](https://github.com/mctlhq/mctl-academy/commit/7ff5720d4281fca657e6a5feb17502a3f57786a2))
+* **client:** remove duplicate disclaimer from course landing page ([bc48bdd](https://github.com/mctlhq/mctl-academy/commit/bc48bddb6a83c46c7969ae01107c29677f4fe68c))
+
 ## [0.1.76](https://github.com/mctlhq/mctl-academy/compare/0.1.75...0.1.76) (2026-11-08)
 
 
