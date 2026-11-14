@@ -338,6 +338,8 @@ export function qualityReport({
     }
   }
   const courseOf = new Map(corpus.map((q) => [q.id, q.course_id]));
+  // Only groups that touch a scored item: in candidate scope, reuse that lies
+  // entirely inside the published bank is not the candidates' finding.
   const reusedExcerpts = [...excerptGroups.entries()]
     .filter(([, set]) => set.size > 1 && [...set].some((id) => scoredIds.has(id)))
     .map(([excerpt, set]) => ({ excerpt, ids: [...set].sort() }));
@@ -397,22 +399,17 @@ export function qualityReport({
     });
 
     // --- new, additive diagnostics ---
+    // Item flags are the per-item signal and cover only the scored items.
+    // Course-level shares are never taken over the candidate sample alone,
+    // which is too small to mean anything: `metrics` describes the course
+    // after the scored items (the published bank plus the candidates), and
+    // `metricsBefore` the published bank alone. In published scope the two
+    // are the same population.
     const items = scored.filter((q) => q.course_id === course.id);
     const cues = items.map(itemCues);
-    const count = (check) => cues.filter((c) => c.flags.some((f) => f.check === check)).length;
-    const ratios = cues.map((c) => c.lengthRatio).filter((r) => r !== null);
-    const metrics = {
-      items: items.length,
-      correctLongestShare: share(count("correct-longest"), items.length),
-      meanLengthRatio: ratios.length ? round(ratios.reduce((s, r) => s + r, 0) / ratios.length) : null,
-      lengthRatioItems: count("length-ratio"),
-      shortDistractorShare: share(count("short-distractor"), items.length),
-      absoluteOnlyInDistractorsShare: share(count("absolute-only-in-distractors"), items.length),
-      volatileShare: share(count("volatile"), items.length),
-      scenarioShare: share(cues.filter((c) => c.scenario).length, items.length),
-    };
-
     const courseBank = corpus.filter((q) => q.course_id === course.id);
+    const metrics = metricsOf(courseBank);
+    const metricsBefore = metricsOf(bank);
     const perSource = new Map();
     for (const q of courseBank) {
       for (const sid of new Set(q.evidence.map((ev) => ev.source_id))) {
@@ -432,20 +429,39 @@ export function qualityReport({
       };
     });
 
-    const excerptReuse = reusedExcerpts.filter((g) => g.ids.some((id) => courseOf.get(id) === course.id));
+    // Per course, as the spec says: the cross-course angle rule allows the
+    // same source to back a different angle in another course, so reuse that
+    // crosses a course boundary is counted for information, never warned on.
+    const excerptReuse = [];
+    const crossCourseExcerptReuse = [];
+    for (const g of reusedExcerpts) {
+      const mine = g.ids.filter((id) => courseOf.get(id) === course.id);
+      if (!mine.length) continue;
+      if (mine.length > 1) excerptReuse.push({ excerpt: g.excerpt, ids: mine });
+      if (mine.length < g.ids.length) {
+        crossCourseExcerptReuse.push({
+          excerpt: g.excerpt,
+          ids: g.ids,
+          courses: [...new Set(g.ids.map((id) => courseOf.get(id)))].sort(),
+        });
+      }
+    }
     const courseDuplicates = dupPairs.filter((p) => p.courses.includes(course.id));
 
     const warnings = [];
     const warn = (check, value, threshold, message, level = "warn") =>
       warnings.push({ check, level, value, threshold, message });
-    if (items.length) {
+    // In candidate scope a course no candidate touches has nothing new to say;
+    // its bank-level findings belong to the published-scope report.
+    const courseLevel = scope === "published" || items.length > 0;
+    if (courseLevel && metrics.items) {
       if (metrics.correctLongestShare > THRESHOLDS.correctLongestShare) {
         const strong = metrics.correctLongestShare > THRESHOLDS.correctLongestShareStrong;
         warn(
           "correct-longest",
           metrics.correctLongestShare,
           strong ? THRESHOLDS.correctLongestShareStrong : THRESHOLDS.correctLongestShare,
-          `correct option is strictly longest in ${pct(metrics.correctLongestShare)} of ${items.length} items (random is about 25%)`,
+          `correct option is strictly longest in ${pct(metrics.correctLongestShare)} of ${metrics.items} items (random is about 25%)`,
           strong ? "strong" : "warn",
         );
       }
@@ -487,10 +503,11 @@ export function qualityReport({
           metrics.scenarioShare,
           THRESHOLDS.scenarioShareMinimum,
           `only ${pct(metrics.scenarioShare)} of stems read as scenarios (crude classifier, advisory)`,
+          "advisory",
         );
       }
     }
-    for (const s of sourceShares.filter((x) => x.share > THRESHOLDS.sourceShare)) {
+    for (const s of courseLevel ? sourceShares.filter((x) => x.share > THRESHOLDS.sourceShare) : []) {
       warn(
         "source-share",
         s.share,
@@ -498,7 +515,7 @@ export function qualityReport({
         `${s.source_id} backs ${pct(s.share)} of the course`,
       );
     }
-    for (const o of objectiveCoverage.filter((x) => x.status !== "ok")) {
+    for (const o of courseLevel ? objectiveCoverage.filter((x) => x.status !== "ok") : []) {
       warn(
         o.status === "missing" ? "objective-missing" : "objective-thin",
         o.items,
@@ -531,14 +548,36 @@ export function qualityReport({
       scored: items.map((q) => q.id),
       bankItems: courseBank.length,
       metrics,
+      metricsBefore,
       itemFlags: cues.filter((c) => c.flags.length).map(({ id, flags }) => ({ id, flags })),
       sourceShares,
       objectiveCoverage,
       excerptReuse,
+      crossCourseExcerptReuse,
+      crossCourseExcerptReuseCount: crossCourseExcerptReuse.length,
       nearDuplicates: courseDuplicates,
       warnings,
     };
   });
+}
+
+/** Course-level cue shares over one population of items. */
+function metricsOf(population) {
+  const cues = population.map(itemCues);
+  const count = (check) => cues.filter((c) => c.flags.some((f) => f.check === check)).length;
+  const ratios = cues.map((c) => c.lengthRatio).filter((r) => r !== null);
+  const n = population.length;
+  return {
+    items: n,
+    correctLongestShare: share(count("correct-longest"), n),
+    meanLengthRatio: ratios.length ? round(ratios.reduce((s, r) => s + r, 0) / ratios.length) : null,
+    lengthRatioItems: count("length-ratio"),
+    shortDistractorShare: share(count("short-distractor"), n),
+    absoluteOnlyInDistractorsShare: share(count("absolute-only-in-distractors"), n),
+    volatileShare: share(count("volatile"), n),
+    scenarioShare: share(cues.filter((c) => c.scenario).length, n),
+    scenarioShareNote: "crude, advisory: a regex classifier, never a gate",
+  };
 }
 
 const pct = (x) => (x === null ? "n/a" : `${Math.round(x * 100)}%`);
@@ -603,10 +642,16 @@ function main(argv) {
     if (c.sourceObjectiveMismatches.length)
       console.log(`Check mappings: ${c.sourceObjectiveMismatches.join(", ")}`);
     const m = c.metrics;
+    const b = c.metricsBefore;
+    const v = (f, key) => (scope === "candidates" ? `${f(b[key])}→${f(m[key])}` : f(m[key]));
+    const num = (x) => (x === null ? "n/a" : String(x));
     console.log(
-      `Diagnostics over ${m.items} ${scope} item(s): correct longest ${pct(m.correctLongestShare)}, mean length ratio ${m.meanLengthRatio ?? "n/a"}, ` +
-        `short distractor ${pct(m.shortDistractorShare)}, absolutes only in distractors ${pct(m.absoluteOnlyInDistractorsShare)}, ` +
-        `volatile ${pct(m.volatileShare)}, scenario stems ${pct(m.scenarioShare)} (crude); top source ${c.sourceShares[0] ? `${c.sourceShares[0].source_id} ${pct(c.sourceShares[0].share)}` : "n/a"}`,
+      `Diagnostics over ${scope === "candidates" ? `${b.items}→${m.items} items (published → with ${c.scored.length} candidate(s))` : `${m.items} published item(s)`}: ` +
+        `correct longest ${v(pct, "correctLongestShare")}, mean length ratio ${v(num, "meanLengthRatio")}, ` +
+        `short distractor ${v(pct, "shortDistractorShare")}, absolutes only in distractors ${v(pct, "absoluteOnlyInDistractorsShare")}, ` +
+        `volatile ${v(pct, "volatileShare")}, scenario stems ${v(pct, "scenarioShare")} (crude, advisory); ` +
+        `top source ${c.sourceShares[0] ? `${c.sourceShares[0].source_id} ${pct(c.sourceShares[0].share)}` : "n/a"}; ` +
+        `cross-course excerpt reuse ${c.crossCourseExcerptReuseCount} (info)`,
     );
     for (const w of c.warnings) console.log(`  [${w.level}] ${w.check}: ${w.message}`);
     for (const p of c.nearDuplicates.filter((x) => x.allowlisted)) {

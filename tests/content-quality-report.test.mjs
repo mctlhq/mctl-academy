@@ -374,3 +374,78 @@ test("candidate scope does not re-report pairs that lie entirely inside the publ
   assert.equal(run(questions)[0].nearDuplicates.length, 1);
   assert.deepEqual(run(questions, { scope: "candidates" })[0].nearDuplicates, []);
 });
+
+test("excerpt reuse is per course; reuse across a course boundary is an informational count, not a warning", () => {
+  const ev = (excerpt) => [{ source_id: "s1", excerpt }];
+  const a = item({ evidence: ev("shared within the course") });
+  const b = item({ evidence: ev("Shared within the course.") });
+  const x = item({ evidence: ev("shared across courses") });
+  const y = item({ course_id: "c2", evidence: ev("shared across courses") });
+  const courses = new Map([
+    ["c1", COURSE("c1")],
+    ["c2", COURSE("c2")],
+  ]);
+  const [c1, c2] = qualityReport({ courses, sources: new Map(), questions: [a, b, x, y] });
+  assert.deepEqual(
+    c1.excerptReuse.map((g) => g.ids),
+    [[a.id, b.id]],
+  );
+  assert.equal(c1.warnings.filter((w) => w.check === "excerpt-reuse").length, 1);
+  assert.equal(c1.crossCourseExcerptReuseCount, 1);
+  assert.deepEqual(c1.crossCourseExcerptReuse[0].courses, ["c1", "c2"]);
+  assert.deepEqual(c2.excerptReuse, []);
+  assert.ok(!c2.warnings.some((w) => w.check === "excerpt-reuse"));
+  assert.equal(c2.crossCourseExcerptReuseCount, 1);
+  // Two in one course plus one elsewhere: a warning for the pair, info for the crossing.
+  const z = item({ course_id: "c2", evidence: ev("shared within the course") });
+  const [d1, d2] = qualityReport({ courses, sources: new Map(), questions: [a, b, z] });
+  assert.deepEqual(
+    d1.excerptReuse.map((g) => g.ids),
+    [[a.id, b.id]],
+  );
+  assert.equal(d1.crossCourseExcerptReuseCount, 1);
+  assert.deepEqual(d2.excerptReuse, []);
+});
+
+test("candidate scope computes course metrics on the after state and keeps the published before state", () => {
+  const long = (status) =>
+    item({ status, options: opts("a much longer correct option", "short one", "short two", "short three") });
+  const bank = [item(), item(), item(), item()];
+  const candidate = long("review_ready");
+  const courses = new Map([
+    ["c1", COURSE("c1")],
+    ["c2", COURSE("c2")],
+  ]);
+  const quiet = [item({ course_id: "c2" }), item({ course_id: "c2" })]; // scenario share 0, thin objectives
+  const [c1, c2] = qualityReport({
+    courses,
+    sources: new Map(),
+    questions: [...bank, candidate, ...quiet],
+    scope: "candidates",
+  });
+  assert.deepEqual(c1.scored, [candidate.id]);
+  assert.equal(c1.metrics.items, 5);
+  assert.equal(c1.metrics.correctLongestShare, 0.2);
+  assert.equal(c1.metricsBefore.items, 4);
+  assert.equal(c1.metricsBefore.correctLongestShare, 0);
+  // On the candidate sample alone this would be 100%, a strong warning.
+  assert.ok(!c1.warnings.some((w) => w.check === "correct-longest"));
+  assert.deepEqual(
+    c1.itemFlags.map((f) => f.id),
+    [candidate.id],
+  );
+  // A course without candidates reports its numbers but raises no course-level warnings.
+  assert.equal(c2.metrics.items, 2);
+  assert.deepEqual(c2.warnings, []);
+  // Published scope: before and after are the same population.
+  const [p1] = run([...bank, candidate]);
+  assert.deepEqual(p1.metrics, p1.metricsBefore);
+});
+
+test("the scenario share is labelled crude and advisory in the JSON", () => {
+  const [course] = run([item(), item()]);
+  assert.match(course.metrics.scenarioShareNote, /crude, advisory/);
+  const w = course.warnings.find((x) => x.check === "scenario-share");
+  assert.equal(w.level, "advisory");
+  assert.match(w.message, /crude classifier, advisory/);
+});
