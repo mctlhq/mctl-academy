@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co220dde0756
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: A training job on a GPU cluster is bottlenecked moving tensors between
@@ -36,3 +36,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: bd5b2e84c09e4b4f3cf14422c677207f2d38e0654bc8648e45a3a20023cff776

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7fa13c2e9b84
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/supervised-fine-tuning
 stem: "When fine-tuning a robot policy with PEFT in LeRobot, which command-line
@@ -35,3 +35,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: cfd188291f766abd15ccf60dd1d003dd8c31357d6365d1ed8252bd6fa90c0325

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf06a4b5c6d7
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
 stem: How can a developer retrieve the extended list of model parameters, such
@@ -37,3 +37,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 64bc9788fefef8ae7bdb5b9155e6512accb64d0fe24e9d437f8353ed048dfcdf

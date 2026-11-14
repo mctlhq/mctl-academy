@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c9a3f62d18b5
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/search-parameters
 stem: "An agent sets `include_domains_mode=prefer` on a Search request but does
@@ -37,3 +37,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:41:51Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 86b52eb4f520dd93df83e13910e2ce092cac19fcdf654a448c1ca47c50d59774

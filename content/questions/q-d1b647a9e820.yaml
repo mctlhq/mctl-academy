@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-d1b647a9e820
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/dataset-curation
 stem: "Before merging several LeRobot datasets into one with
@@ -41,3 +41,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 22971acece224605f926484c8492002b65b1e366ceff50b91091b1c6f6f125a1

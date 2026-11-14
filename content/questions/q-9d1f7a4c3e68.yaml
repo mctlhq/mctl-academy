@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9d1f7a4c3e68
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: What guarantee applies to the minimum replicas configured for a dedicated
@@ -47,3 +47,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: bd3043a3372343d49413719c35c18aadf4cda7be6a4546e6d4c16d94786971af

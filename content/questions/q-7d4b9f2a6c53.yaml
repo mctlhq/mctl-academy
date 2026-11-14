@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7d4b9f2a6c53
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/deployment-evaluation
 stem: "Before a deployment decision, a team runs two candidate policies through
@@ -42,3 +42,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: d88a4ceb74ae271a10104423e10b2102ff17bb1e77c444a45ac7f1a9f86d7394

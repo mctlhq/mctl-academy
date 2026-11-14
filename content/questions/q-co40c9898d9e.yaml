@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co40c9898d9e
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/security-policies
 stem: Your organization's IdP has rotated the signing certificate used for
@@ -45,3 +45,7 @@ authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: f9669e758221689d028f3bcbba9a4c59cb841bf49063ef518a0cac32f6d1ee9b

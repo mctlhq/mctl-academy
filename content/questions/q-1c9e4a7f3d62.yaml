@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1c9e4a7f3d62
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/call-error-handling
 stem: "An agent's error-handling code inspects the exact text of a 429
@@ -42,3 +42,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: d3fe227f825b7d4089939df2ddfa031a3d92a6eb936b4454a9d8820af38fd637

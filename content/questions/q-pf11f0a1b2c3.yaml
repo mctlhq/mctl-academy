@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf11f0a1b2c3
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/playground
 stem: Which model parameter makes generated output more random at higher values
@@ -33,3 +33,7 @@ authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: ec90771aad53441e960788bf8ed345eab4757b7dcb6f5d99c64004b1f0ba7f2f

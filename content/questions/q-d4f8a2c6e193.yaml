@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-d4f8a2c6e193
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/gpu-orchestration
 stem: "A team needs to train or fine-tune a model and run batch inference as a
@@ -43,3 +43,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 9444a11bf9c81780873bb16226b245ea84f297224131084ffd81887f316abdd9

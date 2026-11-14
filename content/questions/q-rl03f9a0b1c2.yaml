@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rl03f9a0b1c2
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limits
 stem: A request that exceeded your rate limit succeeded anyway, carrying an
@@ -36,3 +36,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: eb6ed5c390d0e1058cbb9c5baf23a220f1a324c3872ac22c9d57f1c7b6dc78f0

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-be85d1a3c895
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/endpoint-selection
 stem: "A team needs a single finished answer with citations synthesized from
@@ -36,3 +36,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 074562b516c015309b1390adbe935105d2427c677c8349fe6b55e7b234b09b16

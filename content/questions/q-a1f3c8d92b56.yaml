@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a1f3c8d92b56
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/realtime-search-fundamentals
 stem: "An agent's base model stops learning about the world at its training
@@ -39,3 +39,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 0f9af23eec0ecf1ae9a5e93251f53fa695d9152ace0d601622834465f21e3463

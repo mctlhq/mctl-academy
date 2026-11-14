@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-rl02e8f9a0b1
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limits
 stem: You want to back off before hitting a limit rather than react to errors.
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-06T00:45:00Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 578a8b9db51e86cf8dcb4c1183b6f18d6e522a22fbd133cf3c009ba6cfd5564f

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld295930cb94
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/model-selection
 stem: When shortlisting a base model to fine-tune, which two properties does the
@@ -32,3 +32,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: fb9bdd0d1fce434f202cfb5fbf8f8ea4935c8ec33e3f6e38c585a558f7984e8b

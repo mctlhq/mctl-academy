@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5e8a2c91f06d
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: In a `/v1/rerank` response, which field tells a retrieval pipeline how
@@ -36,3 +36,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 46631a6c30b03e08914ccdccaa35480b2368014fbeea914333ee3f686561a684

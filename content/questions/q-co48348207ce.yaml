@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co48348207ce
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/node-recovery
 stem: After a Network SSD NRD boot disk reported persistent I/O errors, the node
@@ -34,3 +34,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: ea51aa7f9d685ee712e6220e7088cd4cda9baf6d29da2ef496fba8ae3b11236f

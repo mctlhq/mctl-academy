@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co24917d1a57
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: A colleague creating their first Managed Service for Kubernetes cluster
@@ -40,3 +40,7 @@ authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 604b72462d06a0f79e53f70e901a2616ed03599eaff2ab748d70b49330271567

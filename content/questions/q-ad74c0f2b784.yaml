@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ad74c0f2b784
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/mcp-integration
 stem: "An agent connects to Tavily through the remote MCP server in Claude Code
@@ -39,3 +39,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 92c54b8fc7e714e44da4083e1ba693316a96476e1f514fdee2d26ef24e98ac0c

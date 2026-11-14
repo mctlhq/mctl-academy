@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co36b9e8169f
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/iam-roles
 stem: A data-collection agent must drop files into a bucket but must not be able
@@ -35,3 +35,7 @@ authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 5e462935a957af547a4bcfb94e442d4221f9034c43b721817b9b7ad90cc3f363

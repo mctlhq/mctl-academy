@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-039ec8a2d5f7
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/dataset-quality
 stem: "Per LeRobot's Human-In-the-Loop data collection guide, what is
@@ -39,3 +39,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: a8f7ecb55eca4a955642e3d8a2fd039d2ac307d86b93265b6f15f5d0d0d65123

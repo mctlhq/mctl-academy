@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5f2a8c3e1d97
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/endpoint-selection
 stem: "An agent needs to understand how a site is organized before deciding how
@@ -36,3 +36,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 25dd06cf1defecd378f89123fc23ce60683788f2e96f135c095145e41f9da442

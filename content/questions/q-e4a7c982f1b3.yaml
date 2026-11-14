@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-e4a7c982f1b3
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/response-fields
 stem: "In a Tavily Search response, what does each result's `score` field represent?"
@@ -31,3 +31,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:41:51Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 302f6530efe3bae94051ce0d9449ff08df01e2aedda91cb7fc2d389066d1441c
