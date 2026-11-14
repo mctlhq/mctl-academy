@@ -1,0 +1,21 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-types
+url: https://docs.nebius.com/compute/virtual-machines/types.md
+title: Types of virtual machines and GPUs in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:49:44Z
+sha256: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
+objectives:
+  - domain-4/ie-gpu-rollouts
+  - domain-1/sa-gpu-selection
+  - domain-3/sa-right-sizing
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-gpu-rollouts
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-gpu-selection
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-right-sizing

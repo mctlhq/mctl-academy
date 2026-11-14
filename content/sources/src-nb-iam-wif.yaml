@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-iam-wif
+url: https://docs.nebius.com/iam/wif/index.md
+title: Accessing external resources from Nebius AI Cloud workloads
+retrieved_at: 2026-11-14T09:49:51Z
+sha256: 00c1d762c8752f89d44d7b58ca2b799048db5265d59b647f1336162903919d91
+objectives:
+  - domain-1/ie-identity-federation
+  - domain-4/sa-identity-model
+snapshot:
+  bucket: academy-source-snapshots
+  key: 00c1d762c8752f89d44d7b58ca2b799048db5265d59b647f1336162903919d91
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-identity-federation
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-identity-model

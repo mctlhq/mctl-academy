@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-reservations
+url: https://docs.nebius.com/compute/virtual-machines/reservations.md
+title: Capacity reservations for Compute virtual machines
+retrieved_at: 2026-11-14T09:49:43Z
+sha256: e3713e4f7033093213b6b1ec8496146466d7068b67e0fb6766c13f06933c24ed
+objectives:
+  - domain-2/ie-training-cluster-lifecycle
+  - domain-3/sa-capacity-quotas-cost
+snapshot:
+  bucket: academy-source-snapshots
+  key: e3713e4f7033093213b6b1ec8496146466d7068b67e0fb6766c13f06933c24ed
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-cluster-lifecycle
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-capacity-quotas-cost
