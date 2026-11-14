@@ -145,7 +145,7 @@ async function handleClearHistory() {
           <span>Recommended next</span>
           <strong>{{ recommendedDomain.domainTitle }}</strong>
           <RouterLink :to="{ path: '/practice', query: { domain: recommendedDomain.domainId } }">
-            Continue practice <span aria-hidden="true">→</span>
+            Continue practice&nbsp;<span aria-hidden="true">→</span>
           </RouterLink>
         </div>
         <MButton

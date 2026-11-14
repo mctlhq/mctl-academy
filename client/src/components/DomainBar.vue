@@ -12,7 +12,7 @@ defineProps<{
   <div class="domain-bar">
     <div class="domain-bar-labels">
       <RouterLink v-if="to" :to="to" class="domain-bar-link"
-        >{{ label }} <span aria-hidden="true">→</span></RouterLink
+        >{{ label }}&nbsp;<span aria-hidden="true">→</span></RouterLink
       >
       <span v-else>{{ label }}</span>
       <span class="domain-bar-value">
