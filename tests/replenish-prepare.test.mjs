@@ -2414,6 +2414,62 @@ test("prBody lists captured sources, offered-but-not-captured pages, review outc
   assert.match(body, /Attestation is signed by the human/);
 });
 
+test("prBody shows the advisory quality diagnostics before and after, and near-duplicates of promoted items", () => {
+  const args = {
+    candidates: CANDIDATES,
+    receipt: {
+      reviewer: "agent:claude-reviewer",
+      reviewed_at: "2026-11-14T07:00:00Z",
+      questions: [{ id: "q-new", approved: true, reason: "supported" }],
+    },
+  };
+  const metrics = (correctLongestShare) => ({
+    correctLongestShare,
+    meanLengthRatio: 1.4,
+    shortDistractorShare: 0.2,
+    absoluteOnlyInDistractorsShare: 0.1,
+    volatileShare: 0.05,
+    scenarioShare: 0.3,
+  });
+  const pair = (ids, extra = {}) => ({
+    ids,
+    relation: "cross-course",
+    cosine: 0.9,
+    keyOverlap: 0.8,
+    ...extra,
+  });
+  const body = prBody({
+    ...args,
+    before: [{ course: "c1", published: 2, domains: [], metrics: metrics(0.65), nearDuplicates: [] }],
+    after: [
+      {
+        course: "c1",
+        published: 3,
+        domains: [],
+        metrics: metrics(0.6),
+        nearDuplicates: [
+          pair(["q-new", "q-old"]),
+          pair(["q-a", "q-b"]),
+          pair(["q-new", "q-contrast"], { allowlisted: "contrast" }),
+        ],
+      },
+    ],
+  });
+  assert.match(body, /### Quality diagnostics before → after \(advisory\)/);
+  assert.match(body, /- c1: correct longest 65%→60%, mean length ratio 1\.4→1\.4, /);
+  assert.match(body, /near-duplicate pairs 0→2/);
+  assert.match(body, /- `q-new` \/ `q-old` \(cross-course, cosine 0\.9, key-term overlap 0\.8\)/);
+  assert.ok(!/q-a/.test(body), "a pair without a promoted item is not listed");
+  assert.ok(!/q-contrast/.test(body), "an allowlisted pair is not listed");
+  // A report from before the diagnostics existed: no section, no crash.
+  const old = prBody({
+    ...args,
+    before: [{ course: "c1", published: 2, domains: [] }],
+    after: [{ course: "c1", published: 3, domains: [] }],
+  });
+  assert.ok(!/Quality diagnostics/.test(old));
+});
+
 test("guardChanges rejects a non-integer cap instead of silently passing", () => {
   assert.match(guardChanges({ changed: [], statusAtBase: () => null, max: NaN })[0], /cap must be/);
 });

@@ -203,6 +203,10 @@ gh workflow run capture-sources.yml --ref <branch> \
 npm run lint:content
 npm run verify:evidence
 npm run report:content-quality
+# Advisory: score the new review_ready items against the published bank
+# (near-duplicates across courses, answer-length cues, volatile facts).
+# Intentional contrast pairs go in content/quality-allowlist.yaml.
+npm run report:content-quality -- --scope candidates
 npm run test:content
 
 # 3. Ask a different reviewer (human or agent) to inspect the final revision.

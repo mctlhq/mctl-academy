@@ -2969,6 +2969,11 @@ jobs:
           node scripts/verify-evidence.mjs
           bun run test:content
           node scripts/content-quality-report.mjs
+          # Advisory: the new review_ready items scored against the published
+          # bank (near-duplicates across courses, answer-length cues, volatile
+          # facts). Never fails the run on a finding.
+          node scripts/content-quality-report.mjs --scope candidates
+          node scripts/content-quality-report.mjs --scope candidates --json > _run/report-candidates.json
 
       # The token minted at the top of this job lives one hour and the author
       # job does not: run 37702168094 (2026-10-07, nebius) spent 74 minutes in
