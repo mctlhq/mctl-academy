@@ -7,14 +7,14 @@ export interface CourseMetaInput {
   summary?: string;
   publishedQuestionCount: number;
   available: boolean;
-  mock: { domains: readonly unknown[] };
+  mock: { domains?: readonly unknown[] };
 }
 
 export interface CourseHeadMeta {
   title: string;
-  description: string | null;
-  canonicalUrl: string | null;
-  jsonLd: Record<string, unknown> | null;
+  description: string;
+  canonicalUrl: string;
+  jsonLd: Record<string, unknown>;
 }
 
 export interface CourseHeadTagSpec {

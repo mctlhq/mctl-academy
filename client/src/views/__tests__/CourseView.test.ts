@@ -184,6 +184,14 @@ describe("CourseView", () => {
 
     const quizObj = data["@graph"][1];
     expect(quizObj["@type"]).toBe("Quiz");
+
+    const breadcrumbObj = data["@graph"][2];
+    expect(breadcrumbObj["@type"]).toBe("BreadcrumbList");
+    expect(breadcrumbObj["itemListElement"]).toHaveLength(2);
+
+    const faqObj = data["@graph"][3];
+    expect(faqObj["@type"]).toBe("FAQPage");
+    expect(faqObj["mainEntity"]).toHaveLength(3);
   });
 
   it("sets document title and restores original meta tags on unmount", () => {

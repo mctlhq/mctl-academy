@@ -2,6 +2,7 @@
 # build or churn a file nobody hand-edits.
 node_modules/
 .worktrees/
+.claude/
 client/dist/
 client/src/data/
 dist/
