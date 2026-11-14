@@ -35,17 +35,17 @@ const courseOptions = computed(() =>
   })),
 );
 
-const courseContext = ref<HTMLElement | null>(null);
-
 async function onCourseChange(next: string) {
   if (!next) return;
   const revert = () => {
-    // Put the control back where it was (unavailable course, or a
+    // Put the controls back where they were (unavailable course, or a
     // navigation that did not happen). MSelect is controlled by
     // currentCourseId, which did not change, so nothing re-renders it: the
     // native control still shows the refused pick until it is reset here.
-    const control = courseContext.value?.querySelector("select");
-    if (control) control.value = currentCourseId.value ?? "";
+    // Both switchers (header and drawer) share this handler.
+    header.value?.querySelectorAll<HTMLSelectElement>("[data-course-switcher] select").forEach((control) => {
+      control.value = currentCourseId.value ?? "";
+    });
   };
   // On a course page the page *is* the course, so picking another one has to
   // move to that course's page: changing only the stored selection left the
@@ -149,8 +149,8 @@ const links = [
         ><span class="app-brand-suffix">&nbsp;academy</span></RouterLink
       >
       <div
-        ref="courseContext"
         class="mctl-site-header__context mctl-site-header__context--select app-nav-context"
+        data-course-switcher
       >
         <label class="sr-only" for="course-select">Course</label>
         <MSelect
@@ -182,6 +182,33 @@ const links = [
             >{{ mistakeCount }}</span
           >
         </RouterLink>
+        <!-- Drawer only (hidden above 980px, where the header shows both): the
+             drawer covers the header's switcher and theme toggle while it is
+             open, so it carries its own. Separate classes keep it out of the
+             header's layout checks. -->
+        <div class="drawer-settings" data-course-switcher>
+          <label class="drawer-settings-label" for="course-select-drawer">Course</label>
+          <MSelect
+            id="course-select-drawer"
+            size="md"
+            class="drawer-course-select"
+            data-testid="course-select-drawer"
+            :title="currentCourse?.title"
+            :options="courseOptions"
+            :model-value="currentCourseId ?? ''"
+            @update:model-value="onCourseChange"
+          />
+          <button
+            type="button"
+            class="drawer-theme-toggle"
+            data-testid="drawer-theme-toggle"
+            :aria-pressed="theme === 'dark'"
+            @click="toggleTheme"
+          >
+            Dark theme
+            <span class="drawer-theme-state" aria-hidden="true">{{ theme === "dark" ? "On" : "Off" }}</span>
+          </button>
+        </div>
       </nav>
       <div class="mctl-site-header__actions">
         <span v-if="streak > 0" class="streak">
@@ -233,6 +260,72 @@ const links = [
    cap is ours. */
 .course-select {
   max-width: 14rem;
+}
+
+/* The drawer's own course switcher and theme toggle: only while the nav is
+   the drawer (<=980px); above that the header row shows both. */
+.drawer-settings {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .drawer-settings {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--surface-line);
+    font-family: var(--font-display);
+    font-size: var(--text-caption-size);
+  }
+}
+
+.drawer-settings-label {
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.drawer-course-select {
+  width: 100%;
+}
+
+/* The header's type (display face), not MSelect's mono: in a 250px drawer
+   the mono face cut "AI Solutions Architect" to "AI Solutions Ar". */
+.drawer-course-select :deep(.m-select__control) {
+  min-height: 2.75rem;
+  padding-inline: 0.75rem 1.75rem;
+  font-family: var(--font-display);
+  font-size: var(--site-nav-size);
+  text-overflow: ellipsis;
+}
+
+.drawer-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 2.75rem;
+  padding: 0 12px;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-md);
+  background: transparent;
+  color: var(--surface-fg);
+  font: inherit;
+  font-size: var(--site-nav-size);
+  cursor: pointer;
+}
+
+.drawer-theme-toggle:hover {
+  border-color: var(--surface-line-strong);
+}
+
+.drawer-theme-state {
+  color: var(--surface-fg-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
 }
 
 .mistake-badge-empty {
@@ -373,50 +466,62 @@ const links = [
   }
 }
 
+/* Phones: the course switcher gets its own full-width row under the brand
+   row. Sharing one row with the brand and three 44px actions left it about
+   14px at 411px (an empty box over the theme toggle), and no amount of
+   trimming makes a course title fit there. The header grows to two rows;
+   the drawer still overlays it from the top, so nothing else moves. */
+@media (max-width: 480px) {
+  .app-nav.mctl-site-header {
+    height: auto;
+  }
+
+  .app-nav .mctl-site-header__inner {
+    flex-wrap: wrap;
+    height: auto;
+    row-gap: 0;
+    /* Row one keeps the single-row header's height around 44px controls. */
+    padding-top: calc((var(--site-header-height) - 2.75rem) / 2);
+    padding-bottom: 8px;
+  }
+
+  .app-nav .mctl-site-header__actions {
+    margin-left: auto;
+  }
+
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
+    order: 1;
+    flex: 1 0 100%;
+    gap: 0;
+    margin-top: 2px;
+    padding: 0;
+  }
+
+  /* No "/" separator: the switcher no longer follows the brand. */
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context::before {
+    content: none;
+  }
+
+  .course-select {
+    width: 100%;
+  }
+}
+
 @media (max-width: 400px) {
+  /* The full wordmark and three 44px actions overflow a 360px row; "MCTL"
+     alone still reads as the mark (the link keeps its "mctl Academy home"
+     label). */
   .app-brand-suffix {
     display: none;
   }
 
-  /* At 375px the brand, three 44px actions and the gutters leave the course
-     about 100px, which is "Agenti…". The accent M alone still reads as the
-     mark (the link keeps its "mctl Academy home" label) and gives the course
-     name about 55px more. */
-  .app-brand-rest {
-    display: none;
-  }
-
-  /* The mark alone is still the home link: keep it a 44px target, centred,
-     so its focus ring frames a button-sized box like the actions beside it. */
+  /* Keep the home link a 44px target, centred, so its focus ring frames a
+     button-sized box like the actions beside it. */
   .app-brand {
     box-sizing: border-box;
     justify-content: center;
     min-width: 2.75rem;
     min-height: 2.75rem;
-  }
-
-  .app-brand .mctl-site-brand__accent {
-    margin-right: 0;
-  }
-
-  /* A tighter chevron gutter and a 14px label are the last few letters of
-     the longest titles. */
-  .app-nav-context .course-select :deep(.m-select__control) {
-    padding-inline: 0.4rem 1.1rem;
-    font-size: 0.875rem;
-  }
-
-  .app-nav-context .course-select :deep(.m-select__chevron) {
-    right: 0.4rem;
-  }
-
-  /* The "/" separator and its gap are 16px of course name at 375px. */
-  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
-    gap: 0;
-  }
-
-  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context::before {
-    content: none;
   }
 }
 </style>

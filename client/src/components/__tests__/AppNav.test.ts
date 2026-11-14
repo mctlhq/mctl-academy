@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
 import { defineComponent, h, watch } from "vue";
 import { RouterView } from "vue-router";
@@ -62,7 +62,7 @@ describe("AppNav component", () => {
     const select = wrapper.find('[data-testid="course-select"]');
     expect(select.exists()).toBe(true);
 
-    const options = wrapper.findAll("option");
+    const options = select.findAll("option");
     expect(options.length).toBeGreaterThan(0);
 
     // Derived from the catalog rather than hard-coded: the labels depend on
@@ -219,6 +219,54 @@ describe("AppNav component", () => {
       expect(router.currentRoute.value.path).toBe(`/courses/${firstCourse.id}`);
       expect(useCourseStore().currentCourseId.value).toBe(firstCourse.id);
       expect((select.element as HTMLSelectElement).value).toBe(firstCourse.id);
+    });
+
+    test("the drawer carries its own switcher, which selects like the header one", async () => {
+      const { router, wrapper } = await mountAt("/practice");
+      const drawer = wrapper.get(".mctl-site-nav .drawer-settings");
+      const select = drawer.get('[data-testid="course-select-drawer"]');
+      expect(select.attributes("id")).toBe("course-select-drawer");
+      expect(drawer.get('label[for="course-select-drawer"]').text()).toBe("Course");
+      await select.setValue(secondCourse.id);
+      await flushPromises();
+      expect(router.currentRoute.value.path).toBe("/practice");
+      expect(useCourseStore().currentCourseId.value).toBe(secondCourse.id);
+      // Both controls follow the one selection.
+      await wrapper.vm.$nextTick();
+      expect((wrapper.get('[data-testid="course-select"]').element as HTMLSelectElement).value).toBe(
+        secondCourse.id,
+      );
+    });
+
+    test("a refused pick in the drawer puts both switchers back", async () => {
+      const { router, wrapper } = await mountAt(`/courses/${firstCourse.id}`);
+      router.beforeEach((to) => to.path !== `/courses/${secondCourse.id}`);
+      const header = wrapper.get('[data-testid="course-select"]');
+      const drawer = wrapper.get('[data-testid="course-select-drawer"]');
+      (header.element as HTMLSelectElement).value = secondCourse.id;
+      await drawer.setValue(secondCourse.id);
+      await flushPromises();
+      expect(useCourseStore().currentCourseId.value).toBe(firstCourse.id);
+      expect((drawer.element as HTMLSelectElement).value).toBe(firstCourse.id);
+      expect((header.element as HTMLSelectElement).value).toBe(firstCourse.id);
+    });
+
+    test("the drawer's theme toggle switches the theme and reports its state", async () => {
+      const store = new Map<string, string>();
+      vi.stubGlobal("localStorage", {
+        getItem: (k: string) => store.get(k) ?? null,
+        setItem: (k: string, v: string) => void store.set(k, v),
+        removeItem: (k: string) => void store.delete(k),
+      });
+      const { wrapper } = await mountAt("/practice");
+      const toggle = wrapper.get('[data-testid="drawer-theme-toggle"]');
+      const before = toggle.attributes("aria-pressed");
+      await toggle.trigger("click");
+      expect(toggle.attributes("aria-pressed")).not.toBe(before);
+      expect(document.documentElement.dataset.theme).toBe(before === "true" ? "light" : "dark");
+      await toggle.trigger("click");
+      expect(toggle.attributes("aria-pressed")).toBe(before);
+      vi.unstubAllGlobals();
     });
 
     test("with the app's keyed view, the switch never flips back to the old course", async () => {
