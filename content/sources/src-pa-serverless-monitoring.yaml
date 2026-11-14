@@ -13,3 +13,6 @@ snapshot:
 status: current
 versions:
   - 2160fb50a83a777b1789291a99b1e1586517e1a5f429ab11be5007426bacc0ea
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-slo-tuning

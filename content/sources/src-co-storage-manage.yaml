@@ -15,3 +15,6 @@ versions:
   - 481b636ee6e5dbda595d298c4e36b21be9acf0453fd67c48ea968b75161efd63
   - 366225c658d17d32d9a57b648aec42830802564479d1f922949f79ac5d00cee4
   - d98febd2a2f7eeee8c55d35b291984f4e8bbcddef3837682a617a692d88e6fbb
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-storage-tiers

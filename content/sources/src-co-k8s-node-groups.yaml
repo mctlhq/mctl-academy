@@ -16,3 +16,8 @@ versions:
   - 5f148e1a79ec0cac101b2eab9a57f996355607103aca30ff1c2edd6e9709010a
   - 7ac04f2d434db41905e87c95b852d6031007a108df20e01783291f870ec7b99c
   - eda0a2471fc3a905fa2bcb66ded3fa1404863261a9f92bada2c857cc254cdf4a
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-cluster-lifecycle
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-long-run-reliability

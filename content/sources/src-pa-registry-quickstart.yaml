@@ -15,3 +15,6 @@ status: current
 versions:
   - a92b5cf38e1704d00d7e98652ff3b989a4f8914bb9c7813c50a554bf722c35b2
   - a36409ce80f86008f70176f9116cd02cea20bca1ee02e8de04737d8a0fc2f73f
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-images

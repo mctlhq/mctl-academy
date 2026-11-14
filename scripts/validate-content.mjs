@@ -274,6 +274,18 @@ const manifestRows = new Map(); // url -> row id
             err(label, `coverage objective ${c?.objective} is not in course ${c?.course_id}`);
           }
         }
+        // With both lists present the workflow writes `objectives` as given and
+        // derives nothing, so a coverage objective missing from it would leave
+        // the new record claiming a course objective its own objective list
+        // does not name.
+        if (row.objectives !== undefined) {
+          const listed = new Set(Array.isArray(row.objectives) ? row.objectives : []);
+          for (const c of row.coverage) {
+            if (!listed.has(c?.objective)) {
+              err(label, `coverage objective ${c?.objective} is not in the row's objectives`);
+            }
+          }
+        }
       } else if (!Array.isArray(row.objectives) || row.objectives.length === 0) {
         err(label, "needs `objectives` or course-aware `coverage`");
       }

@@ -12,3 +12,8 @@ snapshot:
 status: current
 versions:
   - bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-slo-tuning
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-failure-support-model

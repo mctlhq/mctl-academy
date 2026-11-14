@@ -12,3 +12,10 @@ snapshot:
 status: current
 versions:
   - 9e73aedf8b0e51a99e6531fb78fc4440f03709f5d6cf35a51b7a9a7ff67d1d04
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-cross-cloud-data
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-migration-handover
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-multicloud-ingestion

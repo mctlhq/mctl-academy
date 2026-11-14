@@ -15,3 +15,6 @@ status: current
 versions:
   - b4f09c4433e8b3690ddf0024c6c37ed5a64e65766301a0e17fccd09f5e0a5982
   - c3f9513afb2bcd83438d76aa129f8eb955c696bf1893dbffc9dbee95e10b2a43
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-slo-tuning
