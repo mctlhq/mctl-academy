@@ -1949,10 +1949,27 @@ jobs:
             - `course_id`, `domain`, `objective` from the course maps; `status: review_ready`;
               `authored: { by: "${{ env.AUTHOR_ID }}", at: <the "now" value from _run/limits.json,
               copied exactly> }`; no `reviewed` block
-            - the stem tests one documented fact or behaviour; exactly one option is correct and
-              the three distractors are alternatives the same page or the product documents
-              elsewhere, never invented features; every option has an explanation that matches
-              the source
+            - before writing each item, note for yourself the concept it tests, the decision or
+              behaviour it asks about, and the excerpt that supports it. Check that concept against
+              the existing content/questions/ files and the items already written in this run: the
+              same fact asked from the same angle is a duplicate, so pick another concept; the same
+              source asked from a different angle, in another course, is fine
+            - the stem asks for a technical decision or behaviour under constraints it states, and
+              the evidence supports it. Take the course's angle: ai-cloudops-engineer diagnoses;
+              ai-infrastructure-engineer operates, configures and recovers; ai-solutions-architect
+              chooses between documented alternatives given workload, team, budget and isolation
+              needs. Ask plain recall only when the evidence supports no applied framing, and never
+              pad a stem with a scenario that changes nothing about the answer
+            - test the mechanism or the trade-off, never a volatile figure: no benchmark numbers,
+              prices, region or GPU availability tables, CLI flags or undocumented defaults; no stem
+              that opens "Per <doc>"; no vague "best practice" answer; no capability the captured
+              text does not document
+            - four parallel options of similar length; the correct one is neither the longest nor
+              the most specific; exactly one option is correct, and the three distractors are
+              documented alternatives -- on the same page or elsewhere in the product's documentation,
+              never invented features -- that are plausible for the scenario; always, never and only
+              do not appear in distractors alone; every option has an explanation that matches the
+              source
             - `evidence[]`: `source_id` of a record whose _run/captured/<id>.md contains the excerpt,
               `source_sha256` copied from that record, `excerpt` copied verbatim from the captured
               text, at most 25 words; the excerpt must establish the correct answer on its own
@@ -1962,6 +1979,16 @@ jobs:
               one unparseable file fails the whole run
             Do not paraphrase excerpts, do not cite a page for a claim it does not make, and do
             not write a question whose answer the captured text leaves open.
+
+            Before you write _agent/CHANGES.md, preflight the items you wrote against the advisory
+            checks in scripts/content-quality-report.mjs: read `itemCues`, `volatileKinds` and
+            `THRESHOLDS` there, since you cannot run it. Look for a correct option that is the
+            longest or far longer than the distractors, a distractor much shorter than the correct
+            option, always/never/only in distractors alone, a number with a unit, a version, a CLI
+            flag or a price, and a near-duplicate of an existing item. Revise a flagged item, or keep
+            it when the evidence allows no better wording. The checks are advisory: a deterministic
+            step runs the same report on your items after you finish, and nothing in it blocks the
+            run. Never edit content/quality-allowlist.yaml.
 
             For items under content/questions/ with `status: needs_review` whose source is listed
             in `drifted`: read the new captured text. If the same concept is still documented,
@@ -2416,10 +2443,27 @@ jobs:
             - `course_id`, `domain`, `objective` from the course maps; `status: review_ready`;
               `authored: { by: "${{ env.AUTHOR_ID }}", at: <the "now" value from _run/limits.json,
               copied exactly> }`; no `reviewed` block
-            - the stem tests one documented fact or behaviour; exactly one option is correct and
-              the three distractors are alternatives the same page or the product documents
-              elsewhere, never invented features; every option has an explanation that matches
-              the source
+            - before writing each item, note for yourself the concept it tests, the decision or
+              behaviour it asks about, and the excerpt that supports it. Check that concept against
+              the existing content/questions/ files and the items already written in this run: the
+              same fact asked from the same angle is a duplicate, so pick another concept; the same
+              source asked from a different angle, in another course, is fine
+            - the stem asks for a technical decision or behaviour under constraints it states, and
+              the evidence supports it. Take the course's angle: ai-cloudops-engineer diagnoses;
+              ai-infrastructure-engineer operates, configures and recovers; ai-solutions-architect
+              chooses between documented alternatives given workload, team, budget and isolation
+              needs. Ask plain recall only when the evidence supports no applied framing, and never
+              pad a stem with a scenario that changes nothing about the answer
+            - test the mechanism or the trade-off, never a volatile figure: no benchmark numbers,
+              prices, region or GPU availability tables, CLI flags or undocumented defaults; no stem
+              that opens "Per <doc>"; no vague "best practice" answer; no capability the captured
+              text does not document
+            - four parallel options of similar length; the correct one is neither the longest nor
+              the most specific; exactly one option is correct, and the three distractors are
+              documented alternatives -- on the same page or elsewhere in the product's documentation,
+              never invented features -- that are plausible for the scenario; always, never and only
+              do not appear in distractors alone; every option has an explanation that matches the
+              source
             - `evidence[]`: `source_id` of a record whose _run/captured/<id>.md contains the excerpt,
               `source_sha256` copied from that record, `excerpt` copied verbatim from the captured
               text, at most 25 words; the excerpt must establish the correct answer on its own
@@ -2429,6 +2473,16 @@ jobs:
               one unparseable file fails the whole run
             Do not paraphrase excerpts, do not cite a page for a claim it does not make, and do
             not write a question whose answer the captured text leaves open.
+
+            Before you write _agent/CHANGES.md, preflight the items you wrote against the advisory
+            checks in scripts/content-quality-report.mjs: read `itemCues`, `volatileKinds` and
+            `THRESHOLDS` there, since you cannot run it. Look for a correct option that is the
+            longest or far longer than the distractors, a distractor much shorter than the correct
+            option, always/never/only in distractors alone, a number with a unit, a version, a CLI
+            flag or a price, and a near-duplicate of an existing item. Revise a flagged item, or keep
+            it when the evidence allows no better wording. The checks are advisory: a deterministic
+            step runs the same report on your items after you finish, and nothing in it blocks the
+            run. Never edit content/quality-allowlist.yaml.
 
             For items under content/questions/ with `status: needs_review` whose source is listed
             in `drifted`: read the new captured text. If the same concept is still documented,

@@ -10,6 +10,7 @@ import {
   existsSync,
 } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
@@ -4010,5 +4011,59 @@ test("a staged rename cannot carry an off-scope file past the scoped guard", () 
     assert.match(res.stderr, /q-old000000001\.yaml.*course "course-b"/);
   } finally {
     rmSync(r.dir, { recursive: true, force: true });
+  }
+});
+
+// The author's editorial rubric is advisory guidance for the AUTHOR only. The
+// reviewer still judges exactly two criteria (evidence supports the answer,
+// exactly one option is best); a rubric line leaking into its prompt would
+// turn style advice into a rejection reason nobody signed off on.
+test("the author prompt carries the editorial rubric and the reviewer prompt is untouched", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const agents = (job) => job.steps.filter((s) => s.uses?.startsWith("anthropics/claude-code-action@"));
+  const authors = agents(workflow.jobs.author).filter((s) =>
+    s.name.startsWith("Author agent writes review_ready questions"),
+  );
+  assert.equal(authors.length, 2, "primary and fallback author step");
+  const rubricOf = (prompt) => {
+    const start = prompt.indexOf("- before writing each item, note for yourself the concept");
+    const end = prompt.indexOf("Never edit content/quality-allowlist.yaml.");
+    assert.ok(start !== -1 && end > start, "rubric section not found");
+    return prompt.slice(start, end);
+  };
+  const markers = [
+    /concept it tests, the decision or\s+behaviour it asks about, and the excerpt that supports it/,
+    /same\s+fact asked from the same angle is a duplicate/,
+    /ai-cloudops-engineer diagnoses/,
+    /ai-infrastructure-engineer operates, configures and recovers/,
+    /ai-solutions-architect\s+chooses between documented alternatives/,
+    /plain recall\s+only when the evidence supports no applied framing/,
+    /never a volatile figure/,
+    /"Per <doc>"/,
+    /neither the longest nor\s+the most specific/,
+    /always, never and only\s+do not appear in distractors alone/,
+    /preflight the items you wrote against the advisory\s+checks in scripts\/content-quality-report\.mjs/,
+  ];
+  for (const step of authors) {
+    const prompt = step.with.prompt;
+    assert.doesNotMatch(prompt, /stem tests one documented fact/, `${step.name} keeps the recall line`);
+    for (const m of markers) assert.match(prompt, m, `${step.name} lacks ${m}`);
+    // Unchanged invariants the rubric must not have dropped.
+    assert.match(prompt, /exactly one option is correct/, step.name);
+    assert.match(prompt, /every option has an explanation/, step.name);
+    assert.match(prompt, /Do not run commands\./, step.name);
+  }
+  assert.equal(rubricOf(authors[0].with.prompt), rubricOf(authors[1].with.prompt));
+
+  // sha256 of the reviewer prompt on main at 091e622, before the rubric.
+  const REVIEWER_PROMPT_SHA256 = "74671da826bca05d664a97c6e82d3f635c8bc21fb77a62bb0f585241880eb85d";
+  const reviewers = agents(workflow.jobs.review);
+  assert.equal(reviewers.length, 2, "primary and fallback reviewer step");
+  for (const step of reviewers) {
+    const digest = createHash("sha256").update(step.with.prompt).digest("hex");
+    assert.equal(digest, REVIEWER_PROMPT_SHA256, `${step.name} prompt changed`);
+    assert.doesNotMatch(step.with.prompt, /volatile|longest|Per <doc>|preflight/i, step.name);
   }
 });
