@@ -103,6 +103,7 @@ test("Source drift still quarantines observed drift when a source could not be r
   const steps = wf.jobs.drift.steps;
   const check = steps.find((s) => s.id === "check");
   const branch = /case "\$code" in[\s\S]*?\n\s*esac/.exec(check.run);
+  assert.match(check.run, /--check --mark-drifted 2>&1 \| tee drift\.txt/, "ERROR rows must reach drift.txt");
   assert.ok(branch, "the exit code is not read as a set of codes");
 
   const outcome = (code, report) => {

@@ -71,7 +71,9 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           set +e
-          npm run --silent snapshot:capture -- --check --mark-drifted | tee drift.txt
+          # stderr too: the ERROR rows for unreadable sources go there, and the
+          # final red step lists them from drift.txt. Intake reads only DRIFTED rows.
+          npm run --silent snapshot:capture -- --check --mark-drifted 2>&1 | tee drift.txt
           code=${PIPESTATUS[0]}
           set -e
           # 0 = clean, 2 = drift found (a 404/410 page counts, marked
