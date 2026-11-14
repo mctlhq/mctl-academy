@@ -1,32 +1,51 @@
 schema_version: 1
 id: q-f5e82a6c91d4
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-slurm-admin
-stem: "In a Soperator cluster, a worker node fails its extensive checks after an initial critical-check failure already drained it. How does Soperator's next action differ from that initial drain, and what does the difference trigger?"
+stem: "In a Soperator cluster, a worker node fails its extensive checks after an
+  initial critical-check failure already drained it. How does Soperator's next
+  action differ from that initial drain, and what does the difference trigger?"
 options:
   - id: a
-    text: "Soperator drains the node again with a `[hardware_problem]` prefix, marking it unhealthy and triggering automatic re-creation"
+    text: "Soperator drains the node again with a `[hardware_problem]` prefix,
+      marking it unhealthy and triggering automatic re-creation"
     correct: true
-    explanation: "Correct. If the extensive checks fail, Soperator drains the node again, this time with the `[hardware_problem]` prefix, and marks it as an unhealthy Kubernetes node, which triggers automatic re-creation."
+    explanation: "Correct. If the extensive checks fail, Soperator drains the node
+      again, this time with the `[hardware_problem]` prefix, and marks it as an
+      unhealthy Kubernetes node, which triggers automatic re-creation."
   - id: b
-    text: "Soperator drains the node again with the same `[node_problem]` prefix, which re-queues it for another round of extensive checks"
+    text: "Soperator drains the node again with the same `[node_problem]` prefix,
+      which re-queues it for another round of extensive checks"
     correct: false
-    explanation: "The `[node_problem]` prefix is used for the first drain, before extensive checks run; a second failure escalates to the `[hardware_problem]` prefix instead."
+    explanation: "The `[node_problem]` prefix is used for the first drain, before
+      extensive checks run; a second failure escalates to the
+      `[hardware_problem]` prefix instead."
   - id: c
-    text: "Soperator removes the node from the suspicious reservation and returns it to normal scheduling without any further action"
+    text: "Soperator removes the node from the suspicious reservation and returns it
+      to normal scheduling without any further action"
     correct: false
-    explanation: "Removing the node from the suspicious reservation is what happens when a node passes the extensive checks, not when it fails them."
+    explanation: "Removing the node from the suspicious reservation is what happens
+      when a node passes the extensive checks, not when it fails them."
   - id: d
-    text: "Soperator stops all checks immediately and waits for Compute to issue a maintenance event before it takes any further action on the node"
+    text: "Soperator stops all checks immediately and waits for Compute to issue a
+      maintenance event before it takes any further action on the node"
     correct: false
-    explanation: "Stopping checks to wait for a Compute maintenance event is a separate upstream health-check path used in Managed Soperator and Pro Solution for Soperator, not the outcome of a failed extensive check."
+    explanation: "Stopping checks to wait for a Compute maintenance event is a
+      separate upstream health-check path used in Managed Soperator and Pro
+      Solution for Soperator, not the outcome of a failed extensive check."
 evidence:
   - source_id: src-nb-slurm-soperator-worker-nodes-health
     source_sha256: 3085c77732e30ea4872dea85646ae772fedce71da69fe9eb02bb756a1c0edadf
-    excerpt: "The drain reason now has the `[hardware_problem]` prefix — Soperator marks all worker nodes with this prefix as unhealthy Kubernetes nodes, which triggers automatic re-creation"
+    excerpt: "The drain reason now has the `[hardware_problem]` prefix — Soperator
+      marks all worker nodes with this prefix as unhealthy Kubernetes nodes,
+      which triggers automatic re-creation"
     locator: "Node replacement"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:14:34Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T14:32:11Z
+  content_sha256: 2e9dad008e177bbc4780c0489ecf00dffb01fcf90c992801f8f38e6ff4dfc31c

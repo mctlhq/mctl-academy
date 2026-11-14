@@ -1,32 +1,51 @@
 schema_version: 1
 id: q-f4c71d9a3b58
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-gpu-fabric
-stem: "When planning how to place a multi-node training job's worker processes within a GPU cluster's InfiniBand topology, which placement minimizes the cost of network communication between workers?"
+stem: "When planning how to place a multi-node training job's worker processes
+  within a GPU cluster's InfiniBand topology, which placement minimizes the cost
+  of network communication between workers?"
 options:
   - id: a
-    text: "Keeping the workers within the same scalable unit (SU) or point of delivery (POD), rather than spreading them across PODs"
+    text: "Keeping the workers within the same scalable unit (SU) or point of
+      delivery (POD), rather than spreading them across PODs"
     correct: true
-    explanation: "Correct. The guide states that if a connection takes place within one POD or SU, the cost of network communication does not change, so keeping workers in one such entity minimizes cost."
+    explanation: "Correct. The guide states that if a connection takes place within
+      one POD or SU, the cost of network communication does not change, so
+      keeping workers in one such entity minimizes cost."
   - id: b
-    text: "Spreading the workers evenly across every POD in the fabric, so no single POD becomes a bottleneck"
+    text: "Spreading the workers evenly across every POD in the fabric, so no single
+      POD becomes a bottleneck"
     correct: false
-    explanation: "Spreading workers across PODs means more communication crosses a POD boundary, which the guide says increases the cost of network communication."
+    explanation: "Spreading workers across PODs means more communication crosses a
+      POD boundary, which the guide says increases the cost of network
+      communication."
   - id: c
-    text: "Routing every pair of workers' traffic through the fabric's root switch rather than through nearby POD or SU switches, regardless of distance"
+    text: "Routing every pair of workers' traffic through the fabric's root switch
+      rather than through nearby POD or SU switches, regardless of distance"
     correct: false
-    explanation: "The root switch sits at the highest, most expensive layer of the hierarchy; routing every exchange through it is the costliest placement, not the cheapest."
+    explanation: "The root switch sits at the highest, most expensive layer of the
+      hierarchy; routing every exchange through it is the costliest placement,
+      not the cheapest."
   - id: d
-    text: "Keeping all workers on one scalable unit (SU) but disabling InfiniBand on their virtual machines"
+    text: "Keeping all workers on one scalable unit (SU) but disabling InfiniBand on
+      their virtual machines"
     correct: false
-    explanation: "InfiniBand is the high-speed interconnect the topology describes; disabling it removes the benefit of careful placement rather than reducing communication cost."
+    explanation: "InfiniBand is the high-speed interconnect the topology describes;
+      disabling it removes the benefit of careful placement rather than reducing
+      communication cost."
 evidence:
   - source_id: src-nb-compute-clusters-gpu-topology
     source_sha256: 9e45eb3a7a326319661e90000d1980a78ec70973f603a04997f85fccd20c7400
-    excerpt: "If a connection or data exchange takes place within one entity (POD or SU), the cost of network communication does not change."
+    excerpt: "If a connection or data exchange takes place within one entity (POD or
+      SU), the cost of network communication does not change."
     locator: "Cost of network communication"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:14:34Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T14:32:11Z
+  content_sha256: 51ce8b612126cc7a23fac579b136351d4e200973d0d9190610c1ff71e2396388
