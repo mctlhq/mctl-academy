@@ -1587,8 +1587,9 @@ jobs:
           node scripts/capture-source.mjs --check --mark-drifted
           code=$?
           set -e
-          # capture-source's check mode: 0 clean, 2 drift found and marked, 1 a
-          # source it could not reach. Called directly rather than through
+          # capture-source's check mode: 0 clean, 2 drift found and marked (a
+          # 404/410 page is marked deprecated and counts), 3 a source it could
+          # not read, 1 the check itself failed. Called directly rather than through
           # `npm run`, so the code is check()'s and nothing else's: npm exits 1
           # for its own failures too -- a missing script entry, an unparseable
           # package.json -- which this case would have reported as an
@@ -1597,7 +1598,7 @@ jobs:
           # and treating "not 1" as success let those through as "no drift".
           case "$code" in
             0|2) ;;
-            1) echo "::error::live drift check could not reach a source"; exit 1 ;;
+            3) echo "::error::live drift check could not read a source"; exit 1 ;;
             *) echo "::error::live drift check exited $code"; exit 1 ;;
           esac
           node scripts/quarantine-drifted-questions.mjs

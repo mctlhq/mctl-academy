@@ -54,6 +54,22 @@ export function parseDriftReport(text) {
 }
 
 export function issueBody({ id, url, oldHash, newHash }) {
+  if (newHash === "gone") {
+    return [
+      "Upstream page is gone (HTTP 404 or 410). Automatically marked `status: deprecated` (fail-closed quarantine).",
+      "",
+      `- source: \`${id}\``,
+      `- url: ${url}`,
+      `- recorded hash: \`${oldHash}\``,
+      "",
+      "Questions citing this source are excluded from learner selection.",
+      "The quarantine itself lands through the `chore/quarantine-drift` pull request.",
+      "If the page moved, capture its new URL as a new source and re-cite; otherwise retire the dependents.",
+      "The drift check skips deprecated sources, so nothing restores this one automatically: if the URL resolves again (a transient 404), set `status: current` back by hand after re-checking its hash.",
+      "",
+      "See SOURCES.md and CONTENT-POLICY.md.",
+    ].join("\n");
+  }
   return [
     "Upstream source changed. Automatically marked `status: drifted` (fail-closed quarantine).",
     "",
