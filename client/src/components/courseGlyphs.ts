@@ -99,6 +99,27 @@ const glyphs: Record<string, CourseGlyph> = {
       path("M70 30 L64 38 M70 30 L78 36"),
     ],
   },
+  // A chip with pins feeding a rack: running GPU platforms.
+  "ai-infrastructure-engineer": {
+    hue: "--accent-lime",
+    shapes: [
+      rect(30, 18, 28, 28, 4),
+      rect(38, 26, 12, 12, 2),
+      path("M36 12 V18 M44 12 V18 M52 12 V18 M36 46 V52 M44 46 V52 M52 46 V52"),
+      path("M24 24 H30 M24 32 H30 M24 40 H30 M58 32 H72"),
+      rect(72, 22, 10, 20, 2),
+    ],
+  },
+  // Connected blocks on a grid: designing a solution.
+  "ai-solutions-architect": {
+    hue: "--accent-cyan",
+    shapes: [
+      rect(14, 10, 22, 16),
+      rect(60, 10, 22, 16),
+      rect(37, 40, 22, 16),
+      path("M25 26 V33 H48 V40 M71 26 V33 H48"),
+    ],
+  },
 };
 
 const fallback: CourseGlyph = {

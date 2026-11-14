@@ -3,6 +3,7 @@ id: ai-solutions-architect
 prepares_for: "Nebius AI Solutions Architect"
 title: "AI Solutions Architect"
 description: "Practice for the Nebius AI Solutions Architect certification. Scenario questions on designing AI cloud solutions: choosing compute, storage and training stacks, planning for failure and handover, balancing cost against performance, and securing identity, connectivity and data."
+summary: "Design AI workloads on a GPU cloud that perform, stay resilient, keep costs in check and isolate tenants and data securely."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."

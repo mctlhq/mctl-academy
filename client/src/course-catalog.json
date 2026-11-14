@@ -116,6 +116,7 @@
   {
     "id": "ai-infrastructure-engineer",
     "title": "AI Infrastructure Engineer",
+    "summary": "Run GPU platforms for training and inference: secure and budget them, keep training clusters and serving healthy, and automate operations for reliability.",
     "publishedQuestionCount": 0,
     "available": false,
     "mock": {
@@ -191,6 +192,7 @@
   {
     "id": "ai-solutions-architect",
     "title": "AI Solutions Architect",
+    "summary": "Design AI workloads on a GPU cloud that perform, stay resilient, keep costs in check and isolate tenants and data securely.",
     "publishedQuestionCount": 0,
     "available": false,
     "mock": {

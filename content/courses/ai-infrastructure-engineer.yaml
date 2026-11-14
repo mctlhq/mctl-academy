@@ -3,6 +3,7 @@ id: ai-infrastructure-engineer
 prepares_for: "Nebius AI Infrastructure Engineer"
 title: "AI Infrastructure Engineer"
 description: "Practice for the Nebius AI Infrastructure Engineer certification. Scenario questions on running GPU platforms for training and inference: access, encryption and spend controls, training clusters and storage, serving and GPU sharing, observability, networking, and keeping long-running workloads reliable."
+summary: "Run GPU platforms for training and inference: secure and budget them, keep training clusters and serving healthy, and automate operations for reliability."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
