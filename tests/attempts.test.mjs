@@ -2,6 +2,15 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { app } from "../server/app.mjs";
 import { authedCookie as createAuthedCookie } from "./helpers/auth-test-helper.mjs";
+import { gradableQuestion } from "./helpers/answer-key-fixture.mjs";
+
+// Attempts are graded against the real answer key in content/ (issue #208).
+// Each learner below has their own attempt history, so the same questions can
+// be reused across tests without one test's rows leaking into another's.
+const Q1 = gradableQuestion(0);
+const Q2 = gradableQuestion(1);
+const right = (q) => ({ questionId: q.id, optionId: q.correctOptionId });
+const wrong = (q) => ({ questionId: q.id, optionId: q.wrongOptionId });
 
 async function authedCookie(_githubId, githubLogin) {
   return createAuthedCookie({ githubLogin });
@@ -12,7 +21,7 @@ describe("Attempt sync API", () => {
     const res = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionId: "q-attempts-1", domain: "domain-1", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
 
     assert.equal(res.status, 401);
@@ -29,14 +38,14 @@ describe("Attempt sync API", () => {
     const postRes = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-2", domain: "domain-2", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
 
     assert.equal(postRes.status, 201);
     const postBody = await postRes.json();
     assert.equal(postBody.success, true);
-    assert.equal(postBody.attempt.questionId, "q-attempts-2");
-    assert.equal(postBody.attempt.domain, "domain-2");
+    assert.equal(postBody.attempt.questionId, Q1.id);
+    assert.equal(postBody.attempt.domain, Q1.domain);
     assert.equal(postBody.attempt.correct, true);
     assert.ok(postBody.attempt.attemptedAt);
 
@@ -45,7 +54,7 @@ describe("Attempt sync API", () => {
     });
     assert.equal(getRes.status, 200);
     const getBody = await getRes.json();
-    const found = getBody.attempts.find((a) => a.questionId === "q-attempts-2");
+    const found = getBody.attempts.find((a) => a.questionId === Q1.id);
     assert.ok(found);
     assert.equal(found.correct, true);
   });
@@ -61,7 +70,7 @@ describe("Attempt sync API", () => {
     const postRes = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-privacy-1", domain: "domain-1", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
     assert.equal(postRes.status, 201);
 
@@ -75,7 +84,7 @@ describe("Attempt sync API", () => {
 
     const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
     const getBody = await getRes.json();
-    const found = getBody.attempts.find((a) => a.questionId === "q-privacy-1");
+    const found = getBody.attempts.find((a) => a.questionId === Q1.id);
     assert.ok(found);
     assert.deepEqual(Object.keys(found).sort(), ["attemptedAt", "correct", "domain", "questionId"]);
   });
@@ -86,12 +95,7 @@ describe("Attempt sync API", () => {
     const res = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({
-        questionId: "q-privacy-2",
-        domain: "domain-1",
-        correct: true,
-        courseId: "ai-leader",
-      }),
+      body: JSON.stringify({ ...right(Q1), courseId: "ai-leader" }),
     });
 
     assert.equal(res.status, 201);
@@ -106,7 +110,7 @@ describe("Attempt sync API", () => {
     const res = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ domain: "domain-1", correct: true }),
+      body: JSON.stringify({ optionId: Q1.correctOptionId }),
     });
 
     assert.equal(res.status, 400);
@@ -116,23 +120,91 @@ describe("Attempt sync API", () => {
     assert.equal(getBody.attempts.length, 0);
   });
 
-  test("POST /api/attempts rejects a non-boolean correct with 400 and does not persist it", async () => {
+  test("POST /api/attempts rejects a missing or non-string optionId with 400 and does not persist it", async () => {
     const cookie = await authedCookie(50003, "attempts-user-3");
+
+    for (const body of [
+      { questionId: Q1.id },
+      { questionId: Q1.id, optionId: 1 },
+      // The pre-#208 payload: a boolean the server used to trust.
+      { questionId: Q1.id, domain: Q1.domain, correct: true },
+    ]) {
+      const res = await app.request("/api/attempts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Cookie: cookie },
+        body: JSON.stringify(body),
+      });
+      assert.equal(res.status, 400, JSON.stringify(body));
+    }
+
+    const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
+    const getBody = await getRes.json();
+    assert.equal(getBody.attempts.length, 0);
+  });
+
+  test("a forged correct=true with a wrong option is stored as incorrect (issue #208)", async () => {
+    const cookie = await authedCookie(50010, "attempts-user-10");
 
     const res = await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-3", domain: "domain-1", correct: "yes" }),
+      body: JSON.stringify({ ...wrong(Q1), correct: true, domain: "forged-domain" }),
     });
-
-    assert.equal(res.status, 400);
+    assert.equal(res.status, 201);
+    const body = await res.json();
+    assert.equal(body.attempt.correct, false);
+    assert.equal(body.attempt.domain, Q1.domain);
 
     const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
-    const getBody = await getRes.json();
-    assert.equal(
-      getBody.attempts.find((a) => a.questionId === "q-attempts-3"),
-      undefined,
-    );
+    const found = (await getRes.json()).attempts.find((a) => a.questionId === Q1.id);
+    assert.ok(found);
+    assert.equal(found.correct, false);
+    assert.equal(found.domain, Q1.domain);
+  });
+
+  test("the correct option is stored as correct even when the client claims correct=false", async () => {
+    const cookie = await authedCookie(50011, "attempts-user-11");
+
+    const res = await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ ...right(Q1), correct: false }),
+    });
+    assert.equal(res.status, 201);
+    assert.equal((await res.json()).attempt.correct, true);
+  });
+
+  test("optionId null (a Mock exam question left unanswered) is stored as incorrect", async () => {
+    const cookie = await authedCookie(50012, "attempts-user-12");
+
+    const res = await app.request("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ questionId: Q1.id, optionId: null, correct: true }),
+    });
+    assert.equal(res.status, 201);
+    assert.equal((await res.json()).attempt.correct, false);
+  });
+
+  test("an unknown questionId or optionId is rejected with 400 and not persisted", async () => {
+    const cookie = await authedCookie(50013, "attempts-user-13");
+
+    for (const body of [
+      { questionId: "q-does-not-exist", optionId: "a" },
+      { questionId: Q1.id, optionId: "z" },
+      // A rendered position is not an option id.
+      { questionId: Q1.id, optionId: "0" },
+    ]) {
+      const res = await app.request("/api/attempts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Cookie: cookie },
+        body: JSON.stringify(body),
+      });
+      assert.equal(res.status, 400, JSON.stringify(body));
+    }
+
+    const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
+    assert.equal((await getRes.json()).attempts.length, 0);
   });
 
   test("re-recording an attempt keeps only the latest value per questionId", async () => {
@@ -141,18 +213,18 @@ describe("Attempt sync API", () => {
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-4", domain: "domain-3", correct: false }),
+      body: JSON.stringify(wrong(Q1)),
     });
 
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-4", domain: "domain-3", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
 
     const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
     const getBody = await getRes.json();
-    const matches = getBody.attempts.filter((a) => a.questionId === "q-attempts-4");
+    const matches = getBody.attempts.filter((a) => a.questionId === Q1.id);
     assert.equal(matches.length, 1);
     assert.equal(matches[0].correct, true);
   });
@@ -162,7 +234,7 @@ describe("Attempt sync API", () => {
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-106", domain: "domain-1", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
 
     const deleteRes = await app.request("/api/attempts", { method: "DELETE" });
@@ -170,7 +242,7 @@ describe("Attempt sync API", () => {
 
     const getRes = await app.request("/api/attempts", { headers: { Cookie: cookie } });
     const getBody = await getRes.json();
-    assert.ok(getBody.attempts.find((a) => a.questionId === "q-attempts-106"));
+    assert.ok(getBody.attempts.find((a) => a.questionId === Q1.id));
   });
 
   test("DELETE /api/attempts erases every attempt for the authenticated user — Clear history", async () => {
@@ -179,12 +251,12 @@ describe("Attempt sync API", () => {
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-107a", domain: "domain-1", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ questionId: "q-attempts-107b", domain: "domain-2", correct: false }),
+      body: JSON.stringify(wrong(Q2)),
     });
 
     const deleteRes = await app.request("/api/attempts", {
@@ -207,12 +279,12 @@ describe("Attempt sync API", () => {
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookieA },
-      body: JSON.stringify({ questionId: "q-attempts-108", domain: "domain-1", correct: true }),
+      body: JSON.stringify(right(Q1)),
     });
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookieB },
-      body: JSON.stringify({ questionId: "q-attempts-109", domain: "domain-1", correct: true }),
+      body: JSON.stringify(right(Q2)),
     });
 
     await app.request("/api/attempts", { method: "DELETE", headers: { Cookie: cookieA } });
@@ -222,6 +294,6 @@ describe("Attempt sync API", () => {
 
     const getResB = await app.request("/api/attempts", { headers: { Cookie: cookieB } });
     const bodyB = await getResB.json();
-    assert.ok(bodyB.attempts.find((a) => a.questionId === "q-attempts-109"));
+    assert.ok(bodyB.attempts.find((a) => a.questionId === Q2.id));
   });
 });

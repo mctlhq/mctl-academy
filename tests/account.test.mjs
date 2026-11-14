@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import { app } from "../server/app.mjs";
 import { authPool } from "../server/auth.mjs";
 import { authedCookie } from "./helpers/auth-test-helper.mjs";
+import { gradableQuestion } from "./helpers/answer-key-fixture.mjs";
+
+const Q1 = gradableQuestion(0);
 
 describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
   test("without a session cookie returns 401", async () => {
@@ -41,7 +44,7 @@ describe("DELETE /api/account — self-service deletion (GDPR Art 17)", () => {
     await app.request("/api/attempts", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie, Origin: "http://localhost" },
-      body: JSON.stringify({ questionId: "q-account-delete", domain: "domain-1", correct: true }),
+      body: JSON.stringify({ questionId: Q1.id, optionId: Q1.correctOptionId }),
     });
 
     const before = await app.request("/api/attempts", { headers: { Cookie: cookie } });

@@ -65,7 +65,7 @@ function handleSubmit() {
   for (const scored of perQuestion) {
     const question = submitted.questions.find((q) => q.id === scored.questionId);
     if (!question) continue;
-    recordAttempt(scored.questionId, question.domain, scored.isCorrect);
+    recordAttempt(scored.questionId, question.domain, scored.isCorrect, scored.selectedOptionId ?? null);
   }
 }
 
