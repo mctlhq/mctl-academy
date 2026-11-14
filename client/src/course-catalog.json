@@ -279,7 +279,7 @@
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
     "summary": "Run GPU cloud infrastructure day to day: deploy environments, operate compute nodes, monitor workloads, manage access and storage, and troubleshoot.",
-    "publishedQuestionCount": 39,
+    "publishedQuestionCount": 38,
     "available": true,
     "mock": {
       "questionCount": 30,
