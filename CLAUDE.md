@@ -19,28 +19,13 @@ persisted.
 
 ## Layout
 
-- `content/schemas/` — versioned JSON Schemas (2020-12). Question, lesson, source.
-- `content/courses/*.yaml` — **the** source of truth for course metadata: stable
-  course id, vendor-neutral title, domain weights, the objective map, and mock
-  composition. One file per course; there is no second catalog anywhere, and
-  application code refers to courses by id plus the generated UI metadata below.
-- `content/{questions,lessons,sources}/` — YAML content. Each question names its
-  course with `course_id`.
-- `scripts/validate-content.mjs` — the content lint.
-- `scripts/discover-docs.mjs`, `scripts/replenish-prepare.mjs`,
-  `scripts/review-receipt.mjs` — the deterministic parts of the weekly
-  `Content replenish` workflow (discovery, capture glue and caps, reviewer
-  receipt). `docs/content-operations.md` describes the run.
-- `scripts/lib/content-model.mjs` — the shared bundle-eligibility rule, used by
-  both the lint and the bundle builder.
-- `scripts/build-content-bundle.mjs` — generates `client/src/content-bundle.json`
-  (eligible published questions), `client/src/course-catalog.json` (the
-  vendor-neutral client course catalog, with each course's published question
-  count), and `client/public/sitemap.xml` (the public sitemap for search
-  engines). All are regenerated on every dev/build/test run.
-- `tests/content-lint.test.mjs` — proves the lint rejects, rule by rule.
-- `tests/build-content-bundle.test.mjs` — proves unsafe content cannot reach the
-  client bundle.
+- `content/courses/*.yaml` is **the** source of truth for course metadata; there
+  is no second catalog anywhere, and application code refers to courses by id.
+- `scripts/lib/content-model.mjs` holds the one bundle-eligibility rule, shared
+  by the lint and the bundle builder.
+- `client/src/content-bundle.json`, `client/src/course-catalog.json` and
+  `client/public/sitemap.xml` are generated on every dev/build/test run; never
+  hand-edit them. `docs/content-operations.md` describes the replenish run.
 
 ## The gate
 
@@ -66,14 +51,6 @@ content PRs from forks are not accepted.
 
 **An LLM cannot replace evidence CI.** Independent semantic review and mechanical
 snapshot verification are complementary requirements.
-
-## Commands
-
-```bash
-npm ci
-npm run lint:content     # structural validation, no secrets, no network
-npm run test:content     # lint + bundle-safety tests, each violating one rule
-```
 
 ## Conventions
 
