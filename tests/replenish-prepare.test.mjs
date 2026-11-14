@@ -4264,7 +4264,7 @@ test("prBody lists offered stale-pinned items the run did not revise, from data,
     ...CANDIDATES,
     stalePinned: [
       { source_id: "src-a", question_ids: ["q-aaaaaaaaaaaa", "q-bbbbbbbbbbbb"] },
-      { source_id: "src-b", question_ids: ["q-cccccccccccc"] },
+      { source_id: "src-b", question_ids: ["q-cccccccccccc", "q-bbbbbbbbbbbb"] },
     ],
   };
   const receipt = {
@@ -4274,7 +4274,8 @@ test("prBody lists offered stale-pinned items the run did not revise, from data,
   };
   const body = prBody({ candidates, receipt, captured: [], selected: [] });
   assert.match(body, /### Quarantined items left untouched/);
-  assert.match(body, /- `q-bbbbbbbbbbbb` \(source `src-a`\)/);
+  assert.match(body, /- `q-bbbbbbbbbbbb` \(sources `src-a`, `src-b`\)/);
+  assert.equal(body.match(/- `q-bbbbbbbbbbbb`/g)?.length, 1, "one line per item, not per source");
   assert.match(body, /- `q-cccccccccccc` \(source `src-b`\)/);
   assert.doesNotMatch(body, /- `q-aaaaaaaaaaaa`/, "a reviewed item is not untouched");
 

@@ -856,9 +856,16 @@ export function prBody({
   // items were offered again on every run (14.11: 12 of them across 4 runs).
   if (Array.isArray(candidates.stalePinned)) {
     const reviewed = new Set(receipt.questions.map((q) => q.id));
-    const untouched = candidates.stalePinned.flatMap((s) =>
-      (s.question_ids ?? []).filter((id) => !reviewed.has(id)).map((id) => ({ id, source: s.source_id })),
-    );
+    // Grouped by question: an item citing two stale-pinned sources appears
+    // in both entries, and the list must match the Discovery line's count.
+    const bySource = new Map();
+    for (const s of candidates.stalePinned) {
+      for (const id of s.question_ids ?? []) {
+        if (reviewed.has(id)) continue;
+        bySource.set(id, [...(bySource.get(id) ?? []), s.source_id]);
+      }
+    }
+    const untouched = [...bySource].map(([id, sources]) => ({ id, sources }));
     if (untouched.length) {
       lines.push(
         "",
@@ -867,7 +874,10 @@ export function prBody({
         "Offered as stale-pinned, not revised this run: usually the re-captured page no longer documents the concept, or the item is outside this run's course scope. The author's reasons are in this run's `authoring` artifact (`_agent/CHANGES.md`). They are offered again on every run until a human retires or re-sources them.",
         "",
       );
-      for (const u of untouched) lines.push(`- \`${u.id}\` (source \`${u.source}\`)`);
+      for (const u of untouched) {
+        const label = u.sources.length > 1 ? "sources" : "source";
+        lines.push(`- \`${u.id}\` (${label} ${u.sources.map((x) => `\`${x}\``).join(", ")})`);
+      }
     }
   }
   if (before && after) {
