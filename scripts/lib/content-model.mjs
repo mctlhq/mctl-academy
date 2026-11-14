@@ -79,6 +79,37 @@ export function isAllowedSourceUrl(value) {
 }
 
 /**
+ * The page a fetch actually landed on, when a redirect took it to a different
+ * document than the one requested; null when it is the same page.
+ *
+ * `fetch` follows redirects, and every check downstream is a check of the
+ * bytes, not of their address: a docs site that retires a page and redirects
+ * its URL to a hub or an API reference served a different, perfectly valid
+ * page, the capture stored it under the old record as a routine re-capture,
+ * and the record kept saying `current` (src-tv-hybrid-research ->
+ * examples/hub.md, src-tv-tut-map -> endpoint/map.md, 14.11). So a move is a
+ * finding in its own right, never a re-capture.
+ *
+ * The same page is the same host and path, ignoring a trailing slash and the
+ * `.md` twin suffix (a site may answer `/x.md` from `/x` or the reverse).
+ * Query and fragment are ignored: no allowlisted page is addressed by them.
+ */
+export function movedTo(requested, landed) {
+  let a;
+  let b;
+  try {
+    a = new URL(requested);
+    b = new URL(landed);
+  } catch {
+    // An unparseable final URL is not the requested page; say so rather
+    // than treat "could not compare" as "same page".
+    return String(landed);
+  }
+  const page = (u) => `${u.hostname}${u.pathname.replace(/\/+$/, "").replace(/\.md$/, "")}`;
+  return page(a) === page(b) ? null : b.href;
+}
+
+/**
  * The repository commit an allowlisted URL is pinned to, or null for an
  * entry that is not commit-pinned. The SHA is the path segment right after
  * the repository, which `pathPattern` has already constrained to 40 hex.

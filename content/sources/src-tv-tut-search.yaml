@@ -1,7 +1,7 @@
 schema_version: 1
 id: src-tv-tut-search
-url: https://docs.tavily.com/examples/quick-tutorials/search-api.md
-title: Web Search Essentials
+url: https://docs.tavily.com/documentation/best-practices/best-practices-search.md
+title: Tavily Search best practices
 retrieved_at: 2026-11-14T13:04:11Z
 sha256: f899d424be5ac83b64a300814fadeab770379555101a0336d136e39bdea14b7a
 objectives:

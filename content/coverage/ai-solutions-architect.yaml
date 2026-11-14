@@ -246,7 +246,7 @@ objectives:
         existing: src-co-iam-overview
       - url: https://docs.nebius.com/iam/federations/saml-sso.md
       - url: https://docs.nebius.com/iam/wif/index.md
-      - url: https://docs.nebius.com/iam/federations.md
+      - url: https://docs.nebius.com/iam/federations/manage.md
         existing: src-co-iam-federations
 
   - id: domain-4/sa-private-connectivity

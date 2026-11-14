@@ -790,3 +790,29 @@ test("discover: an unscoped run offers no gaps for a course with no published qu
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+// 14.11: examples/agent-toolkit/hybrid-research.md started redirecting to the
+// Examples Hub and quick-tutorials/map-api.md to the Map API reference. Both
+// destinations are allowlisted, so the old guard let the bytes through and
+// two records kept `status: current` over pages their questions never cited.
+test("fetchText reports a redirect to a different allowlisted page as moved, not as the page", async () => {
+  const real = globalThis.fetch;
+  const from = "https://docs.tavily.com/examples/agent-toolkit/hybrid-research.md";
+  try {
+    globalThis.fetch = fetchLandingOn("https://docs.tavily.com/examples/hub.md");
+    await assert.rejects(fetchText(from), (/** @type {any} */ e) => {
+      assert.match(
+        e.message,
+        /redirected to https:\/\/docs\.tavily\.com\/examples\/hub\.md, a different page/,
+      );
+      assert.equal(e.status, "moved");
+      assert.equal(e.movedTo, "https://docs.tavily.com/examples/hub.md");
+      return true;
+    });
+    // The same page behind a cosmetic redirect (here a query) is not a move.
+    globalThis.fetch = fetchLandingOn(`${from}?ref=llms`);
+    assert.equal(await fetchText(from), "body");
+  } finally {
+    globalThis.fetch = real;
+  }
+});

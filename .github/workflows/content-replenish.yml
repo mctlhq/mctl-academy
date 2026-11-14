@@ -2036,7 +2036,9 @@ jobs:
             Write _agent/CHANGES.md: exactly the line `No files changed.` if you added and
             changed nothing -- that is a real answer, and the run still pushes whatever the
             mechanical re-validation repaired. Otherwise one line per file you added or changed,
-            the objective it serves and the source it cites. Do not run commands. Structural
+            the objective it serves and the source it cites. Then one line
+            `Left untouched: <id> -- <reason>` for every item listed under `stalePinned`, or
+            `needs_review` on a source in `drifted`, that you did not change. Do not run commands. Structural
             validation and R2 citation verification run in separate deterministic steps.
           claude_args: >-
             --model ${{ env.AUTHOR_MODEL }}
@@ -2551,7 +2553,9 @@ jobs:
             Write _agent/CHANGES.md: exactly the line `No files changed.` if you added and
             changed nothing -- that is a real answer, and the run still pushes whatever the
             mechanical re-validation repaired. Otherwise one line per file you added or changed,
-            the objective it serves and the source it cites. Do not run commands. Structural
+            the objective it serves and the source it cites. Then one line
+            `Left untouched: <id> -- <reason>` for every item listed under `stalePinned`, or
+            `needs_review` on a source in `drifted`, that you did not change. Do not run commands. Structural
             validation and R2 citation verification run in separate deterministic steps.
           claude_args: >-
             --model ${{ env.AUTHOR_MODEL }}

@@ -4256,3 +4256,45 @@ test("the author prompt carries the editorial rubric and the reviewer prompt is 
     assert.doesNotMatch(step.with.prompt, /volatile|longest|Per <doc>|preflight/i, step.name);
   }
 });
+
+// 14.11: four re-present runs left 12 stale-pinned items untouched, and the
+// only trace was the author's CHANGES.md in an artifact nobody downloads.
+test("prBody lists offered stale-pinned items the run did not revise, from data, not agent text", () => {
+  const candidates = {
+    ...CANDIDATES,
+    stalePinned: [
+      { source_id: "src-a", question_ids: ["q-aaaaaaaaaaaa", "q-bbbbbbbbbbbb"] },
+      { source_id: "src-b", question_ids: ["q-cccccccccccc", "q-bbbbbbbbbbbb"] },
+    ],
+  };
+  const receipt = {
+    reviewer: "r",
+    reviewed_at: "2026-11-14T00:00:00Z",
+    questions: [{ id: "q-aaaaaaaaaaaa", approved: true }],
+  };
+  const body = prBody({ candidates, receipt, captured: [], selected: [] });
+  assert.match(body, /### Quarantined items left untouched/);
+  assert.match(body, /- `q-bbbbbbbbbbbb` \(sources `src-a`, `src-b`\)/);
+  assert.equal(body.match(/- `q-bbbbbbbbbbbb`/g)?.length, 1, "one line per item, not per source");
+  assert.match(body, /- `q-cccccccccccc` \(source `src-b`\)/);
+  assert.doesNotMatch(body, /- `q-aaaaaaaaaaaa`/, "a reviewed item is not untouched");
+
+  const all = prBody({
+    candidates,
+    receipt: {
+      ...receipt,
+      questions: ["q-aaaaaaaaaaaa", "q-bbbbbbbbbbbb", "q-cccccccccccc"].map((id) => ({ id, approved: true })),
+    },
+    captured: [],
+    selected: [],
+  });
+  assert.doesNotMatch(all, /left untouched/, "nothing untouched, no section");
+  // A report older than the key says nothing rather than claim zero.
+  const old = prBody({
+    candidates: { ...CANDIDATES, stalePinned: undefined },
+    receipt,
+    captured: [],
+    selected: [],
+  });
+  assert.doesNotMatch(old, /left untouched/);
+});

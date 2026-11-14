@@ -25,7 +25,7 @@ objectives:
       all documented. CloudOps already tests federation troubleshooting; ask how
       to set access up, not why sign-in fails.
     sources:
-      - url: https://docs.nebius.com/iam/federations.md
+      - url: https://docs.nebius.com/iam/federations/manage.md
         existing: src-co-iam-federations
       - url: https://docs.nebius.com/iam/service-accounts/manage.md
       - url: https://docs.nebius.com/iam/federations/saml-sso.md

@@ -1,7 +1,7 @@
 schema_version: 1
 id: src-tv-tut-crawl
-url: https://docs.tavily.com/examples/quick-tutorials/crawl-api.md
-title: Website Crawling and Content Extraction
+url: https://docs.tavily.com/documentation/best-practices/best-practices-crawl.md
+title: Tavily Crawl best practices
 retrieved_at: 2026-11-14T13:04:07Z
 sha256: c1bb581747d2e632300c2691fd931478fa0918d7a923b818c10883059de8ed43
 objectives:

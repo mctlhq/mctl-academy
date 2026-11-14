@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { checkSources, GONE_STATUSES } from "../scripts/capture-source.mjs";
+import { checkSources, fetchSource, GONE_STATUSES } from "../scripts/capture-source.mjs";
+import { movedTo } from "../scripts/lib/content-model.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
 import { parseDriftReport, issueBody } from "../scripts/drift-intake.mjs";
 
@@ -60,6 +61,28 @@ test("a page the host reports gone is deprecated and reported, not a failed read
       [["b", "gone"]],
     );
   }
+});
+
+test("a page redirected to a different one is deprecated like a gone page, with its new address", async () => {
+  const moved = Object.assign(
+    new Error("fetch: redirected to https://docs.example/hub.md, a different page"),
+    {
+      movedTo: "https://docs.example/hub.md",
+    },
+  );
+  const { code, writes, report } = await run({ a: SAME, b: moved });
+  assert.equal(code, 2, "a move is a finding, not an unreadable source");
+  assert.equal(writes.get("content/sources/b.yaml")?.status, "deprecated");
+  const { rows, errors } = parseDriftReport(report);
+  assert.deepEqual(errors, []);
+  assert.deepEqual(
+    rows.map((r) => [r.id, r.newHash, r.url, r.movedTo]),
+    [["b", "gone", "https://docs.example/b.md", "https://docs.example/hub.md"]],
+  );
+  const body = issueBody(rows[0]);
+  assert.match(body, /now redirects to a different page/);
+  assert.match(body, /now redirects to: https:\/\/docs\.example\/hub\.md/);
+  assert.doesNotMatch(body, /HTTP 404 or 410/);
 });
 
 test("any other failed read still fails the run: could not observe is not absent", async () => {
@@ -174,4 +197,41 @@ test("a deprecated source is skipped: neither gone nor changed bytes is a new fi
 test("the issue for a gone page says the status is restored by hand", () => {
   const body = issueBody({ id: "b", url: "https://docs.example/b.md", oldHash: "abc", newHash: "gone" });
   assert.match(body, /by hand/);
+});
+
+test("movedTo tells a different page from the same page behind a cosmetic redirect", () => {
+  const page = "https://docs.tavily.com/examples/quick-tutorials/map-api.md";
+  assert.equal(movedTo(page, page), null);
+  assert.equal(movedTo(page, "https://docs.tavily.com/examples/quick-tutorials/map-api"), null);
+  assert.equal(movedTo(page, "https://docs.tavily.com/examples/quick-tutorials/map-api/"), null);
+  assert.equal(movedTo(page, `${page}?ref=x#top`), null);
+  assert.equal(
+    movedTo(page, "https://docs.tavily.com/documentation/api-reference/endpoint/map.md"),
+    "https://docs.tavily.com/documentation/api-reference/endpoint/map.md",
+  );
+  assert.equal(movedTo(page, "https://docs.nebius.com/examples/quick-tutorials/map-api.md") !== null, true);
+  // Could not compare is not "same page".
+  assert.equal(movedTo(page, "not a url"), "not a url");
+});
+
+test("capture refuses a page whose URL now redirects to a different page", async () => {
+  const real = globalThis.fetch;
+  const from = "https://docs.tavily.com/examples/quick-tutorials/map-api.md";
+  const landing = (url) => {
+    const res = new Response("body");
+    Object.defineProperty(res, "url", { value: url });
+    return /** @type {typeof fetch} */ (/** @type {unknown} */ (async () => res));
+  };
+  try {
+    globalThis.fetch = landing("https://docs.tavily.com/documentation/api-reference/endpoint/map.md");
+    await assert.rejects(fetchSource(from, { verifyPin: false }), (/** @type {any} */ e) => {
+      assert.match(e.message, /a different page/);
+      assert.equal(e.movedTo, "https://docs.tavily.com/documentation/api-reference/endpoint/map.md");
+      return true;
+    });
+    globalThis.fetch = landing(from);
+    assert.equal(await fetchSource(from, { verifyPin: false }), "body");
+  } finally {
+    globalThis.fetch = real;
+  }
 });

@@ -1,7 +1,7 @@
 schema_version: 1
 id: src-tv-tut-extract
-url: https://docs.tavily.com/examples/quick-tutorials/extract-api.md
-title: Clean Content Extraction
+url: https://docs.tavily.com/documentation/best-practices/best-practices-extract.md
+title: Tavily Extract best practices
 retrieved_at: 2026-11-14T13:04:08Z
 sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
 objectives:
