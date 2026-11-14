@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { MButton } from "@mctlhq/ui";
+import { RouterLink, useRoute } from "vue-router";
+import { MButton, MPill } from "@mctlhq/ui";
 import { courseCatalog, findCourse, type CourseInfo } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 import { questionsForCourse } from "../services/contentBundle";
 
 const route = useRoute();
-const router = useRouter();
 const { setCourse } = useCourseStore();
 
 const courseId = computed(() => String(route.params.courseId ?? ""));
@@ -23,20 +22,10 @@ function domainQuestionCount(domainId: string): number {
 // Other available tracks for internal SEO cross-linking
 const otherCourses = computed(() => courseCatalog.filter((c) => c.available && c.id !== courseId.value));
 
-function startPractice(domainId?: string) {
-  if (!course.value?.available) return;
-  if (!setCourse(course.value.id)) return;
-  if (domainId) {
-    router.push(`/practice?domain=${encodeURIComponent(domainId)}`);
-  } else {
-    router.push("/practice");
-  }
-}
-
-function startMock() {
-  if (!course.value?.available) return;
-  if (!setCourse(course.value.id)) return;
-  router.push("/mock");
+// Practice and Mock links need no selection step of their own: an available
+// course page has already made its course the selection on mount (below).
+function domainPracticePath(domainId: string): string {
+  return `/practice?domain=${encodeURIComponent(domainId)}`;
 }
 
 let originalDescription: string | null = null;
@@ -113,7 +102,7 @@ function updateMeta() {
   }
 
   if (!course.value.available) {
-    document.title = `${course.value.title} — Coming Soon · mctl academy`;
+    document.title = `${course.value.title} — Coming soon · mctl academy`;
     restoreOriginalMeta();
     return;
   }
@@ -226,7 +215,7 @@ onUnmounted(() => {
 
     <header class="course-hero">
       <div class="course-badge-row">
-        <span class="course-tag">Practice track</span>
+        <MPill tone="accent">Practice track</MPill>
       </div>
       <h1 class="course-title">{{ course.title }}</h1>
       <p class="course-subtitle">
@@ -250,11 +239,11 @@ onUnmounted(() => {
       </div>
 
       <div class="course-cta-row">
-        <MButton type="button" @click="startPractice()">
-          Start Practice ({{ totalQuestions }} questions) <span aria-hidden="true">→</span>
+        <MButton :as="RouterLink" to="/practice">
+          Start practice ({{ totalQuestions }} questions) <span aria-hidden="true">→</span>
         </MButton>
-        <MButton type="button" variant="ghost" @click="startMock()">
-          Timed Mock Run ({{ course.mock.questionCount }} questions)
+        <MButton :as="RouterLink" to="/mock" variant="ghost">
+          Timed mock run ({{ course.mock.questionCount }} questions)
         </MButton>
       </div>
     </header>
@@ -271,14 +260,13 @@ onUnmounted(() => {
             <h3 class="domain-card-title">{{ domain.title }}</h3>
             <p class="domain-card-mock">Mock distribution: {{ domain.mockQuestions }} questions</p>
             <div class="domain-card-action">
-              <button
-                type="button"
+              <RouterLink
+                :to="domainPracticePath(domain.id)"
                 class="domain-btn-link"
                 :aria-label="`Practice ${domain.title}`"
-                @click="startPractice(domain.id)"
               >
                 Practice this domain <span aria-hidden="true">→</span>
-              </button>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -312,8 +300,8 @@ onUnmounted(() => {
       Practice questions for this track are currently in preparation. Check back soon.
     </p>
     <div class="not-found-actions">
-      <MButton type="button" @click="router.push('/practice')">Continue practice</MButton>
-      <MButton type="button" variant="ghost" @click="router.push('/')">Go to Home</MButton>
+      <MButton :as="RouterLink" to="/practice">Continue practice</MButton>
+      <MButton :as="RouterLink" to="/" variant="ghost">Go to home</MButton>
     </div>
   </div>
 
@@ -322,8 +310,8 @@ onUnmounted(() => {
     <h1>Course not found</h1>
     <p class="not-found-lede">The requested course could not be found or has been retired.</p>
     <div class="not-found-actions">
-      <MButton type="button" @click="router.push('/')">Go to Home</MButton>
-      <MButton type="button" variant="ghost" @click="router.push('/practice')">Continue practice</MButton>
+      <MButton :as="RouterLink" to="/">Go to home</MButton>
+      <MButton :as="RouterLink" to="/practice" variant="ghost">Continue practice</MButton>
     </div>
   </div>
 </template>
@@ -342,7 +330,7 @@ onUnmounted(() => {
   margin-bottom: 1.5rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .course-breadcrumbs a {
@@ -351,7 +339,7 @@ onUnmounted(() => {
 }
 
 .course-breadcrumbs a:hover {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: underline;
 }
 
@@ -365,19 +353,6 @@ onUnmounted(() => {
 
 .course-badge-row {
   margin-bottom: 0.5rem;
-}
-
-.course-tag {
-  display: inline-block;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--mctl-radius-sm);
-  background: var(--surface-card);
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .course-title {
@@ -418,7 +393,7 @@ onUnmounted(() => {
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-subtle);
 }
 
@@ -452,11 +427,11 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 .domain-card-tag {
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-weight: 500;
 }
@@ -476,7 +451,7 @@ onUnmounted(() => {
 
 .domain-card-mock {
   margin: 0 0 1rem;
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-muted);
 }
 
@@ -488,9 +463,10 @@ onUnmounted(() => {
   background: none;
   border: none;
   padding: 0;
-  color: var(--accent);
-  font-size: 0.85rem;
+  color: var(--accent-text);
+  font-size: var(--text-caption-size);
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -545,7 +521,7 @@ onUnmounted(() => {
   margin: 0 0 0.5rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .not-found-lede {

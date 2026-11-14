@@ -5,17 +5,14 @@ import CourseView from "../CourseView.vue";
 import * as courseCatalogModule from "../../services/courseCatalog";
 
 const mockSetCourse = vi.fn().mockReturnValue(true);
-const mockPush = vi.fn();
 // Reactive so a test can change the route param under a mounted view, the way
 // vue-router does when /courses/X -> /courses/Y reuses the component.
 let currentRouteParams = reactive({ courseId: "agentic-ai-builder" });
 
-vi.mock("vue-router", () => ({
+vi.mock("vue-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("vue-router")>()),
   useRoute: () => ({
     params: currentRouteParams,
-  }),
-  useRouter: () => ({
-    push: mockPush,
   }),
 }));
 
@@ -88,29 +85,23 @@ describe("CourseView", () => {
     expect(mockSetCourse).not.toHaveBeenCalled();
   });
 
-  it("calls setCourse and navigates only when learner triggers practice action", async () => {
+  // Navigation is a link, not a click handler: it opens in a new tab, shows
+  // its target on hover and survives a disabled script. The course is
+  // already the selection by then (selected on mount, above).
+  it("links the practice and mock CTAs to their pages", () => {
     const wrapper = mountCourseView();
-    const startBtn = wrapper.find(".course-cta-row button");
-    await startBtn.trigger("click");
-    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
-    expect(mockPush).toHaveBeenCalledWith("/practice");
+    const ctas = wrapper.findAll(".course-cta-row a");
+    expect(ctas.map((a) => a.attributes("href"))).toEqual(["/practice", "/mock"]);
+    expect(ctas[0].text()).toMatch(/^Start practice/);
+    expect(ctas[1].text()).toMatch(/^Timed mock run/);
+    expect(wrapper.find(".course-cta-row button").exists()).toBe(false);
   });
 
-  it("calls setCourse and navigates to /mock when mock CTA is clicked", async () => {
+  it("links each domain card to a filtered Practice", () => {
     const wrapper = mountCourseView();
-    const mockBtn = wrapper.findAll(".course-cta-row button")[1];
-    await mockBtn.trigger("click");
-    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
-    expect(mockPush).toHaveBeenCalledWith("/mock");
-  });
-
-  it("calls setCourse and navigates to domain filter when domain practice button is clicked", async () => {
-    const wrapper = mountCourseView();
-    const domainBtn = wrapper.find(".domain-btn-link");
-    expect(domainBtn.attributes("aria-label")).toContain("Practice");
-    await domainBtn.trigger("click");
-    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
-    expect(mockPush).toHaveBeenCalledWith(expect.stringContaining("/practice?domain="));
+    const domainLink = wrapper.find("a.domain-btn-link");
+    expect(domainLink.attributes("aria-label")).toContain("Practice");
+    expect(domainLink.attributes("href")).toMatch(/^\/practice\?domain=/);
   });
 
   it("injects Schema.org Course and Quiz structured data with free offers", () => {
@@ -185,5 +176,10 @@ describe("CourseView", () => {
     const wrapper = mountCourseView();
     expect(wrapper.find('[data-testid="course-not-found"]').exists()).toBe(true);
     expect(wrapper.text()).toContain("Course not found");
+    const actions = wrapper.findAll(".not-found-actions a");
+    expect(actions.map((a) => [a.text(), a.attributes("href")])).toEqual([
+      ["Go to home", "/"],
+      ["Continue practice", "/practice"],
+    ]);
   });
 });

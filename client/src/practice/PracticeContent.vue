@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref, watch, type Ref } from "vue";
+import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
 import { usePracticeSession, type PracticeMode } from "./usePracticeSession";
 import { getItem, setItem } from "../services/storage";
@@ -248,8 +249,10 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
     <div class="completion-actions">
       <MButton v-if="remaining > 0" type="button" @click="restart">Continue practice</MButton>
       <template v-if="bundle.length > 0">
-        <a href="/practice?mode=all" class="link-button" :class="{ primary: remaining === 0 }">Repeat all</a>
-        <a href="/mock" class="link-button">Mock exam</a>
+        <MButton :as="RouterLink" to="/practice?mode=all" :variant="remaining === 0 ? 'primary' : 'ghost'"
+          >Repeat all</MButton
+        >
+        <MButton :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
       </template>
     </div>
   </section>
@@ -271,8 +274,10 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
       <MButton v-if="remaining > 0" type="button" @click="restart">{{
         mode === "all" ? "Repeat all again" : "Continue practice"
       }}</MButton>
-      <a href="/practice?mode=all" class="link-button" :class="{ primary: remaining === 0 }">Repeat all</a>
-      <a href="/mock" class="link-button">Mock exam</a>
+      <MButton :as="RouterLink" to="/practice?mode=all" :variant="remaining === 0 ? 'primary' : 'ghost'"
+        >Repeat all</MButton
+      >
+      <MButton :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
     </div>
   </section>
 
@@ -287,8 +292,8 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
             <template v-if="domainLabel">
               <span class="crumb-sep" aria-hidden="true">/</span>
               <span class="crumb-domain">{{ domainLabel }}</span>
-              <a :href="mode === 'all' ? '/practice?mode=all' : '/practice'" class="clear-filter"
-                >Clear filter</a
+              <RouterLink :to="mode === 'all' ? '/practice?mode=all' : '/practice'" class="clear-filter"
+                >Clear filter</RouterLink
               >
             </template>
           </p>
@@ -449,11 +454,11 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 <style scoped>
 .objective-title {
   color: var(--surface-fg-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   margin: 0 0 0.5rem;
 }
 .answer-details {
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
   margin-bottom: 1rem;
   color: var(--surface-fg-muted);
 }
@@ -484,26 +489,6 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   gap: 0.75rem;
   margin-top: 1.25rem;
 }
-/* Navigations stay links (they change the URL); they only borrow the
-   button shape so the card's actions read as one row. */
-.link-button {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  padding: 0 1rem;
-  border: 1px solid var(--surface-line-strong);
-  border-radius: var(--mctl-radius-md, 0.5rem);
-  color: var(--surface-fg);
-  text-decoration: none;
-}
-.link-button:hover {
-  border-color: var(--accent);
-}
-.link-button.primary {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-fg);
-}
 .practice-context-line {
   margin-bottom: 0.75rem;
 }
@@ -514,7 +499,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   gap: 0.35rem;
   margin: 0;
   color: var(--surface-fg-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 .crumb-course {
   color: var(--surface-fg);
@@ -525,7 +510,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 .clear-filter {
   margin-left: 0.4rem;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .progress-wrap {
   display: grid;
@@ -550,7 +535,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 .first-answer-rule {
   margin: -0.5rem 0 1rem;
   color: var(--surface-fg-muted);
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
 }
 .option-key {
   display: inline-grid;
@@ -562,7 +547,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   border-radius: 0.3rem;
   color: var(--surface-fg-muted);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 /* A flex item will not shrink below its min-content width by default, so a
    long unbroken code span (an API path) would be clipped by the li's
@@ -591,13 +576,13 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   margin: 0.25rem 0;
 }
 .source-link a {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .shortcut-hint {
   margin: 0 auto 0 0;
   align-self: center;
   color: var(--surface-fg-subtle);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 /* Touch-only devices have no keys to press; the hint would be noise. */
 @media (hover: none) {
@@ -626,7 +611,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   display: flex;
   width: min(100%, 80rem);
   min-height: 38rem;
-  margin: -4rem auto;
+  margin: 0 auto;
   position: relative;
 }
 
@@ -664,7 +649,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 
 .progress {
   color: var(--surface-fg-muted);
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
   font-family: var(--font-mono);
   margin: 0;
 }
@@ -682,7 +667,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   background: transparent;
   color: var(--surface-fg-muted);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   white-space: nowrap;
   cursor: pointer;
 }
@@ -713,7 +698,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   display: grid;
   place-items: center;
   color: var(--surface-fg-subtle);
-  font-size: 0.6rem;
+  font-size: var(--text-caption-size);
   line-height: 1;
   transition: color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
 }
@@ -723,11 +708,11 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 
 .vote-button.vote-up.active .vote-icon {
-  color: var(--status-ok);
+  color: var(--status-ok-text);
 }
 
 .vote-button.vote-down.active .vote-icon {
-  color: var(--status-bad);
+  color: var(--status-bad-text);
 }
 
 .vote-score {
@@ -736,12 +721,12 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   text-align: center;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: var(--text-caption-size);
   font-variant-numeric: tabular-nums;
 }
 
 .vote-score-error {
-  color: var(--status-bad);
+  color: var(--status-bad-text);
 }
 
 .options {
@@ -788,7 +773,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 
 .feedback .verdict {
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: var(--text-caption-size);
   font-weight: 700;
   letter-spacing: 0.04em;
   margin: 0 0 0.3rem;
@@ -796,11 +781,11 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 
 .correct .verdict {
-  color: var(--status-ok);
+  color: var(--status-ok-text);
 }
 
 .incorrect .verdict {
-  color: var(--status-bad);
+  color: var(--status-bad-text);
 }
 
 .feedback .explanation {
@@ -809,19 +794,14 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   margin: 0;
 }
 
-/* Sticky rather than plain in-flow: at >560px (the ≤560px "focused-practice"
-   tier below already fixes this a different way, via a viewport-height card
-   with an internally-scrolling `.options`), a short question's `.practice`
-   box stretches to the shell's 38rem floor and `margin-top: auto` puts the
-   button at a consistent spot near the bottom of that floor — but any
-   question whose stem+options exceed 38rem (common at desktop's default
-   padding/line-height: measured 660-720px against the 608px floor for
-   typical 4-option questions) makes `.practice` grow past the floor instead,
-   so the button ends up wherever that particular question's content happens
-   to end. Sticking it to the viewport bottom (bounded by `.practice`'s own
-   box, so it still scrolls away normally once the card ends) gives it one
-   predictable on-screen position regardless of question length, matching
-   the mobile tier's fixed action bar instead of drifting with content. */
+/* Sticky rather than plain in-flow, at every width: a short question's
+   `.practice` box stretches to the shell's 38rem floor (none on phones) and
+   `margin-top: auto` puts the button near the bottom of that floor, but a
+   question whose stem and options run longer makes `.practice` grow and the
+   button would end wherever that question's content ends. Sticking it to the
+   viewport bottom (bounded by `.practice`'s own box, so it scrolls away once
+   the card ends) gives it one predictable on-screen position regardless of
+   question length. */
 .practice-actions {
   display: flex;
   justify-content: flex-end;
@@ -860,7 +840,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 
 .context-toggle:hover {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .context-content {
@@ -873,7 +853,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   margin: 0 0 0.45rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--text-caption-size);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -883,7 +863,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   margin: 0;
   color: var(--surface-fg-muted);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-caption-size);
   line-height: 1.7;
 }
 
@@ -902,27 +882,7 @@ kbd {
   color: var(--surface-fg-muted);
 }
 
-/* .practice-shell's desktop -4rem margin-top pulls it up into .app-main's
-   own top padding (clamp(2rem,5vw,4rem)) by design, but AppNav switches to
-   its taller two-row stacked layout at <=980px (see app.css's breakpoint
-   reference map) while app-main's padding-top only shrinks at <=680px --
-   in between (e.g. 768px, padding-top ~2.4rem), -4rem overshoots the
-   padding box and drags .practice-context up underneath the nav's second
-   row, making .context-toggle unclickable. Match the <=680px tier's
-   smaller pull here too so it never exceeds app-main's own padding-top
-   for any width AppNav is stacked at (2rem is the minimum, well above
-   1.75rem in this range). */
-@media (max-width: 980px) {
-  .practice-shell {
-    margin-top: -1.75rem;
-  }
-}
-
 @media (max-width: 680px) {
-  .practice-shell {
-    margin: -1.75rem auto -2rem;
-  }
-
   .practice-stage,
   .practice-shell.context-open .practice-stage {
     grid-template-columns: minmax(0, 1fr);
@@ -970,26 +930,12 @@ kbd {
 
 @media (max-width: 560px) {
   .practice-shell {
-    flex: 1;
     min-height: 0;
-    overflow: hidden;
-  }
-
-  .practice-stage,
-  .practice-shell.context-open .practice-stage {
-    display: block;
-    height: auto;
-    min-height: 0;
-    overflow-y: auto;
   }
 
   .practice-stage > .practice {
-    box-sizing: border-box;
-    height: auto;
-    min-height: 100%;
     padding-top: 1rem;
     padding-bottom: 1rem;
-    overflow: visible;
   }
 
   .practice-header {
@@ -1003,11 +949,7 @@ kbd {
   }
 
   .options {
-    flex: none;
-    min-height: 0;
     margin-bottom: 0;
-    overflow: visible;
-    overscroll-behavior: contain;
   }
 
   .options li {
@@ -1019,13 +961,6 @@ kbd {
   }
 
   .practice-actions {
-    /* This tier already pins the action bar via a viewport-height card with
-       `.options` scrolling internally (see `.practice-stage > .practice`'s
-       `overflow: hidden` above) — `position: sticky` from the base rule has
-       no scrollable range to act within here, but reset it explicitly
-       rather than rely on that. */
-    position: sticky;
-    flex: none;
     margin-right: -0.25rem;
     margin-left: -0.25rem;
     padding: 0.75rem 0.25rem max(0.25rem, env(safe-area-inset-bottom));
