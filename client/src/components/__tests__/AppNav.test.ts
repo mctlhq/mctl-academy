@@ -108,6 +108,9 @@ describe("AppNav component", () => {
     const burger = wrapper.get(".mctl-site-burger");
     expect(burger.attributes("aria-controls")).toBe(wrapper.get(".mctl-site-nav").attributes("id"));
     expect(burger.attributes("aria-expanded")).toBe("false");
+    // site.css 0.20.2 contract: the burger lives inside the actions slot so it
+    // keeps the slot's gap beside the account control.
+    expect(burger.element.parentElement?.classList.contains("mctl-site-header__actions")).toBe(true);
   });
 
   test("burger toggles data-nav-open; Escape closes it and returns focus", async () => {

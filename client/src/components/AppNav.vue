@@ -191,16 +191,16 @@ const links = [
           </svg>
         </button>
         <UserNav :user="user" :loading="loading" />
+        <button
+          ref="burger"
+          type="button"
+          class="mctl-site-burger"
+          aria-label="Menu"
+          aria-controls="site-nav"
+          :aria-expanded="navOpen"
+          @click="navOpen = !navOpen"
+        ></button>
       </div>
-      <button
-        ref="burger"
-        type="button"
-        class="mctl-site-burger"
-        aria-label="Menu"
-        aria-controls="site-nav"
-        :aria-expanded="navOpen"
-        @click="navOpen = !navOpen"
-      ></button>
     </div>
   </header>
 </template>
@@ -264,7 +264,7 @@ const links = [
 
 .streak {
   color: var(--surface-fg-subtle);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   white-space: nowrap;
 }
 
@@ -335,8 +335,8 @@ const links = [
 
 /* Up to 980px the nav is the drawer (.mctl-site-header--drawer-wide: brand,
    course, five tabs and the account control do not fit one row below that).
-   The actions slot and the burger stay together at the right edge through
-   site.css 0.20.2. */
+   The burger sits inside the actions slot, as the site.css 0.20.2 header
+   contract asks, so it keeps the slot's gap next to the account control. */
 
 @media (max-width: 767px) {
   .user-nav-signin :deep(.signin-label) {
