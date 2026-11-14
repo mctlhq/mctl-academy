@@ -4042,7 +4042,8 @@ test("the author prompt carries the editorial rubric and the reviewer prompt is 
     /plain recall\s+only when the evidence supports no applied framing/,
     /never a volatile figure/,
     /"Per <doc>"/,
-    /neither the longest nor\s+the most specific/,
+    /length and specificity give no cue/,
+    /no more often than any\s+distractor, so neither always nor never/,
     /always, never and only\s+do not appear in distractors alone/,
     /preflight the items you wrote against the advisory\s+checks in scripts\/content-quality-report\.mjs/,
   ];

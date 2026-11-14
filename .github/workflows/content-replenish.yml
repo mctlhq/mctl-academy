@@ -1964,8 +1964,9 @@ jobs:
               prices, region or GPU availability tables, CLI flags or undocumented defaults; no stem
               that opens "Per <doc>"; no vague "best practice" answer; no capability the captured
               text does not document
-            - four parallel options of similar length; the correct one is neither the longest nor
-              the most specific; exactly one option is correct, and the three distractors are
+            - four parallel options of similar length; length and specificity give no cue: across
+              the batch the correct option is the longest or the most specific no more often than any
+              distractor, so neither always nor never; exactly one option is correct, and the three distractors are
               documented alternatives -- on the same page or elsewhere in the product's documentation,
               never invented features -- that are plausible for the scenario; always, never and only
               do not appear in distractors alone; every option has an explanation that matches the
@@ -2458,8 +2459,9 @@ jobs:
               prices, region or GPU availability tables, CLI flags or undocumented defaults; no stem
               that opens "Per <doc>"; no vague "best practice" answer; no capability the captured
               text does not document
-            - four parallel options of similar length; the correct one is neither the longest nor
-              the most specific; exactly one option is correct, and the three distractors are
+            - four parallel options of similar length; length and specificity give no cue: across
+              the batch the correct option is the longest or the most specific no more often than any
+              distractor, so neither always nor never; exactly one option is correct, and the three distractors are
               documented alternatives -- on the same page or elsewhere in the product's documentation,
               never invented features -- that are plausible for the scenario; always, never and only
               do not appear in distractors alone; every option has an explanation that matches the
