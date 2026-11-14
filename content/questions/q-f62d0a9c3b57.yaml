@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f62d0a9c3b57
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/gpu-orchestration
 stem: "A team scales LeRobot training from 1 to 4 GPUs using `accelerate
@@ -11,15 +11,15 @@ options:
     text: "They stay exactly as specified; LeRobot does not auto-scale either one
       for the number of GPUs"
     correct: true
-    explanation: "Correct. The multi-GPU guide states LeRobot does NOT automatically
-      scale learning rates or training steps based on the number of GPUs, giving
-      full control over hyperparameters."
+    explanation: "Correct. The multi-GPU guide states LeRobot does not auto-scale
+      the learning rate or the number of steps when the effective batch size
+      grows, leaving hyperparameter adjustment to the user."
   - id: b
     text: "The learning rate is scaled automatically by the number of GPUs, as many
       distributed frameworks do"
     correct: false
-    explanation: "The guide contrasts LeRobot with those frameworks: unlike them,
-      LeRobot keeps the learning rate exactly as specified."
+    explanation: "The guide states the opposite: LeRobot does not auto-scale the
+      learning rate as the effective batch size grows with more GPUs."
   - id: c
     text: "The number of training steps is automatically reduced to keep total
       samples seen constant"
@@ -35,14 +35,10 @@ options:
       response."
 evidence:
   - source_id: src-pa-lerobot-multi-gpu
-    excerpt: "LeRobot does **NOT** automatically scale learning rates or training
-      steps based on the number of GPUs."
-    source_sha256: e07e67dcb332b43cb182fff5e4c0deac241b8b26517e162269fa9068c01efdc2
+    excerpt: "**LeRobot does not auto-scale the learning rate or the number of
+      steps**"
+    source_sha256: ef2e87599978e7f9897de5bfd723c1f85bc99808786caf3bbc130b6a63d4c20a
 authored:
   by: agent:claude-author
-  at: 2026-10-18T08:30:25Z
+  at: 2026-11-14T20:24:28Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: 7d6e0d4c9902b803afdddac3730cedcc685530e5b3a1aaf9a709bc39c939954f
