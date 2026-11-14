@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-vpc-nebius-vpn-gateway
+url: https://docs.nebius.com/vpc/nebius-vpn-gateway.md
+title: Nebius VPN Gateway
+retrieved_at: 2026-11-14T10:09:35Z
+sha256: 978774a2093836468c1817e065af3d051c8753fb300bda94af6d4b3682717395
+objectives:
+  - domain-4/ie-multicluster-networking
+snapshot:
+  bucket: academy-source-snapshots
+  key: 978774a2093836468c1817e065af3d051c8753fb300bda94af6d4b3682717395
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-multicluster-networking

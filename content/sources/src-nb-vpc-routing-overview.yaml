@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-vpc-routing-overview
+url: https://docs.nebius.com/vpc/routing/overview.md
+title: Routing in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:09:37Z
+sha256: c0c339106c30659473968c649b7e0a8e0fdd2cbd4e6626a05ed076a9f5599781
+objectives:
+  - domain-4/ie-multicluster-networking
+snapshot:
+  bucket: academy-source-snapshots
+  key: c0c339106c30659473968c649b7e0a8e0fdd2cbd4e6626a05ed076a9f5599781
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-multicluster-networking
