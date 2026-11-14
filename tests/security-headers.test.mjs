@@ -1,8 +1,11 @@
+// First, before server/app.mjs: SPA paths below are served from this fixture
+// dist, so the results do not depend on whether client/dist was built.
+import "./helpers/client-dist-fixture.mjs";
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { HTTPException } from "hono/http-exception";
 import { app, errorHandler } from "../server/app.mjs";
-import { securityHeaders } from "../server/middleware/security-headers.mjs";
+import { isNoindexRoute, securityHeaders } from "../server/middleware/security-headers.mjs";
 
 describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
   test("API responses carry the baseline headers", async () => {
@@ -129,10 +132,25 @@ describe("Security header baseline (PLAN.md Track A, PR2b)", () => {
       assert.equal(res.headers.get("x-robots-tag"), "noindex, follow", `expected noindex on ${path}`);
     }
 
-    // Prefix without separator like /mockery or /dashboard-preview must not be falsely matched
-    for (const path of ["/", "/practice", "/healthz", "/mockery", "/dashboard-test"]) {
+    // Indexable pages and endpoints carry no X-Robots-Tag at all.
+    for (const path of ["/", "/practice", "/healthz", "/courses/ai-cloudops-engineer"]) {
       const res = await app.request(path);
+      assert.equal(res.status, 200, path);
       assert.equal(res.headers.get("x-robots-tag"), null, `expected no X-Robots-Tag on ${path}`);
+    }
+
+    // The prefix rule matches whole segments only: /mockery is not /mock.
+    for (const path of ["/mockery", "/dashboard-test", "/mistakes-old", "/administrator"]) {
+      assert.equal(isNoindexRoute(path), false, `prefix rule must not match ${path}`);
+    }
+    assert.equal(isNoindexRoute("/mock/run"), true);
+
+    // Over HTTP those paths are not pages at all: the SPA fallback's 404 with
+    // a bare "noindex" (server/spa.mjs), not the prefix rule's "noindex, follow".
+    for (const path of ["/mockery", "/dashboard-test"]) {
+      const res = await app.request(path);
+      assert.equal(res.status, 404, path);
+      assert.equal(res.headers.get("x-robots-tag"), "noindex", path);
     }
 
     // HTTPException on a noindex path also receives X-Robots-Tag: noindex, follow

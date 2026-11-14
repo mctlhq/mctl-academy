@@ -172,15 +172,34 @@ export function renderSpaPage(template, page) {
 
 /**
  * Hono handler serving index.html per route. The template is read once and
- * kept: client/dist only changes with a new image. A failed read is not
- * cached, so it surfaces as a 500 (via app.onError) on every request rather
- * than as a quietly empty page.
+ * kept: client/dist only changes with a new image.
+ *
+ * A missing index.html is answered 503, not 404 and not a 500 stack trace:
+ * the page may well exist, but this server cannot know -- the image (or a
+ * local checkout) has no client build. It is logged once per process, not
+ * per request, and not cached, so a build appearing later is picked up. Any
+ * other read failure, or a template missing a tag renderSpaPage rewrites,
+ * still throws to app.onError: those are bugs, not a missing build.
+ *
+ * @param {{ indexPath: string, catalog: Array<{ id: string }>, log?: { error(message: string): void } }} options
  */
-export function createSpaHandler({ indexPath, catalog }) {
+export function createSpaHandler({ indexPath, catalog, log = console }) {
   let template = null;
+  let reportedMissing = false;
   return async (c) => {
     if (template === null) {
-      template = assertSpaTemplate(await readFile(indexPath, "utf8"));
+      let raw;
+      try {
+        raw = await readFile(indexPath, "utf8");
+      } catch (err) {
+        if (err?.code !== "ENOENT") throw err;
+        if (!reportedMissing) {
+          reportedMissing = true;
+          log.error(`[spa] ${indexPath} not found -- the client is not built; SPA paths answer 503.`);
+        }
+        return c.text("Service unavailable: client build missing", 503);
+      }
+      template = assertSpaTemplate(raw);
     }
     const { status, html } = renderSpaPage(template, classifySpaPath(c.req.path, catalog));
     if (status === 404) c.header("X-Robots-Tag", "noindex");

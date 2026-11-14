@@ -1,42 +1,33 @@
-import { test, describe, before, after } from "node:test";
+// First, before server/app.mjs: it decides which dist the app serves.
+import { FIXTURE_ASSET, FIXTURE_DIST_PREFIX } from "./helpers/client-dist-fixture.mjs";
+import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { Hono } from "hono";
+import { app } from "../server/app.mjs";
 import {
   assertSpaTemplate,
   classifySpaPath,
+  createSpaHandler,
   escapeHtml,
   loadCourseCatalog,
   renderSpaPage,
 } from "../server/spa.mjs";
 import { courseHeadMeta } from "../client/src/seo/courseMeta.mjs";
 
-// The real head of the shipped page. Vite's build keeps these tags as written
-// and only adds its own script/link tags, so the fixture dist below is this
-// file plus a few static files.
+// The real head of the shipped page; tests/helpers/client-dist-fixture.mjs
+// serves this same file as the fixture dist's index.html.
 const SOURCE_INDEX = readFileSync(new URL("../client/index.html", import.meta.url), "utf8");
 const catalog = loadCourseCatalog();
 const COURSE_ID = "ai-cloudops-engineer";
 
-let dist;
-let app;
-
-before(async () => {
-  dist = mkdtempSync(join(tmpdir(), "academy-spa-"));
-  writeFileSync(join(dist, "index.html"), SOURCE_INDEX);
-  mkdirSync(join(dist, "assets"));
-  writeFileSync(join(dist, "assets", "index-abc123.js"), "console.log('app');\n");
-  writeFileSync(join(dist, "robots.txt"), "User-agent: *\nAllow: /\n");
-  writeFileSync(join(dist, "sitemap.xml"), '<?xml version="1.0"?><urlset></urlset>\n');
-  writeFileSync(join(dist, "favicon.ico"), Buffer.from([0, 0, 1, 0]));
-  // app.mjs reads ACADEMY_CLIENT_DIST at import, so it must be set first.
-  process.env.ACADEMY_CLIENT_DIST = dist;
-  ({ app } = await import("../server/app.mjs"));
-});
-
-after(() => {
-  rmSync(dist, { recursive: true, force: true });
+test("the suite serves the fixture dist, never whatever client/dist happens to hold", () => {
+  assert.ok(
+    process.env.ACADEMY_CLIENT_DIST?.startsWith(join(tmpdir(), FIXTURE_DIST_PREFIX)),
+    `ACADEMY_CLIENT_DIST=${process.env.ACADEMY_CLIENT_DIST}`,
+  );
 });
 
 function attr(html, re) {
@@ -136,7 +127,7 @@ describe("known pages", () => {
 describe("static files are served as before", () => {
   test("assets, robots.txt, sitemap.xml and favicon keep their bytes and types", async () => {
     for (const { path, type } of [
-      { path: "/assets/index-abc123.js", type: /javascript/ },
+      { path: FIXTURE_ASSET, type: /javascript/ },
       { path: "/robots.txt", type: /text\/plain/ },
       { path: "/sitemap.xml", type: /xml/ },
       { path: "/favicon.ico", type: /icon/ },
@@ -172,5 +163,40 @@ describe("rendering safety", () => {
     assert.doesNotThrow(() => assertSpaTemplate(SOURCE_INDEX));
     const withoutCanonical = SOURCE_INDEX.replace(/<link rel="canonical"[^>]*>/, "");
     assert.throws(() => assertSpaTemplate(withoutCanonical), /rel="canonical"/);
+  });
+});
+
+describe("no client build", () => {
+  test("SPA paths answer 503, logged once, and recover when the build appears", async () => {
+    const errors = [];
+    const dir = mkdtempSync(join(tmpdir(), "academy-unbuilt-"));
+    const indexPath = join(dir, "index.html");
+    const probe = new Hono();
+    probe.get("/*", createSpaHandler({ indexPath, catalog, log: { error: (m) => errors.push(m) } }));
+
+    for (const path of ["/", "/nope", `/courses/${COURSE_ID}`]) {
+      const res = await probe.request(path);
+      assert.equal(res.status, 503, path);
+      assert.equal(await res.text(), "Service unavailable: client build missing");
+    }
+    assert.equal(errors.length, 1, "logged once per process, not per request");
+    assert.match(errors[0], /not found -- the client is not built/);
+
+    // The failure is not cached: once a build lands, pages are served again.
+    writeFileSync(indexPath, SOURCE_INDEX);
+    const recovered = await probe.request("/practice");
+    assert.equal(recovered.status, 200);
+    assert.match(await recovered.text(), /<div id="root"><\/div>/);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  test("a read failure other than a missing file is still an error, not a 503", async () => {
+    // A directory where index.html should be: EISDIR, a broken image rather
+    // than an unbuilt one.
+    const probe = new Hono();
+    probe.get("/*", createSpaHandler({ indexPath: tmpdir(), catalog, log: { error() {} } }));
+    probe.onError((_err, c) => c.text("error", 500));
+    const res = await probe.request("/");
+    assert.equal(res.status, 500);
   });
 });
