@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.81](https://github.com/mctlhq/mctl-academy/compare/0.1.80...0.1.81) (2026-11-14)
+
+
+### Features
+
+* **replenish:** S2 author rubric bans absurd distractors and hedges ([8144d3f](https://github.com/mctlhq/mctl-academy/commit/8144d3f5900118cc60c07650b6f38c50771b4e53))
+* **replenish:** S2 author rubric bans absurd distractors and hedges ([275d2f0](https://github.com/mctlhq/mctl-academy/commit/275d2f054e3cf7c2acbd01d9ee130a86f8cfc25c))
+
 ## [0.1.80](https://github.com/mctlhq/mctl-academy/compare/0.1.79...0.1.80) (2026-11-14)
 
 
