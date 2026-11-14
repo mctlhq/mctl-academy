@@ -92,25 +92,37 @@ questions make an objective a gap. The scope is mechanical, not a prompt hint:
 
 - **discover** validates every objective against the course map and fails on
   an unknown id, on objectives given without a course, and on a held
-  objective named explicitly. Gaps are narrowed to the target objectives (and
-  the Mock shortfalls of their domains), which also narrows page ranking.
-  `_run/candidates.json` records the target set under `objectives`.
-- **author** writes the course and target set into `_run/limits.json`
-  (`replenish-prepare.mjs limits`). The page selection keeps only objectives in
-  that set, and the author-phase guard (`guard --limits`, required there)
-  fails the run when any question file the agent created, changed or deleted
-  carries another `course_id` or an `objective` outside the set — drifted
-  items of other courses included. An unreadable or malformed `limits.json` is
-  an error, never "unscoped".
+  objective named explicitly. Gaps are narrowed to the run's targets (and the
+  Mock shortfalls of their domains), which also narrows page ranking.
+  `_run/candidates.json` records them under `objectives`, `held` and
+  `excluded`.
+- **author** writes the run's `targets` (course id → objectives it may author
+  for) into `_run/limits.json` (`replenish-prepare.mjs limits`). The page
+  selection keeps only objectives in those targets, and the author-phase guard
+  (`guard --limits`, required there) fails the run when any question file the
+  agent created, changed or deleted carries a `course_id` or an `objective`
+  outside them. An unreadable or malformed `limits.json` is an error, never
+  "everything in scope".
+- **Drifted items of other courses.** Drift is still reported for every
+  course, but a scoped run may not rewrite a `needs_review` item of another
+  course: the guard rejects it like any other off-scope file, and the prompt
+  tells the author to leave it. Such items wait for an unscoped run, or for a
+  run scoped to their own course.
 - **Held objectives.** When `content/coverage/<course>.yaml` exists
-  (`objectives: [{ id: domain-N/<id>, status: open|held, ... }]`), a course
-  run drops its `held` objectives from the target set automatically, so a
-  course-only run never authors for them. A missing file means no holds; a
-  file that does not parse, names an objective outside the course map, or
-  carries any other status fails the run.
-
-Unscoped runs (the weekly schedule) read no coverage file and behave as
-before; `limits.json` then carries `"course": null`.
+  (`objectives: [{ id: domain-N/<id>, status: open|held, ... }]`; any other
+  keys, such as `strength`, `sources` or a top-level `reviewed_at`, are
+  ignored), every run, scoped or not, drops its `held` objectives from the
+  targets. A missing file means no holds. A file that does not parse, names an
+  objective outside the course map, names another `course_id`, or carries any
+  other status fails the run.
+- **New courses need an explicit go.** An unscoped run, including the weekly
+  schedule, targets only courses that already have at least one `published`
+  question. A course with none is listed as `excluded`: it gets no gaps, the
+  selection cannot place a page on it, and the guard rejects any item for it.
+  It can be authored for only when a dispatch names it in `course`, which is
+  how a new course is bootstrapped. If a question file does not parse, or a
+  published item names no `course_id`, the published counts are unknown and
+  the run fails rather than counting zero.
 
 A run whose agent writes nothing still opens a PR when the mechanical
 re-validation repaired something: those items are real work for the reviewer,

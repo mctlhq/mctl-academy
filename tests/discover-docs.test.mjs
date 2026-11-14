@@ -608,18 +608,22 @@ test("fetchText refuses a redirect out of the allowlisted path prefix", async ()
   }
 });
 
-test("scopeGaps keeps the target objectives and their domains' Mock shortfalls, and nothing else", () => {
+test("scopeGaps keeps each course's target objectives and their domains' Mock shortfalls only", () => {
   const gaps = [
     { kind: "objective", course: "c", objective: "domain-1/quotas", published: 0 },
     { kind: "objective", course: "c", objective: "domain-1/inference-basics", published: 0 },
     { kind: "objective", course: "c", objective: "domain-2/other", published: 0 },
     { kind: "mock-shortfall", course: "c", domain: "domain-1", published: 0 },
     { kind: "mock-shortfall", course: "c", domain: "domain-2", published: 0 },
+    { kind: "objective", course: "new", objective: "domain-1/quotas", published: 0 },
+    { kind: "mock-shortfall", course: "new", domain: "domain-1", published: 0 },
   ];
   assert.equal(scopeGaps(gaps, null), gaps);
   assert.deepEqual(
-    scopeGaps(gaps, { objectives: ["domain-1/quotas"] }).map((g) => g.objective ?? g.domain),
-    ["domain-1/quotas", "domain-1"],
+    scopeGaps(gaps, { targets: { c: ["domain-1/quotas"] } }).map(
+      (g) => `${g.course} ${g.objective ?? g.domain}`,
+    ),
+    ["c domain-1/quotas", "c domain-1"],
   );
 });
 
@@ -667,33 +671,63 @@ test("discover: unknown objectives, or objectives without a course, fail instead
   }
 });
 
-test("discover: a course run drops held objectives from its gaps; an unscoped run ignores holds", async () => {
+test("discover: held objectives are dropped from the gaps of course-scoped and unscoped runs", async () => {
   const dir = fixture();
   mkdirSync(join(dir, "coverage"));
   writeFileSync(
     join(dir, "coverage", "agentic-ai-builder.yaml"),
     yaml({
+      schema_version: 1,
+      course_id: "agentic-ai-builder",
+      reviewed_at: "2026-11-14",
       objectives: [
-        { id: "domain-1/quotas", status: "open" },
-        { id: "domain-1/inference-basics", status: "held" },
+        { id: "domain-1/quotas", status: "open", strength: "strong", volatile: false, sources: [] },
+        { id: "domain-1/inference-basics", status: "held", strength: "missing", note: "n", sources: [] },
       ],
     }),
   );
+  const objectiveGaps = (r) => r.result.gaps.filter((g) => g.kind === "objective").map((g) => g.objective);
   try {
-    const scoped = await scopedDiscover(dir, {});
-    assert.deepEqual(
-      scoped.result.gaps.filter((g) => g.kind === "objective").map((g) => g.objective),
-      ["domain-1/quotas"],
-    );
-    assert.deepEqual(scoped.result.held, ["domain-1/inference-basics"]);
-    assert.match(scoped.result.summary, /Held, not authored: domain-1\/inference-basics/);
-
-    const unscoped = await scopedDiscover(dir, { course: null });
-    assert.ok(unscoped.result.gaps.some((g) => g.objective === "domain-1/inference-basics"));
-    assert.equal(unscoped.result.objectives, null);
-
+    for (const course of ["agentic-ai-builder", null]) {
+      const run = await scopedDiscover(dir, { course });
+      assert.deepEqual(objectiveGaps(run), ["domain-1/quotas"], `course=${course}`);
+      assert.deepEqual(run.result.held, { "agentic-ai-builder": ["domain-1/inference-basics"] });
+      assert.match(
+        run.result.summary,
+        /Held in agentic-ai-builder, not authored: domain-1\/inference-basics/,
+      );
+    }
     writeFileSync(join(dir, "coverage", "agentic-ai-builder.yaml"), "objectives: [unclosed");
     await assert.rejects(scopedDiscover(dir, {}), /coverage\/agentic-ai-builder\.yaml: unreadable/);
+    await assert.rejects(
+      scopedDiscover(dir, { course: null }),
+      /coverage\/agentic-ai-builder\.yaml: unreadable/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: an unscoped run offers no gaps for a course with no published question", async () => {
+  const dir = fixture();
+  addCloudopsCourse(dir);
+  try {
+    const unscoped = await scopedDiscover(dir, { course: null });
+    assert.deepEqual(unscoped.result.excluded, ["ai-cloudops-engineer"]);
+    assert.ok(unscoped.result.gaps.length > 0, "the published course still has its gaps");
+    assert.ok(unscoped.result.gaps.every((g) => g.course === "agentic-ai-builder"));
+    assert.match(unscoped.result.summary, /no published question yet\): ai-cloudops-engineer/);
+
+    // Named explicitly, the new course gets its gaps: the bootstrap path.
+    const named = await scopedDiscover(dir, { course: "ai-cloudops-engineer" });
+    assert.deepEqual(
+      named.result.gaps.filter((g) => g.kind === "objective").map((g) => g.objective),
+      ["domain-1/network-vpc"],
+    );
+
+    // A question file that will not parse leaves the counts unknown: an error.
+    writeFileSync(join(dir, "questions", "q-broken0001.yaml"), "status: [unclosed");
+    await assert.rejects(scopedDiscover(dir, { course: null }), /published counts cannot be computed/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

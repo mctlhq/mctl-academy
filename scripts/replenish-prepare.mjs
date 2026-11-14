@@ -37,8 +37,9 @@
  *       `retired` at the base changed at all. With --forbid-published-now
  *       (the author phase) also fail when a changed file is published or
  *       retired NOW: the agent never publishes anything itself. With --limits
- *       (required on the author phase) a scoped run also fails on any changed
- *       file outside its course or target objectives.
+ *       (required on the author phase) it also fails on any changed file
+ *       outside the run's targets: another course on a scoped run, a course
+ *       with no published question on an unscoped one, a held objective.
  *   boundary --base <git ref>
  *       Fail when anything outside content/questions was changed OR created
  *       since the base. The author agent may touch nothing else; this runs
@@ -99,20 +100,27 @@ export function knownObjectives(contentDir = CONTENT, courseId = null) {
 }
 
 /**
- * The run's objective scope as _run/limits.json carries it, re-resolved
+ * The run's objective scope as _run/limits.json carries it, re-validated
  * against the course maps and coverage holds in the tree being checked.
  *
  * The file is not optional here: whoever passes it is asking for the scope to
  * be enforced, so an unreadable or malformed file throws instead of reading as
- * "unscoped". `course: null` (with no objectives) is the explicit unscoped
- * value and returns null. _run/ is covered by the snapshot taken before each
- * agent and verified after it, so the file the gates read is the one the
- * workflow wrote.
+ * "everything is in scope". Every run carries `targets` (course id -> the
+ * objectives it may author for); a scoped run also names its `course`, which
+ * must be the only target. Each target list is re-resolved, so an objective
+ * outside its course map or held in content/coverage/ throws here too.
+ *
+ * Which courses an unscoped run targets -- those with a published question --
+ * is decided once, when the author job writes the file, and not recomputed
+ * here: the quarantine that runs in between can demote a course's only
+ * published item, and the scope must not move under the agent. _run/ is
+ * covered by the snapshot taken before each agent and verified after it, so
+ * the file the gates read is the one the workflow wrote.
  *
  * @param {object} args
  * @param {string} args.limitsFile
  * @param {string} [args.contentDir]
- * @returns {{ course: string, objectives: string[], held: string[] } | null}
+ * @returns {{ course: string | null, targets: Record<string, string[]>, excluded: string[] }}
  */
 export function readRunScope({ limitsFile, contentDir = CONTENT }) {
   let limits;
@@ -124,50 +132,77 @@ export function readRunScope({ limitsFile, contentDir = CONTENT }) {
   if (!limits || typeof limits !== "object" || Array.isArray(limits) || !("course" in limits)) {
     throw new Error(`${limitsFile}: no "course" key, so the run's scope is unknown`);
   }
-  const { course, objectives } = limits;
+  const { course, objectives, targets, excluded = [] } = limits;
+  if (course !== null && (typeof course !== "string" || !course)) {
+    throw new Error(`${limitsFile}: course is not a course id`);
+  }
+  if (!targets || typeof targets !== "object" || Array.isArray(targets)) {
+    throw new Error(`${limitsFile}: no "targets" mapping, so the run's scope is unknown`);
+  }
+  if (!Array.isArray(excluded) || !excluded.every((c) => typeof c === "string")) {
+    throw new Error(`${limitsFile}: "excluded" is not a list of course ids`);
+  }
+  const isList = (v) =>
+    Array.isArray(v) && v.length > 0 && v.every((o) => typeof o === "string" && OBJECTIVE.test(o));
   if (course === null) {
     if (objectives !== null && objectives !== undefined) {
       throw new Error(`${limitsFile}: objectives without a course`);
     }
-    return null;
+  } else {
+    if (!isList(objectives)) {
+      throw new Error(`${limitsFile}: a scoped run needs a non-empty list of domain-N/<id> objectives`);
+    }
+    const keys = Object.keys(targets);
+    const same =
+      keys.length === 1 &&
+      keys[0] === course &&
+      isList(targets[course]) &&
+      [...targets[course]].sort().join() === [...objectives].sort().join();
+    if (!same) throw new Error(`${limitsFile}: targets disagree with the scoped course and objectives`);
   }
-  if (typeof course !== "string" || !course) throw new Error(`${limitsFile}: course is not a course id`);
-  if (
-    !Array.isArray(objectives) ||
-    !objectives.length ||
-    !objectives.every((o) => typeof o === "string" && OBJECTIVE.test(o))
-  ) {
-    throw new Error(`${limitsFile}: a scoped run needs a non-empty list of domain-N/<id> objectives`);
+  /** @type {Record<string, string[]>} */
+  const resolved = {};
+  for (const [id, list] of Object.entries(targets)) {
+    if (!isList(list)) throw new Error(`${limitsFile}: targets.${id} is not a non-empty objective list`);
+    resolved[id] = resolveScope({ contentDir, course: id, objectives: list }).objectives;
   }
-  return resolveScope({ contentDir, course, objectives });
+  return { course, targets: resolved, excluded };
 }
 
 /**
- * Changed question files that fall outside a scoped run: a different
- * `course_id`, or an `objective` outside the target set. A file the change
- * deleted is judged by what it was at the base, so a scoped run cannot clear
- * another course's work either. A file that cannot be read is reported: its
- * course is unknown, and unknown is not "in scope".
+ * Changed question files that fall outside the run's scope: a `course_id` the
+ * run does not target -- another course on a scoped run, a course with no
+ * published question yet on an unscoped one -- or an `objective` outside that
+ * course's targets (held objectives included). A file the change deleted is
+ * judged by what it was at the base, so a run cannot clear out-of-scope work
+ * either. A file that cannot be read is reported: its course is unknown, and
+ * unknown is not "in scope".
  *
  * `published`/`retired` at the base and non-.yaml paths are skipped here
  * because guardChanges already refuses them.
  *
  * @param {object} args
  * @param {string[]} args.changed
- * @param {{ course: string, objectives: string[] }} args.scope
+ * @param {{ course: string | null, targets: Record<string, string[]>, excluded?: string[] }} args.scope
  * @param {(file: string) => {absent: true} | {error: string} | {data: any}} args.readNow
  * @param {(file: string) => any} args.readAtBase  parsed data, or null when absent
  * @param {(file: string) => string | null} [args.statusAtBase]
  */
 export function scopeProblems({ changed, scope, readNow, readAtBase, statusAtBase = null }) {
-  const objectives = new Set(scope.objectives);
+  const targets = new Map(Object.entries(scope.targets).map(([c, list]) => [c, new Set(list)]));
+  const excluded = new Set(scope.excluded ?? []);
   const problems = [];
   const outside = (file, data, verb) => {
-    if (data?.course_id !== scope.course) {
-      problems.push(
-        `${file} ${verb} course ${JSON.stringify(data?.course_id ?? null)}, but this run is scoped to ${scope.course}`,
-      );
-    } else if (!objectives.has(data?.objective)) {
+    const courseId = data?.course_id ?? null;
+    const named = JSON.stringify(courseId);
+    if (typeof courseId !== "string" || !targets.has(courseId)) {
+      let why;
+      if (scope.course) why = `but this run is scoped to ${scope.course}`;
+      else if (excluded.has(courseId)) {
+        why = "which has no published question yet: only a run that names it in `course` may author for it";
+      } else why = "which this run does not author for";
+      problems.push(`${file} ${verb} course ${named}, ${why}`);
+    } else if (!targets.get(courseId).has(data?.objective)) {
       problems.push(
         `${file} ${verb} objective ${JSON.stringify(data?.objective ?? null)}, outside this run's target objectives`,
       );
@@ -194,7 +229,7 @@ export function scopeProblems({ changed, scope, readNow, readAtBase, statusAtBas
 /** A question file as it is on disk, for scopeProblems. */
 export function questionOnDisk({ file, cwd = process.cwd() }) {
   const abs = join(cwd, file);
-  if (!existsSync(abs)) return { absent: true };
+  if (!existsSync(abs)) return { absent: /** @type {true} */ (true) };
   try {
     return { data: parseYaml(readFileSync(abs, "utf8")) };
   } catch (e) {
@@ -831,12 +866,14 @@ async function main(argv) {
     let objectives;
     if (limitsFile) {
       const scope = readRunScope({ limitsFile });
-      if ((scope?.course ?? null) !== (candidates.course ?? null)) {
+      if ((scope.course ?? null) !== (candidates.course ?? null)) {
         throw new Error(
-          `limits.json is scoped to ${scope?.course ?? "no course"} but the discovery report to ${candidates.course ?? "no course"}`,
+          `limits.json is scoped to ${scope.course ?? "no course"} but the discovery report to ${candidates.course ?? "no course"}`,
         );
       }
-      objectives = scope ? new Set(scope.objectives) : knownObjectives(CONTENT, null);
+      // Source objectives carry no course of their own; every course's ids
+      // are prefixed per course, so the union of the targets is unambiguous.
+      objectives = new Set(Object.values(scope.targets).flat());
     } else {
       objectives = knownObjectives(CONTENT, candidates.course ?? null);
     }
@@ -866,15 +903,17 @@ async function main(argv) {
       max_new: int("max-new"),
       max_questions: int("max-questions"),
       now,
-      course: scope?.course ?? null,
-      objectives: scope?.objectives ?? null,
-      held: scope?.held ?? [],
+      course: scope.course,
+      objectives: scope.objectives,
+      targets: scope.targets,
+      held: scope.held,
+      excluded: scope.excluded,
     };
     writeFileSync(opt(args, "out") ?? "limits.json", JSON.stringify(limits, null, 2) + "\n");
+    const count = Object.values(scope.targets).flat().length;
+    const held = Object.values(scope.held).flat().length;
     console.log(
-      scope
-        ? `scoped to ${scope.course}: ${scope.objectives.length} target objective(s), ${scope.held.length} held`
-        : "unscoped",
+      `${scope.course ? `scoped to ${scope.course}` : "unscoped"}: ${count} target objective(s) in ${Object.keys(scope.targets).length} course(s), ${held} held${scope.excluded.length ? `; excluded until named: ${scope.excluded.join(", ")}` : ""}`,
     );
     return;
   }
@@ -963,17 +1002,15 @@ async function main(argv) {
     }
     if (limitsFile) {
       const scope = readRunScope({ limitsFile });
-      if (scope) {
-        problems.push(
-          ...scopeProblems({
-            changed,
-            scope,
-            readNow: (file) => questionOnDisk({ file }),
-            readAtBase: (file) => questionAtRef({ base, file }),
-            statusAtBase: (file) => statusAtRef({ base, file }),
-          }),
-        );
-      }
+      problems.push(
+        ...scopeProblems({
+          changed,
+          scope,
+          readNow: (file) => questionOnDisk({ file }),
+          readAtBase: (file) => questionAtRef({ base, file }),
+          statusAtBase: (file) => statusAtRef({ base, file }),
+        }),
+      );
     }
     if (expected) {
       problems.push(

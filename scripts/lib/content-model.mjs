@@ -264,6 +264,11 @@ export function coverageHolds(contentDir, courseId, known) {
   if (!doc || typeof doc !== "object" || !Array.isArray(doc.objectives)) {
     throw new Error(`${label}: expected a mapping with an objectives list`);
   }
+  // Extra keys (schema_version, reviewed_at, strength, sources, ...) are the
+  // coverage plan's own business; a course_id, when given, must be this one.
+  if (doc.course_id !== undefined && doc.course_id !== courseId) {
+    throw new Error(`${label}: course_id ${JSON.stringify(doc.course_id)} does not match ${courseId}`);
+  }
   const held = new Set();
   for (const [i, entry] of doc.objectives.entries()) {
     const id = entry?.id;
@@ -280,29 +285,81 @@ export function coverageHolds(contentDir, courseId, known) {
 }
 
 /**
- * The objective scope of a replenish run.
+ * Published questions per course id, for the unscoped-run rule below. Every
+ * question file must be read: a file that does not parse, or a published item
+ * that names no course, could be the one published question a course has, so
+ * either throws instead of being counted as zero.
  *
- * Unscoped (no course): null, and the run behaves as it always has. A course
- * alone scopes to every open objective of that course; a course plus
- * objectives scopes to exactly those. Objectives without a course, an unknown
- * course or objective, an explicitly requested held objective, or a course
- * whose objectives are all held each throw: every one of them would otherwise
- * become a run that authors something other than what was asked.
+ * @param {string} contentDir
+ * @returns {Map<string, number>}
+ */
+export function publishedCounts(contentDir) {
+  const problems = [];
+  const entries = loadYamlDir(contentDir, "questions", (file, why) => problems.push(`${file}: ${why}`));
+  if (problems.length) {
+    throw new Error(`published counts cannot be computed: ${problems.join("; ")}`);
+  }
+  const counts = new Map();
+  for (const { file, data } of entries) {
+    if (data?.status !== "published") continue;
+    if (typeof data.course_id !== "string" || !data.course_id) {
+      throw new Error(`published counts cannot be computed: ${file} is published but names no course_id`);
+    }
+    counts.set(data.course_id, (counts.get(data.course_id) ?? 0) + 1);
+  }
+  return counts;
+}
+
+/**
+ * The objective scope of a replenish run, as `targets`: course id -> the
+ * objectives that run may author for.
+ *
+ * Scoped (a course): a course alone targets every open objective of that
+ * course, a course plus objectives exactly those. Objectives without a course,
+ * an unknown course or objective, an explicitly requested held objective, or a
+ * course whose objectives are all held each throw: every one of them would
+ * otherwise become a run that authors something other than what was asked.
+ *
+ * Unscoped (the weekly schedule): every course that already has a published
+ * question, minus its held objectives. A course with none -- a new course
+ * whose bootstrap needs the owner's go -- is `excluded`: its zero-question
+ * objectives would otherwise win every gap ranking and be authored unasked. It
+ * can only be authored for by naming it in `course`.
  *
  * @param {object} args
  * @param {string} args.contentDir
  * @param {string | null} [args.course]
  * @param {string | string[] | null} [args.objectives]
  * @param {Map<string, object>} [args.courses]
- * @returns {{ course: string, objectives: string[], held: string[] } | null}
+ * @returns {{
+ *   course: string | null,
+ *   objectives: string[] | null,
+ *   targets: Record<string, string[]>,
+ *   held: Record<string, string[]>,
+ *   excluded: string[],
+ * }}
  */
 export function resolveScope({ contentDir, course = null, objectives = null, courses = null }) {
   const wanted = splitObjectives(objectives);
+  const all = courses ?? loadCourses(contentDir);
   if (!course) {
     if (wanted.length) throw new Error("objectives need a course: give the course they belong to");
-    return null;
+    const counts = publishedCounts(contentDir);
+    const scope = { course: null, objectives: null, targets: {}, held: {}, excluded: [] };
+    for (const id of [...all.keys()].sort()) {
+      if (!(counts.get(id) > 0)) {
+        scope.excluded.push(id);
+        continue;
+      }
+      const known = courseObjectives(all, id);
+      const held = coverageHolds(contentDir, id, known);
+      if (held.size) scope.held[id] = [...held].sort();
+      const open = [...known].filter((o) => !held.has(o)).sort();
+      if (open.length) scope.targets[id] = open;
+    }
+    return scope;
   }
-  const known = courseObjectives(courses ?? loadCourses(contentDir), course);
+  const known = courseObjectives(all, course);
   const held = coverageHolds(contentDir, course, known);
   let target;
   if (wanted.length) {
@@ -312,12 +369,18 @@ export function resolveScope({ contentDir, course = null, objectives = null, cou
     if (asked.length) {
       throw new Error(`held in content/coverage/${course}.yaml, not authorable: ${asked.join(", ")}`);
     }
-    target = wanted;
+    target = [...wanted].sort();
   } else {
-    target = [...known].filter((o) => !held.has(o));
+    target = [...known].filter((o) => !held.has(o)).sort();
     if (!target.length) throw new Error(`every objective of ${course} is held; nothing to author`);
   }
-  return { course, objectives: target.sort(), held: [...held].sort() };
+  return {
+    course,
+    objectives: target,
+    targets: { [course]: target },
+    held: held.size ? { [course]: [...held].sort() } : {},
+    excluded: [],
+  };
 }
 
 /** Sources keyed by id, for evidence resolution. */

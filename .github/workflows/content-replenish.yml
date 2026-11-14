@@ -1972,8 +1972,8 @@ jobs:
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
 
-            When _run/limits.json names a `course`, every file you add or change must carry that
-            `course_id` and an `objective` from its `objectives` list; leave any other file, a
+            Every file you add or change must carry a `course_id` that is a key of `targets` in
+            _run/limits.json and an `objective` from that key's list; leave any other file, a
             drifted one included, untouched. A deterministic gate rejects the run otherwise.
 
             Any file you add or change is yours: set `authored: { by: "${{ env.AUTHOR_ID }}" }`
@@ -2439,8 +2439,8 @@ jobs:
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
 
-            When _run/limits.json names a `course`, every file you add or change must carry that
-            `course_id` and an `objective` from its `objectives` list; leave any other file, a
+            Every file you add or change must carry a `course_id` that is a key of `targets` in
+            _run/limits.json and an `objective` from that key's list; leave any other file, a
             drifted one included, untouched. A deterministic gate rejects the run otherwise.
 
             Any file you add or change is yours: set `authored: { by: "${{ env.AUTHOR_ID }}" }`

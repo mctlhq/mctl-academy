@@ -28,9 +28,10 @@
  * every new page, so scoping never loses a first-seen date.
  *
  * --objective (repeatable, or a comma list; needs --course) narrows the gaps
- * further to those objectives, and with them the ranking of new pages. A
- * course scope also drops the objectives content/coverage/<course>.yaml holds
- * (see resolveScope); an unscoped run reads no coverage file at all.
+ * further to those objectives, and with them the ranking of new pages. Every
+ * run drops the objectives content/coverage/<course>.yaml holds, and an
+ * unscoped run also drops every course with no published question yet: a new
+ * course is bootstrapped only by naming it (see resolveScope).
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -193,18 +194,22 @@ export function rankPages(pages, gaps) {
 }
 
 /**
- * The gaps a scoped run may act on: objective gaps inside the target set, and
- * Mock shortfalls of the domains that hold one of its objectives. A null scope
- * keeps everything.
+ * The gaps a run may act on: objective gaps inside its course's targets, and
+ * Mock shortfalls of the domains that hold one of those objectives. A course
+ * with no targets -- out of a scoped run, excluded from an unscoped one, or
+ * entirely held -- contributes nothing. A null scope keeps everything.
  *
  * @param {object[]} gaps
- * @param {{ objectives: string[] } | null} scope
+ * @param {{ targets: Record<string, string[]> } | null} scope
  */
 export function scopeGaps(gaps, scope) {
   if (!scope) return gaps;
-  const objectives = new Set(scope.objectives);
-  const domains = new Set(scope.objectives.map((o) => o.split("/")[0]));
-  return gaps.filter((g) => (g.kind === "objective" ? objectives.has(g.objective) : domains.has(g.domain)));
+  return gaps.filter((g) => {
+    const targets = scope.targets[g.course];
+    if (!targets) return false;
+    if (g.kind === "objective") return targets.includes(g.objective);
+    return targets.some((o) => o.split("/")[0] === g.domain);
+  });
 }
 
 export function gapsFrom(report, minPerObjective) {
@@ -372,10 +377,11 @@ export async function discover({
   const result = {
     generated_at: new Date().toISOString(),
     course,
-    // The target set the run authors against; null when unscoped. The author
-    // job carries it on in _run/limits.json, from the same course map.
-    objectives: scope?.objectives ?? null,
-    held: scope?.held ?? [],
+    // What the run authors against, from the same course map, coverage holds
+    // and published counts the author job re-reads into _run/limits.json.
+    objectives: scope.objectives,
+    held: scope.held,
+    excluded: scope.excluded,
     empty:
       selectedNew.length === 0 &&
       drifted.length === 0 &&
@@ -415,7 +421,8 @@ export async function discover({
 export function summarize({
   course = null,
   objectives = null,
-  held = [],
+  held = {},
+  excluded = [],
   newPages,
   newPagesTotal,
   drifted,
@@ -429,11 +436,13 @@ export function summarize({
       `Scoped to course ${course}: its gaps and pages on its primary host only; drift is reported whole.`,
       "",
     );
-  if (course && objectives) {
-    lines.push(`Target objectives (${objectives.length}): ${objectives.join(", ")}`);
-    if (held.length) lines.push(`Held, not authored: ${held.join(", ")}`);
-    lines.push("");
+  if (course && objectives) lines.push(`Target objectives (${objectives.length}): ${objectives.join(", ")}`);
+  for (const [id, list] of Object.entries(held))
+    lines.push(`Held in ${id}, not authored: ${list.join(", ")}`);
+  if (excluded.length) {
+    lines.push(`Not authored without an explicit course (no published question yet): ${excluded.join(", ")}`);
   }
+  if ((course && objectives) || Object.keys(held).length || excluded.length) lines.push("");
   if (indexErrors.length) {
     lines.push(`## Index errors (${indexErrors.length}) — the new-page count below is incomplete`);
     for (const e of indexErrors) lines.push(`- ${e.index}: ${e.message}`);
