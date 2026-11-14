@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9b3d71ae4c08
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/source-quality
 stem: "An agent wants Tavily Search to prioritize trusted sources such as

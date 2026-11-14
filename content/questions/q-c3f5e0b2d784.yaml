@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c3f5e0b2d784
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/source-quality
 stem: "An agent is filtering Tavily Search results to drop low-relevance sources

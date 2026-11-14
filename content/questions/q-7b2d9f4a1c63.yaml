@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7b2d9f4a1c63
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: According to the Embeddings API reference, which fields are required in a

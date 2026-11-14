@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a3d7f2c9e618
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/workflow-security
 stem: "A service account in one Nebius AI Cloud region needs to read a
