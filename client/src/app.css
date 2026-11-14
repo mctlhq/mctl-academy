@@ -16,9 +16,8 @@
  *   T1  ≤400px      HomeScreen.vue                extra-compact spacing
  *                                                  (340/400 rules; smallest
  *                                                  phones)
- *   T2  401-560px   app.css / AppNav.vue           focused-practice
- *                                                  fullscreen mode,
- *                                                  tightest global padding,
+ *   T2  401-560px   app.css / AppNav.vue           tightest global padding
+ *                                                  (Home trims it further),
  *                                                  course-select label
  *                                                  hidden (≤560, so also
  *                                                  active under T1)
@@ -27,8 +26,9 @@
  *                   MockResultsScreen.vue /
  *                   UserNav.vue
  *   T4  621-680px   PracticeContent.vue            context panel: inline
- *                                                  sidebar -> floating
- *                                                  overlay (≤680)
+ *                                                  sidebar -> full-width
+ *                                                  block below the
+ *                                                  question (≤680)
  *   T5  681-800px   DashboardScreen.vue /          two-column grid
  *                   HomeScreen.vue                 collapses to one
  *                                                  column (≤800); Practice
@@ -75,13 +75,6 @@ body {
   min-height: 100dvh;
 }
 
-#app {
-  display: flex;
-  min-height: 100vh;
-  min-height: 100dvh;
-  flex-direction: column;
-}
-
 .app-shell {
   display: flex;
   min-height: 100vh;
@@ -105,11 +98,23 @@ textarea {
 button:focus-visible,
 a:focus-visible,
 summary:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* Bordered form controls take the design-system focus treatment (accent
+   border plus a soft shadow) instead of an offset outline. Chrome on macOS
+   keeps :focus-visible on a <select> after a mouse pick, and an outline drawn
+   3px outside the control's own border read as a doubled orange box.
+   Checkboxes and radios have no border to recolour, so they keep the ring. */
+input:not([type="checkbox"], [type="radio"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--control-focus-shadow);
 }
 
 /* <main> receives programmatic focus after navigation (router/index.ts); it
@@ -128,7 +133,7 @@ textarea:focus-visible {
   border-radius: var(--mctl-radius-md);
   background: var(--surface-elevated);
   color: var(--surface-fg);
-  font-size: 0.875rem;
+  font-size: var(--text-caption-size);
   text-decoration: none;
   transform: translateY(-200%);
 }
@@ -141,7 +146,6 @@ textarea:focus-visible {
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-height: calc(100vh - 10rem);
   padding-top: clamp(2rem, 5vw, 4rem);
   padding-right: calc(var(--mctl-layout-page-padding) + env(safe-area-inset-right));
   padding-bottom: clamp(2rem, 5vw, 4rem);
@@ -185,74 +189,70 @@ code {
   overflow-wrap: break-word;
 }
 
+/* Routes whose screen carries its own vertical rhythm (App.vue sets these
+   from the route): Practice and Mistakes pad their own question column, and
+   Home trims the shell's padding on phones. A modifier on <main> replaces the
+   negative margins each screen used to pull itself back into this padding. */
+.app-main.app-main--focused {
+  padding-top: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Caption-style section heading shared by Home, the course page and the
+   dashboard: small uppercase mono text that labels a block without
+   competing with the page's own h1. */
+.section-heading {
+  margin: 0 0 1.25rem;
+  color: var(--surface-fg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: var(--text-caption-leading);
+  text-transform: uppercase;
+}
+
 @media (max-width: 680px) {
   .app-main {
     box-sizing: border-box;
-    min-height: calc(100vh - 10.5rem);
-    min-height: calc(100dvh - 10.5rem);
     padding-top: 1.75rem;
     padding-bottom: calc(2rem + env(safe-area-inset-bottom));
-  }
-
-  /* PracticeContent.vue's `.practice-context` becomes a `position: fixed`
-     bottom-right pill at this same 680px threshold (shared with Mistakes,
-     which reuses PracticeContent) — confirmed on a real Pixel 7 that when a
-     question's content is short enough for AppFooter to render in that same
-     corner, the fixed pill visually sits on top of the footer's "mctl
-     Academy" text, and reproduced headlessly at 375/390/768. AppFooter is a
-     plain document-flow sibling with no awareness of the floating chrome
-     above it, so hide it outright here rather than trying to keep two
-     independently-positioned elements out of each other's way — this also
-     matches "focused-practice" mode's already-stated intent (nav/footer
-     chrome removed from scroll flow), just extended from its ≤560px-only
-     reach up to the ≤680px range where the floating pill actually exists. */
-  .focused-practice .app-footer-safe {
-    display: none;
   }
 }
 
 @media (max-width: 560px) {
-  .app-shell.focused-practice {
-    height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .focused-practice .app-main {
-    min-height: 0;
-    overflow: hidden;
-  }
-
   .app-main {
     padding-top: 1rem;
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .app-main--compact {
+    padding-top: 0.25rem;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom));
+  }
+
+  .section-heading {
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .app-main--compact {
+    padding-top: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .section-heading {
+    margin-bottom: 0.5rem;
   }
 }
 
 /* Android standalone PWAs report 100dvh including the system navigation area,
    while 100svh matches the actually visible application viewport. */
 @media (display-mode: standalone) {
-  body {
-    min-height: 100svh;
-  }
-
-  #app,
+  body,
   .app-shell {
     min-height: 100svh;
-  }
-
-  .app-main {
-    min-height: calc(100svh - 10rem);
-  }
-}
-
-@media (display-mode: standalone) and (max-width: 560px) {
-  .app-shell.focused-practice {
-    height: 100svh;
-  }
-
-  .app-main {
-    min-height: calc(100svh - 10.5rem);
   }
 }
 

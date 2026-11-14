@@ -32,7 +32,7 @@ const mistakesBundle = computed(() => {
     :storage-key="sessionKey"
     mode="mistakes"
     :bundle="mistakesBundle"
-    title="Review Mistakes"
+    title="Review mistakes"
     empty-message="Questions you answer incorrectly in Practice or a Mock exam appear here. Answer one correctly on the first try in a new pass to clear it."
   />
 </template>

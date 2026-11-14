@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { MButton } from "@mctlhq/ui";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
+import { RouterLink } from "vue-router";
 </script>
 
 <template>
@@ -11,10 +9,8 @@ const router = useRouter();
     <h1>This page does not exist</h1>
     <p class="not-found-lede">The link may be outdated or mistyped. Your progress is not affected.</p>
     <div class="not-found-actions">
-      <MButton type="button" @click="router.push('/practice')"
-        >Continue practice <span aria-hidden="true">→</span></MButton
-      >
-      <MButton type="button" variant="ghost" @click="router.push('/')">Go to Home</MButton>
+      <MButton :as="RouterLink" to="/practice">Continue practice <span aria-hidden="true">→</span></MButton>
+      <MButton :as="RouterLink" to="/" variant="ghost">Go to home</MButton>
     </div>
   </section>
 </template>
@@ -28,7 +24,7 @@ const router = useRouter();
   margin: 0 0 0.5rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .not-found h1 {

@@ -3,6 +3,9 @@ import { flushPromises, mount } from "@vue/test-utils";
 import MockStartScreen from "../MockStartScreen.vue";
 import type { ExamDataSource } from "../../dataSource";
 import type { MockConfig, Question } from "../../types";
+import { useRouterLinkStub } from "../../../test-utils/routerLinkStub";
+
+useRouterLinkStub();
 
 const baseConfig: MockConfig = {
   questionCount: 30,

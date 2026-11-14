@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, ref, type Ref } from "vue";
+import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
 import DomainBar from "../components/DomainBar.vue";
 import ConfirmDialog from "../components/ConfirmDialog.vue";
@@ -8,11 +9,6 @@ import { calculateProgressStats, clearProgress } from "../services/progressStore
 import { questionsForCourse } from "../services/contentBundle";
 import { domainTitlesFor, findCourse } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
-
-defineProps<{
-  onReviewMistakes: () => void;
-  onStartPractice: (domain?: string) => void;
-}>();
 
 // Scoped to the selected course: the denominator, the attempts and the open
 // mistakes all come from the same course's question bundle, so they can never
@@ -148,16 +144,16 @@ async function handleClearHistory() {
         <div v-if="recommendedDomain" class="weakest-card">
           <span>Recommended next</span>
           <strong>{{ recommendedDomain.domainTitle }}</strong>
-          <button type="button" @click="onStartPractice(recommendedDomain.domainId)">
+          <RouterLink :to="{ path: '/practice', query: { domain: recommendedDomain.domainId } }">
             Continue practice <span aria-hidden="true">→</span>
-          </button>
+          </RouterLink>
         </div>
         <MButton
           v-if="stats.totalMistakes > 0"
-          type="button"
+          :as="RouterLink"
+          to="/mistakes"
           variant="ghost"
           class="review-mistakes"
-          @click="onReviewMistakes"
         >
           Review {{ stats.totalMistakes }} {{ stats.totalMistakes === 1 ? "mistake" : "mistakes" }}
         </MButton>
@@ -213,7 +209,7 @@ async function handleClearHistory() {
 <style scoped>
 .accuracy-detail {
   color: var(--surface-fg-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 .progress-grid {
   display: grid;
@@ -237,14 +233,14 @@ async function handleClearHistory() {
 .readiness-heading span {
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 .section-marker,
 .progress-summary dt,
 .weakest-card > span {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -266,7 +262,7 @@ async function handleClearHistory() {
 .metric-definitions {
   margin: 0.75rem 0 0;
   color: var(--surface-fg-muted);
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
 }
 
 .metric-definitions summary {
@@ -291,7 +287,7 @@ async function handleClearHistory() {
   margin: 0 0 1.35rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -344,16 +340,16 @@ async function handleClearHistory() {
   font-size: 0.9rem;
 }
 
-.weakest-card button {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--accent);
+.weakest-card a {
+  color: var(--accent-text);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   font-weight: 600;
-  text-align: left;
-  cursor: pointer;
+  text-decoration: none;
+}
+
+.weakest-card a:hover {
+  text-decoration: underline;
 }
 
 .data-section {
@@ -367,7 +363,7 @@ async function handleClearHistory() {
   margin: 0 0 0.5rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -375,7 +371,7 @@ async function handleClearHistory() {
 .data-section p {
   margin: 0 0 0.75rem;
   color: var(--surface-fg-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-caption-size);
 }
 
 .data-status {
@@ -394,7 +390,7 @@ async function handleClearHistory() {
 
 .reset-progress:hover {
   border-color: var(--status-bad) !important;
-  color: var(--status-bad) !important;
+  color: var(--status-bad-text) !important;
 }
 
 @media (max-width: 800px) {

@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { MButton } from "@mctlhq/ui";
+import { RouterLink, useRoute } from "vue-router";
+import { MButton, MPill } from "@mctlhq/ui";
+import CourseGrid from "../components/CourseGrid.vue";
 import { courseCatalog, findCourse, type CourseInfo } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 import { questionsForCourse } from "../services/contentBundle";
+import {
+  COURSE_HEAD_TAGS,
+  COURSE_JSONLD_ID,
+  COURSE_NOT_FOUND_TITLE,
+  courseHeadMeta,
+  headTagSelector,
+  type CourseHeadTagSpec,
+} from "../seo/courseMeta.mjs";
 
 const route = useRoute();
-const router = useRouter();
 const { setCourse } = useCourseStore();
 
 const courseId = computed(() => String(route.params.courseId ?? ""));
@@ -23,179 +31,96 @@ function domainQuestionCount(domainId: string): number {
 // Other available tracks for internal SEO cross-linking
 const otherCourses = computed(() => courseCatalog.filter((c) => c.available && c.id !== courseId.value));
 
-function startPractice(domainId?: string) {
-  if (!course.value?.available) return;
-  if (!setCourse(course.value.id)) return;
-  if (domainId) {
-    router.push(`/practice?domain=${encodeURIComponent(domainId)}`);
-  } else {
-    router.push("/practice");
-  }
+// Practice and Mock links need no selection step of their own: an available
+// course page has already made its course the selection on mount (below).
+function domainPracticePath(domainId: string): string {
+  return `/practice?domain=${encodeURIComponent(domainId)}`;
 }
 
-function startMock() {
-  if (!course.value?.available) return;
-  if (!setCourse(course.value.id)) return;
-  router.push("/mock");
+/**
+ * Head tags are built by the module the server also renders course pages
+ * with (server/spa.mjs), so a crawler without JavaScript and this view after
+ * an in-app navigation produce identical strings.
+ *
+ * Restoring: a tag the server rewrote carries the site default in
+ * `data-default`; otherwise the value found before this view's first write is
+ * the default. Reading the live value alone would "restore" a server-rendered
+ * course page's own canonical onto whatever page comes next.
+ */
+const savedDefaults = new Map<Element, string | null>();
+
+function headTag(spec: CourseHeadTagSpec): Element | null {
+  return typeof document === "undefined" ? null : document.querySelector(headTagSelector(spec));
 }
 
-let originalDescription: string | null = null;
-let originalOgTitle: string | null = null;
-let originalOgDesc: string | null = null;
-let originalOgUrl: string | null = null;
-let originalCanonical: string | null = null;
-
-function saveOriginalMeta() {
-  if (typeof document === "undefined") return;
-  if (originalDescription === null) {
-    originalDescription = document.querySelector('meta[name="description"]')?.getAttribute("content") ?? null;
-  }
-  if (originalOgTitle === null) {
-    originalOgTitle = document.querySelector('meta[property="og:title"]')?.getAttribute("content") ?? null;
-  }
-  if (originalOgDesc === null) {
-    originalOgDesc =
-      document.querySelector('meta[property="og:description"]')?.getAttribute("content") ?? null;
-  }
-  if (originalOgUrl === null) {
-    originalOgUrl = document.querySelector('meta[property="og:url"]')?.getAttribute("content") ?? null;
-  }
-  if (originalCanonical === null) {
-    originalCanonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href") ?? null;
-  }
+function defaultFor(el: Element): string | null {
+  return el.getAttribute("data-default") ?? savedDefaults.get(el) ?? null;
 }
 
 function restoreOriginalMeta() {
   if (typeof document === "undefined") return;
-
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    if (originalDescription !== null) metaDesc.setAttribute("content", originalDescription);
-    else metaDesc.removeAttribute("content");
+  for (const spec of COURSE_HEAD_TAGS) {
+    const el = headTag(spec);
+    if (!el || (!el.hasAttribute("data-default") && !savedDefaults.has(el))) continue;
+    const original = defaultFor(el);
+    if (original !== null) el.setAttribute(spec.attr, original);
+    else el.removeAttribute(spec.attr);
   }
-
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) {
-    if (originalOgTitle !== null) ogTitle.setAttribute("content", originalOgTitle);
-    else ogTitle.removeAttribute("content");
-  }
-
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) {
-    if (originalOgDesc !== null) ogDesc.setAttribute("content", originalOgDesc);
-    else ogDesc.removeAttribute("content");
-  }
-
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) {
-    if (originalOgUrl !== null) ogUrl.setAttribute("content", originalOgUrl);
-    else ogUrl.removeAttribute("content");
-  }
-
-  const canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) {
-    if (originalCanonical !== null) canonical.setAttribute("href", originalCanonical);
-    else canonical.setAttribute("href", "https://academy.mctl.ai/");
-  }
-
-  const scriptEl = document.getElementById("schema-course-jsonld");
-  if (scriptEl) scriptEl.remove();
+  document.getElementById(COURSE_JSONLD_ID)?.remove();
 }
 
 function updateMeta() {
   if (typeof document === "undefined") return;
-  saveOriginalMeta();
 
   if (!course.value) {
-    document.title = "Course not found · mctl academy";
+    document.title = COURSE_NOT_FOUND_TITLE;
     restoreOriginalMeta();
     return;
   }
 
-  if (!course.value.available) {
-    document.title = `${course.value.title} — Coming Soon · mctl academy`;
+  const meta = courseHeadMeta(course.value);
+  document.title = meta.title;
+  if (!meta.jsonLd) {
     restoreOriginalMeta();
     return;
   }
 
-  const title = `${course.value.title} — Practice Questions & Syllabus · mctl academy`;
-  const description = `Free online practice questions and syllabus for ${course.value.title}. ${totalQuestions.value} questions across ${course.value.mock.domains.length} domains.`;
-  const canonicalUrl = `https://academy.mctl.ai/courses/${course.value.id}`;
-
-  document.title = title;
-
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDesc.setAttribute("content", description);
+  for (const spec of COURSE_HEAD_TAGS) {
+    const el = headTag(spec);
+    if (!el) continue;
+    if (!el.hasAttribute("data-default") && !savedDefaults.has(el)) {
+      savedDefaults.set(el, el.getAttribute(spec.attr));
+    }
+    el.setAttribute(spec.attr, meta[spec.field] ?? "");
   }
 
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute("content", title);
-
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) ogDesc.setAttribute("content", description);
-
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) ogUrl.setAttribute("content", canonicalUrl);
-
-  const canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) canonical.setAttribute("href", canonicalUrl);
-
-  // Schema.org Course & Quiz JSON-LD
-  let scriptEl = document.getElementById("schema-course-jsonld");
+  let scriptEl = document.getElementById(COURSE_JSONLD_ID);
   if (!scriptEl) {
     scriptEl = document.createElement("script");
-    scriptEl.id = "schema-course-jsonld";
+    scriptEl.id = COURSE_JSONLD_ID;
     scriptEl.setAttribute("type", "application/ld+json");
     document.head.appendChild(scriptEl);
   }
+  scriptEl.textContent = JSON.stringify(meta.jsonLd);
+}
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Course",
-        "@id": `${canonicalUrl}#course`,
-        name: `${course.value.title} Practice Track`,
-        description: `${course.value.title} online practice questions and study syllabus.`,
-        provider: {
-          "@type": "Organization",
-          name: "mctl Academy",
-          url: "https://academy.mctl.ai/",
-        },
-        isAccessibleForFree: true,
-        inLanguage: "en",
-        offers: [
-          {
-            "@type": "Offer",
-            category: "Free",
-            price: "0",
-            priceCurrency: "USD",
-          },
-        ],
-      },
-      {
-        "@type": "Quiz",
-        "@id": `${canonicalUrl}#quiz`,
-        name: `${course.value.title} Practice Questions`,
-        description: `${totalQuestions.value} scenario-based practice questions across ${course.value.mock.domains.length} domains.`,
-        learningResourceType: "Practice Quiz",
-        isAccessibleForFree: true,
-        about: {
-          "@type": "Thing",
-          name: course.value.title,
-        },
-      },
-    ],
-  };
-  scriptEl.textContent = JSON.stringify(structuredData);
+// The header switcher shows the selected course, so a course page selects the
+// course it shows; otherwise /courses/X rendered under another course's name in
+// the header. Only available courses: a coming-soon or unknown id must never
+// become the selection (setCourse refuses it anyway). This does not reintroduce
+// the old switcher revert: the switcher navigates to /courses/<new id> when used
+// on a course page, so the route and the selection always agree.
+function syncSelectedCourse() {
+  if (course.value?.available) setCourse(course.value.id);
 }
 
 onMounted(() => {
+  syncSelectedCourse();
   updateMeta();
 });
 
 watch(course, () => {
+  syncSelectedCourse();
   updateMeta();
 });
 
@@ -214,7 +139,7 @@ onUnmounted(() => {
 
     <header class="course-hero">
       <div class="course-badge-row">
-        <span class="course-tag">Practice track</span>
+        <MPill tone="accent">Practice track</MPill>
       </div>
       <h1 class="course-title">{{ course.title }}</h1>
       <p class="course-subtitle">
@@ -238,11 +163,11 @@ onUnmounted(() => {
       </div>
 
       <div class="course-cta-row">
-        <MButton type="button" @click="startPractice()">
-          Start Practice ({{ totalQuestions }} questions) <span aria-hidden="true">→</span>
+        <MButton :as="RouterLink" to="/practice">
+          Start practice ({{ totalQuestions }} questions) <span aria-hidden="true">→</span>
         </MButton>
-        <MButton type="button" variant="ghost" @click="startMock()">
-          Timed Mock Run ({{ course.mock.questionCount }} questions)
+        <MButton :as="RouterLink" to="/mock" variant="ghost">
+          Timed mock run ({{ course.mock.questionCount }} questions)
         </MButton>
       </div>
     </header>
@@ -259,14 +184,13 @@ onUnmounted(() => {
             <h3 class="domain-card-title">{{ domain.title }}</h3>
             <p class="domain-card-mock">Mock distribution: {{ domain.mockQuestions }} questions</p>
             <div class="domain-card-action">
-              <button
-                type="button"
+              <RouterLink
+                :to="domainPracticePath(domain.id)"
                 class="domain-btn-link"
                 :aria-label="`Practice ${domain.title}`"
-                @click="startPractice(domain.id)"
               >
                 Practice this domain <span aria-hidden="true">→</span>
-              </button>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -274,17 +198,7 @@ onUnmounted(() => {
 
       <section v-if="otherCourses.length > 0" class="other-courses" aria-labelledby="other-courses-heading">
         <h2 id="other-courses-heading" class="section-heading">Explore other courses</h2>
-        <div class="other-courses-grid">
-          <RouterLink
-            v-for="c in otherCourses"
-            :key="c.id"
-            :to="`/courses/${c.id}`"
-            class="other-course-card"
-          >
-            <span class="other-course-title">{{ c.title }}</span>
-            <span class="other-course-meta">{{ c.publishedQuestionCount }} questions</span>
-          </RouterLink>
-        </div>
+        <CourseGrid :courses="otherCourses" />
       </section>
     </div>
   </div>
@@ -300,8 +214,8 @@ onUnmounted(() => {
       Practice questions for this track are currently in preparation. Check back soon.
     </p>
     <div class="not-found-actions">
-      <MButton type="button" @click="router.push('/practice')">Continue practice</MButton>
-      <MButton type="button" variant="ghost" @click="router.push('/')">Go to Home</MButton>
+      <MButton :as="RouterLink" to="/practice">Continue practice</MButton>
+      <MButton :as="RouterLink" to="/" variant="ghost">Go to home</MButton>
     </div>
   </div>
 
@@ -310,8 +224,8 @@ onUnmounted(() => {
     <h1>Course not found</h1>
     <p class="not-found-lede">The requested course could not be found or has been retired.</p>
     <div class="not-found-actions">
-      <MButton type="button" @click="router.push('/')">Go to Home</MButton>
-      <MButton type="button" variant="ghost" @click="router.push('/practice')">Continue practice</MButton>
+      <MButton :as="RouterLink" to="/">Go to home</MButton>
+      <MButton :as="RouterLink" to="/practice" variant="ghost">Continue practice</MButton>
     </div>
   </div>
 </template>
@@ -330,7 +244,7 @@ onUnmounted(() => {
   margin-bottom: 1.5rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .course-breadcrumbs a {
@@ -339,7 +253,7 @@ onUnmounted(() => {
 }
 
 .course-breadcrumbs a:hover {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: underline;
 }
 
@@ -353,19 +267,6 @@ onUnmounted(() => {
 
 .course-badge-row {
   margin-bottom: 0.5rem;
-}
-
-.course-tag {
-  display: inline-block;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--mctl-radius-sm);
-  background: var(--surface-card);
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .course-title {
@@ -406,7 +307,7 @@ onUnmounted(() => {
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-subtle);
 }
 
@@ -440,11 +341,11 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 .domain-card-tag {
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-weight: 500;
 }
@@ -464,7 +365,7 @@ onUnmounted(() => {
 
 .domain-card-mock {
   margin: 0 0 1rem;
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-muted);
 }
 
@@ -476,9 +377,10 @@ onUnmounted(() => {
   background: none;
   border: none;
   padding: 0;
-  color: var(--accent);
-  font-size: 0.85rem;
+  color: var(--accent-text);
+  font-size: var(--text-caption-size);
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -494,46 +396,11 @@ onUnmounted(() => {
   margin-bottom: 3rem;
 }
 
-.other-courses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 1rem;
-}
-
-.other-course-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-md);
-  background: var(--surface-card);
-  text-decoration: none;
-  transition: border-color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
-}
-
-.other-course-card:hover,
-.other-course-card:focus-visible {
-  border-color: var(--accent);
-}
-
-.other-course-title {
-  color: var(--surface-fg);
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-
-.other-course-meta {
-  color: var(--surface-fg-subtle);
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
-}
-
 .not-found-code {
   margin: 0 0 0.5rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .not-found-lede {

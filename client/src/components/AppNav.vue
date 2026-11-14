@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch, type Ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { MSelect } from "@mctlhq/ui";
 import { calculateStudyStreak, getMistakeQuestionIds, progressVersion } from "../services/progressStore";
 import { useCourseStore } from "../services/courseStore";
 import { questionIdsForCourse } from "../services/contentBundle";
@@ -12,24 +13,54 @@ import type { UserProfile } from "../types/user";
 defineProps<{ user: UserProfile | null; loading: boolean }>();
 
 const router = useRouter();
+const route = useRoute();
 const theme = ref(currentTheme());
 const streak = ref(calculateStudyStreak());
 // Courses come from the generated catalog (content/courses/*.yaml), including
 // ones with no published questions yet — those render disabled as "Coming
 // soon" rather than being hidden, so the roadmap is visible without ever
 // letting a learner select a course that would show another course's content.
-const { courses, currentCourseId, setCourse } = useCourseStore();
+const { courses, currentCourseId, setCourse, canSelect } = useCourseStore();
 // The select may truncate a long title on a phone; its title attribute and
 // every learning page's own context line carry the full name.
 const currentCourse = computed(() => findCourse(currentCourseId.value));
 
-function onCourseChange(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  if (!target?.value) return;
-  if (!setCourse(target.value)) {
-    // Rejected (unavailable course): put the control back where it was.
-    target.value = currentCourseId.value ?? "";
+// MSelect options: unavailable courses stay listed but disabled, so the
+// roadmap is visible without ever being selectable.
+const courseOptions = computed(() =>
+  courses.map((c) => ({
+    value: c.id,
+    label: c.available ? c.title : `${c.title} — Coming soon`,
+    disabled: !c.available,
+  })),
+);
+
+const courseContext = ref<HTMLElement | null>(null);
+
+async function onCourseChange(next: string) {
+  if (!next) return;
+  const revert = () => {
+    // Put the control back where it was (unavailable course, or a
+    // navigation that did not happen). MSelect is controlled by
+    // currentCourseId, which did not change, so nothing re-renders it: the
+    // native control still shows the refused pick until it is reset here.
+    const control = courseContext.value?.querySelector("select");
+    if (control) control.value = currentCourseId.value ?? "";
+  };
+  // On a course page the page *is* the course, so picking another one has to
+  // move to that course's page: changing only the stored selection left the
+  // learner looking at course X with course Y in the switcher. Navigate first
+  // and select after — selecting first would remount the still-current
+  // /courses/X view (App.vue keys it on the course id), which syncs the store
+  // back to X.
+  if (route.name === "course") {
+    if (!canSelect(next)) return revert();
+    const failure = await router.push(`/courses/${encodeURIComponent(next)}`);
+    if (failure) return revert();
+    setCourse(next);
+    return;
   }
+  if (!setCourse(next)) revert();
 }
 function toggleTheme() {
   const next = theme.value === "dark" ? "light" : "dark";
@@ -114,24 +145,24 @@ const links = [
   >
     <div class="mctl-site-container mctl-site-header__inner">
       <RouterLink to="/" class="mctl-site-brand app-brand" aria-label="mctl Academy home"
-        ><span class="mctl-site-brand__accent">M</span>CTL<span class="app-brand-suffix"
-          >&nbsp;academy</span
-        ></RouterLink
+        ><span class="mctl-site-brand__accent">M</span><span class="app-brand-rest">CTL</span
+        ><span class="app-brand-suffix">&nbsp;academy</span></RouterLink
       >
-      <div class="mctl-site-header__context app-nav-context">
+      <div
+        ref="courseContext"
+        class="mctl-site-header__context mctl-site-header__context--select app-nav-context"
+      >
         <label class="sr-only" for="course-select">Course</label>
-        <select
+        <MSelect
           id="course-select"
+          size="sm"
           class="course-select"
           data-testid="course-select"
           :title="currentCourse?.title"
-          :value="currentCourseId ?? ''"
-          @change="onCourseChange"
-        >
-          <option v-for="c in courses" :key="c.id" :value="c.id" :disabled="!c.available">
-            {{ c.available ? c.title : `${c.title} — Coming soon` }}
-          </option>
-        </select>
+          :options="courseOptions"
+          :model-value="currentCourseId ?? ''"
+          @update:model-value="onCourseChange"
+        />
       </div>
       <nav id="site-nav" class="mctl-site-nav" aria-label="Main">
         <RouterLink
@@ -174,16 +205,16 @@ const links = [
           </svg>
         </button>
         <UserNav :user="user" :loading="loading" />
+        <button
+          ref="burger"
+          type="button"
+          class="mctl-site-burger"
+          aria-label="Menu"
+          aria-controls="site-nav"
+          :aria-expanded="navOpen"
+          @click="navOpen = !navOpen"
+        ></button>
       </div>
-      <button
-        ref="burger"
-        type="button"
-        class="mctl-site-burger"
-        aria-label="Menu"
-        aria-controls="site-nav"
-        :aria-expanded="navOpen"
-        @click="navOpen = !navOpen"
-      ></button>
     </div>
   </header>
 </template>
@@ -197,28 +228,11 @@ const links = [
   font-weight: 400;
 }
 
+/* The switcher is MSelect size="sm" in site.css's --select context (0.21.0),
+   which supplies the header type, chevron and focus state; only the width
+   cap is ours. */
 .course-select {
-  min-width: 0;
   max-width: 14rem;
-  height: 2rem;
-  padding: 0 0.6rem;
-  text-overflow: ellipsis;
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-md);
-  background: var(--surface-bg);
-  color: var(--surface-fg);
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.course-select:hover {
-  border-color: var(--surface-line-strong);
-}
-
-.course-select:focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
 }
 
 .mistake-badge-empty {
@@ -227,7 +241,7 @@ const links = [
 
 .streak {
   color: var(--surface-fg-subtle);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   white-space: nowrap;
 }
 
@@ -272,7 +286,6 @@ const links = [
 /* 44px touch targets through tablet width. */
 @media (max-width: 980px) {
   .theme-toggle,
-  .course-select,
   .mctl-site-burger,
   .app-nav-link,
   .user-nav-signed-in :deep(summary),
@@ -280,6 +293,11 @@ const links = [
   .user-nav-signin :deep(.signin-zitadel) {
     min-width: 2.75rem;
     min-height: 2.75rem;
+  }
+
+  /* The control, not MSelect's wrapper: outranks the sm height (0,3,0). */
+  .app-nav-context .course-select :deep(.m-select__control) {
+    height: 2.75rem;
   }
 }
 
@@ -298,8 +316,8 @@ const links = [
 
 /* Up to 980px the nav is the drawer (.mctl-site-header--drawer-wide: brand,
    course, five tabs and the account control do not fit one row below that).
-   The actions slot and the burger stay together at the right edge through
-   site.css 0.20.2. */
+   The burger sits inside the actions slot, as the site.css 0.20.2 header
+   contract asks, so it keeps the slot's gap next to the account control. */
 
 @media (max-width: 767px) {
   .user-nav-signin :deep(.signin-label) {
@@ -331,10 +349,23 @@ const links = [
     padding-inline: 0 4px;
   }
 
+  /* site.css caps the context at 40vw once the burger shows, which left
+     "AI Clo…" at 375px. Here the course takes all the room the brand and the
+     actions leave instead (a min-width would only push the burger into the
+     page gutter). Chained to outrank site.css's :has() selector. */
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+  }
+
   .course-select {
     flex: 1 1 auto;
-    min-width: 5.5rem;
-    padding-inline: 0.4rem;
+    max-width: none;
+  }
+
+  .app-nav-context .course-select :deep(.m-select__control) {
+    padding-inline: 0.5rem 1.5rem;
   }
 
   .mctl-site-header__actions {
@@ -345,6 +376,47 @@ const links = [
 @media (max-width: 400px) {
   .app-brand-suffix {
     display: none;
+  }
+
+  /* At 375px the brand, three 44px actions and the gutters leave the course
+     about 100px, which is "Agenti…". The accent M alone still reads as the
+     mark (the link keeps its "mctl Academy home" label) and gives the course
+     name about 55px more. */
+  .app-brand-rest {
+    display: none;
+  }
+
+  /* The mark alone is still the home link: keep it a 44px target, centred,
+     so its focus ring frames a button-sized box like the actions beside it. */
+  .app-brand {
+    box-sizing: border-box;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .app-brand .mctl-site-brand__accent {
+    margin-right: 0;
+  }
+
+  /* A tighter chevron gutter and a 14px label are the last few letters of
+     the longest titles. */
+  .app-nav-context .course-select :deep(.m-select__control) {
+    padding-inline: 0.4rem 1.1rem;
+    font-size: 0.875rem;
+  }
+
+  .app-nav-context .course-select :deep(.m-select__chevron) {
+    right: 0.4rem;
+  }
+
+  /* The "/" separator and its gap are 16px of course name at 375px. */
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
+    gap: 0;
+  }
+
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context::before {
+    content: none;
   }
 }
 </style>

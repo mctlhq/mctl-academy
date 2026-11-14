@@ -2,6 +2,7 @@
   {
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
+    "summary": "Build agents on a hosted model platform: API access, inference and tool integration, data and post-training, and running them in production.",
     "publishedQuestionCount": 89,
     "available": true,
     "mock": {
@@ -39,6 +40,7 @@
   {
     "id": "agentic-web-search",
     "title": "Agentic Web Search",
+    "summary": "Give agents and retrieval pipelines live web data: search, extract, map and crawl, then keep that access reliable in production.",
     "publishedQuestionCount": 60,
     "available": true,
     "mock": {
@@ -76,6 +78,7 @@
   {
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
+    "summary": "Run GPU cloud infrastructure day to day: deploy environments, operate compute nodes, monitor workloads, manage access and storage, and troubleshoot.",
     "publishedQuestionCount": 40,
     "available": true,
     "mock": {
@@ -150,6 +153,7 @@
   {
     "id": "ai-leader",
     "title": "AI Leader",
+    "summary": "A business-first view of AI: core concepts, designing AI products, steering model outputs and choosing platform capabilities.",
     "publishedQuestionCount": 38,
     "available": true,
     "mock": {
@@ -224,6 +228,7 @@
   {
     "id": "physical-ai",
     "title": "Physical AI",
+    "summary": "Post-train models and robot policies, build robotics data pipelines, evaluate and deploy inference, and connect models to robot applications.",
     "publishedQuestionCount": 48,
     "available": true,
     "mock": {

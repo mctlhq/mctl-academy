@@ -89,6 +89,35 @@ for (const kind of ["course", "source", "question", "lesson"]) {
   validators[kind] = ajv.compile(schema);
 }
 
+/**
+ * Names a course file attributes to a vendor: the words of `prepares_for`
+ * that the vendor-neutral `title` does not use (e.g. the vendor prefix), and
+ * every party the short disclaimer disowns ("... sponsored by A or B.").
+ */
+function courseVendorNames(course) {
+  const titleWords = new Set(
+    String(course.title ?? "")
+      .toLowerCase()
+      .split(/\s+/),
+  );
+  const names = new Set(
+    String(course.prepares_for ?? "")
+      .split(/\s+/)
+      // "Acme®" or "Acme's" must still match a plain "Acme" in a summary.
+      .map((w) => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "").replace(/['’]s$/u, ""))
+      .filter((w) => w.length > 1 && !titleWords.has(w.toLowerCase())),
+  );
+  const disowned = /sponsored by (.+?)\.?$/i.exec(String(course.disclaimer?.short ?? ""))?.[1];
+  for (const party of disowned?.split(/,\s*|\s+or\s+|\s+and\s+/) ?? []) {
+    if (party.trim()) names.add(party.trim());
+  }
+  return names;
+}
+
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // ------------------------------------------------------------------ courses
 
 // content/courses/*.yaml is the single source of truth for course metadata:
@@ -109,6 +138,25 @@ const allKnownObjectives = new Set();
       continue;
     }
     if (courses.has(data.id)) err(file, `duplicate course id ${data.id}`);
+
+    // `summary` is the one free-text course field that reaches the client
+    // catalog (the course card), so LEGAL.md's naming rule applies to it:
+    // no vendor or certification name. Vendor names are read from the fields
+    // that legitimately carry them, so a new course or vendor needs no list
+    // kept here.
+    if (typeof data.summary === "string") {
+      for (const name of courseVendorNames(data)) {
+        if (new RegExp(`\\b${escapeRegExp(name)}\\b`, "i").test(data.summary)) {
+          err(
+            file,
+            `summary names ${JSON.stringify(name)}; it reaches the client catalog and must stay vendor-neutral (LEGAL.md)`,
+          );
+        }
+      }
+      if (data.summary.includes(data.prepares_for)) {
+        err(file, "summary repeats prepares_for; the certification name must stay in content/ (LEGAL.md)");
+      }
+    }
 
     const objectives = new Set();
     let weightSum = 0;

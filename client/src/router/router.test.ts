@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { pageTitle, router, scrollPosition, shouldFocusMain } from "./index";
 import { resetCourseStore, useCourseStore } from "../services/courseStore";
+import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS } from "../seo/spaRoutes.mjs";
 
 describe("router", () => {
   it("names each page in the document title", () => {
@@ -11,6 +12,15 @@ describe("router", () => {
   it("sends an unknown URL to the not-found page instead of a blank screen", () => {
     expect(router.resolve("/no-such-page").name).toBe("not-found");
     expect(router.resolve("/practice?domain=domain-1").name).toBe("practice");
+  });
+
+  it("has exactly the pages the server answers 200 for (client/src/seo/spaRoutes.mjs)", () => {
+    // server/spa.mjs returns 404 for any path not in that list, so a page
+    // added here but not there would render fine and still tell crawlers 404.
+    const paths = router.getRoutes().map((r) => r.path);
+    const dynamic = paths.filter((p) => p.includes(":"));
+    expect(dynamic.sort()).toEqual(["/:pathMatch(.*)*", `${COURSE_PATH_PREFIX}:courseId`]);
+    expect(paths.filter((p) => !p.includes(":")).sort()).toEqual([...STATIC_SPA_PATHS].sort());
   });
 
   it("resolves course landing pages", () => {

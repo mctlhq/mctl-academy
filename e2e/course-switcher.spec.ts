@@ -55,3 +55,24 @@ test("no runtime content-safety endpoint is part of the learner flow", async ({ 
   const res = await page.request.get("/api/quarantine");
   expect(await res.text()).not.toContain("quarantinedQuestionIds");
 });
+
+// Home's course grid is a second way into a course, so it has to agree with
+// the switcher: a card's Practice opens that course's bank and selects it.
+test("a Home course card's Practice selects that course and opens its bank", async ({ page }) => {
+  await page.goto("/");
+  const select = page.getByTestId("course-select");
+  const current = await select.inputValue();
+
+  const catalog = (await import("../client/src/course-catalog.json", { with: { type: "json" } })).default;
+  await expect(page.getByTestId("course-card")).toHaveCount(catalog.length);
+
+  const other = catalog.find((c) => c.available && c.id !== current);
+  expect(other, "needs two available courses").toBeTruthy();
+  const card = page.locator(`[data-testid="course-card"][data-course-id="${other!.id}"]`);
+  await expect(card.getByRole("heading", { name: other!.title })).toBeVisible();
+  await card.getByRole("link", { name: `Practice ${other!.title}` }).click();
+
+  await expect(page).toHaveURL(/\/practice$/);
+  await expect(select).toHaveValue(other!.id);
+  await expect(page.locator(".practice .stem")).toBeVisible();
+});
