@@ -10618,6 +10618,344 @@
     ]
   },
   {
+    "id": "q-sa1disttr8q4",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-1",
+    "objective": "domain-1/sa-distributed-training",
+    "stem": "An architect is designing the scheduling strategy for a large distributed-training job that will run across many GPU virtual machines within one GPU cluster, and wants to minimize network communication latency and cost between workers. What should the design do?",
+    "objectiveTitle": "Recommending a distributed-training design and explaining its trade-offs",
+    "sources": [
+      {
+        "title": "InfiniBand topology of a GPU cluster",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/topology/index.md",
+        "excerpt": "When you provide a topology file to a workload manager, it schedules distributed jobs on the worker nodes that are topologically closest to each other."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Provide the cluster's topology file to the workload manager so it schedules workers on nodes that are topologically closest to each other.",
+        "correct": true,
+        "explanation": "Correct. The documentation says that when you provide a topology file to a workload manager, it schedules distributed jobs on the worker nodes that are topologically closest to each other."
+      },
+      {
+        "id": "b",
+        "text": "Spread the job's workers evenly across as many points of delivery as possible, since connections between points of delivery carry no extra communication cost.",
+        "correct": false,
+        "explanation": "The documentation says the cost of network communication increases at higher layers such as between points of delivery, through a root switch -- the opposite of what this option claims."
+      },
+      {
+        "id": "c",
+        "text": "Rely on the platform's GPU memory bandwidth alone to reduce latency, since topology files are documented as applying to CPU workloads instead of GPU scheduling.",
+        "correct": false,
+        "explanation": "Topology files describe the network layout of GPU virtual machines within a GPU cluster for topology-aware scheduling; they apply to GPU workloads, not CPU workloads."
+      },
+      {
+        "id": "d",
+        "text": "Schedule workers without regard to their location in the cluster, since the InfiniBand topology layers exist purely for documentation and do not affect scheduling.",
+        "correct": false,
+        "explanation": "Topology-aware scheduling using the topology file is what places workers close together and reduces latency; the layers describe real placement that scheduling decisions act on, not a documentation-only detail."
+      }
+    ]
+  },
+  {
+    "id": "q-sa1gpusel9x2",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-1",
+    "objective": "domain-1/sa-gpu-selection",
+    "stem": "A solutions architect is sizing capacity for a workload that only needs non-GPU compute, and wants to use Nebius AI Cloud's capacity advisor before onboarding to see how much capacity they can expect to launch. Can the capacity advisor answer this for a non-GPU workload?",
+    "objectiveTitle": "Matching GPU types and platform services to a workload",
+    "sources": [
+      {
+        "title": "Capacity advisor for GPU availability in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/capacity-advisor.md",
+        "excerpt": "Data about computing resource availability of VMs without GPUs isn't provided."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "No -- the capacity advisor only provides availability data for virtual machines with GPUs; data about non-GPU VMs isn't provided.",
+        "correct": true,
+        "explanation": "Correct. The documentation states that data about computing resource availability of VMs without GPUs isn't provided by the capacity advisor."
+      },
+      {
+        "id": "b",
+        "text": "Yes -- the capacity advisor reports availability for every VM platform, with and without GPUs, based on the project's quotas and current physical capacity.",
+        "correct": false,
+        "explanation": "The capacity advisor's documented scope is limited to virtual machines with GPUs; it does not report availability data for non-GPU platforms."
+      },
+      {
+        "id": "c",
+        "text": "No -- but only because the architect's group has the viewer role rather than the editor role; editor access unlocks non-GPU availability data too.",
+        "correct": false,
+        "explanation": "Viewer is the documented minimum role to read capacity advisor data at all, but the GPU-only scope is not a role restriction -- a higher role does not add non-GPU data."
+      },
+      {
+        "id": "d",
+        "text": "Yes -- as long as the request goes through the Nebius AI Cloud provider for Terraform rather than the CLI or web console.",
+        "correct": false,
+        "explanation": "The documentation says the opposite: the Terraform provider does not support the capacity advisor at all, so this path would not work even for GPU platforms."
+      }
+    ]
+  },
+  {
+    "id": "q-sa2chkpt7m3v",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-2",
+    "objective": "domain-2/sa-checkpoint-strategy",
+    "stem": "A training team takes disk snapshots of their checkpoint volumes in Project A as part of their recovery plan, and is now designing Project B, a separate project, where they want to restore training state directly from Project A's snapshots. Does this plan work as documented?",
+    "objectiveTitle": "Planning how training saves progress and recovers from interruption",
+    "sources": [
+      {
+        "title": "Managing disk snapshots in Compute",
+        "url": "https://docs.nebius.com/compute/storage/disk-snapshots.md",
+        "excerpt": "Every snapshot is only available in the project where it was created. Therefore, you can only work with snapshots and disks within the project."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "No -- a snapshot is only available in the project where it was created, so it can't be used to create a disk in another project.",
+        "correct": true,
+        "explanation": "Correct. The documentation says every snapshot is only available in the project where it was created, so you can only work with snapshots and disks within that project."
+      },
+      {
+        "id": "b",
+        "text": "Yes -- snapshots are tenant-level resources, so any project within the same tenant can create a disk from them.",
+        "correct": false,
+        "explanation": "The documentation scopes a snapshot to the project where it was created, not to the tenant as a whole."
+      },
+      {
+        "id": "c",
+        "text": "No -- but once the snapshot is attached to a shared filesystem, that makes it usable from Project B.",
+        "correct": false,
+        "explanation": "The documentation does not describe attaching a snapshot to a shared filesystem as a way to move it between projects; the project scoping applies regardless."
+      },
+      {
+        "id": "d",
+        "text": "Yes -- as long as the disk type is SSD Non-replicated, which the documentation marks as portable across projects.",
+        "correct": false,
+        "explanation": "SSD Non-replicated is one of the disk types that snapshots support, but the documentation does not tie disk type to cross-project portability."
+      }
+    ]
+  },
+  {
+    "id": "q-sa2obscope5r",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-2",
+    "objective": "domain-2/sa-observability-scope",
+    "stem": "A platform team is scoping observability tooling for a large GPU fleet and expects a high volume of monitoring data. They are deciding whether to connect Prometheus directly to Observability Metrics or connect a Grafana data source instead. Which should the architect recommend, and why?",
+    "objectiveTitle": "Deciding what to collect in metrics, logs and traces",
+    "sources": [
+      {
+        "title": "How to view metrics in Prometheus",
+        "url": "https://docs.nebius.com/observability/metrics/prometheus.md",
+        "excerpt": "Prometheus can only show a limited amount of monitoring data. If you have a large infrastructure, consider connecting a data source in [Grafana®](https://docs.nebius.com/observability/metrics/grafana.md) instead."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Grafana, because Prometheus can only show a limited amount of monitoring data for a large infrastructure.",
+        "correct": true,
+        "explanation": "Correct. The documentation recommends connecting a Grafana data source instead of Prometheus for a large infrastructure, since Prometheus can only show a limited amount of monitoring data."
+      },
+      {
+        "id": "b",
+        "text": "Prometheus, because it is documented as the only integration that exposes GPU-specific metrics, which Grafana data sources are said to lack entirely.",
+        "correct": false,
+        "explanation": "GPU metrics reach Prometheus through the same Observability Metrics data as other services; the documentation does not restrict Grafana data sources from GPU metrics."
+      },
+      {
+        "id": "c",
+        "text": "Either option scales identically at high volume, since both read from the same Observability Metrics endpoint without any documented limit on data.",
+        "correct": false,
+        "explanation": "The documentation explicitly notes a limit on how much monitoring data Prometheus can show, so the two options are not equivalent at scale."
+      },
+      {
+        "id": "d",
+        "text": "Prometheus, but with the scrape interval lowered well below the documentation's recommended minimum so it can keep pace with a large fleet's data volume.",
+        "correct": false,
+        "explanation": "The documentation recommends a scrape interval no shorter than the minimum it states, and shortening it further does not address Prometheus's limited display capacity."
+      }
+    ]
+  },
+  {
+    "id": "q-sa3capres6k9",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-3",
+    "objective": "domain-3/sa-capacity-quotas-cost",
+    "stem": "A solutions architect is sizing GPU capacity for a production workload that must be able to launch at a specific future date without competing for shared on-demand capacity, and the team already has enough quota. What should the architect arrange before onboarding?",
+    "objectiveTitle": "Sizing capacity and quotas and estimating cost before onboarding",
+    "sources": [
+      {
+        "title": "Capacity reservations for Compute virtual machines",
+        "url": "https://docs.nebius.com/compute/virtual-machines/reservations.md",
+        "excerpt": "GPUs from a reservation remain available, even if a VM is stopped."
+      },
+      {
+        "title": "Capacity reservations for Compute virtual machines",
+        "url": "https://docs.nebius.com/compute/virtual-machines/reservations.md",
+        "excerpt": "Without reservations, GPU capacity is taken from a shared pool and returned when a VM is stopped"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A capacity reservation, since GPUs from a reservation remain available even when a VM is stopped, instead of returning to the shared capacity pool.",
+        "correct": true,
+        "explanation": "Correct. The documentation says GPUs from a reservation remain available even if a VM is stopped, while without a reservation, GPU capacity is taken from a shared pool and returned when a VM is stopped."
+      },
+      {
+        "id": "b",
+        "text": "A larger compute quota, since GPUs allocated under quota alone remain reserved to the project even after a VM stops.",
+        "correct": false,
+        "explanation": "The documentation says the opposite: without a reservation, GPU capacity comes from the shared pool and is returned to it when the VM stops, regardless of quota."
+      },
+      {
+        "id": "c",
+        "text": "A capacity reservation, understanding that reserved GPUs still count toward the project's GPU quota like any other allocation.",
+        "correct": false,
+        "explanation": "The documentation says GPUs allocated from reservations do not count towards quotas on the number of GPUs, so this understanding of the arrangement is incorrect."
+      },
+      {
+        "id": "d",
+        "text": "Preemptible VMs with a high maximum spot price, since that keeps the same GPUs allocated to the workload between stops.",
+        "correct": false,
+        "explanation": "Preemptible VMs preserve data on attached volumes when stopped, but they do not reserve GPU capacity; a reservation, not a pricing setting, is what keeps GPUs allocated."
+      }
+    ]
+  },
+  {
+    "id": "q-sa3costtr4j8",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-3",
+    "objective": "domain-3/sa-cost-tradeoffs",
+    "stem": "A batch-inference workload checkpoints its progress to persistent network storage and resumes automatically after an interruption. The team wants the lowest-cost VM option that still fits this pattern. What should the architect recommend, and what does the design still need to account for?",
+    "objectiveTitle": "When a cheaper option beats the fastest one, and how to argue it",
+    "sources": [
+      {
+        "title": "Preemptible virtual machines",
+        "url": "https://docs.nebius.com/compute/virtual-machines/preemptible.md",
+        "excerpt": "Preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, but they don't provide guaranteed availability."
+      },
+      {
+        "title": "Preemptible virtual machines",
+        "url": "https://docs.nebius.com/compute/virtual-machines/preemptible.md",
+        "excerpt": "Local SSD disks are ephemeral, meaning any data stored on them will be lost when the preemptible VM stops."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Preemptible VMs, which reduce computing costs for interruption-tolerant workloads but don't persist local SSD data when stopped.",
+        "correct": true,
+        "explanation": "Correct. The documentation says preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, and separately warns that local SSD disks are ephemeral and lose their data when a preemptible VM stops."
+      },
+      {
+        "id": "b",
+        "text": "Preemptible VMs, which guarantee availability for interruption-tolerant workloads and are billed at a fixed discounted rate regardless of demand.",
+        "correct": false,
+        "explanation": "The documentation says preemptible VMs don't provide guaranteed availability and are charged at the current spot price, not a fixed discounted rate."
+      },
+      {
+        "id": "c",
+        "text": "Reserved VMs, since the documentation ties checkpoint-and-resume support specifically to reservations rather than to preemptible pricing.",
+        "correct": false,
+        "explanation": "Reservations guarantee GPU availability, but the documentation ties preemptible VMs, not reservations, to reduced cost for interruption-tolerant workloads like this one."
+      },
+      {
+        "id": "d",
+        "text": "Regular on-demand VMs, since the documentation allows converting an existing VM between preemptible and regular whenever the spot price changes.",
+        "correct": false,
+        "explanation": "The documentation says you can't convert an existing VM from regular to preemptible or the other way around; a new VM is required either way."
+      }
+    ]
+  },
+  {
+    "id": "q-sa4identsvc2",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-4",
+    "objective": "domain-4/sa-identity-model",
+    "stem": "An architect is designing a service account that a CI/CD pipeline will use to manage GPU clusters across several projects in the same tenant, even though the service account itself is created in just one of those projects. Can it still be granted access to resources in the other projects?",
+    "objectiveTitle": "Designing identities, groups and permissions for a solution",
+    "sources": [
+      {
+        "title": "How resources, identities and access are managed in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/iam/overview.md",
+        "excerpt": "This means that a service account can be granted access to any resource in the tenant regardless of the project."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes -- because access is defined by the groups a service account belongs to, not by the project where it was created.",
+        "correct": true,
+        "explanation": "Correct. The documentation says a service account's access to resources is defined by the groups it's added to, and this means it can be granted access to any resource in the tenant regardless of the project."
+      },
+      {
+        "id": "b",
+        "text": "No -- a service account's access is scoped to the project where it was created, so a separate service account would be needed for each project.",
+        "correct": false,
+        "explanation": "The documentation says the opposite: a service account belongs to the project where it was created, but its access to resources is defined by group membership, not by that project."
+      },
+      {
+        "id": "c",
+        "text": "Yes -- but first the service account must be promoted into a full user account through an identity federation sign-on.",
+        "correct": false,
+        "explanation": "The documentation does not describe promoting a service account into a federation user account; cross-project access comes from group membership, not a change of account type."
+      },
+      {
+        "id": "d",
+        "text": "No -- cross-project access for service accounts is granted specifically through membership in the auditors group, not through other groups.",
+        "correct": false,
+        "explanation": "The auditors group is the lowest-access default group, limited to viewing certain resources without access to data; the documentation does not tie cross-project access to that specific group."
+      }
+    ]
+  },
+  {
+    "id": "q-sa4tenantsg7",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-4",
+    "objective": "domain-4/sa-tenant-isolation-least-privilege",
+    "stem": "An architecture team manages VMs in two separate networks, one per tenant project, and wants a single reusable security group whose rules apply to VMs in both networks. Is this design workable as documented?",
+    "objectiveTitle": "Isolating tenants and granting only the access each one needs",
+    "sources": [
+      {
+        "title": "Security groups in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/vpc/security-groups/overview.md",
+        "excerpt": "Each security group is associated with a [network](https://docs.nebius.com/vpc/overview.md#network) and can only apply to VMs in this network."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "No -- a security group applies only to VMs within the one network it's associated with.",
+        "correct": true,
+        "explanation": "Correct. The documentation says each security group is associated with a network and can only apply to VMs in that network."
+      },
+      {
+        "id": "b",
+        "text": "Yes -- security groups are documented as tenant-wide resources, so one group's rules apply to VMs in every network in the tenant.",
+        "correct": false,
+        "explanation": "The documentation associates a security group with one network, specified in its network_id parameter, not with the tenant as a whole."
+      },
+      {
+        "id": "c",
+        "text": "No -- but referencing the group's ID as a destination_security_group_id inside a security rule is documented as a way to extend it across networks.",
+        "correct": false,
+        "explanation": "The documentation requires the security group referenced in a rule and the group containing the rule to be associated with the same network, so this cross-network reference would not work."
+      },
+      {
+        "id": "d",
+        "text": "Yes -- as long as every security rule in the group is configured with the stateful type, which is documented as extending its reach across networks.",
+        "correct": false,
+        "explanation": "Stateful versus stateless only changes whether response traffic is automatically tracked within a connection; the documentation does not describe either type as extending a security group's rules to another network."
+      }
+    ]
+  },
+  {
     "id": "q-so01d5e6f7a8",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",

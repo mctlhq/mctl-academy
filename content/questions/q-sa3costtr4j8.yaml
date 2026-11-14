@@ -1,0 +1,60 @@
+schema_version: 1
+id: q-sa3costtr4j8
+status: published
+domain: domain-3
+objective: domain-3/sa-cost-tradeoffs
+stem: "A batch-inference workload checkpoints its progress to persistent network
+  storage and resumes automatically after an interruption. The team wants the
+  lowest-cost VM option that still fits this pattern. What should the architect
+  recommend, and what does the design still need to account for?"
+options:
+  - id: a
+    text: "Preemptible VMs, which reduce computing costs for interruption-tolerant
+      workloads but don't persist local SSD data when stopped."
+    correct: true
+    explanation: "Correct. The documentation says preemptible VMs can help reduce
+      computing costs for workloads that tolerate interruptions, and separately
+      warns that local SSD disks are ephemeral and lose their data when a
+      preemptible VM stops."
+  - id: b
+    text: "Preemptible VMs, which guarantee availability for interruption-tolerant
+      workloads and are billed at a fixed discounted rate regardless of demand."
+    correct: false
+    explanation: "The documentation says preemptible VMs don't provide guaranteed
+      availability and are charged at the current spot price, not a fixed
+      discounted rate."
+  - id: c
+    text: "Reserved VMs, since the documentation ties checkpoint-and-resume support
+      specifically to reservations rather than to preemptible pricing."
+    correct: false
+    explanation: "Reservations guarantee GPU availability, but the documentation
+      ties preemptible VMs, not reservations, to reduced cost for
+      interruption-tolerant workloads like this one."
+  - id: d
+    text: "Regular on-demand VMs, since the documentation allows converting an
+      existing VM between preemptible and regular whenever the spot price
+      changes."
+    correct: false
+    explanation: "The documentation says you can't convert an existing VM from
+      regular to preemptible or the other way around; a new VM is required
+      either way."
+evidence:
+  - source_id: src-nb-compute-virtual-machines-preemptible
+    source_sha256: 6ef3b262673af7071bc7cb1c5e21b5e69d57a7801d5fd0d6f639460a7fc958b5
+    excerpt: "Preemptible VMs can help reduce computing costs for workloads that
+      tolerate interruptions, but they don't provide guaranteed availability."
+    locator: "Preemptible virtual machines"
+  - source_id: src-nb-compute-virtual-machines-preemptible
+    source_sha256: 6ef3b262673af7071bc7cb1c5e21b5e69d57a7801d5fd0d6f639460a7fc958b5
+    excerpt: "Local SSD disks are ephemeral, meaning any data stored on them will be
+      lost when the preemptible VM stops."
+    locator: "Preemptible virtual machines, How to continue working with a stopped
+      preemptible VM"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:47:26Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T15:04:04Z
+  content_sha256: c011f34176fd29f274d167a0756caa1d950be1292099780765548aaae6f967a0
