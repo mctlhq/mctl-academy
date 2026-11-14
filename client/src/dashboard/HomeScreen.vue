@@ -3,18 +3,23 @@ import { computed, inject, type Ref } from "vue";
 import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
 import CourseGrid from "../components/CourseGrid.vue";
-import DomainBar from "../components/DomainBar.vue";
-import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
-import { questionsForCourse } from "../services/contentBundle";
+import { calculateProgressStats } from "../services/progressStore";
+import { allQuestions, questionsForCourse } from "../services/contentBundle";
 import { courseCatalog, domainTitlesFor, findCourse } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 
-// Same course scope as the dashboard — see DashboardScreen.vue. syncVersion
-// is injected (not part of App.vue's remount key) so a background sync
-// completing while the learner is elsewhere in the app refreshes this
-// screen's numbers without destroying anyone's in-progress session.
+// The home page is the front door to every course, not the dashboard of
+// whichever course happens to be selected: a first-time visitor sees what the
+// academy offers before being pushed into one bank. Per-course progress lives
+// on /dashboard; here it shrinks to one "continue" strip, shown only once the
+// learner has answered something in the selected course.
+//
+// LEGAL.md: no certification name, vendor name, logo or colour on this page.
+// The catalog fields used below are the vendor-neutral ones, and the
+// certification wording stays generic ("the related certification exam").
 const { currentCourseId } = useCourseStore();
 const syncVersion = inject<Ref<number>>("syncVersion");
+
 const stats = computed(() => {
   void syncVersion?.value;
   return calculateProgressStats(
@@ -23,95 +28,115 @@ const stats = computed(() => {
     domainTitlesFor(currentCourseId.value),
   );
 });
-const streak = computed(() => {
-  void syncVersion?.value;
-  return calculateStudyStreak();
-});
-const practiceLabel = computed(() =>
-  stats.value.totalBankQuestions > 0 && stats.value.totalCorrect === stats.value.totalBankQuestions
-    ? "All questions solved"
-    : stats.value.totalAttempted > 0
-      ? "Continue practice"
-      : "Start practice",
+const currentCourse = computed(() => findCourse(currentCourseId.value));
+const showContinue = computed(() => Boolean(currentCourse.value?.available) && stats.value.totalAttempted > 0);
+
+const availableCourses = computed(() => courseCatalog.filter((c) => c.available));
+const upcomingCourses = computed(() => courseCatalog.filter((c) => !c.available));
+const totalQuestions = computed(() =>
+  availableCourses.value.reduce((sum, c) => sum + c.publishedQuestionCount, 0),
 );
-const courseTitle = computed(() => findCourse(currentCourseId.value)?.title ?? "");
-const firstVisit = computed(() => stats.value.totalAttempted === 0);
-const practiceDescription = computed(() => {
-  if (firstVisit.value)
-    return `${stats.value.totalBankQuestions} questions, one at a time. Your first answer counts, and every option comes with an explanation and a source.`;
-  return `${stats.value.totalCorrect} of ${stats.value.totalBankQuestions} questions solved. ${stats.value.totalUnseen} not answered; ${stats.value.totalMistakes} to review.`;
+
+// Distinct documentation pages behind the published bank. Derived from the
+// generated bundle, which only carries questions whose sources passed the
+// build-time evidence gate, so the figure moves with the content.
+const citedPages = computed(() => {
+  const urls = new Set<string>();
+  for (const q of allQuestions) for (const s of q.sources ?? []) urls.add(s.url);
+  return urls.size;
 });
+
+const steps = [
+  {
+    title: "Practice one question at a time",
+    body: "Your first answer counts. Every option comes with an explanation and a link to the documentation page it is drawn from.",
+  },
+  {
+    title: "Review what you missed",
+    body: "Wrong answers collect in a review queue, and progress is tracked per exam domain so you can see where to spend time.",
+  },
+  {
+    title: "Take a timed mock exam",
+    body: "When a course feels comfortable, sit a timed run that follows the course's domain weights.",
+  },
+];
 </script>
 
 <template>
   <section class="home-screen page-shell">
-    <p class="section-marker">Recommended next step</p>
-    <div class="next-card">
-      <div>
-        <p v-if="courseTitle" class="next-course">
-          <RouterLink :to="`/courses/${currentCourseId}`">{{ courseTitle }}</RouterLink>
-        </p>
-        <h1>{{ practiceLabel }}</h1>
-        <p>{{ practiceDescription }}</p>
-        <p v-if="firstVisit" class="next-secondary">
-          When you want a timed run, the <RouterLink to="/mock">Mock exam</RouterLink> uses this course's
-          question mix.
-        </p>
-      </div>
-      <MButton :as="RouterLink" to="/practice">{{ practiceLabel }} <span aria-hidden="true">→</span></MButton>
-    </div>
+    <header class="home-hero">
+      <p class="section-marker">Free · open source · no sign-up needed to start</p>
+      <h1>Practice questions for AI cloud certifications, each one checked against its source.</h1>
+      <p class="home-lead">
+        Every question is written from public product documentation, reviewed independently, and cites the page
+        that supports its answer. Pick a course, practice, review your mistakes, then try a timed mock exam.
+      </p>
 
-    <div class="home-grid">
-      <section aria-labelledby="domain-readiness-title">
-        <h2 id="domain-readiness-title" class="section-heading">Progress by domain</h2>
-        <div class="domain-bars">
-          <DomainBar
-            v-for="domain in stats.domainProgress"
-            :key="domain.domainId"
-            :label="domain.domainTitle"
-            :value="domain.solvedPercent"
-            :detail="`${domain.correctQuestions}/${domain.totalQuestions} solved`"
-            :to="`/practice?domain=${encodeURIComponent(domain.domainId)}`"
-          />
+      <dl class="home-facts" aria-label="Academy at a glance">
+        <div>
+          <dt>Courses available</dt>
+          <dd>{{ availableCourses.length }}</dd>
         </div>
-      </section>
+        <div>
+          <dt>Published questions</dt>
+          <dd>{{ totalQuestions }}</dd>
+        </div>
+        <div>
+          <dt>Documentation pages cited</dt>
+          <dd>{{ citedPages }}</dd>
+        </div>
+      </dl>
 
-      <aside class="home-summary" aria-label="Learning summary">
-        <dl class="stat-list">
-          <div>
-            <dt>Questions solved</dt>
-            <dd>{{ stats.solvedPercent }}%</dd>
-          </div>
-          <div>
-            <dt>Not answered</dt>
-            <dd>{{ stats.totalUnseen }}</dd>
-          </div>
-          <div>
-            <dt>Streak</dt>
-            <dd>{{ streak }} {{ streak === 1 ? "day" : "days" }}</dd>
-          </div>
-        </dl>
-
-        <RouterLink v-if="stats.totalMistakes > 0" to="/mistakes" class="mistakes-callout">
-          <span>{{ stats.totalMistakes }} mistakes ready for review</span>
-          <strong>Review now <span aria-hidden="true">→</span></strong>
-        </RouterLink>
-        <p v-else class="mistakes-clear"><span aria-hidden="true">✓</span> No mistakes waiting for review.</p>
+      <aside class="home-cert-note" aria-label="About certification">
+        <p>
+          <strong>Preparing for a certification exam?</strong>
+          Each course follows the published domains of a related certification, so working through it may help you
+          prepare. It does not reproduce the exam, does not predict a result, and is not a substitute for the
+          vendor's own preparation material.
+        </p>
       </aside>
-    </div>
+    </header>
 
-    <!-- Every course in the catalog, coming-soon ones included, so the
-         roadmap is visible here as it is in the header switcher. -->
+    <RouterLink v-if="showContinue && currentCourse" to="/practice" class="home-continue">
+      <span class="home-continue-label">Continue where you left off</span>
+      <span class="home-continue-course">{{ currentCourse.title }}</span>
+      <span class="home-continue-detail">
+        {{ stats.totalCorrect }} of {{ stats.totalBankQuestions }} solved · {{ stats.totalMistakes }} to review
+      </span>
+      <strong>Continue <span aria-hidden="true">→</span></strong>
+    </RouterLink>
+
     <section class="home-courses" aria-labelledby="home-courses-title">
-      <h2 id="home-courses-title" class="section-heading">All courses</h2>
-      <CourseGrid :courses="courseCatalog" :current-course-id="currentCourseId" />
+      <div class="home-section-head">
+        <h2 id="home-courses-title" class="section-heading">Choose a course</h2>
+        <MButton v-if="showContinue" :as="RouterLink" to="/dashboard" variant="ghost" size="sm">My progress</MButton>
+      </div>
+      <CourseGrid :courses="availableCourses" :current-course-id="showContinue ? currentCourseId : null" />
+    </section>
+
+    <section v-if="upcomingCourses.length" class="home-courses" aria-labelledby="home-upcoming-title">
+      <h2 id="home-upcoming-title" class="section-heading">Coming soon</h2>
+      <CourseGrid :courses="upcomingCourses" />
+    </section>
+
+    <section class="home-steps" aria-labelledby="home-steps-title">
+      <h2 id="home-steps-title" class="section-heading">How it works</h2>
+      <ol class="step-list">
+        <li v-for="(step, i) in steps" :key="step.title">
+          <span class="step-index" aria-hidden="true">{{ String(i + 1).padStart(2, "0") }}</span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.body }}</p>
+        </li>
+      </ol>
     </section>
   </section>
 </template>
 
 <style scoped>
 .section-marker,
-.stat-list dt {
+.home-facts dt,
+.home-continue-label,
+.step-index {
   font-family: var(--font-mono);
   font-size: var(--text-caption-size);
   font-weight: 600;
@@ -119,289 +144,203 @@ const practiceDescription = computed(() => {
   text-transform: uppercase;
 }
 
-/* --accent is theme-selectable via the ui.mctl.ai CDN default (terracotta)
-   and can be a loud color; spending it on a small
-   uppercase caption reads as decoration, not signal, and every other
-   ".section-marker" in the app (DashboardScreen.vue's "Overall readiness")
-   uses --surface-fg-subtle instead. Matching that keeps this eyebrow
-   consistent with its own name elsewhere in the app. */
 .section-marker {
   margin: 0 0 0.75rem;
   color: var(--surface-fg-subtle);
 }
 
-/* Accent now frames the card itself instead of the caption above it —
-   the same "semantic-color-tinted border + background" pattern already
-   used one screen-section down by .mistakes-callout / .mistakes-callout-
-   clear (status-bad/status-ok at the same 8% mix), just with --accent
-   standing in for a status color since this card's role is "recommended
-   action" rather than a pass/fail state. That gives the primary CTA the
-   framing it needs without introducing a new visual language. */
-.next-card {
+.home-hero {
+  max-width: 62rem;
+}
+
+.home-hero h1 {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.5rem, 3.2vw, 2.35rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.home-lead {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.home-facts {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 1.75rem 2rem;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
+  margin: 1.75rem 0 0;
+}
+
+.home-facts div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.home-facts dt {
+  color: var(--surface-fg-subtle);
+}
+
+.home-facts dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.home-cert-note {
+  max-width: 62ch;
+  margin-top: 1.75rem;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--mctl-radius-lg) var(--mctl-radius-lg) 0;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.home-cert-note p {
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.home-cert-note strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--surface-fg);
+}
+
+.home-continue {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "label label label"
+    "course detail action";
+  align-items: baseline;
+  gap: 0.35rem 1.25rem;
+  margin-top: 2.25rem;
+  padding: 1rem 1.25rem;
   border: 1px solid var(--accent);
   border-radius: var(--mctl-radius-lg);
   background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--surface-fg);
+  text-decoration: none;
 }
 
-.next-card h1 {
-  margin: 0 0 0.35rem;
-  font-size: clamp(1.25rem, 2vw, 1.55rem);
+.home-continue:hover,
+.home-continue:focus-visible {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
-.next-card p {
-  margin: 0;
+.home-continue-label {
+  grid-area: label;
+  color: var(--surface-fg-subtle);
+}
+
+.home-continue-course {
+  grid-area: course;
+  font-weight: 600;
+}
+
+.home-continue-detail {
+  grid-area: detail;
   color: var(--surface-fg-muted);
   font-size: 0.9rem;
 }
 
-.next-card .next-course {
-  margin-bottom: 0.35rem;
-  color: var(--surface-fg-subtle);
+.home-continue strong {
+  grid-area: action;
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-size: var(--text-caption-size);
-}
-
-.next-card .next-course a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.next-card .next-course a:hover,
-.next-card .next-course a:focus-visible {
-  color: var(--accent-text);
-  text-decoration: underline;
-}
-
-.next-card .next-secondary {
-  margin-top: 0.5rem;
-}
-
-.next-secondary a {
-  color: var(--accent-text);
-}
-
-.home-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 18.75rem;
-  gap: 3rem;
-  margin-top: 2.25rem;
-}
-
-.domain-bars {
-  display: grid;
-  gap: 1.1rem;
 }
 
 .home-courses {
   margin-top: 3rem;
 }
 
-.home-summary {
-  min-width: 0;
-}
-
-.stat-list {
-  display: grid;
-  gap: 1rem;
-  margin: 0 0 1.25rem;
-  padding: 0 0 1.25rem;
-  border-bottom: 1px solid var(--surface-line);
-}
-
-.stat-list div {
+.home-section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.stat-list dt {
-  color: var(--surface-fg-subtle);
+.home-steps {
+  margin-top: 3.5rem;
 }
 
-.stat-list dd {
+.step-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.step-list li {
+  padding-top: 1rem;
+  border-top: 1px solid var(--surface-line);
+}
+
+.step-index {
+  color: var(--accent-text);
+}
+
+.step-list h3 {
+  margin: 0.4rem 0 0.35rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
-.mistakes-callout {
-  display: grid;
-  box-sizing: border-box;
-  width: 100%;
-  gap: 0.6rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--status-bad);
-  border-radius: var(--mctl-radius-lg);
-  background: color-mix(in srgb, var(--status-bad) 8%, transparent);
-  color: var(--surface-fg);
-  text-align: left;
-  text-decoration: none;
-}
-
-.mistakes-callout:hover {
-  background: color-mix(in srgb, var(--status-bad) 14%, transparent);
-}
-
-.mistakes-callout strong {
-  color: var(--accent-text);
-  font-family: var(--font-mono);
-  font-size: var(--text-caption-size);
-}
-
-/* Zero mistakes is a neutral fact, not an achievement to celebrate: plain
-   text in the summary column, no tinted card competing with the next step. */
-.mistakes-clear {
+.step-list p {
   margin: 0;
   color: var(--surface-fg-muted);
   font-size: 0.9rem;
-}
-
-/* This screen's own content rarely fills a desktop viewport tall enough for
-   .app-main's sticky-footer flex layout to give it real leftover height
-   (measured ~300px of blank space below the grid at 1440x900) — clamp()
-   already lets .next-card h1 scale with viewport width, but everything else
-   here was sized for the ~980px-and-below tier and just stays small at
-   1440px+. Scaling body copy and the stat numbers up (still well inside the
-   existing type scale — .stem/.next-card h1 already reach ~1.55rem) reads
-   as more considered on a wide screen without adding new layout. */
-@media (min-width: 981px) {
-  .next-card {
-    padding: 2rem 2.25rem;
-  }
-
-  .next-card p {
-    font-size: 0.95rem;
-  }
-
-  .stat-list dd {
-    font-size: 1.3rem;
-  }
-
-  .home-grid {
-    gap: 3.5rem;
-  }
+  line-height: 1.5;
 }
 
 @media (max-width: 800px) {
-  .next-card {
-    align-items: stretch;
-    flex-direction: column;
-    padding: 1.5rem;
+  .step-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .home-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .home-continue {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label label"
+      "course action"
+      "detail detail";
   }
 }
 
 @media (max-width: 560px) {
-  .section-marker {
-    margin-bottom: 0.5rem;
+  .home-facts {
+    gap: 0.75rem 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .home-facts dd {
+    font-size: 1.2rem;
+  }
+
+  .home-cert-note {
+    margin-top: 1.25rem;
+    padding: 0.85rem 1rem;
   }
 
   .home-courses {
     margin-top: 2rem;
   }
 
-  .next-card {
-    gap: 0.85rem;
-    padding: 1rem;
-  }
-
-  .next-card h1 {
-    margin-bottom: 0.2rem;
-    font-size: 1.15rem;
-  }
-
-  .next-card p {
-    font-size: var(--text-caption-size);
-  }
-
-  .home-grid {
-    gap: 1.25rem;
-    margin-top: 1.25rem;
-  }
-
-  .domain-bars {
-    gap: 0.75rem;
-  }
-
-  .stat-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.75rem;
-  }
-
-  .stat-list div {
-    display: grid;
-    gap: 0.25rem;
-  }
-
-  .stat-list dd {
-    font-size: 0.95rem;
-  }
-
-  .mistakes-callout {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-  }
-
-  .mistakes-callout strong {
-    white-space: nowrap;
-  }
-}
-
-@media (max-width: 400px) {
-  .next-card {
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
-
-  .home-grid {
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-  }
-
-  .domain-bars {
-    gap: 0.5rem;
-  }
-
-  .stat-list {
-    grid-template-columns: repeat(3, auto);
-    justify-content: space-between;
-    column-gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .mistakes-callout {
-    padding: 0.625rem 0.75rem;
-  }
-}
-
-@media (max-width: 340px) {
-  .next-card,
-  .home-grid {
-    gap: 0.75rem;
-  }
-
-  .home-grid {
-    margin-top: 1rem;
-  }
-
-  .domain-bars {
-    gap: 0.6rem;
+  .home-steps {
+    margin-top: 2.5rem;
   }
 }
 </style>
