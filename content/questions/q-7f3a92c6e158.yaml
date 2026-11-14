@@ -1,44 +1,34 @@
 schema_version: 1
 id: q-7f3a92c6e158
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/framework-integrations
-stem: In the Token Factory third-party integrations overview, which framework is
-  listed under the "AI Application Frameworks" category?
+stem: "In the Token Factory third-party integrations overview, which framework is listed under the \"AI Application Frameworks\" category?"
 options:
   - id: a
-    text: Postman
+    text: "Postman"
     correct: false
-    explanation: Postman is listed under the overview's Developer Tools category,
-      not AI Application Frameworks.
+    explanation: "Postman is listed under the overview's Developer Tools category, not AI Application Frameworks."
   - id: b
-    text: Helicone
+    text: "Helicone"
     correct: false
-    explanation: Helicone is listed under the overview's Observability category, not
-      AI Application Frameworks.
+    explanation: "Helicone is listed under the overview's Observability category, not AI Application Frameworks."
   - id: c
-    text: Langchain
+    text: "Langchain"
     correct: true
-    explanation: The overview's AI Application Frameworks category lists Llama-Index
-      and Langchain.
+    explanation: "The overview's AI Application Frameworks category lists Llama-Index and Langchain."
   - id: d
-    text: Tavily
+    text: "Tavily"
     correct: false
-    explanation: Tavily is listed under the overview's Agentic Search category, not
-      AI Application Frameworks.
+    explanation: "Tavily is listed under the overview's Agentic Search category, not AI Application Frameworks."
 evidence:
   - source_id: src-integrations-overview
     excerpt: "## AI Application Frameworks"
-    source_sha256: 02147b4950b8d699aa6821a7521447e30d0937296a486bdb668c98eb5db7a7d0
+    source_sha256: 7ba04420cd36ce4975cb83464116e48ec6cbe03a59f27dd8a28ca28c52df2172
   - source_id: src-integrations-overview
-    excerpt: "**[Langchain](https://docs.tokenfactory.nebius.com/integrations/frame\
-      works/langchain)**"
-    source_sha256: 02147b4950b8d699aa6821a7521447e30d0937296a486bdb668c98eb5db7a7d0
+    excerpt: "[card] [Langchain](https://docs.tokenfactory.nebius.com/integrations/frameworks/langchain)"
+    source_sha256: 7ba04420cd36ce4975cb83464116e48ec6cbe03a59f27dd8a28ca28c52df2172
 authored:
   by: "agent:claude-author"
-  at: "2026-10-30T14:48:37Z"
+  at: "2026-11-14T18:23:49Z"
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 47b033d7d4f4203fa4ce7b4099f828d1f4024475e8af11c3bba5bd1cd1639212

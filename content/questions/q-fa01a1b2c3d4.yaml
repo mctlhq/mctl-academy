@@ -1,47 +1,32 @@
 schema_version: 1
 id: q-fa01a1b2c3d4
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/files-api
-stem: In the fine-tuning walkthrough, how is a training dataset made available
-  to a fine-tuning job?
+stem: "In the fine-tuning walkthrough, how is a training dataset made available to a fine-tuning job?"
 options:
   - id: a
-    text: Upload the JSONL file with the Files API using `purpose="fine-tune"` and
-      pass the returned file ID as `training_file`
+    text: "Upload the dataset through the Files API with `purpose=\"fine-tune\"` and use the returned file ID as `training_file`"
     correct: true
-    explanation: The walkthrough calls `client.files.create` with the JSONL file and
-      `purpose="fine-tune"`; the required `training_file` parameter is the ID of
-      that file.
+    explanation: "The job's `training_file` field takes the ID of a file uploaded through the Files API with `purpose = \"fine-tune\"`."
   - id: b
-    text: Stream the JSONL rows inline in the fine-tuning job request body
+    text: "Stream the dataset's JSONL rows directly inside the fine-tuning job's request body"
     correct: false
-    explanation: The job references a file ID; the dataset is not embedded in the
-      job request.
+    explanation: "The job references a file ID; the dataset's rows are not embedded in the job request body."
   - id: c
-    text: Upload the file with `purpose="assistants"` and reference its name
+    text: "Upload the file through the Files API with `purpose=\"assistants\"` and reference it by name"
     correct: false
-    explanation: The documented purpose value for fine-tuning datasets is
-      `fine-tune`, and the job takes an ID, not a name.
+    explanation: "The documented purpose value for a training dataset is `fine-tune`, and the job takes a file ID, not a name."
   - id: d
-    text: Point the job at a public HTTPS URL of the dataset
+    text: "Reference the dataset through a public HTTPS URL included in the job request"
     correct: false
-    explanation: The walkthrough uploads the file through the Files API; URLs are
-      not a documented input.
+    explanation: "Datasets are uploaded through the Files API; an external URL field is not part of the job request."
 evidence:
   - source_id: src-supervised-fine-tuning
-    excerpt: training_file = client.files.create( file=open("training.jsonl", "rb"),
-      purpose="fine-tune", )
-    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
-  - source_id: src-supervised-fine-tuning
-    excerpt: '`training_file` (string, **required**) ID of the file with the
-      training dataset (`purpose = "fine-tune"`).'
-    source_sha256: 585b3e6ea0a4dbb9620ed6d9b087daf683eaa3719ecbe446d864f4337956eb96
+    excerpt: "`training_file` (string, **required**) ID of the file with the training dataset (`purpose = \"fine-tune\"`)."
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
+    locator: "API specification for a fine-tuning job > Top-level fields"
 authored:
-  by: agent:claude-fable-5-1
-  at: 2026-09-06T06:39:14Z
+  by: "agent:claude-author"
+  at: "2026-11-14T18:23:49Z"
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 6c901e1ba08fc0181a97fa41957dc2b4761e3a7c9690ce6b283e177913822c4b
