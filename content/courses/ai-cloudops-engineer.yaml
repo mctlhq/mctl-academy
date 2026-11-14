@@ -3,6 +3,7 @@ id: ai-cloudops-engineer
 prepares_for: "Nebius AI CloudOps Engineer"
 title: "AI CloudOps Engineer"
 description: "Practice for the Nebius AI CloudOps Engineer certification. Scenario questions covering GPU cloud infrastructure, compute node operations, monitoring, IAM, storage, and troubleshooting."
+summary: "Run GPU cloud infrastructure day to day: deploy environments, operate compute nodes, monitor workloads, manage access and storage, and troubleshoot."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."

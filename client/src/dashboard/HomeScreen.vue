@@ -2,10 +2,11 @@
 import { computed, inject, type Ref } from "vue";
 import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
+import CourseGrid from "../components/CourseGrid.vue";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
 import { questionsForCourse } from "../services/contentBundle";
-import { domainTitlesFor, findCourse } from "../services/courseCatalog";
+import { courseCatalog, domainTitlesFor, findCourse } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 
 // Same course scope as the dashboard — see DashboardScreen.vue. syncVersion
@@ -98,6 +99,13 @@ const practiceDescription = computed(() => {
         <p v-else class="mistakes-clear"><span aria-hidden="true">✓</span> No mistakes waiting for review.</p>
       </aside>
     </div>
+
+    <!-- Every course in the catalog, coming-soon ones included, so the
+         roadmap is visible here as it is in the header switcher. -->
+    <section class="home-courses" aria-labelledby="home-courses-title">
+      <h2 id="home-courses-title" class="section-heading">All courses</h2>
+      <CourseGrid :courses="courseCatalog" :current-course-id="currentCourseId" />
+    </section>
   </section>
 </template>
 
@@ -187,6 +195,10 @@ const practiceDescription = computed(() => {
 .domain-bars {
   display: grid;
   gap: 1.1rem;
+}
+
+.home-courses {
+  margin-top: 3rem;
 }
 
 .home-summary {
@@ -293,6 +305,10 @@ const practiceDescription = computed(() => {
 @media (max-width: 560px) {
   .section-marker {
     margin-bottom: 0.5rem;
+  }
+
+  .home-courses {
+    margin-top: 2rem;
   }
 
   .next-card {

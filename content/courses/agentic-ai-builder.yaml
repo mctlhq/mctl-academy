@@ -3,6 +3,7 @@ id: agentic-ai-builder
 prepares_for: "Nebius Agentic AI Builder"
 title: "Agentic AI Builder"
 description: "Practice for the Nebius Agentic AI Builder certification. Original questions written from public product documentation, each one citing the source that supports it."
+summary: "Build agents on a hosted model platform: API access, inference and tool integration, data and post-training, and running them in production."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."

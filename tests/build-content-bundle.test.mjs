@@ -308,6 +308,20 @@ test("no vendor certification naming leaks into the client catalog", () => {
   assert.ok(!serialized.includes("disclaimer"));
 });
 
+test("passes a course summary through to the catalog, and omits it when absent", () => {
+  const { catalog } = build({
+    courses: [
+      course({ summary: "Build and run agents end to end." }),
+      course({ id: "ai-leader", title: "AI Leader" }),
+    ],
+  });
+  assert.equal(
+    catalog.find((c) => c.id === "agentic-ai-builder").summary,
+    "Build and run agents end to end.",
+  );
+  assert.ok(!("summary" in catalog.find((c) => c.id === "ai-leader")));
+});
+
 test("emits sitemap.xml with available courses when ACADEMY_SITEMAP_OUT is configured", () => {
   const { sitemap } = build({
     courses: [course(), course({ id: "ai-leader", title: "AI Leader" })],

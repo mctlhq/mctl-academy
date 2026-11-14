@@ -100,7 +100,7 @@ const question = (over = {}) => ({
 });
 
 /** Runs the lint against a fixture tree. Returns { ok, output }. */
-function lint({ sources = [source()], questions = [question()], receipts = [] }) {
+function lint({ sources = [source()], questions = [question()], receipts = [], courseDef = COURSE_DEF }) {
   const dir = mkdtempSync(join(tmpdir(), "academy-lint-"));
   try {
     mkdirSync(join(dir, "courses"), { recursive: true });
@@ -108,7 +108,7 @@ function lint({ sources = [source()], questions = [question()], receipts = [] })
     mkdirSync(join(dir, "questions"), { recursive: true });
     mkdirSync(join(dir, "reviews"), { recursive: true });
     receipts.forEach((r, i) => writeFileSync(join(dir, "reviews", `r${i}-review.json`), JSON.stringify(r)));
-    writeFileSync(join(dir, "courses", "agentic-ai-builder.yaml"), JSON.stringify(COURSE_DEF));
+    writeFileSync(join(dir, "courses", "agentic-ai-builder.yaml"), JSON.stringify(courseDef));
     sources.forEach((s, i) => writeFileSync(join(dir, "sources", `s${i}.yaml`), JSON.stringify(s)));
     questions.forEach((q, i) => writeFileSync(join(dir, "questions", `q${i}.yaml`), JSON.stringify(q)));
 
@@ -478,4 +478,52 @@ test("duplicate receipt entries for one question poison the key instead of last-
   });
   assert.equal(acrossFiles.ok, false);
   assert.match(acrossFiles.output, /more than one receipt entry/);
+});
+
+// The course summary reaches the client catalog (the course card), so it is
+// held to LEGAL.md's naming rule. Vendor names come from the course's own
+// prepares_for and disclaimer, never from a list kept in the lint.
+const VENDOR_COURSE = {
+  ...COURSE_DEF,
+  prepares_for: "Acme Test",
+  disclaimer: { short: "Not affiliated with, endorsed by, or sponsored by Acme or Widgetco." },
+};
+
+test("accepts a vendor-neutral course summary", () => {
+  const { ok, output } = lint({
+    courseDef: { ...VENDOR_COURSE, summary: "Practise building and running agents." },
+  });
+  assert.equal(ok, true, output);
+});
+
+test("rejects a course summary that names the vendor from prepares_for", () => {
+  const { ok, output } = lint({
+    courseDef: { ...VENDOR_COURSE, summary: "Practise for the acme exam, step by step." },
+  });
+  assert.equal(ok, false);
+  assert.match(output, /summary names "Acme"/);
+});
+
+test("rejects a course summary that names a party the disclaimer disowns", () => {
+  const { ok, output } = lint({
+    courseDef: { ...VENDOR_COURSE, summary: "Connect agents to the Widgetco API." },
+  });
+  assert.equal(ok, false);
+  assert.match(output, /summary names "Widgetco"/);
+});
+
+test("rejects a course summary longer than one card sentence", () => {
+  const { ok, output } = lint({ courseDef: { ...COURSE_DEF, summary: "word ".repeat(60) } });
+  assert.equal(ok, false);
+  assert.match(output, /summary/);
+});
+
+test("a vendor name in prepares_for still matches with a mark or possessive attached", () => {
+  for (const prepares_for of ["Acme® Test", "Acme's Test"]) {
+    const { ok, output } = lint({
+      courseDef: { ...COURSE_DEF, prepares_for, summary: "Practise for the Acme exam, step by step." },
+    });
+    assert.equal(ok, false, prepares_for);
+    assert.match(output, /summary names "Acme"/);
+  }
 });

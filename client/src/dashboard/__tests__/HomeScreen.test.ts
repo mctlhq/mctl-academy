@@ -13,12 +13,29 @@ vi.mock("../../services/contentBundle", () => ({
   ],
 }));
 
+// vi.mock factories are hoisted above module-level declarations.
+const { catalogCourse } = vi.hoisted(() => ({
+  catalogCourse: (id: string, title: string, publishedQuestionCount: number) => ({
+    id,
+    title,
+    summary: `${title} in one sentence.`,
+    publishedQuestionCount,
+    available: publishedQuestionCount > 0,
+    mock: { questionCount: 30, timeLimitMinutes: 60, discloseBankSize: true, domains: [] },
+  }),
+}));
+
 vi.mock("../../services/courseCatalog", () => ({
+  courseCatalog: [
+    catalogCourse("course-alpha", "Course Alpha", 2),
+    catalogCourse("course-beta", "Course Beta", 0),
+  ],
   domainTitlesFor: () => ({ "domain-1": "Domain 1" }),
   findCourse: () => ({ title: "Course Alpha" }),
 }));
 
 import HomeScreen from "../HomeScreen.vue";
+import CourseCard from "../../components/CourseCard.vue";
 import { recordAttempt, resetMemoryFallback, setSyncEnabled } from "../../services/progressStore";
 
 describe("HomeScreen", () => {
@@ -79,6 +96,28 @@ describe("HomeScreen", () => {
     const targets = wrapper.findAllComponents(RouterLinkStub).map((l) => l.props("to"));
     expect(targets).toContain("/practice");
     expect(targets).toContain("/mistakes");
-    expect(wrapper.find("button").exists()).toBe(false);
+    expect(wrapper.find(".next-card button").exists()).toBe(false);
+    expect(wrapper.find(".home-summary button").exists()).toBe(false);
+  });
+
+  it("lists every catalog course as a card, coming-soon ones included", () => {
+    const wrapper = mountHome();
+    const cards = wrapper.findAllComponents(CourseCard);
+    expect(cards.map((c) => c.attributes("data-course-id"))).toEqual(["course-alpha", "course-beta"]);
+
+    const [alpha, beta] = cards;
+    expect(alpha.text()).toContain("Course Alpha in one sentence.");
+    expect(alpha.text()).toContain("Available");
+    expect(alpha.text()).toContain("Studying now");
+    const alphaLinks = alpha.findAllComponents(RouterLinkStub).map((l) => l.props("to"));
+    expect(alphaLinks).toEqual(["/practice?course=course-alpha", "/courses/course-alpha"]);
+
+    // No published questions: listed, but Practice cannot start an empty bank.
+    expect(beta.text()).toContain("Coming soon");
+    expect(beta.text()).not.toContain("Studying now");
+    expect(beta.get("button").attributes()).toHaveProperty("disabled");
+    expect(beta.findAllComponents(RouterLinkStub).map((l) => l.props("to"))).toEqual([
+      "/courses/course-beta",
+    ]);
   });
 });

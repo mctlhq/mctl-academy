@@ -5,7 +5,7 @@
     "": {
       "name": "mctl-academy-client",
       "dependencies": {
-        "@mctlhq/ui": "^0.20.2",
+        "@mctlhq/ui": "^0.21.0",
         "better-auth": "^1.6.26",
         "vue": "^3.5.13",
         "vue-router": "^4.5.0",
@@ -125,7 +125,7 @@
 
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
-    "@mctlhq/ui": ["@mctlhq/ui@0.20.2", "https://npm.pkg.github.com/download/@mctlhq/ui/0.20.2/e39cb11062bc67ce67cbad9d6d93640de971af8d", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-nZ/d1pNxxE91URYuT77QAFcFhf6z7Ilh7CGSzSY8lGRf0hjh+WIuaB9n4xF/pcdFFqI6NEMTI8zFlOLK9zRJwA=="],
+    "@mctlhq/ui": ["@mctlhq/ui@0.21.0", "https://npm.pkg.github.com/download/@mctlhq/ui/0.21.0/ee1e4c4f999f97e258bdaaa49beaf1c1d11845b1", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-wxDjIb1XWqzAaiXLzgL3/ExXes69cXwJ4NLZKKj+BrJF4iUF5yJMO2E9ecPTrGo23NobCWDXvxkKJ8Uo6Db9+Q=="],
 
     "@napi-rs/lzma-linux-x64-gnu": ["@napi-rs/lzma-linux-x64-gnu@1.5.1", "", { "os": "linux", "cpu": "x64" }, "sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ=="],
 

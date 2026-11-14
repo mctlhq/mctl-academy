@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, watch } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { MButton, MPill } from "@mctlhq/ui";
+import CourseGrid from "../components/CourseGrid.vue";
 import { courseCatalog, findCourse, type CourseInfo } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 import { questionsForCourse } from "../services/contentBundle";
@@ -197,17 +198,7 @@ onUnmounted(() => {
 
       <section v-if="otherCourses.length > 0" class="other-courses" aria-labelledby="other-courses-heading">
         <h2 id="other-courses-heading" class="section-heading">Explore other courses</h2>
-        <div class="other-courses-grid">
-          <RouterLink
-            v-for="c in otherCourses"
-            :key="c.id"
-            :to="`/courses/${c.id}`"
-            class="other-course-card"
-          >
-            <span class="other-course-title">{{ c.title }}</span>
-            <span class="other-course-meta">{{ c.publishedQuestionCount }} questions</span>
-          </RouterLink>
-        </div>
+        <CourseGrid :courses="otherCourses" />
       </section>
     </div>
   </div>
@@ -403,41 +394,6 @@ onUnmounted(() => {
 
 .other-courses {
   margin-bottom: 3rem;
-}
-
-.other-courses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 1rem;
-}
-
-.other-course-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-md);
-  background: var(--surface-card);
-  text-decoration: none;
-  transition: border-color var(--mctl-motion-duration-base) var(--mctl-motion-easing-standard);
-}
-
-.other-course-card:hover,
-.other-course-card:focus-visible {
-  border-color: var(--accent);
-}
-
-.other-course-title {
-  color: var(--surface-fg);
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-
-.other-course-meta {
-  color: var(--surface-fg-subtle);
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
 }
 
 .not-found-code {

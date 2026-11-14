@@ -97,6 +97,10 @@ const catalog = [...courses.values()]
     return {
       id: course.id,
       title: course.title,
+      // The one free-text course field the client gets: a vendor-neutral
+      // sentence for the course card. Optional, so it is omitted rather than
+      // emitted empty; the content lint keeps vendor names out of it.
+      ...(typeof course.summary === "string" ? { summary: course.summary } : {}),
       publishedQuestionCount,
       // A course with no eligible questions is listed but not selectable. As
       // soon as content lands for it this flips on its own — no TypeScript
