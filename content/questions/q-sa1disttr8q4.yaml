@@ -1,0 +1,58 @@
+schema_version: 1
+id: q-sa1disttr8q4
+status: published
+domain: domain-1
+objective: domain-1/sa-distributed-training
+stem: "An architect is designing the scheduling strategy for a large
+  distributed-training job that will run across many GPU virtual machines within
+  one GPU cluster, and wants to minimize network communication latency and cost
+  between workers. What should the design do?"
+options:
+  - id: a
+    text: "Provide the cluster's topology file to the workload manager so it
+      schedules workers on nodes that are topologically closest to each other."
+    correct: true
+    explanation: "Correct. The documentation says that when you provide a topology
+      file to a workload manager, it schedules distributed jobs on the worker
+      nodes that are topologically closest to each other."
+  - id: b
+    text: "Spread the job's workers evenly across as many points of delivery as
+      possible, since connections between points of delivery carry no extra
+      communication cost."
+    correct: false
+    explanation: "The documentation says the cost of network communication increases
+      at higher layers such as between points of delivery, through a root switch
+      -- the opposite of what this option claims."
+  - id: c
+    text: "Rely on the platform's GPU memory bandwidth alone to reduce latency,
+      since topology files are documented as applying to CPU workloads instead
+      of GPU scheduling."
+    correct: false
+    explanation: "Topology files describe the network layout of GPU virtual machines
+      within a GPU cluster for topology-aware scheduling; they apply to GPU
+      workloads, not CPU workloads."
+  - id: d
+    text: "Schedule workers without regard to their location in the cluster, since
+      the InfiniBand topology layers exist purely for documentation and do not
+      affect scheduling."
+    correct: false
+    explanation: "Topology-aware scheduling using the topology file is what places
+      workers close together and reduces latency; the layers describe real
+      placement that scheduling decisions act on, not a documentation-only
+      detail."
+evidence:
+  - source_id: src-nb-compute-clusters-gpu-topology
+    source_sha256: 9e45eb3a7a326319661e90000d1980a78ec70973f603a04997f85fccd20c7400
+    excerpt: "When you provide a topology file to a workload manager, it schedules
+      distributed jobs on the worker nodes that are topologically closest to
+      each other."
+    locator: "InfiniBand topology of a GPU cluster, Why InfiniBand topology is
+      important"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:47:26Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T15:04:04Z
+  content_sha256: b4cdbad9d1fc9c21365f6f8be7e2ce1be64e26735263079980f4809e00d10292

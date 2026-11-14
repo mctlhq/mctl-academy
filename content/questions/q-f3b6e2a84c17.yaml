@@ -1,0 +1,48 @@
+schema_version: 1
+id: q-f3b6e2a84c17
+status: published
+domain: domain-2
+objective: domain-2/ie-training-cluster-lifecycle
+stem: "A platform team increases a GPU node group's target node count to add
+  training capacity, without changing the node group's template. Does Managed
+  Kubernetes replace any of the group's existing nodes as part of this change?"
+options:
+  - id: a
+    text: "No -- scaling a node group up or down, whether done manually or by the
+      autoscaler, does not recreate any existing nodes"
+    correct: true
+    explanation: "Correct. The documentation states that scaling a node group up or
+      down, whether you or the autoscaler does it, does not recreate any nodes."
+  - id: b
+    text: "Yes -- scaling up or down triggers the same cordon, drain, delete and
+      recreate sequence used when the node template changes"
+    correct: false
+    explanation: "That cordon-drain-delete-create sequence is the deployment
+      strategy used when the node group's template changes, not when it is only
+      scaled."
+  - id: c
+    text: "Yes, if the node group additionally has a GPU cluster attached for
+      high-speed InfiniBand interconnect"
+    correct: false
+    explanation: "Whether the group uses a GPU cluster is unrelated to whether
+      scaling recreates nodes; the behavior described is the same either way."
+  - id: d
+    text: "No, but just when the autoscaler performs the scaling rather than a
+      manual request"
+    correct: false
+    explanation: "The documentation treats manual and autoscaler-driven scaling the
+      same way: neither recreates existing nodes."
+evidence:
+  - source_id: src-co-k8s-node-groups
+    source_sha256: 12d86a1eeeb4a084acc7f8203ec6a9874b0ab0d2cd19320b67b1fe3ec99867cb
+    excerpt: "scales a node group up or down, Managed Kubernetes does not recreate
+      any nodes."
+    locator: "Deployment strategy and quotas"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:14:34Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T14:32:11Z
+  content_sha256: 99cf005947a5b79b6043b9803bc841004384ae4ba99f15bffe98bc891ce8cdd7

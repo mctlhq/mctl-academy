@@ -1,0 +1,53 @@
+schema_version: 1
+id: q-f7a84e1c6b93
+status: published
+domain: domain-4
+objective: domain-4/ie-observability-platform
+stem: "A platform team finds the preconfigured per-resource dashboards in the
+  Nebius AI Cloud web console show enough metrics for day-to-day checks, but not
+  enough for the custom, advanced visualizations they want to build. What should
+  they do?"
+options:
+  - id: a
+    text: "Integrate Observability Metrics with Prometheus or Grafana to view more
+      metrics and build advanced visualizations"
+    correct: true
+    explanation: "Correct. The documentation says that to view more metrics and
+      create advanced visualizations, you integrate Observability Metrics with
+      Prometheus or Grafana."
+  - id: b
+    text: "Switch from the resource's Metrics tab to the Observability → Metrics
+      page in the console, since it shows additional metrics"
+    correct: false
+    explanation: "Both paths reach the same preconfigured web console dashboards;
+      neither adds the deeper metrics or custom visualizations a Prometheus or
+      Grafana integration provides."
+  - id: c
+    text: "Shorten the dashboard's time filter so it refreshes more often, surfacing
+      more data points on the same charts"
+    correct: false
+    explanation: "The refresh interval only changes how often the same preconfigured
+      charts update; it does not add new metrics or visualization options."
+  - id: d
+    text: "Import a pre-built Grafana dashboard from the Grafana Marketplace without
+      first connecting a Prometheus data source"
+    correct: false
+    explanation: "The documented steps connect the Prometheus data source first and
+      only then import the dashboard; skipping that step is not the documented
+      path to advanced visualizations."
+evidence:
+  - source_id: src-nb-observability-dashboards
+    source_sha256: 60428fa6749473edc5bf48aecff06b6fb6f2dde87fb8c9068e30abdc4b18861c
+    excerpt: "To view more metrics and create advanced visualizations, integrate
+      Observability Metrics with
+      [Prometheus](https://docs.nebius.com/observability/metrics/prometheus.md)
+      or [Grafana®](https://docs.nebius.com/observability/metrics/grafana.md)."
+    locator: "Dashboards in the Nebius AI Cloud web console"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:14:34Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T14:32:11Z
+  content_sha256: 7f5b8f7174ca76d8723303b65aa9deb45d4fc0cefd2961d68be29441d7325082

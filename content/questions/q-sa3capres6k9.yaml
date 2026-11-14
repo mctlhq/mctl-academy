@@ -1,0 +1,57 @@
+schema_version: 1
+id: q-sa3capres6k9
+status: published
+domain: domain-3
+objective: domain-3/sa-capacity-quotas-cost
+stem: "A solutions architect is sizing GPU capacity for a production workload
+  that must be able to launch at a specific future date without competing for
+  shared on-demand capacity, and the team already has enough quota. What should
+  the architect arrange before onboarding?"
+options:
+  - id: a
+    text: "A capacity reservation, since GPUs from a reservation remain available
+      even when a VM is stopped, instead of returning to the shared capacity
+      pool."
+    correct: true
+    explanation: "Correct. The documentation says GPUs from a reservation remain
+      available even if a VM is stopped, while without a reservation, GPU
+      capacity is taken from a shared pool and returned when a VM is stopped."
+  - id: b
+    text: "A larger compute quota, since GPUs allocated under quota alone remain
+      reserved to the project even after a VM stops."
+    correct: false
+    explanation: "The documentation says the opposite: without a reservation, GPU
+      capacity comes from the shared pool and is returned to it when the VM
+      stops, regardless of quota."
+  - id: c
+    text: "A capacity reservation, understanding that reserved GPUs still count
+      toward the project's GPU quota like any other allocation."
+    correct: false
+    explanation: "The documentation says GPUs allocated from reservations do not
+      count towards quotas on the number of GPUs, so this understanding of the
+      arrangement is incorrect."
+  - id: d
+    text: "Preemptible VMs with a high maximum spot price, since that keeps the same
+      GPUs allocated to the workload between stops."
+    correct: false
+    explanation: "Preemptible VMs preserve data on attached volumes when stopped,
+      but they do not reserve GPU capacity; a reservation, not a pricing
+      setting, is what keeps GPUs allocated."
+evidence:
+  - source_id: src-nb-compute-virtual-machines-reservations
+    source_sha256: e3713e4f7033093213b6b1ec8496146466d7068b67e0fb6766c13f06933c24ed
+    excerpt: "GPUs from a reservation remain available, even if a VM is stopped."
+    locator: "Capacity reservations for Compute virtual machines"
+  - source_id: src-nb-compute-virtual-machines-reservations
+    source_sha256: e3713e4f7033093213b6b1ec8496146466d7068b67e0fb6766c13f06933c24ed
+    excerpt: "Without reservations, GPU capacity is taken from a shared pool and
+      returned when a VM is stopped"
+    locator: "Capacity reservations for Compute virtual machines"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:47:26Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T15:04:04Z
+  content_sha256: 86c9bc7f70279cd69d2fe2139d5f6ff5c02be0f52c5a7f416134f17b8f379596

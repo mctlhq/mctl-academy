@@ -1,0 +1,62 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T15:04:04Z",
+  "questions": [
+    {
+      "id": "q-sa1disttr8q4",
+      "content_sha256": "b4cdbad9d1fc9c21365f6f8be7e2ce1be64e26735263079980f4809e00d10292",
+      "approved": true,
+      "reason": "The captured page states verbatim: \"When you provide a topology file to a workload manager, it schedules distributed jobs on the worker nodes that are topologically closest to each other. This reduces network latency in such jobs\", which supports option a; the \"Cost of network communication\" section (\"if you need to transfer data from one POD to another, the data goes through a root switch. This leads to a higher cost of resources\") falsifies option b, and topology files are described for VMs with GPUs within a GPU cluster, falsifying c and d.",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa1gpusel9x2",
+      "content_sha256": "1740b40a0dc05f0b14f091cdf5b3e0a3901bfce3e44e8dda3a03bc57a189e87c",
+      "approved": true,
+      "reason": "The Scope section says verbatim \"Data about computing resource availability of VMs without GPUs isn't provided\", establishing option a; the page also falsifies the distractors, since the scope limit is not role-based (viewer is only the prerequisite role) and \"Nebius AI Cloud provider for Terraform doesn't support the capacity advisor.\"",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa2chkpt7m3v",
+      "content_sha256": "ef57e6d48b56f78075fc04d17fead1353a98b54e001b11d686972b5d8f0a389c",
+      "approved": true,
+      "reason": "The captured text states verbatim \"Every snapshot is only available in the project where it was created. Therefore, you can only work with snapshots and disks within the project\", which settles the cross-project question for option a; the page ties no disk type or shared filesystem to cross-project use, so no distractor is defensible.",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa2obscope5r",
+      "content_sha256": "24f8d29e1f6d5e83eb4517d8e2cf7c093f2719a1e964a211f023280527a30a9d",
+      "approved": true,
+      "reason": "The note under \"How to connect Prometheus\" reads verbatim \"Prometheus can only show a limited amount of monitoring data. If you have a large infrastructure, consider connecting a data source in [Grafana®](...) instead\", which is exactly option a; the same note rules out option c's \"no documented limit\", GPU metrics are just one bucket of the shared Observability Metrics data, and the page recommends a scrape interval \"no less than 15 seconds\".",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa3capres6k9",
+      "content_sha256": "86c9bc7f70279cd69d2fe2139d5f6ff5c02be0f52c5a7f416134f17b8f379596",
+      "approved": true,
+      "reason": "Both excerpts appear verbatim in the first paragraph: \"GPUs from a reservation remain available, even if a VM is stopped. Without reservations, GPU capacity is taken from a shared pool and returned when a VM is stopped\", supporting option a and falsifying b; option c is excluded by the note \"GPUs allocated from reservations do not count towards quotas on the number of GPUs\", and option d by \"Preemptible VMs and VMs without GPUs do not support them.\"",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa3costtr4j8",
+      "content_sha256": "c011f34176fd29f274d167a0756caa1d950be1292099780765548aaae6f967a0",
+      "approved": true,
+      "reason": "Both excerpts are verbatim: \"Preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, but they don't provide guaranteed availability\" and \"Local SSD disks are ephemeral, meaning any data stored on them will be lost when the preemptible VM stops\", which together give option a without over-claiming; the page's \"charged at the current spot price\" and \"You can't convert an existing VM from regular to preemptible or the other way around\" exclude b and d.",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa4identsvc2",
+      "content_sha256": "8cd2eb92e61915baa919a3589fa581cfb1d7e74d1e5401cdbe3bb9e991fabd89",
+      "approved": true,
+      "reason": "Under Identity management the page reads \"A service account belongs to the project where it was created, but its access to resources is defined by the groups that it's added to. This means that a service account can be granted access to any resource in the tenant regardless of the project\", which is option a; the page describes auditors only as the lowest-access default group and never describes promoting a service account into a federation user, so d and c fail.",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    },
+    {
+      "id": "q-sa4tenantsg7",
+      "content_sha256": "e900c9a2747a7d3c09d8129d6e713a4825d95fbf21defdaa39175960debb4fbe",
+      "approved": true,
+      "reason": "The excerpt is verbatim: \"Each security group is associated with a [network](...) and can only apply to VMs in this network\", with the network ID in .spec.network_id, which establishes option a; option c is specifically excluded by \"The security group specified in a security rule and the security group that contains the security rule must be associated with the same network\", and stateful/stateless concerns only connection tracking.",
+      "reviewed_at": "2026-11-14T15:04:04Z"
+    }
+  ]
+}
