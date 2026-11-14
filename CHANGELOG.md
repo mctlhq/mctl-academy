@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.83](https://github.com/mctlhq/mctl-academy/compare/0.1.82...0.1.83) (2026-11-14)
+
+
+### Bug Fixes
+
+* **content:** retire 14 quarantined questions with no repair path ([4013590](https://github.com/mctlhq/mctl-academy/commit/40135902fd8bc9ef198dd2641a4893219ecda7b6))
+* **content:** retire 14 quarantined questions with no repair path ([efd056f](https://github.com/mctlhq/mctl-academy/commit/efd056f0685ae45afd236b308ddb2a686e3dbee5))
+
+
+### Content
+
+* **replenish:** author 8 question file(s) from 0 captured source(s) ([7da65ab](https://github.com/mctlhq/mctl-academy/commit/7da65abfb2abb09b11f16d0c315da8572b4c0988))
+* **replenish:** promote 8 reviewed question(s) ([31cc927](https://github.com/mctlhq/mctl-academy/commit/31cc927fdd0b80c1b657295768387faabb219376))
+
 ## [0.1.82](https://github.com/mctlhq/mctl-academy/compare/0.1.81...0.1.82) (2026-11-14)
 
 
