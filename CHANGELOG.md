@@ -1,5 +1,64 @@
 # Changelog
 
+## [0.1.78](https://github.com/mctlhq/mctl-academy/compare/0.1.77...0.1.78) (2026-11-14)
+
+
+### Features
+
+* **client:** add a course card grid to Home ([4a3b7d9](https://github.com/mctlhq/mctl-academy/commit/4a3b7d9756d6df49135e7d7617229552b052d757))
+* **client:** course card grid on Home and MSelect course switcher ([88479e3](https://github.com/mctlhq/mctl-academy/commit/88479e36dcebccf6c2654cf1f0222a8eecba2a72))
+* **client:** move the course switcher to MSelect ([87d1dbd](https://github.com/mctlhq/mctl-academy/commit/87d1dbd54ad4460b32b24a1f04a46012c1ac136a))
+* **content-quality:** add item cues, cross-course near-dups, candidates ([091e622](https://github.com/mctlhq/mctl-academy/commit/091e62254c4e03449646f9be0611a46cb5aca634))
+* **content-quality:** add item cues, cross-course near-dups, candidates ([50439c3](https://github.com/mctlhq/mctl-academy/commit/50439c378dc45bdc2eb55bcd5926c3323b0e5f0b))
+* **content:** add a vendor-neutral course summary ([97b083e](https://github.com/mctlhq/mctl-academy/commit/97b083e73b64132cd4b1029773c34c7c92a3a416))
+* **content:** add AI infra engineer and solutions architect maps ([a97f4ad](https://github.com/mctlhq/mctl-academy/commit/a97f4ad90aa2ca23494bef8161c62829cc561ad8))
+* **content:** add AI infra engineer and solutions architect maps ([b626948](https://github.com/mctlhq/mctl-academy/commit/b626948a17ef6d075293b945510a4f6d31bd40ce))
+* **content:** add source coverage matrices for IE and SA ([ae57779](https://github.com/mctlhq/mctl-academy/commit/ae577795704396d5d9ae0185a2e709d48d76d6e0))
+* **content:** add source coverage matrices for IE and SA ([ac8855e](https://github.com/mctlhq/mctl-academy/commit/ac8855e1a2eec7b5aebfe8e507c7c0a8e99a732e))
+* **content:** add summaries and card glyphs for IE and SA ([4870546](https://github.com/mctlhq/mctl-academy/commit/487054666522abc84e1a3d2c895b11eaf8fa3688))
+* **content:** map captured sources to IE and SA objectives ([7ccc62a](https://github.com/mctlhq/mctl-academy/commit/7ccc62ac7d86ad8e0ed2ec507d99723516a1ee48))
+* **content:** map captured sources to IE and SA objectives ([3660ebd](https://github.com/mctlhq/mctl-academy/commit/3660ebd1d23c58b49f08d6e9e521ede89a9c8d52))
+* **replenish:** bind unscoped runs to published courses and holds ([a7baf12](https://github.com/mctlhq/mctl-academy/commit/a7baf12127bec10273b3696c9247ea1d2b031a7b))
+* **replenish:** enforce course and objective scope mechanically ([d906dbe](https://github.com/mctlhq/mctl-academy/commit/d906dbea10ab1d61ce5f499c6a90254195549a90))
+* **replenish:** enforce course and objective scope mechanically ([5969ceb](https://github.com/mctlhq/mctl-academy/commit/5969ceb03cc4455a7b8cd0d85c93012d8d3bcb39))
+* **replenish:** give the author an editorial preflight rubric ([9ed8b02](https://github.com/mctlhq/mctl-academy/commit/9ed8b023045f1cae7579780dc80f1b5913d95cb8))
+* **replenish:** give the author an editorial preflight rubric ([d9e045b](https://github.com/mctlhq/mctl-academy/commit/d9e045beb4a699fbabf3320bd2ffd18e6fd36187))
+
+
+### Bug Fixes
+
+* **client:** clarify mock exam navigator state ([8ea5416](https://github.com/mctlhq/mctl-academy/commit/8ea54168fa110a601a1c474b591948454d4c40da))
+* **client:** drop the default fieldset frame on mock options ([afa3e99](https://github.com/mctlhq/mctl-academy/commit/afa3e99181c6009ad27c4a8c36b020f3ba7ac718))
+* **client:** give the phone course switcher the header's spare room ([230b2dc](https://github.com/mctlhq/mctl-academy/commit/230b2dcf251266d74cf30c4f83013b5d45f9664f))
+* **client:** keep the footer at every width, drop layout hacks ([401a9b9](https://github.com/mctlhq/mctl-academy/commit/401a9b9a5eb1e14830b66976fdbd47d01baea9d2))
+* **client:** keep the M mark brand a 44px target ([5437e67](https://github.com/mctlhq/mctl-academy/commit/5437e67a7eacf6f7da88955fc112d94155b31fe0))
+* **client:** show a chevron on the phone mock navigator ([0cd76f5](https://github.com/mctlhq/mctl-academy/commit/0cd76f52aa3b0976fccd528b58ad008f0f7b4cf7))
+* **client:** show a chevron on the phone mock navigator ([c90bbf9](https://github.com/mctlhq/mctl-academy/commit/c90bbf98d64619367630f9bbf8d927e750df03b1))
+* **client:** show the brand as its M mark on phones ([a52845f](https://github.com/mctlhq/mctl-academy/commit/a52845fe1a3527674de9b19e18214a4053d2f018))
+* **client:** sync course switcher with course pages ([13117d4](https://github.com/mctlhq/mctl-academy/commit/13117d424686edbb49eeeb2791aadc985fa02d76))
+* **client:** sync course switcher with course pages ([8fc43bd](https://github.com/mctlhq/mctl-academy/commit/8fc43bd67cc048b7063accf68e839ee09b2e8053))
+* **client:** U4 UI polish for mock exam, links and footer ([f2d7430](https://github.com/mctlhq/mctl-academy/commit/f2d7430053fe7f45eafe4c073486987892ac0a44))
+* **content-quality:** count percentages, scope reuse to candidates ([fd560e0](https://github.com/mctlhq/mctl-academy/commit/fd560e0f13e823297a29168cd739f3bf6d3a80ce))
+* **content-quality:** per-course excerpt reuse, after-state metrics ([d50ca1b](https://github.com/mctlhq/mctl-academy/commit/d50ca1b318c179f2adea9637ba577a078ecfc76b))
+* **content:** match vendor names with marks or possessives attached ([8ffc70f](https://github.com/mctlhq/mctl-academy/commit/8ffc70f06d13fd5158b456c480edc1b5d9c67fcf))
+* **drift:** capture stderr so the red step lists unreadable sources ([cbd7f43](https://github.com/mctlhq/mctl-academy/commit/cbd7f43b5dec2a4c0bfa3f55c497990e0a1f14ba))
+* **drift:** mark 404 pages deprecated; quarantine despite unreadable ([98056a5](https://github.com/mctlhq/mctl-academy/commit/98056a54eb12e01556d24e4d2755550d3b6fc488))
+* **drift:** mark 404 pages deprecated; quarantine despite unreadable ([c0acebf](https://github.com/mctlhq/mctl-academy/commit/c0acebfc2999a3b9f463c21b481d868318e07165))
+* **drift:** skip deprecated sources in the live check ([4e7e771](https://github.com/mctlhq/mctl-academy/commit/4e7e771d058cd04fa9bb99249b564ba5a93e2c1b))
+* **replenish:** judge both sides of a rename in the author guard ([dbd2ea7](https://github.com/mctlhq/mctl-academy/commit/dbd2ea7072ded439da17af7f7f2b6c406c1df7d6))
+* **replenish:** judge both sides of a rename in the author guard ([b2f7afb](https://github.com/mctlhq/mctl-academy/commit/b2f7afbe30696b1f60370da1e4c9181c68eda291))
+* **replenish:** make the length rule chance-level, not absolute ([1fc6116](https://github.com/mctlhq/mctl-academy/commit/1fc6116799dec8474d47b999f4de86e1a68a9b3e))
+* **replenish:** treat correct-longest as a batch signal in preflight ([ff1d1dd](https://github.com/mctlhq/mctl-academy/commit/ff1d1ddf3dd55d512059085d94933f77ec5b0a72))
+* **server:** make SPA fallback tests independent of client/dist ([8825748](https://github.com/mctlhq/mctl-academy/commit/8825748174d486b4d1e582f54093c2d526084601))
+* **server:** make SPA fallback tests independent of client/dist ([7791d51](https://github.com/mctlhq/mctl-academy/commit/7791d51dd3e3d2cd151e9a96878af1e413743bf0))
+* **server:** return 404 for unknown paths and render course meta ([86c0ac3](https://github.com/mctlhq/mctl-academy/commit/86c0ac33c1c3e081e468124402b300b1ebcc2e2a))
+* **server:** return 404 for unknown paths and render course meta ([2417c67](https://github.com/mctlhq/mctl-academy/commit/2417c6793bbe86b2e0d32509d5b129e43e812dc6))
+
+
+### Content
+
+* **quarantine:** auto-quarantine drifted sources and rebuild bundle ([89e5f04](https://github.com/mctlhq/mctl-academy/commit/89e5f04ffbc6bc9ec903a1581d8ac5e2f8c756f3))
+
 ## [0.1.77](https://github.com/mctlhq/mctl-academy/compare/0.1.76...0.1.77) (2026-11-10)
 
 
