@@ -1,0 +1,55 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T16:01:31Z",
+  "questions": [
+    {
+      "id": "q-8d2f6b9a4e17",
+      "content_sha256": "d4de57ff0277f3e367844581eed747fc54148b3b7bb6dbac7ecf090ee6c981a3",
+      "approved": true,
+      "reason": "The captured tip is verbatim and decisive: \"For resilience against preemption or lost capacity, design your workload to be resumable, for example, write and resume from checkpoints, and resubmit the job rather than relying on automatic restarts.\" The page also falsifies each distractor, since the restart policy \"responds only to the container's own exit code\" and \"Automatic restarts aren't available for Serverless AI endpoints.\"",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    },
+    {
+      "id": "q-97c4f1a3e8b5",
+      "content_sha256": "5f25dd4ab328c2e2855dc6ffc522b836ac563c1681e1b352aa59f0c8b00367f7",
+      "approved": true,
+      "reason": "The excerpt appears verbatim and, read with the sentence preceding it in the same paragraph (\"When you create a symmetric key, you can configure a rotation period to rotate key material periodically\"), establishes that a rotation period refreshes material while \"you continue using the same key resource.\" No distractor survives that sentence: it names a scheduled option and keeps the resource identity.",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    },
+    {
+      "id": "q-b96e3a1f7c42",
+      "content_sha256": "a945eeac7edf586be5b2ff659759d9123e44dc075dbdb882a6ef4842d6e90efa",
+      "approved": true,
+      "reason": "The excerpt is verbatim and its continuation on the page is decisive: worker nodes use the saved image \"without repeated downloads of the same data from the registry,\" and the next paragraph says \"You can disable this default behavior\" with an empty --container-image-save value. The relocation distractor describes the separate path-valued form of the same parameter, not the disabled form the stem specifies.",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    },
+    {
+      "id": "q-c1a7f3d9e526",
+      "content_sha256": "00354d67cba779e3b3393ef1189b19f7b0c787c8f828b5b53f1827ea9f504a40",
+      "approved": true,
+      "reason": "The cited note is verbatim and answers the stem directly: \"You can deploy each application in a project once. To deploy an application again, delete its previous deployment first.\" The limit is per project, so adding a cluster does not help, and the page describes no in-place reconfiguration path.",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    },
+    {
+      "id": "q-d4f8a21c93b6",
+      "content_sha256": "bd2d2fe9f5789dd5e972088d90746835ae25942ee1670ed6f08d2e336731c9ec",
+      "approved": true,
+      "reason": "The excerpt is verbatim in the \"Disks in Compute\" list: \"**Network SSD**: Encryption is enabled by default at the infrastructure level and can't be disabled.\" The same list makes the alternatives worse — Non-replicated encryption \"is optional,\" Local SSD disks \"are not encrypted,\" and WEKA encryption must be enabled at creation with no later conversion.",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    },
+    {
+      "id": "q-e71c4a9f2d85",
+      "content_sha256": "7c4bd586b591e340a4608c68668674562fec2d2e13d000df5e2d4c46678b42c4",
+      "approved": true,
+      "reason": "Both excerpts are verbatim in one paragraph and settle the item: \"A budget does not stop or cap your usage. ... To limit usage, you can request a quota decrease.\" Thresholds, period and recipients are described only as controlling alerting and tracking, so no distractor is defensible.",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    },
+    {
+      "id": "q-f29b6e4a1c83",
+      "content_sha256": "9f79cadd88834956d926df48db3c18b17ef9da43eeb55b33f12887372edefef8",
+      "approved": true,
+      "reason": "The default routing rule is verbatim: \"Traffic from one resource in a network to another is always routed within that network, ignoring routes from default and custom routing tables,\" followed by \"You cannot modify this behavior, bypass it by using custom routes or disable it\" — which is exactly the durability the stem asks for. The empty-table distractor is contradicted by the page, where such resources \"can only communicate with other resources within their network.\"",
+      "reviewed_at": "2026-11-14T16:01:31Z"
+    }
+  ]
+}

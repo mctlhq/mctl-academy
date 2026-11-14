@@ -1813,6 +1813,52 @@
     ]
   },
   {
+    "id": "q-8d2f6b9a4e17",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/ie-checkpoint-restart",
+    "stem": "A training workload runs as a Serverless AI job with the restart policy set to on-failure. The underlying preemptible VM is reclaimed mid-run, and the job moves to the ERROR status without restarting automatically. What should the team have done so this failure is recoverable?",
+    "objectiveTitle": "Saving checkpoints and resuming interrupted training runs",
+    "sources": [
+      {
+        "title": "Automatic job restarts",
+        "url": "https://docs.nebius.com/serverless/jobs/auto-restarts.md",
+        "excerpt": "design your workload to be resumable, for example, write and resume from checkpoints, and resubmit the job rather than relying on automatic restarts"
+      },
+      {
+        "title": "Automatic job restarts",
+        "url": "https://docs.nebius.com/serverless/jobs/auto-restarts.md",
+        "excerpt": "The restart policy responds only to the container's own exit code. It doesn't recover from:"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Design the workload to write and resume from checkpoints, then resubmit the job after a preemption instead of relying on the restart policy",
+        "correct": true,
+        "explanation": "Correct. The documentation recommends designing a workload to be resumable, for example by writing and resuming from checkpoints, and resubmitting the job for resilience against preemption or lost capacity."
+      },
+      {
+        "id": "b",
+        "text": "Increase the number of restart attempts configured on the job, since a higher restart-attempts value also covers preemption and lost capacity",
+        "correct": false,
+        "explanation": "The restart policy responds only to the container's own exit code; the documentation lists preemption and no available capacity at start as cases it doesn't recover from, regardless of the configured number of attempts."
+      },
+      {
+        "id": "c",
+        "text": "Turn off automatic restarts entirely so the job runs once without retrying, since that removes any effect the restart policy could have during a preemption",
+        "correct": false,
+        "explanation": "The restart policy's value doesn't change what preemption does to the underlying VM; the documentation describes preemption as a case that neither restart policy value recovers from automatically."
+      },
+      {
+        "id": "d",
+        "text": "Run the workload on a Serverless AI endpoint instead of a job, since endpoints support automatic restarts that jobs don't",
+        "correct": false,
+        "explanation": "The documentation says the opposite: automatic restarts aren't available for Serverless AI endpoints, so moving the workload to an endpoint would remove the restart capability jobs already have."
+      }
+    ]
+  },
+  {
     "id": "q-8e4f1a6c9b32",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -1891,6 +1937,47 @@
         "text": "It is not deleted automatically when the cluster is deleted",
         "correct": true,
         "explanation": "Correct. The quickstart states the bucket created for the cluster's logs and metrics is not deleted automatically when the cluster is deleted."
+      }
+    ]
+  },
+  {
+    "id": "q-97c4f1a3e8b5",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/ie-rbac-key-rotation",
+    "stem": "A platform team wants a KMS symmetric key's cryptographic material refreshed on a recurring schedule, without having to re-grant the IAM roles that were already assigned to that key resource each time. What should they configure?",
+    "objectiveTitle": "Role-based access for several teams and rotating credentials and keys",
+    "sources": [
+      {
+        "title": "How to rotate symmetric keys in Key Management Service",
+        "url": "https://docs.nebius.com/kms/manage/rotate.md",
+        "excerpt": "Rotation helps you refresh the cryptographic material behind the key and create a new key version while you continue using the same key resource."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A rotation period set when creating the symmetric key, so Nebius KMS rotates the key material periodically while the key resource stays the same",
+        "correct": true,
+        "explanation": "Correct. The documentation states that rotation creates a new key version while you continue using the same key resource, and that you can configure a rotation period when you create the key for this to happen periodically."
+      },
+      {
+        "id": "b",
+        "text": "A new symmetric key resource created on the same schedule, then moving the retiring key's IAM role assignments to the new resource each time",
+        "correct": false,
+        "explanation": "The documentation describes rotation as keeping the same key resource and only creating a new key version; replacing the resource itself and re-assigning roles is the manual workaround a rotation period is meant to avoid."
+      },
+      {
+        "id": "c",
+        "text": "Manual rotation performed from the web console each time the material needs refreshing, since the documentation does not describe any scheduled option",
+        "correct": false,
+        "explanation": "The documentation does describe a scheduled option: a rotation period configured when the key is created, in addition to rotating the key manually."
+      },
+      {
+        "id": "d",
+        "text": "Deleting the symmetric key and recreating it under the same name, so the new resource inherits the original's role assignments automatically",
+        "correct": false,
+        "explanation": "Deleting and recreating the key produces a new key resource; the documentation describes rotation as creating a new key version of the same resource, not deleting and remaking the resource."
       }
     ]
   },
@@ -3088,6 +3175,47 @@
     ]
   },
   {
+    "id": "q-b96e3a1f7c42",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/ie-training-images",
+    "stem": "A Soperator cluster's worker nodes all run the same training job and pull the container image from a container registry. A platform engineer considers turning off the cluster's default image-caching behavior to save disk space on the shared filesystem. What would disabling that default behavior change?",
+    "objectiveTitle": "Reproducible container and node images for training jobs",
+    "sources": [
+      {
+        "title": "Running jobs in containers by using Enroot and Pyxis",
+        "url": "https://docs.nebius.com/slurm-soperator/jobs/containers/pyxis-enroot.md",
+        "excerpt": "a container image is first pulled from the registry, then saved to the cluster's shared filesystem. Next, all worker nodes can use this image"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Turning it off makes every worker node download the image from the registry itself, instead of reusing one shared copy already pulled for the job",
+        "correct": true,
+        "explanation": "Correct. By default a registry image is pulled once and saved to the cluster's shared filesystem so every worker reuses it; the documentation describes disabling that save as removing the shared copy, which makes each worker pull the image from the registry itself."
+      },
+      {
+        "id": "b",
+        "text": "Turning it off relocates where the cached copy is stored inside the shared filesystem, while the pulled image stays cached as before",
+        "correct": false,
+        "explanation": "The documentation describes the same setting either disabling the save entirely or, with a path value, choosing where the saved copy sits in the filesystem -- turning the save off removes the shared copy rather than just relocating it."
+      },
+      {
+        "id": "c",
+        "text": "Turning it off has no effect, since container images for registry-based jobs are not cached on this cluster regardless of configuration",
+        "correct": false,
+        "explanation": "The documentation describes saving the pulled image to the cluster's shared filesystem as the default behavior for registry-based jobs; this option contradicts that default rather than describing an alternative to it."
+      },
+      {
+        "id": "d",
+        "text": "Turning it off changes how the cluster authenticates to the registry, rather than whether the pulled image is shared across workers",
+        "correct": false,
+        "explanation": "Registry authentication is configured separately through credentials for the registry; disabling the save setting changes whether the pulled image is shared across workers, not how the cluster authenticates to pull it."
+      }
+    ]
+  },
+  {
     "id": "q-bc01b0c1d2e3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-4",
@@ -3166,6 +3294,47 @@
         "text": "Research, since it is for a finished, multi-source answer with citations",
         "correct": true,
         "explanation": "Correct. The guide states to use Research for exactly this: a finished, multi-source answer with citations."
+      }
+    ]
+  },
+  {
+    "id": "q-c1a7f3d9e526",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-marketplace-apps",
+    "stem": "A platform team already deployed a marketplace application in a project and now wants to deploy it again in the same project with different settings. What must they do first?",
+    "objectiveTitle": "Deploying and configuring prebuilt applications for ML workflows",
+    "sources": [
+      {
+        "title": "Deploying applications in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/applications/deploy.md",
+        "excerpt": "You can deploy each application in a project once. To deploy an application again, delete its previous deployment first."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete the application's existing deployment in that project, then deploy it again with the new settings",
+        "correct": true,
+        "explanation": "Correct. The documentation states you can deploy each application in a project once, and to deploy it again you must delete its previous deployment first."
+      },
+      {
+        "id": "b",
+        "text": "Create a second Managed Kubernetes cluster in the same project and deploy the application there instead",
+        "correct": false,
+        "explanation": "The documentation's per-project, per-deployment limit is about the application deployment itself, not about how many clusters exist; adding a cluster doesn't let the same application deploy a second time in the project without first removing the existing deployment."
+      },
+      {
+        "id": "c",
+        "text": "Mark the application's stage as in preview before redeploying, since in-preview applications can be deployed more than once per project",
+        "correct": false,
+        "explanation": "The documentation ties the preview and generally-available stages to testing and feedback versus production use and charges, not to how many times an application can be deployed in a project."
+      },
+      {
+        "id": "d",
+        "text": "Open the existing deployment's configuration and edit its settings directly, since Applications supports in-place reconfiguration without a new deployment",
+        "correct": false,
+        "explanation": "The documentation describes finding, configuring and deploying an application through Deploy on cluster and Deploy application; it does not describe an in-place reconfiguration path for an existing deployment."
       }
     ]
   },
@@ -5332,6 +5501,47 @@
     ]
   },
   {
+    "id": "q-d4f8a21c93b6",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/ie-encryption-secrets",
+    "stem": "A platform team needs a Compute disk for scratch training data where infrastructure-level encryption is active by default and can't be turned off by a later configuration change. Which disk type meets this requirement?",
+    "objectiveTitle": "Encrypting data at rest and keeping secrets out of workloads",
+    "sources": [
+      {
+        "title": "Encryption in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/security/encryption.md",
+        "excerpt": "**Network SSD**: Encryption is enabled by default at the infrastructure level and can't be disabled."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Network SSD disks, whose infrastructure-level encryption is enabled by default and can't be disabled",
+        "correct": true,
+        "explanation": "Correct. The documentation states that Network SSD is encrypted by default at the infrastructure level and that this can't be disabled."
+      },
+      {
+        "id": "b",
+        "text": "Network SSD Non-replicated disks, since enabling encryption when the disk is created turns it on at the infrastructure level by default",
+        "correct": false,
+        "explanation": "Network SSD Non-replicated encryption is optional at creation, not active by default -- the opposite of what this requirement needs, even though enabling it does turn on service- and infrastructure-level encryption for that disk."
+      },
+      {
+        "id": "c",
+        "text": "Local SSD disks, since the same infrastructure-level encryption used for Network SSD disks also covers local storage",
+        "correct": false,
+        "explanation": "The documentation states that Local SSD disks are not encrypted and that no other data protection method is applied to them; protecting their data is the customer's responsibility."
+      },
+      {
+        "id": "d",
+        "text": "WEKA filesystems, since WEKA encryption remains optional after creation and can be enabled at any time",
+        "correct": false,
+        "explanation": "WEKA filesystem encryption must be explicitly enabled at creation time, and a WEKA filesystem can't be converted to an encrypted one later -- the opposite of staying optional indefinitely."
+      }
+    ]
+  },
+  {
     "id": "q-d4f8a2c6e193",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -6207,6 +6417,52 @@
     ]
   },
   {
+    "id": "q-e71c4a9f2d85",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/ie-billing-quotas",
+    "stem": "A team sets a budget alert threshold at their full monthly GPU spending amount, expecting the alert to stop further GPU usage once spending reaches that point. After the alert fires, GPU usage keeps running and spending keeps climbing. What should the team do to actually cap further GPU spending?",
+    "objectiveTitle": "Tracking spend, budgets and quotas for GPU capacity",
+    "sources": [
+      {
+        "title": "Budgets in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/signup-billing/budgets.md",
+        "excerpt": "A budget does not stop or cap your usage."
+      },
+      {
+        "title": "Budgets in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/signup-billing/budgets.md",
+        "excerpt": "To limit usage, you can [request a quota decrease](https://docs.nebius.com/overview/quotas.md)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Request a quota decrease for the GPU resource, since a budget alerts on spending but does not stop or cap usage by itself",
+        "correct": true,
+        "explanation": "Correct. The documentation states that a budget does not stop or cap usage, and that to limit usage you can request a quota decrease."
+      },
+      {
+        "id": "b",
+        "text": "Lower the budget's alert threshold to an earlier point in the spending curve, since an earlier threshold is what stops usage once it is crossed",
+        "correct": false,
+        "explanation": "An earlier threshold only makes the alert email arrive sooner in the spending curve; the documentation describes thresholds as triggering alerts, not as a mechanism that stops usage."
+      },
+      {
+        "id": "c",
+        "text": "Switch the budget's time period from monthly to daily, since a shorter tracking period enforces a hard cap on usage",
+        "correct": false,
+        "explanation": "The time period only controls when the budget's tracked spending resets for the next period; the documentation does not describe any period as enforcing a usage cap."
+      },
+      {
+        "id": "d",
+        "text": "Add more recipients to the budget's alert notifications, since more recipients catch overspending sooner and stop it",
+        "correct": false,
+        "explanation": "Notification recipients only receive the alert email; the documentation describes a budget with no recipients as still tracking usage, which shows recipients affect who is notified, not whether usage is capped."
+      }
+    ]
+  },
+  {
     "id": "q-e8d4b2a7f619",
     "course_id": "agentic-web-search",
     "domain": "domain-1",
@@ -6792,6 +7048,47 @@
         "text": "Setting up a third-party framework integration",
         "correct": false,
         "explanation": "Framework integrations extend capabilities for building applications; they are not what the guide names as the authentication step."
+      }
+    ]
+  },
+  {
+    "id": "q-f29b6e4a1c83",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/ie-multicluster-networking",
+    "stem": "A platform team wants traffic between two Compute VMs that sit in the same Nebius AI Cloud network to keep working even after they later edit that network's custom routing tables. What should they rely on for that connectivity?",
+    "objectiveTitle": "Connecting networks, clusters and private endpoints",
+    "sources": [
+      {
+        "title": "Routing in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/vpc/routing/overview.md",
+        "excerpt": "Traffic from one resource in a network to another is always routed within that network, ignoring routes from default and custom routing tables."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The network's built-in behavior that routes traffic between two resources in the same network directly, bypassing both default and custom routing tables",
+        "correct": true,
+        "explanation": "Correct. The documentation states that traffic between resources in the same network is always routed within that network, ignoring both default and custom routing tables, and that this behavior cannot be modified, bypassed, or disabled."
+      },
+      {
+        "id": "b",
+        "text": "Keeping the default routing table's route for all internet-bound traffic pointed at the default egress gateway, since that route governs how every resource in the network is reached",
+        "correct": false,
+        "explanation": "That route only governs traffic to public IP addresses leaving the network through the default egress gateway; it has no effect on how traffic between two resources inside the same network is routed."
+      },
+      {
+        "id": "c",
+        "text": "A custom routing table with an explicit route for the other VM's private IP address, assigned to both VMs' subnets",
+        "correct": false,
+        "explanation": "Custom routing tables are exactly what the documentation says intra-network traffic ignores; adding a route for the other VM's address would not change how that traffic is routed."
+      },
+      {
+        "id": "d",
+        "text": "Avoiding ever leaving either VM's subnet with an empty routing table, since the documentation ties an empty table to blocking all traffic, same-network traffic included",
+        "correct": false,
+        "explanation": "The documentation says resources in subnets with an empty routing table can still communicate with other resources in their own network; only traffic to addresses outside the network is discarded, so an empty table does not block same-network traffic."
       }
     ]
   },

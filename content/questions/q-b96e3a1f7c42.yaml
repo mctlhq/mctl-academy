@@ -1,32 +1,57 @@
 schema_version: 1
 id: q-b96e3a1f7c42
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-training-images
-stem: "A Soperator cluster's worker nodes all run the same training job and pull the container image from a container registry. A platform engineer considers turning off the cluster's default image-caching behavior to save disk space on the shared filesystem. What would disabling that default behavior change?"
+stem: "A Soperator cluster's worker nodes all run the same training job and pull
+  the container image from a container registry. A platform engineer considers
+  turning off the cluster's default image-caching behavior to save disk space on
+  the shared filesystem. What would disabling that default behavior change?"
 options:
   - id: a
-    text: "Turning it off makes every worker node download the image from the registry itself, instead of reusing one shared copy already pulled for the job"
+    text: "Turning it off makes every worker node download the image from the
+      registry itself, instead of reusing one shared copy already pulled for the
+      job"
     correct: true
-    explanation: "Correct. By default a registry image is pulled once and saved to the cluster's shared filesystem so every worker reuses it; the documentation describes disabling that save as removing the shared copy, which makes each worker pull the image from the registry itself."
+    explanation: "Correct. By default a registry image is pulled once and saved to
+      the cluster's shared filesystem so every worker reuses it; the
+      documentation describes disabling that save as removing the shared copy,
+      which makes each worker pull the image from the registry itself."
   - id: b
-    text: "Turning it off relocates where the cached copy is stored inside the shared filesystem, while the pulled image stays cached as before"
+    text: "Turning it off relocates where the cached copy is stored inside the
+      shared filesystem, while the pulled image stays cached as before"
     correct: false
-    explanation: "The documentation describes the same setting either disabling the save entirely or, with a path value, choosing where the saved copy sits in the filesystem -- turning the save off removes the shared copy rather than just relocating it."
+    explanation: "The documentation describes the same setting either disabling the
+      save entirely or, with a path value, choosing where the saved copy sits in
+      the filesystem -- turning the save off removes the shared copy rather than
+      just relocating it."
   - id: c
-    text: "Turning it off has no effect, since container images for registry-based jobs are not cached on this cluster regardless of configuration"
+    text: "Turning it off has no effect, since container images for registry-based
+      jobs are not cached on this cluster regardless of configuration"
     correct: false
-    explanation: "The documentation describes saving the pulled image to the cluster's shared filesystem as the default behavior for registry-based jobs; this option contradicts that default rather than describing an alternative to it."
+    explanation: "The documentation describes saving the pulled image to the
+      cluster's shared filesystem as the default behavior for registry-based
+      jobs; this option contradicts that default rather than describing an
+      alternative to it."
   - id: d
-    text: "Turning it off changes how the cluster authenticates to the registry, rather than whether the pulled image is shared across workers"
+    text: "Turning it off changes how the cluster authenticates to the registry,
+      rather than whether the pulled image is shared across workers"
     correct: false
-    explanation: "Registry authentication is configured separately through credentials for the registry; disabling the save setting changes whether the pulled image is shared across workers, not how the cluster authenticates to pull it."
+    explanation: "Registry authentication is configured separately through
+      credentials for the registry; disabling the save setting changes whether
+      the pulled image is shared across workers, not how the cluster
+      authenticates to pull it."
 evidence:
   - source_id: src-nb-slurm-soperator-jobs-containers-pyxis-enroot
     source_sha256: 47b6d22e676b896195575e4d59084438c33a97c3ed81c2657f0f732938b5f2fc
-    excerpt: "a container image is first pulled from the registry, then saved to the cluster's shared filesystem. Next, all worker nodes can use this image"
+    excerpt: "a container image is first pulled from the registry, then saved to the
+      cluster's shared filesystem. Next, all worker nodes can use this image"
     locator: "How to run a job for a container registry image"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T15:41:54Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:01:31Z
+  content_sha256: a945eeac7edf586be5b2ff659759d9123e44dc075dbdb882a6ef4842d6e90efa

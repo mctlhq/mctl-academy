@@ -1,32 +1,58 @@
 schema_version: 1
 id: q-f29b6e4a1c83
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/ie-multicluster-networking
-stem: "A platform team wants traffic between two Compute VMs that sit in the same Nebius AI Cloud network to keep working even after they later edit that network's custom routing tables. What should they rely on for that connectivity?"
+stem: "A platform team wants traffic between two Compute VMs that sit in the
+  same Nebius AI Cloud network to keep working even after they later edit that
+  network's custom routing tables. What should they rely on for that
+  connectivity?"
 options:
   - id: a
-    text: "The network's built-in behavior that routes traffic between two resources in the same network directly, bypassing both default and custom routing tables"
+    text: "The network's built-in behavior that routes traffic between two resources
+      in the same network directly, bypassing both default and custom routing
+      tables"
     correct: true
-    explanation: "Correct. The documentation states that traffic between resources in the same network is always routed within that network, ignoring both default and custom routing tables, and that this behavior cannot be modified, bypassed, or disabled."
+    explanation: "Correct. The documentation states that traffic between resources
+      in the same network is always routed within that network, ignoring both
+      default and custom routing tables, and that this behavior cannot be
+      modified, bypassed, or disabled."
   - id: b
-    text: "Keeping the default routing table's route for all internet-bound traffic pointed at the default egress gateway, since that route governs how every resource in the network is reached"
+    text: "Keeping the default routing table's route for all internet-bound traffic
+      pointed at the default egress gateway, since that route governs how every
+      resource in the network is reached"
     correct: false
-    explanation: "That route only governs traffic to public IP addresses leaving the network through the default egress gateway; it has no effect on how traffic between two resources inside the same network is routed."
+    explanation: "That route only governs traffic to public IP addresses leaving the
+      network through the default egress gateway; it has no effect on how
+      traffic between two resources inside the same network is routed."
   - id: c
-    text: "A custom routing table with an explicit route for the other VM's private IP address, assigned to both VMs' subnets"
+    text: "A custom routing table with an explicit route for the other VM's private
+      IP address, assigned to both VMs' subnets"
     correct: false
-    explanation: "Custom routing tables are exactly what the documentation says intra-network traffic ignores; adding a route for the other VM's address would not change how that traffic is routed."
+    explanation: "Custom routing tables are exactly what the documentation says
+      intra-network traffic ignores; adding a route for the other VM's address
+      would not change how that traffic is routed."
   - id: d
-    text: "Avoiding ever leaving either VM's subnet with an empty routing table, since the documentation ties an empty table to blocking all traffic, same-network traffic included"
+    text: "Avoiding ever leaving either VM's subnet with an empty routing table,
+      since the documentation ties an empty table to blocking all traffic,
+      same-network traffic included"
     correct: false
-    explanation: "The documentation says resources in subnets with an empty routing table can still communicate with other resources in their own network; only traffic to addresses outside the network is discarded, so an empty table does not block same-network traffic."
+    explanation: "The documentation says resources in subnets with an empty routing
+      table can still communicate with other resources in their own network;
+      only traffic to addresses outside the network is discarded, so an empty
+      table does not block same-network traffic."
 evidence:
   - source_id: src-nb-vpc-routing-overview
     source_sha256: c0c339106c30659473968c649b7e0a8e0fdd2cbd4e6626a05ed076a9f5599781
-    excerpt: "Traffic from one resource in a network to another is always routed within that network, ignoring routes from default and custom routing tables."
+    excerpt: "Traffic from one resource in a network to another is always routed
+      within that network, ignoring routes from default and custom routing
+      tables."
     locator: "Default routing rules"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T15:41:54Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:01:31Z
+  content_sha256: 9f79cadd88834956d926df48db3c18b17ef9da43eeb55b33f12887372edefef8

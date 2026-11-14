@@ -1,36 +1,60 @@
 schema_version: 1
 id: q-8d2f6b9a4e17
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-checkpoint-restart
-stem: "A training workload runs as a Serverless AI job with the restart policy set to on-failure. The underlying preemptible VM is reclaimed mid-run, and the job moves to the ERROR status without restarting automatically. What should the team have done so this failure is recoverable?"
+stem: "A training workload runs as a Serverless AI job with the restart policy
+  set to on-failure. The underlying preemptible VM is reclaimed mid-run, and the
+  job moves to the ERROR status without restarting automatically. What should
+  the team have done so this failure is recoverable?"
 options:
   - id: a
-    text: "Design the workload to write and resume from checkpoints, then resubmit the job after a preemption instead of relying on the restart policy"
+    text: "Design the workload to write and resume from checkpoints, then resubmit
+      the job after a preemption instead of relying on the restart policy"
     correct: true
-    explanation: "Correct. The documentation recommends designing a workload to be resumable, for example by writing and resuming from checkpoints, and resubmitting the job for resilience against preemption or lost capacity."
+    explanation: "Correct. The documentation recommends designing a workload to be
+      resumable, for example by writing and resuming from checkpoints, and
+      resubmitting the job for resilience against preemption or lost capacity."
   - id: b
-    text: "Increase the number of restart attempts configured on the job, since a higher restart-attempts value also covers preemption and lost capacity"
+    text: "Increase the number of restart attempts configured on the job, since a
+      higher restart-attempts value also covers preemption and lost capacity"
     correct: false
-    explanation: "The restart policy responds only to the container's own exit code; the documentation lists preemption and no available capacity at start as cases it doesn't recover from, regardless of the configured number of attempts."
+    explanation: "The restart policy responds only to the container's own exit code;
+      the documentation lists preemption and no available capacity at start as
+      cases it doesn't recover from, regardless of the configured number of
+      attempts."
   - id: c
-    text: "Turn off automatic restarts entirely so the job runs once without retrying, since that removes any effect the restart policy could have during a preemption"
+    text: "Turn off automatic restarts entirely so the job runs once without
+      retrying, since that removes any effect the restart policy could have
+      during a preemption"
     correct: false
-    explanation: "The restart policy's value doesn't change what preemption does to the underlying VM; the documentation describes preemption as a case that neither restart policy value recovers from automatically."
+    explanation: "The restart policy's value doesn't change what preemption does to
+      the underlying VM; the documentation describes preemption as a case that
+      neither restart policy value recovers from automatically."
   - id: d
-    text: "Run the workload on a Serverless AI endpoint instead of a job, since endpoints support automatic restarts that jobs don't"
+    text: "Run the workload on a Serverless AI endpoint instead of a job, since
+      endpoints support automatic restarts that jobs don't"
     correct: false
-    explanation: "The documentation says the opposite: automatic restarts aren't available for Serverless AI endpoints, so moving the workload to an endpoint would remove the restart capability jobs already have."
+    explanation: "The documentation says the opposite: automatic restarts aren't
+      available for Serverless AI endpoints, so moving the workload to an
+      endpoint would remove the restart capability jobs already have."
 evidence:
   - source_id: src-nb-serverless-jobs-auto-restarts
     source_sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
-    excerpt: "design your workload to be resumable, for example, write and resume from checkpoints, and resubmit the job rather than relying on automatic restarts"
+    excerpt: "design your workload to be resumable, for example, write and resume
+      from checkpoints, and resubmit the job rather than relying on automatic
+      restarts"
     locator: "When jobs aren't restarted, tip"
   - source_id: src-nb-serverless-jobs-auto-restarts
     source_sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
-    excerpt: "The restart policy responds only to the container's own exit code. It doesn't recover from:"
+    excerpt: "The restart policy responds only to the container's own exit code. It
+      doesn't recover from:"
     locator: "When jobs aren't restarted"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T15:41:54Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:01:31Z
+  content_sha256: d4de57ff0277f3e367844581eed747fc54148b3b7bb6dbac7ecf090ee6c981a3

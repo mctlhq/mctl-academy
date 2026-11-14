@@ -1,32 +1,57 @@
 schema_version: 1
 id: q-97c4f1a3e8b5
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ie-rbac-key-rotation
-stem: "A platform team wants a KMS symmetric key's cryptographic material refreshed on a recurring schedule, without having to re-grant the IAM roles that were already assigned to that key resource each time. What should they configure?"
+stem: "A platform team wants a KMS symmetric key's cryptographic material
+  refreshed on a recurring schedule, without having to re-grant the IAM roles
+  that were already assigned to that key resource each time. What should they
+  configure?"
 options:
   - id: a
-    text: "A rotation period set when creating the symmetric key, so Nebius KMS rotates the key material periodically while the key resource stays the same"
+    text: "A rotation period set when creating the symmetric key, so Nebius KMS
+      rotates the key material periodically while the key resource stays the
+      same"
     correct: true
-    explanation: "Correct. The documentation states that rotation creates a new key version while you continue using the same key resource, and that you can configure a rotation period when you create the key for this to happen periodically."
+    explanation: "Correct. The documentation states that rotation creates a new key
+      version while you continue using the same key resource, and that you can
+      configure a rotation period when you create the key for this to happen
+      periodically."
   - id: b
-    text: "A new symmetric key resource created on the same schedule, then moving the retiring key's IAM role assignments to the new resource each time"
+    text: "A new symmetric key resource created on the same schedule, then moving
+      the retiring key's IAM role assignments to the new resource each time"
     correct: false
-    explanation: "The documentation describes rotation as keeping the same key resource and only creating a new key version; replacing the resource itself and re-assigning roles is the manual workaround a rotation period is meant to avoid."
+    explanation: "The documentation describes rotation as keeping the same key
+      resource and only creating a new key version; replacing the resource
+      itself and re-assigning roles is the manual workaround a rotation period
+      is meant to avoid."
   - id: c
-    text: "Manual rotation performed from the web console each time the material needs refreshing, since the documentation does not describe any scheduled option"
+    text: "Manual rotation performed from the web console each time the material
+      needs refreshing, since the documentation does not describe any scheduled
+      option"
     correct: false
-    explanation: "The documentation does describe a scheduled option: a rotation period configured when the key is created, in addition to rotating the key manually."
+    explanation: "The documentation does describe a scheduled option: a rotation
+      period configured when the key is created, in addition to rotating the key
+      manually."
   - id: d
-    text: "Deleting the symmetric key and recreating it under the same name, so the new resource inherits the original's role assignments automatically"
+    text: "Deleting the symmetric key and recreating it under the same name, so the
+      new resource inherits the original's role assignments automatically"
     correct: false
-    explanation: "Deleting and recreating the key produces a new key resource; the documentation describes rotation as creating a new key version of the same resource, not deleting and remaking the resource."
+    explanation: "Deleting and recreating the key produces a new key resource; the
+      documentation describes rotation as creating a new key version of the same
+      resource, not deleting and remaking the resource."
 evidence:
   - source_id: src-nb-kms-manage-rotate
     source_sha256: 4101337ba2db3e85e134a82722e1ade50ee84e1fefe2ef5e220c3f437d7d2edd
-    excerpt: "Rotation helps you refresh the cryptographic material behind the key and create a new key version while you continue using the same key resource."
+    excerpt: "Rotation helps you refresh the cryptographic material behind the key
+      and create a new key version while you continue using the same key
+      resource."
     locator: "How to rotate symmetric keys in Key Management Service, intro"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T15:41:54Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:01:31Z
+  content_sha256: 5f25dd4ab328c2e2855dc6ffc522b836ac563c1681e1b352aa59f0c8b00367f7
