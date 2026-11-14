@@ -114,6 +114,44 @@
     }
   },
   {
+    "id": "ai-infrastructure-engineer",
+    "title": "AI Infrastructure Engineer",
+    "summary": "Run GPU platforms for training and inference: secure and budget them, keep training clusters and serving healthy, and automate operations for reliability.",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Security, compliance & billing",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-2",
+          "title": "Training platform engineering",
+          "weight": 35,
+          "mockQuestions": 10
+        },
+        {
+          "id": "domain-3",
+          "title": "Inference platform engineering",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-4",
+          "title": "Automation & platform reliability",
+          "weight": 25,
+          "mockQuestions": 8
+        }
+      ]
+    }
+  },
+  {
     "id": "ai-leader",
     "title": "AI Leader",
     "summary": "A business-first view of AI: core concepts, designing AI products, steering model outputs and choosing platform capabilities.",
@@ -147,6 +185,44 @@
           "title": "Platform Capabilities",
           "weight": 15,
           "mockQuestions": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "ai-solutions-architect",
+    "title": "AI Solutions Architect",
+    "summary": "Design AI workloads on a GPU cloud that perform, stay resilient, keep costs in check and isolate tenants and data securely.",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "High-performing architectures",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-2",
+          "title": "Resilient architectures",
+          "weight": 25,
+          "mockQuestions": 7
+        },
+        {
+          "id": "domain-3",
+          "title": "Efficient & cost-aware architectures",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-4",
+          "title": "Secure architectures",
+          "weight": 25,
+          "mockQuestions": 7
         }
       ]
     }
