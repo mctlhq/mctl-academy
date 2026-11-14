@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-f1a9c3e76b24
+status: review_ready
+domain: domain-1
+objective: domain-1/ie-identity-federation
+stem: "A workload running on a Nebius AI Cloud virtual machine needs to authenticate to an external platform that supports OIDC Discovery, without storing a long-lived credential for that platform. Which mechanism should it use?"
+options:
+  - id: a
+    text: "Exchange the workload's Nebius IAM access token for a signed ID token through Nebius STS, then send that token to the external platform"
+    correct: true
+    explanation: "Correct. The guide describes exactly this exchange: a Nebius access token is traded for a signed ID token via Nebius STS, which the workload then presents to the external system."
+  - id: b
+    text: "Generate an authorized key for the workload's Nebius service account, then send that key to the external platform"
+    correct: false
+    explanation: "An authorized key authenticates the workload to Nebius AI Cloud itself; sending it to an external platform would create the long-lived credential this scenario is trying to avoid."
+  - id: c
+    text: "Set up a VPN gateway between Nebius AI Cloud and the external platform's network"
+    correct: false
+    explanation: "A VPN gateway provides network connectivity between environments; it does not establish an identity trust relationship with an external platform."
+  - id: d
+    text: "Configure a SAML federation on the external platform to manage the workload's human user credentials"
+    correct: false
+    explanation: "SAML federation lets an external identity provider sign users into Nebius AI Cloud -- the opposite direction from a Nebius workload authenticating to an external platform."
+evidence:
+  - source_id: src-nb-iam-wif
+    source_sha256: 00c1d762c8752f89d44d7b58ca2b799048db5265d59b647f1336162903919d91
+    excerpt: "The workload exchanges its Nebius access token for a signed ID token through Nebius Security Token Service (STS)"
+    locator: "How it works"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:14:34Z"
+course_id: ai-infrastructure-engineer

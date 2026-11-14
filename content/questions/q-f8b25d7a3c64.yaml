@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-f8b25d7a3c64
+status: review_ready
+domain: domain-4
+objective: domain-4/ie-fabric-incidents
+stem: "While working through the documented CUDA initialization error remedies, an engineer finds that restarting the NVIDIA Fabric Manager service did not resolve the issue. The affected VM is a Managed Kubernetes node (its name starts with `mk8snodegroup`). What should the recovery procedure do next?"
+options:
+  - id: a
+    text: "Skip the GPU-restart step using `nvidia-smi -r` and proceed directly to restarting the whole VM"
+    correct: true
+    explanation: "Correct. The guide explicitly says to skip the GPU-restart step for Managed Kubernetes nodes and proceed to the next step, which is restarting the VM."
+  - id: b
+    text: "Run `sudo nvidia-smi -r` to restart the GPUs before restarting the VM, since that step precedes a VM restart for every affected VM"
+    correct: false
+    explanation: "The guide calls out an exception: if the VM's name starts with `mk8snodegroup`, skip the GPU-restart step entirely rather than running it before the VM restart."
+  - id: c
+    text: "Contact support immediately, since restarting the Fabric Manager service has already failed"
+    correct: false
+    explanation: "Contacting support is the documented fallback after restarting the VM has also failed to resolve the issue, not before trying that step."
+  - id: d
+    text: "Stop the `nebius_observability_agent` and `nvidia-dcgm.service` monitoring services and leave them stopped, since the node no longer needs monitoring"
+    correct: false
+    explanation: "Stopping those monitoring services is part of the GPU-restart procedure, which is the very step this Kubernetes node should skip; they are otherwise meant to keep running."
+evidence:
+  - source_id: src-co-cuda-init-error
+    source_sha256: 130af4b0cdd95ad68f4e041752448bd91f38142838f680fbd8045429015689ba
+    excerpt: "node (that is, its name starts with `mk8snodegroup`), skip this step and proceed to the next step."
+    locator: "Solutions, step 2: Restart the GPUs on the VM"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:14:34Z"
+course_id: ai-infrastructure-engineer

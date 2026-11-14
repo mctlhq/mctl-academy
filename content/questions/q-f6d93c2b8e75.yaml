@@ -1,0 +1,32 @@
+schema_version: 1
+id: q-f6d93c2b8e75
+status: review_ready
+domain: domain-3
+objective: domain-3/ie-serving-patterns
+stem: "An engineer runs a model behind a Serverless AI endpoint and plans to stop it overnight to save on compute costs, expecting any data the application wrote to the container disk at runtime to still be there when they restart it the next day. Is this expectation correct?"
+options:
+  - id: a
+    text: "No -- data on the container disk is removed when you stop or delete the endpoint, so anything written there must be persisted elsewhere first"
+    correct: true
+    explanation: "Correct. The documentation states that data on the container disk is removed when you stop or delete the endpoint, so it does not survive a stop."
+  - id: b
+    text: "Yes -- stopping an endpoint releases its computing resources, leaving the container disk and anything written to it untouched"
+    correct: false
+    explanation: "Stopping does release computing resources, but it also removes the container disk's data -- the two are not independent of each other for endpoints."
+  - id: c
+    text: "No -- but just once the endpoint is deleted; stopping it leaves the container disk and its contents intact"
+    correct: false
+    explanation: "The documentation does not limit this to deletion: stopping an endpoint removes container-disk data too, not just deleting it."
+  - id: d
+    text: "Yes -- because mounted Object Storage buckets and shared filesystems continue to be billed while stopped, which keeps the container disk's contents available too"
+    correct: false
+    explanation: "Mounted Object Storage buckets and shared filesystems are billed and persist separately from the endpoint's container disk, but that does not make the container disk itself persistent."
+evidence:
+  - source_id: src-pa-serverless-overview
+    source_sha256: b08e7ddb6f9d5aba59de97a7114e6c146f34425f641fac568447b3bf36d2328e
+    excerpt: "Data on the container disk is removed when you stop or delete the endpoint"
+    locator: "Devlabs, endpoints, and jobs (comparison table, Storage row)"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:14:34Z"
+course_id: ai-infrastructure-engineer
