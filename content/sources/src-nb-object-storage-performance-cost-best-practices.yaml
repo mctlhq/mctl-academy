@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-performance-cost-best-practices
+url: https://docs.nebius.com/object-storage/performance-cost-best-practices.md
+title: Performance and cost-efficiency best practices in Object Storage
+retrieved_at: 2026-11-14T09:58:03Z
+sha256: f5b16595404edabf846ab7d685e32d799b163327d3747152933b081b66a8619f
+objectives:
+  - domain-1/sa-storage-architecture
+snapshot:
+  bucket: academy-source-snapshots
+  key: f5b16595404edabf846ab7d685e32d799b163327d3747152933b081b66a8619f
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-storage-architecture

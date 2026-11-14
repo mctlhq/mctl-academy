@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-observability-dashboards
+url: https://docs.nebius.com/observability/dashboards.md
+title: Service dashboards
+retrieved_at: 2026-11-14T09:58:10Z
+sha256: 60428fa6749473edc5bf48aecff06b6fb6f2dde87fb8c9068e30abdc4b18861c
+objectives:
+  - domain-4/ie-observability-platform
+snapshot:
+  bucket: academy-source-snapshots
+  key: 60428fa6749473edc5bf48aecff06b6fb6f2dde87fb8c9068e30abdc4b18861c
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-observability-platform

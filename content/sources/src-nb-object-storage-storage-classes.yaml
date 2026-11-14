@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-object-storage-storage-classes
+url: https://docs.nebius.com/object-storage/storage-classes.md
+title: Storage classes in Object Storage
+retrieved_at: 2026-11-14T09:58:06Z
+sha256: eff6f3906aa7674e981eca8fb1b26005abcde73038c49a1088df1243b53afca6
+objectives:
+  - domain-1/sa-storage-architecture
+  - domain-3/sa-cost-tradeoffs
+snapshot:
+  bucket: academy-source-snapshots
+  key: eff6f3906aa7674e981eca8fb1b26005abcde73038c49a1088df1243b53afca6
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-storage-architecture
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-cost-tradeoffs

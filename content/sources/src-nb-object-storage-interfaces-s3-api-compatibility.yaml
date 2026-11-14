@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-interfaces-s3-api-compatibility
+url: https://docs.nebius.com/object-storage/interfaces/s3-api-compatibility.md
+title: Compatibility of Amazon S3 API with Object Storage
+retrieved_at: 2026-11-14T09:58:02Z
+sha256: 7d461d377670b1fb585452a6baadd66e72d40cf80b7ee421662e1530a9ed6d35
+objectives:
+  - domain-3/sa-multicloud-ingestion
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7d461d377670b1fb585452a6baadd66e72d40cf80b7ee421662e1530a9ed6d35
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-multicloud-ingestion
