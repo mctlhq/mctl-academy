@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-audit-logs-events-export
+url: https://docs.nebius.com/audit-logs/events/export.md
+title: How to export audit events to Object Storage
+retrieved_at: 2026-11-14T09:39:36Z
+sha256: bcbcc32bfee6cd990b269f009589c8d7b0a3436627667c59012b807f449a7048
+objectives:
+  - domain-4/sa-secrets-audit-compliance
+snapshot:
+  bucket: academy-source-snapshots
+  key: bcbcc32bfee6cd990b269f009589c8d7b0a3436627667c59012b807f449a7048
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-secrets-audit-compliance

@@ -1,0 +1,21 @@
+schema_version: 1
+id: src-nb-audit-logs-use-cases
+url: https://docs.nebius.com/audit-logs/use-cases.md
+title: When to use Audit Logs
+retrieved_at: 2026-11-14T09:39:37Z
+sha256: e0004fee953e301086a58d3540755b44b02ee02c5d54ec826b90e15b97660fdb
+objectives:
+  - domain-1/ie-compliance-residency
+  - domain-2/sa-observability-scope
+  - domain-4/sa-data-lifecycle-investigation
+snapshot:
+  bucket: academy-source-snapshots
+  key: e0004fee953e301086a58d3540755b44b02ee02c5d54ec826b90e15b97660fdb
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-compliance-residency
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-observability-scope
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-data-lifecycle-investigation

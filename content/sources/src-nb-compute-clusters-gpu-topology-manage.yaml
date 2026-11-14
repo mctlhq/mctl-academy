@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-clusters-gpu-topology-manage
+url: https://docs.nebius.com/compute/clusters/gpu/topology/manage.md
+title: Working with InfiniBand topology of a GPU cluster
+retrieved_at: 2026-11-14T09:39:42Z
+sha256: d21dbe706ced92875cac20741894e5993d17db1bad51acb4a14818a897423194
+objectives:
+  - domain-4/ie-fabric-incidents
+snapshot:
+  bucket: academy-source-snapshots
+  key: d21dbe706ced92875cac20741894e5993d17db1bad51acb4a14818a897423194
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-fabric-incidents

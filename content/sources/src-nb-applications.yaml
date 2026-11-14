@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-applications
+url: https://docs.nebius.com/applications/index.md
+title: Applications in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:39:34Z
+sha256: 149cced4831e4bc9cf0e063207199299f837f65a1cdbd9a4806d21e2083cec95
+objectives:
+  - domain-3/ie-marketplace-apps
+snapshot:
+  bucket: academy-source-snapshots
+  key: 149cced4831e4bc9cf0e063207199299f837f65a1cdbd9a4806d21e2083cec95
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-marketplace-apps
