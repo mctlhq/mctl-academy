@@ -29,8 +29,8 @@ describe("progressStore service", () => {
   it("stores and retrieves question attempts", () => {
     expect(getStoredAttempts()).toEqual([]);
 
-    recordAttempt("q-1", "domain-1", true);
-    recordAttempt("q-2", "domain-1", false);
+    recordAttempt("q-1", "domain-1", true, "a");
+    recordAttempt("q-2", "domain-1", false, "b");
 
     const attempts = getStoredAttempts();
     expect(attempts).toHaveLength(2);
@@ -39,20 +39,20 @@ describe("progressStore service", () => {
   });
 
   it("identifies uncorrected mistakes", () => {
-    recordAttempt("q-1", "domain-1", false);
-    recordAttempt("q-2", "domain-2", true);
-    recordAttempt("q-3", "domain-3", false);
+    recordAttempt("q-1", "domain-1", false, "b");
+    recordAttempt("q-2", "domain-2", true, "a");
+    recordAttempt("q-3", "domain-3", false, "b");
 
     expect(getMistakeQuestionIds()).toEqual(["q-1", "q-3"]);
 
     // Correcting q-1 removes it from mistakes list
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
     expect(getMistakeQuestionIds()).toEqual(["q-3"]);
   });
 
   it("keeps prior attempts on a retry instead of erasing them (attempts are append-only)", () => {
-    recordAttempt("q-1", "domain-1", false);
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", false, "b");
+    recordAttempt("q-1", "domain-1", true, "a");
 
     const attempts = getStoredAttempts();
     expect(attempts).toHaveLength(2);
@@ -70,9 +70,9 @@ describe("progressStore service", () => {
       { id: "q-4", domain: "domain-2" },
     ];
 
-    recordAttempt("q-1", "domain-1", true);
-    recordAttempt("q-2", "domain-1", false);
-    recordAttempt("q-3", "domain-2", true);
+    recordAttempt("q-1", "domain-1", true, "a");
+    recordAttempt("q-2", "domain-1", false, "b");
+    recordAttempt("q-3", "domain-2", true, "a");
 
     const stats = calculateProgressStats(mockBundle);
 
@@ -104,10 +104,10 @@ describe("progressStore service", () => {
       { id: "q-2", domain: "domain-1" },
     ];
 
-    recordAttempt("q-1", "domain-1", true);
-    recordAttempt("q-2", "domain-1", false);
-    recordAttempt("other-course-q-1", "domain-1", false);
-    recordAttempt("other-course-q-2", "domain-2", false);
+    recordAttempt("q-1", "domain-1", true, "a");
+    recordAttempt("q-2", "domain-1", false, "b");
+    recordAttempt("other-course-q-1", "domain-1", false, "b");
+    recordAttempt("other-course-q-2", "domain-2", false, "b");
 
     const stats = calculateProgressStats(courseBundle);
 
@@ -144,7 +144,7 @@ describe("progressStore service", () => {
   });
 
   it("clears progress history", () => {
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
     expect(getStoredAttempts()).toHaveLength(1);
 
     clearProgress();
@@ -155,7 +155,7 @@ describe("progressStore service", () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);
 
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
     const result = await clearProgress();
 
     expect(fetchSpy).not.toHaveBeenCalled();
@@ -168,7 +168,7 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
     const result = await clearProgress();
 
     expect(fetchSpy).toHaveBeenCalledWith(
@@ -184,7 +184,7 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
     const result = await clearProgress();
 
     expect(result).toEqual({ serverCleared: false });
@@ -198,7 +198,7 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
     const result = await clearProgress();
 
     expect(result).toEqual({ serverCleared: false });
@@ -278,7 +278,7 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    recordAttempt("q-1", "domain-1", true); // fires the POST, not awaited
+    recordAttempt("q-1", "domain-1", true, "a"); // fires the POST, not awaited
 
     const clearPromise = clearProgress();
 
@@ -395,7 +395,7 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    recordAttempt("q-1", "domain-1", true); // first pending write
+    recordAttempt("q-1", "domain-1", true, "a"); // first pending write
 
     const clearPromise = clearProgress();
     await Promise.resolve();
@@ -405,7 +405,7 @@ describe("progressStore service", () => {
 
     // A second answer arrives while clearProgress() is still awaiting the
     // first write's snapshot.
-    recordAttempt("q-2", "domain-1", false);
+    recordAttempt("q-2", "domain-1", false, "b");
     resolveFirstPost({ ok: true });
 
     await vi.waitFor(() => expect(callOrder).toContain("POST-2-start"));
@@ -432,7 +432,7 @@ describe("progressStore service", () => {
     const clearing = clearProgress();
     await vi.waitFor(() => expect(resolveDelete).toBeTypeOf("function"));
 
-    recordAttempt("q-1", "domain-1", true); // answered while the DELETE is in flight
+    recordAttempt("q-1", "domain-1", true, "a"); // answered while the DELETE is in flight
     for (let i = 0; i < 5; i++) await Promise.resolve();
     expect(callOrder).toEqual(["DELETE"]);
 
@@ -456,10 +456,10 @@ describe("progressStore service", () => {
     setSyncEnabled(true);
     const first = clearProgress();
     await vi.waitFor(() => expect(deletes).toHaveLength(1));
-    recordAttempt("q-wiped", "domain-1", true);
+    recordAttempt("q-wiped", "domain-1", true, "a");
     const second = clearProgress(); // wipes q-wiped locally
     await vi.waitFor(() => expect(deletes).toHaveLength(2));
-    recordAttempt("q-other-account", "domain-1", true);
+    recordAttempt("q-other-account", "domain-1", true, "a");
     setSyncEnabled(true); // account change while the DELETEs are in flight
     deletes.forEach((resolve) => resolve({ ok: true }));
     await Promise.all([first, second]);
@@ -470,7 +470,7 @@ describe("progressStore service", () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);
 
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
 
     expect(fetchSpy).not.toHaveBeenCalled();
   });
@@ -480,13 +480,13 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    expect(() => recordAttempt("q-1", "domain-1", true)).not.toThrow();
+    expect(() => recordAttempt("q-1", "domain-1", true, "a")).not.toThrow();
 
     expect(fetchSpy).toHaveBeenCalledWith(
       "/api/attempts",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ questionId: "q-1", domain: "domain-1", correct: true }),
+        body: JSON.stringify({ questionId: "q-1", optionId: "a" }),
       }),
     );
 
@@ -503,11 +503,11 @@ describe("progressStore service", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     setSyncEnabled(true);
-    recordAttempt("q-1", "domain-1", true);
+    recordAttempt("q-1", "domain-1", true, "a");
 
     const [, init] = fetchSpy.mock.calls[0];
     const body = JSON.parse(init.body);
-    expect(Object.keys(body).sort()).toEqual(["correct", "domain", "questionId"]);
+    expect(Object.keys(body).sort()).toEqual(["optionId", "questionId"]);
     expect(body).not.toHaveProperty("courseId");
 
     // Nor is it kept locally, where a later sync would have to reconcile it.
@@ -515,7 +515,7 @@ describe("progressStore service", () => {
   });
 
   it("backfill posts carry no course association either", async () => {
-    recordAttempt("q-local-only", "domain-1", true);
+    recordAttempt("q-local-only", "domain-1", true, "a");
 
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) });
     vi.stubGlobal("fetch", fetchSpy);
@@ -525,15 +525,43 @@ describe("progressStore service", () => {
 
     const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
     expect(postCalls).toHaveLength(1);
-    expect(Object.keys(JSON.parse(postCalls[0][1].body)).sort()).toEqual(["correct", "domain", "questionId"]);
+    expect(Object.keys(JSON.parse(postCalls[0][1].body)).sort()).toEqual(["optionId", "questionId"]);
+  });
+
+  it("sends the chosen option, never a correctness boolean or domain (#208)", async () => {
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchSpy);
+    setSyncEnabled(true);
+    recordAttempt("q-1", "domain-1", false, "c");
+    recordAttempt("q-2", "domain-1", false, null); // a Mock exam question left unanswered
+
+    const bodies = fetchSpy.mock.calls.map(([, init]) => JSON.parse(String(init.body)));
+    expect(bodies).toEqual([
+      { questionId: "q-1", optionId: "c" },
+      { questionId: "q-2", optionId: null },
+    ]);
+  });
+
+  it("does not backfill a pre-#208 row that has no recorded option, and does not report it as a failure", async () => {
+    saveRawAttempts([
+      { questionId: "q-legacy", domain: "domain-1", correct: true, attemptedAt: "2026-09-01T00:00:00Z" },
+    ]);
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) });
+    vi.stubGlobal("fetch", fetchSpy);
+    setSyncEnabled(true);
+
+    expect(await syncFromServer()).toBe("synced");
+    expect(fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST")).toHaveLength(0);
+    // The row stays on this device: local progress is unchanged.
+    expect(getStoredAttempts()).toEqual([expect.objectContaining({ questionId: "q-legacy", correct: true })]);
   });
 
   it("syncFromServer reconciles local and server attempts without deleting either side's history", async () => {
     const older = "2024-01-01T00:00:00.000Z";
     const newer = "2024-06-01T00:00:00.000Z";
     saveRawAttempts([
-      { questionId: "q-local", domain: "domain-1", correct: true, attemptedAt: newer },
-      { questionId: "q-server-newer", domain: "domain-2", correct: false, attemptedAt: older },
+      { questionId: "q-local", domain: "domain-1", correct: true, attemptedAt: newer, optionId: "a" },
+      { questionId: "q-server-newer", domain: "domain-2", correct: false, attemptedAt: older, optionId: "b" },
     ]);
 
     const fetchSpy = vi.fn().mockResolvedValue({
@@ -573,14 +601,12 @@ describe("progressStore service", () => {
     // is the one questionId that must NOT be re-posted.
     const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
     expect(postCalls).toHaveLength(1);
-    expect(postCalls[0][1].body).toBe(
-      JSON.stringify({ questionId: "q-local", domain: "domain-1", correct: true }),
-    );
+    expect(postCalls[0][1].body).toBe(JSON.stringify({ questionId: "q-local", optionId: "a" }));
   });
 
   it("does not re-post a backfilled attempt forever when the local clock is skewed ahead of the server", async () => {
     // Local clock is skewed into the future relative to the server.
-    recordAttempt("q-skewed", "domain-1", true);
+    recordAttempt("q-skewed", "domain-1", true, "a");
     const [stored] = getStoredAttempts();
     const skewedFutureAttemptedAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
     saveRawAttempts([{ ...stored, attemptedAt: skewedFutureAttemptedAt }]);
@@ -622,7 +648,7 @@ describe("progressStore service", () => {
   });
 
   it("syncFromServer backfills local-only attempts the server did not already have", async () => {
-    recordAttempt("q-local-only", "domain-1", true);
+    recordAttempt("q-local-only", "domain-1", true, "a");
 
     const fetchSpy = vi.fn().mockResolvedValue({
       ok: true,
@@ -635,9 +661,7 @@ describe("progressStore service", () => {
 
     const postCalls = fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST");
     expect(postCalls).toHaveLength(1);
-    expect(postCalls[0][1].body).toBe(
-      JSON.stringify({ questionId: "q-local-only", domain: "domain-1", correct: true }),
-    );
+    expect(postCalls[0][1].body).toBe(JSON.stringify({ questionId: "q-local-only", optionId: "a" }));
   });
 
   describe("sync status", () => {
@@ -662,7 +686,7 @@ describe("progressStore service", () => {
     });
 
     it("reports failed when a backfill write is rejected", async () => {
-      recordAttempt("q-local", "domain-1", true);
+      recordAttempt("q-local", "domain-1", true, "a");
       vi.stubGlobal(
         "fetch",
         vi.fn((_url: string, init?: RequestInit) =>
@@ -679,7 +703,7 @@ describe("progressStore service", () => {
     });
 
     it("reports synced only after the read and every backfill write succeed", async () => {
-      recordAttempt("q-local", "domain-1", true);
+      recordAttempt("q-local", "domain-1", true, "a");
       vi.stubGlobal(
         "fetch",
         vi.fn((_url: string, init?: RequestInit) =>
@@ -717,7 +741,7 @@ describe("progressStore service", () => {
     });
 
     it("lets a clear that starts during backfill writes own the status", async () => {
-      recordAttempt("q-local", "domain-1", true);
+      recordAttempt("q-local", "domain-1", true, "a");
       let releasePost!: () => void;
       vi.stubGlobal(
         "fetch",
@@ -753,9 +777,9 @@ describe("progressStore service", () => {
         }),
       );
       setSyncEnabled(true);
-      recordAttempt("q-1", "domain-1", true); // POST in flight
+      recordAttempt("q-1", "domain-1", true, "a"); // POST in flight
       const clearing = clearProgress(); // waits for it
-      recordAttempt("q-2", "domain-1", false); // recorded after the local wipe; its POST fails
+      recordAttempt("q-2", "domain-1", false, "b"); // recorded after the local wipe; its POST fails
       releaseFirst();
       await clearing;
       expect(getStoredAttempts().map((a) => a.questionId)).toEqual(["q-2"]);
@@ -778,7 +802,7 @@ describe("progressStore service", () => {
       setSyncEnabled(true);
       const clearing = clearProgress();
       await vi.waitFor(() => expect(releaseDelete).toBeTypeOf("function"));
-      recordAttempt("q-1", "domain-1", true); // answered while the DELETE is in flight
+      recordAttempt("q-1", "domain-1", true, "a"); // answered while the DELETE is in flight
       releaseDelete();
       await vi.waitFor(() => expect(releasePost).toBeTypeOf("function"));
       releasePost();
@@ -798,7 +822,7 @@ describe("progressStore service", () => {
       setSyncEnabled(true);
       expect(await syncFromServer()).toBe("synced");
       vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
-      recordAttempt("q-1", "domain-1", true);
+      recordAttempt("q-1", "domain-1", true, "a");
       await vi.waitFor(() => expect(syncStatus.value).toBe("failed"));
       // The answer itself is kept locally regardless.
       expect(getStoredAttempts()).toHaveLength(1);
@@ -838,7 +862,7 @@ describe("progress log per owner (#403)", () => {
 
     setProgressOwner("user-a");
     setSyncEnabled(true);
-    recordAttempt("q-a", "domain-1", false); // its POST fails: unsynced
+    recordAttempt("q-a", "domain-1", false, "b"); // its POST fails: unsynced
     await vi.waitFor(() => expect(posts).toEqual(["q-a"]));
 
     setProgressOwner(null);
@@ -860,7 +884,7 @@ describe("progress log per owner (#403)", () => {
   it("adopts guest answers into the account that signs in, once, and backfills them", async () => {
     const posts: string[] = [];
     stubServer(posts, () => true);
-    recordAttempt("q-guest", "domain-1", true);
+    recordAttempt("q-guest", "domain-1", true, "a");
 
     setProgressOwner("user-a");
     setSyncEnabled(true);
@@ -890,7 +914,13 @@ describe("progress log per owner (#403)", () => {
     );
     setProgressOwner("user-a");
     saveRawAttempts([
-      { questionId: "q-a", domain: "domain-1", correct: true, attemptedAt: "2026-09-01T00:00:00Z" },
+      {
+        questionId: "q-a",
+        domain: "domain-1",
+        correct: true,
+        attemptedAt: "2026-09-01T00:00:00Z",
+        optionId: "a",
+      },
     ]);
     setSyncEnabled(true);
     const pending = syncFromServer();
@@ -924,7 +954,7 @@ describe("progress log per owner (#403)", () => {
     );
     setProgressOwner("user-a");
     setSyncEnabled(true);
-    recordAttempt("q-a", "domain-1", true);
+    recordAttempt("q-a", "domain-1", true, "a");
     setProgressOwner("user-b");
     setSyncEnabled(true);
     resolvePost({ ok: true });
@@ -936,10 +966,10 @@ describe("progress log per owner (#403)", () => {
 
   it("clear history erases only the signed-in account's log", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ attempts: [] }) }));
-    recordAttempt("q-guest", "domain-1", true);
+    recordAttempt("q-guest", "domain-1", true, "a");
     setProgressOwner("user-a");
     setProgressOwner(null);
-    recordAttempt("q-guest-2", "domain-1", true);
+    recordAttempt("q-guest-2", "domain-1", true, "a");
     setProgressOwner("user-b");
     setSyncEnabled(true);
     await clearProgress();

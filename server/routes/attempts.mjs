@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { auth } from "../auth.mjs";
 import { recordUserAttempt, getUserAttempts, deleteUserAttempts } from "../db.mjs";
 import { requireSameOrigin } from "../middleware/csrf.mjs";
+import { gradeAttempt } from "../questions.mjs";
 
 export const attemptsRouter = new Hono();
 
@@ -43,17 +44,28 @@ attemptsRouter.post("/", requireSameOrigin, async (c) => {
     return c.json({ error: "Invalid JSON payload" }, 400);
   }
 
-  const { questionId, domain, correct } = body || {};
+  // The client sends only what the learner did: the question and the stable
+  // option id chosen (null = a Mock exam question left unanswered). Whether
+  // that was correct, and which domain it counts toward, is decided here from
+  // the answer key (issue #208). A `correct` or `domain` field sent by a client
+  // is ignored, never stored -- otherwise the accuracy aggregate is forgeable.
+  const { questionId, optionId } = body || {};
 
   if (!questionId || typeof questionId !== "string") {
     return c.json({ error: "questionId is required" }, 400);
   }
-  if (!domain || typeof domain !== "string") {
-    return c.json({ error: "domain is required" }, 400);
+  if (optionId !== null && typeof optionId !== "string") {
+    return c.json({ error: "optionId must be a string, or null for an unanswered question" }, 400);
   }
-  if (typeof correct !== "boolean") {
-    return c.json({ error: "correct must be a boolean" }, 400);
+
+  const graded = gradeAttempt(questionId, optionId);
+  if (!graded.ok) {
+    if (graded.reason === "unknown_question") return c.json({ error: "Unknown questionId" }, 400);
+    if (graded.reason === "unknown_option") return c.json({ error: "Unknown optionId" }, 400);
+    // The answer key could not be read: refuse rather than store a guess.
+    return c.json({ error: "Attempt cannot be graded right now" }, 503);
   }
+  const { domain, correct } = graded;
 
   const stored = await recordUserAttempt({ userId: user.id, questionId, domain, correct });
 

@@ -196,7 +196,7 @@ export function usePracticeSession(
     if (e.revealed.includes(optionId)) return;
     if (e.firstCorrect === undefined) {
       e.firstCorrect = option.correct;
-      recordAttempt(q.id, q.domain, option.correct);
+      recordAttempt(q.id, q.domain, option.correct, option.id);
     }
     e.revealed.push(optionId);
     save();

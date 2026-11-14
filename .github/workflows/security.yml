@@ -1,0 +1,48 @@
+name: security
+
+# Dependency scan (issue #211, SOC2 F16). Fail-closed: a fixable CRITICAL
+# finding fails the job, and so does any scanner error -- trivy exits
+# non-zero on a failed database download or an unreadable lockfile, and the
+# action propagates that exit code, so a scan that did not run cannot pass.
+#
+# Filesystem scan only: this repo's CI builds no container image (images are
+# built by mctl-gitops' build-image workflow), so there is no image here to
+# scan. Trivy reads both bun.lock files (root server deps and client/).
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Weekly, so a newly published CVE against an unchanged lockfile still
+    # turns the check red without waiting for the next PR.
+    - cron: "37 4 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  trivy:
+    name: Trivy filesystem scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+          # Pinned (not latest) so a scanner release cannot turn every PR red
+          # with no change on our side; the vulnerability database still
+          # floats at run time.
+          version: v0.69.3
+          # Time-limited exceptions live in .trivyignore, each with a reason
+          # and an expiry date.
+          trivyignores: .trivyignore

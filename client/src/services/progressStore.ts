@@ -11,6 +11,17 @@ export interface QuestionAttempt {
   correct: boolean;
   attemptedAt: string;
   /**
+   * The stable option id the learner chose ("a".."d", never a rendered
+   * position), or null for a Mock exam question left unanswered. This, not
+   * `correct`, is what the server receives: it grades the attempt itself
+   * (issue #208). `correct` stays on the local row for offline progress.
+   *
+   * Absent (undefined) on rows recorded before #208 and on rows pulled from
+   * the server. A row without it cannot be graded by the server, so it is
+   * never backfilled; it stays on this device only.
+   */
+  optionId?: string | null;
+  /**
    * Set once this exact row has been confirmed synced to the server —
    * either this device POSTed it successfully, or a sync already found the
    * server's own record at least as recent. Deliberately NOT re-derived from
@@ -294,18 +305,20 @@ export function setSyncEnabled(enabled: boolean): void {
 }
 
 /**
- * The complete set of fields a learner attempt ever transmits. Course
- * membership is deliberately absent: it is canonical content metadata
- * (questionId -> question.course_id), so sending it would duplicate content as
- * personal learner data and create a reconciliation problem the server does
- * not need to have.
+ * The complete set of fields a learner attempt ever transmits: the question
+ * and the option chosen. Correctness and domain are deliberately absent — the
+ * server derives both from its own answer key, so a client cannot forge them
+ * (issue #208). Course membership is absent too: it is canonical content
+ * metadata (questionId -> question.course_id), so sending it would duplicate
+ * content as personal learner data and create a reconciliation problem the
+ * server does not need to have.
  */
-function postAttemptToServer(questionId: string, domain: string, correct: boolean): Promise<boolean> {
+function postAttemptToServer(questionId: string, optionId: string | null): Promise<boolean> {
   return fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
-    body: JSON.stringify({ questionId, domain, correct }),
+    body: JSON.stringify({ questionId, optionId }),
   })
     .then((res) => res.ok)
     .catch(() => {
@@ -337,25 +350,37 @@ function markAttemptSynced(key: string, questionId: string, attemptedAt: string)
  * current state per question" (progress stats, mistakes) derive it via
  * latestPerQuestion rather than relying on storage holding one row per
  * question.
+ *
+ * `optionId` is what the server is sent (see postAttemptToServer). Omitting
+ * it records a local-only row that is never synced.
  */
-export function recordAttempt(questionId: string, domain: string, correct: boolean): void {
+export function recordAttempt(
+  questionId: string,
+  domain: string,
+  correct: boolean,
+  optionId?: string | null,
+): void {
   const attemptedAt = new Date().toISOString();
   // The row belongs to whoever is signed in now, even if its POST settles
   // after a switch to another owner's log.
   const key = logKey();
   try {
     const attempts = readLog(key);
-    attempts.push({ questionId, domain, correct, attemptedAt });
+    attempts.push(
+      optionId === undefined
+        ? { questionId, domain, correct, attemptedAt }
+        : { questionId, domain, correct, attemptedAt, optionId },
+    );
     setItem(key, JSON.stringify(attempts));
     progressVersion.value += 1;
   } catch {
     // Ignore storage errors
   }
 
-  if (syncEnabled) {
+  if (syncEnabled && optionId !== undefined) {
     const epoch = syncEpoch;
     const send = () => {
-      trackWrite(postAttemptToServer(questionId, domain, correct)).then((ok) => {
+      trackWrite(postAttemptToServer(questionId, optionId)).then((ok) => {
         if (ok) markAttemptSynced(key, questionId, attemptedAt);
         else setSyncStatusFor(epoch, "failed");
       });
@@ -451,6 +476,9 @@ export async function syncFromServer(): Promise<SyncOutcome> {
   const backfills: Promise<boolean>[] = [];
   for (const a of localLatestByQuestion.values()) {
     if (a.synced) continue;
+    // Recorded before #208: there is no selection to send, and the server no
+    // longer accepts a client-asserted boolean. It stays on this device.
+    if (a.optionId === undefined) continue;
 
     const serverRecord = serverLatestByQuestion.get(a.questionId);
     const serverIsUpToDate =
@@ -461,7 +489,7 @@ export async function syncFromServer(): Promise<SyncOutcome> {
     }
 
     backfills.push(
-      trackWrite(postAttemptToServer(a.questionId, a.domain, a.correct)).then((ok) => {
+      trackWrite(postAttemptToServer(a.questionId, a.optionId)).then((ok) => {
         if (ok) markAttemptSynced(key, a.questionId, a.attemptedAt);
         return ok;
       }),
@@ -554,7 +582,7 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
         await Promise.allSettled([...pendingWrites]);
       }
     }
-    const unsyncedLeft = getStoredAttempts().some((a) => !a.synced);
+    const unsyncedLeft = getStoredAttempts().some((a) => !a.synced && a.optionId !== undefined);
     setSyncStatusFor(epoch, res.ok && !unsyncedLeft ? "synced" : "failed");
     return { serverCleared: res.ok };
   } catch {
