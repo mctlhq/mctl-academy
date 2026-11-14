@@ -73,20 +73,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-co46427e70ca",
-      "content_sha256": "ff1b08f06c16de237c6591fe3c7eb863ca52d38ee6b7cd7a0f497d3eebb5151e",
-      "approved": true,
-      "reason": "\"If you have admin rights, you can see all contacts from your tenant in this list. If you don't have admin rights, you can see only your own contacts.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co502cd7b152",
-      "content_sha256": "a110d769c79e8c57a147a5ac395a0c585a768675b65a4d6ca61248a4c608e4d2",
-      "approved": true,
-      "reason": "\"A VM and its resources count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-co524dc191c3",
       "content_sha256": "6c81e83550f703d7e61858e0b286a760331e2e8d9a250c872e6658fe80be7c59",
       "approved": true,
@@ -1504,6 +1490,22 @@
       "reason": "`client.files.create(file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\")` establishes `fine-tune` as the purpose value.",
       "reviewed_at": "2026-10-30T15:23:08Z",
       "superseded_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-co46427e70ca",
+      "content_sha256": "ff1b08f06c16de237c6591fe3c7eb863ca52d38ee6b7cd7a0f497d3eebb5151e",
+      "approved": true,
+      "reason": "\"If you have admin rights, you can see all contacts from your tenant in this list. If you don't have admin rights, you can see only your own contacts.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T18:57:12Z"
+    },
+    {
+      "id": "q-co502cd7b152",
+      "content_sha256": "a110d769c79e8c57a147a5ac395a0c585a768675b65a4d6ca61248a4c608e4d2",
+      "approved": true,
+      "reason": "\"A VM and its resources count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T18:57:12Z"
     }
   ]
 }
