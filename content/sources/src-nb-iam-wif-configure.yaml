@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-iam-wif-configure
+url: https://docs.nebius.com/iam/wif/configure.md
+title: Configuring access to Google Cloud for Nebius AI Cloud workloads
+retrieved_at: 2026-11-14T09:49:50Z
+sha256: 83da4d7ee659b28ca8ebd7dd06afce08fb55cf69fffc711b4781a8939c3215f5
+objectives:
+  - domain-4/ie-cross-cloud-data
+snapshot:
+  bucket: academy-source-snapshots
+  key: 83da4d7ee659b28ca8ebd7dd06afce08fb55cf69fffc711b4781a8939c3215f5
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-cross-cloud-data

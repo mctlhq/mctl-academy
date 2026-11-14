@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-iam-authorization-groups-manage
+url: https://docs.nebius.com/iam/authorization/groups/manage.md
+title: Managing custom groups
+retrieved_at: 2026-11-14T09:49:45Z
+sha256: e6e919a0c70971dd199bce1a8076d9f19d0007d4be4b9ef761affb03dabcbd2a
+objectives:
+  - domain-1/ie-rbac-key-rotation
+snapshot:
+  bucket: academy-source-snapshots
+  key: e6e919a0c70971dd199bce1a8076d9f19d0007d4be4b9ef761affb03dabcbd2a
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-rbac-key-rotation

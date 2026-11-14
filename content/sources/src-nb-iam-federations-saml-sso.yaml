@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-iam-federations-saml-sso
+url: https://docs.nebius.com/iam/federations/saml-sso.md
+title: Single sign-on in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:49:46Z
+sha256: 194fc9ee7eba8eb848bb47770d9acd9a8f162ff4b231cc54652cc087aa3ca3f7
+objectives:
+  - domain-1/ie-identity-federation
+  - domain-4/sa-identity-model
+snapshot:
+  bucket: academy-source-snapshots
+  key: 194fc9ee7eba8eb848bb47770d9acd9a8f162ff4b231cc54652cc087aa3ca3f7
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-identity-federation
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-identity-model
