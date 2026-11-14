@@ -1,52 +1,54 @@
 schema_version: 1
 id: q-5e9b7a2c1046
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/sa-data-lifecycle-investigation
-stem: "An architect is planning encryption for a new WEKA filesystem that
-  will hold data subject to a later compliance investigation, and wants to
-  leave the option of enabling encryption open for after the filesystem is
-  already in production. Does the documented design support that plan?"
+stem: "An architect is planning encryption for a new WEKA filesystem that will
+  hold data subject to a later compliance investigation, and wants to leave the
+  option of enabling encryption open for after the filesystem is already in
+  production. Does the documented design support that plan?"
 options:
   - id: a
     text: "Enable encryption at creation, since a WEKA filesystem cannot be
       converted to an encrypted filesystem after creation."
     correct: true
-    explanation: "Correct. The documentation says you need to explicitly
-      enable data encryption when you create a WEKA filesystem, and that it
-      is not possible to convert a WEKA filesystem to an encrypted
-      filesystem later."
+    explanation: "Correct. The documentation says you need to explicitly enable data
+      encryption when you create a WEKA filesystem, and that it is not possible
+      to convert a WEKA filesystem to an encrypted filesystem later."
   - id: b
-    text: "Leave encryption disabled now, since a Local SSD disk in Compute
-      is encrypted by default at the infrastructure level the same way a
-      WEKA filesystem is."
+    text: "Leave encryption disabled now, since a Local SSD disk in Compute is
+      encrypted by default at the infrastructure level the same way a WEKA
+      filesystem is."
     correct: false
-    explanation: "The documentation says Local SSD disks are not encrypted
-      and no other data protection method is applied to them, unlike the
-      WEKA filesystem case in this plan."
+    explanation: "The documentation says Local SSD disks are not encrypted and no
+      other data protection method is applied to them, unlike the WEKA
+      filesystem case in this plan."
   - id: c
-    text: "Leave encryption disabled now, since enabling it later is
-      possible the same way an optional Network SSD Non-replicated disk's
-      encryption can be enabled after the disk already exists."
+    text: "Leave encryption disabled now, since enabling it later is possible the
+      same way an optional Network SSD Non-replicated disk's encryption can be
+      enabled after the disk already exists."
     correct: false
-    explanation: "The documentation describes enabling encryption at
-      creation time for that disk type too, through the same disk-creation
-      flow, not as a change applied to an already-existing disk."
+    explanation: "The documentation describes enabling encryption at creation time
+      for that disk type too, through the same disk-creation flow, not as a
+      change applied to an already-existing disk."
   - id: d
-    text: "Leave encryption disabled now, since a shared filesystem in
-      Compute lets you disable its infrastructure-level encryption later if
-      the plan changes."
+    text: "Leave encryption disabled now, since a shared filesystem in Compute lets
+      you disable its infrastructure-level encryption later if the plan
+      changes."
     correct: false
-    explanation: "The documentation says shared filesystem encryption can't
-      be disabled, which is the opposite of the flexibility this option
-      describes."
+    explanation: "The documentation says shared filesystem encryption can't be
+      disabled, which is the opposite of the flexibility this option describes."
 evidence:
   - source_id: src-nb-security-encryption
     source_sha256: ef25a4bfe3943776def0eda664affe0d13f11a5683bcc43a48dbf5a9af315c5c
-    excerpt: "It is not possible to convert a WEKA filesystem to an
-      encrypted filesystem later."
+    excerpt: "It is not possible to convert a WEKA filesystem to an encrypted
+      filesystem later."
     locator: "Encryption in Nebius AI Cloud, WEKA filesystems"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T16:21:32Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:38:21Z
+  content_sha256: 186d6f288c0ce1f57f3b52d987117bf90d1433c621b875a8d43000b1c43bac6c
