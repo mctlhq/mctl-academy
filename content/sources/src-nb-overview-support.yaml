@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-overview-support
+url: https://docs.nebius.com/overview/support.md
+title: "Support tickets: sending questions, bug reports and feature requests"
+retrieved_at: 2026-11-14T10:00:49Z
+sha256: 465c41652a3f860b12b5df82175faee6cbafa2a7f2bfafebf40069a056064b37
+objectives:
+  - domain-4/ie-fabric-incidents
+  - domain-2/sa-failure-support-model
+snapshot:
+  bucket: academy-source-snapshots
+  key: 465c41652a3f860b12b5df82175faee6cbafa2a7f2bfafebf40069a056064b37
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-fabric-incidents
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-failure-support-model

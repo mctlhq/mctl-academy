@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-overview-limits-capacity-block-groups
+url: https://docs.nebius.com/overview/limits/capacity-block-groups.md
+title: Capacity block groups in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:00:45Z
+sha256: 00ef2cd1e2d8e3b9fb31fc1925195ef99a0af68235442ce2c8ce253611c27062
+objectives:
+  - domain-3/sa-capacity-quotas-cost
+snapshot:
+  bucket: academy-source-snapshots
+  key: 00ef2cd1e2d8e3b9fb31fc1925195ef99a0af68235442ce2c8ce253611c27062
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-capacity-quotas-cost
