@@ -13,7 +13,7 @@ import { remainingMs, unansweredCount } from "../session";
 import RestrictedMarkdown from "./RestrictedMarkdown.vue";
 import { formatRemaining } from "./formatTime";
 
-const props = defineProps<{ session: ExamSessionState; initialIndex?: number }>();
+const props = defineProps<{ session: ExamSessionState; initialIndex?: number; courseTitle?: string }>();
 const emit = defineEmits<{
   answer: [questionId: string, optionId: string];
   submit: [];
@@ -113,6 +113,9 @@ function returnToFirstUnanswered() {
 <template>
   <section class="mock-exam" data-testid="mock-exam">
     <h1 class="sr-only">Mock exam – question {{ currentIndex + 1 }} of {{ session.questions.length }}</h1>
+    <p v-if="courseTitle" class="mock-exam-course" data-testid="mock-course">
+      {{ courseTitle }} <span class="mock-exam-course-sep" aria-hidden="true">/</span> Mock exam
+    </p>
     <header class="mock-exam-header">
       <span class="mock-exam-timer" data-testid="timer">
         <span class="sr-only">Time remaining: </span>{{ formatRemaining(remaining) }}
@@ -222,6 +225,18 @@ function returnToFirstUnanswered() {
 .mock-exam {
   width: min(100%, 43rem);
   margin: 0 auto;
+}
+
+.mock-exam-course {
+  margin: 0;
+  color: var(--surface-fg);
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+}
+
+.mock-exam-course-sep {
+  color: var(--surface-fg-subtle);
+  font-weight: 400;
 }
 
 .mock-exam-header {
@@ -352,9 +367,24 @@ function returnToFirstUnanswered() {
 }
 
 /* Submit is final, so it sits apart from the stepping controls and does not
-   share Next's weight. */
+   share Next's weight: a quiet text action (still a 44px target, still behind
+   the confirm dialog when questions are unanswered), never a second primary.
+   Chained to outrank MButton's ghost variant. */
 .mock-exam-submit {
   margin-left: auto;
+}
+
+.mock-exam-footer .mock-exam-submit {
+  border-color: transparent;
+  color: var(--surface-fg-muted);
+  font-size: var(--text-caption-size);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.mock-exam-footer .mock-exam-submit:hover {
+  border-color: transparent;
+  color: var(--accent-text);
 }
 
 /* .mock-exam-nav-item's 44px floor needs to hold everywhere the app's own

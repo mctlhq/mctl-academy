@@ -4,6 +4,7 @@ import MockFlow from "../MockFlow.vue";
 import type { ExamDataSource } from "../../dataSource";
 import type { MockConfig, Question } from "../../types";
 import { clearProgress, getStoredAttempts } from "../../../services/progressStore";
+import { findCourse } from "../../../services/courseCatalog";
 
 const config: MockConfig = {
   questionCount: 1,
@@ -76,5 +77,19 @@ describe("MockFlow", () => {
     const attempts = getStoredAttempts();
     expect(attempts).toHaveLength(1);
     expect(attempts[0]).toMatchObject({ questionId: "q-1", domain: "domain-1", correct: true });
+  });
+
+  it("names the course on the start screen and throughout the exam", async () => {
+    const title = findCourse("agentic-ai-builder")!.title;
+    const wrapper = mount(MockFlow, {
+      props: { dataSource: makeDataSource(), courseId: "agentic-ai-builder" },
+    });
+    await flushPromises();
+    expect(wrapper.get('[data-testid="mock-start"] [data-testid="mock-course"]').text()).toBe(title);
+    await wrapper
+      .findAll("button")
+      .find((b) => b.text() === "Start mock exam")!
+      .trigger("click");
+    expect(wrapper.get('[data-testid="mock-exam"] [data-testid="mock-course"]').text()).toContain(title);
   });
 });
