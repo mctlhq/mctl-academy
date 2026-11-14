@@ -1,51 +1,53 @@
 schema_version: 1
 id: q-sa4tenantsg7
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/sa-tenant-isolation-least-privilege
-stem: "An architecture team manages VMs in two separate networks, one per
-  tenant project, and wants a single reusable security group whose rules
-  apply to VMs in both networks. Is this design workable as documented?"
+stem: "An architecture team manages VMs in two separate networks, one per tenant
+  project, and wants a single reusable security group whose rules apply to VMs
+  in both networks. Is this design workable as documented?"
 options:
   - id: a
-    text: "No -- a security group applies only to VMs within the one network
-      it's associated with."
+    text: "No -- a security group applies only to VMs within the one network it's
+      associated with."
     correct: true
-    explanation: "Correct. The documentation says each security group is
-      associated with a network and can only apply to VMs in that network."
+    explanation: "Correct. The documentation says each security group is associated
+      with a network and can only apply to VMs in that network."
   - id: b
-    text: "Yes -- security groups are documented as tenant-wide resources, so
-      one group's rules apply to VMs in every network in the tenant."
+    text: "Yes -- security groups are documented as tenant-wide resources, so one
+      group's rules apply to VMs in every network in the tenant."
     correct: false
-    explanation: "The documentation associates a security group with one
-      network, specified in its network_id parameter, not with the tenant as
-      a whole."
+    explanation: "The documentation associates a security group with one network,
+      specified in its network_id parameter, not with the tenant as a whole."
   - id: c
     text: "No -- but referencing the group's ID as a destination_security_group_id
       inside a security rule is documented as a way to extend it across
       networks."
     correct: false
-    explanation: "The documentation requires the security group referenced in
-      a rule and the group containing the rule to be associated with the same
-      network, so this cross-network reference would not work."
+    explanation: "The documentation requires the security group referenced in a rule
+      and the group containing the rule to be associated with the same network,
+      so this cross-network reference would not work."
   - id: d
-    text: "Yes -- as long as every security rule in the group is configured
-      with the stateful type, which is documented as extending its reach
-      across networks."
+    text: "Yes -- as long as every security rule in the group is configured with the
+      stateful type, which is documented as extending its reach across
+      networks."
     correct: false
-    explanation: "Stateful versus stateless only changes whether response
-      traffic is automatically tracked within a connection; the
-      documentation does not describe either type as extending a security
-      group's rules to another network."
+    explanation: "Stateful versus stateless only changes whether response traffic is
+      automatically tracked within a connection; the documentation does not
+      describe either type as extending a security group's rules to another
+      network."
 evidence:
   - source_id: src-co-vpc-security-groups
     source_sha256: 6911c3fce9dafe694208091b7e334dbc59512811d65843e51706d6d86ee83a5f
     excerpt: "Each security group is associated with a
-      [network](https://docs.nebius.com/vpc/overview.md#network) and can
-      only apply to VMs in this network."
-    locator: "Security groups in Nebius AI Cloud, Security groups and
-      security rules"
+      [network](https://docs.nebius.com/vpc/overview.md#network) and can only
+      apply to VMs in this network."
+    locator: "Security groups in Nebius AI Cloud, Security groups and security rules"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:47:26Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T15:04:04Z
+  content_sha256: e900c9a2747a7d3c09d8129d6e713a4825d95fbf21defdaa39175960debb4fbe

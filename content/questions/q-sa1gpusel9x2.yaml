@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sa1gpusel9x2
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/sa-gpu-selection
 stem: "A solutions architect is sizing capacity for a workload that only needs
@@ -9,42 +9,46 @@ stem: "A solutions architect is sizing capacity for a workload that only needs
   capacity advisor answer this for a non-GPU workload?"
 options:
   - id: a
-    text: "No -- the capacity advisor only provides availability data for
-      virtual machines with GPUs; data about non-GPU VMs isn't provided."
+    text: "No -- the capacity advisor only provides availability data for virtual
+      machines with GPUs; data about non-GPU VMs isn't provided."
     correct: true
     explanation: "Correct. The documentation states that data about computing
-      resource availability of VMs without GPUs isn't provided by the
-      capacity advisor."
+      resource availability of VMs without GPUs isn't provided by the capacity
+      advisor."
   - id: b
-    text: "Yes -- the capacity advisor reports availability for every VM
-      platform, with and without GPUs, based on the project's quotas and
-      current physical capacity."
+    text: "Yes -- the capacity advisor reports availability for every VM platform,
+      with and without GPUs, based on the project's quotas and current physical
+      capacity."
     correct: false
-    explanation: "The capacity advisor's documented scope is limited to
-      virtual machines with GPUs; it does not report availability data for
-      non-GPU platforms."
+    explanation: "The capacity advisor's documented scope is limited to virtual
+      machines with GPUs; it does not report availability data for non-GPU
+      platforms."
   - id: c
-    text: "No -- but only because the architect's group has the viewer role
-      rather than the editor role; editor access unlocks non-GPU availability
-      data too."
+    text: "No -- but only because the architect's group has the viewer role rather
+      than the editor role; editor access unlocks non-GPU availability data
+      too."
     correct: false
-    explanation: "Viewer is the documented minimum role to read capacity
-      advisor data at all, but the GPU-only scope is not a role restriction --
-      a higher role does not add non-GPU data."
+    explanation: "Viewer is the documented minimum role to read capacity advisor
+      data at all, but the GPU-only scope is not a role restriction -- a higher
+      role does not add non-GPU data."
   - id: d
-    text: "Yes -- as long as the request goes through the Nebius AI Cloud
-      provider for Terraform rather than the CLI or web console."
+    text: "Yes -- as long as the request goes through the Nebius AI Cloud provider
+      for Terraform rather than the CLI or web console."
     correct: false
-    explanation: "The documentation says the opposite: the Terraform provider
-      does not support the capacity advisor at all, so this path would not
-      work even for GPU platforms."
+    explanation: "The documentation says the opposite: the Terraform provider does
+      not support the capacity advisor at all, so this path would not work even
+      for GPU platforms."
 evidence:
   - source_id: src-nb-compute-virtual-machines-capacity-advisor
     source_sha256: 6736b7d98d834589cebee802d2e7f15d2e774a8f6f04e530b72ce4b19efc2466
-    excerpt: "Data about computing resource availability of VMs without GPUs
-      isn't provided."
+    excerpt: "Data about computing resource availability of VMs without GPUs isn't
+      provided."
     locator: "Capacity advisor for GPU availability in Nebius AI Cloud, Scope"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:47:26Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T15:04:04Z
+  content_sha256: 1740b40a0dc05f0b14f091cdf5b3e0a3901bfce3e44e8dda3a03bc57a189e87c

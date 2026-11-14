@@ -1,54 +1,53 @@
 schema_version: 1
 id: q-sa4identsvc2
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/sa-identity-model
 stem: "An architect is designing a service account that a CI/CD pipeline will
   use to manage GPU clusters across several projects in the same tenant, even
-  though the service account itself is created in just one of those
-  projects. Can it still be granted access to resources in the other
-  projects?"
+  though the service account itself is created in just one of those projects.
+  Can it still be granted access to resources in the other projects?"
 options:
   - id: a
-    text: "Yes -- because access is defined by the groups a service account
-      belongs to, not by the project where it was created."
+    text: "Yes -- because access is defined by the groups a service account belongs
+      to, not by the project where it was created."
     correct: true
-    explanation: "Correct. The documentation says a service account's access
-      to resources is defined by the groups it's added to, and this means it
-      can be granted access to any resource in the tenant regardless of the
-      project."
+    explanation: "Correct. The documentation says a service account's access to
+      resources is defined by the groups it's added to, and this means it can be
+      granted access to any resource in the tenant regardless of the project."
   - id: b
-    text: "No -- a service account's access is scoped to the project where
-      it was created, so a separate service account would be needed for each
-      project."
+    text: "No -- a service account's access is scoped to the project where it was
+      created, so a separate service account would be needed for each project."
     correct: false
-    explanation: "The documentation says the opposite: a service account
-      belongs to the project where it was created, but its access to
-      resources is defined by group membership, not by that project."
+    explanation: "The documentation says the opposite: a service account belongs to
+      the project where it was created, but its access to resources is defined
+      by group membership, not by that project."
   - id: c
-    text: "Yes -- but first the service account must be promoted into a full
-      user account through an identity federation sign-on."
+    text: "Yes -- but first the service account must be promoted into a full user
+      account through an identity federation sign-on."
     correct: false
-    explanation: "The documentation does not describe promoting a service
-      account into a federation user account; cross-project access comes
-      from group membership, not a change of account type."
+    explanation: "The documentation does not describe promoting a service account
+      into a federation user account; cross-project access comes from group
+      membership, not a change of account type."
   - id: d
-    text: "No -- cross-project access for service accounts is granted
-      specifically through membership in the auditors group, not through
-      other groups."
+    text: "No -- cross-project access for service accounts is granted specifically
+      through membership in the auditors group, not through other groups."
     correct: false
-    explanation: "The auditors group is the lowest-access default group,
-      limited to viewing certain resources without access to data; the
-      documentation does not tie cross-project access to that specific
-      group."
+    explanation: "The auditors group is the lowest-access default group, limited to
+      viewing certain resources without access to data; the documentation does
+      not tie cross-project access to that specific group."
 evidence:
   - source_id: src-co-iam-overview
     source_sha256: e5813f76e9b861efe0eae9851532fe47a177531b7fcb322822649ba1f9d0595a
     excerpt: "This means that a service account can be granted access to any
       resource in the tenant regardless of the project."
-    locator: "How resources, identities, and access are managed in Nebius AI
-      Cloud, Identity management"
+    locator: "How resources, identities, and access are managed in Nebius AI Cloud,
+      Identity management"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:47:26Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T15:04:04Z
+  content_sha256: 8cd2eb92e61915baa919a3589fa581cfb1d7e74d1e5401cdbe3bb9e991fabd89
