@@ -162,6 +162,13 @@ test.describe("touch targets", () => {
         await page.getByRole("button", { name: "Start mock exam" }).click();
         await expect(page.getByTestId("mock-exam")).toBeVisible();
 
+        // Up to 620px the navigator is a closed disclosure; its summary is
+        // the control, and the items are measured once it is open.
+        if (width <= 620) {
+          const summary = page.getByTestId("mock-nav-summary");
+          await assertTouchTargets(page, ".mock-exam-nav-summary");
+          await summary.click();
+        }
         await assertTouchTargets(page, ".mock-exam-nav-item");
         // The effective click target is the <label>, not the radio input it
         // wraps (a native radio's intrinsic ~13px box is not what the
@@ -196,37 +203,33 @@ test.describe("Practice context panel at 768px", () => {
   });
 });
 
-test.describe("Practice/Mistakes floating context toggle vs. footer", () => {
+test.describe("Practice footer and legal disclaimer", () => {
   /**
-   * Found on a real Pixel 7: `.practice-context` (PracticeContent.vue)
-   * becomes a `position: fixed` bottom-right pill at <=680px, the same
-   * breakpoint AppFooter switches to being hidden on focused-practice routes
-   * (app.css). Below that threshold AppFooter must stay hidden so it can
-   * never render underneath the fixed pill; above it, the pill goes back to
-   * being an inline sidebar column and the footer must reappear normally.
+   * The footer used to be hidden on Practice/Mistakes up to 680px, because a
+   * floating Info pill sat where it would render. The pill is now part of
+   * the page flow, so the footer, and with it the independence disclaimer
+   * (LEGAL.md), shows on every screen at every width and never sits under
+   * the Info toggle.
    */
-  for (const width of [375, 390, 620, 680]) {
-    test(`${width}px: AppFooter is hidden on /practice so it can't sit under the floating toggle`, async ({
+  for (const width of [375, 390, 620, 680, 700]) {
+    test(`${width}px: the footer disclaimer shows on /practice, clear of the Info toggle`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/practice");
       await expect(page.locator(".practice .stem")).toBeVisible();
-      await expect(page.locator(".context-toggle")).toBeVisible();
-      await expect(page.locator(".app-footer-safe")).toBeHidden();
+      const footer = page.locator(".app-footer-safe");
+      await footer.scrollIntoViewIfNeeded();
+      await expect(page.getByTestId("independence-disclaimer")).toBeVisible();
+      const [toggle, footerBox] = await Promise.all([
+        page.locator(".context-toggle").boundingBox(),
+        footer.boundingBox(),
+      ]);
+      expect(toggle && footerBox && toggle.y + toggle.height <= footerBox.y).toBeTruthy();
     });
   }
 
-  test("700px: AppFooter is visible again once the context panel is back to an inline sidebar", async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 700, height: 900 });
-    await page.goto("/practice");
-    await expect(page.locator(".practice .stem")).toBeVisible();
-    await expect(page.locator(".app-footer-safe")).toBeVisible();
-  });
-
-  test("375px: AppFooter stays visible on unrelated routes (Home, Mock, Dashboard)", async ({ page }) => {
+  test("375px: the footer shows on unrelated routes too (Home, Mock, Dashboard)", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 900 });
     for (const route of ["/", "/mock", "/dashboard"]) {
       await page.goto(route);
