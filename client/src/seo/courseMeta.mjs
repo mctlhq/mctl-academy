@@ -55,37 +55,18 @@ export function courseCanonicalUrl(courseId) {
  * site defaults for every other tag, exactly as CourseView always did.
  */
 export function courseHeadMeta(course) {
-  const canonicalUrl = courseCanonicalUrl(course.id);
-  const domainCount = course.mock?.domains?.length ?? 0;
-
   if (!course.available) {
-    const summary = course.summary ? ` ${course.summary}` : "";
     return {
-      title: `${course.title} — Syllabus & Practice Guide · ${SITE_NAME}`,
-      description: `Exam syllabus, domain breakdown and study guide for ${course.title}.${summary} ${domainCount} domains.`,
-      canonicalUrl,
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Course",
-            "@id": `${canonicalUrl}#course`,
-            name: `${course.title} Practice Track`,
-            description: `${course.title} exam syllabus and domain study guide.`,
-            provider: {
-              "@type": "Organization",
-              name: "mctl Academy",
-              url: `${SITE_ORIGIN}/`,
-            },
-            isAccessibleForFree: true,
-            inLanguage: "en",
-          },
-        ],
-      },
+      title: `${course.title} — Coming soon · ${SITE_NAME}`,
+      description: null,
+      canonicalUrl: null,
+      jsonLd: null,
     };
   }
 
   const questionCount = course.publishedQuestionCount;
+  const domainCount = course.mock.domains.length;
+  const canonicalUrl = courseCanonicalUrl(course.id);
 
   return {
     title: `${course.title} — Practice Questions & Syllabus · ${SITE_NAME}`,
