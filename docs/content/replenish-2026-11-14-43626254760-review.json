@@ -1,0 +1,41 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T18:39:58Z",
+  "questions": [
+    {
+      "id": "q-3a6f9d2e7b15",
+      "content_sha256": "7f734178bd1d23d97e114c68698f6cc6fa6ed2975c20fd1617dab2ddf591b7fc",
+      "approved": true,
+      "reason": "The captured overview places \"[card] [CrewAI](https://docs.tokenfactory.nebius.com/integrations/agents/crewai)\" directly under the \"## Agent Frameworks\" heading, and both excerpts appear verbatim. Portkey (API Routers), Cursor (Coding Assistants) and AIsuite (APIs) each sit under a different heading, so only one option is defensible.",
+      "reviewed_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-7f3a92c6e158",
+      "content_sha256": "2816d64ce21c2790cf404c1ae4d3e0bde7aa87aad3db3ba4316aefd536dd3ad2",
+      "approved": true,
+      "reason": "Under \"## AI Application Frameworks\" the page lists only Llama-Index and \"[card] [Langchain](https://docs.tokenfactory.nebius.com/integrations/frameworks/langchain)\", both excerpts verbatim. Postman, Helicone and Tavily appear under Developer Tools, Observability and Agentic Search respectively, so no distractor is supportable.",
+      "reviewed_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-9f2b6e1a7c84",
+      "content_sha256": "51fae9f2055cfe2562aeca06a923b19c75ab69f9f31f5c3e27c4cb9a3e3ff0fe",
+      "approved": true,
+      "reason": "The top-level field list states verbatim: \"`validation_file` (string, optional) ID of the file with the validation dataset. Same format and requirements as the training dataset\", and the prerequisites describe the 80-90/10-20 train/validation split that makes it held-out. `suffix`, `seed` and `hyperparameters` are each described on the same page as a name label, a random seed and a nested config object, none of which carry a file ID.",
+      "reviewed_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-fa01a1b2c3d4",
+      "content_sha256": "1540096dca33499fb68c286c9e2d26e38fc5b102a73e6e4392463b287b447644",
+      "approved": true,
+      "reason": "The spec reads verbatim \"`training_file` (string, **required**) ID of the file with the training dataset (`purpose = \"fine-tune\"`)\", and the walkthrough uploads to `/v1/files` with `-F 'purpose=fine-tune'` then says \"Save the `id` as your `training_file`\". The page shows no inline JSONL body, no `assistants` purpose and no URL field, so the three distractors have no support.",
+      "reviewed_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-fa02b2c3d4e5",
+      "content_sha256": "0ddf0a900a2484b9781c0e0e13f8eb3a03bf899cb440874c0227df03dc684ef1",
+      "approved": true,
+      "reason": "The cURL upload step contains the excerpt \"-F 'purpose=fine-tune'\" verbatim, matched by the Python `client.files.create(..., purpose=\"fine-tune\")` call and the `\"purpose\": \"fine-tune\"` response example. The other three values appear nowhere on the page, so exactly one option is best.",
+      "reviewed_at": "2026-11-14T18:39:58Z"
+    }
+  ]
+}

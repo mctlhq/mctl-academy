@@ -1,0 +1,44 @@
+schema_version: 1
+id: q-3a6f9d2e7b15
+status: published
+domain: domain-2
+objective: domain-2/framework-integrations
+stem: "In the Token Factory third-party integrations overview, which integration
+  is listed under the \"Agent Frameworks\" category?"
+options:
+  - id: a
+    text: "CrewAI"
+    correct: true
+    explanation: "The overview's Agent Frameworks category lists CrewAI alongside
+      Agno, Camel AI, Google ADK, Llama-Index, Pydantic, and Strands."
+  - id: b
+    text: "Portkey"
+    correct: false
+    explanation: "Portkey is listed under the overview's API Routers category, not
+      Agent Frameworks."
+  - id: c
+    text: "Cursor"
+    correct: false
+    explanation: "Cursor is listed under the overview's Coding Assistants category,
+      not Agent Frameworks."
+  - id: d
+    text: "AIsuite"
+    correct: false
+    explanation: "AIsuite is listed under the overview's APIs category, not Agent
+      Frameworks."
+evidence:
+  - source_id: src-integrations-overview
+    excerpt: "## Agent Frameworks"
+    source_sha256: 7ba04420cd36ce4975cb83464116e48ec6cbe03a59f27dd8a28ca28c52df2172
+  - source_id: src-integrations-overview
+    excerpt: "[card]
+      [CrewAI](https://docs.tokenfactory.nebius.com/integrations/agents/crewai)"
+    source_sha256: 7ba04420cd36ce4975cb83464116e48ec6cbe03a59f27dd8a28ca28c52df2172
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T18:23:49Z"
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T18:39:58Z
+  content_sha256: 7f734178bd1d23d97e114c68698f6cc6fa6ed2975c20fd1617dab2ddf591b7fc

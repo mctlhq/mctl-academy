@@ -1,0 +1,43 @@
+schema_version: 1
+id: q-9f2b6e1a7c84
+status: published
+domain: domain-3
+objective: domain-3/files-api
+stem: "A fine-tuning job request also accepts a dataset the model is evaluated
+  against but never trained on. Which field carries that dataset's file ID?"
+options:
+  - id: a
+    text: "`validation_file`, which takes the ID of a held-out dataset file"
+    correct: true
+    explanation: "The job's `validation_file` field is optional and takes the ID of
+      a file with the validation dataset, in the same format as the training
+      file."
+  - id: b
+    text: "`suffix`, which appends a human-readable label to the model name"
+    correct: false
+    explanation: "`suffix` appends a label to the resulting model name; it carries
+      no file reference."
+  - id: c
+    text: "`seed`, which sets the random seed used during training"
+    correct: false
+    explanation: "`seed` sets the random seed used during training; it is unrelated
+      to dataset files."
+  - id: d
+    text: "`hyperparameters`, which nests training settings like batch size"
+    correct: false
+    explanation: "`hyperparameters` nests training settings such as batch size and
+      learning rate; it is not a file reference."
+evidence:
+  - source_id: src-supervised-fine-tuning
+    excerpt: "`validation_file` (string, optional) ID of the file with the
+      validation dataset. Same format and requirements as the training dataset."
+    source_sha256: ed8590b426cd2bb1a38cb799dd6f9a927d555a246a3a58f75bc46209760bd04b
+    locator: "API specification for a fine-tuning job > Top-level fields"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T18:23:49Z"
+course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T18:39:58Z
+  content_sha256: 51fae9f2055cfe2562aeca06a923b19c75ab69f9f31f5c3e27c4cb9a3e3ff0fe

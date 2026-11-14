@@ -24,13 +24,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-7f3a92c6e158",
-      "content_sha256": "47b033d7d4f4203fa4ce7b4099f828d1f4024475e8af11c3bba5bd1cd1639212",
-      "approved": true,
-      "reason": "Under the heading \"## AI Application Frameworks\" the page lists Llama-Index and Langchain, while Postman, Helicone and Tavily appear under Developer Tools, Observability and Agentic Search.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-8b2e5f1a9c34",
       "content_sha256": "e60a97e80585c19d842555cc17c0803920f0c659fece94eb85a641a81c98494e",
       "approved": true,
@@ -217,20 +210,6 @@
       "content_sha256": "542acdd1521584841245df3bffe815a58d235e5d362153d41af70a954859d282",
       "approved": true,
       "reason": "\"Usage data for endpoints and jobs becomes available 5–10 minutes after a resource is created\"; the 15-second figure is the refresh interval.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-fa01a1b2c3d4",
-      "content_sha256": "6c901e1ba08fc0181a97fa41957dc2b4761e3a7c9690ce6b283e177913822c4b",
-      "approved": true,
-      "reason": "The walkthrough uploads with `purpose=\"fine-tune\"`, and \"`training_file` (string, **required**) ID of the file with the training dataset (`purpose = \"fine-tune\"`).\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-fa02b2c3d4e5",
-      "content_sha256": "ba5c6ae18d2dc85dca3f6f1ac36a02002b00065e2d7a2f08beff17f7700d2380",
-      "approved": true,
-      "reason": "`client.files.create(file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\")` establishes `fine-tune` as the purpose value.",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -1501,6 +1480,30 @@
       "reason": "\"This limit grows automatically when you consistently operate close to your capacity and current limit\", with no support ticket involved.",
       "reviewed_at": "2026-10-30T15:23:08Z",
       "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-7f3a92c6e158",
+      "content_sha256": "47b033d7d4f4203fa4ce7b4099f828d1f4024475e8af11c3bba5bd1cd1639212",
+      "approved": true,
+      "reason": "Under the heading \"## AI Application Frameworks\" the page lists Llama-Index and Langchain, while Postman, Helicone and Tavily appear under Developer Tools, Observability and Agentic Search.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-fa01a1b2c3d4",
+      "content_sha256": "6c901e1ba08fc0181a97fa41957dc2b4761e3a7c9690ce6b283e177913822c4b",
+      "approved": true,
+      "reason": "The walkthrough uploads with `purpose=\"fine-tune\"`, and \"`training_file` (string, **required**) ID of the file with the training dataset (`purpose = \"fine-tune\"`).\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T18:39:58Z"
+    },
+    {
+      "id": "q-fa02b2c3d4e5",
+      "content_sha256": "ba5c6ae18d2dc85dca3f6f1ac36a02002b00065e2d7a2f08beff17f7700d2380",
+      "approved": true,
+      "reason": "`client.files.create(file=open(\"training.jsonl\", \"rb\"), purpose=\"fine-tune\")` establishes `fine-tune` as the purpose value.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T18:39:58Z"
     }
   ]
 }
