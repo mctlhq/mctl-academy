@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.86](https://github.com/mctlhq/mctl-academy/compare/0.1.85...0.1.86) (2026-11-14)
+
+
+### Bug Fixes
+
+* **ui:** mobile follow-up from the Pixel pass ([71e8b2a](https://github.com/mctlhq/mctl-academy/commit/71e8b2a010f060e02dfcd84e73ade278545665ba))
+* **ui:** mobile follow-up from the Pixel pass ([f153664](https://github.com/mctlhq/mctl-academy/commit/f153664fa8057be7fd025611453e4f7d047a8bfa))
+
+
+### Content
+
+* **replenish:** author 4 question file(s) from 0 captured source(s) ([5ac4664](https://github.com/mctlhq/mctl-academy/commit/5ac4664ac7a8c3ec545e5552d854cb6c9f49069a))
+* **replenish:** promote 4 reviewed question(s) ([a4646db](https://github.com/mctlhq/mctl-academy/commit/a4646db89351e0a62c7d843285dd3a110399117a))
+
 ## [0.1.85](https://github.com/mctlhq/mctl-academy/compare/0.1.84...0.1.85) (2026-11-14)
 
 
