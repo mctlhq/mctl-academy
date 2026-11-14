@@ -1,0 +1,51 @@
+schema_version: 1
+id: q-d4f8a21c93b6
+status: published
+domain: domain-1
+objective: domain-1/ie-encryption-secrets
+stem: "A platform team needs a Compute disk for scratch training data where
+  infrastructure-level encryption is active by default and can't be turned off
+  by a later configuration change. Which disk type meets this requirement?"
+options:
+  - id: a
+    text: "Network SSD disks, whose infrastructure-level encryption is enabled by
+      default and can't be disabled"
+    correct: true
+    explanation: "Correct. The documentation states that Network SSD is encrypted by
+      default at the infrastructure level and that this can't be disabled."
+  - id: b
+    text: "Network SSD Non-replicated disks, since enabling encryption when the disk
+      is created turns it on at the infrastructure level by default"
+    correct: false
+    explanation: "Network SSD Non-replicated encryption is optional at creation, not
+      active by default -- the opposite of what this requirement needs, even
+      though enabling it does turn on service- and infrastructure-level
+      encryption for that disk."
+  - id: c
+    text: "Local SSD disks, since the same infrastructure-level encryption used for
+      Network SSD disks also covers local storage"
+    correct: false
+    explanation: "The documentation states that Local SSD disks are not encrypted
+      and that no other data protection method is applied to them; protecting
+      their data is the customer's responsibility."
+  - id: d
+    text: "WEKA filesystems, since WEKA encryption remains optional after creation
+      and can be enabled at any time"
+    correct: false
+    explanation: "WEKA filesystem encryption must be explicitly enabled at creation
+      time, and a WEKA filesystem can't be converted to an encrypted one later
+      -- the opposite of staying optional indefinitely."
+evidence:
+  - source_id: src-nb-security-encryption
+    source_sha256: ef25a4bfe3943776def0eda664affe0d13f11a5683bcc43a48dbf5a9af315c5c
+    excerpt: "**Network SSD**: Encryption is enabled by default at the
+      infrastructure level and can't be disabled."
+    locator: "Encryption by storage type, Disks in Compute"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T15:41:54Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:01:31Z
+  content_sha256: bd2d2fe9f5789dd5e972088d90746835ae25942ee1670ed6f08d2e336731c9ec

@@ -1,0 +1,53 @@
+schema_version: 1
+id: q-c1a7f3d9e526
+status: published
+domain: domain-3
+objective: domain-3/ie-marketplace-apps
+stem: "A platform team already deployed a marketplace application in a project
+  and now wants to deploy it again in the same project with different settings.
+  What must they do first?"
+options:
+  - id: a
+    text: "Delete the application's existing deployment in that project, then deploy
+      it again with the new settings"
+    correct: true
+    explanation: "Correct. The documentation states you can deploy each application
+      in a project once, and to deploy it again you must delete its previous
+      deployment first."
+  - id: b
+    text: "Create a second Managed Kubernetes cluster in the same project and deploy
+      the application there instead"
+    correct: false
+    explanation: "The documentation's per-project, per-deployment limit is about the
+      application deployment itself, not about how many clusters exist; adding a
+      cluster doesn't let the same application deploy a second time in the
+      project without first removing the existing deployment."
+  - id: c
+    text: "Mark the application's stage as in preview before redeploying, since
+      in-preview applications can be deployed more than once per project"
+    correct: false
+    explanation: "The documentation ties the preview and generally-available stages
+      to testing and feedback versus production use and charges, not to how many
+      times an application can be deployed in a project."
+  - id: d
+    text: "Open the existing deployment's configuration and edit its settings
+      directly, since Applications supports in-place reconfiguration without a
+      new deployment"
+    correct: false
+    explanation: "The documentation describes finding, configuring and deploying an
+      application through Deploy on cluster and Deploy application; it does not
+      describe an in-place reconfiguration path for an existing deployment."
+evidence:
+  - source_id: src-nb-applications-deploy
+    source_sha256: 46193651d2183fb7cddd041c5e7c2a76cc457bd6aba4331bbb66c13a2ba5f153
+    excerpt: "You can deploy each application in a project once. To deploy an
+      application again, delete its previous deployment first."
+    locator: "How to find and deploy an application, note"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T15:41:54Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:01:31Z
+  content_sha256: 00354d67cba779e3b3393ef1189b19f7b0c787c8f828b5b53f1827ea9f504a40
