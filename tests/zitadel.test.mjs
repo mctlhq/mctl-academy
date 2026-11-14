@@ -17,6 +17,7 @@ describe("readZitadelConfig", () => {
     ZITADEL_ISSUER: "https://auth.mctl.ai/",
     ZITADEL_CLIENT_ID: " zid ",
     ZITADEL_CLIENT_SECRET: " zsecret ",
+    BETTER_AUTH_URL: "https://academy.mctl.ai/",
   };
 
   test("is off, with no problem, when none of its variables are set", () => {
@@ -30,6 +31,8 @@ describe("readZitadelConfig", () => {
         clientId: "zid",
         clientSecret: "zsecret",
         displayName: "ZITADEL",
+        // What zitadel-iac registers for academy.
+        redirectURI: "https://academy.mctl.ai/api/auth/oauth2/callback/zitadel",
       },
     });
     assert.equal(
@@ -41,6 +44,14 @@ describe("readZitadelConfig", () => {
   test("reports a half-set configuration instead of silently dropping it", () => {
     assert.match(readZitadelConfig({ ZITADEL_CLIENT_ID: "zid" }).problem, /partly configured/);
     assert.match(readZitadelConfig({ ...full, ZITADEL_CLIENT_SECRET: "" }).problem, /partly configured/);
+  });
+
+  test("reports a missing or unusable BETTER_AUTH_URL, since the redirect URI is built from it", () => {
+    assert.match(readZitadelConfig({ ...full, BETTER_AUTH_URL: undefined }).problem, /BETTER_AUTH_URL/);
+    assert.match(
+      readZitadelConfig({ ...full, BETTER_AUTH_URL: "academy.mctl.ai" }).problem,
+      /BETTER_AUTH_URL/,
+    );
   });
 
   test("reports an issuer that is not https", () => {

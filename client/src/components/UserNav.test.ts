@@ -3,7 +3,7 @@ import { flushPromises, mount } from "@vue/test-utils";
 import { ref } from "vue";
 import UserNav from "./UserNav.vue";
 
-const signInMocks = vi.hoisted(() => ({ social: vi.fn(), oauth2: vi.fn() }));
+const signInMocks = vi.hoisted(() => ({ social: vi.fn() }));
 vi.mock("../authClient", () => ({
   authClient: { signIn: signInMocks, signOut: vi.fn() },
 }));
@@ -103,6 +103,21 @@ describe("UserNav", () => {
     await flushPromises();
     expect(wrapper.get("[role=alert]").text()).toMatch(/Could not open GitHub sign-in/);
     expect(wrapper.get(".signin-github").attributes("disabled")).toBeUndefined();
+    window.history.pushState({}, "", "/");
+  });
+
+  it("starts the ZITADEL sign-in through signIn.social with the server's provider id", async () => {
+    stubSignInOptions({ zitadel: { providerId: "zitadel", label: "MCTL account" } });
+    window.history.pushState({}, "", "/practice?domain=domain-3");
+    signInMocks.social.mockReset();
+    const social = signInMocks.social.mockImplementation(() => new Promise(() => {}));
+    const wrapper = mount(UserNav, { props: { user: null, loading: false } });
+    await flushPromises();
+
+    await wrapper.get(".signin-zitadel").trigger("click");
+    expect(social).toHaveBeenCalledTimes(1);
+    expect(social).toHaveBeenCalledWith({ provider: "zitadel", callbackURL: "/practice?domain=domain-3" });
+    wrapper.unmount();
     window.history.pushState({}, "", "/");
   });
 

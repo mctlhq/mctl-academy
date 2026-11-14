@@ -556,6 +556,126 @@ describe("progressStore service", () => {
     expect(getStoredAttempts()).toEqual([expect.objectContaining({ questionId: "q-legacy", correct: true })]);
   });
 
+  describe("a POST the server refuses for good (400/422)", () => {
+    /** GET returns no server rows; every POST answers with `postStatus`. */
+    function stubServer(postStatus: number) {
+      const fetchSpy = vi.fn((_url: string, init?: RequestInit) =>
+        Promise.resolve(
+          init?.method === "POST"
+            ? { ok: postStatus >= 200 && postStatus < 300, status: postStatus }
+            : { ok: true, status: 200, json: async () => ({ attempts: [] }) },
+        ),
+      );
+      vi.stubGlobal("fetch", fetchSpy);
+      return () => fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST").length;
+    }
+
+    it.each([400, 422])(
+      "a backfilled row refused with %i becomes local-only: no failure, never re-posted",
+      async (status) => {
+        // e.g. its question file was deleted, so the server answers unknown_question.
+        saveRawAttempts([
+          {
+            questionId: "q-deleted",
+            domain: "domain-1",
+            correct: true,
+            attemptedAt: "2026-09-01T00:00:00Z",
+            optionId: "a",
+          },
+        ]);
+        const posts = stubServer(status);
+        setSyncEnabled(true);
+
+        expect(await syncFromServer()).toBe("synced");
+        expect(syncStatus.value).toBe("synced");
+        expect(posts()).toBe(1);
+
+        // The next syncs leave it alone, and it still counts as local progress.
+        expect(await syncFromServer()).toBe("synced");
+        expect(await syncFromServer()).toBe("synced");
+        expect(posts()).toBe(1);
+        expect(getStoredAttempts()).toEqual([
+          expect.objectContaining({ questionId: "q-deleted", correct: true, serverRejected: true }),
+        ]);
+      },
+    );
+
+    it("a live answer refused with 400 does not flip the status to failed, and is not backfilled later", async () => {
+      const posts = stubServer(400);
+      setSyncEnabled(true);
+      expect(await syncFromServer()).toBe("synced");
+
+      recordAttempt("q-deleted", "domain-1", true, "a");
+      await vi.waitFor(() =>
+        expect(getStoredAttempts()).toEqual([expect.objectContaining({ serverRejected: true })]),
+      );
+      expect(syncStatus.value).toBe("synced");
+
+      expect(await syncFromServer()).toBe("synced");
+      expect(posts()).toBe(1);
+    });
+
+    it("a clear does not report failed because an answer recorded mid-clear was refused", async () => {
+      let releaseFirst!: () => void;
+      let posts = 0;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) => {
+          if (init?.method === "POST") {
+            posts += 1;
+            if (posts === 1)
+              return new Promise((resolve) => (releaseFirst = () => resolve({ ok: true, status: 201 })));
+            return Promise.resolve({ ok: false, status: 400 });
+          }
+          return Promise.resolve({ ok: true, status: 200, json: async () => ({ attempts: [] }) });
+        }),
+      );
+      setSyncEnabled(true);
+      recordAttempt("q-1", "domain-1", true, "a"); // POST in flight
+      const clearing = clearProgress(); // waits for it
+      recordAttempt("q-deleted", "domain-1", false, "b"); // recorded after the local wipe; refused
+      releaseFirst();
+      await clearing;
+      expect(getStoredAttempts()).toEqual([
+        expect.objectContaining({ questionId: "q-deleted", serverRejected: true }),
+      ]);
+      expect(syncStatus.value).toBe("synced");
+    });
+
+    it.each([
+      ["a 500", 500],
+      ["a 503", 503],
+      ["a 401", 401],
+      ["a 403", 403],
+      ["a 429", 429],
+    ])("keeps retrying a row after %s, and reports the sync as failed", async (_label, status) => {
+      recordAttempt("q-1", "domain-1", true, "a");
+      const posts = stubServer(status);
+      setSyncEnabled(true);
+
+      expect(await syncFromServer()).toBe("failed");
+      expect(await syncFromServer()).toBe("failed");
+      expect(posts()).toBe(2);
+      expect(getStoredAttempts()[0]).not.toHaveProperty("serverRejected");
+    });
+
+    it("keeps retrying a row after a network error", async () => {
+      recordAttempt("q-1", "domain-1", true, "a");
+      const fetchSpy = vi.fn((_url: string, init?: RequestInit) =>
+        init?.method === "POST"
+          ? Promise.reject(new Error("offline"))
+          : Promise.resolve({ ok: true, status: 200, json: async () => ({ attempts: [] }) }),
+      );
+      vi.stubGlobal("fetch", fetchSpy);
+      setSyncEnabled(true);
+
+      expect(await syncFromServer()).toBe("failed");
+      expect(await syncFromServer()).toBe("failed");
+      expect(fetchSpy.mock.calls.filter(([, init]) => init?.method === "POST")).toHaveLength(2);
+      expect(getStoredAttempts()[0]).not.toHaveProperty("serverRejected");
+    });
+  });
+
   it("syncFromServer reconciles local and server attempts without deleting either side's history", async () => {
     const older = "2024-01-01T00:00:00.000Z";
     const newer = "2024-06-01T00:00:00.000Z";

@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import {
   auth,
   authPool,
+  handleAuthRequest,
   assertAuthSecretConfigured,
   assertZitadelConfigValid,
   zitadelSignIn,
@@ -91,7 +92,7 @@ warnIgnoredAllowlistEntries(process.env);
 // better-auth owns /api/auth/* wholesale — origin validation, CSRF/Fetch
 // Metadata checks and secure production cookies are its concern, not a
 // parallel hand-rolled middleware. See server/auth.mjs.
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+app.on(["POST", "GET"], "/api/auth/*", (c) => handleAuthRequest(c.req.raw));
 
 /**
  * GET /api/sign-in-options - which optional sign-in buttons to show.

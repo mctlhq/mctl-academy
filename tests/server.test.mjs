@@ -28,12 +28,13 @@ describe("Hono server & Report API", () => {
   test("the ZITADEL sign-in routes do not exist when ZITADEL_* is unset", async () => {
     // Off means absent, not merely hidden: nothing to start, nothing to call back.
     assert.equal(process.env.ZITADEL_ISSUER, undefined);
-    const start = await app.request("/api/auth/sign-in/oauth2", {
+    const start = await app.request("/api/auth/sign-in/social", {
       method: "POST",
       headers: { "content-type": "application/json", origin: "http://localhost" },
-      body: JSON.stringify({ providerId: "zitadel", callbackURL: "/" }),
+      body: JSON.stringify({ provider: "zitadel", callbackURL: "/" }),
     });
     assert.equal(start.status, 404);
+    // ZITADEL's registered callback path is only forwarded when configured.
     const callback = await app.request("/api/auth/oauth2/callback/zitadel?code=c&state=s");
     assert.equal(callback.status, 404);
   });

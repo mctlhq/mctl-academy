@@ -52,10 +52,19 @@ export class FakeZitadel {
       .sign(key.privateKey);
   }
 
-  /** Register what the login carrying `authorizeUrl` returns for `code`. */
+  /**
+   * Register what the login carrying `authorizeUrl` returns for `code`. Like
+   * ZITADEL, the ID token echoes the request's nonce, and the token request
+   * must repeat the request's redirect_uri.
+   */
   approve(code, authorizeUrl, login) {
     const url = new URL(authorizeUrl);
-    this.codes.set(code, { ...login, challenge: url.searchParams.get("code_challenge") });
+    this.codes.set(code, {
+      ...login,
+      challenge: url.searchParams.get("code_challenge"),
+      nonce: url.searchParams.get("nonce") ?? undefined,
+      redirectUri: url.searchParams.get("redirect_uri"),
+    });
   }
 
   fetch = async (input, init = {}) => {
@@ -68,6 +77,7 @@ export class FakeZitadel {
         token_endpoint: `${this.issuer}/oauth/v2/token`,
         userinfo_endpoint: `${this.issuer}/oidc/v1/userinfo`,
         jwks_uri: `${this.issuer}/oauth/v2/keys`,
+        id_token_signing_alg_values_supported: ["RS256"],
         ...this.discovery,
       });
     }
@@ -89,7 +99,7 @@ export class FakeZitadel {
       const challenge = createHash("sha256")
         .update(body.get("code_verifier") ?? "")
         .digest("base64url");
-      if (!pending || pending.challenge !== challenge) {
+      if (!pending || pending.challenge !== challenge || pending.redirectUri !== body.get("redirect_uri")) {
         return Response.json({ error: "invalid_grant" }, { status: 400 });
       }
       this.codes.delete(body.get("code"));
@@ -102,6 +112,7 @@ export class FakeZitadel {
           email: pending.email,
           name: pending.name,
           email_verified: pending.email_verified ?? true,
+          nonce: pending.nonce,
         }),
       });
     }
