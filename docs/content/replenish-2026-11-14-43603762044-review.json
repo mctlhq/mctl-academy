@@ -1,0 +1,55 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T14:32:11Z",
+  "questions": [
+    {
+      "id": "q-f1a9c3e76b24",
+      "content_sha256": "34f0116b59494db96a58740f42a115c2862b5e442ee9e02713fbdba38acc6987",
+      "approved": true,
+      "reason": "The captured page states under \"How it works\" that \"The workload exchanges its Nebius access token for a signed ID token through Nebius Security Token Service (STS) ... and sends the token to the target system\", which is exactly option a; the page's limitations and SAML/VPN absence leave no other option defensible.",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    },
+    {
+      "id": "q-f3b6e2a84c17",
+      "content_sha256": "99cf005947a5b79b6043b9803bc841004384ae4ba99f15bffe98bc891ce8cdd7",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\" is found verbatim and covers both manual and autoscaler scaling, while the cordon/drain/delete/create sequence is documented only for template changes (\"performs a rolling update to each node in the group when you modify the node group template\").",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    },
+    {
+      "id": "q-f4c71d9a3b58",
+      "content_sha256": "51ce8b612126cc7a23fac579b136351d4e200973d0d9190610c1ff71e2396388",
+      "approved": true,
+      "reason": "Read in its section, the excerpt \"If a connection or data exchange takes place within one entity (POD or SU), the cost of network communication does not change\" together with \"if you need to transfer data from one POD to another, the data goes through a root switch. This leads to a higher cost\" establishes that keeping workers inside one POD or SU is cheapest; no distractor is supported.",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    },
+    {
+      "id": "q-f5e82a6c91d4",
+      "content_sha256": "2e9dad008e177bbc4780c0489ecf00dffb01fcf90c992801f8f38e6ff4dfc31c",
+      "approved": true,
+      "reason": "Under \"Node replacement\": \"The drain reason now has the [hardware_problem] prefix - Soperator marks all worker nodes with this prefix as unhealthy Kubernetes nodes, which triggers automatic re-creation of the node\", found verbatim; the page assigns [node_problem] to the first drain and the suspicious-reservation release to nodes that pass, so only option a fits a failed extensive check.",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    },
+    {
+      "id": "q-f6d93c2b8e75",
+      "content_sha256": "b24e4869ca9999d1e0d0112f657833e46c774b7ce0121c04bbd3da1fcb553643",
+      "approved": true,
+      "reason": "The comparison table's Storage row for Endpoint reads \"Data on the container disk is removed when you stop or delete the endpoint\", verbatim and scoped to stop as well as delete, which refutes both \"Yes\" options and the delete-only variant.",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    },
+    {
+      "id": "q-f7a84e1c6b93",
+      "content_sha256": "7f5b8f7174ca76d8723303b65aa9deb45d4fc0cefd2961d68be29441d7325082",
+      "approved": true,
+      "reason": "\"To view more metrics and create advanced visualizations, integrate Observability Metrics with Prometheus or Grafana\" is the verbatim sentence closing the web console dashboards section; the page presents the Observability -> Metrics page and the resource Metrics tab as \"two ways to find the required dashboard\", so neither the console-navigation nor the refresh-interval option competes.",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    },
+    {
+      "id": "q-f8b25d7a3c64",
+      "content_sha256": "e1c5cae10771707eeda49b97bdc5b0e5fb3096e8b9fb210d64ca848b8e932d68",
+      "approved": true,
+      "reason": "The warning on step 2 \"Restart the GPUs on the VM\" says that if the VM is a Managed Kubernetes \"node (that is, its name starts with mk8snodegroup), skip this step and proceed to the next step\", and the next ordered step is \"Restart the VM\"; support is documented only after a VM restart also fails.",
+      "reviewed_at": "2026-11-14T14:32:11Z"
+    }
+  ]
+}

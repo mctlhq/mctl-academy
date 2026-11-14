@@ -369,8 +369,8 @@
     "id": "ai-infrastructure-engineer",
     "title": "AI Infrastructure Engineer",
     "summary": "Run GPU platforms for training and inference: secure and budget them, keep training clusters and serving healthy, and automate operations for reliability.",
-    "publishedQuestionCount": 0,
-    "available": false,
+    "publishedQuestionCount": 7,
+    "available": true,
     "mock": {
       "questionCount": 30,
       "timeLimitMinutes": 60,
