@@ -1,0 +1,84 @@
+schema_version: 1
+id: ai-solutions-architect
+prepares_for: "Nebius AI Solutions Architect"
+title: "AI Solutions Architect"
+description: "Practice for the Nebius AI Solutions Architect certification. Scenario questions on designing AI cloud solutions: choosing compute, storage and training stacks, planning for failure and handover, balancing cost against performance, and securing identity, connectivity and data."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+# Course map only: objectives are paraphrased in our own words, and no item is
+# authored until an allowlisted source covers the objective (SOURCES.md).
+domains:
+  - id: domain-1
+    title: "High-performing architectures"
+    weight: 25
+    mock_questions: 8
+    objectives:
+      - id: sa-gpu-selection
+        title: "Matching GPU types and platform services to a workload"
+      - id: sa-storage-architecture
+        title: "Storage design for training data, checkpoints and model artifacts"
+      - id: sa-training-stack
+        title: "The supporting stack and user environment for a training platform"
+      - id: sa-deployment-shape
+        title: "Turning workload goals into a fitting deployment design"
+      - id: sa-orchestration-overlays
+        title: "Layering schedulers and ML frameworks on top of compute"
+      - id: sa-distributed-training
+        title: "Recommending a distributed-training design and explaining its trade-offs"
+
+  - id: domain-2
+    title: "Resilient architectures"
+    weight: 25
+    mock_questions: 7
+    objectives:
+      - id: sa-checkpoint-strategy
+        title: "Planning how training saves progress and recovers from interruption"
+      - id: sa-observability-scope
+        title: "Deciding what to collect in metrics, logs and traces"
+      - id: sa-validation-acceptance
+        title: "Validating, benchmarking and accepting a delivered platform"
+      - id: sa-failure-support-model
+        title: "Handling failures and defining who supports the system in operation"
+      - id: sa-migration-handover
+        title: "Migrating workloads in and handing the platform over to its operators"
+
+  - id: domain-3
+    title: "Efficient & cost-aware architectures"
+    weight: 25
+    mock_questions: 8
+    objectives:
+      - id: sa-capacity-quotas-cost
+        title: "Sizing capacity and quotas and estimating cost before onboarding"
+      - id: sa-reuse-automation
+        title: "Cutting operational toil with infrastructure as code and reusable building blocks"
+      - id: sa-finops
+        title: "Cost governance, spend monitoring and shutting down idle resources"
+      - id: sa-cost-tradeoffs
+        title: "When a cheaper option beats the fastest one, and how to argue it"
+      - id: sa-right-sizing
+        title: "Right-sizing resources using both cost and performance signals"
+      - id: sa-multicloud-ingestion
+        title: "Connecting other clouds and bringing data in for AI workloads"
+
+  - id: domain-4
+    title: "Secure architectures"
+    weight: 25
+    mock_questions: 7
+    objectives:
+      - id: sa-identity-model
+        title: "Designing identities, groups and permissions for a solution"
+      - id: sa-private-connectivity
+        title: "Private network paths for operators and management access"
+      - id: sa-secrets-audit-compliance
+        title: "Secrets handling, audit trails and the resulting compliance posture"
+      - id: sa-tenant-isolation-least-privilege
+        title: "Isolating tenants and granting only the access each one needs"
+      - id: sa-data-lifecycle-investigation
+        title: "Data lifecycle, encryption and investigating events from audit logs"

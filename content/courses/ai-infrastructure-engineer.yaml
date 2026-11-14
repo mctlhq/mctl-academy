@@ -1,0 +1,86 @@
+schema_version: 1
+id: ai-infrastructure-engineer
+prepares_for: "Nebius AI Infrastructure Engineer"
+title: "AI Infrastructure Engineer"
+description: "Practice for the Nebius AI Infrastructure Engineer certification. Scenario questions on running GPU platforms for training and inference: access, encryption and spend controls, training clusters and storage, serving and GPU sharing, observability, networking, and keeping long-running workloads reliable."
+disclaimer:
+  short: "Not affiliated with, endorsed by, or sponsored by Nebius."
+  full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
+
+mock:
+  question_count: 30
+  time_limit_minutes: 60
+  disclose_bank_size: true
+
+# Course map only: objectives are paraphrased in our own words, and no item is
+# authored until an allowlisted source covers the objective (SOURCES.md).
+domains:
+  - id: domain-1
+    title: "Security, compliance & billing"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: ie-identity-federation
+        title: "Users, service accounts and federated sign-in for platform access"
+      - id: ie-encryption-secrets
+        title: "Encrypting data at rest and keeping secrets out of workloads"
+      - id: ie-billing-quotas
+        title: "Tracking spend, budgets and quotas for GPU capacity"
+      - id: ie-rbac-key-rotation
+        title: "Role-based access for several teams and rotating credentials and keys"
+      - id: ie-compliance-residency
+        title: "Choosing regions, deleting and exporting data, and auditing actions"
+
+  - id: domain-2
+    title: "Training platform engineering"
+    weight: 35
+    mock_questions: 10
+    objectives:
+      - id: ie-training-cluster-lifecycle
+        title: "Creating, scaling and retiring GPU clusters for training"
+      - id: ie-training-images
+        title: "Reproducible container and node images for training jobs"
+      - id: ie-checkpoint-restart
+        title: "Saving checkpoints and resuming interrupted training runs"
+      - id: ie-gpu-fabric
+        title: "High-speed GPU interconnect for multi-node training and how to verify it"
+      - id: ie-storage-tiers
+        title: "Picking storage tiers for datasets, checkpoints and scratch data"
+      - id: ie-distributed-parallelism
+        title: "Running distributed-training frameworks and launchers on the platform"
+      - id: ie-slurm-admin
+        title: "Operating a Slurm-based training cluster as a platform team"
+
+  - id: domain-3
+    title: "Inference platform engineering"
+    weight: 20
+    mock_questions: 6
+    objectives:
+      - id: ie-gpu-partitioning
+        title: "Sharing one GPU across several inference workloads"
+      - id: ie-inference-pipelines
+        title: "Inference pipelines and integrating external orchestration tools"
+      - id: ie-marketplace-apps
+        title: "Deploying and configuring prebuilt applications for ML workflows"
+      - id: ie-serving-patterns
+        title: "Choosing how to serve a model: endpoints, containers or clusters"
+      - id: ie-inference-slo-tuning
+        title: "Tuning latency, throughput and scaling to meet serving targets"
+
+  - id: domain-4
+    title: "Automation & platform reliability"
+    weight: 25
+    mock_questions: 8
+    objectives:
+      - id: ie-observability-platform
+        title: "Metrics, logs, dashboards and alerts across the GPU platform"
+      - id: ie-multicluster-networking
+        title: "Connecting networks, clusters and private endpoints"
+      - id: ie-cross-cloud-data
+        title: "Moving and integrating data between clouds and on-premises systems"
+      - id: ie-long-run-reliability
+        title: "Keeping multi-day training and always-on inference healthy"
+      - id: ie-fabric-incidents
+        title: "Troubleshooting failing nodes, interconnect faults and stalled jobs"
+      - id: ie-gpu-rollouts
+        title: "Planning a move to a newer GPU platform without breaking workloads"

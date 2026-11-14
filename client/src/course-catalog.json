@@ -111,6 +111,43 @@
     }
   },
   {
+    "id": "ai-infrastructure-engineer",
+    "title": "AI Infrastructure Engineer",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Security, compliance & billing",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-2",
+          "title": "Training platform engineering",
+          "weight": 35,
+          "mockQuestions": 10
+        },
+        {
+          "id": "domain-3",
+          "title": "Inference platform engineering",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-4",
+          "title": "Automation & platform reliability",
+          "weight": 25,
+          "mockQuestions": 8
+        }
+      ]
+    }
+  },
+  {
     "id": "ai-leader",
     "title": "AI Leader",
     "publishedQuestionCount": 38,
@@ -143,6 +180,43 @@
           "title": "Platform Capabilities",
           "weight": 15,
           "mockQuestions": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "ai-solutions-architect",
+    "title": "AI Solutions Architect",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "High-performing architectures",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-2",
+          "title": "Resilient architectures",
+          "weight": 25,
+          "mockQuestions": 7
+        },
+        {
+          "id": "domain-3",
+          "title": "Efficient & cost-aware architectures",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-4",
+          "title": "Secure architectures",
+          "weight": 25,
+          "mockQuestions": 7
         }
       ]
     }
