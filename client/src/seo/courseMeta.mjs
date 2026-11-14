@@ -57,7 +57,7 @@ export function courseCanonicalUrl(courseId) {
 export function courseHeadMeta(course) {
   if (!course.available) {
     return {
-      title: `${course.title} — Coming Soon · ${SITE_NAME}`,
+      title: `${course.title} — Coming soon · ${SITE_NAME}`,
       description: null,
       canonicalUrl: null,
       jsonLd: null,
