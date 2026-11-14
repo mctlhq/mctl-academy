@@ -351,12 +351,12 @@ const links = [
   }
 
   /* site.css caps the context at 40vw once the burger shows, which left
-     "AI Clo…" at 375px. Here the course takes whatever the brand and the
-     actions leave, and never less than a readable width. Chained to outrank
-     site.css's :has() selector. */
+     "AI Clo…" at 375px. Here the course takes all the room the brand and the
+     actions leave instead (a min-width would only push the burger into the
+     page gutter). Chained to outrank site.css's :has() selector. */
   .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
     flex: 1 1 auto;
-    min-width: 7.5rem;
+    min-width: 0;
     max-width: none;
   }
 
@@ -377,6 +377,15 @@ const links = [
 @media (max-width: 400px) {
   .app-brand-suffix {
     display: none;
+  }
+
+  /* The "/" separator and its gap are 16px of course name at 375px. */
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
+    gap: 0;
+  }
+
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context::before {
+    content: none;
   }
 }
 </style>
