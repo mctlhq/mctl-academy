@@ -219,8 +219,7 @@ onUnmounted(() => {
             <h3 class="guide-card-title">Duration & question format</h3>
             <p class="guide-card-text">
               The mock exam is configured for a timed {{ course.mock.timeLimitMinutes }}-minute run with
-              {{ course.mock.questionCount }} scenario-based questions. Problems assess practical
-              architecture, configuration choices, and operational troubleshooting.
+              {{ course.mock.questionCount }} scenario-based questions, drawn from the domains listed above.
             </p>
           </div>
           <div class="guide-card">
@@ -260,7 +259,7 @@ onUnmounted(() => {
             <div class="step-content">
               <h3 class="step-title">Timed mock exam runs</h3>
               <p class="step-text">
-                Simulate realistic exam pacing with a {{ course.mock.timeLimitMinutes }}-minute,
+                Practice working under a time limit with a {{ course.mock.timeLimitMinutes }}-minute,
                 {{ course.mock.questionCount }}-question mock run. Aim for approximately
                 {{ mockPaceMinutes }} minutes per scenario.
               </p>
@@ -404,11 +403,7 @@ onUnmounted(() => {
             <p class="guide-card-text">
               The mock run for {{ course.title }} is configured for {{ course.mock.timeLimitMinutes }} minutes
               with {{ course.mock.questionCount }} scenario-based questions.
-              {{
-                course.summary
-                  ? course.summary
-                  : "Problems assess practical technical skills and operational troubleshooting."
-              }}
+              {{ course.summary ? course.summary : "The domains and objectives it covers are listed above." }}
             </p>
           </div>
           <div class="guide-card">
