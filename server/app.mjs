@@ -28,12 +28,18 @@ import {
   applySecurityHeadersToResponse,
 } from "./middleware/security-headers.mjs";
 import { createSpaHandler, loadCourseCatalog } from "./spa.mjs";
+import { apiErrorLog } from "./middleware/request-log.mjs";
 
 export const app = new Hono();
 
 // Applied first so it wraps every response below, including the static
 // SPA fallback — a security header baseline is not just an API concern.
 app.use("*", securityHeaders);
+
+// One log line per /api/* failure (status >= 400), with no learner data; see
+// server/middleware/request-log.mjs. Registered before every API route so it
+// also sees better-auth's and the rate limiter's responses.
+app.use("/api/*", apiErrorLog());
 
 /**
  * A handler throwing unwinds past securityHeaders' post-next() code (that's
