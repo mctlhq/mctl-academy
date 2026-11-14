@@ -5,6 +5,14 @@ import { MButton } from "@mctlhq/ui";
 import { courseCatalog, findCourse, type CourseInfo } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
 import { questionsForCourse } from "../services/contentBundle";
+import {
+  COURSE_HEAD_TAGS,
+  COURSE_JSONLD_ID,
+  COURSE_NOT_FOUND_TITLE,
+  courseHeadMeta,
+  headTagSelector,
+  type CourseHeadTagSpec,
+} from "../seo/courseMeta.mjs";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,156 +47,71 @@ function startMock() {
   router.push("/mock");
 }
 
-let originalDescription: string | null = null;
-let originalOgTitle: string | null = null;
-let originalOgDesc: string | null = null;
-let originalOgUrl: string | null = null;
-let originalCanonical: string | null = null;
+/**
+ * Head tags are built by the module the server also renders course pages
+ * with (server/spa.mjs), so a crawler without JavaScript and this view after
+ * an in-app navigation produce identical strings.
+ *
+ * Restoring: a tag the server rewrote carries the site default in
+ * `data-default`; otherwise the value found before this view's first write is
+ * the default. Reading the live value alone would "restore" a server-rendered
+ * course page's own canonical onto whatever page comes next.
+ */
+const savedDefaults = new Map<Element, string | null>();
 
-function saveOriginalMeta() {
-  if (typeof document === "undefined") return;
-  if (originalDescription === null) {
-    originalDescription = document.querySelector('meta[name="description"]')?.getAttribute("content") ?? null;
-  }
-  if (originalOgTitle === null) {
-    originalOgTitle = document.querySelector('meta[property="og:title"]')?.getAttribute("content") ?? null;
-  }
-  if (originalOgDesc === null) {
-    originalOgDesc =
-      document.querySelector('meta[property="og:description"]')?.getAttribute("content") ?? null;
-  }
-  if (originalOgUrl === null) {
-    originalOgUrl = document.querySelector('meta[property="og:url"]')?.getAttribute("content") ?? null;
-  }
-  if (originalCanonical === null) {
-    originalCanonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href") ?? null;
-  }
+function headTag(spec: CourseHeadTagSpec): Element | null {
+  return typeof document === "undefined" ? null : document.querySelector(headTagSelector(spec));
+}
+
+function defaultFor(el: Element): string | null {
+  return el.getAttribute("data-default") ?? savedDefaults.get(el) ?? null;
 }
 
 function restoreOriginalMeta() {
   if (typeof document === "undefined") return;
-
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    if (originalDescription !== null) metaDesc.setAttribute("content", originalDescription);
-    else metaDesc.removeAttribute("content");
+  for (const spec of COURSE_HEAD_TAGS) {
+    const el = headTag(spec);
+    if (!el || (!el.hasAttribute("data-default") && !savedDefaults.has(el))) continue;
+    const original = defaultFor(el);
+    if (original !== null) el.setAttribute(spec.attr, original);
+    else el.removeAttribute(spec.attr);
   }
-
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) {
-    if (originalOgTitle !== null) ogTitle.setAttribute("content", originalOgTitle);
-    else ogTitle.removeAttribute("content");
-  }
-
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) {
-    if (originalOgDesc !== null) ogDesc.setAttribute("content", originalOgDesc);
-    else ogDesc.removeAttribute("content");
-  }
-
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) {
-    if (originalOgUrl !== null) ogUrl.setAttribute("content", originalOgUrl);
-    else ogUrl.removeAttribute("content");
-  }
-
-  const canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) {
-    if (originalCanonical !== null) canonical.setAttribute("href", originalCanonical);
-    else canonical.setAttribute("href", "https://academy.mctl.ai/");
-  }
-
-  const scriptEl = document.getElementById("schema-course-jsonld");
-  if (scriptEl) scriptEl.remove();
+  document.getElementById(COURSE_JSONLD_ID)?.remove();
 }
 
 function updateMeta() {
   if (typeof document === "undefined") return;
-  saveOriginalMeta();
 
   if (!course.value) {
-    document.title = "Course not found · mctl academy";
+    document.title = COURSE_NOT_FOUND_TITLE;
     restoreOriginalMeta();
     return;
   }
 
-  if (!course.value.available) {
-    document.title = `${course.value.title} — Coming Soon · mctl academy`;
+  const meta = courseHeadMeta(course.value);
+  document.title = meta.title;
+  if (!meta.jsonLd) {
     restoreOriginalMeta();
     return;
   }
 
-  const title = `${course.value.title} — Practice Questions & Syllabus · mctl academy`;
-  const description = `Free online practice questions and syllabus for ${course.value.title}. ${totalQuestions.value} questions across ${course.value.mock.domains.length} domains.`;
-  const canonicalUrl = `https://academy.mctl.ai/courses/${course.value.id}`;
-
-  document.title = title;
-
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDesc.setAttribute("content", description);
+  for (const spec of COURSE_HEAD_TAGS) {
+    const el = headTag(spec);
+    if (!el) continue;
+    if (!el.hasAttribute("data-default") && !savedDefaults.has(el)) {
+      savedDefaults.set(el, el.getAttribute(spec.attr));
+    }
+    el.setAttribute(spec.attr, meta[spec.field] ?? "");
   }
 
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute("content", title);
-
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) ogDesc.setAttribute("content", description);
-
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) ogUrl.setAttribute("content", canonicalUrl);
-
-  const canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) canonical.setAttribute("href", canonicalUrl);
-
-  // Schema.org Course & Quiz JSON-LD
-  let scriptEl = document.getElementById("schema-course-jsonld");
+  let scriptEl = document.getElementById(COURSE_JSONLD_ID);
   if (!scriptEl) {
     scriptEl = document.createElement("script");
-    scriptEl.id = "schema-course-jsonld";
+    scriptEl.id = COURSE_JSONLD_ID;
     scriptEl.setAttribute("type", "application/ld+json");
     document.head.appendChild(scriptEl);
   }
-
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Course",
-        "@id": `${canonicalUrl}#course`,
-        name: `${course.value.title} Practice Track`,
-        description: `${course.value.title} online practice questions and study syllabus.`,
-        provider: {
-          "@type": "Organization",
-          name: "mctl Academy",
-          url: "https://academy.mctl.ai/",
-        },
-        isAccessibleForFree: true,
-        inLanguage: "en",
-        offers: [
-          {
-            "@type": "Offer",
-            category: "Free",
-            price: "0",
-            priceCurrency: "USD",
-          },
-        ],
-      },
-      {
-        "@type": "Quiz",
-        "@id": `${canonicalUrl}#quiz`,
-        name: `${course.value.title} Practice Questions`,
-        description: `${totalQuestions.value} scenario-based practice questions across ${course.value.mock.domains.length} domains.`,
-        learningResourceType: "Practice Quiz",
-        isAccessibleForFree: true,
-        about: {
-          "@type": "Thing",
-          name: course.value.title,
-        },
-      },
-    ],
-  };
-  scriptEl.textContent = JSON.stringify(structuredData);
+  scriptEl.textContent = JSON.stringify(meta.jsonLd);
 }
 
 // The header switcher shows the selected course, so a course page selects the
