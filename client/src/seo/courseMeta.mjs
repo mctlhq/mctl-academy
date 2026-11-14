@@ -81,7 +81,7 @@ export function courseHeadMeta(course) {
   if (!course.available) {
     const description =
       course.summary ||
-      `Free online syllabus and practice guide for ${course.title} across ${domainCount} domains.`;
+      `Free online syllabus and practice guide for ${course.title}${domainCount > 0 ? ` across ${domainCount} domains` : ""}.`;
     return {
       title: `${course.title} — Coming soon · ${SITE_NAME}`,
       description,

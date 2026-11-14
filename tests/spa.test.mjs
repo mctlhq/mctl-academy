@@ -121,6 +121,9 @@ describe("known pages", () => {
     assert.equal(title(html), "Upcoming — Coming soon · mctl academy");
     assert.equal(canonical(html), "https://academy.mctl.ai/courses/upcoming");
     assert.match(html, /application\/ld\+json/);
+    const jsonLd = JSON.parse(attr(html, /id="schema-course-jsonld">([^<]*)<\/script>/));
+    assert.equal(jsonLd["@graph"][0]["@type"], "Course");
+    assert.equal(jsonLd["@graph"][1]["@type"], "BreadcrumbList");
   });
 });
 

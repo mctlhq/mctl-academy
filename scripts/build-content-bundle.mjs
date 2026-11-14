@@ -9,7 +9,7 @@
  *   client/src/course-catalog.json   the vendor-neutral course catalog and per
  *                                    -course mock configuration, derived from
  *                                    content/courses/*.yaml
- *   client/public/sitemap.xml        dynamic XML sitemap listing available
+ *   client/public/sitemap.xml        dynamic XML sitemap listing catalog
  *                                    course URLs and root learning routes
  *
  * Eligibility is scripts/lib/content-model.mjs's rule, not a local

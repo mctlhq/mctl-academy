@@ -334,6 +334,12 @@ test("emits sitemap.xml with all catalog courses when ACADEMY_SITEMAP_OUT is con
     questions: [question("q-published0001", "published")],
     sitemap: true,
   });
-  assert.match(sitemap, /<loc>https:\/\/academy\.mctl\.ai\/courses\/agentic-ai-builder<\/loc>/);
-  assert.match(sitemap, /<loc>https:\/\/academy\.mctl\.ai\/courses\/ai-leader<\/loc>/);
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/academy\.mctl\.ai\/courses\/agentic-ai-builder<\/loc>[\s\S]*?<priority>0\.9<\/priority>/,
+  );
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/academy\.mctl\.ai\/courses\/ai-leader<\/loc>[\s\S]*?<priority>0\.7<\/priority>/,
+  );
 });
