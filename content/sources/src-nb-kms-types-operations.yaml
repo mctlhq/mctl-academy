@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kms-types-operations
+url: https://docs.nebius.com/kms/types-operations.md
+title: Key types and operations in Key Management Service
+retrieved_at: 2026-11-14T09:52:21Z
+sha256: da4c9928c5dcd43c0140c50ee532e2cfd1bd92449ba7912b478f743b6261a242
+objectives:
+  - domain-1/ie-encryption-secrets
+snapshot:
+  bucket: academy-source-snapshots
+  key: da4c9928c5dcd43c0140c50ee532e2cfd1bd92449ba7912b478f743b6261a242
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-encryption-secrets

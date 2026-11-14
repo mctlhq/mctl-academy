@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kubernetes
+url: https://docs.nebius.com/kubernetes/index.md
+title: Managed Service for Kubernetes
+retrieved_at: 2026-11-14T09:52:29Z
+sha256: 7da4302a6f6ba278e52b175b4e68eec83e852727ef08d4466cb7c586ce2c1aa1
+objectives:
+  - domain-1/sa-deployment-shape
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7da4302a6f6ba278e52b175b4e68eec83e852727ef08d4466cb7c586ce2c1aa1
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-deployment-shape

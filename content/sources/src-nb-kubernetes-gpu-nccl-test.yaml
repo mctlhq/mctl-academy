@@ -1,0 +1,22 @@
+schema_version: 1
+id: src-nb-kubernetes-gpu-nccl-test
+url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
+title: Running NCCL tests in a Managed Service for Kubernetes cluster with
+  InfiniBand-connected GPUs
+retrieved_at: 2026-11-14T09:52:25Z
+sha256: 6f966f011dc3b92c9ffac689e019956abb0fbf8baa427b010dc1fc9054c28bf3
+objectives:
+  - domain-2/ie-gpu-fabric
+  - domain-2/ie-distributed-parallelism
+  - domain-2/sa-validation-acceptance
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6f966f011dc3b92c9ffac689e019956abb0fbf8baa427b010dc1fc9054c28bf3
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-gpu-fabric
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-distributed-parallelism
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-validation-acceptance
