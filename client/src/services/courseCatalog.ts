@@ -14,11 +14,17 @@ import rawCatalog from "../course-catalog.json";
  * `summary` is the exception that proves it: free text written to be
  * vendor-neutral, which the content lint checks before it is allowed through.
  */
+export interface CourseObjectiveConfig {
+  id: string;
+  title: string;
+}
+
 export interface CourseDomainConfig {
   id: string;
   title: string;
   weight: number;
   mockQuestions: number;
+  objectives?: CourseObjectiveConfig[];
 }
 
 export interface CourseMockConfig {

@@ -115,6 +115,10 @@ const catalog = [...courses.values()]
           title: d.title,
           weight: d.weight,
           mockQuestions: d.mock_questions,
+          objectives: (d.objectives ?? []).map((o) => ({
+            id: o.id,
+            title: o.title,
+          })),
         })),
       },
     };
