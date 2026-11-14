@@ -388,6 +388,33 @@ function returnToFirstUnanswered() {
     font-family: var(--font-mono);
     font-size: var(--text-caption-size);
     cursor: pointer;
+    list-style: none;
+  }
+
+  .mock-exam-nav-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* display:flex drops the native disclosure triangle, so draw a chevron:
+     it points down while closed and up once the grid is open. */
+  .mock-exam-nav-summary::after {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-left: auto;
+    border-right: 1.5px solid var(--surface-fg-subtle);
+    border-bottom: 1.5px solid var(--surface-fg-subtle);
+    transform: translateY(-25%) rotate(45deg);
+  }
+
+  .mock-exam-nav-panel[open] .mock-exam-nav-summary::after {
+    transform: translateY(25%) rotate(-135deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mock-exam-nav-summary::after {
+      transition: transform 150ms ease;
+    }
   }
 
   .mock-exam-nav-panel[open] .mock-exam-nav {
