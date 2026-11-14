@@ -44,6 +44,13 @@ jobs:
       - name: Typecheck (.mjs)
         run: bun run typecheck
 
+      # @mctlhq/ui is released from mctl-design on its own schedule; a range
+      # lets a fresh install or a regenerated lockfile pull a design-system
+      # release into this app with no commit here saying so (#210). Static,
+      # no install needed, so it lives with the other whole-repo checks.
+      - name: Exact @mctlhq pins
+        run: bun run check:pins
+
   content:
     name: Content lint and tests
     runs-on: ubuntu-latest
