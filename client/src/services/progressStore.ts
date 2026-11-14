@@ -322,6 +322,26 @@ export function setSyncEnabled(enabled: boolean): void {
 }
 
 /**
+ * How one attempt POST ended. "rejected" is the server refusing this row for
+ * good (400/422: an unknown question or option, a malformed payload), which
+ * no retry can change. "failed" is anything that might succeed later: a
+ * network error, a 5xx, 401/403 (the session, not the row), 429.
+ */
+type PostOutcome = "synced" | "rejected" | "failed";
+
+/**
+ * Statuses that say the request itself is wrong, not the moment it was sent in.
+ *
+ * Trade-off, accepted: during a rolling deploy a new SPA whose bundle adds a
+ * question can reach a pod still serving the old answer key and get
+ * unknown_question. That row then stays local-only although a retry a minute
+ * later would succeed. Nothing is lost on the device, and the learner's next
+ * answer to the question syncs normally; retrying every 400 instead would
+ * re-post rows the server can never accept on every sync.
+ */
+const PERMANENT_REJECTION_STATUSES = new Set([400, 422]);
+
+/**
  * The complete set of fields a learner attempt ever transmits: the question
  * and the option chosen. Correctness and domain are deliberately absent — the
  * server derives both from its own answer key, so a client cannot forge them
@@ -330,17 +350,6 @@ export function setSyncEnabled(enabled: boolean): void {
  * content as personal learner data and create a reconciliation problem the
  * server does not need to have.
  */
-/**
- * How one attempt POST ended. "rejected" is the server refusing this row for
- * good (400/422: an unknown question or option, a malformed payload), which
- * no retry can change. "failed" is anything that might succeed later: a
- * network error, a 5xx, 401/403 (the session, not the row), 429.
- */
-type PostOutcome = "synced" | "rejected" | "failed";
-
-/** Statuses that say the request itself is wrong, not the moment it was sent in. */
-const PERMANENT_REJECTION_STATUSES = new Set([400, 422]);
-
 function postAttemptToServer(questionId: string, optionId: string | null): Promise<PostOutcome> {
   return fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
