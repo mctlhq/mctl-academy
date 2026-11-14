@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.91](https://github.com/mctlhq/mctl-academy/compare/0.1.90...0.1.91) (2026-11-14)
+
+
+### Bug Fixes
+
+* **auth:** better-auth 1.7.15 and synchronous githubLogin ([6f29d69](https://github.com/mctlhq/mctl-academy/commit/6f29d69767f26bae1148387cb5d8b3721eac25fb))
+* **client:** stop retrying attempts the server rejects with 400 ([fcc738c](https://github.com/mctlhq/mctl-academy/commit/fcc738c13471f34468f8c616c27f9169219acccd))
+
 ## [0.1.90](https://github.com/mctlhq/mctl-academy/compare/0.1.89...0.1.90) (2026-11-14)
 
 
