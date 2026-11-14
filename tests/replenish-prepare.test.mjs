@@ -37,7 +37,7 @@ import {
   readRunScope,
   scopeProblems,
 } from "../scripts/replenish-prepare.mjs";
-import { resolveScope } from "../scripts/lib/content-model.mjs";
+import { resolveScope, stalePinnedQuestions } from "../scripts/lib/content-model.mjs";
 import {
   mergeVersions,
   buildSourceRecord,
@@ -2218,18 +2218,184 @@ test("appendManifestRows keeps the manifest's comments and adds the rows", () =>
   }
 });
 
-function questionsDir(entries) {
+const PIN = "a".repeat(64);
+const srcRecord = (id, overrides = {}) => ({
+  schema_version: 1,
+  id,
+  url: `https://docs.nebius.com/${id}.md`,
+  title: id,
+  sha256: PIN,
+  status: "current",
+  ...overrides,
+});
+/**
+ * Questions plus a record for every source they cite. A cited source not in
+ * `sources` gets a current record whose sha256 is the pin `q` uses, so it is
+ * not stale; `sources` overrides fields per id (e.g. a newer sha256).
+ */
+function questionsDir(entries, sources = {}) {
   const dir = mkdtempSync(join(tmpdir(), "academy-prepare-"));
   mkdirSync(join(dir, "questions"));
+  mkdirSync(join(dir, "sources"));
   for (const q of entries) writeFileSync(join(dir, "questions", `${q.id}.yaml`), yaml(q));
+  const cited = new Set([
+    ...entries.flatMap((q) => (q.evidence ?? []).map((ev) => ev.source_id)),
+    ...Object.keys(sources),
+  ]);
+  for (const id of cited) {
+    writeFileSync(join(dir, "sources", `${id}.yaml`), yaml(srcRecord(id, sources[id] ?? {})));
+  }
   return dir;
 }
 const q = (id, status, source) => ({
   schema_version: 1,
   id,
   status,
-  evidence: [{ source_id: source, source_sha256: "a".repeat(64), excerpt: "x" }],
+  evidence: [{ source_id: source, source_sha256: PIN, excerpt: "x" }],
   reviewed: { by: "mashkovd", at: "2026-01-01T00:00:00Z" },
+});
+
+// A source an earlier run re-captured: the record moved to a new hash and
+// kept the old one in `versions`, while its items stayed pinned to the old one.
+const MOVED = { sha256: "b".repeat(64), versions: [PIN] };
+
+test("revalidationIds picks a stale-pinned needs_review item with no source captured this run", () => {
+  const dir = questionsDir(
+    [
+      q("q-st1", "needs_review", "src-moved"),
+      q("q-pub", "published", "src-moved"),
+      q("q-cur", "needs_review", "src-quotas"),
+    ],
+    { "src-moved": MOVED },
+  );
+  try {
+    assert.deepEqual(revalidationIds({ contentDir: dir, sourceIds: [] }), ["q-st1"]);
+    assert.deepEqual(revalidationIds({ contentDir: dir, sourceIds: ["src-quotas"] }), ["q-cur", "q-st1"]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("revalidationIds does not pick an item pinned to its source's current hash", () => {
+  const dir = questionsDir([q("q-cur", "needs_review", "src-quotas")], {
+    "src-quotas": { versions: ["c".repeat(64)] },
+  });
+  try {
+    assert.deepEqual(revalidationIds({ contentDir: dir, sourceIds: [] }), []);
+    assert.deepEqual(stalePinnedQuestions(dir), []);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("stalePinnedQuestions ignores drifted and deprecated sources and groups by source", () => {
+  const two = {
+    ...q("q-two", "needs_review", "src-moved"),
+    evidence: [
+      { source_id: "src-moved", source_sha256: PIN, excerpt: "x" },
+      { source_id: "src-moved2", source_sha256: PIN, excerpt: "y" },
+    ],
+  };
+  const dir = questionsDir(
+    [two, q("q-dr", "needs_review", "src-drifted"), q("q-dp", "needs_review", "src-deprecated")],
+    {
+      "src-moved": MOVED,
+      "src-moved2": MOVED,
+      "src-drifted": { ...MOVED, status: "drifted" },
+      "src-deprecated": { ...MOVED, status: "deprecated" },
+    },
+  );
+  try {
+    assert.deepEqual(stalePinnedQuestions(dir), [
+      { source_id: "src-moved", question_ids: ["q-two"] },
+      { source_id: "src-moved2", question_ids: ["q-two"] },
+    ]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("revalidationIds still skips a stale-pinned item rejected unchanged, unless receipts are unreadable", () => {
+  const judged = { ...q("q-rj01a2b3c4d5", "needs_review", "src-moved"), reviewed: undefined, stem: "s?" };
+  const { reviewed: _r, ...onDisk } = judged;
+  const dir = questionsDir([onDisk], { "src-moved": MOVED });
+  const reviewDir = join(dir, "reviews");
+  mkdirSync(reviewDir);
+  writeFileSync(join(reviewDir, "run-review.json"), JSON.stringify(receipt([verdict(onDisk, false)])));
+  try {
+    const skipped = [];
+    const ids = revalidationIds({
+      contentDir: dir,
+      reviewDir,
+      sourceIds: [],
+      onSkip: (id) => skipped.push(id),
+    });
+    assert.deepEqual(ids, []);
+    assert.deepEqual(skipped, [onDisk.id]);
+    writeFileSync(join(reviewDir, "broken-review.json"), "{ not json");
+    const problems = [];
+    const again = revalidationIds({
+      contentDir: dir,
+      reviewDir,
+      sourceIds: [],
+      onProblem: (p) => problems.push(p),
+    });
+    assert.deepEqual(again, [onDisk.id]);
+    assert.equal(problems.length, 1);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("revalidationIds fails, never reports nothing stale, when a question or source cannot be read", () => {
+  const cases = {
+    "unparseable question": (dir) => writeFileSync(join(dir, "questions", "q-bad.yaml"), "a: [\n"),
+    "unparseable source": (dir) => writeFileSync(join(dir, "sources", "src-bad.yaml"), "a: [\n"),
+    "cited source without a record": (dir) => rmSync(join(dir, "sources", "src-quotas.yaml")),
+    "source without a sha256": (dir) =>
+      writeFileSync(
+        join(dir, "sources", "src-quotas.yaml"),
+        yaml(srcRecord("src-quotas", { sha256: "abc" })),
+      ),
+    "needs_review question without evidence": (dir) =>
+      writeFileSync(join(dir, "questions", "q-noev.yaml"), yaml({ id: "q-noev", status: "needs_review" })),
+  };
+  for (const [name, plant] of Object.entries(cases)) {
+    const dir = questionsDir([q("q-cur", "needs_review", "src-quotas")]);
+    try {
+      plant(dir);
+      assert.throws(
+        () => revalidationIds({ contentDir: dir, sourceIds: [] }),
+        /stale pins not observable/,
+        name,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+});
+
+// Step 4 used to sit inside `if [ -n "$captured" ]`, so a run that captured
+// nothing never asked for stale-pinned items at all; and the author prompt
+// named only `drifted`, which a current source is never in.
+test("the workflow revalidates without a capture and tells the author about stalePinned", () => {
+  const text = readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8");
+  const workflow = parseYaml(text);
+  const capture = workflow.jobs.author.steps.find((s) => s.id === "capture").run;
+  assert.doesNotMatch(capture, /if \[ -n "\$captured" \]/);
+  const call = capture.indexOf('revalidation-ids --sources "$captured"');
+  assert.ok(call !== -1, "revalidation-ids is called");
+  assert.ok(capture.indexOf("revalidate-content.mjs $ids") > call);
+  const authors = workflow.jobs.author.steps.filter((s) =>
+    s.name?.startsWith("Author agent writes review_ready questions"),
+  );
+  const prompts = authors.map((s) => s.with?.prompt).filter(Boolean);
+  assert.equal(prompts.length, 2);
+  for (const p of prompts) {
+    assert.match(p, /\(`stalePinned`\)/);
+    assert.match(p, /whose source is listed\s+in `drifted`, or whose id is listed under `stalePinned`/);
+    assert.match(p, /a\s+drifted or stale-pinned one included, untouched/);
+  }
 });
 
 test("revalidationIds lists needs_review questions citing the re-captured sources only", () => {

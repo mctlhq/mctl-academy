@@ -462,3 +462,58 @@ export function partitionQuestions(contentDir, onError = null, reviewDir = defau
 
   return { eligible, excluded, sourcesById, receipts, total: entries.length };
 }
+
+const SHA256_HEX = /^[0-9a-f]{64}$/;
+
+/**
+ * `needs_review` questions whose evidence pins a source version that is no
+ * longer the record's current one: some `evidence[].source_sha256` differs
+ * from the cited record's `sha256`, while the record itself is usable (not
+ * `drifted`, which the drift path already reports, and not `deprecated`,
+ * which nothing can be repaired against).
+ *
+ * These are items an earlier run re-captured the source for but could
+ * neither repin (the excerpt is not verbatim in the new text) nor rewrite
+ * (the run was scoped to another course). Nothing else presents them again:
+ * the mechanical repair otherwise looks only at sources captured in the
+ * current run, and the author prompt only at sources that are drifted now.
+ *
+ * Fail-closed: "could not observe" is never "none stale". An unparseable
+ * question or source file, a needs_review question naming no id or no
+ * evidence list, a cited source with no record, or a record without a
+ * well-formed sha256 throws, because any of them could hide exactly the item
+ * this exists to find. A missing directory is the documented absence (no
+ * questions, or no sources, at all).
+ *
+ * @param {string} contentDir
+ * @returns {{ source_id: string, question_ids: string[] }[]} sorted by source
+ *   id, question ids sorted; an item stale on two sources appears under both
+ */
+export function stalePinnedQuestions(contentDir) {
+  const errors = [];
+  const onError = (file, msg) => errors.push(`${file}: ${msg}`);
+  const questions = loadYamlDir(contentDir, "questions", onError);
+  const sources = loadSources(contentDir, onError);
+  const fail = (msg) => {
+    throw new Error(`stale pins not observable: ${msg}`);
+  };
+  if (errors.length) fail(errors.join("; "));
+  const bySource = new Map();
+  for (const { file, data: q } of questions) {
+    if (q?.status !== "needs_review") continue;
+    if (typeof q.id !== "string") fail(`${file} names no id`);
+    if (!Array.isArray(q.evidence)) fail(`${file} has no evidence list`);
+    for (const ev of q.evidence) {
+      const src = sources.get(ev?.source_id);
+      if (!src) fail(`${q.id} cites ${ev?.source_id}, which has no source record`);
+      if (!SHA256_HEX.test(src.sha256 ?? "")) fail(`source ${src.id} has no well-formed sha256`);
+      if (UNUSABLE_SOURCE_STATUSES.has(src.status)) continue;
+      if (ev.source_sha256 === src.sha256) continue;
+      if (!bySource.has(src.id)) bySource.set(src.id, new Set());
+      bySource.get(src.id).add(q.id);
+    }
+  }
+  return [...bySource.keys()]
+    .sort()
+    .map((id) => ({ source_id: id, question_ids: [...bySource.get(id)].sort() }));
+}

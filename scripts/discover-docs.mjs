@@ -5,7 +5,7 @@
  * Source drift job re-hashes the sources already recorded); nothing ever
  * looked for pages the bank does not cite yet.
  *
- * Three signals, all deterministic, no LLM:
+ * Four signals, all deterministic, no LLM:
  *
  *   1. New pages: every `.md` page listed in the canonical llms.txt indices
  *      that no content/sources/*.yaml record, no capture-manifest row and no
@@ -17,6 +17,10 @@
  *      stored in R2, when credentials are present.
  *   3. Gaps: Mock shortfalls per domain and objectives with fewer published
  *      questions than --min-per-objective, from the content quality report.
+ *   4. Stale pins (`stalePinned`): needs_review items whose evidence pins an
+ *      old version of a source that is current now (stalePinnedQuestions).
+ *      An earlier run re-captured the source but could neither repin nor
+ *      rewrite them; without this list no later run would ever see them.
  *
  * With --course <id> the report is scoped to one course, so a manual run can
  * be bounded to what the budget covers: gaps of that course only, and new
@@ -43,6 +47,7 @@ import {
   resolveScope,
   loadSources,
   loadYamlDir,
+  stalePinnedQuestions,
 } from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 import { detectDocsDelta } from "./detect-docs-delta.mjs";
@@ -359,6 +364,11 @@ export async function discover({
     drifted.push(entry);
   }
 
+  // Whole on every run, like `drifted`: a scoped run lists other courses'
+  // stale-pinned items too, and the author-phase guard is what keeps it from
+  // rewriting them. Throws when a question or source file cannot be read.
+  const stalePinned = stalePinnedQuestions(contentDir);
+
   const report = qualityReport({
     courses,
     sources: loadSources(contentDir),
@@ -387,12 +397,14 @@ export async function discover({
     empty:
       selectedNew.length === 0 &&
       drifted.length === 0 &&
+      stalePinned.length === 0 &&
       gaps.length === 0 &&
       indexErrors.length === 0 &&
       unreachable.length === 0,
     newPages: selectedNew,
     newPagesTotal: candidatesNew.length,
     drifted,
+    stalePinned,
     unreachable,
     indexErrors,
     gaps,
@@ -428,6 +440,7 @@ export function summarize({
   newPages,
   newPagesTotal,
   drifted,
+  stalePinned = [],
   gaps,
   unreachable = [],
   indexErrors = [],
@@ -466,6 +479,10 @@ export function summarize({
   lines.push("", `## Drifted sources (${drifted.length})`);
   for (const d of drifted) lines.push(`- ${d.id} [${d.classification}] ${d.summary || d.url}`);
   if (!drifted.length) lines.push("- none");
+  const staleCount = new Set(stalePinned.flatMap((s) => s.question_ids)).size;
+  lines.push("", `## Stale-pinned quarantined items (${staleCount})`);
+  for (const s of stalePinned) lines.push(`- ${s.source_id}: ${s.question_ids.join(", ")}`);
+  if (!stalePinned.length) lines.push("- none");
   lines.push("", `## Gaps (${gaps.length})`);
   for (const g of gaps) {
     lines.push(

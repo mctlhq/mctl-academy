@@ -250,6 +250,64 @@ test("discover: unchanged live bytes are not drift, and the run is empty when no
   }
 });
 
+// A needs_review item still pinned to an old version of a source that is
+// current now: an earlier run re-captured the source and could neither repin
+// nor rewrite it. Nothing else in the report names it.
+const stalePinnedItem = () =>
+  yaml({
+    schema_version: 1,
+    id: "q-stale000001",
+    course_id: "agentic-ai-builder",
+    status: "needs_review",
+    domain: "domain-1",
+    objective: "domain-1/quotas",
+    evidence: [{ source_id: "src-quotas", source_sha256: "c".repeat(64), excerpt: "Default limit" }],
+  });
+
+test("discover: a run with only stale-pinned items is not empty and lists them", async () => {
+  const dir = fixture();
+  try {
+    writeFileSync(join(dir, "questions", "q-stale000001.yaml"), stalePinnedItem());
+    const { result } = await discover({
+      contentDir: dir,
+      checkLive: true,
+      maxNew: 0,
+      minPerObjective: 0,
+      fetch: fakeFetch(OLD),
+      store: fakeStore,
+      warn: () => {},
+    });
+    assert.deepEqual(result.drifted, []);
+    assert.deepEqual(result.gaps, []);
+    assert.deepEqual(result.stalePinned, [{ source_id: "src-quotas", question_ids: ["q-stale000001"] }]);
+    assert.equal(result.empty, false);
+    assert.match(result.summary, /## Stale-pinned quarantined items \(1\)\n- src-quotas: q-stale000001/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: an unreadable source record is an error, never 'nothing stale'", async () => {
+  const dir = fixture();
+  try {
+    writeFileSync(join(dir, "sources", "src-broken.yaml"), "a: [\n");
+    await assert.rejects(
+      discover({
+        contentDir: dir,
+        checkLive: true,
+        maxNew: 0,
+        minPerObjective: 0,
+        fetch: fakeFetch(OLD),
+        store: fakeStore,
+        warn: () => {},
+      }),
+      /stale pins not observable/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("discover: without a store the delta is left unknown with a warning, never guessed", async () => {
   const dir = fixture();
   try {

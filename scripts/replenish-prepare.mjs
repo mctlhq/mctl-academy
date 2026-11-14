@@ -28,8 +28,10 @@
  *   stage [--dir <path>] [--all | <src-id> ...]
  *       Write <dir>/<id>.md from the R2 snapshot each record names.
  *   revalidation-ids --sources <id,id,...>
- *       Print the needs_review question ids citing any of those sources,
- *       except those a reviewer already rejected unchanged.
+ *       Print the needs_review question ids citing any of those sources (the
+ *       list may be empty) or pinned to an old version of a current source,
+ *       except those a reviewer already rejected unchanged. An unreadable
+ *       question or source record fails.
  *   guard --base <git ref> [--max <n>] [--forbid-published-now --author <id> --limits limits.json]
  *       Fail when more than <n> question files changed against the base
  *       (untracked files included; --max omitted disables the cap) or when
@@ -75,6 +77,7 @@ import {
   loadSources,
   loadYamlDir,
   resolveScope,
+  stalePinnedQuestions,
 } from "./lib/content-model.mjs";
 import { questionFingerprint } from "./lib/question-review.mjs";
 import { storeFromEnv } from "./lib/snapshot-store.mjs";
@@ -387,10 +390,14 @@ export function rejectedUnchanged(question, verdicts) {
 }
 
 /**
- * The needs_review question ids citing any of the re-captured sources, minus
- * those a reviewer already rejected unchanged (see rejectedUnchanged). When
- * the receipts cannot be read in full nothing is held back: "could not tell"
- * re-selects, it never skips.
+ * The needs_review question ids citing any of the re-captured sources, plus
+ * every stale-pinned one (see stalePinnedQuestions: an item whose evidence
+ * pins an old version of a source that is current now, which no capture in
+ * this run need touch), minus those a reviewer already rejected unchanged
+ * (see rejectedUnchanged). When the receipts cannot be read in full nothing
+ * is held back: "could not tell" re-selects, it never skips. When the
+ * questions or source records cannot be read in full this throws: "could not
+ * tell" is never "nothing stale".
  */
 export function revalidationIds({
   contentDir = CONTENT,
@@ -400,9 +407,14 @@ export function revalidationIds({
   onProblem = null,
 }) {
   const wanted = new Set(sourceIds);
+  const stale = new Set(stalePinnedQuestions(contentDir).flatMap((s) => s.question_ids));
   const cited = loadYamlDir(contentDir, "questions")
     .map((e) => e.data)
-    .filter((q) => q.status === "needs_review" && (q.evidence ?? []).some((ev) => wanted.has(ev.source_id)));
+    .filter(
+      (q) =>
+        q.status === "needs_review" &&
+        (stale.has(q.id) || (q.evidence ?? []).some((ev) => wanted.has(ev.source_id))),
+    );
   const { verdicts, problems } = reviewVerdicts(reviewDir);
   for (const p of problems) onProblem?.(p);
   return cited
@@ -786,8 +798,13 @@ export function prBody({
       "",
     );
   }
+  // `stalePinned` is absent from a report older than the key; that reads as
+  // "?" rather than as zero stale items.
+  const stale = Array.isArray(candidates.stalePinned)
+    ? new Set(candidates.stalePinned.flatMap((s) => s.question_ids ?? [])).size
+    : "?";
   lines.push(
-    `Discovery: ${candidates.newPagesTotal} uncited pages in the indices, ${candidates.newPages.length} offered, ${candidates.drifted.length} drifted sources, ${(candidates.unreachable ?? []).length} unreachable, ${candidates.gaps.length} gaps.`,
+    `Discovery: ${candidates.newPagesTotal} uncited pages in the indices, ${candidates.newPages.length} offered, ${candidates.drifted.length} drifted sources, ${stale} stale-pinned quarantined items, ${(candidates.unreachable ?? []).length} unreachable, ${candidates.gaps.length} gaps.`,
     "",
   );
   lines.push("### Sources captured in this PR", "");
