@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-slurm-soperator-jobs-containers-pyxis-enroot
+url: https://docs.nebius.com/slurm-soperator/jobs/containers/pyxis-enroot.md
+title: Running jobs in containers by using Enroot and Pyxis
+retrieved_at: 2026-11-14T10:06:56Z
+sha256: 47b6d22e676b896195575e4d59084438c33a97c3ed81c2657f0f732938b5f2fc
+objectives:
+  - domain-2/ie-training-images
+snapshot:
+  bucket: academy-source-snapshots
+  key: 47b6d22e676b896195575e4d59084438c33a97c3ed81c2657f0f732938b5f2fc
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-images
