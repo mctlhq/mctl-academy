@@ -739,3 +739,32 @@ test("a vendor name in prepares_for still matches with a mark or possessive atta
     assert.match(output, /summary names "Acme"/);
   }
 });
+
+test("rejects a manifest row whose coverage names an objective outside its own objectives", () => {
+  const row = (objectives) => ({
+    id: "src-new-page",
+    url: "https://docs.nebius.com/new-page.md",
+    title: "New",
+    objectives,
+    coverage: [{ course_id: "agentic-ai-builder", objective: "domain-1/alpha" }],
+  });
+  let r = lint({ manifest: { sources: [row(["domain-2/beta"])] } });
+  assert.equal(r.ok, false);
+  assert.match(r.output, /coverage objective domain-1\/alpha is not in the row's objectives/);
+  r = lint({ manifest: { sources: [row(["domain-1/alpha", "domain-2/beta"])] } });
+  assert.equal(r.ok, true, r.output);
+});
+
+test("a question citing a record covered for its course through `coverage` passes", () => {
+  // The record's bare objectives belong to another course; only its
+  // course-aware coverage maps it to this course's objective.
+  const { ok, output } = lint({
+    sources: [
+      source({
+        objectives: ["domain-2/beta"],
+        coverage: [{ course_id: "agentic-ai-builder", objective: "domain-1/alpha" }],
+      }),
+    ],
+  });
+  assert.equal(ok, true, output);
+});

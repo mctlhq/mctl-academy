@@ -13,3 +13,6 @@ status: current
 versions:
   - bb97dc33a526a8ddf4d365f1ae4e6925dfed1502288c9166edbf0eb54b8b9086
   - e3c5c60f8835b8d9bf228f2a5a6276c633ab6018f9d5355da600c9e3564a19ea
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-training-stack

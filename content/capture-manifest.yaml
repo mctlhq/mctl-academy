@@ -4,9 +4,12 @@ schema_version: 1
 #
 # Each entry becomes exactly one content/sources/<id>.yaml, written by
 # scripts/capture-source.mjs after it fetches the URL, hashes the response
-# bytes, and PUTs the snapshot into the private R2 store. Nothing here is read
-# at build time: the content loaders only ever walk content/{courses,sources,
-# questions,lessons}, so this file is inert to the lint and to the bundler.
+# bytes, and PUTs the snapshot into the private R2 store. Nothing here reaches
+# the bundle: the bundler only walks content/{courses,sources,questions,
+# lessons}. The lint does read it, to check each row before a capture run
+# spends requests on it: allowlisted URL, no duplicate row or URL, no second
+# capture of an already-captured page, valid course-aware `coverage`, and
+# `coverage` objectives contained in `objectives` when a row has both.
 #
 # Why a committed manifest rather than workflow_dispatch inputs:
 #
