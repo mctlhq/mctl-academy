@@ -89,6 +89,21 @@ describe("ZITADEL sign-in, end to end", () => {
     assert.match(sessionCookie, /better-auth\.session_token=/);
   });
 
+  test("forwards a form_post (POST) callback on the registered path instead of failing", async () => {
+    // ZITADEL may return the callback with response_mode=form_post. The
+    // forwarded copy (handleAuthRequest) must carry the method and the body;
+    // passing the Request itself as the init does that on Node and Bun, no
+    // duplex option needed. The state is unknown, so better-auth refuses the
+    // sign-in itself; what matters is that the request reached it.
+    const response = await app.request("/api/auth/oauth2/callback/zitadel", {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ code: randomUUID(), state: "unknown-state" }).toString(),
+    });
+    assert.notEqual(response.status, 500, await response.clone().text());
+    assert.notEqual(response.status, 404);
+  });
+
   test("advertises the button only because the server has ZITADEL configured", async () => {
     const response = await app.request("/api/sign-in-options");
     assert.deepEqual(await response.json(), { zitadel: { providerId: "zitadel", label: "MCTL account" } });
