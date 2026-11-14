@@ -72,6 +72,18 @@ Two workflows in this repository run every Monday:
    approved it. Edit the item, or retire it, to move it on. When any receipt
    cannot be read in full nothing is skipped, and the step log says why.
 
+   **Stale-pinned items.** A `needs_review` item whose evidence pins an older
+   version of a source that is `current` now (its `source_sha256` is in the
+   record's `versions`, not its `sha256`) is one an earlier run re-captured
+   the source for but could neither repin nor rewrite, typically because that
+   run was scoped to another course. Discovery lists every such item under
+   `stalePinned` in `_run/candidates.json` (whole, like `drifted`, on a scoped
+   run too; the guard still rejects off-scope edits), a run with only these is
+   not empty, `revalidation-ids` re-presents them even when nothing was
+   captured, and the author prompt treats them like items of a drifted
+   source. An unreadable question file or source record fails both steps,
+   never "nothing stale".
+
 What stays manual: merging the PR (CODEOWNER), the exam-provenance attestation
 in the PR body, allowlisting a new host, and any `ignored` entry in
 `content/discovery-state.yaml` (a page that should never be proposed again).
