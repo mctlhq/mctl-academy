@@ -743,52 +743,6 @@
     ]
   },
   {
-    "id": "q-3a6f9d2e7b15",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/framework-integrations",
-    "stem": "In the Token Factory third-party integrations overview, which integration is listed under the \"Agent Frameworks\" category?",
-    "objectiveTitle": "Third-party framework integrations",
-    "sources": [
-      {
-        "title": "Overview",
-        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "## Agent Frameworks"
-      },
-      {
-        "title": "Overview",
-        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "[card] [CrewAI](https://docs.tokenfactory.nebius.com/integrations/agents/crewai)"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "CrewAI",
-        "correct": true,
-        "explanation": "The overview's Agent Frameworks category lists CrewAI alongside Agno, Camel AI, Google ADK, Llama-Index, Pydantic, and Strands."
-      },
-      {
-        "id": "b",
-        "text": "Portkey",
-        "correct": false,
-        "explanation": "Portkey is listed under the overview's API Routers category, not Agent Frameworks."
-      },
-      {
-        "id": "c",
-        "text": "Cursor",
-        "correct": false,
-        "explanation": "Cursor is listed under the overview's Coding Assistants category, not Agent Frameworks."
-      },
-      {
-        "id": "d",
-        "text": "AIsuite",
-        "correct": false,
-        "explanation": "AIsuite is listed under the overview's APIs category, not Agent Frameworks."
-      }
-    ]
-  },
-  {
     "id": "q-3c7b5f9a1e84",
     "course_id": "physical-ai",
     "domain": "domain-1",
@@ -1988,52 +1942,6 @@
         "text": "Favor either bucket type freely, since object integrity checksums are supported identically for filesystem and regular buckets.",
         "correct": false,
         "explanation": "The documentation lists object integrity checksums as a limitation of filesystem buckets, so the two types do not support this identically."
-      }
-    ]
-  },
-  {
-    "id": "q-7f3a92c6e158",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/framework-integrations",
-    "stem": "In the Token Factory third-party integrations overview, which framework is listed under the \"AI Application Frameworks\" category?",
-    "objectiveTitle": "Third-party framework integrations",
-    "sources": [
-      {
-        "title": "Overview",
-        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "## AI Application Frameworks"
-      },
-      {
-        "title": "Overview",
-        "url": "https://docs.tokenfactory.nebius.com/integrations/overview.md",
-        "excerpt": "[card] [Langchain](https://docs.tokenfactory.nebius.com/integrations/frameworks/langchain)"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Postman",
-        "correct": false,
-        "explanation": "Postman is listed under the overview's Developer Tools category, not AI Application Frameworks."
-      },
-      {
-        "id": "b",
-        "text": "Helicone",
-        "correct": false,
-        "explanation": "Helicone is listed under the overview's Observability category, not AI Application Frameworks."
-      },
-      {
-        "id": "c",
-        "text": "Langchain",
-        "correct": true,
-        "explanation": "The overview's AI Application Frameworks category lists Llama-Index and Langchain."
-      },
-      {
-        "id": "d",
-        "text": "Tavily",
-        "correct": false,
-        "explanation": "Tavily is listed under the overview's Agentic Search category, not AI Application Frameworks."
       }
     ]
   },
@@ -8354,47 +8262,6 @@
         "text": "Reference the dataset through a public HTTPS URL included in the job request",
         "correct": false,
         "explanation": "Datasets are uploaded through the Files API; an external URL field is not part of the job request."
-      }
-    ]
-  },
-  {
-    "id": "q-fa02b2c3d4e5",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-3",
-    "objective": "domain-3/files-api",
-    "stem": "Which `purpose` value is used when uploading a JSONL dataset for supervised fine-tuning?",
-    "objectiveTitle": "Uploading, retrieving, and deleting files",
-    "sources": [
-      {
-        "title": "Supervised Fine-Tuning",
-        "url": "https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune.md",
-        "excerpt": "-F 'purpose=fine-tune'"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "`purpose: \"user_avatar\"`",
-        "correct": false,
-        "explanation": "Not a documented purpose for dataset files."
-      },
-      {
-        "id": "b",
-        "text": "`purpose: \"fine-tune\"`",
-        "correct": true,
-        "explanation": "The upload request sets `purpose=fine-tune` for a training dataset, and `training_file` must reference a file with that purpose."
-      },
-      {
-        "id": "c",
-        "text": "`purpose: \"web_search\"`",
-        "correct": false,
-        "explanation": "Not a documented purpose for dataset files."
-      },
-      {
-        "id": "d",
-        "text": "`purpose: \"cache_backup\"`",
-        "correct": false,
-        "explanation": "Not a documented purpose for dataset files."
       }
     ]
   },

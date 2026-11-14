@@ -3,7 +3,7 @@
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
     "summary": "Build agents on a hosted model platform: API access, inference and tool integration, data and post-training, and running them in production.",
-    "publishedQuestionCount": 94,
+    "publishedQuestionCount": 91,
     "available": true,
     "mock": {
       "questionCount": 30,
