@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.85](https://github.com/mctlhq/mctl-academy/compare/0.1.84...0.1.85) (2026-11-14)
+
+
+### Features
+
+* **quality:** flag distractors that cite the documentation ([2be8efb](https://github.com/mctlhq/mctl-academy/commit/2be8efbcadcd675435a5880105cbfa91ac7abba1))
+
+
+### Bug Fixes
+
+* **ui:** mobile polish from the phone audit ([fc925a6](https://github.com/mctlhq/mctl-academy/commit/fc925a640754afbb724fb0d13ee2161604257e96))
+
 ## [0.1.84](https://github.com/mctlhq/mctl-academy/compare/0.1.83...0.1.84) (2026-11-14)
 
 
