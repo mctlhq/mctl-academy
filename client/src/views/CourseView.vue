@@ -22,6 +22,11 @@ const courseId = computed(() => String(route.params.courseId ?? ""));
 const course = computed<CourseInfo | undefined>(() => findCourse(courseId.value));
 const questions = computed(() => (course.value ? questionsForCourse(course.value.id) : []));
 const totalQuestions = computed(() => questions.value.length);
+const mockPaceMinutes = computed(() =>
+  course.value && course.value.mock.questionCount > 0
+    ? Math.max(1, Math.round(course.value.mock.timeLimitMinutes / course.value.mock.questionCount))
+    : 2,
+);
 
 // Count questions per domain
 function domainQuestionCount(domainId: string): number {
@@ -208,30 +213,29 @@ onUnmounted(() => {
 
       <!-- Exam structure & format section -->
       <section class="course-guide-section" aria-labelledby="format-heading">
-        <h2 id="format-heading" class="section-heading">Exam structure & format</h2>
+        <h2 id="format-heading" class="section-heading">Track structure & format</h2>
         <div class="guide-grid">
           <div class="guide-card">
             <h3 class="guide-card-title">Duration & question format</h3>
             <p class="guide-card-text">
-              The assessment is a timed {{ course.mock.timeLimitMinutes }}-minute exam with
-              {{ course.mock.questionCount }} scenario-based questions. Problems assess real production
-              architecture, configuration choices, and operational troubleshooting rather than rote
-              definitions.
+              The mock exam is configured for a timed {{ course.mock.timeLimitMinutes }}-minute run with
+              {{ course.mock.questionCount }} scenario-based questions. Problems assess practical
+              architecture, configuration choices, and operational troubleshooting.
             </p>
           </div>
           <div class="guide-card">
             <h3 class="guide-card-title">Curriculum domain weighting</h3>
             <p class="guide-card-text">
-              Questions are drawn across {{ course.mock.domains.length }} distinct domains according to
-              official curriculum weights. Our mock exam engine balances questions to match the exact
-              percentage distribution required on test day.
+              Questions are drawn across {{ course.mock.domains.length }} distinct domains according to the
+              track's domain weighting. The mock engine balances questions to match the target percentage
+              distribution.
             </p>
           </div>
           <div class="guide-card">
-            <h3 class="guide-card-title">Grounded doc citations</h3>
+            <h3 class="guide-card-title">Evidence-backed answers</h3>
             <p class="guide-card-text">
-              Every practice item includes verified citations from public cloud documentation. Each distractor
-              clearly explains why an alternative approach fails or degrades system performance.
+              Every practice item includes citations to allowlisted documentation. Answer feedback explains
+              why the correct option works and why alternatives fail.
             </p>
           </div>
         </div>
@@ -239,7 +243,7 @@ onUnmounted(() => {
 
       <!-- Preparation methodology section -->
       <section class="course-guide-section" aria-labelledby="strategy-heading">
-        <h2 id="strategy-heading" class="section-heading">How to prepare for the certification</h2>
+        <h2 id="strategy-heading" class="section-heading">How to prepare with this practice track</h2>
         <div class="strategy-steps">
           <div class="strategy-step">
             <span class="step-num">01</span>
@@ -256,8 +260,9 @@ onUnmounted(() => {
             <div class="step-content">
               <h3 class="step-title">Timed mock exam runs</h3>
               <p class="step-text">
-                Simulate the real exam experience with a full 60-minute, 30-question mock run. Manage your
-                pace at approximately 2 minutes per scenario.
+                Simulate realistic exam pacing with a {{ course.mock.timeLimitMinutes }}-minute,
+                {{ course.mock.questionCount }}-question mock run. Aim for approximately
+                {{ mockPaceMinutes }} minutes per scenario.
               </p>
             </div>
           </div>
@@ -282,9 +287,13 @@ onUnmounted(() => {
             <summary class="faq-question">What skills are measured in the {{ course.title }} track?</summary>
             <div class="faq-answer">
               <p>
-                The track evaluates practical competency across {{ course.mock.domains.length }} core domains:
-                {{ course.mock.domains.map((d: any) => d.title).join(", ") }}. Candidates must demonstrate
-                hands-on understanding of cloud infrastructure, security, monitoring, and workload deployment.
+                This track covers {{ course.mock.domains.length }} core domains:
+                {{ course.mock.domains.map((d) => d.title).join(", ") }}.
+                {{
+                  course.summary
+                    ? course.summary
+                    : "Review the syllabus topics above for detailed domain objectives."
+                }}
               </p>
             </div>
           </details>
@@ -343,7 +352,7 @@ onUnmounted(() => {
 
       <div class="course-stats-bar" role="group" aria-label="Course statistics">
         <div class="course-stat">
-          <span class="stat-value">In review</span>
+          <span class="stat-value">In preparation</span>
           <span class="stat-label">question bank</span>
         </div>
         <div class="course-stat">
@@ -390,28 +399,28 @@ onUnmounted(() => {
 
       <!-- Exam structure & format section -->
       <section class="course-guide-section" aria-labelledby="format-heading-preview">
-        <h2 id="format-heading-preview" class="section-heading">Exam structure & preparation guide</h2>
+        <h2 id="format-heading-preview" class="section-heading">Practice track structure & syllabus guide</h2>
         <div class="guide-grid">
           <div class="guide-card">
-            <h3 class="guide-card-title">Duration & format</h3>
+            <h3 class="guide-card-title">Track duration & mock format</h3>
             <p class="guide-card-text">
-              The {{ course.title }} examination is a 60-minute test consisting of 30 multiple-choice scenario
-              questions evaluating practical cloud engineering, architecture, and operational decisions.
+              The mock run for {{ course.title }} is configured for {{ course.mock.timeLimitMinutes }} minutes
+              with {{ course.mock.questionCount }} scenario-based questions evaluating practical architecture,
+              configuration, and troubleshooting.
             </p>
           </div>
           <div class="guide-card">
             <h3 class="guide-card-title">Syllabus breakdown</h3>
             <p class="guide-card-text">
-              The curriculum spans {{ course.mock.domains.length }} core domains shown above. Practice
-              questions are being authored strictly from official documentation to provide verifiable
-              citations for every answer.
+              The track spans {{ course.mock.domains.length }} core domains shown above. Practice questions
+              are authored from allowlisted documentation to provide verifiable citations for every answer.
             </p>
           </div>
           <div class="guide-card">
-            <h3 class="guide-card-title">Full coverage in progress</h3>
+            <h3 class="guide-card-title">Coverage in progress</h3>
             <p class="guide-card-text">
-              Our automated content engine and independent reviewers are validating scenarios across all
-              objectives to ensure high quality and zero trick questions.
+              Our authoring pipeline and independent reviewers are validating scenarios across all objectives
+              to ensure evidence-backed explanations for every question.
             </p>
           </div>
         </div>

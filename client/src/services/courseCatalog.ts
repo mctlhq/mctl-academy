@@ -11,8 +11,8 @@ import rawCatalog from "../course-catalog.json";
  * Only vendor-neutral fields cross this boundary. `prepares_for`, the course
  * description and the disclaimer name a certification vendor and stay in
  * content/ — LEGAL.md forbids them in nav labels, URLs, page titles and images.
- * `summary` is the exception that proves it: free text written to be
- * vendor-neutral, which the content lint checks before it is allowed through.
+ * `summary`, domain titles, and objective titles are free text that the content
+ * lint checks for vendor-neutrality before allowing them through to the client.
  */
 export interface CourseObjectiveConfig {
   id: string;
