@@ -136,6 +136,52 @@ test("short distractor: a distractor under half the correct length flags the ite
   ); // 14%
 });
 
+// #511/#516: distractors that argued from the documentation instead of making
+// a claim about the product, e.g. "since the documentation ties ...".
+test("cites docs: a distractor citing the documentation is flagged, the correct option and plain ones are not", () => {
+  const has = (q) => itemCues(q).flags.find((f) => f.check === "cites-docs-in-option");
+  const cue = item({
+    options: opts(
+      "Set the budget period to monthly",
+      "Switch to a daily period, since the documentation ties a shorter period to capping spend",
+      "Set the budget scope to one project",
+      "Raise the alert threshold to the limit",
+    ),
+  });
+  assert.deepEqual(has(cue)?.options, ["b"]);
+  for (const text of [
+    "documented as copying events across regions",
+    "per the docs, it retries",
+    "see the doc",
+  ]) {
+    const q = item({ options: opts("Use the event router", text, "Use the queue", "Use the bucket") });
+    assert.deepEqual(has(q)?.options, ["b"], text);
+  }
+  const inCorrect = item({
+    options: opts(
+      "The documented retry policy with backoff",
+      "Retry on every error",
+      "Drop the request",
+      "Queue it forever",
+    ),
+  });
+  assert.equal(has(inCorrect), undefined, "the correct option is never the cue");
+  assert.equal(has(item()), undefined, "plain distractors are not flagged");
+  const docker = item({ options: opts("Use a Docker image", "Use dockerd", "Use a doctor", "Use a dock") });
+  assert.equal(has(docker), undefined, "word boundaries: docker, doctor and dock are not docs");
+
+  // Course share and the threshold: 1 of 10 is not above 10%, 2 of 10 is.
+  const plain = () => Array.from({ length: 8 }, () => item());
+  const at = run([cue, ...plain(), item()]);
+  assert.equal(at[0].metrics.citesDocsInOptionShare, 0.1);
+  assert.ok(!at[0].warnings.some((w) => w.check === "cites-docs-in-option"));
+  const above = run([cue, { ...cue, id: "q-cue2" }, ...plain()]);
+  assert.equal(above[0].metrics.citesDocsInOptionShare, 0.2);
+  const w = above[0].warnings.find((x) => x.check === "cites-docs-in-option");
+  assert.equal(w?.threshold, 0.1);
+  assert.ok(above[0].itemFlags.some((f) => f.flags.some((x) => x.check === "cites-docs-in-option")));
+});
+
 test("absolutes: always/never/only in distractors but not in the correct option", () => {
   const cue = item({ options: opts("Retry with backoff", "Never retry at all", "Retry forever", "Drop it") });
   const both = item({

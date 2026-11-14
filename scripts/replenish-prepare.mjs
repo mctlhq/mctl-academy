@@ -879,6 +879,7 @@ export function prBody({
               m.absoluteOnlyInDistractorsShare,
               pc,
             ),
+            row("distractors citing the docs", p.citesDocsInOptionShare, m.citesDocsInOptionShare, pc),
             row("volatile", p.volatileShare, m.volatileShare, pc),
             row("scenario stems", p.scenarioShare, m.scenarioShare, pc),
             row("near-duplicate pairs", dups(prev), dups(c), num),

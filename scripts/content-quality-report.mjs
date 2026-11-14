@@ -29,6 +29,7 @@ export const THRESHOLDS = {
   shortDistractorFraction: 0.5,
   shortDistractorShare: 0.15,
   absoluteOnlyInDistractorsShare: 0.4,
+  citesDocsInOptionShare: 0.1,
   sourceShare: 0.2,
   objectiveMinimum: 3,
   volatileShare: 0.25,
@@ -63,6 +64,13 @@ const distractorsOf = (q) => q.options.filter((o) => !o.correct);
 const len = (o) => o.text.trim().length;
 
 const ABSOLUTE = /\b(always|never|only)\b/i;
+
+// A distractor that argues from the documentation ("since the documentation
+// ties ...", "documented as copying ...") instead of making a claim about the
+// product. The source is where a distractor comes from, never what it says;
+// an option that cites it reads as a tell, and the IE and SA batches of
+// #511/#516 produced them even after the prose rule of #513.
+const CITES_DOCS = /\b(documentation|documented|the docs?)\b/i;
 
 // Number followed by a unit: durations, sizes, rates, counts of hardware.
 //
@@ -113,6 +121,10 @@ export function itemCues(q) {
   const absDistractors = distractors.filter((o) => ABSOLUTE.test(o.text));
   if (absDistractors.length && !ABSOLUTE.test(correct.text)) {
     flags.push({ check: "absolute-only-in-distractors", options: absDistractors.map((o) => o.id ?? o.text) });
+  }
+  const citesDocs = distractors.filter((o) => CITES_DOCS.test(o.text));
+  if (citesDocs.length) {
+    flags.push({ check: "cites-docs-in-option", options: citesDocs.map((o) => o.id ?? o.text) });
   }
   const volatile = [...new Set([q.stem, ...q.options.map((o) => o.text)].flatMap((t) => volatileKinds(t)))];
   if (volatile.length) flags.push({ check: "volatile", kinds: volatile });
@@ -503,6 +515,14 @@ export function qualityReport({
           `${pct(metrics.absoluteOnlyInDistractorsShare)} of items use always/never/only in distractors only`,
         );
       }
+      if (metrics.citesDocsInOptionShare > THRESHOLDS.citesDocsInOptionShare) {
+        warn(
+          "cites-docs-in-option",
+          metrics.citesDocsInOptionShare,
+          THRESHOLDS.citesDocsInOptionShare,
+          `${pct(metrics.citesDocsInOptionShare)} of items have a distractor that cites the documentation`,
+        );
+      }
       if (metrics.volatileShare > THRESHOLDS.volatileShare) {
         warn(
           "volatile",
@@ -588,6 +608,7 @@ function metricsOf(population) {
     lengthRatioItems: count("length-ratio"),
     shortDistractorShare: share(count("short-distractor"), n),
     absoluteOnlyInDistractorsShare: share(count("absolute-only-in-distractors"), n),
+    citesDocsInOptionShare: share(count("cites-docs-in-option"), n),
     volatileShare: share(count("volatile"), n),
     scenarioShare: share(cues.filter((c) => c.scenario).length, n),
     scenarioShareNote: "crude, advisory: a regex classifier, never a gate",
@@ -663,6 +684,7 @@ function main(argv) {
       `Diagnostics over ${scope === "candidates" ? `${b.items}→${m.items} items (published → with ${c.scored.length} candidate(s))` : `${m.items} published item(s)`}: ` +
         `correct longest ${v(pct, "correctLongestShare")}, mean length ratio ${v(num, "meanLengthRatio")}, ` +
         `short distractor ${v(pct, "shortDistractorShare")}, absolutes only in distractors ${v(pct, "absoluteOnlyInDistractorsShare")}, ` +
+        `distractors citing the docs ${v(pct, "citesDocsInOptionShare")}, ` +
         `volatile ${v(pct, "volatileShare")}, scenario stems ${v(pct, "scenarioShare")} (crude, advisory); ` +
         `top source ${c.sourceShares[0] ? `${c.sourceShares[0].source_id} ${pct(c.sourceShares[0].share)}` : "n/a"}`,
     );

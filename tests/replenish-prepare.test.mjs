@@ -2634,6 +2634,7 @@ test("prBody shows the advisory quality diagnostics before and after, and near-d
     meanLengthRatio: 1.4,
     shortDistractorShare: 0.2,
     absoluteOnlyInDistractorsShare: 0.1,
+    citesDocsInOptionShare: correctLongestShare > 0.62 ? 0.5 : 0.25,
     volatileShare: 0.05,
     scenarioShare: 0.3,
   });
@@ -2664,6 +2665,7 @@ test("prBody shows the advisory quality diagnostics before and after, and near-d
   assert.match(body, /### Quality diagnostics before → after \(advisory\)/);
   assert.match(body, /- c1: correct longest 65%→60%, mean length ratio 1\.4→1\.4, /);
   assert.match(body, /near-duplicate pairs 0→2/);
+  assert.match(body, /absolutes only in distractors 10%→10%, distractors citing the docs 50%→25%, volatile/);
   assert.match(body, /- `q-new` \/ `q-old` \(cross-course, cosine 0\.9, key-term overlap 0\.8\)/);
   assert.ok(!/q-a/.test(body), "a pair without a promoted item is not listed");
   assert.ok(!/q-contrast/.test(body), "an allowlisted pair is not listed");
@@ -4221,11 +4223,21 @@ test("the author prompt carries the editorial rubric and the reviewer prompt is 
     /a distractor's own wording never gives it away/,
     /contradicts the requirement in the stem/,
     /justifies itself\s+by what the documentation does or does not say/,
+    /real product alternatives drawn from the documentation/,
+    /The option text never mentions the documentation/,
+    /a distractor that cites the documentation/,
     /preflight the items you wrote against the advisory\s+checks in scripts\/content-quality-report\.mjs/,
   ];
   for (const step of authors) {
     const prompt = step.with.prompt;
     assert.doesNotMatch(prompt, /stem tests one documented fact/, `${step.name} keeps the recall line`);
+    // #511/#516: "the three distractors are documented alternatives" invited
+    // distractors that cite the documentation in their own text.
+    assert.doesNotMatch(
+      prompt,
+      /distractors are\s+documented alternatives/,
+      `${step.name} keeps the old wording`,
+    );
     for (const m of markers) assert.match(prompt, m, `${step.name} lacks ${m}`);
     // Unchanged invariants the rubric must not have dropped.
     assert.match(prompt, /exactly one option is correct/, step.name);
