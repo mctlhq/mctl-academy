@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-3p-integrations-multi-cloud-skypilot
+url: https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md
+title: Multi-platform orchestration in Managed Service for SkyPilot
+retrieved_at: 2026-11-14T09:28:29Z
+sha256: 34e004eb468f3eaf339013614f843684492f2bd69e31dbb7d4b3bb434931b142
+objectives:
+  - domain-4/ie-multicluster-networking
+  - domain-3/sa-multicloud-ingestion
+snapshot:
+  bucket: academy-source-snapshots
+  key: 34e004eb468f3eaf339013614f843684492f2bd69e31dbb7d4b3bb434931b142
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-multicluster-networking
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-multicloud-ingestion

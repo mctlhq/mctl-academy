@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-3p-integrations-run-ai
+url: https://docs.nebius.com/3p-integrations/run-ai.md
+title: Configuring a Managed Service for Kubernetes cluster to work in Run:ai
+retrieved_at: 2026-11-14T09:28:30Z
+sha256: 95f8ea4f180c6a49f2c11354ab32205b0f67a1a9b112bbb8e36a36aeccc49937
+objectives:
+  - domain-3/ie-inference-pipelines
+  - domain-1/sa-orchestration-overlays
+snapshot:
+  bucket: academy-source-snapshots
+  key: 95f8ea4f180c6a49f2c11354ab32205b0f67a1a9b112bbb8e36a36aeccc49937
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-pipelines
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-orchestration-overlays

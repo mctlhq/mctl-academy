@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-applications-deploy
+url: https://docs.nebius.com/applications/deploy.md
+title: Deploying applications in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:28:34Z
+sha256: 46193651d2183fb7cddd041c5e7c2a76cc457bd6aba4331bbb66c13a2ba5f153
+objectives:
+  - domain-3/ie-marketplace-apps
+snapshot:
+  bucket: academy-source-snapshots
+  key: 46193651d2183fb7cddd041c5e7c2a76cc457bd6aba4331bbb66c13a2ba5f153
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-marketplace-apps
