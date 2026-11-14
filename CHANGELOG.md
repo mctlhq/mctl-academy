@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.79](https://github.com/mctlhq/mctl-academy/compare/0.1.78...0.1.79) (2026-11-14)
+
+
+### Content
+
+* **replenish:** author 7 question file(s) from 0 captured source(s) ([839130e](https://github.com/mctlhq/mctl-academy/commit/839130e9d2cade1beabaa43bced1fecf6f34dbaa))
+* **replenish:** author 8 question file(s) from 0 captured source(s) ([d4d5826](https://github.com/mctlhq/mctl-academy/commit/d4d5826b0a6b1309d7c6ef90663e4c3be1d31924))
+* **replenish:** promote 7 reviewed question(s) ([29c271a](https://github.com/mctlhq/mctl-academy/commit/29c271a3c2cde4a72230b69373ad24b37bf1fef9))
+* **replenish:** promote 8 reviewed question(s) ([39af819](https://github.com/mctlhq/mctl-academy/commit/39af8193c11e5634cf49d33af5cb6baf6edb16e7))
+
 ## [0.1.78](https://github.com/mctlhq/mctl-academy/compare/0.1.77...0.1.78) (2026-11-14)
 
 
