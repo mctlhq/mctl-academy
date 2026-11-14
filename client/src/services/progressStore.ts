@@ -31,6 +31,23 @@ export interface QuestionAttempt {
    * reposting it indefinitely. Once true, a row is settled for good.
    */
   synced?: boolean;
+  /**
+   * Set when the server refused this row outright (400/422): its question no
+   * longer exists, or the payload is one the server will never accept, such as
+   * a stale cached SPA's. Resending it can only be refused again, so, like a
+   * row without `optionId`, it stays on this device and is never retried or
+   * counted as a sync failure. A later answer to the same question is a new
+   * row and is sent normally.
+   */
+  serverRejected?: boolean;
+}
+
+/**
+ * Whether a row can never be sent to the server: recorded before #208 (no
+ * `optionId`), or already refused by it for good (`serverRejected`).
+ */
+function isLocalOnly(a: QuestionAttempt): boolean {
+  return a.optionId === undefined || a.serverRejected === true;
 }
 
 /**
@@ -313,19 +330,53 @@ export function setSyncEnabled(enabled: boolean): void {
  * content as personal learner data and create a reconciliation problem the
  * server does not need to have.
  */
-function postAttemptToServer(questionId: string, optionId: string | null): Promise<boolean> {
+/**
+ * How one attempt POST ended. "rejected" is the server refusing this row for
+ * good (400/422: an unknown question or option, a malformed payload), which
+ * no retry can change. "failed" is anything that might succeed later: a
+ * network error, a 5xx, 401/403 (the session, not the row), 429.
+ */
+type PostOutcome = "synced" | "rejected" | "failed";
+
+/** Statuses that say the request itself is wrong, not the moment it was sent in. */
+const PERMANENT_REJECTION_STATUSES = new Set([400, 422]);
+
+function postAttemptToServer(questionId: string, optionId: string | null): Promise<PostOutcome> {
   return fetch(ATTEMPTS_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
     body: JSON.stringify({ questionId, optionId }),
   })
-    .then((res) => res.ok)
-    .catch(() => {
+    .then((res): PostOutcome => {
+      if (res.ok) return "synced";
+      return PERMANENT_REJECTION_STATUSES.has(res.status) ? "rejected" : "failed";
+    })
+    .catch((): PostOutcome => {
       // Best-effort only: the local write already succeeded, so a sync
       // failure (offline, expired session, 5xx) is never surfaced.
-      return false;
+      return "failed";
     });
+}
+
+/** Settles one stored row after its POST: synced, or local-only if the server refused it for good. */
+function settleAttempt(key: string, questionId: string, attemptedAt: string, outcome: PostOutcome): void {
+  if (outcome === "synced") markAttemptSynced(key, questionId, attemptedAt);
+  else if (outcome === "rejected") markAttemptRejected(key, questionId, attemptedAt);
+}
+
+/** Marks one stored row as refused by the server, so it is never sent again (see `serverRejected`). */
+function markAttemptRejected(key: string, questionId: string, attemptedAt: string): void {
+  try {
+    const attempts = readLog(key);
+    const row = attempts.find((a) => a.questionId === questionId && a.attemptedAt === attemptedAt);
+    if (row && !row.serverRejected) {
+      row.serverRejected = true;
+      setItem(key, JSON.stringify(attempts));
+    }
+  } catch {
+    // Ignore storage errors
+  }
 }
 
 /** Flips one stored row to synced once the server has confirmed it, so it is never reconsidered. */
@@ -380,9 +431,9 @@ export function recordAttempt(
   if (syncEnabled && optionId !== undefined) {
     const epoch = syncEpoch;
     const send = () => {
-      trackWrite(postAttemptToServer(questionId, optionId)).then((ok) => {
-        if (ok) markAttemptSynced(key, questionId, attemptedAt);
-        else setSyncStatusFor(epoch, "failed");
+      trackWrite(postAttemptToServer(questionId, optionId)).then((outcome) => {
+        settleAttempt(key, questionId, attemptedAt, outcome);
+        if (outcome === "failed") setSyncStatusFor(epoch, "failed");
       });
     };
     if (writesHeldBy) queuedWrites.push({ epoch, send });
@@ -476,9 +527,11 @@ export async function syncFromServer(): Promise<SyncOutcome> {
   const backfills: Promise<boolean>[] = [];
   for (const a of localLatestByQuestion.values()) {
     if (a.synced) continue;
-    // Recorded before #208: there is no selection to send, and the server no
-    // longer accepts a client-asserted boolean. It stays on this device.
-    if (a.optionId === undefined) continue;
+    // Recorded before #208 (no selection to send; the server no longer
+    // accepts a client-asserted boolean), or already refused by the server
+    // for good. It stays on this device.
+    // (Spelled out rather than isLocalOnly(a) so `optionId` narrows.)
+    if (a.optionId === undefined || a.serverRejected === true) continue;
 
     const serverRecord = serverLatestByQuestion.get(a.questionId);
     const serverIsUpToDate =
@@ -489,9 +542,10 @@ export async function syncFromServer(): Promise<SyncOutcome> {
     }
 
     backfills.push(
-      trackWrite(postAttemptToServer(a.questionId, a.optionId)).then((ok) => {
-        if (ok) markAttemptSynced(key, a.questionId, a.attemptedAt);
-        return ok;
+      trackWrite(postAttemptToServer(a.questionId, a.optionId)).then((outcome) => {
+        settleAttempt(key, a.questionId, a.attemptedAt, outcome);
+        // A refused row is now local-only, not a failure to sync.
+        return outcome !== "failed";
       }),
     );
   }
@@ -582,7 +636,7 @@ export async function clearProgress(): Promise<{ serverCleared: boolean }> {
         await Promise.allSettled([...pendingWrites]);
       }
     }
-    const unsyncedLeft = getStoredAttempts().some((a) => !a.synced && a.optionId !== undefined);
+    const unsyncedLeft = getStoredAttempts().some((a) => !a.synced && !isLocalOnly(a));
     setSyncStatusFor(epoch, res.ok && !unsyncedLeft ? "synced" : "failed");
     return { serverCleared: res.ok };
   } catch {
