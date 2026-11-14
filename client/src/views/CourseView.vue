@@ -213,22 +213,25 @@ onUnmounted(() => {
           <div class="guide-card">
             <h3 class="guide-card-title">Duration & question format</h3>
             <p class="guide-card-text">
-              The assessment is a timed {{ course.mock.timeLimitMinutes }}-minute exam with {{ course.mock.questionCount }} scenario-based questions.
-              Problems assess real production architecture, configuration choices, and operational troubleshooting rather than rote definitions.
+              The assessment is a timed {{ course.mock.timeLimitMinutes }}-minute exam with
+              {{ course.mock.questionCount }} scenario-based questions. Problems assess real production
+              architecture, configuration choices, and operational troubleshooting rather than rote
+              definitions.
             </p>
           </div>
           <div class="guide-card">
             <h3 class="guide-card-title">Curriculum domain weighting</h3>
             <p class="guide-card-text">
-              Questions are drawn across {{ course.mock.domains.length }} distinct domains according to official curriculum weights.
-              Our mock exam engine balances questions to match the exact percentage distribution required on test day.
+              Questions are drawn across {{ course.mock.domains.length }} distinct domains according to
+              official curriculum weights. Our mock exam engine balances questions to match the exact
+              percentage distribution required on test day.
             </p>
           </div>
           <div class="guide-card">
             <h3 class="guide-card-title">Grounded doc citations</h3>
             <p class="guide-card-text">
-              Every practice item includes verified citations from public cloud documentation. Each distractor clearly explains why
-              an alternative approach fails or degrades system performance.
+              Every practice item includes verified citations from public cloud documentation. Each distractor
+              clearly explains why an alternative approach fails or degrades system performance.
             </p>
           </div>
         </div>
@@ -243,8 +246,8 @@ onUnmounted(() => {
             <div class="step-content">
               <h3 class="step-title">Domain-by-domain practice</h3>
               <p class="step-text">
-                Start by drilling individual domains to identify knowledge gaps. Study the citation rationale for incorrect options
-                to understand production constraints.
+                Start by drilling individual domains to identify knowledge gaps. Study the citation rationale
+                for incorrect options to understand production constraints.
               </p>
             </div>
           </div>
@@ -253,8 +256,8 @@ onUnmounted(() => {
             <div class="step-content">
               <h3 class="step-title">Timed mock exam runs</h3>
               <p class="step-text">
-                Simulate the real exam experience with a full 60-minute, 30-question mock run. Manage your pace at approximately
-                2 minutes per scenario.
+                Simulate the real exam experience with a full 60-minute, 30-question mock run. Manage your
+                pace at approximately 2 minutes per scenario.
               </p>
             </div>
           </div>
@@ -263,7 +266,8 @@ onUnmounted(() => {
             <div class="step-content">
               <h3 class="step-title">Mistakes review queue</h3>
               <p class="step-text">
-                Re-test questions you answered incorrectly. Solidify concepts until you achieve consistent mastery across all domains.
+                Re-test questions you answered incorrectly. Solidify concepts until you achieve consistent
+                mastery across all domains.
               </p>
             </div>
           </div>
@@ -279,8 +283,8 @@ onUnmounted(() => {
             <div class="faq-answer">
               <p>
                 The track evaluates practical competency across {{ course.mock.domains.length }} core domains:
-                {{ course.mock.domains.map((d: any) => d.title).join(", ") }}.
-                Candidates must demonstrate hands-on understanding of cloud infrastructure, security, monitoring, and workload deployment.
+                {{ course.mock.domains.map((d: any) => d.title).join(", ") }}. Candidates must demonstrate
+                hands-on understanding of cloud infrastructure, security, monitoring, and workload deployment.
               </p>
             </div>
           </details>
@@ -288,15 +292,20 @@ onUnmounted(() => {
             <summary class="faq-question">Is this practice platform free to use?</summary>
             <div class="faq-answer">
               <p>
-                Yes. mctl Academy is completely free and accessible without a paywall. You can take untimed practice tests or full timed mock exams at zero cost.
+                Yes. mctl Academy is completely free and accessible without a paywall. You can take untimed
+                practice tests or full timed mock exams at zero cost.
               </p>
             </div>
           </details>
           <details class="faq-item">
-            <summary class="faq-question">Are questions identical to official certification questions?</summary>
+            <summary class="faq-question">
+              Are questions identical to official certification questions?
+            </summary>
             <div class="faq-answer">
               <p>
-                No. In accordance with clean-room guidelines and our content policy, all items are original scenario problems authored from public documentation. They test the same technical objectives without reproducing proprietary exam content.
+                No. In accordance with clean-room guidelines and our content policy, all items are original
+                scenario problems authored from public documentation. They test the same technical objectives
+                without reproducing proprietary exam content.
               </p>
             </div>
           </details>
@@ -328,7 +337,8 @@ onUnmounted(() => {
       <p class="not-found-code">Coming soon</p>
       <h1 class="course-title">{{ course.title }}</h1>
       <p class="not-found-lede">
-        Practice questions for this track are currently in preparation. Review the complete domain syllabus and exam objectives below.
+        Practice questions for this track are currently in preparation. Review the complete domain syllabus
+        and exam objectives below.
       </p>
 
       <div class="course-stats-bar" role="group" aria-label="Course statistics">
@@ -362,7 +372,9 @@ onUnmounted(() => {
               <span class="domain-card-count">{{ domain.mockQuestions }} questions</span>
             </div>
             <h3 class="domain-card-title">{{ domain.title }}</h3>
-            <p class="domain-card-mock">Exam distribution: {{ domain.mockQuestions }} questions ({{ domain.weight }}%)</p>
+            <p class="domain-card-mock">
+              Exam distribution: {{ domain.mockQuestions }} questions ({{ domain.weight }}%)
+            </p>
 
             <div v-if="domain.objectives && domain.objectives.length > 0" class="domain-objectives">
               <h4 class="domain-objectives-heading">Skills & objectives:</h4>
@@ -383,25 +395,33 @@ onUnmounted(() => {
           <div class="guide-card">
             <h3 class="guide-card-title">Duration & format</h3>
             <p class="guide-card-text">
-              The {{ course.title }} examination is a 60-minute test consisting of 30 multiple-choice scenario questions evaluating practical cloud engineering, architecture, and operational decisions.
+              The {{ course.title }} examination is a 60-minute test consisting of 30 multiple-choice scenario
+              questions evaluating practical cloud engineering, architecture, and operational decisions.
             </p>
           </div>
           <div class="guide-card">
             <h3 class="guide-card-title">Syllabus breakdown</h3>
             <p class="guide-card-text">
-              The curriculum spans {{ course.mock.domains.length }} core domains shown above. Practice questions are being authored strictly from official documentation to provide verifiable citations for every answer.
+              The curriculum spans {{ course.mock.domains.length }} core domains shown above. Practice
+              questions are being authored strictly from official documentation to provide verifiable
+              citations for every answer.
             </p>
           </div>
           <div class="guide-card">
             <h3 class="guide-card-title">Full coverage in progress</h3>
             <p class="guide-card-text">
-              Our automated content engine and independent reviewers are validating scenarios across all objectives to ensure high quality and zero trick questions.
+              Our automated content engine and independent reviewers are validating scenarios across all
+              objectives to ensure high quality and zero trick questions.
             </p>
           </div>
         </div>
       </section>
 
-      <section v-if="otherCourses.length > 0" class="other-courses" aria-labelledby="other-courses-heading-preview">
+      <section
+        v-if="otherCourses.length > 0"
+        class="other-courses"
+        aria-labelledby="other-courses-heading-preview"
+      >
         <h2 id="other-courses-heading-preview" class="section-heading">Explore available courses</h2>
         <CourseGrid :courses="otherCourses" />
       </section>
