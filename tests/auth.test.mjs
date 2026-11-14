@@ -1,8 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
 import { app } from "../server/app.mjs";
-import { auth, authPool, backfillGithubLogin, stashGithubProfileLogin } from "../server/auth.mjs";
+import { auth } from "../server/auth.mjs";
 import { authedCookie } from "./helpers/auth-test-helper.mjs";
 
 describe("better-auth session API", () => {
@@ -71,16 +70,19 @@ describe("session ipAddress/userAgent scrub (PRIVACY.md)", () => {
     // hook; including them keeps the stand-in session the same shape as the
     // real one rather than the subset this assertion happens to read.
     const now = new Date();
-    const result = await hook({
-      id: "session-scrub-test",
-      userId: "user-scrub-test",
-      token: "token-scrub-test",
-      ipAddress: "203.0.113.99",
-      userAgent: "Mozilla/5.0 (test)",
-      expiresAt: new Date(),
-      createdAt: now,
-      updatedAt: now,
-    });
+    const result = await hook(
+      {
+        id: "session-scrub-test",
+        userId: "user-scrub-test",
+        token: "token-scrub-test",
+        ipAddress: "203.0.113.99",
+        userAgent: "Mozilla/5.0 (test)",
+        expiresAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
+      },
+      null,
+    );
 
     assert.equal(result.data.ipAddress, null);
     assert.equal(result.data.userAgent, null);
@@ -89,60 +91,5 @@ describe("session ipAddress/userAgent scrub (PRIVACY.md)", () => {
     assert.equal(result.data.id, "session-scrub-test");
     assert.equal(result.data.userId, "user-scrub-test");
     assert.equal(result.data.token, "token-scrub-test");
-  });
-});
-
-describe("githubLogin backfill (session.create.after)", () => {
-  // githubLogin is declared `input: false` on the user schema so the public
-  // update-user endpoint can never be used to self-elevate into the
-  // moderator/admin-stats allowlists — but that same flag also silently
-  // drops better-auth's own OAuth-profile mapping before it reaches the DB.
-  // backfillGithubLogin bypasses the field filter with a raw query instead.
-  // See the long comment above it in server/auth.mjs for the full story.
-  //
-  // authedCookie() inserts its session row directly via raw SQL too, so it
-  // never runs this hook — these tests call it explicitly, seeded via the
-  // same account+session tables a real GitHub sign-in would populate.
-  async function insertUserAndGithubAccount({ githubAccountId }) {
-    const userId = randomUUID();
-    const now = new Date();
-    await authPool.query(
-      `INSERT INTO "user" (id, name, email, "emailVerified", "createdAt", "updatedAt")
-       VALUES ($1, $2, $3, true, $4, $4);`,
-      [userId, "backfill-test", `${userId}@users.noreply.github.com`, now],
-    );
-    await authPool.query(
-      `INSERT INTO "account" (id, "accountId", "providerId", "userId", "createdAt", "updatedAt")
-       VALUES ($1, $2, 'github', $3, $4, $4);`,
-      [randomUUID(), githubAccountId, userId, now],
-    );
-    return userId;
-  }
-
-  test("writes the stashed GitHub login onto the user row", async () => {
-    const githubAccountId = `gh-${randomUUID()}`;
-    const userId = await insertUserAndGithubAccount({ githubAccountId });
-    stashGithubProfileLogin(githubAccountId, "octocat");
-
-    await backfillGithubLogin({ userId });
-
-    const { rows } = await authPool.query(`SELECT "githubLogin" FROM "user" WHERE id = $1`, [userId]);
-    assert.equal(rows[0].githubLogin, "octocat");
-  });
-
-  test("is a no-op when nothing was stashed for this account (e.g. a Google sign-in)", async () => {
-    const githubAccountId = `gh-${randomUUID()}`;
-    const userId = await insertUserAndGithubAccount({ githubAccountId });
-
-    await backfillGithubLogin({ userId });
-
-    const { rows } = await authPool.query(`SELECT "githubLogin" FROM "user" WHERE id = $1`, [userId]);
-    assert.equal(rows[0].githubLogin, null);
-  });
-
-  test("is a no-op when the session's user has no linked GitHub account at all", async () => {
-    // Never throws — a broken lookup here must not turn into a failed
-    // sign-in for the user it's trying to help.
-    await assert.doesNotReject(backfillGithubLogin({ userId: randomUUID() }));
   });
 });

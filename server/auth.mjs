@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { betterAuth, getCurrentAdapter } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
 import pg from "pg";
@@ -103,45 +104,45 @@ export function zitadelSignIn() {
  * stays null forever. (Discovered 2026-08-10: the admin-stats/moderator
  * gates 404'd for an allowlisted, signed-in user because of this.)
  *
- * githubProfileLoginByAccountId + backfillGithubLogin below are the
- * workaround: mapProfileToUser stashes GitHub's login by its stable numeric
- * account id, and a session.create.after hook writes it straight to
- * Postgres with a raw query — bypassing the input-filtered field system
- * entirely, so the update-user endpoint's protection is untouched. This
- * runs on every GitHub sign-in, not just the first one, so it self-heals
- * existing rows (like the two production users created before this fix)
- * the next time they log in — no manual backfill needed.
+ * So the login is written by this module, not by better-auth's field
+ * system, and the update-user endpoint's protection is untouched. It is
+ * written synchronously, as part of the sign-in that maps the GitHub
+ * account, before that sign-in's session exists:
+ *
+ * - a first sign-in: user.create.before puts it into the INSERT of the user
+ *   row, in the same transaction that creates the GitHub account row;
+ * - a returning (or newly e-mail-linked) user: session.create.before sets it
+ *   on the existing row before the session row is written. That also
+ *   self-heals a row whose login is missing or stale (a renamed GitHub
+ *   account).
+ *
+ * mapProfileToUser hands the login to those hooks through request-scoped
+ * state (githubSignInScope), not through anything that outlives the
+ * request: an earlier in-process Map keyed by account id was lost on a
+ * restart and was invisible to a second replica, and it was drained by a
+ * best-effort session.create.after hook, so a moderator could sign in and
+ * still not be recognised (mctl-academy#209).
  */
-const githubProfileLoginByAccountId = new Map();
 
-// Exported for tests/auth.test.mjs's "githubLogin backfill" suite, which exercises the
-// backfill without a real GitHub OAuth handshake — it stashes a profile
-// login via this setter, inserts an account+session row directly (same
-// pattern as tests/helpers/auth-test-helper.mjs), then calls
-// backfillGithubLogin itself to assert the DB write.
-export function stashGithubProfileLogin(accountId, login) {
-  githubProfileLoginByAccountId.set(String(accountId), login);
-}
+/** @type {AsyncLocalStorage<{ githubLogin?: string, persisted?: boolean }>} */
+const githubSignInScope = new AsyncLocalStorage();
 
-export async function backfillGithubLogin(session) {
-  try {
-    const { rows } = await authPool.query(
-      `SELECT "accountId" FROM "account" WHERE "userId" = $1 AND "providerId" = 'github' LIMIT 1`,
-      [session.userId],
-    );
-    const accountId = rows[0]?.accountId;
-    const login = accountId && githubProfileLoginByAccountId.get(accountId);
-    if (!login) return;
-    githubProfileLoginByAccountId.delete(accountId);
-    await authPool.query(
-      `UPDATE "user" SET "githubLogin" = $1 WHERE id = $2 AND "githubLogin" IS DISTINCT FROM $1`,
-      [login, session.userId],
-    );
-  } catch (err) {
-    // Never block sign-in on this — worst case githubLogin stays stale
-    // until the next successful login, not a broken session.
-    console.error("[auth] Failed to backfill githubLogin:", err.message);
+/**
+ * mapProfileToUser for GitHub: remember the login for this request's hooks.
+ * Outside a handleAuthRequest scope there is nowhere to keep it, and a
+ * sign-in that cannot store the login must not pass for one that has none:
+ * the allowlists would then quietly fail shut for an allowlisted user.
+ *
+ * @param {{ login?: unknown }} profile
+ */
+function rememberGithubLogin(profile) {
+  const scope = githubSignInScope.getStore();
+  if (!scope) throw new Error("GitHub sign-in outside handleAuthRequest: githubLogin cannot be stored");
+  if (typeof profile.login !== "string" || profile.login === "") {
+    throw new Error("GitHub profile has no login");
   }
+  scope.githubLogin = profile.login;
+  return { githubLogin: profile.login };
 }
 
 export const auth = betterAuth({
@@ -173,12 +174,39 @@ export const auth = betterAuth({
   // keeps the promise rather than requiring a PRIVACY.md rewrite to match
   // better-auth's own defaults.
   databaseHooks: {
+    // A first GitHub sign-in: the login goes into the user row's own INSERT.
+    user: {
+      create: {
+        before: async (user) => {
+          const scope = githubSignInScope.getStore();
+          if (!scope?.githubLogin) return;
+          scope.persisted = true;
+          return { data: { ...user, githubLogin: scope.githubLogin } };
+        },
+      },
+    },
     session: {
       create: {
-        before: async (session) => ({
-          data: { ...session, ipAddress: null, userAgent: null },
-        }),
-        after: backfillGithubLogin,
+        before: async (session, ctx) => {
+          // A returning GitHub user: the login is set before the session
+          // row exists. Through the adapter in use, so a transaction, if
+          // one is open, is not waited on from a second pool client. A
+          // failure fails the sign-in rather than issuing a session whose
+          // user the allowlists cannot recognise.
+          const scope = githubSignInScope.getStore();
+          if (scope?.githubLogin && !scope.persisted) {
+            const fallback = ctx?.context?.adapter;
+            const adapter = fallback ? await getCurrentAdapter(fallback) : undefined;
+            if (!adapter) throw new Error("no database adapter to store githubLogin with");
+            await adapter.update({
+              model: "user",
+              where: [{ field: "id", value: session.userId }],
+              update: { githubLogin: scope.githubLogin },
+            });
+            scope.persisted = true;
+          }
+          return { data: { ...session, ipAddress: null, userAgent: null } };
+        },
       },
     },
     // See server/zitadel.mjs: no implicit e-mail linking across the ZITADEL
@@ -224,13 +252,10 @@ export const auth = betterAuth({
           github: {
             clientId: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            mapProfileToUser: (profile) => {
-              // Stashed for backfillGithubLogin's session.create.after hook
-              // — see the comment above githubProfileLoginByAccountId for
-              // why this return value alone never reaches the DB.
-              stashGithubProfileLogin(profile.id, profile.login);
-              return { githubLogin: profile.login };
-            },
+            // better-auth drops the returned githubLogin (input: false);
+            // the hooks above store it. See the comment above
+            // githubSignInScope.
+            mapProfileToUser: rememberGithubLogin,
           },
         }
       : {}),
@@ -294,13 +319,18 @@ export const auth = betterAuth({
  * with the query (code, state, iss) intact. Only when ZITADEL is
  * configured; otherwise the path stays a 404 like any unknown route.
  *
+ * Every request runs in its own githubSignInScope; a GitHub sign-in through
+ * any other entry point refuses to complete (rememberGithubLogin).
+ *
  * @param {Request} request
  */
 export function handleAuthRequest(request) {
   const url = new URL(request.url);
   if (zitadel.config && url.pathname === ZITADEL_CALLBACK_PATH) {
     url.pathname = `/api/auth/callback/${ZITADEL_PROVIDER_ID}`;
-    return auth.handler(new Request(url, request));
+    request = new Request(url, request);
   }
-  return auth.handler(request);
+  // One scope per request: what a GitHub sign-in maps is visible to that
+  // sign-in's database hooks and to nothing else.
+  return githubSignInScope.run({}, () => auth.handler(request));
 }
