@@ -145,9 +145,8 @@ const links = [
   >
     <div class="mctl-site-container mctl-site-header__inner">
       <RouterLink to="/" class="mctl-site-brand app-brand" aria-label="mctl Academy home"
-        ><span class="mctl-site-brand__accent">M</span>CTL<span class="app-brand-suffix"
-          >&nbsp;academy</span
-        ></RouterLink
+        ><span class="mctl-site-brand__accent">M</span><span class="app-brand-rest">CTL</span
+        ><span class="app-brand-suffix">&nbsp;academy</span></RouterLink
       >
       <div
         ref="courseContext"
@@ -377,6 +376,25 @@ const links = [
 @media (max-width: 400px) {
   .app-brand-suffix {
     display: none;
+  }
+
+  /* At 375px the brand, three 44px actions and the gutters leave the course
+     about 100px, which is "Agenti…". The accent M alone still reads as the
+     mark (the link keeps its "mctl Academy home" label) and gives the course
+     name about 55px more. */
+  .app-brand-rest {
+    display: none;
+  }
+
+  /* A tighter chevron gutter and a 14px label are the last few letters of
+     the longest titles. */
+  .app-nav-context .course-select :deep(.m-select__control) {
+    padding-inline: 0.4rem 1.1rem;
+    font-size: 0.875rem;
+  }
+
+  .app-nav-context .course-select :deep(.m-select__chevron) {
+    right: 0.4rem;
   }
 
   /* The "/" separator and its gap are 16px of course name at 375px. */
