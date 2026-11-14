@@ -838,6 +838,56 @@ export function prBody({
       );
       lines.push(`- ${c.course}: ${cells.join(", ")} (published ${prev?.published ?? "?"}→${c.published})`);
     }
+    // Advisory only (scripts/content-quality-report.mjs); absent keys come
+    // from a report older than the diagnostics and read as "?".
+    if (after.some((c) => c.metrics)) {
+      const pc = (x) => (typeof x === "number" ? `${Math.round(x * 100)}%` : "?");
+      const num = (x) => (typeof x === "number" ? String(x) : "?");
+      const dups = (c) =>
+        c?.nearDuplicates ? c.nearDuplicates.filter((p) => !p.allowlisted).length : undefined;
+      const row = (label, b, a, f) => `${label} ${f(b)}→${f(a)}`;
+      lines.push("", "### Quality diagnostics before → after (advisory)", "");
+      for (const c of after) {
+        const prev = before.find((b) => b.course === c.course);
+        const m = c.metrics ?? {};
+        const p = prev?.metrics ?? {};
+        lines.push(
+          `- ${c.course}: ${[
+            row("correct longest", p.correctLongestShare, m.correctLongestShare, pc),
+            row("mean length ratio", p.meanLengthRatio, m.meanLengthRatio, num),
+            row("short distractor", p.shortDistractorShare, m.shortDistractorShare, pc),
+            row(
+              "absolutes only in distractors",
+              p.absoluteOnlyInDistractorsShare,
+              m.absoluteOnlyInDistractorsShare,
+              pc,
+            ),
+            row("volatile", p.volatileShare, m.volatileShare, pc),
+            row("scenario stems", p.scenarioShare, m.scenarioShare, pc),
+            row("near-duplicate pairs", dups(prev), dups(c), num),
+          ].join(", ")}`,
+        );
+      }
+      const promoted = new Set(approved.map((q) => q.id));
+      const seen = new Set();
+      const flagged = [];
+      for (const c of after) {
+        for (const p of c.nearDuplicates ?? []) {
+          const key = p.ids.join(",");
+          if (p.allowlisted || seen.has(key) || !p.ids.some((id) => promoted.has(id))) continue;
+          seen.add(key);
+          flagged.push(p);
+        }
+      }
+      if (flagged.length) {
+        lines.push("", "Near-duplicate pairs involving promoted items:", "");
+        for (const p of flagged) {
+          lines.push(
+            `- \`${p.ids[0]}\` / \`${p.ids[1]}\` (${p.relation}, cosine ${p.cosine}, key-term overlap ${p.keyOverlap})`,
+          );
+        }
+      }
+    }
   }
   lines.push(
     "",

@@ -1,0 +1,11 @@
+# Intentional contrast pairs for the advisory near-duplicate check in
+# scripts/content-quality-report.mjs. A listed pair is still reported, marked
+# "allowlisted" with its reason, but is not counted as a warning. List a pair
+# only after reading both items: the two must test different facts that a
+# learner could confuse, not the same fact twice.
+schema_version: 1
+pairs:
+  - pair: [q-9a3f6c1e8b45, q-e1b8a4d6f128]
+    reason: "Contrast: key.search_usage (Search-only credits) versus key.usage (total credits) for the same API key."
+  - pair: [q-cs01d4e5f6a7, q-de08c9d0e1f2]
+    reason: "Contrast: the Partially ready readiness status versus Ready for a dedicated endpoint."
