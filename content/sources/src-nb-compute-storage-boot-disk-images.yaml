@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-storage-boot-disk-images
+url: https://docs.nebius.com/compute/storage/boot-disk-images.md
+title: Boot disk images for Compute virtual machines
+retrieved_at: 2026-11-14T09:39:44Z
+sha256: 74e72486025dec1da3199fb52d4a8c5bfd1a64d566cbebf755ee06a15ab61edb
+objectives:
+  - domain-2/ie-training-images
+snapshot:
+  bucket: academy-source-snapshots
+  key: 74e72486025dec1da3199fb52d4a8c5bfd1a64d566cbebf755ee06a15ab61edb
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-images

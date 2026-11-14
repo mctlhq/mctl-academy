@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-storage-custom-disk-images
+url: https://docs.nebius.com/compute/storage/custom-disk-images.md
+title: Creating custom boot disk images
+retrieved_at: 2026-11-14T09:39:46Z
+sha256: e7d248754d57029c4ca0851001d720d133f4803ed3886834bc5f8c66387bd39f
+objectives:
+  - domain-2/ie-training-images
+snapshot:
+  bucket: academy-source-snapshots
+  key: e7d248754d57029c4ca0851001d720d133f4803ed3886834bc5f8c66387bd39f
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-images

@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-compute-clusters-gpu-topology
+url: https://docs.nebius.com/compute/clusters/gpu/topology/index.md
+title: InfiniBand topology of a GPU cluster
+retrieved_at: 2026-11-14T09:39:41Z
+sha256: 9e45eb3a7a326319661e90000d1980a78ec70973f603a04997f85fccd20c7400
+objectives:
+  - domain-2/ie-gpu-fabric
+  - domain-1/sa-distributed-training
+snapshot:
+  bucket: academy-source-snapshots
+  key: 9e45eb3a7a326319661e90000d1980a78ec70973f603a04997f85fccd20c7400
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-gpu-fabric
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-distributed-training

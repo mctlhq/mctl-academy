@@ -1,0 +1,21 @@
+schema_version: 1
+id: src-nb-compute-clusters-gpu-test
+url: https://docs.nebius.com/compute/clusters/gpu/test.md
+title: How to test a GPU cluster physical state in Compute
+retrieved_at: 2026-11-14T09:39:39Z
+sha256: 6cb1b7b330015106030b77e1ee4c3ea6e07d376bc6db613cf8d2f972a1a37529
+objectives:
+  - domain-2/ie-gpu-fabric
+  - domain-4/ie-fabric-incidents
+  - domain-2/sa-validation-acceptance
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6cb1b7b330015106030b77e1ee4c3ea6e07d376bc6db613cf8d2f972a1a37529
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-gpu-fabric
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-fabric-incidents
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-validation-acceptance
