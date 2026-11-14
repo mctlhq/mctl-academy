@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.90](https://github.com/mctlhq/mctl-academy/compare/0.1.89...0.1.90) (2026-11-14)
+
+
+### Features
+
+* **seo:** add FAQPage and BreadcrumbList schema and index all tracks in sitemap ([6ed3009](https://github.com/mctlhq/mctl-academy/commit/6ed3009826ca60c81269e03211d2db22a53e56fa))
+
+
+### Bug Fixes
+
+* **deps:** pin [@mctlhq](https://github.com/mctlhq) deps exactly and enforce it in CI ([3a33f37](https://github.com/mctlhq/mctl-academy/commit/3a33f37a1655c4a2ea3bbe0e6523e371f8b3c912))
+* **deps:** pin @mctlhq/ui to the exact 0.21.0 ([f7f19de](https://github.com/mctlhq/mctl-academy/commit/f7f19de8f526bbca7d115b8b1290d3498e49fb92)), closes [#210](https://github.com/mctlhq/mctl-academy/issues/210)
+
 ## [0.1.89](https://github.com/mctlhq/mctl-academy/compare/0.1.88...0.1.89) (2026-11-14)
 
 
