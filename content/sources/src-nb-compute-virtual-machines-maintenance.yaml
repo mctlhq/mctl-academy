@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-maintenance
+url: https://docs.nebius.com/compute/virtual-machines/maintenance.md
+title: Maintenance of Compute virtual machines
+retrieved_at: 2026-11-14T09:43:26Z
+sha256: f3a6e95365c5bb063ba3177091f06565157b8ea69eb162f4ef790d39dfc72de6
+objectives:
+  - domain-4/ie-long-run-reliability
+snapshot:
+  bucket: academy-source-snapshots
+  key: f3a6e95365c5bb063ba3177091f06565157b8ea69eb162f4ef790d39dfc72de6
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-long-run-reliability

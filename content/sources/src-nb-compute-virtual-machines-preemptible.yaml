@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-preemptible
+url: https://docs.nebius.com/compute/virtual-machines/preemptible.md
+title: Preemptible virtual machines
+retrieved_at: 2026-11-14T09:43:27Z
+sha256: 6ef3b262673af7071bc7cb1c5e21b5e69d57a7801d5fd0d6f639460a7fc958b5
+objectives:
+  - domain-2/ie-checkpoint-restart
+  - domain-3/sa-cost-tradeoffs
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6ef3b262673af7071bc7cb1c5e21b5e69d57a7801d5fd0d6f639460a7fc958b5
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-checkpoint-restart
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-cost-tradeoffs

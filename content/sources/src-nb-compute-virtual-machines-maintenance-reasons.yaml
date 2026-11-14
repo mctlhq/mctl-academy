@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-maintenance-reasons
+url: https://docs.nebius.com/compute/virtual-machines/maintenance-reasons.md
+title: Maintenance reasons in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:43:24Z
+sha256: 4a9f21d5090e963471c6269c555abb2dbefbbb8cd347595cea3e3a6426523ec6
+objectives:
+  - domain-2/sa-failure-support-model
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4a9f21d5090e963471c6269c555abb2dbefbbb8cd347595cea3e3a6426523ec6
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-failure-support-model
