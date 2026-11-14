@@ -23,7 +23,6 @@ import { recordAttempt, resetMemoryFallback, setSyncEnabled } from "../../servic
 
 function mountDashboard(syncVersion = ref(0)) {
   return mount(DashboardScreen, {
-    props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
     global: { stubs: { RouterLink: RouterLinkStub }, provide: { syncVersion } },
   });
 }
@@ -41,6 +40,15 @@ describe("DashboardScreen progress readout", () => {
     expect(marker.element.nextElementSibling?.classList.contains("readiness-heading")).toBe(true);
     expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/practice?domain=domain-1");
     expect(wrapper.find(".metric-definitions").text()).toMatch(/latest answer to the question is correct/);
+  });
+
+  it("navigates with links: the recommended domain and the mistakes review", () => {
+    recordAttempt("q-1", "domain-1", false);
+    const wrapper = mountDashboard();
+    const targets = wrapper.findAllComponents(RouterLinkStub).map((l) => l.props("to"));
+    expect(targets).toContainEqual({ path: "/practice", query: { domain: "domain-1" } });
+    expect(targets).toContain("/mistakes");
+    expect(wrapper.find(".weakest-card button").exists()).toBe(false);
   });
 });
 
@@ -99,7 +107,6 @@ describe("DashboardScreen", () => {
   it("tells a guest only about this device, and a signed-in learner about the server copy too", async () => {
     recordAttempt("q-1", "domain-1", true);
     const guest = mount(DashboardScreen, {
-      props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
       global: {
         stubs: { RouterLink: RouterLinkStub },
         provide: { syncVersion: ref(0), currentUser: ref(null) },
@@ -114,7 +121,6 @@ describe("DashboardScreen", () => {
     guest.unmount();
 
     const member = mount(DashboardScreen, {
-      props: { onReviewMistakes: () => {}, onStartPractice: () => {} },
       global: {
         stubs: { RouterLink: RouterLinkStub },
         provide: { syncVersion: ref(0), currentUser: ref({ id: "u-1" }) },

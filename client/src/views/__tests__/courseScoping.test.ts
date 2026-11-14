@@ -55,12 +55,18 @@ vi.mock("../../services/contentBundle", () => ({
     new Set((courseId ? fixtures.all.filter((q) => q.course_id === courseId) : []).map((q) => q.id)),
 }));
 
-vi.mock("vue-router", () => ({ useRoute: () => ({ query: {} }) }));
+vi.mock("vue-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("vue-router")>()),
+  useRoute: () => ({ query: {} }),
+}));
 
 import { ref } from "vue";
 import PracticeView from "../PracticeView.vue";
 import MistakesView from "../MistakesView.vue";
 import { recordAttempt, resetMemoryFallback, setSyncEnabled } from "../../services/progressStore";
+import { useRouterLinkStub } from "../../test-utils/routerLinkStub";
+
+useRouterLinkStub();
 enableAutoUnmount(afterEach);
 
 // A real ref, so the views react to a course change exactly as they do in the app.

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
 import type { ExamDataSource } from "../dataSource";
 import type { MockConfig, Question } from "../types";
@@ -87,10 +88,10 @@ function handleStart() {
     <div v-else class="mock-start-shortfall" data-testid="not-enough-content" role="status">
       <h2>Full mock not available for this course yet</h2>
       <p>
-        Some domains do not have enough published questions for a full mock. You can keep practising while the
+        Some domains do not have enough published questions for a full mock. You can keep practicing while the
         bank is reviewed and expanded.
       </p>
-      <a href="/practice" class="mock-start-practice">Continue practice</a>
+      <MButton :as="RouterLink" to="/practice">Continue practice</MButton>
       <details>
         <summary>What is missing</summary>
         <ul>
@@ -185,7 +186,7 @@ function handleStart() {
 .mock-start-facts dt {
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -212,7 +213,7 @@ function handleStart() {
 .mock-start-resume {
   margin: 0;
   color: var(--surface-fg-subtle);
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
 }
 
 .mock-start-domains ul {
@@ -239,17 +240,6 @@ function handleStart() {
   color: var(--surface-fg-subtle);
 }
 
-.mock-start-practice {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  padding: 0 1rem;
-  border-radius: var(--mctl-radius-md, 6px);
-  background: var(--accent);
-  color: var(--accent-fg);
-  text-decoration: none;
-}
-
 .mock-start-how {
   margin: 0 0 1.25rem;
   color: var(--surface-fg-muted);
@@ -270,7 +260,7 @@ function handleStart() {
 .mock-start-how-narrow summary {
   color: var(--surface-fg);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   cursor: pointer;
 }
 

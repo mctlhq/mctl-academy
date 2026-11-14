@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { computed, inject, type Ref } from "vue";
+import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
+import CourseGrid from "../components/CourseGrid.vue";
 import DomainBar from "../components/DomainBar.vue";
 import { calculateProgressStats, calculateStudyStreak } from "../services/progressStore";
 import { questionsForCourse } from "../services/contentBundle";
-import { domainTitlesFor, findCourse } from "../services/courseCatalog";
+import { courseCatalog, domainTitlesFor, findCourse } from "../services/courseCatalog";
 import { useCourseStore } from "../services/courseStore";
-
-defineProps<{
-  onStartPractice: () => void;
-  onReviewMistakes: () => void;
-}>();
 
 // Same course scope as the dashboard — see DashboardScreen.vue. syncVersion
 // is injected (not part of App.vue's remount key) so a background sync
@@ -61,9 +58,7 @@ const practiceDescription = computed(() => {
           question mix.
         </p>
       </div>
-      <MButton type="button" @click="onStartPractice"
-        >{{ practiceLabel }} <span aria-hidden="true">→</span></MButton
-      >
+      <MButton :as="RouterLink" to="/practice">{{ practiceLabel }} <span aria-hidden="true">→</span></MButton>
     </div>
 
     <div class="home-grid">
@@ -97,27 +92,28 @@ const practiceDescription = computed(() => {
           </div>
         </dl>
 
-        <button
-          v-if="stats.totalMistakes > 0"
-          type="button"
-          class="mistakes-callout"
-          @click="onReviewMistakes"
-        >
+        <RouterLink v-if="stats.totalMistakes > 0" to="/mistakes" class="mistakes-callout">
           <span>{{ stats.totalMistakes }} mistakes ready for review</span>
           <strong>Review now <span aria-hidden="true">→</span></strong>
-        </button>
+        </RouterLink>
         <p v-else class="mistakes-clear"><span aria-hidden="true">✓</span> No mistakes waiting for review.</p>
       </aside>
     </div>
+
+    <!-- Every course in the catalog, coming-soon ones included, so the
+         roadmap is visible here as it is in the header switcher. -->
+    <section class="home-courses" aria-labelledby="home-courses-title">
+      <h2 id="home-courses-title" class="section-heading">All courses</h2>
+      <CourseGrid :courses="courseCatalog" :current-course-id="currentCourseId" />
+    </section>
   </section>
 </template>
 
 <style scoped>
 .section-marker,
-.section-heading,
 .stat-list dt {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -167,7 +163,7 @@ const practiceDescription = computed(() => {
   margin-bottom: 0.35rem;
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 .next-card .next-course a {
@@ -177,7 +173,7 @@ const practiceDescription = computed(() => {
 
 .next-card .next-course a:hover,
 .next-card .next-course a:focus-visible {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: underline;
 }
 
@@ -186,7 +182,7 @@ const practiceDescription = computed(() => {
 }
 
 .next-secondary a {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .home-grid {
@@ -196,14 +192,13 @@ const practiceDescription = computed(() => {
   margin-top: 2.25rem;
 }
 
-.section-heading {
-  margin: 0 0 1.25rem;
-  color: var(--surface-fg-subtle);
-}
-
 .domain-bars {
   display: grid;
   gap: 1.1rem;
+}
+
+.home-courses {
+  margin-top: 3rem;
 }
 
 .home-summary {
@@ -238,6 +233,7 @@ const practiceDescription = computed(() => {
 
 .mistakes-callout {
   display: grid;
+  box-sizing: border-box;
   width: 100%;
   gap: 0.6rem;
   padding: 1rem 1.1rem;
@@ -246,13 +242,17 @@ const practiceDescription = computed(() => {
   background: color-mix(in srgb, var(--status-bad) 8%, transparent);
   color: var(--surface-fg);
   text-align: left;
-  cursor: pointer;
+  text-decoration: none;
+}
+
+.mistakes-callout:hover {
+  background: color-mix(in srgb, var(--status-bad) 14%, transparent);
 }
 
 .mistakes-callout strong {
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 /* Zero mistakes is a neutral fact, not an achievement to celebrate: plain
@@ -303,13 +303,12 @@ const practiceDescription = computed(() => {
 }
 
 @media (max-width: 560px) {
-  .home-screen {
-    margin-top: -0.75rem;
-    margin-bottom: -0.75rem;
-  }
-
   .section-marker {
     margin-bottom: 0.5rem;
+  }
+
+  .home-courses {
+    margin-top: 2rem;
   }
 
   .next-card {
@@ -323,16 +322,12 @@ const practiceDescription = computed(() => {
   }
 
   .next-card p {
-    font-size: 0.85rem;
+    font-size: var(--text-caption-size);
   }
 
   .home-grid {
     gap: 1.25rem;
     margin-top: 1.25rem;
-  }
-
-  .section-heading {
-    margin-bottom: 0.75rem;
   }
 
   .domain-bars {
@@ -368,11 +363,6 @@ const practiceDescription = computed(() => {
 }
 
 @media (max-width: 400px) {
-  .home-screen {
-    margin-top: -1rem;
-    margin-bottom: -1rem;
-  }
-
   .next-card {
     gap: 0.5rem;
     padding: 0.75rem;
@@ -381,10 +371,6 @@ const practiceDescription = computed(() => {
   .home-grid {
     gap: 0.75rem;
     margin-top: 0.75rem;
-  }
-
-  .section-heading {
-    margin-bottom: 0.5rem;
   }
 
   .domain-bars {

@@ -150,6 +150,12 @@ function validateCatalogCourse(course, index, errors) {
     }
   }
 
+  if ("summary" in course && !isNonEmptyString(course.summary)) {
+    errors.push(
+      `${at}.summary: expected a non-empty string when present, got ${JSON.stringify(course.summary)}`,
+    );
+  }
+
   if (!isNonNegativeInteger(course.publishedQuestionCount)) {
     errors.push(
       `${at}.publishedQuestionCount: expected a non-negative integer, got ${JSON.stringify(course.publishedQuestionCount)}`,

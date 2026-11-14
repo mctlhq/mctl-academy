@@ -10,9 +10,8 @@ not been reviewed by a lawyer.
 by any other certification vendor.**
 
 This disclaimer appears in the application footer, in `README.md`, and in the
-`disclaimer` field of every course file. It is not buried in a settings screen.
-The footer is hidden on the practice and mistakes screens at widths up to 680px,
-where it would sit under the floating toggle.
+`disclaimer` field of every course file. It is not buried in a settings screen,
+and the footer is shown on every screen at every width.
 
 ## Naming rules
 

@@ -3,6 +3,7 @@ id: ai-leader
 prepares_for: "Nebius AI Leader"
 title: "AI Leader"
 description: "Practice for the Nebius AI Leader certification. Foundational business and product track covering AI fundamentals, product design, controlling model outputs, and platform capabilities."
+summary: "A business-first view of AI: core concepts, designing AI products, steering model outputs and choosing platform capabilities."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."

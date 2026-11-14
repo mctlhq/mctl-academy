@@ -50,7 +50,7 @@ defineProps<{
 
 .domain-bar-link:hover,
 .domain-bar-link:focus-visible {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: underline;
 }
 
@@ -59,12 +59,12 @@ defineProps<{
   align-items: baseline;
   gap: 0.4rem;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .domain-bar-value small {
   color: var(--surface-fg-subtle);
-  font-size: 0.7rem;
+  font-size: var(--text-caption-size);
 }
 
 .domain-bar-track {
@@ -85,10 +85,6 @@ defineProps<{
 @media (min-width: 981px) {
   .domain-bar-labels {
     font-size: 1rem;
-  }
-
-  .domain-bar-value {
-    font-size: 0.85rem;
   }
 }
 </style>

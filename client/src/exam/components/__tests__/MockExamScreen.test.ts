@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import MockExamScreen from "../MockExamScreen.vue";
@@ -96,5 +96,73 @@ describe("MockExamScreen", () => {
     await new Promise((r) => setTimeout(r, 900));
     expect(live.text()).toBe("5 minutes remaining");
     wrapper.unmount();
+  });
+
+  function twoQuestionSession() {
+    const base = makeSession();
+    return { ...base, questions: [base.questions[0], { ...base.questions[0], id: "q-2" }] };
+  }
+
+  it("names the screen and position in a visually hidden heading", () => {
+    const wrapper = mount(MockExamScreen, { props: { session: twoQuestionSession(), initialIndex: 1 } });
+    const h1 = wrapper.get("h1");
+    expect(h1.classes()).toContain("sr-only");
+    expect(h1.text()).toBe("Mock exam – question 2 of 2");
+    wrapper.unmount();
+  });
+
+  it("marks answered navigator items neutrally, with a check, never as correct", () => {
+    const base = twoQuestionSession();
+    const session = { ...base, answers: { "q-1": "b" } };
+    const wrapper = mount(MockExamScreen, { props: { session } });
+    const [first, second] = wrapper.findAll(".mock-exam-nav-item");
+    expect(first.classes()).toEqual(expect.arrayContaining(["answered", "current"]));
+    expect(first.find(".mock-exam-nav-check").text()).toBe("✓");
+    expect(first.attributes("aria-label")).toBe("Question 1, answered");
+    expect(second.find(".mock-exam-nav-check").exists()).toBe(false);
+    expect(wrapper.html()).not.toMatch(/status-ok|correct/);
+    wrapper.unmount();
+  });
+
+  describe("on a phone (<=620px)", () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    function stubNarrow(matches: boolean) {
+      vi.stubGlobal(
+        "matchMedia",
+        vi.fn().mockImplementation((query: string) => ({
+          matches,
+          media: query,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        })),
+      );
+    }
+
+    it("collapses the navigator behind a 'Question N of M' summary and closes it after a pick", async () => {
+      stubNarrow(true);
+      const wrapper = mount(MockExamScreen, { props: { session: twoQuestionSession() } });
+      const details = wrapper.get<HTMLDetailsElement>(".mock-exam-nav-panel");
+      expect(details.element.open).toBe(false);
+      expect(wrapper.get('[data-testid="mock-nav-summary"]').text()).toBe("Question 1 of 2");
+
+      details.element.open = true;
+      await details.trigger("toggle");
+      expect(details.element.open).toBe(true);
+
+      await wrapper.findAll(".mock-exam-nav-item")[1].trigger("click");
+      expect(details.element.open).toBe(false);
+      expect(wrapper.get('[data-testid="mock-nav-summary"]').text()).toBe("Question 2 of 2");
+      wrapper.unmount();
+    });
+
+    it("keeps the navigator open on wider screens", () => {
+      stubNarrow(false);
+      const wrapper = mount(MockExamScreen, { props: { session: twoQuestionSession() } });
+      expect(wrapper.get<HTMLDetailsElement>(".mock-exam-nav-panel").element.open).toBe(true);
+      wrapper.unmount();
+    });
   });
 });

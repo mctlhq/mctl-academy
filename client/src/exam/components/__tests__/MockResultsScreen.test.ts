@@ -3,6 +3,9 @@ import { mount } from "@vue/test-utils";
 import MockResultsScreen from "../MockResultsScreen.vue";
 import { answerQuestion, startSession, submitSession } from "../../session";
 import type { Question } from "../../types";
+import { useRouterLinkStub } from "../../../test-utils/routerLinkStub";
+
+useRouterLinkStub();
 
 function makeSubmittedSession() {
   const questions: Question[] = [
@@ -68,7 +71,7 @@ describe("MockResultsScreen summary and filters", () => {
   it("filters the question list by outcome", async () => {
     const wrapper = mount(MockResultsScreen, { props: { session: session() } });
     const show = (label: string) =>
-      wrapper.findAll(".mock-results-filters button").find((b) => b.text() === label)!;
+      wrapper.findAll('.mock-results-filters [role="tab"]').find((b) => b.text() === label)!;
     expect(wrapper.findAll(".mock-results-question")).toHaveLength(3);
     await show("Incorrect").trigger("click");
     expect(wrapper.findAll(".mock-results-question").map((li) => li.text())).toEqual([
@@ -84,6 +87,9 @@ describe("MockResultsScreen summary and filters", () => {
     const wrapper = mount(MockResultsScreen, { props: { session: session() } });
     const practice = wrapper.findAll(".mock-results-link").find((a) => a.text().startsWith("Practice"))!;
     expect(practice.attributes("href")).toBe("/practice?domain=domain-2");
+    const review = wrapper.findAll(".mock-results-link").find((a) => a.text() === "Review mistakes")!;
+    expect(review.element.tagName).toBe("A");
+    expect(review.attributes("href")).toBe("/mistakes");
     await wrapper.find(".mock-restart").trigger("click");
     expect(wrapper.emitted("restart")).toHaveLength(1);
   });

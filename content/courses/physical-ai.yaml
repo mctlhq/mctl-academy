@@ -3,6 +3,7 @@ id: physical-ai
 prepares_for: "Nebius Physical AI"
 title: "Physical AI"
 description: "Practice for the Nebius Physical AI certification. Scenario questions covering post-training of language, vision-language and vision-language-action models and robot policies, robotics data pipelines, inference evaluation and deployment, and integrating models with robot applications."
+summary: "Post-train models and robot policies, build robotics data pipelines, evaluate and deploy inference, and connect models to robot applications."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."

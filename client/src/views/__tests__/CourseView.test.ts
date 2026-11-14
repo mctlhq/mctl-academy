@@ -1,18 +1,19 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
+import { nextTick, reactive } from "vue";
 import CourseView from "../CourseView.vue";
 import * as courseCatalogModule from "../../services/courseCatalog";
+import { courseHeadMeta } from "../../seo/courseMeta.mjs";
 
 const mockSetCourse = vi.fn().mockReturnValue(true);
-const mockPush = vi.fn();
-let currentRouteParams = { courseId: "agentic-ai-builder" };
+// Reactive so a test can change the route param under a mounted view, the way
+// vue-router does when /courses/X -> /courses/Y reuses the component.
+let currentRouteParams = reactive({ courseId: "agentic-ai-builder" });
 
-vi.mock("vue-router", () => ({
+vi.mock("vue-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("vue-router")>()),
   useRoute: () => ({
     params: currentRouteParams,
-  }),
-  useRouter: () => ({
-    push: mockPush,
   }),
 }));
 
@@ -41,7 +42,7 @@ describe("CourseView", () => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
     mockSetCourse.mockReturnValue(true);
-    currentRouteParams = { courseId: "agentic-ai-builder" };
+    currentRouteParams = reactive({ courseId: "agentic-ai-builder" });
     document.head.innerHTML = `
       <title>Original Title</title>
       <meta name="description" content="Original Description" />
@@ -49,41 +50,61 @@ describe("CourseView", () => {
       <meta property="og:description" content="Original OG Description" />
       <meta property="og:url" content="https://academy.mctl.ai/" />
       <link rel="canonical" href="https://academy.mctl.ai/" />
+      <meta name="twitter:title" content="Original Twitter Title" />
+      <meta name="twitter:description" content="Original Twitter Description" />
     `;
     document.title = "Original Title";
   });
 
-  it("renders the course hero and metadata without hijacking currentCourseId on mount", () => {
+  it("renders the course hero and selects the course it shows", () => {
     const wrapper = mountCourseView();
     expect(wrapper.text()).toContain("Agentic AI Builder");
     expect(wrapper.text()).toContain("Practice track");
     expect(wrapper.text()).toContain("Practice domains & syllabus");
+    // The header switcher reads the store: without this the page showed one
+    // course while the header named another.
+    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
+  });
+
+  it("re-selects when the route moves to another course page", async () => {
+    mountCourseView();
+    mockSetCourse.mockClear();
+    currentRouteParams.courseId = "agentic-web-search";
+    await nextTick();
+    expect(mockSetCourse).toHaveBeenCalledWith("agentic-web-search");
+  });
+
+  it("does not select a coming-soon or unknown course", () => {
+    vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue({
+      id: "upcoming-course",
+      title: "Upcoming Track",
+      publishedQuestionCount: 0,
+      available: false,
+      mock: { questionCount: 30, timeLimitMinutes: 60, discloseBankSize: true, domains: [] },
+    });
+    mountCourseView().unmount();
+    vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue(undefined);
+    mountCourseView();
     expect(mockSetCourse).not.toHaveBeenCalled();
   });
 
-  it("calls setCourse and navigates only when learner triggers practice action", async () => {
+  // Navigation is a link, not a click handler: it opens in a new tab, shows
+  // its target on hover and survives a disabled script. The course is
+  // already the selection by then (selected on mount, above).
+  it("links the practice and mock CTAs to their pages", () => {
     const wrapper = mountCourseView();
-    const startBtn = wrapper.find(".course-cta-row button");
-    await startBtn.trigger("click");
-    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
-    expect(mockPush).toHaveBeenCalledWith("/practice");
+    const ctas = wrapper.findAll(".course-cta-row a");
+    expect(ctas.map((a) => a.attributes("href"))).toEqual(["/practice", "/mock"]);
+    expect(ctas[0].text()).toMatch(/^Start practice/);
+    expect(ctas[1].text()).toMatch(/^Timed mock run/);
+    expect(wrapper.find(".course-cta-row button").exists()).toBe(false);
   });
 
-  it("calls setCourse and navigates to /mock when mock CTA is clicked", async () => {
+  it("links each domain card to a filtered Practice", () => {
     const wrapper = mountCourseView();
-    const mockBtn = wrapper.findAll(".course-cta-row button")[1];
-    await mockBtn.trigger("click");
-    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
-    expect(mockPush).toHaveBeenCalledWith("/mock");
-  });
-
-  it("calls setCourse and navigates to domain filter when domain practice button is clicked", async () => {
-    const wrapper = mountCourseView();
-    const domainBtn = wrapper.find(".domain-btn-link");
-    expect(domainBtn.attributes("aria-label")).toContain("Practice");
-    await domainBtn.trigger("click");
-    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
-    expect(mockPush).toHaveBeenCalledWith(expect.stringContaining("/practice?domain="));
+    const domainLink = wrapper.find("a.domain-btn-link");
+    expect(domainLink.attributes("aria-label")).toContain("Practice");
+    expect(domainLink.attributes("href")).toMatch(/^\/practice\?domain=/);
   });
 
   it("injects Schema.org Course and Quiz structured data with free offers", () => {
@@ -129,6 +150,41 @@ describe("CourseView", () => {
     expect(document.getElementById("schema-course-jsonld")).toBeNull();
   });
 
+  it("writes the same strings the server renders, twitter tags included", () => {
+    mountCourseView();
+    const meta = courseHeadMeta(courseCatalogModule.findCourse("agentic-ai-builder")!);
+    expect(document.title).toBe(meta.title);
+    expect(document.querySelector('meta[name="twitter:title"]')?.getAttribute("content")).toBe(meta.title);
+    expect(document.querySelector('meta[name="twitter:description"]')?.getAttribute("content")).toBe(
+      meta.description,
+    );
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
+      "https://academy.mctl.ai/courses/agentic-ai-builder",
+    );
+    expect(JSON.parse(document.getElementById("schema-course-jsonld")?.textContent || "{}")).toEqual(
+      meta.jsonLd,
+    );
+  });
+
+  it("restores the server's data-default values, not the server-rendered course values", () => {
+    // A direct load of /courses/<id>: server/spa.mjs already wrote the course
+    // values and kept the site defaults in data-default.
+    document.head.innerHTML = `
+      <meta data-default="Site Description" name="description" content="Course Description" />
+      <link data-default="https://academy.mctl.ai/" rel="canonical" href="https://academy.mctl.ai/courses/agentic-ai-builder" />
+      <script type="application/ld+json" id="schema-course-jsonld">{}</script>
+    `;
+    const wrapper = mountCourseView();
+    wrapper.unmount();
+    expect(document.querySelector('meta[name="description"]')?.getAttribute("content")).toBe(
+      "Site Description",
+    );
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
+      "https://academy.mctl.ai/",
+    );
+    expect(document.getElementById("schema-course-jsonld")).toBeNull();
+  });
+
   it("renders all syllabus domains with weights and links", () => {
     const wrapper = mountCourseView();
     expect(wrapper.text()).toContain("Platform foundations and API access");
@@ -158,5 +214,10 @@ describe("CourseView", () => {
     const wrapper = mountCourseView();
     expect(wrapper.find('[data-testid="course-not-found"]').exists()).toBe(true);
     expect(wrapper.text()).toContain("Course not found");
+    const actions = wrapper.findAll(".not-found-actions a");
+    expect(actions.map((a) => [a.text(), a.attributes("href")])).toEqual([
+      ["Go to home", "/"],
+      ["Continue practice", "/practice"],
+    ]);
   });
 });

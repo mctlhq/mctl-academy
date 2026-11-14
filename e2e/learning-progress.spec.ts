@@ -123,7 +123,7 @@ test("progress denominator and recommended domain link agree", async ({ page }) 
     `${Math.round((5 / bank.length) * 100)}%`,
   );
   await expect(page.locator(".accuracy-detail").first()).toContainText("100% (5/5)");
-  await page.getByRole("button", { name: "Continue practice" }).click();
+  await page.getByRole("link", { name: "Continue practice" }).click();
   expect(new URL(page.url()).searchParams.get("domain")).toMatch(/^domain-/);
 });
 
