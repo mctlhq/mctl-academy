@@ -1,0 +1,55 @@
+schema_version: 1
+id: q-c6e2a4918fd3
+status: published
+domain: domain-3
+objective: domain-3/sa-finops
+stem: "A FinOps team sets a budget in Nebius AI Cloud with an alert threshold,
+  expecting that crossing the threshold will stop further spending on the
+  tracked usage. What should the architect do instead to actually enforce a hard
+  limit on that spending?"
+options:
+  - id: a
+    text: "Request a quota decrease, since a budget alone does not stop or cap usage
+      once spending crosses its threshold."
+    correct: true
+    explanation: "Correct. The documentation says a budget does not stop or cap your
+      usage, and that to limit usage you can request a quota decrease instead."
+  - id: b
+    text: "Raise the budget's alert threshold to its maximum value, since the
+      documentation ties a maximized threshold to automatically stopping usage."
+    correct: false
+    explanation: "The documentation only describes alert thresholds as triggering
+      email alerts on actual recorded spending; it does not tie any threshold
+      value to automatically stopping usage."
+  - id: c
+    text: "Switch the budget's time period to daily, since the documentation ties a
+      shorter tracking period to capping spend as soon as it is recorded."
+    correct: false
+    explanation: "The documentation describes the time period as only setting when a
+      budget resets for tracking purposes; it does not tie a shorter period to
+      capping spend."
+  - id: d
+    text: "Set the budget's scope to All usage, since the documentation ties that
+      scope setting to enforcing a hard limit on account-wide spending."
+    correct: false
+    explanation: "The documentation describes the All usage scope as simply tracking
+      the entire pay-as-you-go spend for alerting purposes, not as a setting
+      that enforces a spending limit."
+evidence:
+  - source_id: src-nb-signup-billing-budgets
+    source_sha256: 613fa38d227f942203b3babf11856de2f87349d257f4b98cd80065ddb3f88586
+    excerpt: "A budget does not stop or cap your usage."
+    locator: "Budgets in Nebius AI Cloud"
+  - source_id: src-nb-signup-billing-budgets
+    source_sha256: 613fa38d227f942203b3babf11856de2f87349d257f4b98cd80065ddb3f88586
+    excerpt: "To limit usage, you can [request a quota
+      decrease](https://docs.nebius.com/overview/quotas.md)."
+    locator: "Budgets in Nebius AI Cloud"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T16:21:32Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:38:21Z
+  content_sha256: eb6edbf7c0524a0beb2feb67270c2f5791ee136708e22990662c3ba63698fe9c

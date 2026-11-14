@@ -1,0 +1,52 @@
+schema_version: 1
+id: q-1f84b3e9c572
+status: published
+domain: domain-4
+objective: domain-4/sa-secrets-audit-compliance
+stem: "A compliance team is designing the workflow that exports audit events to
+  Object Storage for long-term retention, and is choosing the destination bucket
+  for a given region's events. What constraint does the design need to satisfy?"
+options:
+  - id: a
+    text: "The destination bucket must be in the same region as the events being
+      exported."
+    correct: true
+    explanation: "Correct. The documentation says the destination bucket must be in
+      the same region as the events, and repeats this requirement for the bucket
+      ID parameter in each interface."
+  - id: b
+    text: "The destination bucket can be in any region, since audit event export is
+      documented as copying events across regions automatically."
+    correct: false
+    explanation: "The documentation requires the destination bucket to be in the
+      same region as the exported events; it does not describe cross-region
+      copying as part of the export."
+  - id: c
+    text: "The exporting identity needs the admin or auditlogs.audit-event-exporter
+      role on the destination bucket, while the storage.uploader role applies to
+      the tenant instead."
+    correct: false
+    explanation: "The documentation assigns the admin or
+      auditlogs.audit-event-exporter role to the tenant and the storage.uploader
+      role to the destination bucket, the reverse of what this option
+      describes."
+  - id: d
+    text: "The export writes events under a custom object prefix, since the
+      documentation requires a prefix to be specified for every export."
+    correct: false
+    explanation: "The documentation says the object prefix is optional and the
+      auditlogs prefix is used by default when omitted, not required on every
+      export."
+evidence:
+  - source_id: src-nb-audit-logs-events-export
+    source_sha256: bcbcc32bfee6cd990b269f009589c8d7b0a3436627667c59012b807f449a7048
+    excerpt: "the destination bucket must be in the same region as the events"
+    locator: "How to export audit events to Object Storage, How to export events"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T16:21:32Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:38:21Z
+  content_sha256: 90df8fc1ce8ce7ea37e0862ae3ed105313d40471dc84e3fcd1f22898b645fd41

@@ -1,0 +1,54 @@
+schema_version: 1
+id: q-9d3c6e1a84f2
+status: published
+domain: domain-2
+objective: domain-2/sa-validation-acceptance
+stem: "A platform team is accepting delivery of a new GPU cluster and needs to
+  confirm that InfiniBand connections are physically established between GPUs
+  before benchmarking the cluster's performance. According to the documented
+  test, what should they check?"
+options:
+  - id: a
+    text: "Run ibstatus on each VM and confirm the phys state field for each
+      InfiniBand device reports LinkUp."
+    correct: true
+    explanation: "Correct. The documentation says to check the physical state (phys
+      state) for each device in the ibstatus result, and that it should be
+      LinkUp."
+  - id: b
+    text: "Run ibstatus on each VM and confirm the state field for each InfiniBand
+      device reports ACTIVE, since that is the field the documentation ties to
+      physical link establishment."
+    correct: false
+    explanation: "The ibstatus output reports both state and phys state, but the
+      documentation ties physical link establishment specifically to phys state
+      being LinkUp, not to the separate state field."
+  - id: c
+    text: "Run ibstatus on each VM and confirm the link_layer field for each
+      InfiniBand device reports Ethernet, since that is the value the
+      documentation associates with a working connection."
+    correct: false
+    explanation: "The documentation's example ibstatus result reports link_layer as
+      InfiniBand for a working device, not Ethernet."
+  - id: d
+    text: "Run ib_send_bw between two VMs and confirm the command reports zero bytes
+      sent, since that is the value the documentation associates with a
+      successful test."
+    correct: false
+    explanation: "The documentation says a successful test should show non-zero
+      values for bytes sent, so zero bytes would indicate the opposite of
+      successful connectivity."
+evidence:
+  - source_id: src-nb-compute-clusters-gpu-test
+    source_sha256: 6cb1b7b330015106030b77e1ee4c3ea6e07d376bc6db613cf8d2f972a1a37529
+    excerpt: "check the physical state (`phys state`): it should be `LinkUp`."
+    locator: "How to test a GPU cluster physical state in Compute, Testing the port
+      state"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T16:21:32Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:38:21Z
+  content_sha256: 22809abf6aa05b0337dcc7320f87e2b89281a50e3ef4b8b2cf09c3cf5e367ab2

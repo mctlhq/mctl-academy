@@ -1,0 +1,59 @@
+schema_version: 1
+id: q-4b7e2f918ac3
+status: published
+domain: domain-1
+objective: domain-1/sa-deployment-shape
+stem: "A team needs an inference deployment with a fixed, user-selected region
+  for data residency and capacity reserved for their organization alone, so
+  throughput does not depend on other tenants' demand. Which deployment option
+  fits this goal, and why?"
+options:
+  - id: a
+    text: "Dedicated endpoints, since the deployment region is fixed and
+      user-selected and capacity is reserved for the organization rather than
+      shared."
+    correct: true
+    explanation: "Correct. The documentation's comparison says a dedicated
+      endpoint's deployment region is fixed and user-selected and its capacity
+      is reserved for your organization, unlike the shared, capacity-dependent
+      region of public serverless endpoints."
+  - id: b
+    text: "Public serverless endpoints, since their region stays fixed once traffic
+      begins while their capacity scales automatically to match demand."
+    correct: false
+    explanation: "The documentation says a public serverless endpoint's region may
+      change based on available capacity, so the region is not fixed the way
+      this option describes."
+  - id: c
+    text: "Dedicated endpoints, since autoscaling on them is platform-managed with
+      predefined limits that remove the need to plan capacity."
+    correct: false
+    explanation: "The documentation says you control the minimum and maximum
+      replicas on dedicated endpoints; platform-managed autoscaling with
+      predefined limits is how it describes public serverless endpoints
+      instead."
+  - id: d
+    text: "Public serverless endpoints, since custom fine-tuned weights are
+      supported there for eligible models while dedicated endpoints are
+      restricted to base models."
+    correct: false
+    explanation: "The documentation reverses this: custom weights support is listed
+      for dedicated endpoints on eligible models, while public serverless
+      endpoints are described as base models only."
+evidence:
+  - source_id: src-ld-dedicated-overview
+    source_sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
+    excerpt: "Deployment region is fixed and user-selected"
+    locator: "Dedicated endpoints overview, Dedicated vs Public Endpoints Comparison"
+  - source_id: src-ld-dedicated-overview
+    source_sha256: 53103f851f433ebe1f607c0b3dc9887b9bba183cb321f28e3bc190dae866e845
+    excerpt: "Capacity reserved for your organization"
+    locator: "Dedicated endpoints overview, Dedicated vs Public Endpoints Comparison"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T16:21:32Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:38:21Z
+  content_sha256: bcf90221704aa1c80d087dd893dff0cb511e5380efb272e5ea823d3d87267e7d

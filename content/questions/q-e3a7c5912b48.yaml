@@ -1,0 +1,51 @@
+schema_version: 1
+id: q-e3a7c5912b48
+status: published
+domain: domain-3
+objective: domain-3/sa-multicloud-ingestion
+stem: "A platform team runs production workloads through an existing Managed
+  SkyPilot server and wants to add a new third-party cloud platform to it so
+  workloads can also run there. Which documented behavior should the team plan a
+  maintenance window around before making the change?"
+options:
+  - id: a
+    text: "Connecting a third-party platform to an existing server restarts the
+      server, the same as disconnecting a platform does."
+    correct: true
+    explanation: "Correct. The documentation notes that connecting third-party
+      platforms restarts the server, and separately notes the same for
+      disconnecting them."
+  - id: b
+    text: "The Google Cloud service account JSON key is generated automatically by
+      the Managed SkyPilot form instead of being created in Google Cloud first."
+    correct: false
+    explanation: "The documentation says you create the service account and generate
+      its JSON key in Google Cloud yourself, then add that key to the Managed
+      SkyPilot form."
+  - id: c
+    text: "The AWS secret access key stays retrievable at any later time from the
+      Managed SkyPilot form after the platform is connected."
+    correct: false
+    explanation: "The documentation says the secret access key can only be retrieved
+      right after creation in AWS, not later from the Managed SkyPilot form."
+  - id: d
+    text: "The external Kubernetes platform is connected using the cluster's
+      existing kubeconfig without preparing a namespace to use."
+    correct: false
+    explanation: "The documentation says to prepare a kubeconfig file with access
+      credentials and a namespace to be used, so a namespace still needs to be
+      prepared."
+evidence:
+  - source_id: src-nb-3p-integrations-multi-cloud-skypilot
+    source_sha256: 34e004eb468f3eaf339013614f843684492f2bd69e31dbb7d4b3bb434931b142
+    excerpt: "Connecting third-party platforms restarts the server."
+    locator: "Multi-platform orchestration in Managed Service for SkyPilot, How to
+      connect third-party platforms when updating a Managed SkyPilot server"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T16:21:32Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T16:38:21Z
+  content_sha256: cc9baf8e122ece1f16732a503b97b815af9e4ef8a1d42bd897cdc5cd4211df11

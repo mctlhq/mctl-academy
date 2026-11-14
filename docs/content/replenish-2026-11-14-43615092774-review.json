@@ -1,0 +1,62 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T16:38:21Z",
+  "questions": [
+    {
+      "id": "q-1f84b3e9c572",
+      "content_sha256": "90df8fc1ce8ce7ea37e0862ae3ed105313d40471dc84e3fcd1f22898b645fd41",
+      "approved": true,
+      "reason": "The captured page states verbatim, in the export step that selects a destination, \"the destination bucket must be in the same region as the events\", and repeats \"The bucket must be in the same region as the exported events\" for the bucket ID parameter in every interface. The three distractors are each contradicted by the same page: no cross-region copying is described, the roles are reversed (admin/auditlogs.audit-event-exporter within the tenant, storage.uploader on the bucket), and the object prefix is \"(optional)\" with the default auditlogs prefix.",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-2a8f4c91e637",
+      "content_sha256": "2f5344309118da9b4bb90bc96a17a06213d5059c4a295e94f76457c1cbb91284",
+      "approved": true,
+      "reason": "Under \"When jobs aren't restarted\" the page says the restart policy \"doesn't recover from\" \"Preemption: if you run on preemptible compute and Nebius AI Cloud reclaims (preempts) the underlying virtual machine (VM)\", and the tip advises to \"write and resume from checkpoints, and resubmit the job\" for exactly that case. The other options are each refuted by the page: a non-zero exit code is what on-failure does restart, the default value \"never\" marks the job failed without restarting, and \"Automatic restarts aren't available for Serverless AI endpoints.\"",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-4b7e2f918ac3",
+      "content_sha256": "bcf90221704aa1c80d087dd893dff0cb511e5380efb272e5ea823d3d87267e7d",
+      "approved": true,
+      "reason": "The comparison table gives dedicated endpoints \"Capacity reserved for your organization\" and \"Deployment region is fixed and user-selected\", against \"Shared multi-tenant capacity\" and \"Region may change based on available capacity\" for public serverless. The two non-answer rationales invert table rows (autoscaling is \"You control minimum and maximum replicas\" for dedicated, \"Platform-managed with predefined limits\" for public; custom weights are \"Supported for eligible models\" for dedicated, \"Base models only\" for public), so only option a survives.",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-5e9b7a2c1046",
+      "content_sha256": "186d6f288c0ce1f57f3b52d987117bf90d1433c621b875a8d43000b1c43bac6c",
+      "approved": true,
+      "reason": "The WEKA section says \"You need to explicitly enable data encryption when you create a WEKA filesystem. It is not possible to convert a WEKA filesystem to an encrypted filesystem later.\", which settles the plan of deferring the decision. No distractor is defensible: Local SSD disks \"are not encrypted\", Network SSD Non-replicated encryption is described through the disk-creation flow rather than as a later change, and shared filesystem encryption \"can't be disabled\".",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-7f1a93cd5e82",
+      "content_sha256": "5122badc5255aa12f7f1e7dc3935aba3532d7c4544eac75b97e9c1ccabdaf360",
+      "approved": true,
+      "reason": "The Limitations section states verbatim \"After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular.\", which is precisely the constraint that must shape the choice before creation. The same list refutes the other three: bucket policies \"cannot be used to grant anonymous access to a filesystem bucket\", \"Delayed deletion and bucket restoration are not supported\", and \"Object integrity checksums are not supported.\"",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-9d3c6e1a84f2",
+      "content_sha256": "22809abf6aa05b0337dcc7320f87e2b89281a50e3ef4b8b2cf09c3cf5e367ab2",
+      "approved": true,
+      "reason": "Step 3 of \"Testing the port state\" says \"For each device in the result, check the physical state (`phys state`): it should be `LinkUp`.\", which is the documented check for established InfiniBand connections. The alternatives fail on the captured text: the page ties the check to phys state rather than the separate state field, the example reports \"link_layer: InfiniBand\" not Ethernet, and the performance test expects \"non-zero values for the bytes sent\".",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-c6e2a4918fd3",
+      "content_sha256": "eb6edbf7c0524a0beb2feb67270c2f5791ee136708e22990662c3ba63698fe9c",
+      "approved": true,
+      "reason": "The page says \"A budget does not stop or cap your usage\" and, in the same paragraph, \"To limit usage, you can [request a quota decrease](https://docs.nebius.com/overview/quotas.md).\" Thresholds are described only as sending email alerts \"when your actual recorded spending crosses an alert threshold\", the time period only sets when the budget resets, and \"All usage\" only tracks entire pay-as-you-go spending, so no distractor is supportable.",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    },
+    {
+      "id": "q-e3a7c5912b48",
+      "content_sha256": "cc9baf8e122ece1f16732a503b97b815af9e4ef8a1d42bd897cdc5cd4211df11",
+      "approved": true,
+      "reason": "The note opening \"How to connect third-party platforms when updating a Managed SkyPilot server\" reads \"Connecting third-party platforms restarts the server.\", and the disconnect section carries the matching note, supporting both halves of the correct option. The others contradict the page: the Google Cloud JSON key is generated by the user in Google Cloud, \"you can only retrieve the secret access key right after creation\", and external Kubernetes requires a kubeconfig \"with access credentials and a namespace to be used\".",
+      "reviewed_at": "2026-11-14T16:38:21Z"
+    }
+  ]
+}

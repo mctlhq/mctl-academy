@@ -410,6 +410,47 @@
     ]
   },
   {
+    "id": "q-1f84b3e9c572",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-4",
+    "objective": "domain-4/sa-secrets-audit-compliance",
+    "stem": "A compliance team is designing the workflow that exports audit events to Object Storage for long-term retention, and is choosing the destination bucket for a given region's events. What constraint does the design need to satisfy?",
+    "objectiveTitle": "Secrets handling, audit trails and the resulting compliance posture",
+    "sources": [
+      {
+        "title": "How to export audit events to Object Storage",
+        "url": "https://docs.nebius.com/audit-logs/events/export.md",
+        "excerpt": "the destination bucket must be in the same region as the events"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The destination bucket must be in the same region as the events being exported.",
+        "correct": true,
+        "explanation": "Correct. The documentation says the destination bucket must be in the same region as the events, and repeats this requirement for the bucket ID parameter in each interface."
+      },
+      {
+        "id": "b",
+        "text": "The destination bucket can be in any region, since audit event export is documented as copying events across regions automatically.",
+        "correct": false,
+        "explanation": "The documentation requires the destination bucket to be in the same region as the exported events; it does not describe cross-region copying as part of the export."
+      },
+      {
+        "id": "c",
+        "text": "The exporting identity needs the admin or auditlogs.audit-event-exporter role on the destination bucket, while the storage.uploader role applies to the tenant instead.",
+        "correct": false,
+        "explanation": "The documentation assigns the admin or auditlogs.audit-event-exporter role to the tenant and the storage.uploader role to the destination bucket, the reverse of what this option describes."
+      },
+      {
+        "id": "d",
+        "text": "The export writes events under a custom object prefix, since the documentation requires a prefix to be specified for every export.",
+        "correct": false,
+        "explanation": "The documentation says the object prefix is optional and the auditlogs prefix is used by default when omitted, not required on every export."
+      }
+    ]
+  },
+  {
     "id": "q-2a8c4e6f91b7",
     "course_id": "physical-ai",
     "domain": "domain-3",
@@ -447,6 +488,52 @@
         "text": "`dagger`",
         "correct": false,
         "explanation": "`dagger` is human-in-the-loop data collection that alternates policy execution with teleoperator correction, not an observation-only strategy."
+      }
+    ]
+  },
+  {
+    "id": "q-2a8f4c91e637",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-2",
+    "objective": "domain-2/sa-failure-support-model",
+    "stem": "An architect is deciding whether a Serverless AI job's built-in on-failure restart policy is sufficient on its own, or whether the workload also needs checkpoint-and-resubmit logic to recover from a different kind of interruption. Which situation still needs that separate checkpoint-and-resubmit design?",
+    "objectiveTitle": "Handling failures and defining who supports the system in operation",
+    "sources": [
+      {
+        "title": "Automatic job restarts",
+        "url": "https://docs.nebius.com/serverless/jobs/auto-restarts.md",
+        "excerpt": "Nebius AI Cloud reclaims (preempts) the underlying virtual machine (VM)."
+      },
+      {
+        "title": "Automatic job restarts",
+        "url": "https://docs.nebius.com/serverless/jobs/auto-restarts.md",
+        "excerpt": "If the container exits with a non-zero exit code, Serverless AI automatically restarts it."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The underlying VM being preempted while the job runs on preemptible compute, since the restart policy does not recover from preempted jobs.",
+        "correct": true,
+        "explanation": "Correct. The documentation lists preemption of the underlying VM as one of the failures the restart policy doesn't recover from, so checkpoint-and-resubmit logic is still needed for it."
+      },
+      {
+        "id": "b",
+        "text": "The job's container exiting with a non-zero exit code after an application error, since the restart policy also does not recover from this failure.",
+        "correct": false,
+        "explanation": "The documentation says the on-failure restart policy automatically restarts the container specifically when it exits with a non-zero exit code, so this failure is already recovered without separate logic."
+      },
+      {
+        "id": "c",
+        "text": "The restart policy left at its default configuration, which the documentation ties to the same recovery behavior as explicitly setting on-failure.",
+        "correct": false,
+        "explanation": "The documentation says the default configuration marks a failed job as failed without restarting it, which is not the same recovery behavior as the on-failure setting."
+      },
+      {
+        "id": "d",
+        "text": "A Serverless AI endpoint's container exiting with an error, since restart policies recover endpoint containers the same way they recover job containers.",
+        "correct": false,
+        "explanation": "The documentation says automatic restarts aren't available for Serverless AI endpoints at all, so this scenario isn't a restart-policy case to begin with."
       }
     ]
   },
@@ -958,6 +1045,52 @@
     ]
   },
   {
+    "id": "q-4b7e2f918ac3",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-1",
+    "objective": "domain-1/sa-deployment-shape",
+    "stem": "A team needs an inference deployment with a fixed, user-selected region for data residency and capacity reserved for their organization alone, so throughput does not depend on other tenants' demand. Which deployment option fits this goal, and why?",
+    "objectiveTitle": "Turning workload goals into a fitting deployment design",
+    "sources": [
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Deployment region is fixed and user-selected"
+      },
+      {
+        "title": "Dedicated endpoints overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md",
+        "excerpt": "Capacity reserved for your organization"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Dedicated endpoints, since the deployment region is fixed and user-selected and capacity is reserved for the organization rather than shared.",
+        "correct": true,
+        "explanation": "Correct. The documentation's comparison says a dedicated endpoint's deployment region is fixed and user-selected and its capacity is reserved for your organization, unlike the shared, capacity-dependent region of public serverless endpoints."
+      },
+      {
+        "id": "b",
+        "text": "Public serverless endpoints, since their region stays fixed once traffic begins while their capacity scales automatically to match demand.",
+        "correct": false,
+        "explanation": "The documentation says a public serverless endpoint's region may change based on available capacity, so the region is not fixed the way this option describes."
+      },
+      {
+        "id": "c",
+        "text": "Dedicated endpoints, since autoscaling on them is platform-managed with predefined limits that remove the need to plan capacity.",
+        "correct": false,
+        "explanation": "The documentation says you control the minimum and maximum replicas on dedicated endpoints; platform-managed autoscaling with predefined limits is how it describes public serverless endpoints instead."
+      },
+      {
+        "id": "d",
+        "text": "Public serverless endpoints, since custom fine-tuned weights are supported there for eligible models while dedicated endpoints are restricted to base models.",
+        "correct": false,
+        "explanation": "The documentation reverses this: custom weights support is listed for dedicated endpoints on eligible models, while public serverless endpoints are described as base models only."
+      }
+    ]
+  },
+  {
     "id": "q-4c8e2b6f1a93",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -1251,6 +1384,47 @@
         "text": "`owned_by`",
         "correct": false,
         "explanation": "`owned_by` is a field of the Model object returned by the List models endpoint, unrelated to reranking documents."
+      }
+    ]
+  },
+  {
+    "id": "q-5e9b7a2c1046",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-4",
+    "objective": "domain-4/sa-data-lifecycle-investigation",
+    "stem": "An architect is planning encryption for a new WEKA filesystem that will hold data subject to a later compliance investigation, and wants to leave the option of enabling encryption open for after the filesystem is already in production. Does the documented design support that plan?",
+    "objectiveTitle": "Data lifecycle, encryption and investigating events from audit logs",
+    "sources": [
+      {
+        "title": "Encryption in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/security/encryption.md",
+        "excerpt": "It is not possible to convert a WEKA filesystem to an encrypted filesystem later."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable encryption at creation, since a WEKA filesystem cannot be converted to an encrypted filesystem after creation.",
+        "correct": true,
+        "explanation": "Correct. The documentation says you need to explicitly enable data encryption when you create a WEKA filesystem, and that it is not possible to convert a WEKA filesystem to an encrypted filesystem later."
+      },
+      {
+        "id": "b",
+        "text": "Leave encryption disabled now, since a Local SSD disk in Compute is encrypted by default at the infrastructure level the same way a WEKA filesystem is.",
+        "correct": false,
+        "explanation": "The documentation says Local SSD disks are not encrypted and no other data protection method is applied to them, unlike the WEKA filesystem case in this plan."
+      },
+      {
+        "id": "c",
+        "text": "Leave encryption disabled now, since enabling it later is possible the same way an optional Network SSD Non-replicated disk's encryption can be enabled after the disk already exists.",
+        "correct": false,
+        "explanation": "The documentation describes enabling encryption at creation time for that disk type too, through the same disk-creation flow, not as a change applied to an already-existing disk."
+      },
+      {
+        "id": "d",
+        "text": "Leave encryption disabled now, since a shared filesystem in Compute lets you disable its infrastructure-level encryption later if the plan changes.",
+        "correct": false,
+        "explanation": "The documentation says shared filesystem encryption can't be disabled, which is the opposite of the flexibility this option describes."
       }
     ]
   },
@@ -1686,6 +1860,47 @@
         "text": "Use soft resets instead of hard resets, since soft resets are faster for comparison runs",
         "correct": false,
         "explanation": "The documentation says to use hard resets when reproducing benchmark results, because soft resets are not bit-identical to hard resets."
+      }
+    ]
+  },
+  {
+    "id": "q-7f1a93cd5e82",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-1",
+    "objective": "domain-1/sa-storage-architecture",
+    "stem": "An architecture team is designing storage for a training pipeline's checkpoints and model artifacts, and is deciding whether to expose an existing shared filesystem through Object Storage as a filesystem bucket, or create a regular Object Storage bucket for the same artifacts instead. What constraint should shape this decision before either bucket is created?",
+    "objectiveTitle": "Storage design for training data, checkpoints and model artifacts",
+    "sources": [
+      {
+        "title": "How to manage filesystem buckets",
+        "url": "https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md",
+        "excerpt": "After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The bucket's type must be chosen at creation, since a bucket cannot be changed from regular to filesystem or from filesystem to regular afterward.",
+        "correct": true,
+        "explanation": "Correct. The documentation says that after you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular, so the choice has to match the storage needed from the start."
+      },
+      {
+        "id": "b",
+        "text": "Favor the filesystem bucket, since bucket policies grant it anonymous access the same way they do for a regular bucket.",
+        "correct": false,
+        "explanation": "The documentation says bucket policies cannot be used to grant anonymous access to a filesystem bucket, so this is not a capability the two bucket types share."
+      },
+      {
+        "id": "c",
+        "text": "Favor the filesystem bucket, since it supports delayed deletion and bucket restoration the same way a regular bucket does.",
+        "correct": false,
+        "explanation": "The documentation lists delayed deletion and bucket restoration as unsupported for filesystem buckets, so this protection is not available the way it is for a regular bucket."
+      },
+      {
+        "id": "d",
+        "text": "Favor either bucket type freely, since object integrity checksums are supported identically for filesystem and regular buckets.",
+        "correct": false,
+        "explanation": "The documentation lists object integrity checksums as a limitation of filesystem buckets, so the two types do not support this identically."
       }
     ]
   },
@@ -2234,6 +2449,47 @@
         "text": "It becomes a private draft that only becomes visible once the push succeeds",
         "correct": false,
         "explanation": "The repo's visibility is governed by the `--policy.private` setting, not by whether the push succeeded; a failed run's repo is documented as being left on the Hub as-is."
+      }
+    ]
+  },
+  {
+    "id": "q-9d3c6e1a84f2",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-2",
+    "objective": "domain-2/sa-validation-acceptance",
+    "stem": "A platform team is accepting delivery of a new GPU cluster and needs to confirm that InfiniBand connections are physically established between GPUs before benchmarking the cluster's performance. According to the documented test, what should they check?",
+    "objectiveTitle": "Validating, benchmarking and accepting a delivered platform",
+    "sources": [
+      {
+        "title": "How to test a GPU cluster physical state in Compute",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/test.md",
+        "excerpt": "check the physical state (`phys state`): it should be `LinkUp`."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Run ibstatus on each VM and confirm the phys state field for each InfiniBand device reports LinkUp.",
+        "correct": true,
+        "explanation": "Correct. The documentation says to check the physical state (phys state) for each device in the ibstatus result, and that it should be LinkUp."
+      },
+      {
+        "id": "b",
+        "text": "Run ibstatus on each VM and confirm the state field for each InfiniBand device reports ACTIVE, since that is the field the documentation ties to physical link establishment.",
+        "correct": false,
+        "explanation": "The ibstatus output reports both state and phys state, but the documentation ties physical link establishment specifically to phys state being LinkUp, not to the separate state field."
+      },
+      {
+        "id": "c",
+        "text": "Run ibstatus on each VM and confirm the link_layer field for each InfiniBand device reports Ethernet, since that is the value the documentation associates with a working connection.",
+        "correct": false,
+        "explanation": "The documentation's example ibstatus result reports link_layer as InfiniBand for a working device, not Ethernet."
+      },
+      {
+        "id": "d",
+        "text": "Run ib_send_bw between two VMs and confirm the command reports zero bytes sent, since that is the value the documentation associates with a successful test.",
+        "correct": false,
+        "explanation": "The documentation says a successful test should show non-zero values for bytes sent, so zero bytes would indicate the opposite of successful connectivity."
       }
     ]
   },
@@ -3458,6 +3714,52 @@
         "text": "`432 Key limit or Plan Limit exceeded`; contact support to raise the usage limit",
         "correct": false,
         "explanation": "432 Key limit or Plan Limit exceeded is a documented response for a different condition (exceeding the plan's set usage limit), not this flex-tier scenario."
+      }
+    ]
+  },
+  {
+    "id": "q-c6e2a4918fd3",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-3",
+    "objective": "domain-3/sa-finops",
+    "stem": "A FinOps team sets a budget in Nebius AI Cloud with an alert threshold, expecting that crossing the threshold will stop further spending on the tracked usage. What should the architect do instead to actually enforce a hard limit on that spending?",
+    "objectiveTitle": "Cost governance, spend monitoring and shutting down idle resources",
+    "sources": [
+      {
+        "title": "Budgets in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/signup-billing/budgets.md",
+        "excerpt": "A budget does not stop or cap your usage."
+      },
+      {
+        "title": "Budgets in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/signup-billing/budgets.md",
+        "excerpt": "To limit usage, you can [request a quota decrease](https://docs.nebius.com/overview/quotas.md)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Request a quota decrease, since a budget alone does not stop or cap usage once spending crosses its threshold.",
+        "correct": true,
+        "explanation": "Correct. The documentation says a budget does not stop or cap your usage, and that to limit usage you can request a quota decrease instead."
+      },
+      {
+        "id": "b",
+        "text": "Raise the budget's alert threshold to its maximum value, since the documentation ties a maximized threshold to automatically stopping usage.",
+        "correct": false,
+        "explanation": "The documentation only describes alert thresholds as triggering email alerts on actual recorded spending; it does not tie any threshold value to automatically stopping usage."
+      },
+      {
+        "id": "c",
+        "text": "Switch the budget's time period to daily, since the documentation ties a shorter tracking period to capping spend as soon as it is recorded.",
+        "correct": false,
+        "explanation": "The documentation describes the time period as only setting when a budget resets for tracking purposes; it does not tie a shorter period to capping spend."
+      },
+      {
+        "id": "d",
+        "text": "Set the budget's scope to All usage, since the documentation ties that scope setting to enforcing a hard limit on account-wide spending.",
+        "correct": false,
+        "explanation": "The documentation describes the All usage scope as simply tracking the entire pay-as-you-go spend for alerting purposes, not as a setting that enforces a spending limit."
       }
     ]
   },
@@ -6285,6 +6587,47 @@
         "text": "Only the embedding and output head layers",
         "correct": false,
         "explanation": "Wrong. The documentation describes targeting `q_proj`/`v_proj` and the state and action projection matrices, not the embedding or output head layers."
+      }
+    ]
+  },
+  {
+    "id": "q-e3a7c5912b48",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-3",
+    "objective": "domain-3/sa-multicloud-ingestion",
+    "stem": "A platform team runs production workloads through an existing Managed SkyPilot server and wants to add a new third-party cloud platform to it so workloads can also run there. Which documented behavior should the team plan a maintenance window around before making the change?",
+    "objectiveTitle": "Connecting other clouds and bringing data in for AI workloads",
+    "sources": [
+      {
+        "title": "Multi-platform orchestration in Managed Service for SkyPilot",
+        "url": "https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md",
+        "excerpt": "Connecting third-party platforms restarts the server."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Connecting a third-party platform to an existing server restarts the server, the same as disconnecting a platform does.",
+        "correct": true,
+        "explanation": "Correct. The documentation notes that connecting third-party platforms restarts the server, and separately notes the same for disconnecting them."
+      },
+      {
+        "id": "b",
+        "text": "The Google Cloud service account JSON key is generated automatically by the Managed SkyPilot form instead of being created in Google Cloud first.",
+        "correct": false,
+        "explanation": "The documentation says you create the service account and generate its JSON key in Google Cloud yourself, then add that key to the Managed SkyPilot form."
+      },
+      {
+        "id": "c",
+        "text": "The AWS secret access key stays retrievable at any later time from the Managed SkyPilot form after the platform is connected.",
+        "correct": false,
+        "explanation": "The documentation says the secret access key can only be retrieved right after creation in AWS, not later from the Managed SkyPilot form."
+      },
+      {
+        "id": "d",
+        "text": "The external Kubernetes platform is connected using the cluster's existing kubeconfig without preparing a namespace to use.",
+        "correct": false,
+        "explanation": "The documentation says to prepare a kubeconfig file with access credentials and a namespace to be used, so a namespace still needs to be prepared."
       }
     ]
   },
