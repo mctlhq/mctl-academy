@@ -1,0 +1,16 @@
+schema_version: 1
+id: src-nb-kubernetes-networking-limit-access-to-public-endpoint
+url: https://docs.nebius.com/kubernetes/networking/limit-access-to-public-endpoint.md
+title: Access restriction for a public endpoint of a Managed Service for
+  Kubernetes cluster
+retrieved_at: 2026-11-14T09:54:57Z
+sha256: af04437e8745d9d7b540edb2299168e821b080df22fd996798db27f966525575
+objectives:
+  - domain-4/sa-private-connectivity
+snapshot:
+  bucket: academy-source-snapshots
+  key: af04437e8745d9d7b540edb2299168e821b080df22fd996798db27f966525575
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-private-connectivity

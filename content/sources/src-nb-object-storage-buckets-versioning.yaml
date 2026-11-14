@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-buckets-versioning
+url: https://docs.nebius.com/object-storage/buckets/versioning.md
+title: How to manage object versioning in a bucket
+retrieved_at: 2026-11-14T09:55:05Z
+sha256: 14377164decd045d01c722eda25ac487cf7cf599a88cd3dc2cce10aba48604fe
+objectives:
+  - domain-2/sa-checkpoint-strategy
+snapshot:
+  bucket: academy-source-snapshots
+  key: 14377164decd045d01c722eda25ac487cf7cf599a88cd3dc2cce10aba48604fe
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-checkpoint-strategy
