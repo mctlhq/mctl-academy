@@ -1,0 +1,329 @@
+schema_version: 1
+course_id: ai-infrastructure-engineer
+reviewed_at: 2026-11-14
+
+# Source coverage for every objective of content/courses/ai-infrastructure-engineer.yaml.
+#
+# This is a capture and authoring plan, not evidence: no question may cite a URL
+# listed here until capture-sources.yml has minted its content/sources record.
+# `existing` names a record that is already captured; a URL without it is
+# captured from content/capture-manifest.yaml first. The lint checks every
+# objective appears exactly once, every URL is allowlisted, and every
+# `existing` id resolves to a record with the same URL.
+#
+# Angle: CloudOps diagnoses, this course operates and configures, and the
+# Solutions Architect course chooses and trades off. A page shared with either
+# course is fine; a question that duplicates the other course's angle is not.
+
+objectives:
+  # ------------------------------------------------- domain-1 Security, compliance & billing
+  - id: domain-1/ie-identity-federation
+    status: open
+    strength: strong
+    volatile: false
+    note: Service accounts, SAML federation and workload identity federation are
+      all documented. CloudOps already tests federation troubleshooting; ask how
+      to set access up, not why sign-in fails.
+    sources:
+      - url: https://docs.nebius.com/iam/federations.md
+        existing: src-co-iam-federations
+      - url: https://docs.nebius.com/iam/service-accounts/manage.md
+      - url: https://docs.nebius.com/iam/federations/saml-sso.md
+      - url: https://docs.nebius.com/iam/wif/index.md
+
+  - id: domain-1/ie-encryption-secrets
+    status: open
+    strength: strong
+    volatile: false
+    note: Default encryption, KMS key types and MysteryBox secrets delivered to
+      Kubernetes workloads are documented end to end.
+    sources:
+      - url: https://docs.nebius.com/security/encryption.md
+      - url: https://docs.nebius.com/kms/types-operations.md
+      - url: https://docs.nebius.com/mysterybox/kubernetes.md
+      - url: https://docs.nebius.com/mysterybox/overview.md
+        existing: src-pa-mysterybox-overview
+
+  - id: domain-1/ie-billing-quotas
+    status: open
+    strength: strong
+    volatile: true
+    note: Budgets, quota requests and cost-allocation labels are documented. Quota
+      values and prices change; test the mechanism, never a number or a price.
+    sources:
+      - url: https://docs.nebius.com/signup-billing/budgets.md
+      - url: https://docs.nebius.com/overview/quotas.md
+      - url: https://docs.nebius.com/signup-billing/usage/cost-allocation-labels.md
+      - url: https://docs.nebius.com/compute/resources/quotas-limits.md
+        existing: src-co-compute-quotas
+
+  - id: domain-1/ie-rbac-key-rotation
+    status: open
+    strength: strong
+    volatile: false
+    note: Groups and roles, KMS key rotation and service-account authorized keys
+      are documented.
+    sources:
+      - url: https://docs.nebius.com/iam/authorization/groups/manage.md
+      - url: https://docs.nebius.com/kms/manage/rotate.md
+      - url: https://docs.nebius.com/iam/service-accounts/authorized-keys.md
+      - url: https://docs.nebius.com/iam/authorization/roles.md
+        existing: src-co-iam-roles
+
+  - id: domain-1/ie-compliance-residency
+    status: open
+    strength: partial
+    volatile: true
+    note: Regions, data deletion, data portability and audit-log use cases are
+      documented. Compliance certifications are not on an allowlisted host; do not
+      ask about them. The region list changes.
+    sources:
+      - url: https://docs.nebius.com/overview/regions.md
+      - url: https://docs.nebius.com/overview/data-deletion.md
+      - url: https://docs.nebius.com/overview/data-portability.md
+      - url: https://docs.nebius.com/audit-logs/use-cases.md
+
+  # ------------------------------------------------- domain-2 Training platform engineering
+  - id: domain-2/ie-training-cluster-lifecycle
+    status: open
+    strength: strong
+    volatile: false
+    note: GPU clusters, the Kubernetes GPU setup, reservations and node-group
+      changes are documented.
+    sources:
+      - url: https://docs.nebius.com/compute/clusters/gpu/index.md
+        existing: src-co-gpu-clusters
+      - url: https://docs.nebius.com/kubernetes/gpu/set-up.md
+      - url: https://docs.nebius.com/compute/virtual-machines/reservations.md
+      - url: https://docs.nebius.com/kubernetes/node-groups/manage.md
+        existing: src-co-k8s-node-groups
+
+  - id: domain-2/ie-training-images
+    status: open
+    strength: strong
+    volatile: true
+    note: Boot images, custom images, Pyxis/Enroot containers on Soperator and the
+      container registry are documented. Image names carry driver and CUDA
+      versions; test how to build and pin images, not version strings.
+    sources:
+      - url: https://docs.nebius.com/compute/storage/boot-disk-images.md
+      - url: https://docs.nebius.com/compute/storage/custom-disk-images.md
+      - url: https://docs.nebius.com/slurm-soperator/jobs/containers/pyxis-enroot.md
+      - url: https://docs.nebius.com/container-registry/quickstart.md
+        existing: src-pa-registry-quickstart
+
+  - id: domain-2/ie-checkpoint-restart
+    status: open
+    strength: partial
+    volatile: false
+    note: Restart policies, preemptible VMs and Slurm node health are documented;
+      framework-level checkpointing is not. Author interruption and restart
+      mechanics only.
+    sources:
+      - url: https://docs.nebius.com/serverless/jobs/auto-restarts.md
+      - url: https://docs.nebius.com/compute/virtual-machines/preemptible.md
+      - url: https://docs.nebius.com/slurm-soperator/worker-nodes-health.md
+      - url: https://docs.nebius.com/serverless/jobs/failure.md
+        existing: src-pa-serverless-failure
+
+  - id: domain-2/ie-gpu-fabric
+    status: open
+    strength: strong
+    volatile: true
+    note: InfiniBand topology and the cluster and NCCL tests are documented.
+      Bandwidth figures and expected test results are volatile; test what to run
+      and how to read it. CloudOps tests the fabric as a fault to diagnose.
+    sources:
+      - url: https://docs.nebius.com/compute/clusters/gpu/test.md
+      - url: https://docs.nebius.com/compute/clusters/gpu/topology/index.md
+      - url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
+      - url: https://docs.nebius.com/compute/clusters/gpu/index.md
+        existing: src-co-gpu-clusters
+
+  - id: domain-2/ie-storage-tiers
+    status: open
+    strength: strong
+    volatile: false
+    note: Volume types, filesystem buckets and the shared-filesystem CSI driver are
+      documented. CloudOps covers volume types too; ask which tier fits a dataset,
+      checkpoint or scratch workload.
+    sources:
+      - url: https://docs.nebius.com/compute/storage/types.md
+        existing: src-co-storage-types
+      - url: https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md
+      - url: https://docs.nebius.com/kubernetes/storage/filesystem-over-csi.md
+      - url: https://docs.nebius.com/compute/storage/manage.md
+        existing: src-co-storage-manage
+
+  - id: domain-2/ie-distributed-parallelism
+    status: open
+    strength: partial
+    volatile: false
+    note: Launchers (mpirun, Slurm NCCL all-reduce) and topology-aware scheduling
+      are documented; FSDP, DeepSpeed and tensor or pipeline parallelism are not.
+      Do not test framework internals.
+    sources:
+      - url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
+      - url: https://docs.nebius.com/slurm-soperator/jobs/examples/nccl-all-reduce.md
+      - url: https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md
+      - url: https://docs.nebius.com/3p-integrations/mpirun.md
+
+  - id: domain-2/ie-slurm-admin
+    status: open
+    strength: strong
+    volatile: false
+    note: Soperator architecture, managed Soperator operations, worker health and
+      moving capacity are documented.
+    sources:
+      - url: https://docs.nebius.com/slurm-soperator/overview/architecture.md
+      - url: https://docs.nebius.com/slurm-soperator/managed-soperator/manage.md
+      - url: https://docs.nebius.com/slurm-soperator/worker-nodes-health.md
+      - url: https://docs.nebius.com/slurm-soperator/capacity/move-capacity.md
+        existing: src-pa-soperator-move-capacity
+
+  # ------------------------------------------------- domain-3 Inference platform engineering
+  - id: domain-3/ie-gpu-partitioning
+    status: held
+    strength: missing
+    volatile: false
+    note: MIG, MPS and time-slicing are not documented on any allowlisted host;
+      docs.nvidia.com is pending a retention review. Held out of author scope
+      until a source exists. Do not cover it from general knowledge.
+    sources: []
+
+  - id: domain-3/ie-inference-pipelines
+    status: open
+    strength: partial
+    volatile: false
+    note: SkyPilot with vLLM, Run:ai and Serverless endpoints are documented as
+      separate integrations; there is no end-to-end pipeline page.
+    sources:
+      - url: https://docs.nebius.com/3p-integrations/skypilot-vllm-inference.md
+      - url: https://docs.nebius.com/3p-integrations/run-ai.md
+      - url: https://docs.nebius.com/serverless/endpoints/manage.md
+        existing: src-pa-serverless-endpoints
+      - url: https://docs.nebius.com/serverless/tutorials/deploy-model.md
+        existing: src-pa-serverless-deploy-model
+
+  - id: domain-3/ie-marketplace-apps
+    status: open
+    strength: partial
+    volatile: true
+    note: Deploying and managing applications is documented, but configuration
+      depth varies by app and the catalog changes. Test the deploy and manage
+      flow, not which apps exist.
+    sources:
+      - url: https://docs.nebius.com/applications/index.md
+      - url: https://docs.nebius.com/applications/deploy.md
+      - url: https://docs.nebius.com/kubernetes/manage-applications.md
+
+  - id: domain-3/ie-serving-patterns
+    status: open
+    strength: partial
+    volatile: false
+    note: Serverless endpoints, Token Factory dedicated endpoints and the
+      third-party compatibility list are documented; no page compares the three
+      directly. Overlaps sa-deployment-shape, which owns the choice.
+    sources:
+      - url: https://docs.nebius.com/3p-integrations/compatibility.md
+      - url: https://docs.nebius.com/serverless/overview.md
+        existing: src-pa-serverless-overview
+      - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/overview.md
+        existing: src-ld-dedicated-overview
+
+  - id: domain-3/ie-inference-slo-tuning
+    status: open
+    strength: partial
+    volatile: true
+    note: Dedicated-endpoint scaling, best practice, node-group autoscaling and
+      Serverless monitoring are documented; latency targets are not. Replica
+      limits are volatile.
+    sources:
+      - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md
+        existing: src-ld-capacity-and-scaling
+      - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md
+        existing: src-recovery-best-practice
+      - url: https://docs.nebius.com/kubernetes/node-groups/autoscaling.md
+      - url: https://docs.nebius.com/serverless/monitoring.md
+        existing: src-pa-serverless-monitoring
+
+  # ------------------------------------------------- domain-4 Automation & platform reliability
+  - id: domain-4/ie-observability-platform
+    status: open
+    strength: strong
+    volatile: false
+    note: The observability agent, dashboards, Soperator metrics and alerts are
+      documented. CloudOps already tests alerts, Prometheus and LogQL as
+      diagnosis; ask how to set the stack up across the platform.
+    sources:
+      - url: https://docs.nebius.com/observability/metrics/ingest/nebius-o11y-agent.md
+      - url: https://docs.nebius.com/observability/dashboards.md
+      - url: https://docs.nebius.com/slurm-soperator/monitoring/metrics.md
+      - url: https://docs.nebius.com/observability/alerts.md
+        existing: src-co-alerts
+
+  - id: domain-4/ie-multicluster-networking
+    status: open
+    strength: partial
+    volatile: false
+    note: Routing, the VPN gateway, network isolation and multi-cloud SkyPilot are
+      documented; cluster-to-cluster service meshes are not. CloudOps tests VPC
+      isolation as a fault.
+    sources:
+      - url: https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md
+      - url: https://docs.nebius.com/vpc/routing/overview.md
+      - url: https://docs.nebius.com/vpc/nebius-vpn-gateway.md
+      - url: https://docs.nebius.com/vpc/networking/isolation.md
+        existing: src-co-vpc-isolation
+
+  - id: domain-4/ie-cross-cloud-data
+    status: open
+    strength: strong
+    volatile: true
+    note: Data transfer, its limits and workload identity federation for external
+      clouds are documented. Transfer limits are volatile.
+    sources:
+      - url: https://docs.nebius.com/object-storage/transfer/overview.md
+        existing: src-pa-object-storage-transfer
+      - url: https://docs.nebius.com/object-storage/transfer/limits.md
+      - url: https://docs.nebius.com/iam/wif/configure.md
+
+  - id: domain-4/ie-long-run-reliability
+    status: open
+    strength: strong
+    volatile: false
+    note: Kubernetes health checks and auto-repair, VM maintenance and Slurm
+      worker health are documented. CloudOps tests health checks as diagnosis.
+    sources:
+      - url: https://docs.nebius.com/kubernetes/maintenance/health-checks.md
+        existing: src-co-k8s-health-checks
+      - url: https://docs.nebius.com/compute/virtual-machines/maintenance.md
+      - url: https://docs.nebius.com/slurm-soperator/worker-nodes-health.md
+      - url: https://docs.nebius.com/kubernetes/node-groups/manage.md
+        existing: src-co-k8s-node-groups
+
+  - id: domain-4/ie-fabric-incidents
+    status: open
+    strength: partial
+    volatile: false
+    note: Topology management, cluster tests, support and the CUDA 802 error are
+      documented; there is no stalled-job runbook. CloudOps owns CUDA 802 as
+      diagnosis; ask what the platform team changes afterwards.
+    sources:
+      - url: https://docs.nebius.com/compute/clusters/gpu/topology/manage.md
+      - url: https://docs.nebius.com/compute/clusters/gpu/test.md
+      - url: https://docs.nebius.com/overview/support.md
+      - url: https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md
+        existing: src-co-cuda-init-error
+
+  - id: domain-4/ie-gpu-rollouts
+    status: open
+    strength: partial
+    volatile: true
+    note: VM types, regions and moving workloads between node groups are
+      documented; a migration runbook is not. Platform and region lists change
+      often; test the migration steps, not which GPU is where.
+    sources:
+      - url: https://docs.nebius.com/compute/virtual-machines/types.md
+      - url: https://docs.nebius.com/overview/regions.md
+      - url: https://docs.nebius.com/kubernetes/node-groups/moving-workload.md

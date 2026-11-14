@@ -121,7 +121,7 @@ async function assertCommitOnBranch({ repo, branch, sha }, signal) {
   }
 }
 
-async function capture({ url, id, objectives, title }) {
+async function capture({ url, id, objectives, title, coverage }) {
   const store = storeFromEnv();
   if (!store)
     throw new Error(
@@ -135,7 +135,7 @@ async function capture({ url, id, objectives, title }) {
   const previous = existsSync(join(SOURCES, `${id}.yaml`))
     ? parseYaml(readFileSync(join(SOURCES, `${id}.yaml`), "utf8"))
     : null;
-  const record = buildSourceRecord({ id, url, title, objectives, hash, key, previous });
+  const record = buildSourceRecord({ id, url, title, objectives, coverage, hash, key, previous });
 
   mkdirSync(SOURCES, { recursive: true });
   writeFileSync(join(SOURCES, `${id}.yaml`), stringifyYaml(record));
@@ -193,11 +193,17 @@ async function check({ markDrifted = false } = {}) {
  * by whoever also wrote those fields; the replenish workflow re-captures every
  * drifted source unattended each week, and no lint can notice a field that is
  * simply gone -- so `coverage` and `notes` are carried forward explicitly.
+ * Coverage passed for this capture (the manifest row's course-aware
+ * `coverage`) replaces the carried-forward list: the manifest row is the
+ * reviewed statement of what the page covers, as it already is for
+ * `objectives`.
  *
  * @param {{ id: string, url: string, title?: string, objectives: string[],
+ *           coverage?: { course_id: string, objective: string }[],
  *           hash: string, key: string, previous: any }} args
  */
-export function buildSourceRecord({ id, url, title, objectives, hash, key, previous }) {
+export function buildSourceRecord({ id, url, title, objectives, coverage, hash, key, previous }) {
+  const recordCoverage = coverage?.length ? coverage : previous?.coverage;
   /** @type {Record<string, any>} */
   const record = {
     schema_version: 1,
@@ -211,7 +217,7 @@ export function buildSourceRecord({ id, url, title, objectives, hash, key, previ
     objectives,
     snapshot: { bucket: process.env.R2_BUCKET ?? "academy-source-snapshots", key },
     status: "current",
-    ...(previous?.coverage ? { coverage: previous.coverage } : {}),
+    ...(recordCoverage ? { coverage: recordCoverage } : {}),
     ...(previous?.notes ? { notes: previous.notes } : {}),
   };
   const versions = mergeVersions(previous, hash);
@@ -264,10 +270,12 @@ export function parseMode(argv) {
  * was already fetched, hashed and uploaded.
  *
  * @param {string[]} argv
- * @returns {{ url?: string, id?: string, title?: string, objectives: string[] }}
+ * @returns {{ url?: string, id?: string, title?: string, objectives: string[],
+ *             coverage?: { course_id: string, objective: string }[] }}
  */
 export function parseCaptureArgs(argv) {
-  /** @type {{ url?: string, id?: string, title?: string, objectives: string[] }} */
+  /** @type {{ url?: string, id?: string, title?: string, objectives: string[],
+   *           coverage?: { course_id: string, objective: string }[] }} */
   const out = { objectives: [] };
   if (argv[0] && !argv[0].startsWith("--")) out.url = argv[0];
   for (let i = out.url ? 1 : 0; i < argv.length; i += 1) {
@@ -279,7 +287,14 @@ export function parseCaptureArgs(argv) {
     if (name === "--id") out.id = value;
     else if (name === "--title") out.title = value;
     else if (name === "--objective") out.objectives.push(value);
-    else throw new Error(`unknown option ${name}`);
+    else if (name === "--coverage") {
+      // course_id:objective -- course ids hold no colon, objectives hold no
+      // colon, so the first colon is the separator.
+      const at = value.indexOf(":");
+      if (at < 1 || at === value.length - 1)
+        throw new Error(`--coverage needs course_id:objective, got ${JSON.stringify(value)}`);
+      (out.coverage ??= []).push({ course_id: value.slice(0, at), objective: value.slice(at + 1) });
+    } else throw new Error(`unknown option ${name}`);
   }
   return out;
 }
@@ -302,10 +317,16 @@ if (args) {
   }
   if (!parsed.url?.startsWith("https://") || !parsed.id || !parsed.objectives.length) {
     console.error(
-      "usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...]",
+      "usage: capture-source.mjs <url> --id <src-id> --objective <domain-N/obj> [--objective ...] [--coverage <course_id:domain-N/obj> ...]",
     );
     console.error("       capture-source.mjs --check [--mark-drifted]");
     process.exit(1);
   }
-  await capture({ url: parsed.url, id: parsed.id, objectives: parsed.objectives, title: parsed.title });
+  await capture({
+    url: parsed.url,
+    id: parsed.id,
+    objectives: parsed.objectives,
+    title: parsed.title,
+    coverage: parsed.coverage,
+  });
 }

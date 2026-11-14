@@ -20,9 +20,13 @@ schema_version: 1
 #     This file is that record, diffable beside the allowlist row it justifies.
 #
 # capture-source.mjs rewrites the whole record from these fields alone — it is
-# not a merge. Any objective omitted here disappears on the next capture, and
-# hand-added `coverage:`/`notes:` must be re-applied after a re-dispatch. Keep
-# each entry's objective list complete.
+# not a merge. Any objective omitted here disappears on the next capture. Keep
+# each entry's objective list complete. `notes:` and a hand-added `coverage:`
+# are carried forward from the previous record; a row's own `coverage:` list
+# (course_id + objective) replaces it, and when a row has no `objectives` the
+# workflow derives them from that coverage. Prefer `coverage` for a page that
+# serves more than one course. `batch:` lets one dispatch capture a small group
+# (input `batch`); see docs/content-operations.md.
 #
 # Sources already captured and verifying are deliberately absent: re-capturing
 # them would churn snapshots for no reason. Where an existing record needed an
@@ -749,3 +753,652 @@ sources:
     title: Agent Toolkit
     objectives:
       - domain-1/agent-tool-selection
+
+  # ---------------------------------------------------------------------
+  # ai-infrastructure-engineer + ai-solutions-architect — docs.nebius.com
+  # ---------------------------------------------------------------------
+  #
+  # Pages planned by content/coverage/{ai-infrastructure-engineer,
+  # ai-solutions-architect}.yaml that no record captures yet. Pages already
+  # captured (src-co-iam-federations, src-co-gpu-clusters, ...) are reused, not
+  # listed: iam/federations.md, for one, redirects to iam/federations/manage.md
+  # and is not captured a second time.
+  #
+  # Rows carry course-aware `coverage` instead of bare `objectives`; the
+  # workflow derives `objectives` from it. `batch` groups at most eight rows:
+  # docs.nebius.com starts answering 403 after about 40 rapid requests, so
+  # dispatch one batch at a time (docs/content-operations.md).
+  - id: src-nb-3p-integrations-compatibility
+    url: https://docs.nebius.com/3p-integrations/compatibility.md
+    title: "Software compatibility and supported runtimes in Nebius AI Cloud"
+    batch: q4-01
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-serving-patterns
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-training-stack
+  - id: src-nb-3p-integrations-dstack
+    url: https://docs.nebius.com/3p-integrations/dstack.md
+    title: "Installation of dstack for AI workload orchestration"
+    batch: q4-01
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-orchestration-overlays
+  - id: src-nb-3p-integrations-mpirun
+    url: https://docs.nebius.com/3p-integrations/mpirun.md
+    title: "Running parallel jobs with MPIrun"
+    batch: q4-01
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-distributed-parallelism
+  - id: src-nb-3p-integrations-multi-cloud-skypilot
+    url: https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md
+    title: "Multi-platform orchestration in Managed Service for SkyPilot"
+    batch: q4-01
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-multicluster-networking
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-multicloud-ingestion
+  - id: src-nb-3p-integrations-run-ai
+    url: https://docs.nebius.com/3p-integrations/run-ai.md
+    title: "Configuring a Managed Service for Kubernetes cluster to work in Run:ai"
+    batch: q4-01
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-inference-pipelines
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-orchestration-overlays
+  - id: src-nb-3p-integrations-skypilot-mk8s
+    url: https://docs.nebius.com/3p-integrations/skypilot-mk8s.md
+    title: "Managing AI workloads across Managed Service for Kubernetes clusters with SkyPilot"
+    batch: q4-01
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-orchestration-overlays
+  - id: src-nb-3p-integrations-skypilot-vllm-inference
+    url: https://docs.nebius.com/3p-integrations/skypilot-vllm-inference.md
+    title: "Running vLLM inference on a Managed Service for Kubernetes cluster with SkyPilot"
+    batch: q4-01
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-inference-pipelines
+  - id: src-nb-applications-deploy
+    url: https://docs.nebius.com/applications/deploy.md
+    title: "Deploying applications in Nebius AI Cloud"
+    batch: q4-01
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-marketplace-apps
+  - id: src-nb-applications
+    url: https://docs.nebius.com/applications/index.md
+    title: "Applications in Nebius AI Cloud"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-marketplace-apps
+  - id: src-nb-audit-logs-events-export
+    url: https://docs.nebius.com/audit-logs/events/export.md
+    title: "How to export audit events to Object Storage"
+    batch: q4-02
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-secrets-audit-compliance
+  - id: src-nb-audit-logs-use-cases
+    url: https://docs.nebius.com/audit-logs/use-cases.md
+    title: "When to use Audit Logs"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-compliance-residency
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-observability-scope
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-data-lifecycle-investigation
+  - id: src-nb-compute-clusters-gpu-test
+    url: https://docs.nebius.com/compute/clusters/gpu/test.md
+    title: "How to test a GPU cluster physical state in Compute"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-gpu-fabric
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-fabric-incidents
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-validation-acceptance
+  - id: src-nb-compute-clusters-gpu-topology
+    url: https://docs.nebius.com/compute/clusters/gpu/topology/index.md
+    title: "InfiniBand topology of a GPU cluster"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-gpu-fabric
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-distributed-training
+  - id: src-nb-compute-clusters-gpu-topology-manage
+    url: https://docs.nebius.com/compute/clusters/gpu/topology/manage.md
+    title: "Working with InfiniBand topology of a GPU cluster"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-fabric-incidents
+  - id: src-nb-compute-storage-boot-disk-images
+    url: https://docs.nebius.com/compute/storage/boot-disk-images.md
+    title: "Boot disk images for Compute virtual machines"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-training-images
+  - id: src-nb-compute-storage-custom-disk-images
+    url: https://docs.nebius.com/compute/storage/custom-disk-images.md
+    title: "Creating custom boot disk images"
+    batch: q4-02
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-training-images
+  - id: src-nb-compute-storage-disk-snapshots
+    url: https://docs.nebius.com/compute/storage/disk-snapshots.md
+    title: "Managing disk snapshots in Compute"
+    batch: q4-03
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-checkpoint-strategy
+  - id: src-nb-compute-storage-import-image
+    url: https://docs.nebius.com/compute/storage/import-image.md
+    title: "Importing your own image into Compute"
+    batch: q4-03
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-migration-handover
+  - id: src-nb-compute-storage-packer
+    url: https://docs.nebius.com/compute/storage/packer.md
+    title: "Creating boot disk images with Packer"
+    batch: q4-03
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-reuse-automation
+  - id: src-nb-compute-virtual-machines-capacity-advisor
+    url: https://docs.nebius.com/compute/virtual-machines/capacity-advisor.md
+    title: "Capacity advisor for GPU availability in Nebius AI Cloud"
+    batch: q4-03
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-gpu-selection
+  - id: src-nb-compute-virtual-machines-list-platforms
+    url: https://docs.nebius.com/compute/virtual-machines/list-platforms.md
+    title: "How to find out platforms and presets available in a project"
+    batch: q4-03
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-gpu-selection
+  - id: src-nb-compute-virtual-machines-maintenance-reasons
+    url: https://docs.nebius.com/compute/virtual-machines/maintenance-reasons.md
+    title: "Maintenance reasons in Nebius AI Cloud"
+    batch: q4-03
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-failure-support-model
+  - id: src-nb-compute-virtual-machines-maintenance
+    url: https://docs.nebius.com/compute/virtual-machines/maintenance.md
+    title: "Maintenance of Compute virtual machines"
+    batch: q4-03
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-long-run-reliability
+  - id: src-nb-compute-virtual-machines-preemptible
+    url: https://docs.nebius.com/compute/virtual-machines/preemptible.md
+    title: "Preemptible virtual machines"
+    batch: q4-03
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-checkpoint-restart
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-cost-tradeoffs
+  - id: src-nb-compute-virtual-machines-reservations
+    url: https://docs.nebius.com/compute/virtual-machines/reservations.md
+    title: "Capacity reservations for Compute virtual machines"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-training-cluster-lifecycle
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-capacity-quotas-cost
+  - id: src-nb-compute-virtual-machines-types
+    url: https://docs.nebius.com/compute/virtual-machines/types.md
+    title: "Types of virtual machines and GPUs in Nebius AI Cloud"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-gpu-rollouts
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-gpu-selection
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-right-sizing
+  - id: src-nb-iam-authorization-groups-manage
+    url: https://docs.nebius.com/iam/authorization/groups/manage.md
+    title: "Managing custom groups"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-rbac-key-rotation
+  - id: src-nb-iam-federations-saml-sso
+    url: https://docs.nebius.com/iam/federations/saml-sso.md
+    title: "Single sign-on in Nebius AI Cloud"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-identity-federation
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-identity-model
+  - id: src-nb-iam-service-accounts-authorized-keys
+    url: https://docs.nebius.com/iam/service-accounts/authorized-keys.md
+    title: "How to use authorized keys"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-rbac-key-rotation
+  - id: src-nb-iam-service-accounts-manage
+    url: https://docs.nebius.com/iam/service-accounts/manage.md
+    title: "How to manage service accounts"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-identity-federation
+  - id: src-nb-iam-wif-configure
+    url: https://docs.nebius.com/iam/wif/configure.md
+    title: "Configuring access to Google Cloud for Nebius AI Cloud workloads"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-cross-cloud-data
+  - id: src-nb-iam-wif
+    url: https://docs.nebius.com/iam/wif/index.md
+    title: "Accessing external resources from Nebius AI Cloud workloads"
+    batch: q4-04
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-identity-federation
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-identity-model
+  - id: src-nb-kms-logs
+    url: https://docs.nebius.com/kms/logs.md
+    title: "Logs in Key Management Service"
+    batch: q4-05
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-secrets-audit-compliance
+  - id: src-nb-kms-manage-rotate
+    url: https://docs.nebius.com/kms/manage/rotate.md
+    title: "How to rotate symmetric keys in Key Management Service"
+    batch: q4-05
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-rbac-key-rotation
+  - id: src-nb-kms-types-operations
+    url: https://docs.nebius.com/kms/types-operations.md
+    title: "Key types and operations in Key Management Service"
+    batch: q4-05
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-encryption-secrets
+  - id: src-nb-kubernetes-gpu-clusters
+    url: https://docs.nebius.com/kubernetes/gpu/clusters.md
+    title: "Interconnecting GPUs in Managed Service for Kubernetes clusters using InfiniBand"
+    batch: q4-05
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-distributed-training
+  - id: src-nb-kubernetes-gpu-nccl-test
+    url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
+    title: "Running NCCL tests in a Managed Service for Kubernetes cluster with InfiniBand-connected GPUs"
+    batch: q4-05
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-gpu-fabric
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-distributed-parallelism
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-validation-acceptance
+  - id: src-nb-kubernetes-gpu-set-up
+    url: https://docs.nebius.com/kubernetes/gpu/set-up.md
+    title: "Working with GPUs in the Managed Service for Kubernetes"
+    batch: q4-05
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-training-cluster-lifecycle
+  - id: src-nb-kubernetes-gpu-topology-aware-scheduling
+    url: https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md
+    title: "Topology-aware scheduling for GPU workloads in Managed Service for Kubernetes"
+    batch: q4-05
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-distributed-parallelism
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-distributed-training
+  - id: src-nb-kubernetes
+    url: https://docs.nebius.com/kubernetes/index.md
+    title: "Managed Service for Kubernetes"
+    batch: q4-05
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-deployment-shape
+  - id: src-nb-kubernetes-manage-applications
+    url: https://docs.nebius.com/kubernetes/manage-applications.md
+    title: "Deploying and deleting applications for Managed Service for Kubernetes"
+    batch: q4-06
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-marketplace-apps
+  - id: src-nb-kubernetes-networking-limit-access-to-public-endpoint
+    url: https://docs.nebius.com/kubernetes/networking/limit-access-to-public-endpoint.md
+    title: "Access restriction for a public endpoint of a Managed Service for Kubernetes cluster"
+    batch: q4-06
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-private-connectivity
+  - id: src-nb-kubernetes-node-groups-autoscaling
+    url: https://docs.nebius.com/kubernetes/node-groups/autoscaling.md
+    title: "Autoscaling in Managed Service for Kubernetes"
+    batch: q4-06
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-3/ie-inference-slo-tuning
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-right-sizing
+  - id: src-nb-kubernetes-node-groups-moving-workload
+    url: https://docs.nebius.com/kubernetes/node-groups/moving-workload.md
+    title: "Moving workload from the existing node group"
+    batch: q4-06
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-gpu-rollouts
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-migration-handover
+  - id: src-nb-kubernetes-storage-filesystem-over-csi
+    url: https://docs.nebius.com/kubernetes/storage/filesystem-over-csi.md
+    title: "Mounting shared filesystems to Pods in a Managed Service for Kubernetes cluster"
+    batch: q4-06
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-storage-tiers
+  - id: src-nb-mysterybox-kubernetes
+    url: https://docs.nebius.com/mysterybox/kubernetes.md
+    title: "Syncing SecretStash secrets with Managed Service for Kubernetes clusters by using External Secrets Operator"
+    batch: q4-06
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-encryption-secrets
+  - id: src-nb-object-storage-buckets-filesystem-buckets
+    url: https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md
+    title: "How to manage filesystem buckets"
+    batch: q4-06
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-storage-tiers
+  - id: src-nb-object-storage-buckets-versioning
+    url: https://docs.nebius.com/object-storage/buckets/versioning.md
+    title: "How to manage object versioning in a bucket"
+    batch: q4-06
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-checkpoint-strategy
+  - id: src-nb-object-storage-interfaces-s3-api-compatibility
+    url: https://docs.nebius.com/object-storage/interfaces/s3-api-compatibility.md
+    title: "Compatibility of Amazon S3 API with Object Storage"
+    batch: q4-07
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-multicloud-ingestion
+  - id: src-nb-object-storage-performance-cost-best-practices
+    url: https://docs.nebius.com/object-storage/performance-cost-best-practices.md
+    title: "Performance and cost-efficiency best practices in Object Storage"
+    batch: q4-07
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-storage-architecture
+  - id: src-nb-object-storage-performance-benchmark
+    url: https://docs.nebius.com/object-storage/performance/benchmark.md
+    title: "Performance benchmark tests with Warp in Object Storage"
+    batch: q4-07
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-validation-acceptance
+  - id: src-nb-object-storage-storage-classes
+    url: https://docs.nebius.com/object-storage/storage-classes.md
+    title: "Storage classes in Object Storage"
+    batch: q4-07
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-storage-architecture
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-cost-tradeoffs
+  - id: src-nb-object-storage-store-terraform-state
+    url: https://docs.nebius.com/object-storage/store-terraform-state.md
+    title: "How to store a Terraform state in an Object Storage bucket"
+    batch: q4-07
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-reuse-automation
+  - id: src-nb-object-storage-transfer-limits
+    url: https://docs.nebius.com/object-storage/transfer/limits.md
+    title: "Data transfer limits on request rate and bandwidth"
+    batch: q4-07
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-cross-cloud-data
+  - id: src-nb-observability-dashboards
+    url: https://docs.nebius.com/observability/dashboards.md
+    title: "Service dashboards"
+    batch: q4-07
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-observability-platform
+  - id: src-nb-observability
+    url: https://docs.nebius.com/observability/index.md
+    title: "Observability in Nebius AI Cloud"
+    batch: q4-07
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-observability-scope
+  - id: src-nb-observability-metrics-ingest-nebius-o11y-agent
+    url: https://docs.nebius.com/observability/metrics/ingest/nebius-o11y-agent.md
+    title: "How to ingest metrics with Nebius Observability Agent for Kubernetes"
+    batch: q4-08
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-observability-platform
+  - id: src-nb-observability-services
+    url: https://docs.nebius.com/observability/services.md
+    title: "Supported Nebius AI Cloud services"
+    batch: q4-08
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-observability-scope
+  - id: src-nb-overview-data-deletion
+    url: https://docs.nebius.com/overview/data-deletion.md
+    title: "Data deletion in Nebius AI Cloud"
+    batch: q4-08
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-compliance-residency
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-data-lifecycle-investigation
+  - id: src-nb-overview-data-portability
+    url: https://docs.nebius.com/overview/data-portability.md
+    title: "Data portability in Nebius AI Cloud"
+    batch: q4-08
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-compliance-residency
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-migration-handover
+  - id: src-nb-overview-limits-capacity-block-groups
+    url: https://docs.nebius.com/overview/limits/capacity-block-groups.md
+    title: "Capacity block groups in Nebius AI Cloud"
+    batch: q4-08
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-capacity-quotas-cost
+  - id: src-nb-overview-quotas
+    url: https://docs.nebius.com/overview/quotas.md
+    title: "Quotas in Nebius AI Cloud"
+    batch: q4-08
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-billing-quotas
+  - id: src-nb-overview-regions
+    url: https://docs.nebius.com/overview/regions.md
+    title: "Nebius AI Cloud regions"
+    batch: q4-08
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-compliance-residency
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-gpu-rollouts
+  - id: src-nb-overview-support
+    url: https://docs.nebius.com/overview/support.md
+    title: "Support tickets: sending questions, bug reports and feature requests"
+    batch: q4-08
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-fabric-incidents
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-failure-support-model
+  - id: src-nb-security-encryption
+    url: https://docs.nebius.com/security/encryption.md
+    title: "Encryption in Nebius AI Cloud"
+    batch: q4-09
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-encryption-secrets
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-data-lifecycle-investigation
+  - id: src-nb-serverless-jobs-auto-restarts
+    url: https://docs.nebius.com/serverless/jobs/auto-restarts.md
+    title: "Automatic job restarts"
+    batch: q4-09
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-checkpoint-restart
+      - course_id: ai-solutions-architect
+        objective: domain-2/sa-checkpoint-strategy
+  - id: src-nb-signup-billing-billing-models-committed-usage
+    url: https://docs.nebius.com/signup-billing/billing-models/committed-usage.md
+    title: "Commitment discounts in Nebius AI Cloud"
+    batch: q4-09
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-capacity-quotas-cost
+  - id: src-nb-signup-billing-budgets
+    url: https://docs.nebius.com/signup-billing/budgets.md
+    title: "Budgets in Nebius AI Cloud"
+    batch: q4-09
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-billing-quotas
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-finops
+  - id: src-nb-signup-billing-pricing-policy
+    url: https://docs.nebius.com/signup-billing/pricing-policy.md
+    title: "Spot pricing and pricing policies in Nebius AI Cloud"
+    batch: q4-09
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-cost-tradeoffs
+  - id: src-nb-signup-billing-usage-cost-allocation-labels
+    url: https://docs.nebius.com/signup-billing/usage/cost-allocation-labels.md
+    title: "Cost allocation labels in Nebius AI Cloud"
+    batch: q4-09
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-1/ie-billing-quotas
+  - id: src-nb-signup-billing-usage-export
+    url: https://docs.nebius.com/signup-billing/usage/export.md
+    title: "Exporting usage data as CSV in Nebius AI Cloud"
+    batch: q4-09
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-finops
+  - id: src-nb-signup-billing-usage-focus-conformance
+    url: https://docs.nebius.com/signup-billing/usage/focus-conformance.md
+    title: "Usage data conformance with FOCUS"
+    batch: q4-09
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-3/sa-finops
+  - id: src-nb-slurm-soperator-jobs-containers-pyxis-enroot
+    url: https://docs.nebius.com/slurm-soperator/jobs/containers/pyxis-enroot.md
+    title: "Running jobs in containers by using Enroot and Pyxis"
+    batch: q4-10
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-training-images
+  - id: src-nb-slurm-soperator-jobs-examples-nccl-all-reduce
+    url: https://docs.nebius.com/slurm-soperator/jobs/examples/nccl-all-reduce.md
+    title: "Running the all-reduce NCCL performance test in Soperator clusters"
+    batch: q4-10
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-distributed-parallelism
+  - id: src-nb-slurm-soperator-managed-soperator-manage
+    url: https://docs.nebius.com/slurm-soperator/managed-soperator/manage.md
+    title: "Creating and deleting Soperator clusters in Managed Service for Soperator"
+    batch: q4-10
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-slurm-admin
+  - id: src-nb-slurm-soperator-monitoring-metrics
+    url: https://docs.nebius.com/slurm-soperator/monitoring/metrics.md
+    title: "Monitoring metrics of Soperator clusters"
+    batch: q4-10
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-observability-platform
+  - id: src-nb-slurm-soperator-overview-architecture
+    url: https://docs.nebius.com/slurm-soperator/overview/architecture.md
+    title: "Soperator cluster architecture"
+    batch: q4-10
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-slurm-admin
+  - id: src-nb-slurm-soperator-overview-why-slurm-soperator
+    url: https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md
+    title: "Combining Slurm and Kubernetes by using Soperator"
+    batch: q4-10
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-training-stack
+      - course_id: ai-solutions-architect
+        objective: domain-1/sa-deployment-shape
+  - id: src-nb-slurm-soperator-worker-nodes-health
+    url: https://docs.nebius.com/slurm-soperator/worker-nodes-health.md
+    title: "Health management of worker nodes in Soperator clusters"
+    batch: q4-10
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-checkpoint-restart
+      - course_id: ai-infrastructure-engineer
+        objective: domain-2/ie-slurm-admin
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-long-run-reliability
+  - id: src-nb-vpc-addressing-disable-public-addresses
+    url: https://docs.nebius.com/vpc/addressing/disable-public-addresses.md
+    title: "Disabling public addresses for a subnet"
+    batch: q4-10
+    coverage:
+      - course_id: ai-solutions-architect
+        objective: domain-4/sa-private-connectivity
+  - id: src-nb-vpc-nebius-vpn-gateway
+    url: https://docs.nebius.com/vpc/nebius-vpn-gateway.md
+    title: "Nebius VPN Gateway"
+    batch: q4-11
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-multicluster-networking
+  - id: src-nb-vpc-routing-overview
+    url: https://docs.nebius.com/vpc/routing/overview.md
+    title: "Routing in Nebius AI Cloud"
+    batch: q4-11
+    coverage:
+      - course_id: ai-infrastructure-engineer
+        objective: domain-4/ie-multicluster-networking

@@ -513,6 +513,40 @@ test("capture-source resolves the url and every flag by position, never by scann
   assert.throws(() => parseCaptureArgs(["https://x/a.md", "--id"]), /--id needs a value/);
 });
 
+test("--coverage reaches the record and replaces carried-forward coverage", () => {
+  const parsed = parseCaptureArgs([
+    "https://docs.nebius.com/a.md",
+    "--id",
+    "src-a",
+    "--objective",
+    "domain-1/ie-x",
+    "--coverage",
+    "ai-infrastructure-engineer:domain-1/ie-x",
+  ]);
+  assert.deepEqual(parsed.coverage, [
+    { course_id: "ai-infrastructure-engineer", objective: "domain-1/ie-x" },
+  ]);
+  assert.throws(
+    () => parseCaptureArgs(["https://x/a.md", "--coverage", "domain-1/x"]),
+    /course_id:objective/,
+  );
+  const previous = { coverage: [{ course_id: "old-course", objective: "domain-9/old" }] };
+  const base = {
+    id: "src-a",
+    url: "https://docs.nebius.com/a.md",
+    objectives: ["domain-1/ie-x"],
+    hash: "a",
+    key: "k",
+  };
+  assert.deepEqual(
+    buildSourceRecord({ ...base, coverage: parsed.coverage, previous }).coverage,
+    parsed.coverage,
+  );
+  // Without --coverage a re-capture still keeps what the record had.
+  assert.deepEqual(buildSourceRecord({ ...base, previous }).coverage, previous.coverage);
+  assert.equal(buildSourceRecord({ ...base, previous: null }).coverage, undefined);
+});
+
 test("a scraped title longer than the schema allows is cut, not written whole", () => {
   const long = "T".repeat(400);
   const { rows } = validateSelection({

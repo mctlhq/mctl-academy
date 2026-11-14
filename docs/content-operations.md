@@ -269,6 +269,32 @@ source hash, reuse an ID for a different concept, or change a question's evidenc
 just to satisfy a report. Human CODEOWNERS approval of the content PR remains a
 separate merge gate.
 
+## Paced captures from docs.nebius.com
+
+`docs.nebius.com` started answering 403 (a Vercel checkpoint) after about 40
+rapid requests. `capture-sources.yml` fetches its rows one after another with no
+delay, so a large manifest is captured in small batches rather than in one run.
+Rows planned by `content/coverage/*.yaml` carry a `batch:` value (`q4-01` to
+`q4-11`, at most eight rows each). Dispatch one batch, wait for it to finish,
+and leave a few minutes before the next:
+
+```bash
+gh workflow run capture-sources.yml --ref <branch> -f batch=q4-01
+gh run watch "$(gh run list --workflow capture-sources.yml --branch <branch> \
+  --limit 1 --json databaseId --jq '.[0].databaseId')"
+```
+
+`batch` and `only` combine: `-f batch=q4-03 -f only=src-a,src-b` captures only
+those ids inside that batch. A run that fails part-way names the failed ids;
+re-dispatch with `-f only=<those ids>` once the host answers again. A dry run
+(`-f dry_run=true`) also fetches every page, so it costs the same requests.
+Never dispatch with no filter on a manifest this size.
+
+A row with a `coverage:` list (course id plus objective) writes that list into
+the record, and the record's bare `objectives` are derived from it. After a
+batch lands, `existing:` can be filled in on the coverage plan; the lint already
+accepts a URL that a record or a manifest row covers.
+
 ## Revalidating quarantined items
 
 Revalidation is explicit and fail-closed:

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://academy.mctl.ai/schemas/coverage/1.json",
+  "title": "Course source coverage",
+  "description": "Which allowlisted pages cover each objective of one course map, how well, and whether the objective is open to authoring. A capture and authoring plan, not evidence: questions cite content/sources records, never this file. The lint checks the objective list against the course map and every URL against the allowlist.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "course_id", "reviewed_at", "objectives"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "course_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,62}$"
+    },
+    "reviewed_at": {
+      "description": "Date the coverage was last checked against the docs index (YYYY-MM-DD).",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "strength", "volatile", "note", "sources"],
+        "properties": {
+          "id": {
+            "description": "domain-N/<objective id>, exactly as in the course map.",
+            "type": "string",
+            "pattern": "^domain-[1-9][0-9]*/[a-z0-9][a-z0-9-]{1,62}$"
+          },
+          "status": {
+            "description": "open: authors may write items. held: excluded from author scope until a source exists.",
+            "enum": ["open", "held"]
+          },
+          "strength": { "enum": ["strong", "partial", "missing"] },
+          "volatile": {
+            "description": "The covering pages carry figures that change (prices, quotas, versions, tables). Items test the logic, not the figure.",
+            "type": "boolean"
+          },
+          "note": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "sources": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url"],
+              "properties": {
+                "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+                "existing": {
+                  "description": "Id of an already-captured content/sources record for this exact URL.",
+                  "type": "string",
+                  "pattern": "^src-[a-z0-9][a-z0-9-]{2,62}$"
+                }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "description": "An open objective needs at least one source; only a held one may have none.",
+            "if": { "properties": { "status": { "const": "open" } } },
+            "then": { "properties": { "sources": { "minItems": 1 } } }
+          },
+          {
+            "description": "Nothing documents a missing objective, so it cannot be open to authoring.",
+            "if": { "properties": { "strength": { "const": "missing" } } },
+            "then": { "properties": { "status": { "const": "held" } } }
+          }
+        ]
+      }
+    }
+  }
+}

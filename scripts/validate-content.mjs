@@ -84,7 +84,7 @@ function loadYamlDir(dir) {
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 const validators = {};
-for (const kind of ["course", "source", "question", "lesson"]) {
+for (const kind of ["course", "source", "question", "lesson", "coverage"]) {
   const schema = JSON.parse(readFileSync(join(SCHEMAS, `${kind}.schema.json`), "utf8"));
   validators[kind] = ajv.compile(schema);
 }
@@ -215,6 +215,124 @@ for (const { file, data } of sources) {
       err(file, `coverage references unknown course ${c.course_id}`);
     } else if (!course.objectives.has(c.objective)) {
       err(file, `coverage objective ${c.objective} is not in course ${c.course_id}`);
+    }
+  }
+}
+
+// --------------------------------------------------------- capture manifest
+
+// The manifest is not content -- nothing in it reaches the bundle -- but its
+// course-aware `coverage` rows decide which objective a new record will be
+// mapped to, and capture-sources.yml copies them into the record verbatim.
+// Catch a wrong course or objective here, in review, rather than in the lint
+// step at the end of a capture run that has already fetched and stored pages.
+const manifestRows = new Map(); // url -> row id
+{
+  const file = "content/capture-manifest.yaml";
+  const path = join(CONTENT, "capture-manifest.yaml");
+  if (existsSync(path)) {
+    let doc = null;
+    try {
+      doc = parseYaml(readFileSync(path, "utf8"));
+    } catch (e) {
+      err(file, `unparseable YAML: ${e.message}`);
+    }
+    if (doc !== null && !Array.isArray(doc?.sources)) {
+      err(file, "has no `sources` list");
+    }
+    const seenIds = new Set();
+    for (const row of Array.isArray(doc?.sources) ? doc.sources : []) {
+      const label = `${file} row ${row?.id ?? "?"}`;
+      if (!row || typeof row.id !== "string" || typeof row.url !== "string") {
+        err(file, `row ${JSON.stringify(row?.id ?? null)} needs a string id and url`);
+        continue;
+      }
+      if (seenIds.has(row.id)) err(file, `duplicate row id ${row.id}`);
+      seenIds.add(row.id);
+      if (manifestRows.has(row.url))
+        err(file, `${row.url} is listed twice (${manifestRows.get(row.url)}, ${row.id})`);
+      manifestRows.set(row.url, row.id);
+      if (!isAllowedSourceUrl(row.url)) err(label, `${row.url} is not on the SOURCES.md allowlist`);
+      // A page already captured under another id would be snapshotted twice
+      // and cited under two names. Reuse the record instead. Only rows not yet
+      // captured are checked: the Builder recovery deliberately re-captured a
+      // few Token Factory pages under new ids, and those records stand.
+      if (!sourcesById.has(row.id)) {
+        for (const [id, src] of sourcesById) {
+          if (src.url === row.url) err(label, `${row.url} is already captured as ${id}`);
+        }
+      }
+      if (row.coverage !== undefined) {
+        if (!Array.isArray(row.coverage) || row.coverage.length === 0) {
+          err(label, "coverage must be a non-empty list of {course_id, objective}");
+          continue;
+        }
+        for (const c of row.coverage) {
+          const course = courses.get(c?.course_id);
+          if (!course) err(label, `coverage references unknown course ${c?.course_id}`);
+          else if (!course.objectives.has(c?.objective)) {
+            err(label, `coverage objective ${c?.objective} is not in course ${c?.course_id}`);
+          }
+        }
+      } else if (!Array.isArray(row.objectives) || row.objectives.length === 0) {
+        err(label, "needs `objectives` or course-aware `coverage`");
+      }
+    }
+  }
+}
+
+// ----------------------------------------------------------- coverage plans
+
+// content/coverage/<course>.yaml: which pages cover each objective of one
+// course map. Every objective must be accounted for exactly once -- a missing
+// one is an objective nobody checked, which is not the same as one with no
+// source (that is `strength: missing`, `status: held`).
+{
+  const seenCourses = new Set();
+  for (const { file, name, data } of loadYamlDir("coverage")) {
+    if (!validators.coverage(data)) {
+      for (const e of validators.coverage.errors) err(file, `${e.instancePath || "/"} ${e.message}`);
+      continue;
+    }
+    if (name.replace(/\.ya?ml$/, "") !== data.course_id) {
+      err(file, `file name must be ${data.course_id}.yaml`);
+    }
+    if (seenCourses.has(data.course_id)) err(file, `duplicate coverage for course ${data.course_id}`);
+    seenCourses.add(data.course_id);
+
+    const course = courses.get(data.course_id);
+    if (!course) {
+      err(file, `references unknown course ${data.course_id}`);
+      continue;
+    }
+
+    const listed = new Set();
+    for (const o of data.objectives) {
+      if (listed.has(o.id)) err(file, `objective ${o.id} is listed more than once`);
+      listed.add(o.id);
+      if (!course.objectives.has(o.id)) err(file, `objective ${o.id} is not in course ${data.course_id}`);
+
+      const urls = new Set();
+      for (const s of o.sources) {
+        if (urls.has(s.url)) err(file, `${o.id} lists ${s.url} twice`);
+        urls.add(s.url);
+        if (!isAllowedSourceUrl(s.url)) {
+          err(file, `${o.id}: ${s.url} is not on the SOURCES.md allowlist`);
+          continue;
+        }
+        if (s.existing !== undefined) {
+          const src = sourcesById.get(s.existing);
+          if (!src) err(file, `${o.id}: existing source ${s.existing} does not exist`);
+          else if (src.url !== s.url) err(file, `${o.id}: ${s.existing} is ${src.url}, not ${s.url}`);
+        } else if (!manifestRows.has(s.url) && ![...sourcesById.values()].some((src) => src.url === s.url)) {
+          // Neither captured nor planned: the objective would rest on a page
+          // nobody is going to snapshot.
+          err(file, `${o.id}: ${s.url} is neither captured nor in content/capture-manifest.yaml`);
+        }
+      }
+    }
+    for (const objective of course.objectives) {
+      if (!listed.has(objective)) err(file, `objective ${objective} of ${data.course_id} is missing`);
     }
   }
 }
