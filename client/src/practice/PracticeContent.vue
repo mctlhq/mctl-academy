@@ -155,6 +155,13 @@ function toggleShortcuts() {
 // The first revealed option is the learner's scored answer; later reveals
 // are exploration and never change the score (usePracticeSession).
 const firstAnswerId = computed(() => [...revealed.value][0]);
+// After a wrong answer the correct option is marked straight away (its
+// explanation still opens on tap), so the learner never has to guess through
+// the remaining options to find out what was right.
+const correctOptionId = computed(() => current.value?.options.find((o) => o.correct)?.id);
+function marksCorrectAnswer(optionId: string): boolean {
+  return revealed.value.size > 0 && optionId === correctOptionId.value && !revealed.value.has(optionId);
+}
 // Shown once per session, before the first answer, so the scoring rule is
 // known before it applies rather than discovered afterwards.
 const showFirstAnswerRule = computed(() => attempted.value === 0 && revealed.value.size === 0);
@@ -227,7 +234,12 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   if (newlyRevealed.length > 0) {
     const lastOption = current.value.options.find((o) => o.id === newlyRevealed[newlyRevealed.length - 1]);
     if (lastOption) {
-      lastAnnouncement.value = lastOption.correct ? "Correct" : "Incorrect";
+      const correctIndex = current.value.options.findIndex((o) => o.correct);
+      lastAnnouncement.value = lastOption.correct
+        ? "Correct"
+        : !nextRevealed.has(current.value.options[correctIndex]?.id ?? "") && correctIndex >= 0
+          ? `Incorrect. The correct answer is option ${correctIndex + 1}.`
+          : "Incorrect";
     }
   }
 });
@@ -372,13 +384,23 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
             :key="option.id"
             :class="[
               revealed.has(option.id) ? (option.correct ? 'correct' : 'incorrect') : '',
-              { 'first-answer': option.id === firstAnswerId },
+              {
+                'first-answer': option.id === firstAnswerId,
+                'correct-answer': marksCorrectAnswer(option.id),
+              },
             ]"
           >
             <button type="button" @click="selectOption(option.id)">
               <span class="option-key" aria-hidden="true">{{ optionIndex + 1 }}</span>
               <span class="option-text"><RestrictedMarkdown :text="option.text" /></span>
             </button>
+            <p
+              v-if="marksCorrectAnswer(option.id)"
+              class="correct-answer-tag"
+              data-testid="correct-answer-tag"
+            >
+              Correct answer · open it to read why
+            </p>
             <div v-if="revealed.has(option.id)" class="feedback">
               <p class="verdict">
                 {{ option.correct ? "Correct" : "Incorrect" }}
@@ -468,6 +490,12 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 }
 .answer-sources blockquote {
   margin: 0.5rem 0;
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--surface-line-strong);
+  border-radius: 0 var(--mctl-radius-md) var(--mctl-radius-md) 0;
+  background: var(--surface-card);
+  color: var(--surface-fg-muted);
+  overflow-wrap: anywhere;
 }
 .practice-card {
   margin-top: 1rem;
@@ -660,16 +688,26 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   gap: 0.75rem;
 }
 
+/* Same pill as the Info toggle beside it: two header controls, one look. */
 .report-button {
+  display: inline-flex;
+  gap: 0.35rem;
+  min-width: 2.75rem;
   min-height: 2.75rem;
-  padding: 0.5rem 0.25rem;
-  border: 0;
+  padding: 0 0.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-pill);
   background: transparent;
-  color: var(--surface-fg-muted);
+  color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: var(--text-caption-size);
   white-space: nowrap;
   cursor: pointer;
+}
+
+.report-button:hover {
+  color: var(--accent-text);
 }
 
 /* A 1px pill groups the two arrows with the running count they change, so
@@ -740,6 +778,8 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
   border-radius: var(--mctl-radius-md, 8px);
   margin-bottom: 0.65rem;
   overflow: hidden;
+  /* Keyboard focus scrolls an option clear of the sticky action bar. */
+  scroll-margin-bottom: 6rem;
 }
 
 .options li.correct {
@@ -750,6 +790,25 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 .options li.incorrect {
   border-color: var(--status-bad);
   background: color-mix(in srgb, var(--status-bad) 12%, transparent);
+}
+
+/* The right answer after a wrong one: marked, but lighter than a revealed
+   option (dashed, no fill) since its explanation is still closed. It stays
+   at full opacity while the other unopened options dim. */
+/* :not() twice to outrank the dimming rule above. */
+.options.answered li.correct-answer:not(.correct):not(.incorrect) {
+  border-style: dashed;
+  border-color: var(--status-ok);
+  opacity: 1;
+}
+
+.correct-answer-tag {
+  margin: 0;
+  padding: 0 1.1rem 0.75rem;
+  color: var(--status-ok-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  letter-spacing: 0.04em;
 }
 
 .options button {
@@ -948,8 +1007,10 @@ kbd {
     line-height: 1.3;
   }
 
+  /* Room between the last option and the sticky bar, so option 4 is never
+     tucked under it once the page is scrolled to the end. */
   .options {
-    margin-bottom: 0;
+    margin-bottom: 1rem;
   }
 
   .options li {
@@ -960,7 +1021,14 @@ kbd {
     padding: 0.65rem 0.75rem;
   }
 
+  .correct-answer-tag {
+    padding: 0 0.75rem 0.6rem;
+  }
+
+  /* On phones the bar overlays the options while scrolling: a top rule
+     shows where it begins instead of cutting an option's text mid-line. */
   .practice-actions {
+    border-top: 1px solid var(--surface-line);
     margin-right: -0.25rem;
     margin-left: -0.25rem;
     padding: 0.75rem 0.25rem max(0.25rem, env(safe-area-inset-bottom));
