@@ -29,7 +29,9 @@ const stats = computed(() => {
   );
 });
 const currentCourse = computed(() => findCourse(currentCourseId.value));
-const showContinue = computed(() => Boolean(currentCourse.value?.available) && stats.value.totalAttempted > 0);
+const showContinue = computed(
+  () => Boolean(currentCourse.value?.available) && stats.value.totalAttempted > 0,
+);
 
 // The hero's primary action names the course it opens, so the header
 // switcher and this page never disagree about where "Practice" leads.
@@ -77,8 +79,9 @@ const steps = [
       <p class="section-marker">Free · open source · no sign-up needed to start</p>
       <h1>Practice questions for AI cloud certifications, each one checked against its source.</h1>
       <p class="home-lead">
-        Every question is written from public product documentation, reviewed independently, and cites the page
-        that supports its answer. Pick a course, practice, review your mistakes, then try a timed mock exam.
+        Every question is written from public product documentation, reviewed independently, and cites the
+        page that supports its answer. Pick a course, practice, review your mistakes, then try a timed mock
+        exam.
       </p>
 
       <div class="home-cta">
@@ -89,8 +92,8 @@ const steps = [
         <MButton as="a" href="#home-courses-title" variant="ghost">Browse all courses</MButton>
       </div>
       <p v-if="ctaCourse" class="home-cta-note">
-        Practice, Mock exam and Mistakes in the header use the course selected there. Pick another course below or
-        in the switcher at any time.
+        Practice, Mock exam and Mistakes in the header use the course selected there. Pick another course
+        below or in the switcher at any time.
       </p>
 
       <dl class="home-facts" aria-label="Academy at a glance">
@@ -111,9 +114,9 @@ const steps = [
       <aside class="home-cert-note" aria-label="About certification">
         <p>
           <strong>Preparing for a certification exam?</strong>
-          Each course follows the published domains of a related certification, so working through it may help you
-          prepare. It does not reproduce the exam, does not predict a result, and is not a substitute for the
-          vendor's own preparation material.
+          Each course follows the published domains of a related certification, so working through it may help
+          you prepare. It does not reproduce the exam, does not predict a result, and is not a substitute for
+          the vendor's own preparation material.
         </p>
       </aside>
     </header>
@@ -122,7 +125,8 @@ const steps = [
       <span class="home-continue-label">Continue where you left off</span>
       <span class="home-continue-course">{{ currentCourse.title }}</span>
       <span class="home-continue-detail">
-        {{ stats.totalCorrect }} of {{ stats.totalBankQuestions }} solved · {{ stats.totalMistakes }} to review
+        {{ stats.totalCorrect }} of {{ stats.totalBankQuestions }} solved · {{ stats.totalMistakes }} to
+        review
       </span>
       <strong>Continue <span aria-hidden="true">→</span></strong>
     </RouterLink>
@@ -130,7 +134,9 @@ const steps = [
     <section class="home-courses" aria-labelledby="home-courses-title">
       <div class="home-section-head">
         <h2 id="home-courses-title" class="section-heading">Choose a course</h2>
-        <MButton v-if="showContinue" :as="RouterLink" to="/dashboard" variant="ghost" size="sm">My progress</MButton>
+        <MButton v-if="showContinue" :as="RouterLink" to="/dashboard" variant="ghost" size="sm"
+          >My progress</MButton
+        >
       </div>
       <CourseGrid :courses="availableCourses" :current-course-id="currentCourseId" />
     </section>
