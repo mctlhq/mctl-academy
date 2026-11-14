@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.82](https://github.com/mctlhq/mctl-academy/compare/0.1.81...0.1.82) (2026-11-14)
+
+
+### Features
+
+* **replenish:** author rubric bans self-refuting distractors ([2051652](https://github.com/mctlhq/mctl-academy/commit/205165294d0cad84e86470ae4c2f0f7da75480ca))
+* **replenish:** author rubric bans self-refuting distractors ([6fd941c](https://github.com/mctlhq/mctl-academy/commit/6fd941c5e7446ea01556bd01bb7a4318efec56f9))
+
+
+### Content
+
+* **replenish:** author 7 question file(s) from 0 captured source(s) ([d41003c](https://github.com/mctlhq/mctl-academy/commit/d41003c103fb207a05b18e3dcbcea12a18e2a596))
+* **replenish:** promote 7 reviewed question(s) ([f99f88a](https://github.com/mctlhq/mctl-academy/commit/f99f88a2ecd5659c420fff43e925e0040fdf1ed7))
+
 ## [0.1.81](https://github.com/mctlhq/mctl-academy/compare/0.1.80...0.1.81) (2026-11-14)
 
 
