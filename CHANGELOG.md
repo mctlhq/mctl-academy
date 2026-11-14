@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.92](https://github.com/mctlhq/mctl-academy/compare/0.1.91...0.1.92) (2026-11-14)
+
+
+### Features
+
+* **server:** log every /api/* failure as one structured line ([0c9c7d6](https://github.com/mctlhq/mctl-academy/commit/0c9c7d665279df71d3a537ea006b23ae8d1d3675))
+* **server:** log every /api/* failure as one structured line ([73c473a](https://github.com/mctlhq/mctl-academy/commit/73c473a25362163a7f5c26738eb2f4d23f837228))
+
+
+### Bug Fixes
+
+* address the P3 follow-ups from the [#545](https://github.com/mctlhq/mctl-academy/issues/545) review ([95b2499](https://github.com/mctlhq/mctl-academy/commit/95b2499f862be5d4dce9b254d677e487c6a6fd1b))
+* address the P3 follow-ups from the [#545](https://github.com/mctlhq/mctl-academy/issues/545) review ([b24ef03](https://github.com/mctlhq/mctl-academy/commit/b24ef0374d25e25ed1fa57efa5284caf299e9e12))
+
 ## [0.1.91](https://github.com/mctlhq/mctl-academy/compare/0.1.90...0.1.91) (2026-11-14)
 
 
