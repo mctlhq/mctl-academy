@@ -1,44 +1,45 @@
 schema_version: 1
 id: q-0e6c3b9a4f78
-status: needs_review
+status: review_ready
 domain: domain-4
 objective: domain-4/rate-limit-handling
-stem: "A production app runs Search calls near its 1,000 RPM limit, then starts
-  sending Crawl calls at the same rate. Per Tavily's Rate Limits documentation,
-  what should it expect?"
+stem: "An application is sending Search calls near its account's rate limit,
+  then begins sending Crawl calls at that same request rate. What should it
+  expect from Tavily's per-endpoint rate limits?"
 options:
   - id: a
-    text: "The Crawl calls are governed by their own separate limit that applies
-      equally to development and production keys, not the higher production
-      Search limit"
+    text: "Crawl is capped by its own separate limit that does not rise with
+      the account's search limit"
     correct: true
-    explanation: "Correct. The documentation states the crawl endpoint has a
-      separate rate limit that applies to both development and production keys."
+    explanation: "Correct. Endpoints such as crawl keep their own fixed limit,
+      separate from and not scaled to the account's general search limit,
+      even once search traffic is already near that limit."
   - id: b
-    text: "The Crawl calls share the same 1,000 RPM production limit as Search"
+    text: "Crawl shares the account's general search limit, so the elevated
+      rate carries over automatically"
     correct: false
-    explanation: "The documentation gives Crawl its own separate rate limit rather
-      than sharing the default 1,000 RPM production limit."
+    explanation: "Crawl, map and research keep their own fixed limit rather
+      than inheriting or scaling with the account's broader search limit."
   - id: c
-    text: "Crawl has no documented rate limit at all"
+    text: "Crawl calls are throttled under the flex tier capacity restriction
+      that applies during heavy load to live content fetches"
     correct: false
-    explanation: "The documentation states Crawl has its own separate rate limit; it
-      is not undocumented or absent."
+    explanation: "Flex tier capacity governs search requests that set
+      max_age_hours during heavy load; it does not govern crawl's per-minute
+      cap."
   - id: d
-    text: "Crawl's separate limit applies only to development keys, not production"
+    text: "Crawl calls count against the separate usage-endpoint limit rather
+      than against any per-minute cap"
     correct: false
-    explanation: "The documented Crawl limit applies to both development and
-      production keys, not development alone."
+    explanation: "The usage endpoint's rate limit governs calls to the usage
+      endpoint itself, not calls to crawl."
 evidence:
   - source_id: src-tv-rate-limits
-    excerpt: "The crawl endpoint has a separate rate limit that applies to both
-      development and production keys"
-    source_sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+    excerpt: "an organization with a 1,500 RPM limit can send up to 1,500
+      search requests per minute, but no more than 100 crawl requests per
+      minute"
+    source_sha256: e4043d7728d85cda4573aeaea864f1e03fade88fc0ba3539c0a155d3530b66ec
 authored:
   by: "agent:claude-author"
-  at: "2026-10-31T08:10:42Z"
+  at: "2026-11-14T17:57:46Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T08:31:18Z
-  content_sha256: 656922eaa1512bc0314a12a7843f9cdf0b5134d5b336bec876119d8388aae42f

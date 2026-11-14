@@ -1,44 +1,46 @@
 schema_version: 1
 id: q-e4b8d1a6f293
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/web-access-operations
-stem: "Per Tavily's Crawl tutorial, what is the rule of thumb for choosing
-  between Map and Crawl as web-access operations?"
+stem: "A team wants to see every URL on a site quickly, before deciding which
+  pages are worth a full read. Which Tavily operation fits this step, saving
+  full content extraction for later?"
 options:
   - id: a
-    text: "Use Map when you need to find pages; use Crawl when you need to read
-      pages"
+    text: "Map, for quick site structure discovery without extracting content"
     correct: true
-    explanation: "Correct. The tutorial states this exact rule of thumb."
+    explanation: "Correct. Crawl's best-practices guide lists quick site
+      structure discovery and URL collection without content extraction as
+      what Map is for, while Crawl is for full content extraction and deep
+      analysis."
   - id: b
-    text: "Use Crawl when you need to find pages; use Map when you need to read
-      pages"
+    text: "Crawl, since it also discovers structure quickly before extracting
+      content"
     correct: false
-    explanation: "That reverses the tutorial's rule of thumb; Map is for finding,
-      Crawl is for reading."
+    explanation: "Crawl is listed for full content extraction and deep
+      content analysis, not quick structure discovery; extracting content is
+      what makes it slower than Map."
   - id: c
-    text: "Use Extract when you need to find pages; use Search when you need to read
-      them"
+    text: "Extract, since it can list a site's URLs without reading them"
     correct: false
-    explanation: "Extract pulls content from known URLs and Search finds sources for
-      a query; neither matches this find-vs-read distinction between Map and
-      Crawl."
+    explanation: "Extract pulls content from URLs you already have; it does
+      not discover a site's URL structure the way Map does."
   - id: d
-    text: "Use Map and Crawl interchangeably, since they return identical output"
+    text: "Search, since it returns a ranked list of site URLs first"
     correct: false
-    explanation: "The tutorial contrasts Map's URL-only output with Crawl's
-      full-page content; they are not interchangeable."
+    explanation: "Search finds and ranks sources for a query across the web;
+      it does not map a single site's URL structure."
 evidence:
   - source_id: src-tv-tut-crawl
-    excerpt: "Use Map when you need to *find* pages. Use Crawl when you need to
-      *read* pages."
-    source_sha256: 81fc02aa2d38904276f79a73a2d4c90b4353f1734acb776d758c5a053fde1609
+    excerpt: "Full content extraction from pages"
+    source_sha256: c1bb581747d2e632300c2691fd931478fa0918d7a923b818c10883059de8ed43
+    locator: "Use Crawl when you need:"
+  - source_id: src-tv-tut-crawl
+    excerpt: "Quick site structure discovery"
+    source_sha256: c1bb581747d2e632300c2691fd931478fa0918d7a923b818c10883059de8ed43
+    locator: "Use Map when you need:"
 authored:
   by: "agent:claude-author"
-  at: "2026-10-31T08:10:42Z"
+  at: "2026-11-14T17:57:46Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T08:31:18Z
-  content_sha256: 0dfbb8c7903e15adb403dc91b474bafe80cda1f138613e5bdda17388615ba36b

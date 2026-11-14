@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ee3b9d2a4c78
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/search-extract-pipelines
 stem: "An agent wants Extract to return only the portions of a page most
@@ -16,8 +16,8 @@ options:
     text: "A `query` parameter, so Extract reranks the content chunks by relevance
       to the question"
     correct: true
-    explanation: "Correct. The tutorial states that when you pass a query parameter,
-      Extract reranks the content chunks by relevance to your question."
+    explanation: "Correct. The documentation states that when query is
+      provided, chunks are reranked based on relevance to the query."
   - id: c
     text: "`include_images=true`, since that focuses extraction on the most relevant
       sections"
@@ -31,14 +31,10 @@ options:
       effect on relevance reranking."
 evidence:
   - source_id: src-tv-tut-extract
-    excerpt: "When you pass a `query` parameter, Extract reranks the content chunks
-      by relevance to your question."
-    source_sha256: 2aee3dfcc57cf52c91b7124a0e0f7ba6cf5d117968052a444c4f049830d145eb
+    excerpt: "When `query` is provided, chunks are reranked based on relevance
+      to the query."
+    source_sha256: 36f6172a40a2d8d44344a3fb9728c328ab13ed1291e806bd5cd3821241095360
 authored:
   by: "agent:claude-author"
-  at: "2026-10-31T08:10:42Z"
+  at: "2026-11-14T17:57:46Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T08:31:18Z
-  content_sha256: 119bbd1f2e1302528d0b2fdaea1004a9fe11382df57265b148d51e55a0e3425d
