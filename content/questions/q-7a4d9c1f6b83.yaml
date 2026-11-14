@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7a4d9c1f6b83
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/mcp-integration
 stem: "A team names a key `mcp_auth_default` in their shared Tavily team

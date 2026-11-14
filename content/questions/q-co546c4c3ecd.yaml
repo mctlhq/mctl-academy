@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co546c4c3ecd
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: You have confirmed a CUDA initialization failure on a GPU VM. What is the

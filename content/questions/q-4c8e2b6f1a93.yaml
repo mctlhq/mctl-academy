@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4c8e2b6f1a93
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/data-collection
 stem: "A robotics engineer runs `lerobot-record` over SSH on a headless Linux

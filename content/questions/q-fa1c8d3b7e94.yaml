@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fa1c8d3b7e94
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/mcp-integration
 stem: "A team wants to standardize web access across everyone's Cursor and

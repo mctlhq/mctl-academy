@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-eac06372819f
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/edge-cloud-placement
 stem: "A team is choosing whether to run policy inference on an edge device or

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b58e3f9a2c71
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/observability
 stem: In a Chat Completions response, what is the documented purpose of the

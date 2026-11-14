@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9d1f7a4c3e68
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/capacity-and-scaling
 stem: What guarantee applies to the minimum replicas configured for a dedicated

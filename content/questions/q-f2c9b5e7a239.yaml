@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f2c9b5e7a239
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/rate-limit-handling
 stem: "An agent's request to Tavily returns `429 Too Many Requests` with a

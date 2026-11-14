@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-e4a7c982f1b3
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/response-fields
 stem: "In a Tavily Search response, what does each result's `score` field represent?"
