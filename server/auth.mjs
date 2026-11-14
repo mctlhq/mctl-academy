@@ -3,6 +3,7 @@ import { genericOAuth } from "better-auth/plugins";
 import pg from "pg";
 import { dbSslConfig } from "./db-ssl.mjs";
 import {
+  ZITADEL_CALLBACK_PATH,
   ZITADEL_PROVIDER_ID,
   createZitadelUserInfo,
   readZitadelConfig,
@@ -32,6 +33,16 @@ const isProduction = process.env.NODE_ENV === "production";
 export const authPool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: dbSslConfig(isProduction),
+});
+
+// Same reason as db.mjs's pool.on("error"): an idle client whose backend
+// goes away emits "error", and an unhandled "error" event kills the process.
+// better-auth 1.7 checks its schema when it initializes, so this pool now
+// holds an idle connection from boot on, not only after the first sign-in;
+// without this handler a database blip crashed the pod instead of failing
+// /readyz (tests/readyz-live.test.mjs).
+authPool.on("error", (err) => {
+  console.error("[auth] Idle client error:", err.message);
 });
 
 /**
@@ -238,13 +249,33 @@ export const auth = betterAuth({
           config: [
             {
               providerId: ZITADEL_PROVIDER_ID,
+              // better-auth 1.7 takes the expected issuer from this document
+              // (it dropped the `issuer` option) and rejects a callback whose
+              // `iss` names another one; the document is the issuer's own,
+              // and createZitadelUserInfo checks that it names this issuer.
               discoveryUrl: `${zitadel.config.issuer}/.well-known/openid-configuration`,
-              issuer: zitadel.config.issuer,
+              // Without discovery's issuer and JWKS the plugin would register
+              // the provider with no ID-token verification of its own; skip
+              // it instead (the plugin retries discovery on the next request).
+              requireIdTokenVerification: true,
+              // The URI registered in ZITADEL, not 1.7's default
+              // /api/auth/callback/zitadel; handleAuthRequest forwards it.
+              redirectURI: zitadel.config.redirectURI,
               clientId: zitadel.config.clientId,
               clientSecret: zitadel.config.clientSecret,
               authentication: "basic",
               scopes: ["openid", "email", "profile"],
               pkce: true,
+              // The account id stays the verified ID-token `sub`, as in 1.6.
+              // 1.7's default for an OIDC provider reads `profile.sub`, which
+              // createZitadelUserInfo does not return; naming it here keeps
+              // the account key independent of how discovery went.
+              accountSubject: ({ profile }) => {
+                if (typeof profile.id !== "string" || profile.id === "") {
+                  throw new Error("ZITADEL profile has no verified subject");
+                }
+                return profile.id;
+              },
               getUserInfo: createZitadelUserInfo(zitadel.config),
               // Never a githubLogin: the allowlists name a ZITADEL user only
               // as zitadel:<sub> (server/allowlist.mjs).
@@ -255,3 +286,21 @@ export const auth = betterAuth({
       ]
     : [],
 });
+
+/**
+ * The /api/auth/* handler. Everything goes to better-auth unchanged except
+ * ZITADEL's registered callback path, which better-auth 1.7 no longer
+ * mounts: it is served by the shared callback route for the same provider,
+ * with the query (code, state, iss) intact. Only when ZITADEL is
+ * configured; otherwise the path stays a 404 like any unknown route.
+ *
+ * @param {Request} request
+ */
+export function handleAuthRequest(request) {
+  const url = new URL(request.url);
+  if (zitadel.config && url.pathname === ZITADEL_CALLBACK_PATH) {
+    url.pathname = `/api/auth/callback/${ZITADEL_PROVIDER_ID}`;
+    return auth.handler(new Request(url, request));
+  }
+  return auth.handler(request);
+}

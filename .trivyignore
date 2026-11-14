@@ -1,11 +1,3 @@
 # Findings accepted for a limited time. Every entry needs a reason, a link to
 # the tracking issue and an `exp:` date; after that date trivy reports the
 # finding again and the security check fails.
-#
-# better-auth 1.6.26, root and client/ (mctl-academy#540). GHSA-965c-763c-88jm:
-# an OAuth state value is accepted as a Magic Link token. Exploitable only when
-# the Magic Link plugin is enabled; academy enables genericOAuth alone and has
-# no Magic Link plugin. The fix (1.7.7) changes the genericOAuth server and
-# client API, so it is an auth migration rather than a lockfile bump.
-# Remove this line when better-auth >= 1.7.7 is in both lockfiles.
-CVE-2026-114607 exp:2026-12-14

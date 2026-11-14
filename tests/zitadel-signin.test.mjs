@@ -15,6 +15,11 @@ process.env.ZITADEL_ISSUER = issuer.issuer;
 process.env.ZITADEL_CLIENT_ID = issuer.clientId;
 process.env.ZITADEL_CLIENT_SECRET = issuer.clientSecret;
 process.env.ZITADEL_DISPLAY_NAME = "MCTL account";
+// The redirect URI is built from it; app.request() serves http://localhost.
+process.env.BETTER_AUTH_URL = "http://localhost";
+
+/** What zitadel-iac registers for academy, on this test's origin. */
+const REGISTERED_REDIRECT_URI = "http://localhost/api/auth/oauth2/callback/zitadel";
 
 const realFetch = globalThis.fetch;
 globalThis.fetch = /** @type {typeof fetch} */ (
@@ -37,16 +42,23 @@ function cookiesOf(response) {
 
 /** Sign in with ZITADEL as `login`; returns the callback response. */
 async function signIn(login) {
-  const start = await app.request("/api/auth/sign-in/oauth2", {
+  const start = await app.request("/api/auth/sign-in/social", {
     method: "POST",
     headers: { "content-type": "application/json", origin: "http://localhost" },
-    body: JSON.stringify({ providerId: "zitadel", callbackURL: "/" }),
+    body: JSON.stringify({ provider: "zitadel", callbackURL: "/" }),
   });
-  assert.equal(start.status, 200);
+  assert.equal(start.status, 200, await start.clone().text());
   const { url } = await start.json();
   const authorize = new URL(url);
   assert.equal(authorize.origin + authorize.pathname, `${issuer.issuer}/oauth/v2/authorize`);
   assert.equal(authorize.searchParams.get("code_challenge_method"), "S256");
+  // The redirect URI ZITADEL has registered, not better-auth 1.7's default
+  // /api/auth/callback/zitadel; the fake's token endpoint checks the
+  // exchange repeats it.
+  assert.equal(authorize.searchParams.get("redirect_uri"), REGISTERED_REDIRECT_URI);
+  assert.equal(authorize.searchParams.get("client_id"), issuer.clientId);
+  assert.equal(authorize.searchParams.get("response_type"), "code");
+  assert.deepEqual(authorize.searchParams.get("scope")?.split(" ").sort(), ["email", "openid", "profile"]);
 
   const code = randomUUID();
   issuer.approve(code, url, login);

@@ -12,10 +12,11 @@ import { createLocalJWKSet, jwtVerify } from "jose";
  *    error (assertZitadelConfigValid, called from app.mjs next to
  *    assertAuthSecretConfigured) rather than a silently missing button.
  *
- * 2. ID token verification. The plugin's default user-info step *decodes*
- *    the ID token without checking its signature. Here the signature is
- *    verified against the issuer's published keys (RS256 only), along with
- *    iss, aud/azp and expiry, before its `sub` is believed.
+ * 2. ID token verification. better-auth 1.6's plugin only *decoded* the ID
+ *    token; 1.7 verifies it against the discovery JWKS and a nonce before
+ *    calling getUserInfo. Here it is verified once more, on terms the
+ *    plugin does not enforce: RS256 only, iss, aud *and* azp, and a
+ *    required exp/iat/sub, before its `sub` is believed.
  *
  * 3. No account linking by e-mail for ZITADEL. better-auth links a new
  *    provider account to an existing user whose e-mail matches. For
@@ -35,13 +36,23 @@ import { createLocalJWKSet, jwtVerify } from "jose";
 
 export const ZITADEL_PROVIDER_ID = "zitadel";
 
+/**
+ * The redirect URI path registered for academy in ZITADEL (zitadel-iac's
+ * labs_apps). better-auth 1.6's generic OAuth plugin mounted its own callback
+ * here; 1.7 serves every provider from the shared /api/auth/callback/<id>
+ * route instead. The registered URI is kept, rather than moved in lockstep
+ * with ZITADEL's configuration, by sending it as redirectURI and forwarding
+ * this path to the shared route (server/app.mjs).
+ */
+export const ZITADEL_CALLBACK_PATH = `/api/auth/oauth2/callback/${ZITADEL_PROVIDER_ID}`;
+
 /** How long a discovery document or key set is reused before it is fetched again. */
 const CACHE_TTL_MS = 60 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 10_000;
 
 /**
  * @param {Record<string, string | undefined>} env
- * @returns {{ config?: { issuer: string, clientId: string, clientSecret: string, displayName: string }, problem?: string }}
+ * @returns {{ config?: { issuer: string, clientId: string, clientSecret: string, displayName: string, redirectURI: string }, problem?: string }}
  */
 export function readZitadelConfig(env) {
   const issuer = env.ZITADEL_ISSUER?.trim().replace(/\/+$/, "") || "";
@@ -65,8 +76,25 @@ export function readZitadelConfig(env) {
   if (!url || url.protocol !== "https:" || url.username || url.password) {
     return { problem: `ZITADEL_ISSUER must be an https URL, got ${JSON.stringify(issuer)}.` };
   }
+  // The redirect URI must be absolute and fixed: it is compared with the one
+  // registered in ZITADEL, and better-auth 1.7 takes a configured redirectURI
+  // as is (see ZITADEL_CALLBACK_PATH). Without BETTER_AUTH_URL there is no
+  // fixed origin to build it from, so ZITADEL cannot be offered at all.
+  const baseURL = env.BETTER_AUTH_URL?.trim().replace(/\/+$/, "") || "";
+  let base;
+  try {
+    base = new URL(baseURL);
+  } catch {
+    base = undefined;
+  }
+  if (!base || !["https:", "http:"].includes(base.protocol) || base.username || base.password) {
+    return {
+      problem: `ZITADEL sign-in needs BETTER_AUTH_URL (an http(s) URL) for its redirect URI, got ${JSON.stringify(baseURL)}.`,
+    };
+  }
+  const redirectURI = `${baseURL}${ZITADEL_CALLBACK_PATH}`;
   const displayName = env.ZITADEL_DISPLAY_NAME?.trim() || "ZITADEL";
-  return { config: { issuer, clientId, clientSecret, displayName } };
+  return { config: { issuer, clientId, clientSecret, displayName, redirectURI } };
 }
 
 async function fetchJson(fetchImpl, url, init = {}) {
@@ -216,10 +244,11 @@ export function zitadelDisplayName(profile) {
 /**
  * databaseHooks.account.create.before: refuse any account row that would
  * attach a ZITADEL account to an existing user (of any provider, ZITADEL
- * included), or a GitHub/Google account to a ZITADEL user. Throwing (not
- * returning false) is what stops the sign-in: better-auth's implicit link
- * ignores a null result and would sign the caller in as the existing user
- * anyway, but turns a thrown error into "unable to link account".
+ * included), or a GitHub/Google account to a ZITADEL user. It throws rather
+ * than returning false: under better-auth 1.6 the implicit link ignored a
+ * false result and signed the caller in as the existing user anyway. 1.7
+ * stops on either, and redirects a thrown, coded APIError to the error page
+ * with that code.
  *
  * A returning ZITADEL user is not affected: better-auth finds its account by
  * (providerId, accountId) and creates nothing.
@@ -236,6 +265,10 @@ export async function refuseZitadelCrossLink(listProviderIds, account) {
     account.providerId === ZITADEL_PROVIDER_ID ? existing.length > 0 : existing.includes(ZITADEL_PROVIDER_ID);
   if (refused) {
     throw new APIError("FORBIDDEN", {
+      // better-auth 1.7 redirects a browser sign-in to the error page only
+      // for an APIError that carries a code (otherwise it answers a bare
+      // 403). This is the code 1.6 put on that page for the same refusal.
+      code: "unable_to_link_account",
       message: "A ZITADEL sign-in cannot be linked to an existing account, or the reverse.",
     });
   }

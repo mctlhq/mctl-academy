@@ -82,7 +82,7 @@ function signInWithZitadel() {
   const provider = zitadel.value;
   if (!provider) return;
   return startSignIn(provider.label, (callbackURL) =>
-    authClient.signIn.oauth2({ providerId: provider.providerId, callbackURL }),
+    authClient.signIn.social({ provider: provider.providerId, callbackURL }),
   );
 }
 
