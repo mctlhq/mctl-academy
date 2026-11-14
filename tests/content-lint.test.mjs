@@ -99,8 +99,13 @@ const question = (over = {}) => ({
   ...over,
 });
 
-/** Runs the lint against a fixture tree. Returns { ok, output }. */
-function lint({ sources = [source()], questions = [question()], receipts = [] }) {
+/**
+ * Runs the lint against a fixture tree. Returns { ok, output }.
+ *
+ * @param {{ sources?: any[], questions?: any[], receipts?: any[],
+ *           coverage?: any[], manifest?: any }} fixture
+ */
+function lint({ sources = [source()], questions = [question()], receipts = [], coverage = [], manifest }) {
   const dir = mkdtempSync(join(tmpdir(), "academy-lint-"));
   try {
     mkdirSync(join(dir, "courses"), { recursive: true });
@@ -111,6 +116,20 @@ function lint({ sources = [source()], questions = [question()], receipts = [] })
     writeFileSync(join(dir, "courses", "agentic-ai-builder.yaml"), JSON.stringify(COURSE_DEF));
     sources.forEach((s, i) => writeFileSync(join(dir, "sources", `s${i}.yaml`), JSON.stringify(s)));
     questions.forEach((q, i) => writeFileSync(join(dir, "questions", `q${i}.yaml`), JSON.stringify(q)));
+    if (coverage.length) mkdirSync(join(dir, "coverage"), { recursive: true });
+    // A string is written as-is, so a test can hand the lint unparseable YAML.
+    coverage.forEach((c, i) =>
+      writeFileSync(
+        join(dir, "coverage", typeof c === "string" ? `bad${i}.yaml` : `${c.course_id}.yaml`),
+        typeof c === "string" ? c : JSON.stringify(c),
+      ),
+    );
+    if (manifest !== undefined) {
+      writeFileSync(
+        join(dir, "capture-manifest.yaml"),
+        typeof manifest === "string" ? manifest : JSON.stringify(manifest),
+      );
+    }
 
     try {
       const out = execFileSync("node", [LINT], {
@@ -478,4 +497,190 @@ test("duplicate receipt entries for one question poison the key instead of last-
   });
   assert.equal(acrossFiles.ok, false);
   assert.match(acrossFiles.output, /more than one receipt entry/);
+});
+
+// ------------------------------------------------------------ coverage plans
+
+const covObjective = (id, over = {}) => ({
+  id,
+  status: "open",
+  strength: "strong",
+  volatile: false,
+  note: "Documented end to end.",
+  sources: [{ url: "https://docs.nebius.com/agents", existing: "src-docs-agents" }],
+  ...over,
+});
+
+const coveragePlan = (over = {}) => ({
+  schema_version: 1,
+  course_id: "agentic-ai-builder",
+  reviewed_at: "2026-11-14",
+  objectives: ["domain-1/alpha", "domain-2/beta", "domain-3/gamma", "domain-4/delta"].map((id) =>
+    covObjective(id),
+  ),
+  ...over,
+});
+
+const withObjectives = (mutate) => {
+  const plan = coveragePlan();
+  plan.objectives = mutate(plan.objectives);
+  return plan;
+};
+
+test("a coverage plan listing every objective once passes", () => {
+  const { ok, output } = lint({ coverage: [coveragePlan()] });
+  assert.equal(ok, true, output);
+});
+
+test("rejects a coverage plan that leaves an objective out", () => {
+  const { ok, output } = lint({ coverage: [withObjectives((o) => o.slice(0, 3))] });
+  assert.equal(ok, false);
+  assert.match(output, /objective domain-4\/delta of agentic-ai-builder is missing/);
+});
+
+test("rejects a coverage objective the course map does not define", () => {
+  const { ok, output } = lint({
+    coverage: [withObjectives((o) => [...o, covObjective("domain-1/omega")])],
+  });
+  assert.equal(ok, false);
+  assert.match(output, /objective domain-1\/omega is not in course agentic-ai-builder/);
+});
+
+test("rejects a coverage objective listed twice", () => {
+  const { ok, output } = lint({ coverage: [withObjectives((o) => [...o, covObjective("domain-1/alpha")])] });
+  assert.equal(ok, false);
+  assert.match(output, /domain-1\/alpha is listed more than once/);
+});
+
+test("rejects coverage for an unknown course", () => {
+  const { ok, output } = lint({ coverage: [coveragePlan({ course_id: "no-such-course" })] });
+  assert.equal(ok, false);
+  assert.match(output, /references unknown course no-such-course/);
+});
+
+test("rejects a malformed or unparseable coverage file instead of skipping it", () => {
+  const missingNote = withObjectives((o) => [{ ...o[0], note: undefined }, ...o.slice(1)]);
+  delete missingNote.objectives[0].note;
+  for (const coverage of [
+    [missingNote],
+    [coveragePlan({ objectives: "all" })],
+    ["objectives: [\n"],
+    ["null"],
+  ]) {
+    const { ok } = lint({ coverage });
+    assert.equal(ok, false, JSON.stringify(coverage));
+  }
+});
+
+test("rejects an open objective with no source, and a missing one left open", () => {
+  let r = lint({ coverage: [withObjectives((o) => [{ ...o[0], sources: [] }, ...o.slice(1)])] });
+  assert.equal(r.ok, false);
+  r = lint({
+    coverage: [withObjectives((o) => [{ ...o[0], strength: "missing", sources: [] }, ...o.slice(1)])],
+  });
+  assert.equal(r.ok, false);
+  r = lint({
+    coverage: [
+      withObjectives((o) => [{ ...o[0], status: "held", strength: "missing", sources: [] }, ...o.slice(1)]),
+    ],
+  });
+  assert.equal(r.ok, true, r.output);
+});
+
+test("rejects a coverage URL off the allowlist", () => {
+  const { ok, output } = lint({
+    coverage: [
+      withObjectives((o) => [{ ...o[0], sources: [{ url: "https://example.com/a.md" }] }, ...o.slice(1)]),
+    ],
+  });
+  assert.equal(ok, false);
+  assert.match(output, /example\.com\/a\.md is not on the SOURCES\.md allowlist/);
+});
+
+test("rejects an `existing` id that is unknown or names a different page", () => {
+  let r = lint({
+    coverage: [
+      withObjectives((o) => [
+        { ...o[0], sources: [{ url: "https://docs.nebius.com/agents", existing: "src-nope" }] },
+        ...o.slice(1),
+      ]),
+    ],
+  });
+  assert.equal(r.ok, false);
+  assert.match(r.output, /existing source src-nope does not exist/);
+  r = lint({
+    coverage: [
+      withObjectives((o) => [
+        { ...o[0], sources: [{ url: "https://docs.nebius.com/other.md", existing: "src-docs-agents" }] },
+        ...o.slice(1),
+      ]),
+    ],
+    manifest: { sources: [] },
+  });
+  assert.equal(r.ok, false);
+  assert.match(r.output, /src-docs-agents is https:\/\/docs\.nebius\.com\/agents, not/);
+});
+
+test("a new coverage URL must be planned in the capture manifest", () => {
+  const plan = withObjectives((o) => [
+    { ...o[0], sources: [{ url: "https://docs.nebius.com/new-page.md" }] },
+    ...o.slice(1),
+  ]);
+  let r = lint({ coverage: [plan] });
+  assert.equal(r.ok, false);
+  assert.match(r.output, /new-page\.md is neither captured nor in content\/capture-manifest\.yaml/);
+  r = lint({
+    coverage: [plan],
+    manifest: {
+      sources: [
+        {
+          id: "src-new-page",
+          url: "https://docs.nebius.com/new-page.md",
+          title: "New",
+          coverage: [{ course_id: "agentic-ai-builder", objective: "domain-1/alpha" }],
+        },
+      ],
+    },
+  });
+  assert.equal(r.ok, true, r.output);
+});
+
+test("rejects manifest coverage naming an objective the course does not define", () => {
+  const { ok, output } = lint({
+    manifest: {
+      sources: [
+        {
+          id: "src-new-page",
+          url: "https://docs.nebius.com/new-page.md",
+          title: "New",
+          coverage: [{ course_id: "agentic-ai-builder", objective: "domain-2/alpha" }],
+        },
+      ],
+    },
+  });
+  assert.equal(ok, false);
+  assert.match(output, /coverage objective domain-2\/alpha is not in course agentic-ai-builder/);
+});
+
+test("rejects a planned capture of a page already captured under another id", () => {
+  const { ok, output } = lint({
+    manifest: {
+      sources: [
+        {
+          id: "src-again",
+          url: "https://docs.nebius.com/agents",
+          title: "Again",
+          objectives: ["domain-1/alpha"],
+        },
+      ],
+    },
+  });
+  assert.equal(ok, false);
+  assert.match(output, /already captured as src-docs-agents/);
+});
+
+test("rejects an unparseable capture manifest", () => {
+  const { ok, output } = lint({ manifest: "sources: [\n" });
+  assert.equal(ok, false);
+  assert.match(output, /capture-manifest\.yaml: unparseable YAML/);
 });

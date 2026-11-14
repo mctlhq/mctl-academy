@@ -29,6 +29,10 @@ on:
         description: "Comma-separated source ids to capture (blank = all)"
         required: false
         default: ""
+      batch:
+        description: "Capture only rows with this `batch` value (blank = no filter)"
+        required: false
+        default: ""
       dry_run:
         description: "Fetch and hash only; write nothing, store nothing"
         type: boolean
@@ -75,13 +79,17 @@ jobs:
         env:
           MANIFEST: ${{ inputs.manifest }}
           ONLY: ${{ inputs.only }}
+          BATCH: ${{ inputs.batch }}
         run: |
           node --input-type=module -e '
             import { readFileSync } from "node:fs";
             import { parse } from "yaml";
             const doc = parse(readFileSync(process.env.MANIFEST, "utf8"));
             const only = (process.env.ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
-            const rows = (doc.sources ?? []).filter((s) => !only.length || only.includes(s.id));
+            const batch = (process.env.BATCH || "").trim();
+            const rows = (doc.sources ?? []).filter(
+              (s) => (!only.length || only.includes(s.id)) && (!batch || s.batch === batch),
+            );
             if (!rows.length) {
               console.error("manifest selected no sources");
               process.exit(1);
@@ -98,6 +106,7 @@ jobs:
             // shell command.
             const ID = /^src-[a-z0-9][a-z0-9-]{2,62}$/;
             const OBJECTIVE = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
+            const COURSE = /^[a-z0-9][a-z0-9-]{2,62}$/;
             const seen = new Set();
             for (const s of rows) {
               for (const f of ["id", "url", "title"]) {
@@ -109,6 +118,23 @@ jobs:
               if (!ID.test(s.id)) {
                 console.error(`${s.id}: id does not match ${ID}`);
                 process.exit(1);
+              }
+              // A row may name its objectives per course in `coverage` instead
+              // of a bare `objectives` list; the record still needs the bare
+              // list (source.schema.json), so derive it from the coverage.
+              const coverage = s.coverage ?? [];
+              if (!Array.isArray(coverage)) {
+                console.error(`${s.id}: coverage must be a list`);
+                process.exit(1);
+              }
+              for (const c of coverage) {
+                if (!c || !COURSE.test(c.course_id ?? "") || !OBJECTIVE.test(c.objective ?? "")) {
+                  console.error(`${s.id}: bad coverage entry ${JSON.stringify(c)}`);
+                  process.exit(1);
+                }
+              }
+              if (s.objectives === undefined && coverage.length) {
+                s.objectives = [...new Set(coverage.map((c) => c.objective))];
               }
               if (!Array.isArray(s.objectives) || !s.objectives.length) {
                 console.error(`${s.id}: missing objectives`);
@@ -138,7 +164,11 @@ jobs:
                 console.error(`${s.id}: title contains a tab or newline`);
                 process.exit(1);
               }
-              console.log([s.id, s.url, s.title, s.objectives.join(",")].join("\t"));
+              // Fifth column: course_id:objective pairs. Both halves are pinned
+              // by COURSE and OBJECTIVE above, so neither holds a tab, comma
+              // or colon of its own.
+              const pairs = coverage.map((c) => `${c.course_id}:${c.objective}`).join(",");
+              console.log([s.id, s.url, s.title, s.objectives.join(","), pairs].join("\t"));
             }
           ' > batch.tsv
           echo "selected $(wc -l < batch.tsv) source(s):"
@@ -160,7 +190,7 @@ jobs:
           mkdir -p captured
           failed=""
           ok=0
-          while IFS=$'\t' read -r id url title objs; do
+          while IFS=$'\t' read -r id url title objs pairs; do
             echo "::group::$id"
             args=("$url" --id "$id" --title "$title")
             # Split on the comma with IFS rather than via an unquoted
@@ -171,6 +201,10 @@ jobs:
             # glob against the runner's working directory.
             IFS=',' read -ra objective_args <<< "$objs"
             for o in "${objective_args[@]}"; do args+=(--objective "$o"); done
+            if [ -n "$pairs" ]; then
+              IFS=',' read -ra coverage_args <<< "$pairs"
+              for c in "${coverage_args[@]}"; do args+=(--coverage "$c"); done
+            fi
 
             if [ "$DRY_RUN" = "true" ]; then
               node --input-type=module -e '

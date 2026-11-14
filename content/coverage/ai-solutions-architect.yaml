@@ -1,0 +1,302 @@
+schema_version: 1
+course_id: ai-solutions-architect
+reviewed_at: 2026-11-14
+
+# Source coverage for every objective of content/courses/ai-solutions-architect.yaml.
+#
+# This is a capture and authoring plan, not evidence: no question may cite a URL
+# listed here until capture-sources.yml has minted its content/sources record.
+# `existing` names a record that is already captured; a URL without it is
+# captured from content/capture-manifest.yaml first. The lint checks every
+# objective appears exactly once, every URL is allowlisted, and every
+# `existing` id resolves to a record with the same URL.
+#
+# Angle: this course chooses and trades off. CloudOps diagnoses and the
+# Infrastructure Engineer course operates and configures; a question that asks
+# for a procedure belongs to them.
+
+objectives:
+  # ------------------------------------------------- domain-1
+  - id: domain-1/sa-gpu-selection
+    status: open
+    strength: strong
+    volatile: true
+    note: VM types, platform listing and the capacity advisor are documented.
+      GPU tables and availability change often; test the selection logic, never
+      a table cell or a price.
+    sources:
+      - url: https://docs.nebius.com/compute/virtual-machines/types.md
+      - url: https://docs.nebius.com/compute/virtual-machines/list-platforms.md
+      - url: https://docs.nebius.com/compute/virtual-machines/capacity-advisor.md
+
+  - id: domain-1/sa-storage-architecture
+    status: open
+    strength: strong
+    volatile: false
+    note: Volume types, object-storage classes and the performance and cost best
+      practices are documented. Overlaps ie-storage-tiers; ask for the design
+      trade-off, not the setup.
+    sources:
+      - url: https://docs.nebius.com/compute/storage/types.md
+        existing: src-co-storage-types
+      - url: https://docs.nebius.com/object-storage/storage-classes.md
+      - url: https://docs.nebius.com/object-storage/performance-cost-best-practices.md
+
+  - id: domain-1/sa-training-stack
+    status: open
+    strength: partial
+    volatile: false
+    note: The compatibility list, the case for Soperator, MLflow and Serverless are
+      documented; there is no reference training stack. Test component fit, not a
+      prescribed stack.
+    sources:
+      - url: https://docs.nebius.com/3p-integrations/compatibility.md
+      - url: https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md
+      - url: https://docs.nebius.com/mlflow/index.md
+        existing: src-pa-mlflow-index
+      - url: https://docs.nebius.com/serverless/overview.md
+        existing: src-pa-serverless-overview
+
+  - id: domain-1/sa-deployment-shape
+    status: open
+    strength: strong
+    volatile: false
+    note: Serverless, Soperator and Managed Kubernetes each state when to use them.
+      Pairs with ie-serving-patterns, which operates the chosen shape.
+    sources:
+      - url: https://docs.nebius.com/serverless/overview.md
+        existing: src-pa-serverless-overview
+      - url: https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md
+      - url: https://docs.nebius.com/kubernetes/index.md
+
+  - id: domain-1/sa-orchestration-overlays
+    status: open
+    strength: strong
+    volatile: false
+    note: Run:ai, dstack and SkyPilot on Managed Kubernetes are documented as
+      integrations.
+    sources:
+      - url: https://docs.nebius.com/3p-integrations/run-ai.md
+      - url: https://docs.nebius.com/3p-integrations/dstack.md
+      - url: https://docs.nebius.com/3p-integrations/skypilot-mk8s.md
+
+  - id: domain-1/sa-distributed-training
+    status: open
+    strength: partial
+    volatile: false
+    note: Topology-aware scheduling, InfiniBand topology and GPU clusters for
+      Kubernetes are documented; parallelism strategies are not. Pairs with
+      ie-distributed-parallelism.
+    sources:
+      - url: https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md
+      - url: https://docs.nebius.com/compute/clusters/gpu/topology/index.md
+      - url: https://docs.nebius.com/kubernetes/gpu/clusters.md
+      - url: https://docs.nebius.com/compute/clusters/gpu/index.md
+        existing: src-co-gpu-clusters
+
+  # ------------------------------------------------- domain-2
+  - id: domain-2/sa-checkpoint-strategy
+    status: open
+    strength: partial
+    volatile: false
+    note: Restart policies, disk snapshots and bucket versioning are documented;
+      checkpoint frequency and framework formats are not. Pairs with
+      ie-checkpoint-restart.
+    sources:
+      - url: https://docs.nebius.com/serverless/jobs/auto-restarts.md
+      - url: https://docs.nebius.com/compute/storage/disk-snapshots.md
+      - url: https://docs.nebius.com/object-storage/buckets/versioning.md
+      - url: https://docs.nebius.com/serverless/jobs/manage.md
+        existing: src-pa-serverless-jobs
+
+  - id: domain-2/sa-observability-scope
+    status: open
+    strength: strong
+    volatile: false
+    note: The observability overview, the services it covers and audit-log use
+      cases are documented. Pairs with ie-observability-platform; ask what to
+      observe, not how to wire it.
+    sources:
+      - url: https://docs.nebius.com/observability/index.md
+      - url: https://docs.nebius.com/observability/services.md
+      - url: https://docs.nebius.com/audit-logs/use-cases.md
+      - url: https://docs.nebius.com/observability/metrics/prometheus.md
+        existing: src-co-prometheus
+
+  - id: domain-2/sa-validation-acceptance
+    status: open
+    strength: partial
+    volatile: true
+    note: Cluster tests, NCCL tests and the object-storage benchmark are
+      documented; acceptance criteria are not. Expected figures are volatile; test
+      which check proves what.
+    sources:
+      - url: https://docs.nebius.com/compute/clusters/gpu/test.md
+      - url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
+      - url: https://docs.nebius.com/object-storage/performance/benchmark.md
+
+  - id: domain-2/sa-failure-support-model
+    status: open
+    strength: partial
+    volatile: false
+    note: Support, maintenance reasons, auto-repair and dedicated-endpoint capacity
+      are documented; SLA terms are not. Do not test SLA numbers.
+    sources:
+      - url: https://docs.nebius.com/overview/support.md
+      - url: https://docs.nebius.com/compute/virtual-machines/maintenance-reasons.md
+      - url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md
+        existing: src-ld-capacity-and-scaling
+      - url: https://docs.nebius.com/kubernetes/maintenance/health-checks.md
+        existing: src-co-k8s-health-checks
+
+  - id: domain-2/sa-migration-handover
+    status: open
+    strength: partial
+    volatile: false
+    note: Data portability, image import, moving node-group workloads and data
+      transfer are documented; a handover process is not.
+    sources:
+      - url: https://docs.nebius.com/overview/data-portability.md
+      - url: https://docs.nebius.com/compute/storage/import-image.md
+      - url: https://docs.nebius.com/kubernetes/node-groups/moving-workload.md
+      - url: https://docs.nebius.com/object-storage/transfer/overview.md
+        existing: src-pa-object-storage-transfer
+
+  # ------------------------------------------------- domain-3
+  - id: domain-3/sa-capacity-quotas-cost
+    status: open
+    strength: strong
+    volatile: true
+    note: Capacity block groups, reservations, committed usage and quotas are
+      documented. Terms and quota values change; test the trade-off between
+      on-demand, reserved and committed capacity.
+    sources:
+      - url: https://docs.nebius.com/overview/limits/capacity-block-groups.md
+      - url: https://docs.nebius.com/compute/virtual-machines/reservations.md
+      - url: https://docs.nebius.com/signup-billing/billing-models/committed-usage.md
+      - url: https://docs.nebius.com/compute/resources/quotas-limits.md
+        existing: src-co-compute-quotas
+
+  - id: domain-3/sa-reuse-automation
+    status: open
+    strength: partial
+    volatile: false
+    note: Packer images and Terraform state in object storage are documented;
+      module and pipeline design are not.
+    sources:
+      - url: https://docs.nebius.com/compute/storage/packer.md
+      - url: https://docs.nebius.com/object-storage/store-terraform-state.md
+
+  - id: domain-3/sa-finops
+    status: open
+    strength: strong
+    volatile: false
+    note: Usage export, FOCUS conformance and budgets are documented. Pairs with
+      ie-billing-quotas, which sets them up.
+    sources:
+      - url: https://docs.nebius.com/signup-billing/usage/export.md
+      - url: https://docs.nebius.com/signup-billing/usage/focus-conformance.md
+      - url: https://docs.nebius.com/signup-billing/budgets.md
+
+  - id: domain-3/sa-cost-tradeoffs
+    status: open
+    strength: strong
+    volatile: true
+    note: The pricing policy, preemptible VMs and storage classes are documented.
+      Avoid pricing tables entirely; test which option is cheaper and why.
+    sources:
+      - url: https://docs.nebius.com/signup-billing/pricing-policy.md
+      - url: https://docs.nebius.com/compute/virtual-machines/preemptible.md
+      - url: https://docs.nebius.com/object-storage/storage-classes.md
+
+  - id: domain-3/sa-right-sizing
+    status: open
+    strength: partial
+    volatile: true
+    note: VM types, node-group autoscaling and VM monitoring are documented;
+      sizing guidance is not. VM type tables are volatile.
+    sources:
+      - url: https://docs.nebius.com/compute/virtual-machines/types.md
+      - url: https://docs.nebius.com/kubernetes/node-groups/autoscaling.md
+      - url: https://docs.nebius.com/compute/monitoring/virtual-machines.md
+        existing: src-co-vm-monitoring
+
+  - id: domain-3/sa-multicloud-ingestion
+    status: open
+    strength: strong
+    volatile: false
+    note: Data transfer, multi-cloud SkyPilot and S3 API compatibility are
+      documented. Pairs with ie-cross-cloud-data.
+    sources:
+      - url: https://docs.nebius.com/object-storage/transfer/overview.md
+        existing: src-pa-object-storage-transfer
+      - url: https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md
+      - url: https://docs.nebius.com/object-storage/interfaces/s3-api-compatibility.md
+
+  # ------------------------------------------------- domain-4
+  - id: domain-4/sa-identity-model
+    status: open
+    strength: strong
+    volatile: false
+    note: The IAM model, SAML federation and workload identity federation are
+      documented. Pairs with ie-identity-federation; CloudOps tests federation
+      faults.
+    sources:
+      - url: https://docs.nebius.com/iam/overview.md
+        existing: src-co-iam-overview
+      - url: https://docs.nebius.com/iam/federations/saml-sso.md
+      - url: https://docs.nebius.com/iam/wif/index.md
+      - url: https://docs.nebius.com/iam/federations.md
+        existing: src-co-iam-federations
+
+  - id: domain-4/sa-private-connectivity
+    status: open
+    strength: partial
+    volatile: false
+    note: Disabling public addresses, restricting the Kubernetes endpoint, tunnels
+      and network isolation are documented; private service endpoints are not.
+    sources:
+      - url: https://docs.nebius.com/vpc/addressing/disable-public-addresses.md
+      - url: https://docs.nebius.com/kubernetes/networking/limit-access-to-public-endpoint.md
+      - url: https://docs.nebius.com/tunnels/overview.md
+        existing: src-pa-tunnels-overview
+      - url: https://docs.nebius.com/vpc/networking/isolation.md
+        existing: src-co-vpc-isolation
+
+  - id: domain-4/sa-secrets-audit-compliance
+    status: open
+    strength: partial
+    volatile: false
+    note: MysteryBox, audit-log export and KMS logs are documented; compliance
+      certifications are not on an allowlisted host. Do not ask about them.
+    sources:
+      - url: https://docs.nebius.com/mysterybox/overview.md
+        existing: src-pa-mysterybox-overview
+      - url: https://docs.nebius.com/audit-logs/events/export.md
+      - url: https://docs.nebius.com/kms/logs.md
+
+  - id: domain-4/sa-tenant-isolation-least-privilege
+    status: open
+    strength: strong
+    volatile: false
+    note: Network isolation, security groups and the IAM model are all captured
+      already. Shared responsibility is not documented and is out of scope.
+      CloudOps tests isolation as a fault.
+    sources:
+      - url: https://docs.nebius.com/vpc/networking/isolation.md
+        existing: src-co-vpc-isolation
+      - url: https://docs.nebius.com/vpc/security-groups/overview.md
+        existing: src-co-vpc-security-groups
+      - url: https://docs.nebius.com/iam/overview.md
+        existing: src-co-iam-overview
+
+  - id: domain-4/sa-data-lifecycle-investigation
+    status: open
+    strength: partial
+    volatile: false
+    note: Data deletion, audit-log use cases and encryption are documented; data
+      classification and incident-response process are not.
+    sources:
+      - url: https://docs.nebius.com/overview/data-deletion.md
+      - url: https://docs.nebius.com/audit-logs/use-cases.md
+      - url: https://docs.nebius.com/security/encryption.md
