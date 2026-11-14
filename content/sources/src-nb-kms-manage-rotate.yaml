@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kms-manage-rotate
+url: https://docs.nebius.com/kms/manage/rotate.md
+title: How to rotate symmetric keys in Key Management Service
+retrieved_at: 2026-11-14T09:52:20Z
+sha256: 4101337ba2db3e85e134a82722e1ade50ee84e1fefe2ef5e220c3f437d7d2edd
+objectives:
+  - domain-1/ie-rbac-key-rotation
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4101337ba2db3e85e134a82722e1ade50ee84e1fefe2ef5e220c3f437d7d2edd
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-rbac-key-rotation

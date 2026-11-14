@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kms-logs
+url: https://docs.nebius.com/kms/logs.md
+title: Logs in Key Management Service
+retrieved_at: 2026-11-14T09:52:18Z
+sha256: cd31f621c922ac1dd8f7bf9b6842fb14ee4466315bca7df32f4e41c0e6162123
+objectives:
+  - domain-4/sa-secrets-audit-compliance
+snapshot:
+  bucket: academy-source-snapshots
+  key: cd31f621c922ac1dd8f7bf9b6842fb14ee4466315bca7df32f4e41c0e6162123
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-secrets-audit-compliance

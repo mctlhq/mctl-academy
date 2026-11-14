@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-kubernetes-gpu-topology-aware-scheduling
+url: https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md
+title: Topology-aware scheduling for GPU workloads in Managed Service for Kubernetes
+retrieved_at: 2026-11-14T09:52:28Z
+sha256: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
+objectives:
+  - domain-2/ie-distributed-parallelism
+  - domain-1/sa-distributed-training
+snapshot:
+  bucket: academy-source-snapshots
+  key: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-distributed-parallelism
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-distributed-training

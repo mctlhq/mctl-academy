@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kubernetes-gpu-set-up
+url: https://docs.nebius.com/kubernetes/gpu/set-up.md
+title: Working with GPUs in the Managed Service for Kubernetes
+retrieved_at: 2026-11-14T09:52:26Z
+sha256: 5464967909b88baeaf904ec4736e93c8bf2328cddc62f2a7aaf7833e99966f45
+objectives:
+  - domain-2/ie-training-cluster-lifecycle
+snapshot:
+  bucket: academy-source-snapshots
+  key: 5464967909b88baeaf904ec4736e93c8bf2328cddc62f2a7aaf7833e99966f45
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-cluster-lifecycle
