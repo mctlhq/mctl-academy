@@ -26,6 +26,7 @@ import {
   applySecurityHeaders,
   applySecurityHeadersToResponse,
 } from "./middleware/security-headers.mjs";
+import { createSpaHandler, loadCourseCatalog } from "./spa.mjs";
 
 export const app = new Hono();
 
@@ -72,8 +73,12 @@ app.onError(errorHandler);
 // process exits and lets Kubernetes restart it according to its restart
 // policy. See the comments on initDb() in db.mjs and
 // assertAuthSecretConfigured() in auth.mjs.
+let courseCatalog;
 try {
   await initDb();
+  // Read at boot, not per request: without it every course page would 404,
+  // so an image missing client/src/course-catalog.json must not start.
+  courseCatalog = loadCourseCatalog();
   assertAuthSecretConfigured();
   assertZitadelConfigValid();
 } catch (err) {
@@ -276,13 +281,16 @@ app.get("/api/admin/stats", async (c) => {
   return c.json(stats);
 });
 
-// Serve static frontend assets from client/dist with SPA fallback
-if (typeof Bun !== "undefined") {
-  const { serveStatic } = await import("hono/bun");
-  app.use("/*", serveStatic({ root: "./client/dist" }));
-  app.get("/*", serveStatic({ path: "./client/dist/index.html" }));
-} else {
-  const { serveStatic } = await import("@hono/node-server/serve-static");
-  app.use("/*", serveStatic({ root: "./client/dist" }));
-  app.get("/*", serveStatic({ path: "./client/dist/index.html" }));
-}
+// Unmatched API paths answer like an API: JSON and a real 404, never the SPA
+// shell with 200 (a typo'd endpoint used to "succeed" with an HTML body).
+app.all("/api/*", (c) => c.json({ error: "not_found" }, 404));
+
+// Static frontend assets from client/dist, then index.html for everything
+// else -- 200 for the router's pages and catalog courses (with the course's
+// own head tags), 404 + noindex for the rest. See server/spa.mjs.
+// ACADEMY_CLIENT_DIST exists for the test suite, which serves a fixture dist.
+const CLIENT_DIST = process.env.ACADEMY_CLIENT_DIST || "./client/dist";
+const { serveStatic } =
+  typeof Bun !== "undefined" ? await import("hono/bun") : await import("@hono/node-server/serve-static");
+app.use("/*", serveStatic({ root: CLIENT_DIST }));
+app.get("/*", createSpaHandler({ indexPath: `${CLIENT_DIST}/index.html`, catalog: courseCatalog }));
