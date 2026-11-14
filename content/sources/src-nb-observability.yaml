@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-observability
+url: https://docs.nebius.com/observability/index.md
+title: Observability in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:58:11Z
+sha256: 8c4bb3a7ecda9530138eeb68a9fdfbcd5501fc572b5186522234a8310852c2de
+objectives:
+  - domain-2/sa-observability-scope
+snapshot:
+  bucket: academy-source-snapshots
+  key: 8c4bb3a7ecda9530138eeb68a9fdfbcd5501fc572b5186522234a8310852c2de
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-observability-scope

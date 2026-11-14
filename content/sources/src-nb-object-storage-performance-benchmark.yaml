@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-performance-benchmark
+url: https://docs.nebius.com/object-storage/performance/benchmark.md
+title: Performance benchmark tests with Warp in Object Storage
+retrieved_at: 2026-11-14T09:58:05Z
+sha256: a4f57178dda49f5786bb72bcf499bb15019f47fee65ca546c01f4e78a4460868
+objectives:
+  - domain-2/sa-validation-acceptance
+snapshot:
+  bucket: academy-source-snapshots
+  key: a4f57178dda49f5786bb72bcf499bb15019f47fee65ca546c01f4e78a4460868
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-validation-acceptance

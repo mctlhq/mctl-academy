@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-store-terraform-state
+url: https://docs.nebius.com/object-storage/store-terraform-state.md
+title: How to store a Terraform state in an Object Storage bucket
+retrieved_at: 2026-11-14T09:58:07Z
+sha256: 4cfa015debc984e89b24bdd96a083ceab3341766b12d643a8deced2ca35eae9f
+objectives:
+  - domain-3/sa-reuse-automation
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4cfa015debc984e89b24bdd96a083ceab3341766b12d643a8deced2ca35eae9f
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-reuse-automation

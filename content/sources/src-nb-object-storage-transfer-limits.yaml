@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-transfer-limits
+url: https://docs.nebius.com/object-storage/transfer/limits.md
+title: Data transfer limits on request rate and bandwidth
+retrieved_at: 2026-11-14T09:58:08Z
+sha256: 6ea403b3da9384c5e41dec957e9a641b931fb5fd62ad3a1d3df78ef0d14658dd
+objectives:
+  - domain-4/ie-cross-cloud-data
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6ea403b3da9384c5e41dec957e9a641b931fb5fd62ad3a1d3df78ef0d14658dd
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-cross-cloud-data
