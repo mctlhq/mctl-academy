@@ -9475,6 +9475,47 @@
     ]
   },
   {
+    "id": "q-ld25f6d73083",
+    "course_id": "ai-leader",
+    "domain": "domain-1",
+    "objective": "domain-1/ai-concepts",
+    "stem": "A team plans an application that must read screenshots and answer questions about them. Which model type do they need?",
+    "objectiveTitle": "Generative model families, capabilities, and where each fits",
+    "sources": [
+      {
+        "title": "Inference Overview",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/overview.md",
+        "excerpt": "[Vision](https://tokenfactory.nebius.com/endpoints?modality=image2text)"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Embedding",
+        "correct": false,
+        "explanation": "Embedding models turn inputs into vectors for search and similarity, not into answers about an image."
+      },
+      {
+        "id": "b",
+        "text": "Vision",
+        "correct": true,
+        "explanation": "Correct. Vision is the supported modality for turning image input into text."
+      },
+      {
+        "id": "c",
+        "text": "Text-to-text",
+        "correct": false,
+        "explanation": "Text-to-text covers generative language tasks and does not accept image input."
+      },
+      {
+        "id": "d",
+        "text": "Any text-to-text model configured with a longer context window",
+        "correct": false,
+        "explanation": "Context length governs how much text fits, not whether images can be interpreted."
+      }
+    ]
+  },
+  {
     "id": "q-ld26959cd0bd",
     "course_id": "ai-leader",
     "domain": "domain-1",

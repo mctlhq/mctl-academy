@@ -1,0 +1,13 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T21:21:19Z",
+  "questions": [
+    {
+      "id": "q-ld25f6d73083",
+      "content_sha256": "eaaa626e7bea1b01cfcc4a34a20f948da0c18b20621dd292d7448f9ff7bc97c3",
+      "approved": true,
+      "reason": "The captured source lists the supported model types and the excerpt is found verbatim as \"[Vision](https://tokenfactory.nebius.com/endpoints?modality=image2text)\" under \"Nebius Token Factory supports the following model types\", so the image-to-text modality is established as Vision and option b is supported. The other listed modalities on the same page are text2text and embedding, neither of which accepts image input, and context window length is unrelated, so exactly one option is best.",
+      "reviewed_at": "2026-11-14T21:21:19Z"
+    }
+  ]
+}

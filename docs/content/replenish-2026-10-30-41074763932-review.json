@@ -199,13 +199,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-ld25f6d73083",
-      "content_sha256": "6ad39a16de79dae0fb02a7c3b6c4c1d367a309ab8f8b7593ba180c57457b14ee",
-      "approved": true,
-      "reason": "The supported model types list Vision with `modality=image2text` alongside Text-to-text and Embedding, so image input answering needs the Vision type.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-ld26959cd0bd",
       "content_sha256": "ea575c2c7c049494fb2693703c083c02acd0426de6751fb09bb5de6fa29ab991",
       "approved": true,
@@ -1506,6 +1499,14 @@
       "reason": "\"A VM and its resources count towards the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped.\"",
       "reviewed_at": "2026-10-30T15:23:08Z",
       "superseded_at": "2026-11-14T18:57:12Z"
+    },
+    {
+      "id": "q-ld25f6d73083",
+      "content_sha256": "6ad39a16de79dae0fb02a7c3b6c4c1d367a309ab8f8b7593ba180c57457b14ee",
+      "approved": true,
+      "reason": "The supported model types list Vision with `modality=image2text` alongside Text-to-text and Embedding, so image input answering needs the Vision type.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T21:21:19Z"
     }
   ]
 }

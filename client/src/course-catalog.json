@@ -507,7 +507,7 @@
     "id": "ai-leader",
     "title": "AI Leader",
     "summary": "A business-first view of AI: core concepts, designing AI products, steering model outputs and choosing platform capabilities.",
-    "publishedQuestionCount": 38,
+    "publishedQuestionCount": 39,
     "available": true,
     "mock": {
       "questionCount": 30,
