@@ -1080,7 +1080,8 @@ test("the live drift check treats only its own exit codes as success", () => {
   assert.ok(step, "the drift step is gone or renamed");
   const branch = /case "\$code" in[\s\S]*?esac/.exec(step.run);
   assert.ok(branch, "the exit code is not read as a set of codes");
-  // capture-source: 0 clean, 2 drift found, 1 unreachable. 137 is the OOM
+  // capture-source: 0 clean, 2 drift found, 3 unreachable, 1 the check
+  // failed. 137 is the OOM
   // killer, and it used to pass as "not 1".
   const status = (code) => {
     try {
@@ -1094,7 +1095,8 @@ test("the live drift check treats only its own exit codes as success", () => {
   };
   assert.equal(status(0), 0, "a clean check must continue");
   assert.equal(status(2), 0, "drift found and marked is the expected path");
-  assert.equal(status(1), 1, "an unreachable source must stop the run");
+  assert.equal(status(3), 1, "an unreachable source must stop the run");
+  assert.equal(status(1), 1, "a failed check must stop the run");
   assert.equal(status(137), 1, "the OOM killer must stop the run");
   assert.equal(status(127), 1, "an interpreter that would not start must stop the run");
 });

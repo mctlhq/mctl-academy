@@ -73,7 +73,12 @@ export async function fetchSource(url, { verifyPin = true } = {}) {
       headers: { accept: "text/markdown, text/plain, text/html" },
       signal: controller.signal,
     });
-    if (!res.ok) throw new Error(`fetch ${url}: HTTP ${res.status}`);
+    if (!res.ok) {
+      const err = new Error(`fetch ${url}: HTTP ${res.status}`);
+      // check() reads this to tell a page that is gone from one it could not read.
+      /** @type {any} */ (err).httpStatus = res.status;
+      throw err;
+    }
     // fetch follows redirects, so the bytes may come from somewhere other than
     // the URL checked above. On a host allowlisted by path prefix, a redirect
     // out of the prefix would otherwise be stored under the allowlisted URL.
@@ -144,46 +149,87 @@ async function capture({ url, id, objectives, title, coverage }) {
 }
 
 /**
+ * HTTP statuses that are the docs host's own statement that a page no longer
+ * exists. Only these mean absent; every other failure (timeout, 5xx, 403
+ * from a bot checkpoint, a redirect off the allowlist) is "could not observe".
+ */
+export const GONE_STATUSES = new Set([404, 410]);
+
+/**
  * Compare every recorded source against its live document.
  *
  * Prints one line per drifted source in a stable, greppable form so the drift
- * workflow can act on it without parsing prose. Exit code 2 means "drift
- * found" — distinct from 1, which means the check itself failed.
+ * workflow can act on it without parsing prose. A page the host reports gone
+ * (GONE_STATUSES) is a finding, not a failed read: it is marked `deprecated`,
+ * which withdraws its dependents exactly as drift does, and printed as a
+ * DRIFTED row with `gone` as its new hash so intake opens an issue for it.
+ *
+ * Exit codes: 0 clean, 2 drift found (gone included), 3 the check completed
+ * but at least one source could not be read, 1 the check itself failed (an
+ * unhandled error). 3 is not "no drift": the sources that were read are still
+ * marked, and any DRIFTED rows are still printed, so a caller can quarantine
+ * what was observed and fail afterwards -- one unreadable page must not keep
+ * every other drifted page live.
+ *
+ * `fetcher`, `sources` and `write` are injectable for tests.
  */
-async function check({ markDrifted = false } = {}) {
-  const sources = listSources();
+export async function checkSources({
+  sources,
+  fetcher = (url) => fetchSource(url, { verifyPin: false }),
+  write = (path, data) => writeFileSync(path, stringifyYaml(data)),
+  markDrifted = false,
+  log = console.log,
+  logError = console.error,
+}) {
   if (!sources.length) {
-    console.log("no sources recorded yet");
+    log("no sources recorded yet");
     return 0;
   }
   let drifted = 0;
+  let gone = 0;
   let failed = 0;
 
   for (const { path: sourcePath, data } of sources) {
+    let text;
     try {
-      const text = await fetchSource(data.url, { verifyPin: false });
-      const hash = sha256(Buffer.from(text, "utf8"));
-      if (hash === data.sha256) {
-        console.log(`ok       ${data.id}`);
-      } else {
-        drifted += 1;
-        if (markDrifted) {
-          data.status = "drifted";
-          writeFileSync(sourcePath, stringifyYaml(data));
-        }
-        console.log(`DRIFTED  ${data.id}  ${data.sha256.slice(0, 12)} -> ${hash.slice(0, 12)}  ${data.url}`);
-      }
+      text = await fetcher(data.url);
     } catch (e) {
+      const status = /** @type {any} */ (e)?.httpStatus;
+      if (GONE_STATUSES.has(status)) {
+        gone += 1;
+        if (markDrifted && data.status !== "deprecated") {
+          data.status = "deprecated";
+          write(sourcePath, data);
+        }
+        log(`DRIFTED  ${data.id}  ${String(data.sha256).slice(0, 12)} -> gone  ${data.url}`);
+        continue;
+      }
       // An unreachable source is not drift; conflating the two would mark
       // content needs_review every time the docs site has a bad minute.
       failed += 1;
-      console.error(`ERROR    ${data.id}: ${e.message}`);
+      logError(`ERROR    ${data.id}: ${e instanceof Error ? e.message : e}`);
+      continue;
+    }
+    const hash = sha256(Buffer.from(text, "utf8"));
+    if (hash === data.sha256) {
+      log(`ok       ${data.id}`);
+    } else {
+      drifted += 1;
+      if (markDrifted) {
+        data.status = "drifted";
+        write(sourcePath, data);
+      }
+      log(`DRIFTED  ${data.id}  ${String(data.sha256).slice(0, 12)} -> ${hash.slice(0, 12)}  ${data.url}`);
     }
   }
 
-  console.log(`\n${sources.length} source(s): ${drifted} drifted, ${failed} unreachable`);
-  if (failed) return 1;
-  return drifted ? 2 : 0;
+  log(`\n${sources.length} source(s): ${drifted} drifted, ${gone} gone, ${failed} unreachable`);
+  if (failed) return 3;
+  return drifted || gone ? 2 : 0;
+}
+
+async function check({ markDrifted = false } = {}) {
+  return checkSources({ sources: listSources(), markDrifted });
 }
 
 /**

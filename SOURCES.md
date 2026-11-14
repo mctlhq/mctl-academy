@@ -46,9 +46,9 @@ settled when the record was minted and bytes at a fixed commit cannot change,
 so a pinned page always compares clean and is never refreshed. Moving to a
 newer commit is a deliberate re-capture under new URLs. If the pinned URL
 stops resolving (the repository is renamed, made private or deleted), the
-drift job reports the page as unreachable every week rather than as drift.
-That calls for a deliberate re-capture at a current commit or for marking the
-source `deprecated`, not for waiting. Questions from these pages test the workflows and platform choices they
+drift job marks the source `deprecated` when the host answers 404 or 410, and
+reports any other failure as unreachable. Either calls for a deliberate
+re-capture at a current commit, not for waiting. Questions from these pages test the workflows and platform choices they
 describe, not flags of the repository's `npa` CLI, which is unversioned and
 changes without notice.
 
@@ -155,7 +155,9 @@ A hand-written hash is the exact failure that produced the fabricated CloudOps a
 Leader banks — see issues #140 and #141.
 
 To check recorded sources against their live documents without credentials, run
-`npm run snapshot:capture -- --check` (exit 0 clean, 2 drifted, 1 unreachable).
+`npm run snapshot:capture -- --check` (exit 0 clean, 2 drifted, 3 unreachable,
+1 the check failed). A page the host answers with 404 or 410 is gone, not
+unreachable: the check marks it `deprecated` and reports it as drift.
 
 ## Evidence records
 

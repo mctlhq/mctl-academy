@@ -74,13 +74,24 @@ jobs:
           npm run --silent snapshot:capture -- --check --mark-drifted | tee drift.txt
           code=${PIPESTATUS[0]}
           set -e
-          # 0 = clean, 2 = drift found, 1 = the check itself failed. Only 1 is
-          # a build failure: drift is the expected finding this job exists for,
-          # and an unreachable docs site is a real error worth a red run.
+          # 0 = clean, 2 = drift found (a 404/410 page counts, marked
+          # deprecated), 3 = the check completed but some source could not be
+          # read, anything else = the check itself failed. 3 still quarantines
+          # whatever drift was observed and fails the run only at the end:
+          # until 2026-11-14 one 404 page made this step exit early, and the
+          # 49 sources that had drifted that week stayed live for a week.
           case "$code" in
             0) echo "drifted=false" >> "$GITHUB_OUTPUT" ;;
             2) echo "drifted=true"  >> "$GITHUB_OUTPUT" ;;
-            *) echo "::error::source drift check failed"; exit 1 ;;
+            3)
+              echo "unreachable=true" >> "$GITHUB_OUTPUT"
+              if grep -q '^DRIFTED' drift.txt; then
+                echo "drifted=true" >> "$GITHUB_OUTPUT"
+              else
+                echo "drifted=false" >> "$GITHUB_OUTPUT"
+              fi
+              ;;
+            *) echo "::error::source drift check failed (exit $code)"; exit 1 ;;
           esac
 
       # Second half of the lifecycle SOURCES.md documents ("Dependent published
@@ -171,3 +182,13 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: node scripts/drift-intake.mjs --report drift.txt --repo "${{ github.repository }}" --label content:drift
+
+      # Last, so the quarantine above is never skipped because of it: a source
+      # that could not be read is an unknown state, and an unknown state is a
+      # red run, never a green one.
+      - name: Fail when a source could not be read
+        if: ${{ !cancelled() && steps.check.outputs.unreachable == 'true' }}
+        run: |
+          grep '^ERROR' drift.txt || true
+          echo "::error::at least one source could not be read; observed drift was still quarantined"
+          exit 1
