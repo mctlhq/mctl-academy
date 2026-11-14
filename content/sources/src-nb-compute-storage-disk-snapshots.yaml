@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-storage-disk-snapshots
+url: https://docs.nebius.com/compute/storage/disk-snapshots.md
+title: Managing disk snapshots in Compute
+retrieved_at: 2026-11-14T09:43:17Z
+sha256: 4f44f897e3e34b470076c94623b05d917d75d0a771474b93949b8973f4429a05
+objectives:
+  - domain-2/sa-checkpoint-strategy
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4f44f897e3e34b470076c94623b05d917d75d0a771474b93949b8973f4429a05
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-checkpoint-strategy

@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-capacity-advisor
+url: https://docs.nebius.com/compute/virtual-machines/capacity-advisor.md
+title: Capacity advisor for GPU availability in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:43:21Z
+sha256: 6736b7d98d834589cebee802d2e7f15d2e774a8f6f04e530b72ce4b19efc2466
+objectives:
+  - domain-1/sa-gpu-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6736b7d98d834589cebee802d2e7f15d2e774a8f6f04e530b72ce4b19efc2466
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-gpu-selection

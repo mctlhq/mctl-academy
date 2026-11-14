@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-storage-import-image
+url: https://docs.nebius.com/compute/storage/import-image.md
+title: Importing your own image into Compute
+retrieved_at: 2026-11-14T09:43:18Z
+sha256: 5aade2111a5e6adc58a796d8ea8fa0cc8dd7474fcc82349895c3066bf6fa1c68
+objectives:
+  - domain-2/sa-migration-handover
+snapshot:
+  bucket: academy-source-snapshots
+  key: 5aade2111a5e6adc58a796d8ea8fa0cc8dd7474fcc82349895c3066bf6fa1c68
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-migration-handover

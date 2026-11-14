@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-storage-packer
+url: https://docs.nebius.com/compute/storage/packer.md
+title: Creating boot disk images with Packer
+retrieved_at: 2026-11-14T09:43:20Z
+sha256: a637cbfd2f0d8a7beb01ef41853060c4304c8bb328e48be4282e6d020576723b
+objectives:
+  - domain-3/sa-reuse-automation
+snapshot:
+  bucket: academy-source-snapshots
+  key: a637cbfd2f0d8a7beb01ef41853060c4304c8bb328e48be4282e6d020576723b
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-reuse-automation

@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-compute-virtual-machines-list-platforms
+url: https://docs.nebius.com/compute/virtual-machines/list-platforms.md
+title: How to find out platforms and presets available in a project
+retrieved_at: 2026-11-14T09:43:23Z
+sha256: fae7f38de0e9fd70b1c0ce605f209ecc013d60b1e6c802d6ef40754d933b648f
+objectives:
+  - domain-1/sa-gpu-selection
+snapshot:
+  bucket: academy-source-snapshots
+  key: fae7f38de0e9fd70b1c0ce605f209ecc013d60b1e6c802d6ef40754d933b648f
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-gpu-selection
