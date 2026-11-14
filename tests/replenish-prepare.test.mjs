@@ -4048,6 +4048,10 @@ test("the author prompt carries the editorial rubric and the reviewer prompt is 
     /merely the longest is a batch-level\s+signal, not a per-item defect/,
     /no more often than any\s+distractor, so neither always nor never/,
     /always, never and only\s+do not appear in distractors alone/,
+    /never an option nobody would pick/,
+    /pick another concept rather than fill a slot/,
+    /No yes\/no hedges such as "Yes,\s+but only when \.\.\." or "No -- but just \.\.\."/,
+    /make each\s+option a different condition/,
     /preflight the items you wrote against the advisory\s+checks in scripts\/content-quality-report\.mjs/,
   ];
   for (const step of authors) {

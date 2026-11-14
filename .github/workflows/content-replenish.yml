@@ -1972,6 +1972,15 @@ jobs:
               never invented features -- that are plausible for the scenario; always, never and only
               do not appear in distractors alone; every option has an explanation that matches the
               source
+            - every distractor is a choice a practitioner could make by misreading the scenario or
+              the page: never an option nobody would pick, such as a product or feature that has
+              nothing to do with the question, an action unrelated to the stated goal, or a claim
+              that is wrong on its face. If you cannot find three plausible documented
+              alternatives, pick another concept rather than fill a slot
+            - state every option positively and in parallel form. No yes/no hedges such as "Yes,
+              but only when ..." or "No -- but just ...": when the answer is a condition, make each
+              option a different condition, and when it is an action, make each option a different
+              action
             - `evidence[]`: `source_id` of a record whose _run/captured/<id>.md contains the excerpt,
               `source_sha256` copied from that record, `excerpt` copied verbatim from the captured
               text, at most 25 words; the excerpt must establish the correct answer on its own
@@ -2469,6 +2478,15 @@ jobs:
               never invented features -- that are plausible for the scenario; always, never and only
               do not appear in distractors alone; every option has an explanation that matches the
               source
+            - every distractor is a choice a practitioner could make by misreading the scenario or
+              the page: never an option nobody would pick, such as a product or feature that has
+              nothing to do with the question, an action unrelated to the stated goal, or a claim
+              that is wrong on its face. If you cannot find three plausible documented
+              alternatives, pick another concept rather than fill a slot
+            - state every option positively and in parallel form. No yes/no hedges such as "Yes,
+              but only when ..." or "No -- but just ...": when the answer is a condition, make each
+              option a different condition, and when it is an action, make each option a different
+              action
             - `evidence[]`: `source_id` of a record whose _run/captured/<id>.md contains the excerpt,
               `source_sha256` copied from that record, `excerpt` copied verbatim from the captured
               text, at most 25 words; the excerpt must establish the correct answer on its own
