@@ -1,0 +1,21 @@
+schema_version: 1
+id: src-nb-slurm-soperator-worker-nodes-health
+url: https://docs.nebius.com/slurm-soperator/worker-nodes-health.md
+title: Health management of worker nodes in Soperator clusters
+retrieved_at: 2026-11-14T10:07:04Z
+sha256: 3085c77732e30ea4872dea85646ae772fedce71da69fe9eb02bb756a1c0edadf
+objectives:
+  - domain-2/ie-checkpoint-restart
+  - domain-2/ie-slurm-admin
+  - domain-4/ie-long-run-reliability
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3085c77732e30ea4872dea85646ae772fedce71da69fe9eb02bb756a1c0edadf
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-checkpoint-restart
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-slurm-admin
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-long-run-reliability

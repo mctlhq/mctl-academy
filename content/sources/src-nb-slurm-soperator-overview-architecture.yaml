@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-slurm-soperator-overview-architecture
+url: https://docs.nebius.com/slurm-soperator/overview/architecture.md
+title: Soperator cluster architecture
+retrieved_at: 2026-11-14T10:07:01Z
+sha256: eb014549d560ebeec7562645c5eeda8817d66e89805c06c496396bc8c0becd3d
+objectives:
+  - domain-2/ie-slurm-admin
+snapshot:
+  bucket: academy-source-snapshots
+  key: eb014549d560ebeec7562645c5eeda8817d66e89805c06c496396bc8c0becd3d
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-slurm-admin

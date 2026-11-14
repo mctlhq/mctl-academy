@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-slurm-soperator-overview-why-slurm-soperator
+url: https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md
+title: Combining Slurm and Kubernetes by using Soperator
+retrieved_at: 2026-11-14T10:07:03Z
+sha256: c9687298d79767543789a677a40e31eb0684ca9395d665c24b863715e6334180
+objectives:
+  - domain-1/sa-training-stack
+  - domain-1/sa-deployment-shape
+snapshot:
+  bucket: academy-source-snapshots
+  key: c9687298d79767543789a677a40e31eb0684ca9395d665c24b863715e6334180
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-training-stack
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-deployment-shape

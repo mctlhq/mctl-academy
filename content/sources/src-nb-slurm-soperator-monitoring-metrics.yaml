@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-slurm-soperator-monitoring-metrics
+url: https://docs.nebius.com/slurm-soperator/monitoring/metrics.md
+title: Monitoring metrics of Soperator clusters
+retrieved_at: 2026-11-14T10:07:00Z
+sha256: 45d7381addfd2e156e50f6920ef00801de4a59c2fe30fd379af9037746f645b7
+objectives:
+  - domain-4/ie-observability-platform
+snapshot:
+  bucket: academy-source-snapshots
+  key: 45d7381addfd2e156e50f6920ef00801de4a59c2fe30fd379af9037746f645b7
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-observability-platform

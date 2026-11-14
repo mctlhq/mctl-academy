@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-slurm-soperator-managed-soperator-manage
+url: https://docs.nebius.com/slurm-soperator/managed-soperator/manage.md
+title: Creating and deleting Soperator clusters in Managed Service for Soperator
+retrieved_at: 2026-11-14T10:06:59Z
+sha256: 586d3f1f1a06e13ba5faaa3fd2fdb89580f680591316382546d3307d7064f89a
+objectives:
+  - domain-2/ie-slurm-admin
+snapshot:
+  bucket: academy-source-snapshots
+  key: 586d3f1f1a06e13ba5faaa3fd2fdb89580f680591316382546d3307d7064f89a
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-slurm-admin
