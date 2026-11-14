@@ -154,10 +154,22 @@ test("absolutes: always/never/only in distractors but not in the correct option"
 test("volatile facts: number+unit, version, CLI flag and price, but not API paths or bare numbers", () => {
   assert.deepEqual(volatileKinds("The timeout is 30 seconds"), ["number+unit"]);
   assert.deepEqual(volatileKinds("an 80 GB GPU"), ["number+unit"]);
+  // `%` is a non-word character, so it cannot sit before a `\b`.
+  assert.deepEqual(volatileKinds("99%"), ["number+unit"]);
+  assert.deepEqual(volatileKinds("a 99.9% availability target"), ["number+unit"]);
+  assert.deepEqual(volatileKinds("when 50% of replicas are ready"), ["number+unit"]);
+  assert.deepEqual(volatileKinds("utilisation stays under 80 %"), ["number+unit"]);
+  assert.deepEqual(volatileKinds("the share stays under 50%"), ["number+unit"]);
+  assert.deepEqual(volatileKinds("a percentage of the replicas"), []);
   assert.deepEqual(volatileKinds("Upgrade to v2.1 of the SDK"), ["version"]);
   assert.deepEqual(volatileKinds("release 3.4.1"), ["version"]);
   assert.deepEqual(volatileKinds("pass `--max-depth` to the CLI"), ["cli-flag"]);
   assert.ok(volatileKinds("It costs $0.40 per call").includes("price"));
+  // Same class as `%`: a currency symbol is a non-word character, so it must
+  // lead the pattern rather than sit before a `\b`.
+  for (const t of ["$5", "costs €0.40 an hour", "£3", "pay $ 12"]) {
+    assert.ok(volatileKinds(t).includes("price"), t);
+  }
   assert.deepEqual(volatileKinds("POST /v1/chat/completions"), []);
   assert.deepEqual(volatileKinds("send it to GET /v2"), []);
   assert.deepEqual(volatileKinds("the endpoint api.example.com/v2/search"), []);
@@ -311,11 +323,22 @@ test("a malformed allowlist throws instead of reading as empty; a missing file i
   assert.throws(() => parseAllowlist({ pairs: [{ pair: ["q-a", "q-b"] }] }), /reason/);
   assert.throws(() => parseAllowlist({ pairs: [{ pair: ["q-a", "q-b"], reason: "   " }] }), /reason/);
   assert.throws(() => parseAllowlist([{ pair: ["q-a", "q-b"], reason: "x" }]), /pairs/);
+  assert.throws(() => parseAllowlist(null), /pairs/);
   const dir = mkdtempSync(join(tmpdir(), "quality-allowlist-"));
   try {
     assert.equal(loadAllowlist(dir).size, 0);
     writeFileSync(join(dir, "quality-allowlist.yaml"), "pairs:\n  - pair: [q-a]\n    reason: x\n");
     assert.throws(() => loadAllowlist(dir), /two distinct/);
+    // Genuinely empty or comment-only: an empty allowlist.
+    writeFileSync(join(dir, "quality-allowlist.yaml"), "");
+    assert.equal(loadAllowlist(dir).size, 0);
+    writeFileSync(join(dir, "quality-allowlist.yaml"), "# nothing allowlisted yet\n\n  # still nothing\n");
+    assert.equal(loadAllowlist(dir).size, 0);
+    // Other documents that parse to null are malformed, not empty.
+    for (const text of ["~\n", "null\n", "---\n", "# header\n---\n"]) {
+      writeFileSync(join(dir, "quality-allowlist.yaml"), text);
+      assert.throws(() => loadAllowlist(dir), /pairs/, JSON.stringify(text));
+    }
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -491,4 +514,32 @@ test("a record shared across courses is on-objective through its course-aware co
   const [ops, infra] = qualityReport({ courses, sources, questions });
   assert.deepEqual(ops.sourceObjectiveMismatches, []);
   assert.deepEqual(infra.sourceObjectiveMismatches, ["ie-off"]);
+});
+
+test("in candidate scope a course's own excerpt group must contain a candidate to warn", () => {
+  const ev = [{ source_id: "s1", excerpt: "one excerpt everywhere" }];
+  const p1 = item({ evidence: ev });
+  const p2 = item({ evidence: ev });
+  const k = item({ course_id: "c2", status: "review_ready", evidence: ev });
+  const courses = new Map([
+    ["c1", COURSE("c1")],
+    ["c2", COURSE("c2")],
+  ]);
+  const questions = [p1, p2, k];
+  const [c1, c2] = qualityReport({ courses, sources: new Map(), questions, scope: "candidates" });
+  assert.deepEqual(c1.excerptReuse, []);
+  assert.ok(!c1.warnings.some((w) => w.check === "excerpt-reuse"));
+  // The crossing is still visible, as information, on both sides.
+  assert.equal(c1.crossCourseExcerptReuseCount, 1);
+  assert.equal(c2.crossCourseExcerptReuseCount, 1);
+  // A candidate inside c1 does make it c1's finding.
+  const k1 = item({ status: "review_ready", evidence: ev });
+  const [d1] = qualityReport({ courses, sources: new Map(), questions: [p1, p2, k1], scope: "candidates" });
+  assert.deepEqual(
+    d1.excerptReuse.map((g) => g.ids),
+    [[p1.id, p2.id, k1.id].sort()],
+  );
+  // Published scope is unchanged: every item is scored.
+  const [e1] = qualityReport({ courses, sources: new Map(), questions });
+  assert.equal(e1.excerptReuse.length, 1);
 });

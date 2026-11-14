@@ -65,8 +65,12 @@ const len = (o) => o.text.trim().length;
 const ABSOLUTE = /\b(always|never|only)\b/i;
 
 // Number followed by a unit: durations, sizes, rates, counts of hardware.
+//
+// `%` stays outside the `\b`-terminated group: it is a non-word character, so
+// `%\b` only matches when a word character follows ("99%x"), and "99%
+// availability" or a trailing "50%" would never count.
 const NUMBER_UNIT =
-  /\b\d+(?:[.,]\d+)?\s?(?:%|percent|ms|milliseconds?|s|secs?|seconds?|mins?|minutes?|h|hrs?|hours?|days?|weeks?|months?|kb|mb|gb|tb|kib|mib|gib|tib|tokens?|[kmb]\s?tokens|gpus?|vcpus?|cpus?|cores?|nodes?|replicas?|requests?|rps|qps|rpm|tpm|credits?|usd|dollars?|cents?|eur|gbit|gbps|mbps|tflops|pflops|watts?|w|kw)\b(?!\/)/i;
+  /\b\d+(?:[.,]\d+)?(?:\s?%|\s?(?:percent|ms|milliseconds?|s|secs?|seconds?|mins?|minutes?|h|hrs?|hours?|days?|weeks?|months?|kb|mb|gb|tb|kib|mib|gib|tib|tokens?|[kmb]\s?tokens|gpus?|vcpus?|cpus?|cores?|nodes?|replicas?|requests?|rps|qps|rpm|tpm|credits?|usd|dollars?|cents?|eur|gbit|gbps|mbps|tflops|pflops|watts?|w|kw)\b)(?!\/)/i;
 // Version strings: v2, v1.3, 3.1.4. A path segment such as /v1/ is an API
 // route, not a release, so a preceding slash disqualifies the match.
 const VERSION = /(?<![/\w.])(?:v\d+(?:\.\d+)*|\d+\.\d+\.\d+)\b(?!\/)/i;
@@ -249,12 +253,13 @@ export function nearDuplicates(corpus, { focus = null, allowlist = new Map() } =
 /**
  * Parses content/quality-allowlist.yaml into Map(pairKey -> reason). A missing
  * file is an empty allowlist; a present but malformed one throws, so a typo
- * can never silently un-suppress or suppress everything.
+ * can never silently un-suppress or suppress everything. `null` (what YAML
+ * gives for an empty document) is malformed here: only loadAllowlist, which
+ * sees the text, may decide that a file is genuinely empty.
  */
 export function parseAllowlist(data, file = "content/quality-allowlist.yaml") {
   const map = new Map();
-  if (data === null || data === undefined) return map;
-  if (typeof data !== "object" || !Array.isArray(data.pairs)) {
+  if (data === null || typeof data !== "object" || Array.isArray(data) || !Array.isArray(data.pairs)) {
     throw new Error(`${file}: expected a mapping with a "pairs" list`);
   }
   data.pairs.forEach((entry, i) => {
@@ -278,7 +283,11 @@ export function parseAllowlist(data, file = "content/quality-allowlist.yaml") {
 export function loadAllowlist(contentDir) {
   const file = join(contentDir, "quality-allowlist.yaml");
   if (!existsSync(file)) return new Map();
-  return parseAllowlist(parseYaml(readFileSync(file, "utf8")));
+  const text = readFileSync(file, "utf8");
+  // Blank lines and comments only: an empty allowlist. Anything else that
+  // parses to null ("~", "null", a bare "---") falls through to the error.
+  if (text.split(/\r?\n/).every((line) => /^\s*(?:#.*)?$/.test(line))) return new Map();
+  return parseAllowlist(parseYaml(text));
 }
 
 // --- Report ------------------------------------------------------------------
@@ -437,7 +446,12 @@ export function qualityReport({
     for (const g of reusedExcerpts) {
       const mine = g.ids.filter((id) => courseOf.get(id) === course.id);
       if (!mine.length) continue;
-      if (mine.length > 1) excerptReuse.push({ excerpt: g.excerpt, ids: mine });
+      // The within-course group must itself hold a scored item: in candidate
+      // scope a group that only reaches this course through another course's
+      // candidate is bank-internal reuse here, not the candidate's finding.
+      if (mine.length > 1 && mine.some((id) => scoredIds.has(id))) {
+        excerptReuse.push({ excerpt: g.excerpt, ids: mine });
+      }
       if (mine.length < g.ids.length) {
         crossCourseExcerptReuse.push({
           excerpt: g.excerpt,
@@ -650,9 +664,19 @@ function main(argv) {
         `correct longest ${v(pct, "correctLongestShare")}, mean length ratio ${v(num, "meanLengthRatio")}, ` +
         `short distractor ${v(pct, "shortDistractorShare")}, absolutes only in distractors ${v(pct, "absoluteOnlyInDistractorsShare")}, ` +
         `volatile ${v(pct, "volatileShare")}, scenario stems ${v(pct, "scenarioShare")} (crude, advisory); ` +
-        `top source ${c.sourceShares[0] ? `${c.sourceShares[0].source_id} ${pct(c.sourceShares[0].share)}` : "n/a"}; ` +
-        `cross-course excerpt reuse ${c.crossCourseExcerptReuseCount} (info)`,
+        `top source ${c.sourceShares[0] ? `${c.sourceShares[0].source_id} ${pct(c.sourceShares[0].share)}` : "n/a"}`,
     );
+    // One line per course, never one per group: a cross-course group is
+    // listed under every course it touches in the JSON, and printing each
+    // here would bury the warnings below.
+    if (c.crossCourseExcerptReuseCount) {
+      const others = [...new Set(c.crossCourseExcerptReuse.flatMap((g) => g.courses))].filter(
+        (x) => x !== c.course,
+      );
+      console.log(
+        `  [info] cross-course excerpt reuse: ${c.crossCourseExcerptReuseCount} group(s) shared with ${others.join(", ")} (allowed at a different angle; not a warning)`,
+      );
+    }
     for (const w of c.warnings) console.log(`  [${w.level}] ${w.check}: ${w.message}`);
     for (const p of c.nearDuplicates.filter((x) => x.allowlisted)) {
       console.log(`  [allowlisted] ${p.ids.join(" / ")}: ${p.allowlisted}`);
