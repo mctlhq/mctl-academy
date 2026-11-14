@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.80](https://github.com/mctlhq/mctl-academy/compare/0.1.79...0.1.80) (2026-11-14)
+
+
+### Features
+
+* **client:** course overview home page ([cd2b9af](https://github.com/mctlhq/mctl-academy/commit/cd2b9af6ae11e94b27514ab1a630f030482f7c8b))
+
 ## [0.1.79](https://github.com/mctlhq/mctl-academy/compare/0.1.78...0.1.79) (2026-11-14)
 
 
