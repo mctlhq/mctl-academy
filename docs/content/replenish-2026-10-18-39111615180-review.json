@@ -31,24 +31,10 @@
       "reviewed_at": "2026-10-18T08:51:12Z"
     },
     {
-      "id": "q-c04b7fe2918a",
-      "content_sha256": "c7d36a733c1fe2696617622c36c09eb158d3fba2c8c11ff4aaa4e589a12348a7",
-      "approved": true,
-      "reason": "The training section says `policy.type=act` means \"this policy will automatically adapt to the number of motor states, motor actions and cameras of your robot (e.g. `laptop` and `phone`) which have been saved in your dataset.\" Nothing on the page requires setting feature flags, per-camera calibration files or `accelerate config` for this adaptation.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
       "id": "q-eac06372819f",
       "content_sha256": "a6a45092ee3136a00a8cabb410170d8d49121ac4bd3e2f7f0bc0a33988ab5e9d",
       "approved": true,
       "reason": "The tuning section states \"[PI0](https://huggingface.co/lerobot/pi0) occupies 14GB of memory at inference time, while [SmolVLA](https://huggingface.co/lerobot/smolvla_base) requires only ~2GB\" and adds that \"smaller policies require less computational resources\". The figure is explicitly inference-time memory, and chunk_size_threshold is described as controlling observation frequency, not model memory.",
-      "reviewed_at": "2026-10-18T08:51:12Z"
-    },
-    {
-      "id": "q-f62d0a9c3b57",
-      "content_sha256": "7d6e0d4c9902b803afdddac3730cedcc685530e5b3a1aaf9a709bc39c939954f",
-      "approved": true,
-      "reason": "The guide states \"LeRobot does **NOT** automatically scale learning rates or training steps based on the number of GPUs. This gives you full control over your training hyperparameters\", and presents both LR and step scaling as things \"you should do it manually\".",
       "reviewed_at": "2026-10-18T08:51:12Z"
     }
   ],
@@ -156,6 +142,22 @@
       "reason": "The overview of the merge operation reads \"Combine multiple datasets into one. The datasets must have identical features, and episodes are concatenated in the order specified in `repo_ids`\". Video conversion, encoder settings and splitting are listed as separate operations with no stated bearing on merging.",
       "reviewed_at": "2026-10-18T08:51:12Z",
       "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c04b7fe2918a",
+      "content_sha256": "c7d36a733c1fe2696617622c36c09eb158d3fba2c8c11ff4aaa4e589a12348a7",
+      "approved": true,
+      "reason": "The training section says `policy.type=act` means \"this policy will automatically adapt to the number of motor states, motor actions and cameras of your robot (e.g. `laptop` and `phone`) which have been saved in your dataset.\" Nothing on the page requires setting feature flags, per-camera calibration files or `accelerate config` for this adaptation.",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-11-14T20:33:13Z"
+    },
+    {
+      "id": "q-f62d0a9c3b57",
+      "content_sha256": "7d6e0d4c9902b803afdddac3730cedcc685530e5b3a1aaf9a709bc39c939954f",
+      "approved": true,
+      "reason": "The guide states \"LeRobot does **NOT** automatically scale learning rates or training steps based on the number of GPUs. This gives you full control over your training hyperparameters\", and presents both LR and step scaling as things \"you should do it manually\".",
+      "reviewed_at": "2026-10-18T08:51:12Z",
+      "superseded_at": "2026-11-14T20:33:13Z"
     }
   ]
 }

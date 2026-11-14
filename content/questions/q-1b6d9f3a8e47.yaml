@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1b6d9f3a8e47
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/training-results
 stem: "A team wants one place to compare model artifacts, training results and
@@ -39,14 +39,14 @@ options:
 evidence:
   - source_id: src-pa-mlflow-index
     excerpt: "Managed MLflow in Nebius AI Cloud enables you to access model
-      artifacts, training results and tuned hyperparameters in a single
+      artifacts, training results, and tuned hyperparameters in a single
       interface."
-    source_sha256: 2e701f0f6677bf4b765048bcc19bcf305db77729bcfc503a1bf386a117fb900a
+    source_sha256: 866fc65f3e72d90bd383e05331b0e92ab18f661a42c38e60589fbc146c4151ef
 authored:
   by: agent:claude-author
-  at: 2026-10-18T09:04:42Z
+  at: 2026-11-14T20:24:28Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 085515e6471490699a9f663e8ef30f3563f66c858af53b1891ea83d7e646828b
+  at: 2026-11-14T20:33:13Z
+  content_sha256: 98a7b11bacd9fd8a287d46146dacdec79ed4d64f707bf507d2c3f360206a8ee7

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c04b7fe2918a
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/robot-policy-training
 stem: "When training an ACT policy with `lerobot-train --policy.type=act`, how
@@ -37,13 +37,13 @@ options:
 evidence:
   - source_id: src-pa-lerobot-il-robots
     excerpt: "automatically adapt to the number of motor states, motor actions and
-      cameras of your robot (e.g. `laptop` and `phone`) which have been saved"
-    source_sha256: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+      cameras of your robot (e.g. `wrist` and `top`) which have been saved"
+    source_sha256: dabde58cb59b20c83b4bfec9e7f2c9f7a8c06e5cc53063e6235a297849467b12
 authored:
   by: agent:claude-author
-  at: 2026-10-18T08:30:25Z
+  at: 2026-11-14T20:24:28Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: c7d36a733c1fe2696617622c36c09eb158d3fba2c8c11ff4aaa4e589a12348a7
+  at: 2026-11-14T20:33:13Z
+  content_sha256: 75ac97732a3a6af5cf93005e850bf4e42f821dff6a95161f6359fc64e5bb4a9e
