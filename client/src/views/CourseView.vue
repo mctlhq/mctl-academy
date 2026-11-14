@@ -22,6 +22,11 @@ const courseId = computed(() => String(route.params.courseId ?? ""));
 const course = computed<CourseInfo | undefined>(() => findCourse(courseId.value));
 const questions = computed(() => (course.value ? questionsForCourse(course.value.id) : []));
 const totalQuestions = computed(() => questions.value.length);
+const mockPaceMinutes = computed(() =>
+  course.value && course.value.mock.questionCount > 0
+    ? Math.max(1, Math.round(course.value.mock.timeLimitMinutes / course.value.mock.questionCount))
+    : 2,
+);
 
 // Count questions per domain
 function domainQuestionCount(domainId: string): number {
@@ -183,6 +188,16 @@ onUnmounted(() => {
             </div>
             <h3 class="domain-card-title">{{ domain.title }}</h3>
             <p class="domain-card-mock">Mock distribution: {{ domain.mockQuestions }} questions</p>
+
+            <div v-if="domain.objectives && domain.objectives.length > 0" class="domain-objectives">
+              <h4 class="domain-objectives-heading">Skills & objectives:</h4>
+              <ul class="domain-objectives-list">
+                <li v-for="obj in domain.objectives" :key="obj.id" class="domain-objective-item">
+                  {{ obj.title }}
+                </li>
+              </ul>
+            </div>
+
             <div class="domain-card-action">
               <RouterLink
                 :to="domainPracticePath(domain.id)"
@@ -193,6 +208,114 @@ onUnmounted(() => {
               </RouterLink>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- Exam structure & format section -->
+      <section class="course-guide-section" aria-labelledby="format-heading">
+        <h2 id="format-heading" class="section-heading">Track structure & format</h2>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h3 class="guide-card-title">Duration & question format</h3>
+            <p class="guide-card-text">
+              The mock exam is configured for a timed {{ course.mock.timeLimitMinutes }}-minute run with
+              {{ course.mock.questionCount }} scenario-based questions. Problems assess practical
+              architecture, configuration choices, and operational troubleshooting.
+            </p>
+          </div>
+          <div class="guide-card">
+            <h3 class="guide-card-title">Curriculum domain weighting</h3>
+            <p class="guide-card-text">
+              Questions are drawn across {{ course.mock.domains.length }} distinct domains according to the
+              track's domain weighting. The mock engine balances questions to match the target percentage
+              distribution.
+            </p>
+          </div>
+          <div class="guide-card">
+            <h3 class="guide-card-title">Evidence-backed answers</h3>
+            <p class="guide-card-text">
+              Every practice item includes citations to allowlisted documentation. Answer feedback explains
+              why the correct option works and why alternatives fail.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preparation methodology section -->
+      <section class="course-guide-section" aria-labelledby="strategy-heading">
+        <h2 id="strategy-heading" class="section-heading">How to prepare with this practice track</h2>
+        <div class="strategy-steps">
+          <div class="strategy-step">
+            <span class="step-num">01</span>
+            <div class="step-content">
+              <h3 class="step-title">Domain-by-domain practice</h3>
+              <p class="step-text">
+                Start by drilling individual domains to identify knowledge gaps. Study the citation rationale
+                for incorrect options to understand production constraints.
+              </p>
+            </div>
+          </div>
+          <div class="strategy-step">
+            <span class="step-num">02</span>
+            <div class="step-content">
+              <h3 class="step-title">Timed mock exam runs</h3>
+              <p class="step-text">
+                Simulate realistic exam pacing with a {{ course.mock.timeLimitMinutes }}-minute,
+                {{ course.mock.questionCount }}-question mock run. Aim for approximately
+                {{ mockPaceMinutes }} minutes per scenario.
+              </p>
+            </div>
+          </div>
+          <div class="strategy-step">
+            <span class="step-num">03</span>
+            <div class="step-content">
+              <h3 class="step-title">Mistakes review queue</h3>
+              <p class="step-text">
+                Re-test questions you answered incorrectly. Solidify concepts until you achieve consistent
+                mastery across all domains.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="course-faq-section" aria-labelledby="faq-heading">
+        <h2 id="faq-heading" class="section-heading">Frequently asked questions</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary class="faq-question">What skills are measured in the {{ course.title }} track?</summary>
+            <div class="faq-answer">
+              <p>
+                This track covers {{ course.mock.domains.length }} core domains:
+                {{ course.mock.domains.map((d) => d.title).join(", ") }}.
+                {{
+                  course.summary
+                    ? course.summary
+                    : "Review the syllabus topics above for detailed domain objectives."
+                }}
+              </p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-question">Is this practice platform free to use?</summary>
+            <div class="faq-answer">
+              <p>
+                Yes. mctl Academy is completely free and accessible without a paywall. You can take untimed
+                practice tests or full timed mock exams at zero cost.
+              </p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-question">Are these official exam questions?</summary>
+            <div class="faq-answer">
+              <p>
+                No. In accordance with clean-room guidelines and our content policy, all items are original
+                scenario problems authored from public documentation. They test practical technical objectives
+                without reproducing proprietary exam content.
+              </p>
+            </div>
+          </details>
         </div>
       </section>
 
@@ -208,14 +331,111 @@ onUnmounted(() => {
     class="course-coming-soon page-shell"
     data-testid="course-coming-soon"
   >
-    <p class="not-found-code">Coming soon</p>
-    <h1>{{ course.title }}</h1>
-    <p class="not-found-lede">
-      Practice questions for this track are currently in preparation. Check back soon.
-    </p>
-    <div class="not-found-actions">
-      <MButton :as="RouterLink" to="/practice">Continue practice</MButton>
-      <MButton :as="RouterLink" to="/" variant="ghost">Go to home</MButton>
+    <nav class="course-breadcrumbs" aria-label="Breadcrumb">
+      <RouterLink to="/">Home</RouterLink>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ course.title }}</span>
+    </nav>
+
+    <header class="course-hero">
+      <div class="course-badge-row">
+        <MPill tone="neutral">Upcoming track · Syllabus preview</MPill>
+      </div>
+      <p class="not-found-code">Coming soon</p>
+      <h1 class="course-title">{{ course.title }}</h1>
+      <p class="not-found-lede">
+        Practice questions for this track are currently in preparation. Review the complete domain syllabus
+        and exam objectives below.
+      </p>
+
+      <div class="course-stats-bar" role="group" aria-label="Course statistics">
+        <div class="course-stat">
+          <span class="stat-value">In preparation</span>
+          <span class="stat-label">question bank</span>
+        </div>
+        <div class="course-stat">
+          <span class="stat-value">{{ course.mock.timeLimitMinutes }} min</span>
+          <span class="stat-label">mock duration</span>
+        </div>
+        <div class="course-stat">
+          <span class="stat-value">{{ course.mock.domains.length }}</span>
+          <span class="stat-label">domains</span>
+        </div>
+      </div>
+
+      <div class="not-found-actions">
+        <MButton :as="RouterLink" to="/practice">Continue practice</MButton>
+        <MButton :as="RouterLink" to="/" variant="ghost">Go to home</MButton>
+      </div>
+    </header>
+
+    <div class="course-content">
+      <section class="course-domains" aria-labelledby="domains-heading-preview">
+        <h2 id="domains-heading-preview" class="section-heading">Practice domains & syllabus</h2>
+        <div class="domain-cards-list">
+          <div v-for="domain in course.mock.domains" :key="domain.id" class="domain-card">
+            <div class="domain-card-header">
+              <span class="domain-card-tag">{{ domain.weight }}% domain weight</span>
+              <span class="domain-card-count">{{ domain.mockQuestions }} questions</span>
+            </div>
+            <h3 class="domain-card-title">{{ domain.title }}</h3>
+            <p class="domain-card-mock">
+              Mock distribution: {{ domain.mockQuestions }} questions ({{ domain.weight }}%)
+            </p>
+
+            <div v-if="domain.objectives && domain.objectives.length > 0" class="domain-objectives">
+              <h4 class="domain-objectives-heading">Skills & objectives:</h4>
+              <ul class="domain-objectives-list">
+                <li v-for="obj in domain.objectives" :key="obj.id" class="domain-objective-item">
+                  {{ obj.title }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exam structure & format section -->
+      <section class="course-guide-section" aria-labelledby="format-heading-preview">
+        <h2 id="format-heading-preview" class="section-heading">Practice track structure & syllabus guide</h2>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h3 class="guide-card-title">Track duration & mock format</h3>
+            <p class="guide-card-text">
+              The mock run for {{ course.title }} is configured for {{ course.mock.timeLimitMinutes }} minutes
+              with {{ course.mock.questionCount }} scenario-based questions.
+              {{
+                course.summary
+                  ? course.summary
+                  : "Problems assess practical technical skills and operational troubleshooting."
+              }}
+            </p>
+          </div>
+          <div class="guide-card">
+            <h3 class="guide-card-title">Syllabus breakdown</h3>
+            <p class="guide-card-text">
+              The track spans {{ course.mock.domains.length }} core domains shown above. Practice questions
+              are authored from allowlisted documentation to provide verifiable citations for every answer.
+            </p>
+          </div>
+          <div class="guide-card">
+            <h3 class="guide-card-title">Coverage in progress</h3>
+            <p class="guide-card-text">
+              Our authoring pipeline and independent reviewers are validating scenarios across all objectives
+              to ensure evidence-backed explanations for every question.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        v-if="otherCourses.length > 0"
+        class="other-courses"
+        aria-labelledby="other-courses-heading-preview"
+      >
+        <h2 id="other-courses-heading-preview" class="section-heading">Explore available courses</h2>
+        <CourseGrid :courses="otherCourses" />
+      </section>
     </div>
   </div>
 
@@ -364,9 +584,36 @@ onUnmounted(() => {
 }
 
 .domain-card-mock {
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
   font-size: var(--text-caption-size);
   color: var(--surface-fg-muted);
+}
+
+.domain-objectives {
+  margin: 0.5rem 0 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--surface-line);
+}
+
+.domain-objectives-heading {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-caption-size);
+  font-family: var(--font-mono);
+  color: var(--surface-fg-subtle);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.domain-objectives-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--surface-fg-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .domain-card-action {
@@ -390,6 +637,112 @@ onUnmounted(() => {
 .domain-btn-link:hover,
 .domain-btn-link:focus-visible {
   text-decoration: underline;
+}
+
+.course-guide-section {
+  margin-bottom: 3rem;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
+}
+
+.guide-card {
+  padding: 1.25rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-md);
+  background: var(--surface-card);
+}
+
+.guide-card-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--surface-fg);
+}
+
+.guide-card-text {
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.strategy-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
+}
+
+.strategy-step {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-md);
+  background: var(--surface-card);
+}
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-text);
+  opacity: 0.8;
+}
+
+.step-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: var(--surface-fg);
+}
+
+.step-text {
+  margin: 0;
+  color: var(--surface-fg-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.course-faq-section {
+  margin-bottom: 3rem;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.faq-item {
+  border: 1px solid var(--surface-line);
+  border-radius: var(--mctl-radius-md);
+  background: var(--surface-card);
+  padding: 0.85rem 1.25rem;
+}
+
+.faq-question {
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--surface-fg);
+  cursor: pointer;
+  outline: none;
+}
+
+.faq-question:hover {
+  color: var(--accent-text);
+}
+
+.faq-answer {
+  margin-top: 0.65rem;
+  color: var(--surface-fg-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.faq-answer p {
+  margin: 0;
 }
 
 .other-courses {

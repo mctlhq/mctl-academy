@@ -4,6 +4,7 @@
 export interface CourseMetaInput {
   id: string;
   title: string;
+  summary?: string;
   publishedQuestionCount: number;
   available: boolean;
   mock: { domains: readonly unknown[] };
