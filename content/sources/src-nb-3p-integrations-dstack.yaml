@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-3p-integrations-dstack
+url: https://docs.nebius.com/3p-integrations/dstack.md
+title: Installation of dstack for AI workload orchestration
+retrieved_at: 2026-11-14T09:28:26Z
+sha256: 8d4aa9d6a735403b929069ad4f1f42e4d03e4a5930cd8f8971a38795e9ccb6c0
+objectives:
+  - domain-1/sa-orchestration-overlays
+snapshot:
+  bucket: academy-source-snapshots
+  key: 8d4aa9d6a735403b929069ad4f1f42e4d03e4a5930cd8f8971a38795e9ccb6c0
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-orchestration-overlays
