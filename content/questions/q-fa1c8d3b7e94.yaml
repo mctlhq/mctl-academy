@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-fa1c8d3b7e94
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/mcp-integration
 stem: "A team wants to standardize web access across everyone's Cursor and
@@ -32,12 +32,8 @@ options:
 evidence:
   - source_id: src-tv-agents
     excerpt: "Shared across a team or org — even in Cursor or Claude Code → **MCP**."
-    source_sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+    source_sha256: 35aed151e4822769229d83af2c7db4890885fe8dceaaa5bf09485b9612dc47d5
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:10:42Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T08:31:18Z
-  content_sha256: bf4515acca58479aa983a7dce1502221f706ca4cb1cd049866e5813b725c6834

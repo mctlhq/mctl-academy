@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b2e4d9a1c673
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/web-access-operations
 stem: "Tavily's quickstart describes four web-access operations in one line
@@ -25,12 +25,8 @@ options:
 evidence:
   - source_id: src-tv-quickstart
     excerpt: "Read many pages across a site."
-    source_sha256: 3b09f433e0e37e32726da10bfa4c0095cf490a227aafb51e8249d102302dd06d
+    source_sha256: 6a25f1c2841b9869faa4806842d31674269a373a5c66b5c969d4da3f41e595ca
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: f3b74f31bc0644384901f0820d4e1948eef883fcc9e28fac5e9d89f548918591

@@ -2,12 +2,14 @@ schema_version: 1
 id: src-pa-lerobot-dataset-v3
 url: https://huggingface.co/docs/lerobot/lerobot-dataset-v3.md
 title: LeRobotDataset v3.0
-retrieved_at: 2026-10-18T01:17:36Z
-sha256: 3fa6349f9f74edaa504b52f0097443b626bb7cc4f7302cb6ba0f3476ad342fad
+retrieved_at: 2026-11-14T13:03:25Z
+sha256: 27472c93393a0fd51cb9efa699ab2caa847f76d329e7a15e381918ca11014595
 objectives:
   - domain-2/data-collection
   - domain-2/dataset-curation
 snapshot:
   bucket: academy-source-snapshots
-  key: 3fa6349f9f74edaa504b52f0097443b626bb7cc4f7302cb6ba0f3476ad342fad
-status: drifted
+  key: 27472c93393a0fd51cb9efa699ab2caa847f76d329e7a15e381918ca11014595
+status: current
+versions:
+  - 3fa6349f9f74edaa504b52f0097443b626bb7cc4f7302cb6ba0f3476ad342fad

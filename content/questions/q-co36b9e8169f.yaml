@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co36b9e8169f
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/iam-roles
 stem: A data-collection agent must drop files into a bucket but must not be able
@@ -30,12 +30,8 @@ evidence:
   - source_id: src-co-iam-roles
     excerpt: '`storage.uploader`: view buckets, upload objects but not list or
       download them'
-    source_sha256: a7887607388f956c078ac08857e9e8b3e3b65be08f73eec90cd19b7f143971fc
+    source_sha256: d832a94c211b412f71935f30f044c7ff150d478091651bdfd5e3df2e9b390606
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 73d984f82e3a6bcc4202e03dc6cbb76526af2cb5c3f69107d774b5c485a3f61b

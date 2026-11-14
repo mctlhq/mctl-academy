@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co38a7131e83
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/organization-hierarchy
 stem: During a cleanup, a team asks you to delete an unused tenant along with
@@ -27,12 +27,8 @@ options:
 evidence:
   - source_id: src-co-iam-overview
     excerpt: You cannot delete a tenant.
-    source_sha256: d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5
+    source_sha256: e5813f76e9b861efe0eae9851532fe47a177531b7fcb322822649ba1f9d0595a
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 0ad8b6e16b250f22f7654baeaeb68be31ae0e6832265541e96cf5a0b3e93d5ed

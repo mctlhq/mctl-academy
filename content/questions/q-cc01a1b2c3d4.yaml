@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-cc01a1b2c3d4
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/chat-completions
 stem: When `stream` is enabled in a Chat Completions request, how does Token
@@ -32,16 +32,12 @@ evidence:
   - source_id: src-recovery-chat
     excerpt: Tokens will be sent as data-only [server-sent
       events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format)
-    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
+    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
   - source_id: src-recovery-chat
     excerpt: "as they become available, with the stream terminated by a `data:
       [DONE]` message."
-    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
+    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:39:14Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: cafebd466795a830b3144fa29db2c4de04bb77513efaf14ba60a6f9084f9712f

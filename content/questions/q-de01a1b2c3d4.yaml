@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-de01a1b2c3d4
-status: needs_review
+status: review_ready
 domain: domain-4
 objective: domain-4/dedicated-endpoints
 stem: According to the comparison table, how does capacity differ between
@@ -37,12 +37,8 @@ evidence:
   - source_id: src-recovery-capacity
     excerpt: it is not a long-term reservation, and the minimum replicas guarantee
       applies only while the endpoint is running.
-    source_sha256: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
+    source_sha256: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 93632211c9ebcad71020498e1ffceb320ae1f4b6354982d71418fb52b311960b

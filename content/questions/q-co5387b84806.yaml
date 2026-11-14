@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co5387b84806
-status: needs_review
+status: review_ready
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: PyTorch on a multi-GPU VM fails with `system not yet initialized (error
@@ -28,12 +28,8 @@ evidence:
   - source_id: src-co-cuda-init-error
     excerpt: its service, `nvidia-fabricmanager`, does not initialize on VM startup
       because of a race condition or other timing issues
-    source_sha256: 7d741ea2c8ce727ea56c6fd2013ecd7cf6e2682560ba1d902700d6eef4cdca62
+    source_sha256: 130af4b0cdd95ad68f4e041752448bd91f38142838f680fbd8045429015689ba
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: c333de0618d536fdbf046e4b51173cd92aa82f36a4946c38a7e2c2cf6d7921d7

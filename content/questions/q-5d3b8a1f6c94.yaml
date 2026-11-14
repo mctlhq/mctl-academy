@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5d3b8a1f6c94
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/inference-capacity
 stem: "When sizing a Token Factory dedicated endpoint's inference capacity, how
@@ -40,16 +40,12 @@ evidence:
   - source_id: src-ld-capacity-and-scaling
     excerpt: "Minimum replicas are reserved and non-preemptible and remain allocated
       to your deployment for as long as the endpoint is active."
-    source_sha256: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
+    source_sha256: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
   - source_id: src-ld-capacity-and-scaling
     excerpt: "Scaling above minimum replicas depends on available burst capacity and
       is not guaranteed indefinitely."
-    source_sha256: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
+    source_sha256: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: cdfb1ebf3858e0d03cefb6c265a9d13d5bbf6327834bd3edac7c575f8c045db0

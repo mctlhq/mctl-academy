@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1c9e4a7f3d62
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/call-error-handling
 stem: "An agent's error-handling code inspects the exact text of a 429
@@ -37,12 +37,8 @@ evidence:
   - source_id: src-tv-rate-limits
     excerpt: "Error messages can vary by the limit reached; use the HTTP status and
       header for retry handling rather than matching the message text."
-    source_sha256: 60a44b16937fa13eb592fde90739282b1099d728cc502839aad06930ba1cd1fc
+    source_sha256: e4043d7728d85cda4573aeaea864f1e03fade88fc0ba3539c0a155d3530b66ec
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T09:13:49Z
-  content_sha256: 9a93f1e97ae556d838ef69fc485bef8febfe183b96029aa9550dc0f3345fd566

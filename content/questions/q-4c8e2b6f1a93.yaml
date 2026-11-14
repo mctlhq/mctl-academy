@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4c8e2b6f1a93
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/data-collection
 stem: "A robotics engineer runs `lerobot-record` over SSH on a headless Linux
@@ -36,12 +36,8 @@ evidence:
     excerpt: "the recording control-flow keys (arrow keys, Escape) work on X11,
       Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an
       interactive terminal"
-    source_sha256: 7a020d485666ab3d7265769dbcad4f5d7c6723219e71c090aa4a12e5250ca5f6
+    source_sha256: dabde58cb59b20c83b4bfec9e7f2c9f7a8c06e5cc53063e6235a297849467b12
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-18T09:29:20Z
-  content_sha256: 9060045fae9c0731d21f3270cb58af6802b8e9d089d937763ca8fe49ac7ecf49

@@ -2,11 +2,13 @@ schema_version: 1
 id: src-tv-toolkit-overview
 url: https://docs.tavily.com/examples/agent-toolkit/overview.md
 title: Agent Toolkit
-retrieved_at: 2026-10-31T09:26:06Z
-sha256: 7498352884b97557ec864f5140dcc21090a47583ee653624e97af8b7f3df724a
+retrieved_at: 2026-11-14T13:04:03Z
+sha256: f862ce94968474532658a2607ad6b89f2fe36cbe90ff32f097cc6a3f96cd91c3
 objectives:
   - domain-1/agent-tool-selection
 snapshot:
   bucket: academy-source-snapshots
-  key: 7498352884b97557ec864f5140dcc21090a47583ee653624e97af8b7f3df724a
-status: drifted
+  key: f862ce94968474532658a2607ad6b89f2fe36cbe90ff32f097cc6a3f96cd91c3
+status: current
+versions:
+  - 7498352884b97557ec864f5140dcc21090a47583ee653624e97af8b7f3df724a

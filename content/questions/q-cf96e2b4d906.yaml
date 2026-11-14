@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-cf96e2b4d906
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/call-error-handling
 stem: "An agent runs a batch of 20 async Search calls and one of them raises an
@@ -34,12 +34,8 @@ evidence:
   - source_id: src-tv-bp-search
     excerpt: "Tag each result `ok` / `error` and retry only the failed ones with
       backoff, so a single error never sinks the whole batch."
-    source_sha256: e68ed528e037a62638367faebd53116f287b63fb87b7a0c98635a5e0bb282a6d
+    source_sha256: f899d424be5ac83b64a300814fadeab770379555101a0336d136e39bdea14b7a
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 1e808b4e218f996f022c431c704c4af81a3dd3268ca2bc9436c1f187e9488d39

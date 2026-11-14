@@ -2,20 +2,21 @@ schema_version: 1
 id: src-co-iam-overview
 url: https://docs.nebius.com/iam/overview.md
 title: How resources, identities and access are managed in Nebius AI Cloud
-retrieved_at: 2026-10-31T01:33:59Z
-sha256: d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5
+retrieved_at: 2026-11-14T13:03:12Z
+sha256: e5813f76e9b861efe0eae9851532fe47a177531b7fcb322822649ba1f9d0595a
 objectives:
   - domain-2/iam-roles
   - domain-2/organization-hierarchy
 snapshot:
   bucket: academy-source-snapshots
-  key: d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5
-status: drifted
-versions:
-  - 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
-  - 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
+  key: e5813f76e9b861efe0eae9851532fe47a177531b7fcb322822649ba1f9d0595a
+status: current
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-4/sa-identity-model
   - course_id: ai-solutions-architect
     objective: domain-4/sa-tenant-isolation-least-privilege
+versions:
+  - 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
+  - 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
+  - d67e119239437b232641cf07b06621d78e142513f862add9231c0d0f1d183cd5

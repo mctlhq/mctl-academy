@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-d84f2a7c91e6
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/extraction-recovery
 stem: "A batch Extract call for 25 URLs is rejected, and separately a batch
@@ -38,12 +38,8 @@ evidence:
   - source_id: src-tv-api-extract
     excerpt: "When all URLs fail validation, detail.failed_results describes the
       individual failures."
-    source_sha256: 200fb5074a7131a24105c09eeb756c1e6deee7db35cc640244c9ecf36d4c06db
+    source_sha256: e113eaaa99a6ed198d2e4a2170b576f0a92bd2b1600c2655fbaff276b1703a34
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:00:04Z"
 course_id: agentic-web-search
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T09:13:49Z
-  content_sha256: c2b05cdcb5ead1345cc0e3a29a57177b04a9babf0289e3308e2c22a1bd601313

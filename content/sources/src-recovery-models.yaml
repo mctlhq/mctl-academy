@@ -2,16 +2,17 @@ schema_version: 1
 id: src-recovery-models
 url: https://docs.tokenfactory.nebius.com/api-reference/models/list-models.md
 title: List models API
-retrieved_at: 2026-10-30T14:51:29Z
-sha256: 010eef24ca44ade7342d223c81eb64a9cfb12c745f93c9dafda225a224a1caaf
+retrieved_at: 2026-11-14T13:03:47Z
+sha256: 6c4ea439fb9a7b7ec77841237a192be1d41d6ac7962a96177a1ecb9dd6aa2862
 objectives:
   - domain-1/model-catalog
 snapshot:
   bucket: academy-source-snapshots
-  key: 010eef24ca44ade7342d223c81eb64a9cfb12c745f93c9dafda225a224a1caaf
-status: drifted
+  key: 6c4ea439fb9a7b7ec77841237a192be1d41d6ac7962a96177a1ecb9dd6aa2862
+status: current
 versions:
   - 5fa7decba80dd0a117fa5d218eb69fc963ff207856d15cda01c089666b009eae
   - f43c029bbe5c6073b957876a6ef9258d7056aae92cdb294ccd64eda317c141f1
   - abf56736eda2e10f564e3d44930b0070aedbe1928e5d39607309a9edeae4d971
   - e1dafb714f59049ff17445fe20b4252fcc6a1988df60c0144426ef4a3974d288
+  - 010eef24ca44ade7342d223c81eb64a9cfb12c745f93c9dafda225a224a1caaf

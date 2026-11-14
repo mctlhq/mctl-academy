@@ -2,18 +2,19 @@ schema_version: 1
 id: src-co-iam-roles
 url: https://docs.nebius.com/iam/authorization/roles.md
 title: Roles for Nebius AI Cloud groups
-retrieved_at: 2026-10-30T14:50:35Z
-sha256: a7887607388f956c078ac08857e9e8b3e3b65be08f73eec90cd19b7f143971fc
+retrieved_at: 2026-11-14T13:03:13Z
+sha256: d832a94c211b412f71935f30f044c7ff150d478091651bdfd5e3df2e9b390606
 objectives:
   - domain-2/iam-roles
 snapshot:
   bucket: academy-source-snapshots
-  key: a7887607388f956c078ac08857e9e8b3e3b65be08f73eec90cd19b7f143971fc
-status: drifted
+  key: d832a94c211b412f71935f30f044c7ff150d478091651bdfd5e3df2e9b390606
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-rbac-key-rotation
 versions:
   - 7891fa6b12a6a85716a2b7805580924c99c803a4c8b704ee73b4a0dcd94235f7
   - fb98d03ee47d91815e13066f7e3bb0c84d6e1b5b20c650c888a3cfe27297d183
   - 6933c348f595af88b699f007d399d74227c5fe10722f3f06dc6c641a00df85b7
-coverage:
-  - course_id: ai-infrastructure-engineer
-    objective: domain-1/ie-rbac-key-rotation
+  - a7887607388f956c078ac08857e9e8b3e3b65be08f73eec90cd19b7f143971fc

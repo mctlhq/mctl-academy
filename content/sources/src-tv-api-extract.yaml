@@ -2,12 +2,14 @@ schema_version: 1
 id: src-tv-api-extract
 url: https://docs.tavily.com/documentation/api-reference/endpoint/extract.md
 title: Tavily Extract API reference
-retrieved_at: 2026-10-31T01:11:35Z
-sha256: 200fb5074a7131a24105c09eeb756c1e6deee7db35cc640244c9ecf36d4c06db
+retrieved_at: 2026-11-14T13:03:51Z
+sha256: e113eaaa99a6ed198d2e4a2170b576f0a92bd2b1600c2655fbaff276b1703a34
 objectives:
   - domain-2/response-fields
   - domain-2/extraction-recovery
 snapshot:
   bucket: academy-source-snapshots
-  key: 200fb5074a7131a24105c09eeb756c1e6deee7db35cc640244c9ecf36d4c06db
-status: drifted
+  key: e113eaaa99a6ed198d2e4a2170b576f0a92bd2b1600c2655fbaff276b1703a34
+status: current
+versions:
+  - 200fb5074a7131a24105c09eeb756c1e6deee7db35cc640244c9ecf36d4c06db

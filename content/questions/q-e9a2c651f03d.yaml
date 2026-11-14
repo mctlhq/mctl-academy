@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-e9a2c651f03d
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/experiment-tracking
 stem: "A team creates a Managed Service for MLflow cluster in Nebius AI Cloud
@@ -37,12 +37,8 @@ evidence:
   - source_id: src-pa-mlflow-quickstart
     excerpt: "the private endpoint from the network where the cluster is located
       (for example, via a virtual machine in this network)."
-    source_sha256: 3e717d2841f6be3de59894489ca6dfd6553bca3da6ed1dd4679debd6a6cb9782
+    source_sha256: 587ad090c734b920589d9ca4324d7ed4a88e0825c2660d1f8b118a2ed907db8f
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: cbf5cfc9337789bf0fdf40a723ed6a1b93d88ef29f1a15f763d4327b536e50fa
