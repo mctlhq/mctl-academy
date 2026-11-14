@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-039ec8a2d5f7
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/dataset-quality
 stem: "Per LeRobot's Human-In-the-Loop data collection guide, what is
@@ -34,12 +34,12 @@ evidence:
   - source_id: src-pa-lerobot-hil-data
     excerpt: "During deployment, small errors can compound and push the robot into
       states never seen during training (distribution shift)."
-    source_sha256: 56a35ec789b4059eefa20006bf4552106fa09af06f9018635d6bd085874e67d6
+    source_sha256: 1334819bd31fde0aee81f463dac97f3ee443dddc5cbea5606adbaef6cbf36099
 authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T08:51:12Z
-  content_sha256: a6413b5ba76d62c5abcf7f7c96ac9b86b7c8dc9676a1992e50345b5fdaa1c5ca
+  at: 2026-11-14T13:21:41Z
+  content_sha256: a8f7ecb55eca4a955642e3d8a2fd039d2ac307d86b93265b6f15f5d0d0d65123

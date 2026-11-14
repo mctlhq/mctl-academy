@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co41d66f720d
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/security-policies
 stem: An engineer with the `editor` role is asked to set up a federation so
@@ -31,12 +31,12 @@ evidence:
   - source_id: src-co-iam-federations
     excerpt: that has the `admin` role within your tenant or project; for example,
       the default `admins` group.
-    source_sha256: caec0f6766bdb457fa6a14ab1b0c6ab0c02fe0612c5da306d1ca17889d8d7664
+    source_sha256: 3acf7d6083b818c81f8ba8f57dac2aca3a2e0e6dd95e1c18538e0a799fc1ef7c
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 5e66fc77618de5002c8c128e52f85e93be320567163e11b1a1d19e0f17fcdbf6
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 272c902d786d4607bdec0f80bd57434129f332de3140972270e0f467e9bc15a9

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-2d8f6a19c5e3
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/agent-tool-selection
 stem: "An agent knows a site's domain but not which specific page holds the
@@ -32,12 +32,12 @@ evidence:
   - source_id: src-tv-agent-skills
     excerpt: "Use the **map + extract** pattern: map to find the right page, then
       extract its content."
-    source_sha256: 1f70cad875995608e441e5070af9568692bcb1eb8a750e101b08d0f1eab47c0d
+    source_sha256: 3e045ce49db5c93ed61004569db24c492e1e19276d15f90f34887040ef645b79
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:24:19Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T09:35:45Z
-  content_sha256: 317027da44056bd8ba01612bd761a41a9147ff48e2fa2fe5ee14cc2e4c8eb684
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 66431bd1db56f844e7002f4ee74d488d45531abfcf98309338223e34ce8e1b77

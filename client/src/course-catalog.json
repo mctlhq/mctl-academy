@@ -3,7 +3,7 @@
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
     "summary": "Build agents on a hosted model platform: API access, inference and tool integration, data and post-training, and running them in production.",
-    "publishedQuestionCount": 63,
+    "publishedQuestionCount": 89,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -14,25 +14,137 @@
           "id": "domain-1",
           "title": "Platform foundations and API access",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "api-authentication",
+              "title": "API keys, authentication, and request basics"
+            },
+            {
+              "id": "openai-compatibility",
+              "title": "OpenAI-compatible API surface and client setup"
+            },
+            {
+              "id": "model-catalog",
+              "title": "Listing models, model flavors, and deprecation notices"
+            },
+            {
+              "id": "playground",
+              "title": "Using the UI and playground to compare models"
+            },
+            {
+              "id": "organizations-and-projects",
+              "title": "Organizations, projects, and how resources are scoped"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "Inference and agent integration",
           "weight": 35,
-          "mockQuestions": 10
+          "mockQuestions": 10,
+          "objectives": [
+            {
+              "id": "chat-completions",
+              "title": "Chat completions: parameters, streaming, and responses"
+            },
+            {
+              "id": "embeddings-and-rerank",
+              "title": "Embeddings and reranking for retrieval"
+            },
+            {
+              "id": "retrieval-pipelines",
+              "title": "Composing retrieval-augmented pipelines"
+            },
+            {
+              "id": "function-calling",
+              "title": "Function calling and tool use"
+            },
+            {
+              "id": "structured-output",
+              "title": "Structured output and JSON-constrained generation"
+            },
+            {
+              "id": "framework-integrations",
+              "title": "Third-party framework integrations"
+            },
+            {
+              "id": "agent-sandboxes",
+              "title": "Sandboxes, MCP, and SDK-driven agent execution"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Data and post-training",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "files-api",
+              "title": "Uploading, retrieving, and deleting files"
+            },
+            {
+              "id": "datasets",
+              "title": "Creating and managing datasets"
+            },
+            {
+              "id": "dataset-formats",
+              "title": "Dataset formats required for fine-tuning"
+            },
+            {
+              "id": "supervised-fine-tuning",
+              "title": "Running supervised fine-tuning"
+            },
+            {
+              "id": "fine-tuning-jobs",
+              "title": "Fine-tuning job lifecycle, events, and checkpoints"
+            },
+            {
+              "id": "lora-adapters",
+              "title": "Working with and merging LoRA adapters"
+            },
+            {
+              "id": "data-lab",
+              "title": "Data Lab: importing and processing training data"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Production operations",
           "weight": 25,
-          "mockQuestions": 8
+          "mockQuestions": 8,
+          "objectives": [
+            {
+              "id": "dedicated-endpoints",
+              "title": "Deploying and operating dedicated endpoints"
+            },
+            {
+              "id": "endpoint-lifecycle",
+              "title": "Endpoint lifecycle and readiness status"
+            },
+            {
+              "id": "capacity-and-scaling",
+              "title": "Capacity, availability, and service guarantees"
+            },
+            {
+              "id": "rate-limits",
+              "title": "Rate limits and scaling behaviour"
+            },
+            {
+              "id": "observability",
+              "title": "Inference observability and integrations"
+            },
+            {
+              "id": "billing-and-consumption",
+              "title": "Billing, consumption, and cost controls"
+            },
+            {
+              "id": "team-access",
+              "title": "Groups, invitations, and single sign-on"
+            }
+          ]
         }
       ]
     }
@@ -41,7 +153,7 @@
     "id": "agentic-web-search",
     "title": "Agentic Web Search",
     "summary": "Give agents and retrieval pipelines live web data: search, extract, map and crawl, then keep that access reliable in production.",
-    "publishedQuestionCount": 25,
+    "publishedQuestionCount": 49,
     "available": true,
     "mock": {
       "questionCount": 20,
@@ -52,25 +164,113 @@
           "id": "domain-1",
           "title": "Foundations of agentic web search",
           "weight": 15,
-          "mockQuestions": 3
+          "mockQuestions": 3,
+          "objectives": [
+            {
+              "id": "realtime-search-fundamentals",
+              "title": "Explaining why agents need real-time web search alongside a static knowledge base"
+            },
+            {
+              "id": "web-access-operations",
+              "title": "Distinguishing searching, extracting, mapping and crawling as web-access operations"
+            },
+            {
+              "id": "source-quality",
+              "title": "Judging returned sources for relevance, recency and credibility"
+            },
+            {
+              "id": "agent-tool-selection",
+              "title": "Choosing the web-access tool an agent should call for a task"
+            },
+            {
+              "id": "blended-rag",
+              "title": "Blending live web results with a private knowledge base in RAG pipelines"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "Search and Extract",
           "weight": 35,
-          "mockQuestions": 7
+          "mockQuestions": 7,
+          "objectives": [
+            {
+              "id": "search-parameters",
+              "title": "Tuning Search parameters for relevance, latency and cost"
+            },
+            {
+              "id": "search-extract-pipelines",
+              "title": "Combining Search with Extract to retrieve and clean page content"
+            },
+            {
+              "id": "response-fields",
+              "title": "Reading and using Search and Extract response fields"
+            },
+            {
+              "id": "extraction-recovery",
+              "title": "Recovering from failed extractions and partial results"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Crawl, Map and agent integrations",
           "weight": 25,
-          "mockQuestions": 5
+          "mockQuestions": 5,
+          "objectives": [
+            {
+              "id": "map-usage",
+              "title": "Using Map to discover a site's structure"
+            },
+            {
+              "id": "crawl-parameters",
+              "title": "Configuring Crawl parameters for focused content collection"
+            },
+            {
+              "id": "crawl-scope",
+              "title": "Constraining crawl scope and depth"
+            },
+            {
+              "id": "mcp-integration",
+              "title": "Connecting agents to web access through the MCP server and SDKs"
+            },
+            {
+              "id": "endpoint-selection",
+              "title": "Selecting the right endpoint for a retrieval requirement"
+            },
+            {
+              "id": "call-error-handling",
+              "title": "Handling errors and recovering around web-access API calls"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Production operations and reliability",
           "weight": 25,
-          "mockQuestions": 5
+          "mockQuestions": 5,
+          "objectives": [
+            {
+              "id": "api-key-auth",
+              "title": "Authenticating requests with API keys"
+            },
+            {
+              "id": "credit-monitoring",
+              "title": "Monitoring credit consumption and usage"
+            },
+            {
+              "id": "rate-limit-handling",
+              "title": "Handling rate limits and HTTP 429 responses"
+            },
+            {
+              "id": "budget-and-forecasting",
+              "title": "Managing credit budgets and forecasting cost"
+            },
+            {
+              "id": "key-rotation-secrets",
+              "title": "Rotating keys and handling secrets safely"
+            }
+          ]
         }
       ]
     }
@@ -79,7 +279,7 @@
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
     "summary": "Run GPU cloud infrastructure day to day: deploy environments, operate compute nodes, monitor workloads, manage access and storage, and troubleshoot.",
-    "publishedQuestionCount": 8,
+    "publishedQuestionCount": 34,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -90,25 +290,77 @@
           "id": "domain-1",
           "title": "Cloud Infrastructure & Environment Deployment",
           "weight": 30,
-          "mockQuestions": 9
+          "mockQuestions": 9,
+          "objectives": [
+            {
+              "id": "environment-deployment",
+              "title": "Deploying standard GPU environments and managed cluster infrastructure"
+            },
+            {
+              "id": "network-vpc",
+              "title": "VPC networking, subnets, and security group configuration"
+            },
+            {
+              "id": "storage-volumes",
+              "title": "Block storage, shared filesystems, and object storage setup"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "Access Management & Governance",
           "weight": 25,
-          "mockQuestions": 8
+          "mockQuestions": 8,
+          "objectives": [
+            {
+              "id": "iam-roles",
+              "title": "User access, IAM roles, service accounts, and permissions"
+            },
+            {
+              "id": "organization-hierarchy",
+              "title": "Managing organizations, projects, and resource boundaries"
+            },
+            {
+              "id": "security-policies",
+              "title": "Enforcing security policies and single sign-on"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Monitoring, Observability & Resource Lifecycle",
           "weight": 25,
-          "mockQuestions": 7
+          "mockQuestions": 7,
+          "objectives": [
+            {
+              "id": "node-monitoring",
+              "title": "GPU cluster monitoring, metrics collection, and alerting"
+            },
+            {
+              "id": "node-recovery",
+              "title": "Handling failed GPU nodes, node restarts, and health checks"
+            },
+            {
+              "id": "resource-quotas",
+              "title": "Quota management, capacity planning, and usage limits"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Troubleshooting & Incident Escalation",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "operational-troubleshooting",
+              "title": "Diagnosing GPU workload failures and network bottlenecks"
+            },
+            {
+              "id": "escalation-workflows",
+              "title": "Operational troubleshooting, log analysis, and escalation paths"
+            }
+          ]
         }
       ]
     }
@@ -128,25 +380,125 @@
           "id": "domain-1",
           "title": "Security, compliance & billing",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "ie-identity-federation",
+              "title": "Users, service accounts and federated sign-in for platform access"
+            },
+            {
+              "id": "ie-encryption-secrets",
+              "title": "Encrypting data at rest and keeping secrets out of workloads"
+            },
+            {
+              "id": "ie-billing-quotas",
+              "title": "Tracking spend, budgets and quotas for GPU capacity"
+            },
+            {
+              "id": "ie-rbac-key-rotation",
+              "title": "Role-based access for several teams and rotating credentials and keys"
+            },
+            {
+              "id": "ie-compliance-residency",
+              "title": "Choosing regions, deleting and exporting data, and auditing actions"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "Training platform engineering",
           "weight": 35,
-          "mockQuestions": 10
+          "mockQuestions": 10,
+          "objectives": [
+            {
+              "id": "ie-training-cluster-lifecycle",
+              "title": "Creating, scaling and retiring GPU clusters for training"
+            },
+            {
+              "id": "ie-training-images",
+              "title": "Reproducible container and node images for training jobs"
+            },
+            {
+              "id": "ie-checkpoint-restart",
+              "title": "Saving checkpoints and resuming interrupted training runs"
+            },
+            {
+              "id": "ie-gpu-fabric",
+              "title": "High-speed GPU interconnect for multi-node training and how to verify it"
+            },
+            {
+              "id": "ie-storage-tiers",
+              "title": "Picking storage tiers for datasets, checkpoints and scratch data"
+            },
+            {
+              "id": "ie-distributed-parallelism",
+              "title": "Running distributed-training frameworks and launchers on the platform"
+            },
+            {
+              "id": "ie-slurm-admin",
+              "title": "Operating a Slurm-based training cluster as a platform team"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Inference platform engineering",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "ie-gpu-partitioning",
+              "title": "Sharing one GPU across several inference workloads"
+            },
+            {
+              "id": "ie-inference-pipelines",
+              "title": "Inference pipelines and integrating external orchestration tools"
+            },
+            {
+              "id": "ie-marketplace-apps",
+              "title": "Deploying and configuring prebuilt applications for ML workflows"
+            },
+            {
+              "id": "ie-serving-patterns",
+              "title": "Choosing how to serve a model: endpoints, containers or clusters"
+            },
+            {
+              "id": "ie-inference-slo-tuning",
+              "title": "Tuning latency, throughput and scaling to meet serving targets"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Automation & platform reliability",
           "weight": 25,
-          "mockQuestions": 8
+          "mockQuestions": 8,
+          "objectives": [
+            {
+              "id": "ie-observability-platform",
+              "title": "Metrics, logs, dashboards and alerts across the GPU platform"
+            },
+            {
+              "id": "ie-multicluster-networking",
+              "title": "Connecting networks, clusters and private endpoints"
+            },
+            {
+              "id": "ie-cross-cloud-data",
+              "title": "Moving and integrating data between clouds and on-premises systems"
+            },
+            {
+              "id": "ie-long-run-reliability",
+              "title": "Keeping multi-day training and always-on inference healthy"
+            },
+            {
+              "id": "ie-fabric-incidents",
+              "title": "Troubleshooting failing nodes, interconnect faults and stalled jobs"
+            },
+            {
+              "id": "ie-gpu-rollouts",
+              "title": "Planning a move to a newer GPU platform without breaking workloads"
+            }
+          ]
         }
       ]
     }
@@ -155,7 +507,7 @@
     "id": "ai-leader",
     "title": "AI Leader",
     "summary": "A business-first view of AI: core concepts, designing AI products, steering model outputs and choosing platform capabilities.",
-    "publishedQuestionCount": 34,
+    "publishedQuestionCount": 38,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -166,25 +518,69 @@
           "id": "domain-1",
           "title": "AI Fundamentals",
           "weight": 40,
-          "mockQuestions": 12
+          "mockQuestions": 12,
+          "objectives": [
+            {
+              "id": "ai-concepts",
+              "title": "Generative model families, capabilities, and where each fits"
+            },
+            {
+              "id": "model-selection",
+              "title": "Choosing a model: context windows, modality, and tradeoffs"
+            },
+            {
+              "id": "inference-basics",
+              "title": "How inference is served and consumed through an API"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "AI Product Design",
           "weight": 25,
-          "mockQuestions": 7
+          "mockQuestions": 7,
+          "objectives": [
+            {
+              "id": "product-outcomes",
+              "title": "Aligning model capabilities with business outcomes and user needs"
+            },
+            {
+              "id": "workflow-design",
+              "title": "Designing AI-assisted workflows and integration patterns"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Controlling AI Outputs",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "structured-output",
+              "title": "Constraining responses to a schema for downstream systems"
+            },
+            {
+              "id": "tool-use",
+              "title": "Grounding answers by letting a model call tools and functions"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Platform Capabilities",
           "weight": 15,
-          "mockQuestions": 5
+          "mockQuestions": 5,
+          "objectives": [
+            {
+              "id": "platform-capabilities",
+              "title": "Endpoint options, scaling, quotas, and team access"
+            },
+            {
+              "id": "cost-and-billing",
+              "title": "Token economics, consumption pricing, and cost controls"
+            }
+          ]
         }
       ]
     }
@@ -204,25 +600,121 @@
           "id": "domain-1",
           "title": "High-performing architectures",
           "weight": 25,
-          "mockQuestions": 8
+          "mockQuestions": 8,
+          "objectives": [
+            {
+              "id": "sa-gpu-selection",
+              "title": "Matching GPU types and platform services to a workload"
+            },
+            {
+              "id": "sa-storage-architecture",
+              "title": "Storage design for training data, checkpoints and model artifacts"
+            },
+            {
+              "id": "sa-training-stack",
+              "title": "The supporting stack and user environment for a training platform"
+            },
+            {
+              "id": "sa-deployment-shape",
+              "title": "Turning workload goals into a fitting deployment design"
+            },
+            {
+              "id": "sa-orchestration-overlays",
+              "title": "Layering schedulers and ML frameworks on top of compute"
+            },
+            {
+              "id": "sa-distributed-training",
+              "title": "Recommending a distributed-training design and explaining its trade-offs"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "Resilient architectures",
           "weight": 25,
-          "mockQuestions": 7
+          "mockQuestions": 7,
+          "objectives": [
+            {
+              "id": "sa-checkpoint-strategy",
+              "title": "Planning how training saves progress and recovers from interruption"
+            },
+            {
+              "id": "sa-observability-scope",
+              "title": "Deciding what to collect in metrics, logs and traces"
+            },
+            {
+              "id": "sa-validation-acceptance",
+              "title": "Validating, benchmarking and accepting a delivered platform"
+            },
+            {
+              "id": "sa-failure-support-model",
+              "title": "Handling failures and defining who supports the system in operation"
+            },
+            {
+              "id": "sa-migration-handover",
+              "title": "Migrating workloads in and handing the platform over to its operators"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Efficient & cost-aware architectures",
           "weight": 25,
-          "mockQuestions": 8
+          "mockQuestions": 8,
+          "objectives": [
+            {
+              "id": "sa-capacity-quotas-cost",
+              "title": "Sizing capacity and quotas and estimating cost before onboarding"
+            },
+            {
+              "id": "sa-reuse-automation",
+              "title": "Cutting operational toil with infrastructure as code and reusable building blocks"
+            },
+            {
+              "id": "sa-finops",
+              "title": "Cost governance, spend monitoring and shutting down idle resources"
+            },
+            {
+              "id": "sa-cost-tradeoffs",
+              "title": "When a cheaper option beats the fastest one, and how to argue it"
+            },
+            {
+              "id": "sa-right-sizing",
+              "title": "Right-sizing resources using both cost and performance signals"
+            },
+            {
+              "id": "sa-multicloud-ingestion",
+              "title": "Connecting other clouds and bringing data in for AI workloads"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Secure architectures",
           "weight": 25,
-          "mockQuestions": 7
+          "mockQuestions": 7,
+          "objectives": [
+            {
+              "id": "sa-identity-model",
+              "title": "Designing identities, groups and permissions for a solution"
+            },
+            {
+              "id": "sa-private-connectivity",
+              "title": "Private network paths for operators and management access"
+            },
+            {
+              "id": "sa-secrets-audit-compliance",
+              "title": "Secrets handling, audit trails and the resulting compliance posture"
+            },
+            {
+              "id": "sa-tenant-isolation-least-privilege",
+              "title": "Isolating tenants and granting only the access each one needs"
+            },
+            {
+              "id": "sa-data-lifecycle-investigation",
+              "title": "Data lifecycle, encryption and investigating events from audit logs"
+            }
+          ]
         }
       ]
     }
@@ -231,7 +723,7 @@
     "id": "physical-ai",
     "title": "Physical AI",
     "summary": "Post-train models and robot policies, build robotics data pipelines, evaluate and deploy inference, and connect models to robot applications.",
-    "publishedQuestionCount": 17,
+    "publishedQuestionCount": 43,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -242,25 +734,101 @@
           "id": "domain-1",
           "title": "Post-training Physical AI models",
           "weight": 40,
-          "mockQuestions": 12
+          "mockQuestions": 12,
+          "objectives": [
+            {
+              "id": "supervised-fine-tuning",
+              "title": "Running supervised fine-tuning jobs for language, vision-language and vision-language-action models"
+            },
+            {
+              "id": "robot-policy-training",
+              "title": "Training and fine-tuning robot policies from demonstration data with LeRobot"
+            },
+            {
+              "id": "experiment-tracking",
+              "title": "Configuring and tracking post-training experiments and hyperparameter searches"
+            },
+            {
+              "id": "gpu-orchestration",
+              "title": "Sizing GPU nodes and orchestration for model size, workload, cost and completion time"
+            },
+            {
+              "id": "training-results",
+              "title": "Reading training and validation results to pick models and policies for evaluation"
+            }
+          ]
         },
         {
           "id": "domain-2",
           "title": "Building Physical AI data pipelines",
           "weight": 25,
-          "mockQuestions": 8
+          "mockQuestions": 8,
+          "objectives": [
+            {
+              "id": "simulation-assets",
+              "title": "Preparing 3D assets for simulation and synthetic data generation"
+            },
+            {
+              "id": "data-collection",
+              "title": "Collecting robot logs, sensor streams and demonstrations"
+            },
+            {
+              "id": "dataset-curation",
+              "title": "Filtering, cleaning, augmenting and organising data into training and evaluation datasets"
+            },
+            {
+              "id": "dataset-quality",
+              "title": "Balancing real and synthetic data and finding poor samples, labelling problems and coverage gaps"
+            }
+          ]
         },
         {
           "id": "domain-3",
           "title": "Evaluating and deploying inference",
           "weight": 20,
-          "mockQuestions": 6
+          "mockQuestions": 6,
+          "objectives": [
+            {
+              "id": "inference-setup",
+              "title": "Setting up managed model inference in the cloud"
+            },
+            {
+              "id": "release-management",
+              "title": "Staging and production releases with versioned model artifacts, promotion and rollback"
+            },
+            {
+              "id": "deployment-evaluation",
+              "title": "Evaluating deployments against physical tasks, failure scenarios and safety checks"
+            },
+            {
+              "id": "inference-capacity",
+              "title": "Sizing inference capacity for quality, latency, throughput and cost"
+            }
+          ]
         },
         {
           "id": "domain-4",
           "title": "Integrating robotics applications",
           "weight": 15,
-          "mockQuestions": 4
+          "mockQuestions": 4,
+          "objectives": [
+            {
+              "id": "application-integration",
+              "title": "Connecting inference and data pipelines to robot applications through APIs, services and containers"
+            },
+            {
+              "id": "observability-tracing",
+              "title": "Collecting logs, metrics and diagnostics and tracing failures across data, models and robots"
+            },
+            {
+              "id": "edge-cloud-placement",
+              "title": "Choosing cloud or edge execution for latency and deployment requirements"
+            },
+            {
+              "id": "workflow-security",
+              "title": "Versioning models and configurations and protecting credentials, artifacts and data"
+            }
+          ]
         }
       ]
     }

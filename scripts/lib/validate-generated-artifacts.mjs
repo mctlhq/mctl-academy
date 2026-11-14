@@ -243,6 +243,27 @@ function validateCatalogCourse(course, index, errors) {
     } else {
       mockQuestionSum += domain.mockQuestions;
     }
+
+    if ("objectives" in domain) {
+      if (!Array.isArray(domain.objectives)) {
+        errors.push(`${domainAt}.objectives: expected an array when present`);
+      } else {
+        domain.objectives.forEach((obj, objIndex) => {
+          const objAt = `${domainAt}.objectives[${objIndex}]`;
+          if (obj === null || typeof obj !== "object" || Array.isArray(obj)) {
+            errors.push(`${objAt}: expected an object`);
+            return;
+          }
+          for (const field of ["id", "title"]) {
+            if (!isNonEmptyString(obj[field])) {
+              errors.push(
+                `${objAt}.${field}: expected a non-empty string, got ${JSON.stringify(obj[field])}`,
+              );
+            }
+          }
+        });
+      }
+    }
   });
 
   // The mock builder draws `mockQuestions` per domain and promises a

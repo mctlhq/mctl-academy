@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co32676fb56d
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/storage-volumes
 stem: Two teams keep their VMs in separate projects in the same region and want
@@ -30,12 +30,12 @@ evidence:
   - source_id: src-co-storage-types
     excerpt: Sharing a filesystem across projects is not supported, even if the
       projects are in the same
-    source_sha256: 79a494137f6a9864bb08b91eeb76a2356e658c8ac020b6d92166362ab8fc2a78
+    source_sha256: b5f3a4a7e30c92f0bcc84439a13ab2e94ba0ad36ae4abb17a20765ddb5969def
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 1f5522c684ece0faa7a0126f80e68a9bd44e69169fc173d257f2f58759c4e2b8
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 9886ee95c89fba839d5b4b2b8bf6c43d887cd20142b44b99dbe018847cbded3c

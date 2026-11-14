@@ -1,0 +1,748 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T13:21:41Z",
+  "questions": [
+    {
+      "id": "q-039ec8a2d5f7",
+      "content_sha256": "a8f7ecb55eca4a955642e3d8a2fd039d2ac307d86b93265b6f15f5d0d0d65123",
+      "approved": true,
+      "reason": "The HIL guide states \"During deployment, small errors can compound and push the robot into states never seen during training (distribution shift)\", which is exactly option a; the other options describe takeover mechanics or dataset splitting, not the definition.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-0f3d9a7c2b56",
+      "content_sha256": "5483021d3211fa272dd01a24e76e68bbc2748323cd2e784d6684a546228e0822",
+      "approved": true,
+      "reason": "The GET /v1/models verbose parameter schema reads \"type: boolean / default: false / title: Verbose\", establishing `false` as the default. The other values are defaults of unrelated parameters (`n`, `service_tier`).",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-184fb9e73ac2",
+      "content_sha256": "abd51f88dc6b5574c8ee8380f99bce316dbe6b6a855824e9610345a2ac2a64d6",
+      "approved": true,
+      "reason": "The hardware guide states \"AdamW (the LeRobot default) carries optimizer state that adds ~30–100% over a forward+backward pass alone\". FSDP sharding, effective batch size, and mixed precision are separate mechanisms on the same page, so only option a answers the question.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-1c9e4a7f3d62",
+      "content_sha256": "d3fe227f825b7d4089939df2ddfa031a3d92a6eb936b4454a9d8820af38fd637",
+      "approved": true,
+      "reason": "The Rate Limits page states \"Error messages can vary by the limit reached; use the HTTP status and header for retry handling rather than matching the message text.\" The page's own 429 example includes Retry-After, which rules out option c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-2a8c4e6f91b7",
+      "content_sha256": "4eb96a57333046a84c283cd68004b2bebb3b8e395027db737b0baa26e86c08bd",
+      "approved": true,
+      "reason": "The rollout guide describes `base` as \"Autonomous policy execution with no data recording. Use this for quick evaluation, demos, or when you only need to observe the robot.\" The other strategies are documented on the same page as recording modes.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-2d8f6a19c5e3",
+      "content_sha256": "66431bd1db56f844e7002f4ee74d488d45531abfcf98309338223e34ce8e1b77",
+      "approved": true,
+      "reason": "The Agent Skills page says \"Use the **map + extract** pattern: map to find the right page, then extract its content\", matching option a and fixing the order against options b-d.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-2f6b8d4a1c93",
+      "content_sha256": "15c0f6439af3f8d404b34476c071afa1ff23237c46e86745adceda6c70da4ac8",
+      "approved": true,
+      "reason": "The tutorial states \"Each pushed checkpoint is tagged with its step (e.g. `--policy.pretrained_revision=010000`), so you can recover a checkpoint by step without looking up its commit sha.\" The same page shows `--resume=true` continuing from the latest checkpoint, so option d is excluded.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-2f9b53d8c164",
+      "content_sha256": "d28f3ffd6c726795b93ac1843352bf9a327d45105d66e4f88e9ec3d9c1ce2c2f",
+      "approved": true,
+      "reason": "The overview states SecretStash \"allows you to avoid hardcoding sensitive data, for example, in Terraform manifests or cloud-init scripts. As a result, you eliminate vulnerabilities and maintain compliance with security.\" The page contradicts options b and d (versions cannot be modified; the primary version changes only when set explicitly).",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-3c7b5f9a1e84",
+      "content_sha256": "050b874debae68bda5f453a382f71dbab2617d8beb9dd860a052f7adde06e6df",
+      "approved": true,
+      "reason": "The LIBERO page states \"Success rates may vary by a few percent across evaluation seeds, so we recommend averaging over 3 seeds\", which is option c; batch size and reset fidelity are separate recommendations on the page.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-4c8e2b6f1a93",
+      "content_sha256": "06607565bd40e9d3ef1038af57661bd5d477cbe1b0d036cb510a75687f6a32a3",
+      "approved": true,
+      "reason": "The troubleshooting note says the control-flow keys \"work on X11, Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an interactive terminal — no `$DISPLAY` setup is needed\", and attributes the global key backend requirement to keyboard teleoperation instead.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5a3f7d9c1e48",
+      "content_sha256": "aa72e9e83c3e9998b451d93bbddbf428aa802e3a12d2bb343edfbf9e7738100c",
+      "approved": true,
+      "reason": "The HIL protocol lists \"No frames recorded during pause\" under the pause step and \"All movements are recorded\" under the takeover step, which is exactly option c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5d3b8a1f6c94",
+      "content_sha256": "22d0f13773dd929672e369273e49b817ca4a186e848444a2e2dc381c7f8f45f0",
+      "approved": true,
+      "reason": "The capacity page states \"Minimum replicas are reserved and non-preemptible and remain allocated... for as long as the endpoint is active\" and \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely.\" Option a wrongly extends the guarantee to maximum replicas; option c reverses the two.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5e8a2c91f06d",
+      "content_sha256": "46631a6c30b03e08914ccdccaa35480b2368014fbeea914333ee3f686561a684",
+      "approved": true,
+      "reason": "RerankResult documents `relevance_score` with \"Relevance score of the document\". `total_tokens` belongs to RerankUsage, and `embedding`/`owned_by` belong to other endpoints' schemas.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5f2a8c3e1d97",
+      "content_sha256": "25dd06cf1defecd378f89123fc23ce60683788f2e96f135c095145e41f9da442",
+      "approved": true,
+      "reason": "The capability table row reads \"**Map** | You need a site's structure before crawling it\", which matches the scenario; the other options quote the Search, Crawl, and Research rows.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-6b9c4e1a7f32",
+      "content_sha256": "cbedd6b4ab015d68e2884c8f30bff661757456dec98c4591dd800ef7c78c4db2",
+      "approved": true,
+      "reason": "The dataset v3.0 page states \"Without calling `finalize()`, your parquet files will be incomplete and the dataset won't load properly\", and instructs callers to call it before `push_to_hub()`, excluding option c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "4c9f3af69d47baa57f50ebfaf9b4a35cf9ae10e46dceea0fc2fae63b156dbc24",
+      "approved": true,
+      "reason": "All four cited descriptions are verbatim, and only rerank \"Reranks documents based on their relevance to a query\"; embeddings takes \"Input text to embed\", chat \"Creates a model response for the given chat conversation\", and models \"Lists the currently available models\".",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "ec3dcd33f374f228605a467b9849124752d873949d97ef59bb874bfb4e6542ca",
+      "approved": true,
+      "reason": "EmbeddingRequest lists \"required: - model - input\". `encoding_format` (default float) and `dimensions` are optional in the same schema, and option d omits the required `model`.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-7d4b9f2a6c53",
+      "content_sha256": "d88a4ceb74ae271a10104423e10b2102ff17bb1e77c444a45ac7f1a9f86d7394",
+      "approved": true,
+      "reason": "The page states \"To compare two policies on the same episodes, use the same `--seed`, keep `--env.init_states=true`, and run each task in a single batch\". It also says to use hard resets when reproducing benchmark results, excluding option d.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-7fa13c2e9b84",
+      "content_sha256": "cfd188291f766abd15ccf60dd1d003dd8c31357d6365d1ed8252bd6fa90c0325",
+      "approved": true,
+      "reason": "The PEFT guide says \"Note the `--peft.method_type` parameter that let's you select which PEFT method to use\", while `--peft.r`, `--peft.lora_alpha`, and `--peft.target_modules` are documented as rank, scaling, and layer selection.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "11f176d6fb7edfb4a10019706e377bb1d7e85819e2b9c97a294435bc24839c22",
+      "approved": true,
+      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\" for the vllm/vllm-openai image; the other options name unrelated Nebius services.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-8f1a3d6e9c52",
+      "content_sha256": "f5c47bf48aba4062cb32a0be46d1df1556068925acacae00164f637f3a588cc8",
+      "approved": true,
+      "reason": "The quickstart states \"This bucket is not deleted automatically after you delete the cluster\" and adds that charges continue until it is deleted, which also rules out the free read-only state in option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9b3d71ae4c08",
+      "content_sha256": "cb03b5a15cab0f5ec6f66f3bd534563b9946fd9afa97959d831e912cc4bbd295",
+      "approved": true,
+      "reason": "The best-practices note states \"`include_domains_mode: \"prefer\"` is useful when you want to prioritize trusted sources without risking empty results if none of them cover the query\", and the page's example sets both include_domains and the prefer mode; the default mode is a hard filter, excluding option c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9c4e7b2a5f16",
+      "content_sha256": "9a45977b28fbedf6e9c68342e766e3a97762b87ce584d1623026f6c729618bf5",
+      "approved": true,
+      "reason": "The MLflow quickstart prerequisite requires being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", so editor/viewer/no-role options fail.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9d1f7a4c3e68",
+      "content_sha256": "bd3043a3372343d49413719c35c18aadf4cda7be6a4546e6d4c16d94786971af",
+      "approved": true,
+      "reason": "The capacity page states \"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\", and separately that the allocation is released on stop and that there is no formal SLA, excluding options b-d.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9d3a5e7c1f46",
+      "content_sha256": "ebdf183ea55e19aa6e5b5db79200a01fabba5c7fbc2c05a3d75b04cb5543d78d",
+      "approved": true,
+      "reason": "The page states \"If a run fails before the model is pushed, that repo is left on the Hub so you can inspect it — it is not deleted automatically, so repeated failures can leave empty repos behind\", matching option c exactly.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a1f3c8d92b56",
+      "content_sha256": "0f9af23eec0ecf1ae9a5e93251f53fa695d9152ace0d601622834465f21e3463",
+      "approved": true,
+      "reason": "The quickstart's opening line is \"Tavily is the web layer for AI agents: real-time **search**, page **extraction**, site **crawling** and **mapping**, and cited **research**, returned as clean, LLM-ready content\", which option a restates; keyless access, session headers, and the docs MCP server are separate features.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a3d7f2c9e618",
+      "content_sha256": "52925e029eadca5bdc4ba5e733b9c31ecf6a9308a10c908acf5f571d2bd868ce",
+      "approved": true,
+      "reason": "The overview states \"User and service accounts of different regions cannot access the secret\", treating region as a constraint separate from permissions and describing no copy mechanism.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a6f3d8c1e975",
+      "content_sha256": "f415d13985f4b75ab4ce448dd231264df800ad0a278d1b2b9611064af2e4b90e",
+      "approved": true,
+      "reason": "The strategy list reads \"`sentry`: Continuous recording with auto-upload (useful for large-scale evaluation)\", with base, highlight, and dagger listed on the same lines as the other three behaviours.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a94f1d2b7c3e",
+      "content_sha256": "9f27cda7d4dea49a7af86486d9b421fe32d0a593d0b57b4db70b9e33327a65ef",
+      "approved": true,
+      "reason": "EmbeddingRequest documents `dimensions` as \"The dimensions to use for the request\"; `encoding_format` controls float vs base64 and `service_tier` the priority tier, neither of which changes vector size.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ad74c0f2b784",
+      "content_sha256": "92c54b8fc7e714e44da4083e1ba693316a96476e1f514fdee2d26ef24e98ac0c",
+      "approved": true,
+      "reason": "The MCP guide's Claude Code section states \"No API key needed in the URL — authentication is handled automatically via OAuth\"; the TAVILY_API_KEY variable appears only in the local Claude Desktop config.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "08ae0cc4b8dd695f08d79bacd0e26e6ffbec549f253141a5562aa4e7d9432bf2",
+      "approved": true,
+      "reason": "The tutorial states the LoRA adapter weights \"are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket\", and notes Serverless AI deletes the job after completion, excluding option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b2e4d9a1c673",
+      "content_sha256": "bdaa563943b12c3cfa390d65d6cc7fe2f48cfe9afccd8e2b71b86b889211c43a",
+      "approved": true,
+      "reason": "The quickstart's Crawl card reads \"Read many pages across a site\", while the other three options are verbatim the Search, Extract, and Map cards, so exactly one option matches Crawl.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b4de81f9a062",
+      "content_sha256": "ca0a961020214e57ed31ff9df8a2f4611cfdf4913f8ecea5b76f6ed0fa1a47bf",
+      "approved": true,
+      "reason": "The capacity page states \"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", and lists \"stopped for scheduled or emergency maintenance\" among those reasons.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b58e3f9a2c71",
+      "content_sha256": "82fa678e89ff3eaf3fe6d41ab4c97746500599b33c224f4098212fe532f89bb0",
+      "approved": true,
+      "reason": "The schema says \"This fingerprint represents the backend configuration that the model runs with\" and \"Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism\"; the end-user identifier is the separate `user` field.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b829d5a7c239",
+      "content_sha256": "2002becd4893953a55cff3a103bd781a16f5442febc58438f82b52e3004e7b4d",
+      "approved": true,
+      "reason": "The Search reference describes raw_content as \"The cleaned and parsed HTML content of the search result. Only if `include_raw_content` is true\"; favicon is gated by its own include_favicon flag, so only option c names the field in question.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b85c1e49730d",
+      "content_sha256": "6b2ee7644701440dc0ba87adc912bb118a923a4664f5dd93c68b9e21d42b8419",
+      "approved": true,
+      "reason": "The debugging page states that on failure \"Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\", so the VM is neither retained, nor left running, nor automatically kept alive without the sleep-on-fail wrapper.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-be85d1a3c895",
+      "content_sha256": "074562b516c015309b1390adbe935105d2427c677c8349fe6b55e7b234b09b16",
+      "approved": true,
+      "reason": "The guide states \"Use Search when you need raw source URLs and content to process yourself. Use Research when you need a finished, multi-source answer with citations\", which decides for option d.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c3814f269b05",
+      "content_sha256": "28f13ff3e86014898eebc6969e1eddfbb0e018d69146913058a0e6eb10a8baa7",
+      "approved": true,
+      "reason": "The rollout guide describes highlight as \"Autonomous rollout with on-demand recording via a memory-bounded ring buffer. The buffer captures the last N seconds of telemetry. Press the save key to flush the buffer\", distinct from sentry's periodic upload and episodic's reset structure.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "c791414e0fa31fc3fae2b06e67662b18472e0a3d1afc950b7c56eb37ed551077",
+      "approved": true,
+      "reason": "RerankRequest lists \"required: - model - query - documents\"; `user` and `service_tier` (default auto) are optional in the same schema, and option d omits `model`.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c6a4f1d93b72",
+      "content_sha256": "87ac867a7fda67447a90a7c2c4d46c67d78d90659b54c3b2b1d5ab2bdc791be6",
+      "approved": true,
+      "reason": "The Flex Tier section states that on non-paying plans with max_age_hours set \"these requests are refused with `434 Flex tier capacity exceeded`. Retry shortly, or omit `max_age_hours` to be served from cache.\" 429, 432, and 433 are documented for different conditions.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c8f1a5e3d964",
+      "content_sha256": "909a1e1fd4f3fecb2307eb76794ee91319ba21634a299b870ebfe2d3f976a89e",
+      "approved": true,
+      "reason": "One sentence carries both halves of option a: \"Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs... To keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper.\"",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c930e6b8d340",
+      "content_sha256": "43e8a0062a30af8495a6710bce457a21117d1e84f7caba117b24b9927e6d9449",
+      "approved": true,
+      "reason": "The Extract reference states \"Successful URLs appear in results; per-URL failures appear in failed_results. Check both arrays even when the response is HTTP 200\", which is option c and refutes options a and b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c9a3f62d18b5",
+      "content_sha256": "86b52eb4f520dd93df83e13910e2ce092cac19fcdf654a448c1ca47c50d59774",
+      "approved": true,
+      "reason": "The include_domains_mode description ends \"Setting it without `include_domains` returns a 400 error\", so for this scenario the 400 is the outcome; the other options quote the parameter's normal behaviour when domains are listed.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "ab8abee804e24c070cd29f86512007a84f6f13f9281bac8956f14742c20e377f",
+      "approved": true,
+      "reason": "The `stream` parameter says \"Tokens will be sent as data-only [server-sent events] as they become available, with the stream terminated by a `data: [DONE]` message\", excluding WebSocket, multipart, and batched-array transports.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "91a7842a29c21809e1d940c6f3e288877162df6d2c758160ced71336b929a498",
+      "approved": true,
+      "reason": "The temperature description states \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\" The page only recommends altering temperature or top_p, not that one disables the other.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cf96e2b4d906",
+      "content_sha256": "e9ca677d693ec3df122d09dfac4366f852192f1b6a104ddd7c31431e64ab63c6",
+      "approved": true,
+      "reason": "The operational checklist says \"Tag each result `ok` / `error` and retry only the failed ones with backoff, so a single error never sinks the whole batch\", which is option c and the opposite of aborting the batch.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "4c405e087c359c3b181a3363a3674a61b0f3316f36807c3dc32b4a367985184b",
+      "approved": true,
+      "reason": "The isolation section states each cluster \"is assigned a unique P-Key\" so that \"nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\", and the page confirms clusters do share fabrics, excluding option d.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "bd5b2e84c09e4b4f3cf14422c677207f2d38e0654bc8648e45a3a20023cff776",
+      "approved": true,
+      "reason": "The page attributes the speed-up to GPUDirect RDMA, which \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\"; options a and d describe the bottlenecks it removes.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co24917d1a57",
+      "content_sha256": "604b72462d06a0f79e53f70e901a2616ed03599eaff2ab748d70b49330271567",
+      "approved": true,
+      "reason": "The quickstart says \"Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine\"; the endpoint concerns control-plane reachability, not node addressing or workload exposure.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "931d09c13dfef2bf1ff68e6aa618caa79db6f62d4d09f4d1e0fd02b13601b7d2",
+      "approved": true,
+      "reason": "The warning states \"You cannot move a resource to another network or subnet after creation\", with no exception for stopping the VM or adding an interface, so recreation is the only route.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "f59bcd43c76a6c69486f036c01ea637299f773b66f1392b853cc7351a813bd5d",
+      "approved": true,
+      "reason": "The page states \"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources... create separate networks for them\", which covers both requirements; option d breaks the same-region constraint.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "7f21b93c376e94deba03619d372baf465f4c8f18a17938a058d5bd52670e1cf0",
+      "approved": true,
+      "reason": "The storage page states \"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted\", and notes they are not created from images or snapshots, excluding option c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "4a36670d8f36924346126a7a873a623ee15bc0bb23397001c1753c73d342ac22",
+      "approved": true,
+      "reason": "The page states \"One shared filesystem can be attached to multiple VMs at once\", while a network SSD disk \"can only be added to one running VM at a time\", so only the shared filesystem supports concurrent access.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "aa7c48513ffb455c9c02b30e75b5cd345c6e8c755c503d191c76a3ddb5062d12",
+      "approved": true,
+      "reason": "For Network SSD Non-replicated disks the page states \"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB\", and 100 GiB is not such a multiple.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "9886ee95c89fba839d5b4b2b8bf6c43d887cd20142b44b99dbe018847cbded3c",
+      "approved": true,
+      "reason": "The page states \"Sharing a filesystem across projects is not supported, even if the projects are in the same region\", and that all attached VMs must belong to the same project; virtiofs mounting and encryption do not lift that.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co33486f6ab7",
+      "content_sha256": "c6bebbfe961a7fbd6772f8548a9ca07fa4378b51a5bcdcdcc31881d85b95ef44",
+      "approved": true,
+      "reason": "The IAM overview states \"Being on the tenant user list does not grant access to resources. Each account should be assigned to a group that specifies the level of access\", which is option d.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3467c7f2ed",
+      "content_sha256": "8e0826ca72d5777425351d1948c3fb615f963dcdd1a17a49d6aca1a2c46dc0d2",
+      "approved": true,
+      "reason": "The overview states a service account \"belongs to the project where it was created, but its access to resources is defined by the groups that it's added to... can be granted access to any resource in the tenant regardless of the project\", supporting option a.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co356433d8e1",
+      "content_sha256": "ab1d3aa1e027a4062d86ea4eb9b0fefb8b09a090967398b0f76c632cede3b14c",
+      "approved": true,
+      "reason": "The roles reference lists \"`compute.instance-power-operator`: perform power operations on virtual machines without broader Compute permissions\", exactly the stated requirement; serial-console-user, editor, and viewer cover different permissions.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co36b9e8169f",
+      "content_sha256": "5e462935a957af547a4bcfb94e442d4221f9034c43b721817b9b7ad90cc3f363",
+      "approved": true,
+      "reason": "The roles reference lists \"`storage.uploader`: view buckets, upload objects but not list or download them\", matching write-only submission; object-viewer and object-lister grant the very access being withheld.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co37d7aa468e",
+      "content_sha256": "a9830876a3bba93bab41a4a3b6b258ab88c23d37268384214e7f35252dbff22c",
+      "approved": true,
+      "reason": "The page states \"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\", which supports option d and refutes a-c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co38a7131e83",
+      "content_sha256": "ac15d8006b312e626b07abdef661c3f8d9ddde420445dad79d6526bcd9a1d2b2",
+      "approved": true,
+      "reason": "The IAM overview states flatly \"You cannot delete a tenant\", so emptying it, its origin, or removing accounts makes no difference.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3981dd0ddc",
+      "content_sha256": "af4fd246ceb9002e1d7d70a1d3a742bf0d36fd8d18d8b9d906ac907c44d90dcb",
+      "approved": true,
+      "reason": "The CLI warning states \"You can only create a project via the Nebius AI Cloud CLI in public regions. If you try to create a project in a private region, you receive an error\", which is option a.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co40c9898d9e",
+      "content_sha256": "f9669e758221689d028f3bcbba9a4c59cb841bf49063ef518a0cac32f6d1ee9b",
+      "approved": true,
+      "reason": "The page states \"you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates\", so rotation is handled in place on the existing federation; the page describes no IdP sync and warns a federation needs at least one valid certificate.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co41d66f720d",
+      "content_sha256": "272c902d786d4607bdec0f80bd57434129f332de3140972270e0f467e9bc15a9",
+      "approved": true,
+      "reason": "Every prerequisite tab requires being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", and the roles page shows `editor` is a lesser role, so option b holds.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co427b99b29e",
+      "content_sha256": "f373c1c578a849991cc9164fe06d94f67020af6c9920c4cecd58b8571b3aed24",
+      "approved": true,
+      "reason": "The prerequisites require that \"you have access to your IdP admin portal and can get the SAML application metadata (login URL, identifier, certificate)\", which is option c; a private key is never supplied.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co45cdfe9d9a",
+      "content_sha256": "9840196afb8d5149cec2066e72e9b62ebbd460b4cd7da578253d2fcca978d664",
+      "approved": true,
+      "reason": "The alerts page defines \"**Duration**: Time during which the condition is met\" and states a `Pending` alert \"must last for the **Duration** time before the alert becomes `Firing`\", which is precisely what filters momentary spikes.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co47ac4ebcf8",
+      "content_sha256": "0175a537a424cd897d7e3343aefd6435bf164d8c64f3f5c99998a56558ea761c",
+      "approved": true,
+      "reason": "The health-checks page states \"If the condition remains in the `False` status for more than five minutes, or if the condition remains in the `Unknown` status for more than 15 minutes, the service runs an automatic recovery\", so at eight minutes recovery has triggered and the 15-minute figure belongs to `Unknown`.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co48348207ce",
+      "content_sha256": "ea51aa7f9d685ee712e6220e7088cd4cda9baf6d29da2ef496fba8ae3b11236f",
+      "approved": true,
+      "reason": "For persistent boot-disk I/O errors the page states \"the service runs an automatic recovery: it deletes the node and then creates a new one with a different name and healthy boot disk\", which is option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "03395d538c4fb9dc19bf79eb80840c6aa9e3436d43455b432ca1c70195bb02c3",
+      "approved": true,
+      "reason": "The node-groups page states \"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\"; recreation follows template changes, which is the rolling update described separately.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "01e6352f22fdf0b6a4f98002a574460dc20b6cb20de34784f6866bbd22d4c17a",
+      "approved": true,
+      "reason": "The quotas page states \"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs\", with no mirrored Kubernetes quota and no GPU-cluster condition.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co5387b84806",
+      "content_sha256": "30c974dac656350b09b4d468183ace08f3b2506389155616c63049f64d123bb0",
+      "approved": true,
+      "reason": "The troubleshooting page names as a possible cause that \"its service, `nvidia-fabricmanager`, does not initialize on VM startup because of a race condition or other timing issues\", and the quoted error shows the driver present but CUDA failing, excluding option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co564ab8cfb2",
+      "content_sha256": "9198307ee5b589f2c0874fd304b16596aec643131ed45c3152c108820b95b6a2",
+      "approved": true,
+      "reason": "The page states \"We strongly recommend collecting logs while the issue is still occurring, because they capture more information about the broken state than logs collected after the issue has been resolved\", which is option c.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cs02a5b6c7d8",
+      "content_sha256": "7fe02aca2f9c99ded13096ffd0f9378caaec2b1962ef284c94de2b42430c380d",
+      "approved": true,
+      "reason": "The overview says \"Set minimum and maximum replicas to automatically scale capacity with traffic\" and the capacity page adds \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely\", which together are option a.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d1b647a9e820",
+      "content_sha256": "22971acece224605f926484c8492002b65b1e366ceff50b91091b1c6f6f125a1",
+      "approved": true,
+      "reason": "The dataset tools guide states merge means \"The datasets must have identical features, and episodes are concatenated in the order specified in `repo_ids`\"; video encoding and splitting are separate operations.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d49a1e7f3c82",
+      "content_sha256": "8adde6cdcb329f0c06ad1d5165d07ee074074533ec6938095ff4f0cabb17651c",
+      "approved": true,
+      "reason": "The max_tokens description ends \"If omitted or set to null, defaults to 8192 tokens\"; 100 appears only as an example value and 1 is the default for `n`.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d4a6f1c3e895",
+      "content_sha256": "d96b546dbcf048a367c00b5e20ec78b3da3666496099c3b223fcab65ff8fcd4e",
+      "approved": true,
+      "reason": "The capability section opens \"Lead with **Search** when sources are unknown; move to the others once you have URLs or a site to work through\", which is option c; the guide makes no claim that Map must run first or that Research is cheapest.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d4f8a2c6e193",
+      "content_sha256": "9444a11bf9c81780873bb16226b245ea84f297224131084ffd81887f316abdd9",
+      "approved": true,
+      "reason": "The overview maps \"Train or fine-tune a model, preprocess data, run batch inference or evaluation → **Job**\" and describes a Job as \"Non-interactive, terminates upon task completion or timeout\"; Devlab and Endpoint are listed as interactive.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d84f2a7c91e6",
+      "content_sha256": "9797987637fe65c2dfa9965e838b5cd583224bd5d2ce535c6f24c23cf8e4d1a6",
+      "approved": true,
+      "reason": "The 400 response description states \"When all URLs fail validation, detail.failed_results describes the individual failures\", which is option b and refutes the generic-error and one-at-a-time options.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de01a1b2c3d4",
+      "content_sha256": "4610fcf5b9d06966bb84f78797d2bedbec57df86c1dcf117e5bbfc8b05d3d7fa",
+      "approved": true,
+      "reason": "The comparison table row reads \"| Capacity | Capacity reserved for your organization | Shared multi-tenant capacity |\", and the capacity page adds \"it is not a long-term reservation, and the minimum replicas guarantee applies only while the endpoint is running\", which excludes option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de03c5d6e7f8",
+      "content_sha256": "4623b8663938e2650542086e70ac1d1d83a2f36db04ad8eb843a4e5210ea2fa9",
+      "approved": true,
+      "reason": "The table row \"| Custom weights support | Supported for eligible models | Base models only |\" settles it; the same table prices dedicated endpoints per GPU/hour with a fixed user-selected region, and the capacity page denies a formal SLA.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de04e5f6a7b8",
+      "content_sha256": "0a0464670183ebe47c288a0d9a6bff0c4078f25a82770384114ea873e32fc24a",
+      "approved": true,
+      "reason": "The page states \"requests that exceed your rate limit may still be processed. This occurs when the system has spare capacity available\", these responses carry \"x-ratelimit-over-limit: yes\", and it says to \"Treat this as an early warning\", so option a is right and option b's \"always\" is wrong.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de09d0e1f2a3",
+      "content_sha256": "14b823982a9b27d0207638b6ee5b1e9b145f619057c7c67124b1aca8e669150f",
+      "approved": true,
+      "reason": "The page states \"If you exceed the active limit you will receive **HTTP 429**\"; 500, 404, and 401 are unrelated conditions.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e2a9c7f4b816",
+      "content_sha256": "0dd88f6b092a09d47f23071198d7b14215a27f17719309e300c5479562126245",
+      "approved": true,
+      "reason": "The PEFT guide states \"By default, PEFT will target the `q_proj` and `v_proj` layers of the LM expert in SmolVLA\", and says other layers need `--peft.target_modules`, excluding the no-default and embedding/head options.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e4a7c982f1b3",
+      "content_sha256": "302f6530efe3bae94051ce0d9449ff08df01e2aedda91cb7fc2d389066d1441c",
+      "approved": true,
+      "reason": "The Search reference describes score as \"The relevance score of the search result\"; credits are in top-level usage, response_time is the request duration, and published_date is its own field.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e6c3a9f12d84",
+      "content_sha256": "12b0b14c1f5620e489357c08620f648532440aa06288d39d5f34aff39df9caf1",
+      "approved": true,
+      "reason": "The metadata table lists \"| `content` | Quick relevance check |\", with score for filtering/ranking, title for keyword filtering, and raw_content for deep analysis, so only option c matches.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e8d4b2a7f619",
+      "content_sha256": "7eadca63b62e2e37f1f7883e56f2ec69d2d8fd09b5c3f2dd832aae7413669e68",
+      "approved": true,
+      "reason": "The capability table row reads \"**Extract** | You already have the URL, or picked one from Search\", exactly the scenario; the other options quote the Map, Crawl, and Research rows.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "674ca690fa3a1c6434c81613ba787a98801958c8b109aac1820a56d8a0b3faf0",
+      "approved": true,
+      "reason": "The quickstart states you can access \"the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\", which is option a.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ec2a8f4b916d",
+      "content_sha256": "6134d94e16a685b6654fc453575a0bd20af4405b0aa88b6fb6d800f58afbb606",
+      "approved": true,
+      "reason": "The search_depth cost note reads \"`basic`, `fast`, `ultra-fast`: 1 API Credit\" and \"`advanced`: 2 API Credits\", which is option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "5cb6119c5333eb78258e9efee77e927afd7ece3cd510a066451b36bd815b256f",
+      "approved": true,
+      "reason": "The endpoint \"Reranks documents based on their relevance to a query\" and RerankResult carries index, document, and \"relevance_score... Relevance score of the document\" — no vectors, rewrites, or generated answers.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-f01c7a4e9b36",
+      "content_sha256": "ca2d72bbaa488662f003c22ebfde8dd8fbadad5bdc2cbc27beb24bd8a25eb6fa",
+      "approved": true,
+      "reason": "The Extract result schema describes favicon as \"The favicon URL for the result\", while raw_content, images, and url are the other three options' fields.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-f2c9b5e7a239",
+      "content_sha256": "cd2c4bad14a139b4daf3f9d35d14ddecd8f3aab6945803508c3ab2b1e1107617",
+      "approved": true,
+      "reason": "The page states \"If the response includes `Retry-After`, wait the indicated number of seconds before retrying\" and adds \"The 60-second delay is an example; use the value returned in the response\", which makes option c best and option d wrong.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-f607b3e5a017",
+      "content_sha256": "f21048d1f652fea88ce8b2a8c1099485bcd4aa8e2459f76f23c1ff7b01e4906e",
+      "approved": true,
+      "reason": "The best-practices guide states \"`advanced` searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency. Reach for it when coverage matters most: niche topics...\", matching the scenario.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-fa1c8d3b7e94",
+      "content_sha256": "a7f6d04549982291fb2d4f02c73ce73b7e81b3c064daf3de31ed721dd29e9396",
+      "approved": true,
+      "reason": "The quick rules state \"Shared across a team or org — even in Cursor or Claude Code → **MCP**\", and the connection table describes MCP as \"Governed, shared, reusable access\"; CLI + Skills is reserved for a single local session.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-fe3a1c6d8b27",
+      "content_sha256": "a466177dd28e60b4d5bf0ac8187d63a645afbf9fdc8b33ffb04b5869ebd6fd01",
+      "approved": true,
+      "reason": "For the 434 response the page says \"Retry shortly, or omit `max_age_hours` to be served from cache\"; Retry-After guidance belongs to the 429 case and search_depth is unrelated.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld28389db1f6",
+      "content_sha256": "a3b4e9ade66d046866cc2c69b34b55ff831cf464572ff3e1d5b0d6a8f85944a2",
+      "approved": true,
+      "reason": "The models page states \"Unless you override it via the `context_length` hyperparameter, the default context length for fine-tuning is **8192 tokens**\"; 131072 is the top of the supported range, not the default.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld295930cb94",
+      "content_sha256": "fb9bdd0d1fce434f202cfb5fbf8f8ea4935c8ec33e3f6e38c585a558f7984e8b",
+      "approved": true,
+      "reason": "The page's own list of what it provides is \"Which **context lengths** they support\" and \"Which **fine-tuning types** are available (LoRA vs full fine-tuning)\", which is option a; training data, throughput, and pricing are not enumerated there.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld537a96b931",
+      "content_sha256": "88f8e24729d5e029e659c7cab1c8ede887224618bdf75c90db212ec77f99b10e",
+      "approved": true,
+      "reason": "The capacity page states \"When an endpoint stops, its GPU capacity is released back to the shared pool\" and \"capacity is requested from the pool anew and allocated based on availability at that moment\", with \"no mechanism that holds your previous GPUs\".",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld549f772575",
+      "content_sha256": "a2f0e396bb4d288c351e8f5034e0e69ad6cea24b90ac6ee1c18fb13698917a17",
+      "approved": true,
+      "reason": "The page warns that \"During periods of high demand, or for scarce GPU types, restarting may take significantly longer than the initial deployment, and capacity may be temporarily unavailable\", which is the risk in option a.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ob01d8e9f0a1",
+      "content_sha256": "319d2c3d8d71027ac385fff7227a7c498cb283bbb4ef7daaac22ce0965aeea62",
+      "approved": true,
+      "reason": "The page says to \"track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers\"; the other header pairs carry no quota data.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "09b010c09ebe65538059657839f83cbc9c8835a89c6b8f9ca1b6cfabb0aa2282",
+      "approved": true,
+      "reason": "The Usage schema defines completion_tokens, prompt_tokens, and \"total_tokens... Total number of tokens used in the request (prompt + completion)\"; the other options are hardware, transport, or database metrics.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "64bc9788fefef8ae7bdb5b9155e6512accb64d0fe24e9d437f8353ed048dfcdf",
+      "approved": true,
+      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and the models schema includes \"context_length: type: integer\".",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "ec90771aad53441e960788bf8ed345eab4757b7dcb6f5d99c64004b1f0ba7f2f",
+      "approved": true,
+      "reason": "The temperature parameter is documented as \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\"; the other options are not model parameters at all.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl01d7e8f9a0",
+      "content_sha256": "46c0abf6dcee87632b4a3a92c5c49cd59592c2ff35a83e85ad0a9ae08857b5c5",
+      "approved": true,
+      "reason": "The page states \"Every user is provided with a default rate limit cap. This limit grows automatically when you consistently operate close to your capacity and current limit\", and evaluates usage in 15-minute buckets rather than monthly.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl02e8f9a0b1",
+      "content_sha256": "578a8b9db51e86cf8dcb4c1183b6f18d6e522a22fbd133cf3c009ba6cfd5564f",
+      "approved": true,
+      "reason": "The page directs you to \"track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers\"; no webhook or polling endpoint is documented.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl03f9a0b1c2",
+      "content_sha256": "eb6ed5c390d0e1058cbb9c5baf23a220f1a324c3872ac22c9d57f1c7b6dc78f0",
+      "approved": true,
+      "reason": "Over-the-limit processing \"occurs when the system has spare capacity available, and your request can be handled with a lower priority without affecting other users\", which is option d; nothing is queued or replayed.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl04b6c7d8e9",
+      "content_sha256": "c3686c356ee495a4f003c3d6a07dfcf218d5f06a56c9fd043f784ff48e3a6b5e",
+      "approved": true,
+      "reason": "The page states the default cap \"grows automatically when you consistently operate close to your capacity and current limit\", so sustained high usage raises the cap rather than suspending or throttling the account.",
+      "reviewed_at": "2026-11-14T13:21:41Z"
+    }
+  ]
+}

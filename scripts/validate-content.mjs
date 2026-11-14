@@ -139,22 +139,38 @@ const allKnownObjectives = new Set();
     }
     if (courses.has(data.id)) err(file, `duplicate course id ${data.id}`);
 
-    // `summary` is the one free-text course field that reaches the client
-    // catalog (the course card), so LEGAL.md's naming rule applies to it:
+    // Free-text course fields that reach the client catalog (`summary`,
+    // domain titles, and objective titles) must obey LEGAL.md's naming rule:
     // no vendor or certification name. Vendor names are read from the fields
     // that legitimately carry them, so a new course or vendor needs no list
     // kept here.
-    if (typeof data.summary === "string") {
-      for (const name of courseVendorNames(data)) {
-        if (new RegExp(`\\b${escapeRegExp(name)}\\b`, "i").test(data.summary)) {
+    const vendorNames = courseVendorNames(data);
+    const checkVendorNeutral = (text, fieldName) => {
+      if (typeof text !== "string") return;
+      for (const name of vendorNames) {
+        if (new RegExp(`\\b${escapeRegExp(name)}\\b`, "i").test(text)) {
           err(
             file,
-            `summary names ${JSON.stringify(name)}; it reaches the client catalog and must stay vendor-neutral (LEGAL.md)`,
+            `${fieldName} names ${JSON.stringify(name)}; it reaches the client catalog and must stay vendor-neutral (LEGAL.md)`,
           );
         }
       }
-      if (data.summary.includes(data.prepares_for)) {
-        err(file, "summary repeats prepares_for; the certification name must stay in content/ (LEGAL.md)");
+      if (text.includes(data.prepares_for)) {
+        err(
+          file,
+          `${fieldName} repeats prepares_for; the certification name must stay in content/ (LEGAL.md)`,
+        );
+      }
+    };
+
+    if (typeof data.summary === "string") {
+      checkVendorNeutral(data.summary, "summary");
+    }
+
+    for (const d of data.domains ?? []) {
+      checkVendorNeutral(d.title, `domain ${d.id} title`);
+      for (const o of d.objectives ?? []) {
+        checkVendorNeutral(o.title, `objective ${o.id ?? o} title`);
       }
     }
 

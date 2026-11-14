@@ -2,12 +2,14 @@ schema_version: 1
 id: src-tv-sdk-python
 url: https://docs.tavily.com/sdk/python/reference.md
 title: Tavily Python SDK reference
-retrieved_at: 2026-10-31T01:11:47Z
-sha256: 66407123e3b930d5ffe5a6c03249739fb12e225ccde0e2aff790639929038457
+retrieved_at: 2026-11-14T13:03:59Z
+sha256: 66068a10df22b4f4e39cd62926f2a46d0988b03d5f47e1964a0f6b5bcadb71f3
 objectives:
   - domain-3/mcp-integration
   - domain-1/blended-rag
 snapshot:
   bucket: academy-source-snapshots
-  key: 66407123e3b930d5ffe5a6c03249739fb12e225ccde0e2aff790639929038457
-status: drifted
+  key: 66068a10df22b4f4e39cd62926f2a46d0988b03d5f47e1964a0f6b5bcadb71f3
+status: current
+versions:
+  - 66407123e3b930d5ffe5a6c03249739fb12e225ccde0e2aff790639929038457

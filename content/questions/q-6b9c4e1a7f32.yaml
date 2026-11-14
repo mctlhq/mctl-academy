@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6b9c4e1a7f32
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/dataset-curation
 stem: "When creating or recording a LeRobotDataset v3.0 dataset, what happens if
@@ -39,12 +39,12 @@ evidence:
   - source_id: src-pa-lerobot-dataset-v3
     excerpt: "Without calling `finalize()`, your parquet files will be incomplete
       and the dataset won't load properly."
-    source_sha256: 3fa6349f9f74edaa504b52f0097443b626bb7cc4f7302cb6ba0f3476ad342fad
+    source_sha256: 27472c93393a0fd51cb9efa699ab2caa847f76d329e7a15e381918ca11014595
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:04:42Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T09:29:20Z
-  content_sha256: eec86a603a9aee1125b50a9841d8eb727b25f5776ffec5f80ba6e687b55b2837
+  at: 2026-11-14T13:21:41Z
+  content_sha256: cbedd6b4ab015d68e2884c8f30bff661757456dec98c4591dd800ef7c78c4db2

@@ -271,7 +271,13 @@ test("catalog title and mock config come from canonical course metadata", () => 
   assert.equal(catalog[0].mock.timeLimitMinutes, 25);
   assert.equal(catalog[0].mock.discloseBankSize, false);
   assert.deepEqual(catalog[0].mock.domains, [
-    { id: "domain-1", title: "One", weight: 100, mockQuestions: 12 },
+    {
+      id: "domain-1",
+      title: "One",
+      weight: 100,
+      mockQuestions: 12,
+      objectives: [{ id: "alpha", title: "Alpha" }],
+    },
   ]);
 });
 

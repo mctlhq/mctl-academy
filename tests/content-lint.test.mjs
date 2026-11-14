@@ -740,6 +740,42 @@ test("a vendor name in prepares_for still matches with a mark or possessive atta
   }
 });
 
+test("rejects a domain title or objective title that names the vendor from prepares_for", () => {
+  const { ok: okDomain, output: outputDomain } = lint({
+    courseDef: {
+      ...VENDOR_COURSE,
+      domains: [
+        {
+          id: "domain-1",
+          title: "Acme Cloud Architecture",
+          weight: 100,
+          mock_questions: 30,
+          objectives: [{ id: "alpha", title: "Valid objective title" }],
+        },
+      ],
+    },
+  });
+  assert.equal(okDomain, false);
+  assert.match(outputDomain, /domain domain-1 title names "Acme"/);
+
+  const { ok: okObj, output: outputObj } = lint({
+    courseDef: {
+      ...VENDOR_COURSE,
+      domains: [
+        {
+          id: "domain-1",
+          title: "Cloud Architecture",
+          weight: 100,
+          mock_questions: 30,
+          objectives: [{ id: "alpha", title: "Configuring Acme clusters" }],
+        },
+      ],
+    },
+  });
+  assert.equal(okObj, false);
+  assert.match(outputObj, /objective alpha title names "Acme"/);
+});
+
 test("rejects a manifest row whose coverage names an objective outside its own objectives", () => {
   const row = (objectives) => ({
     id: "src-new-page",

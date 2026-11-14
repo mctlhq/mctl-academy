@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf06a4b5c6d7
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/model-catalog
 stem: How can a developer retrieve the extended list of model parameters, such
@@ -32,12 +32,12 @@ evidence:
     source_sha256: 0d25ddec63101f1d028e628e937c43cf756546b3339c6cfbaf6b6e7886df9a97
   - source_id: src-recovery-models
     excerpt: "context_length: type: integer title: Context Length"
-    source_sha256: 010eef24ca44ade7342d223c81eb64a9cfb12c745f93c9dafda225a224a1caaf
+    source_sha256: 6c4ea439fb9a7b7ec77841237a192be1d41d6ac7962a96177a1ecb9dd6aa2862
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 3a363c1c300cbbd55efe63a53c08d673db0e87ad93ec194deacbdca58cabc2db
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 64bc9788fefef8ae7bdb5b9155e6512accb64d0fe24e9d437f8353ed048dfcdf

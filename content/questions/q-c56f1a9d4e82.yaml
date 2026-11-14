@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c56f1a9d4e82
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: According to the Reranking API reference, which fields are required in a
@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-recovery-rerank
     excerpt: "required: - model - query - documents"
-    source_sha256: 51501d6a852a638838e4fb8ded65d5949925046266d85750bd051ef28c9e4819
+    source_sha256: fa1765a8f584d350dd4d8f191bf2393e1b8a9d1cbdb7fac5ed1c141e9c1965b1
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 323dbfe9d00f490fad828651646c54ec7d4828e702c275d0af8744be12c9929a
+  at: 2026-11-14T13:21:41Z
+  content_sha256: c791414e0fa31fc3fae2b06e67662b18472e0a3d1afc950b7c56eb37ed551077

@@ -7,33 +7,17 @@
 # scopes in SOURCES.md) and must say why. Both lists are maintained by the
 # Content replenish workflow and reviewed like any other change under content/.
 seen:
-  - url: https://docs.nebius.com/3p-integrations/compatibility.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/3p-integrations/dstack.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/3p-integrations/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/3p-integrations/mpirun.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/3p-integrations/run-ai.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/3p-integrations/skypilot-mk8s.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/3p-integrations/skypilot.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/ai-services/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/deploy.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/applications/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/applications/kubernetes/nvidia-blueprint-virtual-screening/deploy.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/applications/kubernetes/nvidia-blueprint-virtual-screening/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/applications/kubernetes/nvidia-blueprint-virtual-screening/licenses.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/audit-logs/events/export.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/events/filter.md
     first_seen: 2026-09-13
@@ -48,8 +32,6 @@ seen:
   - url: https://docs.nebius.com/audit-logs/resources/quotas-limits.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/services.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/audit-logs/use-cases.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/cli/compute-vm.md
     first_seen: 2026-09-13
@@ -75,12 +57,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/clusters/ai-workloads.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/clusters/gpu/test.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/clusters/gpu/topology/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/clusters/gpu/topology/manage.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/monitoring/serial-logs.md
@@ -95,27 +71,15 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/automatic-updates.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/boot-disk-images.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/custom-disk-images.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/detach-volume.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/disk-snapshots.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/export.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/image-recommendations.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/import-image.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/local-disks.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/packer.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/use.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/capacity-advisor.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/connect.md
     first_seen: 2026-09-13
@@ -131,21 +95,11 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/lifecycle.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/list-platforms.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/maintenance-reasons.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/maintenance.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/network.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/not-enough-resources.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/params.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/preemptible.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/reservations.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/serial-console.md
     first_seen: 2026-09-13
@@ -156,8 +110,6 @@ seen:
   - url: https://docs.nebius.com/compute/virtual-machines/stopped-with-linux-commands.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/tcp-window-tuning.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/virtual-machines/types.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/virtual-machines/wireguard.md
     first_seen: 2026-09-13
@@ -174,8 +126,6 @@ seen:
   - url: https://docs.nebius.com/container-registry/resources/quotas-limits.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/developer-tools.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/docs-ai.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/grpc-api/api-github.md
     first_seen: 2026-09-13
@@ -199,8 +149,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/authorization/groups/index.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/iam/authorization/groups/manage.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/authorization/groups/members.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/authorization/static-keys/index.md
@@ -217,8 +165,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/federations/manage.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/iam/federations/saml-sso.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/get-tenants.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/index.md
@@ -231,27 +177,15 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/iam/service-accounts/authentication.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/iam/service-accounts/authorized-keys.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/iam/service-accounts/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/iam/wif/configure.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/iam/wif/index.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/cryptography/asymmetric.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/cryptography/symmetric.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/index.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kms/logs.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/manage/create.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/manage/delete-restore.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kms/manage/rotate.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/manage/update.md
     first_seen: 2026-09-13
@@ -263,8 +197,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kms/resources/quotas-limits.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kms/types-operations.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/clusters/load-balancer.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/clusters/manage.md
@@ -273,16 +205,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/connect.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/gpu/clusters.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/gpu/set-up.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/index.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/logs.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/maintenance/enable-disable-health-checks.md
@@ -290,8 +212,6 @@ seen:
   - url: https://docs.nebius.com/kubernetes/maintenance/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/maintenance/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/manage-applications.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/manage-versions.md
     first_seen: 2026-09-13
@@ -303,8 +223,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/dynamic-to-static.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/networking/limit-access-to-public-endpoint.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/nodelocal-dns-cache.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/non-default-subnet.md
@@ -315,11 +233,7 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/networking/security-groups.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/node-groups/autoscaling.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/node-groups/kube-reserved.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/node-groups/moving-workload.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/node-groups/reservations.md
     first_seen: 2026-09-13
@@ -330,8 +244,6 @@ seen:
   - url: https://docs.nebius.com/kubernetes/skypilot.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/storage/disk-over-csi.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/kubernetes/storage/filesystem-over-csi.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/kubernetes/troubleshooting/cidr-allocation-error.md
     first_seen: 2026-09-13
@@ -377,13 +289,9 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/buckets/configure-inventory.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/buckets/inventory.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/buckets/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/buckets/versioning.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/configure-storage-classes.md
     first_seen: 2026-09-13
@@ -394,8 +302,6 @@ seen:
   - url: https://docs.nebius.com/object-storage/interfaces/aws-cli.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/interfaces/mountpoint-s3.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/interfaces/s3-api-compatibility.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/logs.md
     first_seen: 2026-09-13
@@ -411,19 +317,11 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/overview.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/performance-cost-best-practices.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/performance/benchmark.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/quickstart.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/resources/pricing.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/resources/quotas-limits.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/storage-classes.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/store-terraform-state.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/supported-actions.md
     first_seen: 2026-09-13
@@ -434,8 +332,6 @@ seen:
   - url: https://docs.nebius.com/object-storage/transfer/key-prefixes.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/transfer/launch.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/object-storage/transfer/limits.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/object-storage/transfer/manage.md
     first_seen: 2026-09-13
@@ -450,10 +346,6 @@ seen:
   - url: https://docs.nebius.com/observability/agents/monitoring-agent.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/agents/nebius-o11y-agent.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/observability/dashboards.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/observability/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/logging.md
     first_seen: 2026-09-13
@@ -477,8 +369,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/metrics/ingest/index.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/observability/metrics/ingest/nebius-o11y-agent.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/metrics/ingest/prometheus-instance.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/metrics/ingest/prometheus-operator.md
@@ -492,8 +382,6 @@ seen:
   - url: https://docs.nebius.com/observability/resources/pricing.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/resources/quotas-limits.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/observability/services.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/observability/traces/direct-ingest.md
     first_seen: 2026-09-13
@@ -509,13 +397,7 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/contacts/manage-contacts.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/overview/data-deletion.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/overview/data-portability.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/overview/limits/capacity-block-groups.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/limits/manage-project-limits.md
     first_seen: 2026-09-13
@@ -523,17 +405,11 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/nebius-echo.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/overview/quotas.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/overview/regions.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/services.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/subscriptions/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/overview/subscriptions/manage-subscriptions.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/overview/support.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/postgresql/backups.md
     first_seen: 2026-09-13
@@ -585,8 +461,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/sdk/python/send-request.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/security/encryption.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/serverless/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/serverless/lifecycle.md
@@ -603,13 +477,9 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/serverless/tutorials/video-translation.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/signup-billing/billing-models/committed-usage.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/signup-billing/billing-models/overview.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/signup-billing/billing-models/payg.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/signup-billing/budgets.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/signup-billing/index.md
     first_seen: 2026-09-13
@@ -629,10 +499,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/signup-billing/sign-up.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/signup-billing/usage/export.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/signup-billing/usage/focus-conformance.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/signup-billing/usage/focus-fields.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/signup-billing/usage/view.md
@@ -651,15 +517,9 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/jobs/containers/index.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/jobs/containers/pyxis-enroot.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/jobs/examples/nccl-all-reduce.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/jobs/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/jobs/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/managed-soperator/manage.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/managed-soperator/resources/pricing.md
     first_seen: 2026-09-13
@@ -671,21 +531,13 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/monitoring/logs.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/monitoring/metrics.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/monitoring/statuses.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/overview/architecture.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/storage/download-data.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/storage/manage-access.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/slurm-soperator/users/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/slurm-soperator/worker-nodes-health.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/terraform-provider/authentication.md
     first_seen: 2026-09-13
@@ -735,13 +587,9 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/addressing/custom-private-addresses.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/vpc/addressing/disable-public-addresses.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/addressing/public-address-ranges.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/index.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/vpc/nebius-vpn-gateway.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/networking/resources.md
     first_seen: 2026-09-13
@@ -754,8 +602,6 @@ seen:
   - url: https://docs.nebius.com/vpc/routing/custom-nat-gateway.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/routing/manage.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/vpc/routing/overview.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/vpc/security-groups/manage.md
     first_seen: 2026-09-13
@@ -1131,8 +977,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.tokenfactory.nebius.com/utilities/prompt-presets.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/3p-integrations/multi-cloud-skypilot.md
-    first_seen: 2026-10-08
   - url: https://docs.nebius.com/3p-integrations/wiz.md
     first_seen: 2026-10-08
   - url: https://docs.nebius.com/cli/update.md
@@ -1145,17 +989,11 @@ seen:
     first_seen: 2026-10-08
   - url: https://docs.nebius.com/serverless/devlabs/manage.md
     first_seen: 2026-10-08
-  - url: https://docs.nebius.com/serverless/jobs/auto-restarts.md
-    first_seen: 2026-10-08
   - url: https://docs.nebius.com/serverless/quickstart/devlabs.md
     first_seen: 2026-10-08
   - url: https://docs.nebius.com/signup-billing/manage-pricing-policy.md
     first_seen: 2026-10-08
   - url: https://docs.nebius.com/signup-billing/payments/cost-breakdown.md
-    first_seen: 2026-10-08
-  - url: https://docs.nebius.com/signup-billing/pricing-policy.md
-    first_seen: 2026-10-08
-  - url: https://docs.nebius.com/signup-billing/usage/cost-allocation-labels.md
     first_seen: 2026-10-08
   - url: https://docs.nebius.com/vpc/dns/manage-records.md
     first_seen: 2026-10-08
@@ -1259,15 +1097,11 @@ seen:
     first_seen: 2026-10-30
   - url: https://docs.nebius.com/kubernetes/gpu/dynamic-resource-allocation.md
     first_seen: 2026-10-30
-  - url: https://docs.nebius.com/mysterybox/kubernetes.md
-    first_seen: 2026-10-30
   - url: https://docs.nebius.com/serverless/maintenance/stop-start.md
     first_seen: 2026-10-30
   - url: https://docs.nebius.com/signup-billing/spot-prices.md
     first_seen: 2026-10-30
   - url: https://docs.tokenfactory.nebius.com/cached-tokens.md
-    first_seen: 2026-10-30
-  - url: https://docs.tokenfactory.nebius.com/model-deprecations-november-2026.md
     first_seen: 2026-10-30
   - url: https://docs.tokenfactory.nebius.com/sandboxes/sdk/contributing.md
     first_seen: 2026-10-30
@@ -1323,8 +1157,6 @@ seen:
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/documentation/tavily-cli.md
     first_seen: 2026-10-31
-  - url: https://docs.tavily.com/examples/agent-toolkit/overview.md
-    first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/hub.md
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/examples/open-sources/projects.md
@@ -1353,4 +1185,28 @@ seen:
     first_seen: 2026-10-31
   - url: https://docs.tavily.com/sdk/python/quick-start.md
     first_seen: 2026-10-31
+  - url: https://docs.nebius.com/3p-integrations/saturn-cloud.md
+    first_seen: 2026-11-14
+  - url: https://docs.nebius.com/ai-agents/connect.md
+    first_seen: 2026-11-14
+  - url: https://docs.nebius.com/ai-agents/docs-for-agents.md
+    first_seen: 2026-11-14
+  - url: https://docs.nebius.com/ai-agents/mcp-server.md
+    first_seen: 2026-11-14
+  - url: https://docs.nebius.com/ai-agents/skills.md
+    first_seen: 2026-11-14
+  - url: https://docs.tavily.com/examples/use-cases/fsi-kit.md
+    first_seen: 2026-11-14
+  - url: https://docs.tavily.com/examples/use-cases/slack-research-agent.md
+    first_seen: 2026-11-14
+  - url: https://docs.tavily.com/examples/use-cases/supply-chain-risk.md
+    first_seen: 2026-11-14
+  - url: https://docs.tokenfactory.nebius.com/model-deprecations-december-2026.md
+    first_seen: 2026-11-14
+  - url: https://docs.tokenfactory.nebius.com/november-2026-deprecation-notice.md
+    first_seen: 2026-11-14
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/sdk/integrations/harbor.md
+    first_seen: 2026-11-14
+  - url: https://docs.tokenfactory.nebius.com/sandboxes/sdk/python_sdk/custom-store.md
+    first_seen: 2026-11-14
 ignored: []

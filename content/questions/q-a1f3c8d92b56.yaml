@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-a1f3c8d92b56
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/realtime-search-fundamentals
 stem: "An agent's base model stops learning about the world at its training
@@ -34,12 +34,12 @@ evidence:
     excerpt: "Tavily is the web layer for AI agents: real-time **search**, page
       **extraction**, site **crawling** and **mapping**, and cited **research**,
       returned as clean, LLM-ready content."
-    source_sha256: 3b09f433e0e37e32726da10bfa4c0095cf490a227aafb51e8249d102302dd06d
+    source_sha256: 6a25f1c2841b9869faa4806842d31674269a373a5c66b5c969d4da3f41e595ca
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: c3de04fd7bfb521bc5389a55e399dfa1e2836c83bbdbe3d91a0fba709c770933
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 0f9af23eec0ecf1ae9a5e93251f53fa695d9152ace0d601622834465f21e3463

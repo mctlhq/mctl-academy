@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b829d5a7c239
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/response-fields
 stem: "In a Tavily Search response, which field is only present when
@@ -30,12 +30,12 @@ evidence:
   - source_id: src-tv-api-search
     excerpt: "The cleaned and parsed HTML content of the search result. Only if
       `include_raw_content` is true."
-    source_sha256: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
+    source_sha256: 2541b8dc55c062fdb57aacb6c0d1f5da53750234d3572c12c2b872e3547e97dd
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: d7d6c69603a9bc77c245bf413b442f62d9d34080d3f75b6ed374e44dbf445628
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 2002becd4893953a55cff3a103bd781a16f5442febc58438f82b52e3004e7b4d

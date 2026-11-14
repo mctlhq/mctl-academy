@@ -17,13 +17,6 @@
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
-      "id": "q-2f6b8d4a1c93",
-      "content_sha256": "bc488c664b24c48e044d4d5895f07d83b76e6e3ce3e4f2291a4002f094b2d458",
-      "approved": true,
-      "reason": "Found verbatim: \"Each pushed checkpoint is tagged with its step (e.g. `--policy.pretrained_revision=010000`), so you can recover a checkpoint by step without looking up its commit sha.\" The page separately says `--resume=true` continues from the repo's latest checkpoint, so distractor d is not defensible.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
       "id": "q-3d7e2a6b9c41",
       "content_sha256": "64ddff7419cffa4dcac1eb119adc94c7765894d07b65d6ddb779e1896d0e9ea9",
       "approved": true,
@@ -45,31 +38,10 @@
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
-      "id": "q-4c8e2b6f1a93",
-      "content_sha256": "9060045fae9c0731d21f3270cb58af6802b8e9d089d937763ca8fe49ac7ecf49",
-      "approved": true,
-      "reason": "The troubleshooting note reads verbatim \"the recording control-flow keys (arrow keys, Escape) work on X11, Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an interactive terminal — no `$DISPLAY` setup is needed\", and the page confines the global-key-backend requirement to keyboard teleoperation.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
       "id": "q-4e8c2a6f9d17",
       "content_sha256": "abb1a98fd38aada8b47946a1ff269bc7df83eb81e94923a5f51ef53334366ef3",
       "approved": true,
       "reason": "Verbatim: \"An earlier 10-epoch pilot passed both promotion gates but scored 5/10 on deployment states 20–29; the unchanged 70% requirement correctly rejected it\", which supports option d and contradicts the automatic-pass, exclusion and lowered-threshold options.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
-      "id": "q-5a3f7d9c1e48",
-      "content_sha256": "369d5eb6ebdd1c250f0d43f8b7fbbd24bbdd1a07f77d2fbcb6f09a5dd55fe790",
-      "approved": true,
-      "reason": "The HIL protocol lists \"No frames recorded during pause\" under the pause step and \"All movements are recorded\" under takeover, both verbatim, which establishes option c and excludes continuous, discarded and session-ending recording.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
-      "id": "q-6b9c4e1a7f32",
-      "content_sha256": "eec86a603a9aee1125b50a9841d8eb727b25f5776ffec5f80ba6e687b55b2837",
-      "approved": true,
-      "reason": "Verbatim under Common Issues: \"Without calling `finalize()`, your parquet files will be incomplete and the dataset won't load properly\", and the same section says you \"**must** call `dataset.finalize()`\" before `push_to_hub()`, so the automatic-call distractor fails.",
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
@@ -84,13 +56,6 @@
       "content_sha256": "234c73f1b86984eefa37c0d0b80d332d4af80f5bc6dbe9a4d116babbc6728710",
       "approved": true,
       "reason": "The 10K env note states verbatim \"`NPA_ENV_COUNT=10000` creates **10K JSON env records** (~8K train / ~2K held-out). They are **not** 10K Isaac Sim instances at envgen time\", which matches option c and rules out the three alternatives.",
-      "reviewed_at": "2026-10-18T09:29:20Z"
-    },
-    {
-      "id": "q-9d3a5e7c1f46",
-      "content_sha256": "3385bfd9209c9ec020a391529002fb47694b5345303dacb5d6899caa7d114494",
-      "approved": true,
-      "reason": "The HF Jobs note reads verbatim \"If a run fails before the model is pushed, that repo is left on the Hub so you can inspect it — it is not deleted automatically, so repeated failures can leave empty repos behind\", which is option c verbatim in substance.",
       "reviewed_at": "2026-10-18T09:29:20Z"
     },
     {
@@ -149,6 +114,46 @@
       "reason": "The prerequisites require being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\" (verbatim), so only the admin option is defensible.",
       "reviewed_at": "2026-10-18T09:29:20Z",
       "superseded_at": "2026-10-30T15:23:08Z"
+    },
+    {
+      "id": "q-2f6b8d4a1c93",
+      "content_sha256": "bc488c664b24c48e044d4d5895f07d83b76e6e3ce3e4f2291a4002f094b2d458",
+      "approved": true,
+      "reason": "Found verbatim: \"Each pushed checkpoint is tagged with its step (e.g. `--policy.pretrained_revision=010000`), so you can recover a checkpoint by step without looking up its commit sha.\" The page separately says `--resume=true` continues from the repo's latest checkpoint, so distractor d is not defensible.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-4c8e2b6f1a93",
+      "content_sha256": "9060045fae9c0731d21f3270cb58af6802b8e9d089d937763ca8fe49ac7ecf49",
+      "approved": true,
+      "reason": "The troubleshooting note reads verbatim \"the recording control-flow keys (arrow keys, Escape) work on X11, Wayland, and headless/SSH sessions as long as `lerobot-record` runs in an interactive terminal — no `$DISPLAY` setup is needed\", and the page confines the global-key-backend requirement to keyboard teleoperation.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5a3f7d9c1e48",
+      "content_sha256": "369d5eb6ebdd1c250f0d43f8b7fbbd24bbdd1a07f77d2fbcb6f09a5dd55fe790",
+      "approved": true,
+      "reason": "The HIL protocol lists \"No frames recorded during pause\" under the pause step and \"All movements are recorded\" under takeover, both verbatim, which establishes option c and excludes continuous, discarded and session-ending recording.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-6b9c4e1a7f32",
+      "content_sha256": "eec86a603a9aee1125b50a9841d8eb727b25f5776ffec5f80ba6e687b55b2837",
+      "approved": true,
+      "reason": "Verbatim under Common Issues: \"Without calling `finalize()`, your parquet files will be incomplete and the dataset won't load properly\", and the same section says you \"**must** call `dataset.finalize()`\" before `push_to_hub()`, so the automatic-call distractor fails.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9d3a5e7c1f46",
+      "content_sha256": "3385bfd9209c9ec020a391529002fb47694b5345303dacb5d6899caa7d114494",
+      "approved": true,
+      "reason": "The HF Jobs note reads verbatim \"If a run fails before the model is pushed, that repo is left on the Hub so you can inspect it — it is not deleted automatically, so repeated failures can leave empty repos behind\", which is option c verbatim in substance.",
+      "reviewed_at": "2026-10-18T09:29:20Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
     }
   ]
 }
