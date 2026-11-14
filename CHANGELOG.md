@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.89](https://github.com/mctlhq/mctl-academy/compare/0.1.88...0.1.89) (2026-11-14)
+
+
+### Bug Fixes
+
+* **content:** retire review_ready item pinned to a drifted source ([742444d](https://github.com/mctlhq/mctl-academy/commit/742444dc2024aae1457c973b323b1788ab7bee80))
+* **content:** retire review_ready item pinned to a drifted source ([254cd5b](https://github.com/mctlhq/mctl-academy/commit/254cd5b1787c840c2a026aab31381c3102c15928)), closes [#258](https://github.com/mctlhq/mctl-academy/issues/258)
+* grade attempts server-side; add fail-closed Trivy scan ([92cfb41](https://github.com/mctlhq/mctl-academy/commit/92cfb4121a81808962ca0d8cd042b80b25abb4f3))
+* **server:** grade attempts server-side from the answer key ([246d0bf](https://github.com/mctlhq/mctl-academy/commit/246d0bf08df8ba3e05a802f1c885f7dc02060618)), closes [#208](https://github.com/mctlhq/mctl-academy/issues/208)
+
 ## [0.1.88](https://github.com/mctlhq/mctl-academy/compare/0.1.87...0.1.88) (2026-11-14)
 
 
