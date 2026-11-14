@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-overview-data-portability
+url: https://docs.nebius.com/overview/data-portability.md
+title: Data portability in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:00:43Z
+sha256: 3b072e443e915f4ee3f877c6b0d7f9d72ac50d2ee1a8f3473cea999e20bf9d85
+objectives:
+  - domain-1/ie-compliance-residency
+  - domain-2/sa-migration-handover
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3b072e443e915f4ee3f877c6b0d7f9d72ac50d2ee1a8f3473cea999e20bf9d85
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-compliance-residency
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-migration-handover

@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-overview-data-deletion
+url: https://docs.nebius.com/overview/data-deletion.md
+title: Data deletion in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:00:41Z
+sha256: a8220c8ea111f140d6036b56bd3cfce55a0f1c9949371e8fbc42df98be190351
+objectives:
+  - domain-1/ie-compliance-residency
+  - domain-4/sa-data-lifecycle-investigation
+snapshot:
+  bucket: academy-source-snapshots
+  key: a8220c8ea111f140d6036b56bd3cfce55a0f1c9949371e8fbc42df98be190351
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-compliance-residency
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-data-lifecycle-investigation

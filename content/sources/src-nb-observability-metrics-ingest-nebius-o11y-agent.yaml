@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-observability-metrics-ingest-nebius-o11y-agent
+url: https://docs.nebius.com/observability/metrics/ingest/nebius-o11y-agent.md
+title: How to ingest metrics with Nebius Observability Agent for Kubernetes
+retrieved_at: 2026-11-14T10:00:38Z
+sha256: 989e5d4dacf82037da9f63b1cc01a00ed148191f9deb50bc0eaf9d78ab2e5289
+objectives:
+  - domain-4/ie-observability-platform
+snapshot:
+  bucket: academy-source-snapshots
+  key: 989e5d4dacf82037da9f63b1cc01a00ed148191f9deb50bc0eaf9d78ab2e5289
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-observability-platform

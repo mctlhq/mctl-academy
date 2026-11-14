@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-overview-quotas
+url: https://docs.nebius.com/overview/quotas.md
+title: Quotas in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:00:46Z
+sha256: 9a2f2380d586ab4404b1f9886791c99abd0dba58820f46cc48f4b718e4d36c8e
+objectives:
+  - domain-1/ie-billing-quotas
+snapshot:
+  bucket: academy-source-snapshots
+  key: 9a2f2380d586ab4404b1f9886791c99abd0dba58820f46cc48f4b718e4d36c8e
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-billing-quotas

@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-overview-regions
+url: https://docs.nebius.com/overview/regions.md
+title: Nebius AI Cloud regions
+retrieved_at: 2026-11-14T10:00:47Z
+sha256: cc489d8742447e6eb0c03982d879388b3629eedb2366a45114312f54b48903e4
+objectives:
+  - domain-1/ie-compliance-residency
+  - domain-4/ie-gpu-rollouts
+snapshot:
+  bucket: academy-source-snapshots
+  key: cc489d8742447e6eb0c03982d879388b3629eedb2366a45114312f54b48903e4
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-compliance-residency
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-gpu-rollouts
