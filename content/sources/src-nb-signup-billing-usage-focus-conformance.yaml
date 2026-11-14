@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-signup-billing-usage-focus-conformance
+url: https://docs.nebius.com/signup-billing/usage/focus-conformance.md
+title: Usage data conformance with FOCUS
+retrieved_at: 2026-11-14T10:04:27Z
+sha256: c8aa01aaf6d406dcab01b3c1e376f2aad4cd58e92def42b7ab42b48266f67205
+objectives:
+  - domain-3/sa-finops
+snapshot:
+  bucket: academy-source-snapshots
+  key: c8aa01aaf6d406dcab01b3c1e376f2aad4cd58e92def42b7ab42b48266f67205
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-finops

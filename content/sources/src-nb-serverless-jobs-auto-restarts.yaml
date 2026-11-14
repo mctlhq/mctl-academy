@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-serverless-jobs-auto-restarts
+url: https://docs.nebius.com/serverless/jobs/auto-restarts.md
+title: Automatic job restarts
+retrieved_at: 2026-11-14T10:04:20Z
+sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
+objectives:
+  - domain-2/ie-checkpoint-restart
+  - domain-2/sa-checkpoint-strategy
+snapshot:
+  bucket: academy-source-snapshots
+  key: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-checkpoint-restart
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-checkpoint-strategy

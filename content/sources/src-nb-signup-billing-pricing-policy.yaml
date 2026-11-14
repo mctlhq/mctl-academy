@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-signup-billing-pricing-policy
+url: https://docs.nebius.com/signup-billing/pricing-policy.md
+title: Spot pricing and pricing policies in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:04:23Z
+sha256: 0c6f69d0c17406a4c3bf25476162581f85fe5fb59f0618b8341f48c674c2f107
+objectives:
+  - domain-3/sa-cost-tradeoffs
+snapshot:
+  bucket: academy-source-snapshots
+  key: 0c6f69d0c17406a4c3bf25476162581f85fe5fb59f0618b8341f48c674c2f107
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-cost-tradeoffs
