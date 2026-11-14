@@ -3,6 +3,7 @@ import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import PracticeContent from "./PracticeContent.vue";
 import { resetStorage } from "../services/storage";
+import { resetCourseStore, useCourseStore } from "../services/courseStore";
 import type { BundleQuestion } from "../services/contentBundle";
 import { useRouterLinkStub } from "../test-utils/routerLinkStub";
 
@@ -290,6 +291,54 @@ describe("PracticeContent", () => {
     });
     expect(wrapper.text()).toContain("No mistakes yet.");
     expect(wrapper.find(".queue-note").exists()).toBe(false);
+  });
+
+  describe("Review mistakes with nothing to review", () => {
+    afterEach(() => {
+      resetStorage();
+      resetCourseStore();
+    });
+    const mountEmptyMistakes = () =>
+      mount(PracticeContent, {
+        props: {
+          bundle: [question("q-1")],
+          mode: "mistakes",
+          title: "Review mistakes",
+          emptyMessage: "Questions you answer incorrectly appear here.",
+        },
+      });
+
+    it("says there is nothing to review and offers practice instead of Repeat all", () => {
+      const wrapper = mountEmptyMistakes();
+      const empty = wrapper.get('[data-testid="mistakes-empty"]');
+      expect(empty.get(".empty-lead").text()).toBe("No mistakes to review");
+      expect(empty.text()).toContain("Questions you answer incorrectly appear here.");
+      const links = empty.findAll(".completion-actions a").map((a) => [a.text(), a.attributes("href")]);
+      expect(links).toEqual([
+        ["Go to practice", "/practice"],
+        ["Mock exam", "/mock"],
+      ]);
+    });
+
+    it("drops the Mock exam link when the selected course cannot start a mock", () => {
+      // Too few published questions for its mock, as on an early-access course.
+      const { courses, setCourse } = useCourseStore();
+      const unready = courses.find((c) => c.available && c.publishedQuestionCount < c.mock.questionCount);
+      expect(unready, "an available course whose bank cannot fill its mock").toBeDefined();
+      expect(setCourse(unready!.id)).toBe(true);
+      const wrapper = mountEmptyMistakes();
+      const links = wrapper.findAll('[data-testid="mistakes-empty"] .completion-actions a');
+      expect(links.map((a) => a.text())).toEqual(["Go to practice"]);
+    });
+
+    it("drops the Mock exam link from the session summary too", async () => {
+      const { courses, setCourse } = useCourseStore();
+      setCourse(courses.find((c) => c.available && c.publishedQuestionCount < c.mock.questionCount)!.id);
+      const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
+      await optionButton(wrapper, "Option B").trigger("click");
+      await actionButton(wrapper, "Finish").trigger("click");
+      expect(wrapper.findAll(".completion-actions a").map((a) => a.text())).toEqual(["Repeat all"]);
+    });
   });
 
   describe("keyboard shortcuts", () => {

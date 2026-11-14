@@ -4,7 +4,8 @@ import { RouterLink } from "vue-router";
 import { MButton } from "@mctlhq/ui";
 import { usePracticeSession, type PracticeMode } from "./usePracticeSession";
 import { getItem, setItem } from "../services/storage";
-import type { BundleQuestion } from "../services/contentBundle";
+import { questionsForCourse, type BundleQuestion } from "../services/contentBundle";
+import { selectMockQuestions } from "../exam/selectMockQuestions";
 import RestrictedMarkdown from "../exam/components/RestrictedMarkdown.vue";
 import ReportModal from "../components/ReportModal.vue";
 import { castVote, fetchVoteSummary, removeVote, type VoteValue } from "../services/questionVotes";
@@ -35,6 +36,13 @@ const props = withDefaults(
 // truncate a long course title on a phone; this line carries it in full.
 const { currentCourseId } = useCourseStore();
 const courseTitle = computed(() => findCourse(currentCourseId.value)?.title ?? "");
+// The Mock exam link is offered only when a mock can actually start for the
+// selected course: the same whole-course check the Mock start screen and the
+// course page run. The bundle here may be domain-filtered, so it is not used.
+const mockReady = computed(() => {
+  const course = findCourse(currentCourseId.value);
+  return course ? selectMockQuestions(questionsForCourse(course.id), course.mock, () => 0).ok : false;
+});
 const modeLabel = computed(() =>
   props.mode === "mistakes" ? "Review mistakes" : props.mode === "all" ? "Repeat all" : "Practice",
 );
@@ -246,7 +254,21 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
 </script>
 
 <template>
-  <section v-if="total === 0" class="practice practice-empty practice-card">
+  <section
+    v-if="total === 0 && mode === 'mistakes' && bundle.length > 0 && remaining === 0"
+    class="practice practice-empty practice-card"
+    data-testid="mistakes-empty"
+  >
+    <h1>{{ title }}</h1>
+    <p class="empty-lead">No mistakes to review</p>
+    <p v-if="emptyMessage">{{ emptyMessage }}</p>
+    <div class="completion-actions">
+      <MButton :as="RouterLink" to="/practice">Go to practice</MButton>
+      <MButton v-if="mockReady" :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
+    </div>
+  </section>
+
+  <section v-else-if="total === 0" class="practice practice-empty practice-card">
     <h1>{{ title }}</h1>
     <p v-if="bundle.length === 0">There are no published questions in this selection yet.</p>
     <p v-else-if="remaining > 0">
@@ -264,7 +286,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
         <MButton :as="RouterLink" to="/practice?mode=all" :variant="remaining === 0 ? 'primary' : 'ghost'"
           >Repeat all</MButton
         >
-        <MButton :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
+        <MButton v-if="mockReady" :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
       </template>
     </div>
   </section>
@@ -289,7 +311,7 @@ watch([revealed, () => current.value?.id], ([nextRevealed, questionId]) => {
       <MButton :as="RouterLink" to="/practice?mode=all" :variant="remaining === 0 ? 'primary' : 'ghost'"
         >Repeat all</MButton
       >
-      <MButton :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
+      <MButton v-if="mockReady" :as="RouterLink" to="/mock" variant="ghost">Mock exam</MButton>
     </div>
   </section>
 
@@ -939,6 +961,12 @@ kbd {
 .practice-summary .meta,
 .practice-empty p {
   color: var(--surface-fg-muted);
+}
+
+.practice-empty .empty-lead {
+  color: var(--surface-fg);
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 @media (max-width: 680px) {

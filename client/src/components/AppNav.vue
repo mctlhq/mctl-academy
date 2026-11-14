@@ -8,6 +8,7 @@ import { questionIdsForCourse } from "../services/contentBundle";
 import { findCourse } from "../services/courseCatalog";
 import { currentTheme, setTheme } from "../theme";
 import UserNav from "./UserNav.vue";
+import { useCollapsingRow } from "./collapsingRow";
 import type { UserProfile } from "../types/user";
 
 defineProps<{ user: UserProfile | null; loading: boolean }>();
@@ -128,6 +129,17 @@ onBeforeUnmount(() => {
 });
 router.afterEach(() => closeNav());
 
+// Phones only (<=480px): the switcher wraps onto a second header row, which
+// tucks away while scrolling down and returns on scroll up, near the top, or
+// when focus reaches it. Never while the drawer or the account menu is open.
+const switcherRow = ref<HTMLElement | null>(null);
+const switcherScrolledAway = useCollapsingRow(
+  header,
+  switcherRow,
+  () => navOpen.value || !!header.value?.querySelector("details[open]"),
+);
+const switcherCollapsed = computed(() => switcherScrolledAway.value && !navOpen.value);
+
 const links = [
   { to: "/", label: "Home" },
   { to: "/practice", label: "Practice" },
@@ -142,6 +154,7 @@ const links = [
     ref="header"
     class="mctl-site-header mctl-site-header--app mctl-site-header--drawer-wide app-nav"
     :data-nav-open="navOpen ? '' : null"
+    :data-switcher-collapsed="switcherCollapsed ? '' : null"
   >
     <div class="mctl-site-container mctl-site-header__inner">
       <RouterLink to="/" class="mctl-site-brand app-brand" aria-label="mctl Academy home"
@@ -149,6 +162,7 @@ const links = [
         ><span class="app-brand-suffix">&nbsp;academy</span></RouterLink
       >
       <div
+        ref="switcherRow"
         class="mctl-site-header__context mctl-site-header__context--select app-nav-context"
         data-course-switcher
       >
@@ -504,6 +518,59 @@ const links = [
 
   .course-select {
     width: 100%;
+  }
+
+  /* Scrolled away (see collapsingRow.ts). The header keeps its height in the
+     layout, so nothing below it moves: only the backdrop shrinks to row one,
+     the switcher fades out, and the freed strip lets taps through to the page.
+     The switcher stays in the accessibility tree and focusable; focus brings
+     it back. */
+  .app-nav.mctl-site-header::before {
+    transition: clip-path 160ms ease;
+  }
+
+  .app-nav .app-nav-context {
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+
+  .app-nav.mctl-site-header[data-switcher-collapsed] {
+    border-bottom-color: transparent;
+    pointer-events: none;
+  }
+
+  .app-nav.mctl-site-header[data-switcher-collapsed]::before {
+    clip-path: inset(0 0 calc(100% - var(--site-header-height)) 0);
+  }
+
+  /* Row one's own bottom edge, standing in for the header border. */
+  .app-nav.mctl-site-header[data-switcher-collapsed]::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--site-header-height) - 1px);
+    right: 0;
+    left: 0;
+    height: 1px;
+    background: var(--site-header-border);
+    pointer-events: none;
+  }
+
+  .app-nav[data-switcher-collapsed] .mctl-site-header__inner > * {
+    pointer-events: auto;
+  }
+
+  .app-nav.mctl-site-header[data-switcher-collapsed] .mctl-site-header__context.app-nav-context {
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 480px) and (prefers-reduced-motion: reduce) {
+  .app-nav.mctl-site-header::before,
+  .app-nav .app-nav-context {
+    transition: none;
   }
 }
 

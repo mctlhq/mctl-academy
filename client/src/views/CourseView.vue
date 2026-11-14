@@ -29,7 +29,8 @@ const totalQuestions = computed(() => questions.value.length);
 const earlyAccess = computed(() => (course.value ? isEarlyAccess(course.value) : false));
 // The mock only starts when every domain can supply its quota
 // (selectMockQuestions, the same check the Mock start screen runs), so the
-// CTA is offered only when pressing it actually starts a mock.
+// CTA and the mock-duration stat are shown only when pressing it actually
+// starts a mock.
 const mockReady = computed(() =>
   course.value ? selectMockQuestions(questions.value, course.value.mock, () => 0).ok : false,
 );
@@ -179,7 +180,7 @@ onUnmounted(() => {
           <span class="stat-value">{{ totalQuestions }}</span>
           <span class="stat-label">practice questions</span>
         </div>
-        <div class="course-stat">
+        <div v-if="mockReady" class="course-stat" data-testid="course-stat-mock">
           <span class="stat-value">{{ course.mock.timeLimitMinutes }} min</span>
           <span class="stat-label">mock duration</span>
         </div>
@@ -380,7 +381,7 @@ onUnmounted(() => {
           <span class="stat-value">In preparation</span>
           <span class="stat-label">question bank</span>
         </div>
-        <div class="course-stat">
+        <div v-if="mockReady" class="course-stat" data-testid="course-stat-mock">
           <span class="stat-value">{{ course.mock.timeLimitMinutes }} min</span>
           <span class="stat-label">mock duration</span>
         </div>
