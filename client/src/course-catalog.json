@@ -153,7 +153,7 @@
     "id": "agentic-web-search",
     "title": "Agentic Web Search",
     "summary": "Give agents and retrieval pipelines live web data: search, extract, map and crawl, then keep that access reliable in production.",
-    "publishedQuestionCount": 49,
+    "publishedQuestionCount": 53,
     "available": true,
     "mock": {
       "questionCount": 20,

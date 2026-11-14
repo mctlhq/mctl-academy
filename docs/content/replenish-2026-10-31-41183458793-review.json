@@ -17,13 +17,6 @@
       "reviewed_at": "2026-10-31T08:31:18Z"
     },
     {
-      "id": "q-0e6c3b9a4f78",
-      "content_sha256": "656922eaa1512bc0314a12a7843f9cdf0b5134d5b336bec876119d8388aae42f",
-      "approved": true,
-      "reason": "The Rate Limits page states \"The crawl endpoint has a separate rate limit that applies to both development and production keys\" with a table showing 100 RPM for both, which supports the separate-and-equal limit and rules out the 1,000 RPM, undocumented, and development-only distractors.",
-      "reviewed_at": "2026-10-31T08:31:18Z"
-    },
-    {
       "id": "q-10d7a4c2e958",
       "content_sha256": "757aa6277f48179cbbe3040a606f5a8f99ab1c5482a94d235aeb9f4ba6b9e824",
       "approved": true,
@@ -45,24 +38,10 @@
       "reviewed_at": "2026-10-31T08:31:18Z"
     },
     {
-      "id": "q-e4b8d1a6f293",
-      "content_sha256": "0dfbb8c7903e15adb403dc91b474bafe80cda1f138613e5bdda17388615ba36b",
-      "approved": true,
-      "reason": "The Crawl tutorial states \"**Rule of thumb**: Use Map when you need to *find* pages. Use Crawl when you need to *read* pages.\", and the same page contrasts Map's URL-only output with Crawl's full content, so the reversed and interchangeable options fail.",
-      "reviewed_at": "2026-10-31T08:31:18Z"
-    },
-    {
       "id": "q-ea1f6c3d8b94",
       "content_sha256": "7b2ef3a8e8c74aff01a6f2213f99db1d5e3f62fc3a180631f70aa3129296b8a1",
       "approved": true,
       "reason": "The Data Enrichment Pattern's step 4 is \"**Store those web results internally** for future queries\", with the following code storing sources in a knowledge base, which excludes discarding, context-only retention, and sending results to Tavily.",
-      "reviewed_at": "2026-10-31T08:31:18Z"
-    },
-    {
-      "id": "q-ee3b9d2a4c78",
-      "content_sha256": "119bbd1f2e1302528d0b2fdaea1004a9fe11382df57265b148d51e55a0e3425d",
-      "approved": true,
-      "reason": "The Extract tutorial states \"When you pass a `query` parameter, Extract reranks the content chunks by relevance to your question\", while the same page ties extract_depth to JS/tables, include_images to image URLs, and format to markdown versus text.",
       "reviewed_at": "2026-10-31T08:31:18Z"
     },
     {
@@ -149,6 +128,30 @@
       "reason": "The Flex Tier Capacity section says requests setting max_age_hours on non-paying plans are refused with 434 and to \"Retry shortly, or omit `max_age_hours` to be served from cache\"; the page's Retry-After guidance belongs to 429 responses, and no upgrade or search_depth remedy is stated.",
       "reviewed_at": "2026-10-31T08:31:18Z",
       "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-0e6c3b9a4f78",
+      "content_sha256": "656922eaa1512bc0314a12a7843f9cdf0b5134d5b336bec876119d8388aae42f",
+      "approved": true,
+      "reason": "The Rate Limits page states \"The crawl endpoint has a separate rate limit that applies to both development and production keys\" with a table showing 100 RPM for both, which supports the separate-and-equal limit and rules out the 1,000 RPM, undocumented, and development-only distractors.",
+      "reviewed_at": "2026-10-31T08:31:18Z",
+      "superseded_at": "2026-11-14T18:13:18Z"
+    },
+    {
+      "id": "q-e4b8d1a6f293",
+      "content_sha256": "0dfbb8c7903e15adb403dc91b474bafe80cda1f138613e5bdda17388615ba36b",
+      "approved": true,
+      "reason": "The Crawl tutorial states \"**Rule of thumb**: Use Map when you need to *find* pages. Use Crawl when you need to *read* pages.\", and the same page contrasts Map's URL-only output with Crawl's full content, so the reversed and interchangeable options fail.",
+      "reviewed_at": "2026-10-31T08:31:18Z",
+      "superseded_at": "2026-11-14T18:13:18Z"
+    },
+    {
+      "id": "q-ee3b9d2a4c78",
+      "content_sha256": "119bbd1f2e1302528d0b2fdaea1004a9fe11382df57265b148d51e55a0e3425d",
+      "approved": true,
+      "reason": "The Extract tutorial states \"When you pass a `query` parameter, Extract reranks the content chunks by relevance to your question\", while the same page ties extract_depth to JS/tables, include_images to image URLs, and format to markdown versus text.",
+      "reviewed_at": "2026-10-31T08:31:18Z",
+      "superseded_at": "2026-11-14T18:13:18Z"
     }
   ]
 }

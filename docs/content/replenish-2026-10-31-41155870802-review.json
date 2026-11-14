@@ -108,13 +108,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-c3f5e0b2d784",
-      "content_sha256": "d8c8cb60f06ff84a5c1347220d0569e97c9b43fa41dcd0c4eee9d550477ab7a9",
-      "approved": true,
-      "reason": "Production notes: \"Quality filtering: Use `score` from the response to filter low-relevance results (e.g., discard results below 0.5)\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-c71b4f9a3d85",
       "content_sha256": "c70d0bd2f2ce9d7ffea8b66e6e512fb4f9c3c591f4a20d2edd0dda663ed13efa",
       "approved": true,
@@ -931,6 +924,14 @@
       "reason": "\"`advanced` searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency. Reach for it when coverage matters most: niche topics ...\"",
       "reviewed_at": "2026-10-31T01:59:27Z",
       "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c3f5e0b2d784",
+      "content_sha256": "d8c8cb60f06ff84a5c1347220d0569e97c9b43fa41dcd0c4eee9d550477ab7a9",
+      "approved": true,
+      "reason": "Production notes: \"Quality filtering: Use `score` from the response to filter low-relevance results (e.g., discard results below 0.5)\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T18:13:18Z"
     }
   ]
 }
