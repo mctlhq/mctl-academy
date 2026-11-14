@@ -191,11 +191,23 @@ function updateMeta() {
   scriptEl.textContent = JSON.stringify(structuredData);
 }
 
+// The header switcher shows the selected course, so a course page selects the
+// course it shows; otherwise /courses/X rendered under another course's name in
+// the header. Only available courses: a coming-soon or unknown id must never
+// become the selection (setCourse refuses it anyway). This does not reintroduce
+// the old switcher revert: the switcher navigates to /courses/<new id> when used
+// on a course page, so the route and the selection always agree.
+function syncSelectedCourse() {
+  if (course.value?.available) setCourse(course.value.id);
+}
+
 onMounted(() => {
+  syncSelectedCourse();
   updateMeta();
 });
 
 watch(course, () => {
+  syncSelectedCourse();
   updateMeta();
 });
 

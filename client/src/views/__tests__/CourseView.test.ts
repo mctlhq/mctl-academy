@@ -1,11 +1,14 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
+import { nextTick, reactive } from "vue";
 import CourseView from "../CourseView.vue";
 import * as courseCatalogModule from "../../services/courseCatalog";
 
 const mockSetCourse = vi.fn().mockReturnValue(true);
 const mockPush = vi.fn();
-let currentRouteParams = { courseId: "agentic-ai-builder" };
+// Reactive so a test can change the route param under a mounted view, the way
+// vue-router does when /courses/X -> /courses/Y reuses the component.
+let currentRouteParams = reactive({ courseId: "agentic-ai-builder" });
 
 vi.mock("vue-router", () => ({
   useRoute: () => ({
@@ -41,7 +44,7 @@ describe("CourseView", () => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
     mockSetCourse.mockReturnValue(true);
-    currentRouteParams = { courseId: "agentic-ai-builder" };
+    currentRouteParams = reactive({ courseId: "agentic-ai-builder" });
     document.head.innerHTML = `
       <title>Original Title</title>
       <meta name="description" content="Original Description" />
@@ -53,11 +56,35 @@ describe("CourseView", () => {
     document.title = "Original Title";
   });
 
-  it("renders the course hero and metadata without hijacking currentCourseId on mount", () => {
+  it("renders the course hero and selects the course it shows", () => {
     const wrapper = mountCourseView();
     expect(wrapper.text()).toContain("Agentic AI Builder");
     expect(wrapper.text()).toContain("Practice track");
     expect(wrapper.text()).toContain("Practice domains & syllabus");
+    // The header switcher reads the store: without this the page showed one
+    // course while the header named another.
+    expect(mockSetCourse).toHaveBeenCalledWith("agentic-ai-builder");
+  });
+
+  it("re-selects when the route moves to another course page", async () => {
+    mountCourseView();
+    mockSetCourse.mockClear();
+    currentRouteParams.courseId = "agentic-web-search";
+    await nextTick();
+    expect(mockSetCourse).toHaveBeenCalledWith("agentic-web-search");
+  });
+
+  it("does not select a coming-soon or unknown course", () => {
+    vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue({
+      id: "upcoming-course",
+      title: "Upcoming Track",
+      publishedQuestionCount: 0,
+      available: false,
+      mock: { questionCount: 30, timeLimitMinutes: 60, discloseBankSize: true, domains: [] },
+    });
+    mountCourseView().unmount();
+    vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue(undefined);
+    mountCourseView();
     expect(mockSetCourse).not.toHaveBeenCalled();
   });
 

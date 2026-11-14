@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch, type Ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { calculateStudyStreak, getMistakeQuestionIds, progressVersion } from "../services/progressStore";
 import { useCourseStore } from "../services/courseStore";
 import { questionIdsForCourse } from "../services/contentBundle";
@@ -12,24 +12,41 @@ import type { UserProfile } from "../types/user";
 defineProps<{ user: UserProfile | null; loading: boolean }>();
 
 const router = useRouter();
+const route = useRoute();
 const theme = ref(currentTheme());
 const streak = ref(calculateStudyStreak());
 // Courses come from the generated catalog (content/courses/*.yaml), including
 // ones with no published questions yet — those render disabled as "Coming
 // soon" rather than being hidden, so the roadmap is visible without ever
 // letting a learner select a course that would show another course's content.
-const { courses, currentCourseId, setCourse } = useCourseStore();
+const { courses, currentCourseId, setCourse, canSelect } = useCourseStore();
 // The select may truncate a long title on a phone; its title attribute and
 // every learning page's own context line carry the full name.
 const currentCourse = computed(() => findCourse(currentCourseId.value));
 
-function onCourseChange(e: Event) {
+async function onCourseChange(e: Event) {
   const target = e.target as HTMLSelectElement;
   if (!target?.value) return;
-  if (!setCourse(target.value)) {
-    // Rejected (unavailable course): put the control back where it was.
+  const next = target.value;
+  const revert = () => {
+    // Put the control back where it was (unavailable course, or a
+    // navigation that did not happen).
     target.value = currentCourseId.value ?? "";
+  };
+  // On a course page the page *is* the course, so picking another one has to
+  // move to that course's page: changing only the stored selection left the
+  // learner looking at course X with course Y in the switcher. Navigate first
+  // and select after — selecting first would remount the still-current
+  // /courses/X view (App.vue keys it on the course id), which syncs the store
+  // back to X.
+  if (route.name === "course") {
+    if (!canSelect(next)) return revert();
+    const failure = await router.push(`/courses/${encodeURIComponent(next)}`);
+    if (failure) return revert();
+    setCourse(next);
+    return;
   }
+  if (!setCourse(next)) revert();
 }
 function toggleTheme() {
   const next = theme.value === "dark" ? "light" : "dark";
@@ -201,14 +218,30 @@ const links = [
   min-width: 0;
   max-width: 14rem;
   height: 2rem;
-  padding: 0 0.6rem;
+  padding: 0 1.75rem 0 0.6rem;
+  overflow: hidden;
   text-overflow: ellipsis;
-  border: 1px solid var(--surface-line);
+  white-space: nowrap;
+  border: 1px solid var(--control-border);
   border-radius: var(--mctl-radius-md);
-  background: var(--surface-bg);
+  /* Interim local styling until the switcher moves to MSelect: no native
+     chrome (it ignores the header theme on macOS), a CSS chevron drawn with
+     two gradients so it follows the theme colour without an SVG asset. */
+  appearance: none;
+  background-color: var(--control-bg);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--surface-fg-muted) 50%),
+    linear-gradient(135deg, var(--surface-fg-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 0.95rem) 50%,
+    calc(100% - 0.65rem) 50%;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
   color: var(--surface-fg);
   font: inherit;
-  font-size: 0.8rem;
+  /* Same size as the nav tabs and the site.css context slot it sits in. */
+  font-size: var(--site-nav-size);
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -216,9 +249,13 @@ const links = [
   border-color: var(--surface-line-strong);
 }
 
+/* A border-plus-shadow focus state, not an offset outline: Chrome keeps
+   :focus-visible on a <select> after a mouse pick, and the outline drew a
+   second accent box around the control's own border. */
 .course-select:focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--control-focus-shadow);
 }
 
 .mistake-badge-empty {
@@ -311,6 +348,17 @@ const links = [
     padding: 0;
   }
 
+  /* site.css clips the context slot (overflow: hidden) once the burger shows;
+     the select truncates its own text, so let the slot overflow and keep the
+     focus shadow visible. Chained to outrank site.css's :has() selector. */
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
+    overflow: visible;
+  }
+
+  .course-select {
+    max-width: 100%;
+  }
+
   .user-nav-signin :deep(.signin-zitadel .signin-label-short) {
     display: inline-block;
     max-width: 6rem;
@@ -334,7 +382,10 @@ const links = [
   .course-select {
     flex: 1 1 auto;
     min-width: 5.5rem;
-    padding-inline: 0.4rem;
+    padding-inline: 0.4rem 1.5rem;
+    background-position:
+      calc(100% - 0.8rem) 50%,
+      calc(100% - 0.5rem) 50%;
   }
 
   .mctl-site-header__actions {

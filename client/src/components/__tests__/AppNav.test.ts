@@ -1,8 +1,12 @@
-import { describe, test, expect } from "vitest";
-import { mount } from "@vue/test-utils";
+import { describe, test, expect, beforeEach } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
+import { defineComponent, h, watch } from "vue";
+import { RouterView } from "vue-router";
+import CourseView from "../../views/CourseView.vue";
 import { createRouter, createMemoryHistory } from "vue-router";
 import AppNav from "../AppNav.vue";
 import { courseCatalog } from "../../services/courseCatalog";
+import { useCourseStore } from "../../services/courseStore";
 
 const routes = [
   { path: "/", component: { template: "<div>Home</div>" } },
@@ -10,7 +14,10 @@ const routes = [
   { path: "/mock", component: { template: "<div>Mock</div>" } },
   { path: "/mistakes", component: { template: "<div>Mistakes</div>" } },
   { path: "/dashboard", component: { template: "<div>Dashboard</div>" } },
+  { path: "/courses/:courseId", name: "course", component: { template: "<div>Course</div>" } },
 ];
+
+const [firstCourse, secondCourse] = courseCatalog.filter((c) => c.available);
 
 describe("AppNav component", () => {
   test("renders unified navigation labels without term drift across screen sizes", async () => {
@@ -156,5 +163,76 @@ describe("AppNav component", () => {
     } finally {
       window.matchMedia = original;
     }
+  });
+
+  describe("course switcher", () => {
+    beforeEach(() => {
+      // The store is a module singleton: start every case from a known course.
+      useCourseStore().setCourse(firstCourse.id);
+    });
+
+    async function mountAt(path: string) {
+      const router = createRouter({ history: createMemoryHistory(), routes });
+      await router.push(path);
+      const wrapper = mount(AppNav, { props: { user: null, loading: false }, global: { plugins: [router] } });
+      return { router, wrapper };
+    }
+
+    test("on a course page, picking another course opens that course's page", async () => {
+      const { router, wrapper } = await mountAt(`/courses/${firstCourse.id}`);
+      await wrapper.get('[data-testid="course-select"]').setValue(secondCourse.id);
+      await flushPromises();
+      expect(router.currentRoute.value.path).toBe(`/courses/${secondCourse.id}`);
+      expect(useCourseStore().currentCourseId.value).toBe(secondCourse.id);
+    });
+
+    test("elsewhere, picking a course changes the selection and stays on the page", async () => {
+      const { router, wrapper } = await mountAt("/practice");
+      await wrapper.get('[data-testid="course-select"]').setValue(secondCourse.id);
+      await flushPromises();
+      expect(router.currentRoute.value.path).toBe("/practice");
+      expect(useCourseStore().currentCourseId.value).toBe(secondCourse.id);
+    });
+
+    test("with the app's keyed view, the switch never flips back to the old course", async () => {
+      // App.vue keys the routed view on fullPath + selected course. Selecting
+      // before navigating remounts the still-current /courses/X page, which
+      // selects X again: the switcher visibly bounces (or, without the
+      // navigation, the switch is lost altogether).
+      const { currentCourseId } = useCourseStore();
+      const Harness = defineComponent({
+        setup() {
+          return () => [
+            h(AppNav, { user: null, loading: false }),
+            h(RouterView, null, {
+              default: ({ Component, route }: { Component: unknown; route: { fullPath: string } }) =>
+                Component
+                  ? h(Component as never, { key: `${route.fullPath}-${currentCourseId.value}` })
+                  : null,
+            }),
+          ];
+        },
+      });
+      const router = createRouter({
+        history: createMemoryHistory(),
+        routes: [
+          ...routes.filter((r) => r.name !== "course"),
+          { path: "/courses/:courseId", name: "course", component: CourseView },
+        ],
+      });
+      await router.push(`/courses/${firstCourse.id}`);
+      const wrapper = mount(Harness, { global: { plugins: [router] } });
+      await flushPromises();
+
+      const seen: (string | null)[] = [];
+      const stop = watch(currentCourseId, (id) => seen.push(id), { flush: "sync" });
+      await wrapper.get('[data-testid="course-select"]').setValue(secondCourse.id);
+      await flushPromises();
+      stop();
+
+      expect(router.currentRoute.value.path).toBe(`/courses/${secondCourse.id}`);
+      expect(seen).toEqual([secondCourse.id]);
+      wrapper.unmount();
+    });
   });
 });
