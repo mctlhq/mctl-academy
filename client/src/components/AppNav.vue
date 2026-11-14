@@ -386,6 +386,19 @@ const links = [
     display: none;
   }
 
+  /* The mark alone is still the home link: keep it a 44px target, centred,
+     so its focus ring frames a button-sized box like the actions beside it. */
+  .app-brand {
+    box-sizing: border-box;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .app-brand .mctl-site-brand__accent {
+    margin-right: 0;
+  }
+
   /* A tighter chevron gutter and a 14px label are the last few letters of
      the longest titles. */
   .app-nav-context .course-select :deep(.m-select__control) {
