@@ -1,0 +1,48 @@
+schema_version: 1
+id: q-sa2chkpt7m3v
+status: review_ready
+domain: domain-2
+objective: domain-2/sa-checkpoint-strategy
+stem: "A training team takes disk snapshots of their checkpoint volumes in
+  Project A as part of their recovery plan, and is now designing Project B, a
+  separate project, where they want to restore training state directly from
+  Project A's snapshots. Does this plan work as documented?"
+options:
+  - id: a
+    text: "No -- a snapshot is only available in the project where it was
+      created, so it can't be used to create a disk in another project."
+    correct: true
+    explanation: "Correct. The documentation says every snapshot is only
+      available in the project where it was created, so you can only work
+      with snapshots and disks within that project."
+  - id: b
+    text: "Yes -- snapshots are tenant-level resources, so any project within
+      the same tenant can create a disk from them."
+    correct: false
+    explanation: "The documentation scopes a snapshot to the project where it
+      was created, not to the tenant as a whole."
+  - id: c
+    text: "No -- but once the snapshot is attached to a shared filesystem,
+      that makes it usable from Project B."
+    correct: false
+    explanation: "The documentation does not describe attaching a snapshot to
+      a shared filesystem as a way to move it between projects; the project
+      scoping applies regardless."
+  - id: d
+    text: "Yes -- as long as the disk type is SSD Non-replicated, which the
+      documentation marks as portable across projects."
+    correct: false
+    explanation: "SSD Non-replicated is one of the disk types that snapshots
+      support, but the documentation does not tie disk type to cross-project
+      portability."
+evidence:
+  - source_id: src-nb-compute-storage-disk-snapshots
+    source_sha256: 4f44f897e3e34b470076c94623b05d917d75d0a771474b93949b8973f4429a05
+    excerpt: "Every snapshot is only available in the project where it was
+      created. Therefore, you can only work with snapshots and disks within
+      the project."
+    locator: "Managing disk snapshots in Compute"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:47:26Z"
+course_id: ai-solutions-architect

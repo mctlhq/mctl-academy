@@ -1,0 +1,54 @@
+schema_version: 1
+id: q-sa2obscope5r
+status: review_ready
+domain: domain-2
+objective: domain-2/sa-observability-scope
+stem: "A platform team is scoping observability tooling for a large GPU
+  fleet and expects a high volume of monitoring data. They are deciding
+  whether to connect Prometheus directly to Observability Metrics or connect
+  a Grafana data source instead. Which should the architect recommend, and
+  why?"
+options:
+  - id: a
+    text: "Grafana, because Prometheus can only show a limited amount of
+      monitoring data for a large infrastructure."
+    correct: true
+    explanation: "Correct. The documentation recommends connecting a Grafana
+      data source instead of Prometheus for a large infrastructure, since
+      Prometheus can only show a limited amount of monitoring data."
+  - id: b
+    text: "Prometheus, because it is documented as the only integration that
+      exposes GPU-specific metrics, which Grafana data sources are said to
+      lack entirely."
+    correct: false
+    explanation: "GPU metrics reach Prometheus through the same Observability
+      Metrics data as other services; the documentation does not restrict
+      Grafana data sources from GPU metrics."
+  - id: c
+    text: "Either option scales identically at high volume, since both read
+      from the same Observability Metrics endpoint without any documented
+      limit on data."
+    correct: false
+    explanation: "The documentation explicitly notes a limit on how much
+      monitoring data Prometheus can show, so the two options are not
+      equivalent at scale."
+  - id: d
+    text: "Prometheus, but with the scrape interval lowered well below the
+      documentation's recommended minimum so it can keep pace with a large
+      fleet's data volume."
+    correct: false
+    explanation: "The documentation recommends a scrape interval no shorter
+      than the minimum it states, and shortening it further does not address
+      Prometheus's limited display capacity."
+evidence:
+  - source_id: src-co-prometheus
+    source_sha256: ea826788771a702720050c5169a6b3b45ee564c37952386549b214f05165721d
+    excerpt: "Prometheus can only show a limited amount of monitoring data. If
+      you have a large infrastructure, consider connecting a data source in
+      [Grafana®](https://docs.nebius.com/observability/metrics/grafana.md)
+      instead."
+    locator: "How to view metrics in Prometheus, How to connect Prometheus"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T14:47:26Z"
+course_id: ai-solutions-architect
