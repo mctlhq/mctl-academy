@@ -190,6 +190,15 @@ export async function checkSources({
   let failed = 0;
 
   for (const { path: sourcePath, data } of sources) {
+    // Deprecated is terminal for this check: the source is already withdrawn,
+    // so neither a dead URL nor changed bytes is a new finding. Checking it
+    // anyway made every later run report it again (exit 2 forever), and its
+    // drift used to overwrite `deprecated` with `drifted`. A maintainer who
+    // finds the page back restores the status by hand.
+    if (data.status === "deprecated") {
+      log(`skip     ${data.id}  deprecated`);
+      continue;
+    }
     let text;
     try {
       text = await fetcher(data.url);
@@ -197,7 +206,7 @@ export async function checkSources({
       const status = /** @type {any} */ (e)?.httpStatus;
       if (GONE_STATUSES.has(status)) {
         gone += 1;
-        if (markDrifted && data.status !== "deprecated") {
+        if (markDrifted) {
           data.status = "deprecated";
           write(sourcePath, data);
         }

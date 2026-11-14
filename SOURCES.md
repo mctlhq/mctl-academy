@@ -157,7 +157,9 @@ Leader banks — see issues #140 and #141.
 To check recorded sources against their live documents without credentials, run
 `npm run snapshot:capture -- --check` (exit 0 clean, 2 drifted, 3 unreachable,
 1 the check failed). A page the host answers with 404 or 410 is gone, not
-unreachable: the check marks it `deprecated` and reports it as drift.
+unreachable: the check marks it `deprecated` and reports it as drift. The
+check skips deprecated sources, so a page that comes back after a transient
+404 is restored to `current` by hand, never automatically.
 
 ## Evidence records
 

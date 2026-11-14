@@ -22,8 +22,10 @@ function source(id, overrides = {}) {
 }
 
 /** Runs checkSources over `responses` (id -> text | Error). */
-async function run(responses, { markDrifted = true } = {}) {
-  const sources = Object.keys(responses).map((id) => source(id));
+async function run(responses, { markDrifted = true, statuses = {} } = {}) {
+  const sources = Object.keys(responses).map((id) =>
+    source(id, statuses[id] ? { status: statuses[id] } : {}),
+  );
   const writes = new Map();
   const lines = [];
   const code = await checkSources({
@@ -143,4 +145,32 @@ test("Source drift still quarantines observed drift when a source could not be r
   assert.equal(last["continue-on-error"], undefined, "the red step must be able to turn the run red");
   const quarantine = steps.findIndex((s) => /quarantine-drifted-questions/.test(s.run ?? ""));
   assert.ok(quarantine > 0 && quarantine < steps.length - 1, "the red step must come after the quarantine");
+});
+
+test("a deprecated source is skipped: neither gone nor changed bytes is a new finding", async () => {
+  const fetched = [];
+  const sources = [source("a"), source("b", { status: "deprecated" })];
+  const writes = new Map();
+  const code = await checkSources({
+    sources,
+    markDrifted: true,
+    fetcher: async (url) => {
+      fetched.push(url);
+      throw httpError(404);
+    },
+    write: (path, data) => writes.set(path, { ...data }),
+    log: () => {},
+    logError: () => {},
+  });
+  assert.equal(code, 2, "only the newly gone source is a finding");
+  assert.deepEqual(fetched, ["https://docs.example/a.md"]);
+  assert.equal(writes.has("content/sources/b.yaml"), false, "deprecated is never overwritten");
+  const again = await run({ b: "changed bytes" }, { statuses: { b: "deprecated" } });
+  assert.equal(again.code, 0, "a deprecated source alone leaves the check clean");
+  assert.equal(again.writes.size, 0);
+});
+
+test("the issue for a gone page says the status is restored by hand", () => {
+  const body = issueBody({ id: "b", url: "https://docs.example/b.md", oldHash: "abc", newHash: "gone" });
+  assert.match(body, /by hand/);
 });
