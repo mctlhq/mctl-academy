@@ -136,6 +136,13 @@ describe("CourseView", () => {
       expect(ctas.map((a) => a.attributes("href"))).toEqual(["/practice"]);
       expect(wrapper.get('[data-testid="course-mock-unavailable"]').text()).toMatch(/timed mock opens once/i);
     });
+
+    it("does not advertise a mock duration for a mock that cannot start", () => {
+      vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue(early());
+      const wrapper = mountCourseView();
+      expect(wrapper.find('[data-testid="course-stat-mock"]').exists()).toBe(false);
+      expect(wrapper.get(".course-stats-bar").text()).not.toMatch(/mock duration/i);
+    });
   });
 
   it("a full bank gets no Early access pill and keeps the mock CTA", () => {
@@ -143,6 +150,7 @@ describe("CourseView", () => {
     expect(wrapper.find('[data-testid="course-early-access"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="course-mock-unavailable"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="course-subtitle"]').text()).not.toMatch(/complete coverage/i);
+    expect(wrapper.get('[data-testid="course-stat-mock"]').text()).toMatch(/min\s*mock duration/);
   });
 
   it("links each domain card to a filtered Practice", () => {

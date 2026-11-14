@@ -149,7 +149,10 @@ describe("AppNav component", () => {
       return {
         matches: false,
         media: q,
-        addEventListener: (_: string, l: (e: MediaQueryListEvent) => void) => (listener = l),
+        // The phone-header query registers a listener too; keep the drawer's.
+        addEventListener: (_: string, l: (e: MediaQueryListEvent) => void) => {
+          if (q === "(min-width: 981px)") listener = l;
+        },
         removeEventListener: () => {},
       } as unknown as MediaQueryList;
     }) as typeof window.matchMedia;
@@ -165,6 +168,40 @@ describe("AppNav component", () => {
       wrapper.unmount();
     } finally {
       window.matchMedia = original;
+    }
+  });
+
+  test("on a phone, scrolls the switcher row away and brings it back for the drawer", async () => {
+    const original = window.matchMedia;
+    const frames: FrameRequestCallback[] = [];
+    window.matchMedia = ((q: string) =>
+      ({
+        matches: q === "(max-width: 480px)",
+        media: q,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      }) as unknown as MediaQueryList) as typeof window.matchMedia;
+    vi.stubGlobal("requestAnimationFrame", (fn: FrameRequestCallback) => frames.push(fn));
+    const scrollTo = (y: number) => {
+      window.scrollY = y;
+      window.dispatchEvent(new Event("scroll"));
+      frames.splice(0).forEach((fn) => fn(0));
+    };
+    try {
+      const router = createRouter({ history: createMemoryHistory(), routes });
+      const wrapper = mount(AppNav, { props: { user: null, loading: false }, global: { plugins: [router] } });
+      const header = () => wrapper.get("header");
+      scrollTo(400);
+      await wrapper.vm.$nextTick();
+      expect(header().attributes("data-switcher-collapsed")).toBeDefined();
+
+      await wrapper.get(".mctl-site-burger").trigger("click");
+      expect(header().attributes("data-switcher-collapsed")).toBeUndefined();
+      wrapper.unmount();
+    } finally {
+      window.matchMedia = original;
+      vi.unstubAllGlobals();
+      window.scrollY = 0;
     }
   });
 

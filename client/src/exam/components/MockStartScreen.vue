@@ -281,6 +281,11 @@ function handleStart() {
   border-radius: var(--mctl-radius-md, 6px);
 }
 
+/* The disclosure would otherwise sit flush under the Continue practice button. */
+.mock-start-shortfall details {
+  margin-top: var(--mctl-space-4, 16px);
+}
+
 @media (max-width: 620px) {
   .mock-start-how-wide {
     display: none;
