@@ -43,6 +43,7 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import {
   isAllowedSourceUrl,
+  movedTo,
   loadCourses,
   resolveScope,
   loadSources,
@@ -103,6 +104,15 @@ export async function fetchText(url) {
     // must still be inside the allowlist (an index may only land on itself).
     if (!(res.url === url && isFetchableUrl(url)) && !isAllowedSourceUrl(res.url)) {
       throw new Error(`fetch ${url}: redirected to ${res.url}, outside the SOURCES.md allowlist`);
+    }
+    // And the same moved-page rule: a source URL redirected to a different
+    // page is not that source's live text. It is reported, never compared.
+    const moved = LLMS_INDICES.includes(String(url)) ? null : movedTo(url, res.url);
+    if (moved) {
+      throw Object.assign(new Error(`fetch ${url}: redirected to ${moved}, a different page`), {
+        status: "moved",
+        movedTo: moved,
+      });
     }
     return await res.text();
   } finally {
@@ -466,7 +476,9 @@ export function summarize({
   if (unreachable.length) {
     lines.push(`## Unreachable sources (${unreachable.length})`);
     for (const u of unreachable)
-      lines.push(`- ${u.id}${u.status === 404 ? " [page gone: HTTP 404]" : ""}: ${u.message}`);
+      lines.push(
+        `- ${u.id}${u.status === 404 ? " [page gone: HTTP 404]" : u.status === "moved" ? " [page moved]" : ""}: ${u.message}`,
+      );
     lines.push("");
   }
   lines.push(`## New pages (${newPages.length} of ${newPagesTotal} not yet cited)`);

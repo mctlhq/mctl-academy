@@ -3767,8 +3767,8 @@
     "objectiveTitle": "Judging returned sources for relevance, recency and credibility",
     "sources": [
       {
-        "title": "Web Search Essentials",
-        "url": "https://docs.tavily.com/examples/quick-tutorials/search-api.md",
+        "title": "Tavily Search best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-search.md",
         "excerpt": "The `score` indicates relevance between query and content. Higher is better, but the ideal threshold depends on your use case."
       }
     ],
@@ -5059,12 +5059,12 @@
     "sources": [
       {
         "title": "How to manage federations in Nebius AI Cloud",
-        "url": "https://docs.nebius.com/iam/federations.md",
+        "url": "https://docs.nebius.com/iam/federations/manage.md",
         "excerpt": "you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates."
       },
       {
         "title": "How to manage federations in Nebius AI Cloud",
-        "url": "https://docs.nebius.com/iam/federations.md",
+        "url": "https://docs.nebius.com/iam/federations/manage.md",
         "excerpt": "A federation cannot function correctly without at least one valid certificate."
       }
     ],
@@ -5105,7 +5105,7 @@
     "sources": [
       {
         "title": "How to manage federations in Nebius AI Cloud",
-        "url": "https://docs.nebius.com/iam/federations.md",
+        "url": "https://docs.nebius.com/iam/federations/manage.md",
         "excerpt": "that has the `admin` role within your tenant or project; for example, the default `admins` group."
       }
     ],
@@ -5146,7 +5146,7 @@
     "sources": [
       {
         "title": "How to manage federations in Nebius AI Cloud",
-        "url": "https://docs.nebius.com/iam/federations.md",
+        "url": "https://docs.nebius.com/iam/federations/manage.md",
         "excerpt": "you have access to your IdP admin portal and can get the SAML application metadata (login URL, identifier, certificate)"
       }
     ],
@@ -7055,13 +7055,13 @@
     "objectiveTitle": "Distinguishing searching, extracting, mapping and crawling as web-access operations",
     "sources": [
       {
-        "title": "Website Crawling and Content Extraction",
-        "url": "https://docs.tavily.com/examples/quick-tutorials/crawl-api.md",
+        "title": "Tavily Crawl best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-crawl.md",
         "excerpt": "Full content extraction from pages"
       },
       {
-        "title": "Website Crawling and Content Extraction",
-        "url": "https://docs.tavily.com/examples/quick-tutorials/crawl-api.md",
+        "title": "Tavily Crawl best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-crawl.md",
         "excerpt": "Quick site structure discovery"
       }
     ],
@@ -7357,8 +7357,8 @@
     "objectiveTitle": "Combining Search with Extract to retrieve and clean page content",
     "sources": [
       {
-        "title": "Clean Content Extraction",
-        "url": "https://docs.tavily.com/examples/quick-tutorials/extract-api.md",
+        "title": "Tavily Extract best practices",
+        "url": "https://docs.tavily.com/documentation/best-practices/best-practices-extract.md",
         "excerpt": "When `query` is provided, chunks are reranked based on relevance to the query."
       }
     ],

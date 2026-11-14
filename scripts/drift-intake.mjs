@@ -34,7 +34,7 @@ export function issueTitle(id) {
  * One unreadable line costs that line, not the other rows' issues; the
  * caller reports `errors` and exits non-zero after every good row is handled.
  *
- * @returns {{ rows: { id: string, oldHash: string, newHash: string, url: string }[], errors: string[] }}
+ * @returns {{ rows: { id: string, oldHash: string, newHash: string, url: string, movedTo?: string }[], errors: string[] }}
  */
 export function parseDriftReport(text) {
   const rows = [];
@@ -48,18 +48,26 @@ export function parseDriftReport(text) {
       errors.push(`unparseable DRIFTED line: ${JSON.stringify(raw)}`);
       continue;
     }
-    rows.push({ id: parts[1], oldHash: parts[2], newHash: parts[4], url: parts[5] });
+    /** @type {{ id: string, oldHash: string, newHash: string, url: string, movedTo?: string }} */
+    const row = { id: parts[1], oldHash: parts[2], newHash: parts[4], url: parts[5] };
+    // checkSources() appends `moved-to <url>` to a gone row when the page was
+    // redirected to a different one rather than answering 404/410.
+    if (parts[6] === "moved-to" && parts[7]) row.movedTo = parts[7];
+    rows.push(row);
   }
   return { rows, errors };
 }
 
-export function issueBody({ id, url, oldHash, newHash }) {
+export function issueBody({ id, url, oldHash, newHash, movedTo = null }) {
   if (newHash === "gone") {
     return [
-      "Upstream page is gone (HTTP 404 or 410). Automatically marked `status: deprecated` (fail-closed quarantine).",
+      movedTo
+        ? "Upstream page moved: the URL now redirects to a different page. Automatically marked `status: deprecated` (fail-closed quarantine)."
+        : "Upstream page is gone (HTTP 404 or 410). Automatically marked `status: deprecated` (fail-closed quarantine).",
       "",
       `- source: \`${id}\``,
       `- url: ${url}`,
+      ...(movedTo ? [`- now redirects to: ${movedTo}`] : []),
       `- recorded hash: \`${oldHash}\``,
       "",
       "Questions citing this source are excluded from learner selection.",

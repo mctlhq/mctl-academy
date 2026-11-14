@@ -109,7 +109,10 @@ sources:
       - domain-2/organization-hierarchy
 
   - id: src-co-iam-federations
-    url: https://docs.nebius.com/iam/federations.md
+    # Was iam/federations.md, which redirects here; the record and its
+    # snapshot were always this page (the move rule in movedTo() would
+    # otherwise withdraw it).
+    url: https://docs.nebius.com/iam/federations/manage.md
     title: "How to manage federations in Nebius AI Cloud"
     objectives:
       - domain-2/security-policies
@@ -656,19 +659,13 @@ sources:
       - domain-3/mcp-integration
       - domain-1/blended-rag
 
-  - id: src-tv-tut-search
-    url: https://docs.tavily.com/examples/quick-tutorials/search-api.md
-    title: "Web Search Essentials"
-    objectives:
-      - domain-2/search-parameters
-      - domain-1/source-quality
+  # src-tv-tut-search: row removed 14.11. quick-tutorials/search-api.md now
+  # redirects to the best-practices page src-tv-bp-search already lists, and
+  # the record is byte-identical to it; the record stays for its citations.
 
-  - id: src-tv-tut-extract
-    url: https://docs.tavily.com/examples/quick-tutorials/extract-api.md
-    title: "Clean Content Extraction"
-    objectives:
-      - domain-2/search-extract-pipelines
-      - domain-2/extraction-recovery
+  # src-tv-tut-extract: row removed 14.11. quick-tutorials/extract-api.md now
+  # redirects to the best-practices page src-tv-bp-extract already lists, and
+  # the record is byte-identical to it; the record stays for its citations.
 
   - id: src-tv-tut-map
     url: https://docs.tavily.com/examples/quick-tutorials/map-api.md
@@ -676,12 +673,9 @@ sources:
     objectives:
       - domain-3/map-usage
 
-  - id: src-tv-tut-crawl
-    url: https://docs.tavily.com/examples/quick-tutorials/crawl-api.md
-    title: "Website Crawling and Content Extraction"
-    objectives:
-      - domain-3/crawl-parameters
-      - domain-1/web-access-operations
+  # src-tv-tut-crawl: row removed 14.11. quick-tutorials/crawl-api.md now
+  # redirects to the best-practices page src-tv-bp-crawl already lists, and
+  # the record is byte-identical to it; the record stays for its citations.
 
   - id: src-tv-hybrid-research
     url: https://docs.tavily.com/examples/agent-toolkit/hybrid-research.md
@@ -764,8 +758,8 @@ sources:
   # Pages planned by content/coverage/{ai-infrastructure-engineer,
   # ai-solutions-architect}.yaml that no record captures yet. Pages already
   # captured (src-co-iam-federations, src-co-gpu-clusters, ...) are reused, not
-  # listed: iam/federations.md, for one, redirects to iam/federations/manage.md
-  # and is not captured a second time.
+  # listed: src-co-iam-federations, for one, already records
+  # iam/federations/manage.md and is not captured a second time.
   #
   # Rows carry course-aware `coverage` instead of bare `objectives`; the
   # workflow derives `objectives` from it. `batch` groups at most eight rows:

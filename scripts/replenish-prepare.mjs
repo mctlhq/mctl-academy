@@ -838,7 +838,9 @@ export function prBody({
   if (candidates.unreachable?.length) {
     lines.push("", "### Unreachable sources (not changed here; needs a human decision)", "");
     for (const u of candidates.unreachable) {
-      lines.push(`- \`${u.id}\`${u.status === 404 ? " page gone (HTTP 404)" : ""}: ${u.message}`);
+      lines.push(
+        `- \`${u.id}\`${u.status === 404 ? " page gone (HTTP 404)" : u.status === "moved" ? " page moved" : ""}: ${u.message}`,
+      );
     }
   }
   lines.push("", `### Review by \`${receipt.reviewer}\` (${receipt.reviewed_at})`, "");
@@ -846,6 +848,28 @@ export function prBody({
     `${approved.length} approved and promoted, ${rejected.length} rejected.${max !== null ? ` Cap for this run: ${max} question files.` : ""}`,
   );
   for (const q of rejected) lines.push(`- rejected \`${q.id}\`: ${q.reason}`);
+  // Stale-pinned items the run offered but nobody touched: the author leaves
+  // one untouched when the re-captured page no longer documents its concept.
+  // Computed from candidates and the receipt, never from the author's own
+  // notes (agent-written text does not reach this body). Without this list
+  // the skip was visible only in an artifact nobody downloads, and the same
+  // items were offered again on every run (14.11: 12 of them across 4 runs).
+  if (Array.isArray(candidates.stalePinned)) {
+    const reviewed = new Set(receipt.questions.map((q) => q.id));
+    const untouched = candidates.stalePinned.flatMap((s) =>
+      (s.question_ids ?? []).filter((id) => !reviewed.has(id)).map((id) => ({ id, source: s.source_id })),
+    );
+    if (untouched.length) {
+      lines.push(
+        "",
+        "### Quarantined items left untouched",
+        "",
+        "Offered as stale-pinned, not revised this run: usually the re-captured page no longer documents the concept, or the item is outside this run's course scope. The author's reasons are in this run's `authoring` artifact (`_agent/CHANGES.md`). They are offered again on every run until a human retires or re-sources them.",
+        "",
+      );
+      for (const u of untouched) lines.push(`- \`${u.id}\` (source \`${u.source}\`)`);
+    }
+  }
   if (before && after) {
     lines.push("", "### Mock shortfall before → after", "");
     for (const c of after) {

@@ -18,7 +18,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
-import { isAllowedSourceUrl, pinnedCommitOf } from "./lib/content-model.mjs";
+import { isAllowedSourceUrl, movedTo, pinnedCommitOf } from "./lib/content-model.mjs";
 import { storeFromEnv, sha256 } from "./lib/snapshot-store.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -91,6 +91,17 @@ export async function fetchSource(url, { verifyPin = true } = {}) {
     if (verifyPin && landed && landed.sha !== pin?.sha) {
       throw new Error(`fetch ${url}: redirected to ${res.url}, an unverified commit`);
     }
+    // Inside the allowlist is not the same page: a retired page redirected
+    // to a hub or a reference is a different document, and storing it under
+    // the old record is how two Tavily sources kept `status: current` while
+    // serving pages their questions never cited. See movedTo().
+    const moved = movedTo(url, res.url);
+    if (moved) {
+      const err = new Error(`fetch ${url}: redirected to ${moved}, a different page`);
+      // checkSources() reads this to treat the move like a page that is gone.
+      /** @type {any} */ (err).movedTo = moved;
+      throw err;
+    }
     return await res.text();
   } catch (e) {
     if (e.name === "AbortError") throw new Error(`fetch ${url}: timed out after ${FETCH_TIMEOUT_MS}ms`);
@@ -152,6 +163,8 @@ async function capture({ url, id, objectives, title, coverage }) {
  * HTTP statuses that are the docs host's own statement that a page no longer
  * exists. Only these mean absent; every other failure (timeout, 5xx, 403
  * from a bot checkpoint, a redirect off the allowlist) is "could not observe".
+ * A redirect to a different allowlisted page is not in this set but is treated
+ * the same way by checkSources(): see movedTo().
  */
 export const GONE_STATUSES = new Set([404, 410]);
 
@@ -204,13 +217,19 @@ export async function checkSources({
       text = await fetcher(data.url);
     } catch (e) {
       const status = /** @type {any} */ (e)?.httpStatus;
-      if (GONE_STATUSES.has(status)) {
+      // A redirect to a different page is the host's own statement that the
+      // cited page is no longer at this URL, as a 404 is: withdraw it the
+      // same way. The row keeps the "-> gone" form drift intake parses.
+      const moved = /** @type {any} */ (e)?.movedTo;
+      if (GONE_STATUSES.has(status) || moved) {
         gone += 1;
         if (markDrifted) {
           data.status = "deprecated";
           write(sourcePath, data);
         }
-        log(`DRIFTED  ${data.id}  ${String(data.sha256).slice(0, 12)} -> gone  ${data.url}`);
+        log(
+          `DRIFTED  ${data.id}  ${String(data.sha256).slice(0, 12)} -> gone  ${data.url}${moved ? `  moved-to ${moved}` : ""}`,
+        );
         continue;
       }
       // An unreachable source is not drift; conflating the two would mark
