@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-kubernetes-node-groups-moving-workload
+url: https://docs.nebius.com/kubernetes/node-groups/moving-workload.md
+title: Moving workload from the existing node group
+retrieved_at: 2026-11-14T09:54:59Z
+sha256: 21aba18772b922b75abca8a24d00712ce766f4f0084d8e565fb083f32cb9d47f
+objectives:
+  - domain-4/ie-gpu-rollouts
+  - domain-2/sa-migration-handover
+snapshot:
+  bucket: academy-source-snapshots
+  key: 21aba18772b922b75abca8a24d00712ce766f4f0084d8e565fb083f32cb9d47f
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-gpu-rollouts
+  - course_id: ai-solutions-architect
+    objective: domain-2/sa-migration-handover

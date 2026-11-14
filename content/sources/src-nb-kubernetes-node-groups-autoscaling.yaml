@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-kubernetes-node-groups-autoscaling
+url: https://docs.nebius.com/kubernetes/node-groups/autoscaling.md
+title: Autoscaling in Managed Service for Kubernetes
+retrieved_at: 2026-11-14T09:54:58Z
+sha256: fa910c31f478cf9c6bd517c4ce9fedb978109f904cb012ef1fba806ad4fbd52e
+objectives:
+  - domain-3/ie-inference-slo-tuning
+  - domain-3/sa-right-sizing
+snapshot:
+  bucket: academy-source-snapshots
+  key: fa910c31f478cf9c6bd517c4ce9fedb978109f904cb012ef1fba806ad4fbd52e
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-slo-tuning
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-right-sizing

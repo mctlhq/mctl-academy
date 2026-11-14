@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kubernetes-manage-applications
+url: https://docs.nebius.com/kubernetes/manage-applications.md
+title: Deploying and deleting applications for Managed Service for Kubernetes
+retrieved_at: 2026-11-14T09:54:56Z
+sha256: f0f0908510c99459c329428bcc6050151bc01c250a016f849caa7754adf7cfe1
+objectives:
+  - domain-3/ie-marketplace-apps
+snapshot:
+  bucket: academy-source-snapshots
+  key: f0f0908510c99459c329428bcc6050151bc01c250a016f849caa7754adf7cfe1
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-marketplace-apps

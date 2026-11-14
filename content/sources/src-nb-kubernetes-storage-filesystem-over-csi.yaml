@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-kubernetes-storage-filesystem-over-csi
+url: https://docs.nebius.com/kubernetes/storage/filesystem-over-csi.md
+title: Mounting shared filesystems to Pods in a Managed Service for Kubernetes cluster
+retrieved_at: 2026-11-14T09:55:01Z
+sha256: 31628c9463746ee5a1efe0e1542b0aa8278e456c0fc63a9bf7f72f87332daf69
+objectives:
+  - domain-2/ie-storage-tiers
+snapshot:
+  bucket: academy-source-snapshots
+  key: 31628c9463746ee5a1efe0e1542b0aa8278e456c0fc63a9bf7f72f87332daf69
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-storage-tiers

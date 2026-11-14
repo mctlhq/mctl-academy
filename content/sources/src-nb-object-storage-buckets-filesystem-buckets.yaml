@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-object-storage-buckets-filesystem-buckets
+url: https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md
+title: How to manage filesystem buckets
+retrieved_at: 2026-11-14T09:55:03Z
+sha256: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
+objectives:
+  - domain-2/ie-storage-tiers
+snapshot:
+  bucket: academy-source-snapshots
+  key: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-storage-tiers
