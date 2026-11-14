@@ -63,13 +63,13 @@ const issueUrl = computed(() => buildQuestionIssueUrl(props.questionId, reason.v
 <style scoped>
 .report-intro,
 .report-meta {
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-muted);
 }
 
 .report-char-count {
   margin: 0.25rem 0 1rem;
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-subtle);
   text-align: right;
 }

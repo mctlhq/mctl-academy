@@ -148,7 +148,7 @@ async function handleDeleteAccount() {
 </script>
 
 <template>
-  <span v-if="loading" class="user-nav-checking">Checking session...</span>
+  <span v-if="loading" class="user-nav-checking">Checking session…</span>
 
   <div v-else-if="!user" class="user-nav-signin">
     <!--
@@ -249,7 +249,7 @@ async function handleDeleteAccount() {
 
 <style scoped>
 .user-nav-checking {
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-muted);
 }
 
@@ -282,12 +282,12 @@ async function handleDeleteAccount() {
   background: var(--surface-card);
   color: var(--surface-fg-muted);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-caption-size);
 }
 
 .user-nav-name {
   font-weight: 600;
-  font-size: 0.78rem;
+  font-size: var(--text-caption-size);
 }
 
 .user-nav-signed-in {
@@ -307,7 +307,7 @@ async function handleDeleteAccount() {
 
 .chevron {
   color: var(--surface-fg-subtle);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
 }
 
 .account-menu {
@@ -328,13 +328,13 @@ async function handleDeleteAccount() {
   display: grid;
   padding: 0.25rem 0.4rem 0.75rem;
   border-bottom: 1px solid var(--surface-line);
-  font-size: 0.78rem;
+  font-size: var(--text-caption-size);
 }
 
 .account-identity span {
   color: var(--surface-fg-subtle);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--text-caption-size);
 }
 
 .user-nav-signout {
@@ -349,15 +349,15 @@ async function handleDeleteAccount() {
   margin: 0;
   padding: 0.25rem 0.4rem;
   color: var(--surface-fg-subtle);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 .sync-status.sync-synced {
-  color: var(--status-ok);
+  color: var(--status-ok-text);
 }
 
 .sync-status.sync-failed {
-  color: var(--status-bad);
+  color: var(--status-bad-text);
 }
 
 .sync-retry {
@@ -366,7 +366,7 @@ async function handleDeleteAccount() {
   border-radius: var(--mctl-radius-md);
   background: transparent;
   color: var(--surface-fg);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   cursor: pointer;
 }
 
@@ -382,7 +382,7 @@ async function handleDeleteAccount() {
   border-radius: var(--mctl-radius-md);
   background: var(--surface-elevated);
   color: var(--surface-fg);
-  font-size: 0.8rem;
+  font-size: var(--text-caption-size);
   z-index: 1;
 }
 
@@ -405,7 +405,7 @@ async function handleDeleteAccount() {
   width: 100%;
   min-height: 2rem;
   padding: 0.3rem 0.6rem;
-  font-size: 0.78rem;
+  font-size: var(--text-caption-size);
   background: transparent;
   border: none;
   color: var(--surface-fg-subtle);
@@ -414,7 +414,7 @@ async function handleDeleteAccount() {
 }
 
 .user-nav-delete:hover {
-  color: var(--status-bad);
+  color: var(--status-bad-text);
 }
 
 @media (max-width: 620px) {
