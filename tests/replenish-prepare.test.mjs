@@ -4052,6 +4052,9 @@ test("the author prompt carries the editorial rubric and the reviewer prompt is 
     /pick another concept rather than fill a slot/,
     /No yes\/no hedges such as "Yes,\s+but only when \.\.\." or "No -- but just \.\.\."/,
     /make each\s+option a different condition/,
+    /a distractor's own wording never gives it away/,
+    /contradicts the requirement in the stem/,
+    /justifies itself\s+by what the documentation does or does not say/,
     /preflight the items you wrote against the advisory\s+checks in scripts\/content-quality-report\.mjs/,
   ];
   for (const step of authors) {
