@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1b6d9f3a8e47
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/training-results
 stem: "A team wants one place to compare model artifacts, training results and
@@ -46,3 +46,7 @@ authored:
   by: agent:claude-author
   at: 2026-11-14T20:24:28Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T20:33:13Z
+  content_sha256: 98a7b11bacd9fd8a287d46146dacdec79ed4d64f707bf507d2c3f360206a8ee7

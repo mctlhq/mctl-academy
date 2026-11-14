@@ -1,0 +1,27 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T20:33:13Z",
+  "questions": [
+    {
+      "id": "q-1b6d9f3a8e47",
+      "content_sha256": "98a7b11bacd9fd8a287d46146dacdec79ed4d64f707bf507d2c3f360206a8ee7",
+      "approved": true,
+      "reason": "The captured overview states verbatim that \"Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results, and tuned hyperparameters in a single interface\", which establishes option b and contradicts the separate-dashboard, auto-selection and hyperparameters-only distractors.",
+      "reviewed_at": "2026-11-14T20:33:13Z"
+    },
+    {
+      "id": "q-c04b7fe2918a",
+      "content_sha256": "75ac97732a3a6af5cf93005e850bf4e42f821dff6a95161f6359fc64e5bb4a9e",
+      "approved": true,
+      "reason": "The training section says the `--policy.type=act` policy \"will automatically adapt to the number of motor states, motor actions and cameras of your robot (e.g. `wrist` and `top`) which have been saved in your dataset\" — and the page records those features into the dataset at creation — so only option a stands; the page describes no manual feature, calibration or `accelerate config` step for this adaptation.",
+      "reviewed_at": "2026-11-14T20:33:13Z"
+    },
+    {
+      "id": "q-f62d0a9c3b57",
+      "content_sha256": "9ad541430766d5f7a856a4c0e44906bac0e9ef940ab8dd6489e9e3736a041305",
+      "approved": true,
+      "reason": "The multi-GPU page states \"**LeRobot does not auto-scale the learning rate or the number of steps** when the effective batch size grows. If you scale out and want equivalent training, please adjust manually\", which supports option a and rules out every automatic-adjustment distractor.",
+      "reviewed_at": "2026-11-14T20:33:13Z"
+    }
+  ]
+}

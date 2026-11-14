@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f62d0a9c3b57
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/gpu-orchestration
 stem: "A team scales LeRobot training from 1 to 4 GPUs using `accelerate
@@ -35,10 +35,13 @@ options:
       response."
 evidence:
   - source_id: src-pa-lerobot-multi-gpu
-    excerpt: "**LeRobot does not auto-scale the learning rate or the number of
-      steps**"
+    excerpt: "**LeRobot does not auto-scale the learning rate or the number of steps**"
     source_sha256: ef2e87599978e7f9897de5bfd723c1f85bc99808786caf3bbc130b6a63d4c20a
 authored:
   by: agent:claude-author
   at: 2026-11-14T20:24:28Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T20:33:13Z
+  content_sha256: 9ad541430766d5f7a856a4c0e44906bac0e9ef940ab8dd6489e9e3736a041305

@@ -328,6 +328,47 @@
     ]
   },
   {
+    "id": "q-1b6d9f3a8e47",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/training-results",
+    "stem": "A team wants one place to compare model artifacts, training results and the hyperparameters used across several post-training runs, instead of checking separate logs and output directories. What does Managed Service for MLflow provide for this purpose?",
+    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
+    "sources": [
+      {
+        "title": "Managed Service for MLflow",
+        "url": "https://docs.nebius.com/mlflow/index.md",
+        "excerpt": "Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results, and tuned hyperparameters in a single interface."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A separate dashboard for artifacts and a separate one for hyperparameters that must be cross-referenced manually",
+        "correct": false,
+        "explanation": "The documentation describes one single interface for artifacts, results and hyperparameters together, not separate dashboards that need manual cross-referencing."
+      },
+      {
+        "id": "b",
+        "text": "A single interface for accessing model artifacts, training results and tuned hyperparameters together",
+        "correct": true,
+        "explanation": "Correct. The Managed MLflow overview states it enables access to model artifacts, training results and tuned hyperparameters in a single interface, which is exactly this comparison use case."
+      },
+      {
+        "id": "c",
+        "text": "Automatic selection of the best-performing model without exposing the underlying training results",
+        "correct": false,
+        "explanation": "Managed MLflow exposes training results and metrics for the team to compare; it does not silently auto-select a best model and hide the data."
+      },
+      {
+        "id": "d",
+        "text": "Storage for hyperparameters only, with model artifacts and results tracked elsewhere",
+        "correct": false,
+        "explanation": "The documentation states all three — model artifacts, training results and hyperparameters — are accessible in the same interface, not hyperparameters alone."
+      }
+    ]
+  },
+  {
     "id": "q-1c9e4a7f3d62",
     "course_id": "agentic-web-search",
     "domain": "domain-3",
@@ -3632,6 +3673,47 @@
         "text": "Research, since it is for a finished, multi-source answer with citations",
         "correct": true,
         "explanation": "Correct. The guide states to use Research for exactly this: a finished, multi-source answer with citations."
+      }
+    ]
+  },
+  {
+    "id": "q-c04b7fe2918a",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/robot-policy-training",
+    "stem": "When training an ACT policy with `lerobot-train --policy.type=act`, how does the policy's architecture adapt to a specific robot's motor states, actions and cameras?",
+    "objectiveTitle": "Training and fine-tuning robot policies from demonstration data with LeRobot",
+    "sources": [
+      {
+        "title": "Imitation Learning on Real-World Robots",
+        "url": "https://huggingface.co/docs/lerobot/il_robots.md",
+        "excerpt": "automatically adapt to the number of motor states, motor actions and cameras of your robot (e.g. `wrist` and `top`) which have been saved"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "It automatically adapts to whatever has been saved in the dataset's metadata",
+        "correct": true,
+        "explanation": "Correct. The guide says this policy will automatically adapt to the number of motor states, motor actions and cameras of your robot which have been saved in your dataset."
+      },
+      {
+        "id": "b",
+        "text": "You must manually set `--policy.input_features` and `--policy.output_features` for each robot",
+        "correct": false,
+        "explanation": "Those flags are used elsewhere to disable automatic feature inference (for example when loading a pretrained policy for PEFT), not as the normal required step for a new ACT policy."
+      },
+      {
+        "id": "c",
+        "text": "You must record a separate calibration file per camera before training will start",
+        "correct": false,
+        "explanation": "Calibration files identify a specific robot/teleop pair for teleoperation and recording; they are not what the policy uses to adapt its architecture."
+      },
+      {
+        "id": "d",
+        "text": "You must re-run `accelerate config` to register the robot's hardware profile",
+        "correct": false,
+        "explanation": "`accelerate config` configures multi-GPU training hardware, not the policy's motor/camera feature adaptation."
       }
     ]
   },
@@ -8139,6 +8221,47 @@
         "text": "`advanced`, since it searches more broadly and reaches more sources per query",
         "correct": true,
         "explanation": "Correct. The guide states advanced searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency."
+      }
+    ]
+  },
+  {
+    "id": "q-f62d0a9c3b57",
+    "course_id": "physical-ai",
+    "domain": "domain-1",
+    "objective": "domain-1/gpu-orchestration",
+    "stem": "A team scales LeRobot training from 1 to 4 GPUs using `accelerate launch`. By default, what happens to the learning rate and the number of training steps?",
+    "objectiveTitle": "Sizing GPU nodes and orchestration for model size, workload, cost and completion time",
+    "sources": [
+      {
+        "title": "Multi-GPU Training",
+        "url": "https://huggingface.co/docs/lerobot/multi_gpu_training.md",
+        "excerpt": "**LeRobot does not auto-scale the learning rate or the number of steps**"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "They stay exactly as specified; LeRobot does not auto-scale either one for the number of GPUs",
+        "correct": true,
+        "explanation": "Correct. The multi-GPU guide states LeRobot does not auto-scale the learning rate or the number of steps when the effective batch size grows, leaving hyperparameter adjustment to the user."
+      },
+      {
+        "id": "b",
+        "text": "The learning rate is scaled automatically by the number of GPUs, as many distributed frameworks do",
+        "correct": false,
+        "explanation": "The guide states the opposite: LeRobot does not auto-scale the learning rate as the effective batch size grows with more GPUs."
+      },
+      {
+        "id": "c",
+        "text": "The number of training steps is automatically reduced to keep total samples seen constant",
+        "correct": false,
+        "explanation": "The guide shows reducing steps for a larger effective batch size as something you do manually, not something LeRobot does automatically."
+      },
+      {
+        "id": "d",
+        "text": "Both are automatically doubled to match the larger effective batch size from more GPUs",
+        "correct": false,
+        "explanation": "The effective batch size does grow with more GPUs, but LeRobot does not automatically adjust the learning rate or step count in response."
       }
     ]
   },
