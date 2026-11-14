@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-e71c4a9f2d85
+status: review_ready
+domain: domain-1
+objective: domain-1/ie-billing-quotas
+stem: "A team sets a budget alert threshold at their full monthly GPU spending amount, expecting the alert to stop further GPU usage once spending reaches that point. After the alert fires, GPU usage keeps running and spending keeps climbing. What should the team do to actually cap further GPU spending?"
+options:
+  - id: a
+    text: "Request a quota decrease for the GPU resource, since a budget alerts on spending but does not stop or cap usage by itself"
+    correct: true
+    explanation: "Correct. The documentation states that a budget does not stop or cap usage, and that to limit usage you can request a quota decrease."
+  - id: b
+    text: "Lower the budget's alert threshold to an earlier point in the spending curve, since an earlier threshold is what stops usage once it is crossed"
+    correct: false
+    explanation: "An earlier threshold only makes the alert email arrive sooner in the spending curve; the documentation describes thresholds as triggering alerts, not as a mechanism that stops usage."
+  - id: c
+    text: "Switch the budget's time period from monthly to daily, since a shorter tracking period enforces a hard cap on usage"
+    correct: false
+    explanation: "The time period only controls when the budget's tracked spending resets for the next period; the documentation does not describe any period as enforcing a usage cap."
+  - id: d
+    text: "Add more recipients to the budget's alert notifications, since more recipients catch overspending sooner and stop it"
+    correct: false
+    explanation: "Notification recipients only receive the alert email; the documentation describes a budget with no recipients as still tracking usage, which shows recipients affect who is notified, not whether usage is capped."
+evidence:
+  - source_id: src-nb-signup-billing-budgets
+    source_sha256: 613fa38d227f942203b3babf11856de2f87349d257f4b98cd80065ddb3f88586
+    excerpt: "A budget does not stop or cap your usage."
+    locator: "Budgets in Nebius AI Cloud, intro"
+  - source_id: src-nb-signup-billing-budgets
+    source_sha256: 613fa38d227f942203b3babf11856de2f87349d257f4b98cd80065ddb3f88586
+    excerpt: "To limit usage, you can [request a quota decrease](https://docs.nebius.com/overview/quotas.md)."
+    locator: "Budgets in Nebius AI Cloud, intro"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T15:41:54Z"
+course_id: ai-infrastructure-engineer
