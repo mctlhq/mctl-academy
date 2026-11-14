@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.1.87](https://github.com/mctlhq/mctl-academy/compare/0.1.86...0.1.87) (2026-11-14)
+
+
+### Bug Fixes
+
+* **content:** retire three weak Builder questions from [#526](https://github.com/mctlhq/mctl-academy/issues/526) ([c07de3d](https://github.com/mctlhq/mctl-academy/commit/c07de3dc2ff36043836292ab1d8142f5fc6ce9c5))
+* **content:** retire three weak Builder questions from [#526](https://github.com/mctlhq/mctl-academy/issues/526) ([a9a653e](https://github.com/mctlhq/mctl-academy/commit/a9a653ed916e4618d74656faaeef0c98fc0e640c))
+* **content:** retire weak CloudOps question q-co55ed4440ca ([e86f85a](https://github.com/mctlhq/mctl-academy/commit/e86f85af13996c5a90f23fc4628423dd838699a1))
+* **content:** retire weak CloudOps question q-co55ed4440ca ([05a39f6](https://github.com/mctlhq/mctl-academy/commit/05a39f6543009878c0c959ff6ec573b74db62f9a))
+* **content:** retire weak Physical AI question q-1b6d9f3a8e47 ([d8252ca](https://github.com/mctlhq/mctl-academy/commit/d8252ca74ebb96e70c211ba6af2e4748d48c88d2))
+* **content:** retire weak Physical AI question q-1b6d9f3a8e47 ([731ce71](https://github.com/mctlhq/mctl-academy/commit/731ce714c6debd92dbf1c2dedb4d265eeeb2e394))
+
+
+### Content
+
+* **replenish:** author 1 question file(s) from 0 captured source(s) ([6d3bbd0](https://github.com/mctlhq/mctl-academy/commit/6d3bbd0761e2d9d0dc12bd90df19760107192a5b))
+* **replenish:** author 3 question file(s) from 0 captured source(s) ([626e29d](https://github.com/mctlhq/mctl-academy/commit/626e29d6e029576d66da41a437d022702d95d8e9))
+* **replenish:** author 5 question file(s) from 0 captured source(s) ([64ee2c6](https://github.com/mctlhq/mctl-academy/commit/64ee2c62de47f597ce36cb36bb2de396d4182123))
+* **replenish:** promote 1 reviewed question(s) ([f7d88f1](https://github.com/mctlhq/mctl-academy/commit/f7d88f169bc18ec6536709ea357926cf37b4c29c))
+* **replenish:** promote 3 reviewed question(s) ([292973d](https://github.com/mctlhq/mctl-academy/commit/292973de21ff6d9082c757af8a1a348c7d0afc21))
+* **replenish:** promote 5 reviewed question(s) ([3083fe2](https://github.com/mctlhq/mctl-academy/commit/3083fe23e0c7c7da0cc68a6c26ae98452f138dbd))
+* **replenish:** promote 5 reviewed question(s) ([26c0993](https://github.com/mctlhq/mctl-academy/commit/26c099301bf80fcf63858a5a34e0c5020655950d))
+
 ## [0.1.86](https://github.com/mctlhq/mctl-academy/compare/0.1.85...0.1.86) (2026-11-14)
 
 
