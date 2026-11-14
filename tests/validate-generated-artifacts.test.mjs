@@ -302,3 +302,18 @@ describe("validateGeneratedArtifacts — the real build output", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 });
+
+describe("validateGeneratedArtifacts — course summary", () => {
+  test("accepts a catalog course with or without a summary", () => {
+    assert.deepEqual(validateGeneratedArtifacts([question()], [course()]), []);
+    assert.deepEqual(
+      validateGeneratedArtifacts([question()], [course({ summary: "One neutral sentence." })]),
+      [],
+    );
+  });
+
+  test("rejects a summary that is present but empty or not a string", () => {
+    assertRejects([question()], [course({ summary: "" })], "summary");
+    assertRejects([question()], [course({ summary: 42 })], "summary");
+  });
+});

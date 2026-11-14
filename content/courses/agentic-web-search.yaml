@@ -3,6 +3,7 @@ id: agentic-web-search
 prepares_for: "Nebius Agentic Web Search"
 title: "Agentic Web Search"
 description: "Practice for the Nebius Agentic Web Search certification. Scenario questions on connecting agents and RAG pipelines to live web data with the Tavily API: Search and Extract, Map and Crawl, agent integrations, and running web access reliably in production."
+summary: "Give agents and retrieval pipelines live web data: search, extract, map and crawl, then keep that access reliable in production."
 disclaimer:
   short: "Not affiliated with, endorsed by, or sponsored by Nebius or Tavily."
   full: "mctl Academy is an independent study tool. It is not affiliated with, endorsed by, or sponsored by Nebius or Tavily. It does not reproduce, mirror, or predict any certification exam, and it is not a proctored assessment."
