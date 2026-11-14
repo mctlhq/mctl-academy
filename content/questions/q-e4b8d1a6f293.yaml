@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-e4b8d1a6f293
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/web-access-operations
 stem: "A team wants to see every URL on a site quickly, before deciding which
@@ -10,27 +10,26 @@ options:
   - id: a
     text: "Map, for quick site structure discovery without extracting content"
     correct: true
-    explanation: "Correct. Crawl's best-practices guide lists quick site
-      structure discovery and URL collection without content extraction as
-      what Map is for, while Crawl is for full content extraction and deep
-      analysis."
+    explanation: "Correct. Crawl's best-practices guide lists quick site structure
+      discovery and URL collection without content extraction as what Map is
+      for, while Crawl is for full content extraction and deep analysis."
   - id: b
     text: "Crawl, since it also discovers structure quickly before extracting
       content"
     correct: false
-    explanation: "Crawl is listed for full content extraction and deep
-      content analysis, not quick structure discovery; extracting content is
-      what makes it slower than Map."
+    explanation: "Crawl is listed for full content extraction and deep content
+      analysis, not quick structure discovery; extracting content is what makes
+      it slower than Map."
   - id: c
     text: "Extract, since it can list a site's URLs without reading them"
     correct: false
-    explanation: "Extract pulls content from URLs you already have; it does
-      not discover a site's URL structure the way Map does."
+    explanation: "Extract pulls content from URLs you already have; it does not
+      discover a site's URL structure the way Map does."
   - id: d
     text: "Search, since it returns a ranked list of site URLs first"
     correct: false
-    explanation: "Search finds and ranks sources for a query across the web;
-      it does not map a single site's URL structure."
+    explanation: "Search finds and ranks sources for a query across the web; it does
+      not map a single site's URL structure."
 evidence:
   - source_id: src-tv-tut-crawl
     excerpt: "Full content extraction from pages"
@@ -44,3 +43,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-14T17:57:46Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T18:13:19Z
+  content_sha256: 0566e3f00757215da608537203ae0f767d21c7f8605f17dd328aaddfbb129f1d

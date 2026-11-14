@@ -1,0 +1,34 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-14T18:13:18Z",
+  "questions": [
+    {
+      "id": "q-0e6c3b9a4f78",
+      "content_sha256": "7eb719458f5f898df07d938ee3db092a23bd94343403ea47faeed5052e10b9ec",
+      "approved": true,
+      "reason": "The excerpt is verbatim in the captured page, and its section states the endpoints \"have their own lower limit, which is the same on every plan\" with \"no more than 100 crawl requests per minute\" for a 1,500 RPM organization, which establishes that crawl has a separate cap that does not scale with the search limit. The flex-tier and usage-endpoint distractors are each governed by different passages on the page (search requests setting max_age_hours; the usage endpoint itself), so only option a is defensible.",
+      "reviewed_at": "2026-11-14T18:13:18Z"
+    },
+    {
+      "id": "q-c3f5e0b2d784",
+      "content_sha256": "deeacffa95cdb175a03f406eb146a346fb1c460fe38901b673a1402f2f9901a8",
+      "approved": true,
+      "reason": "\"The `score` indicates relevance between query and content. Higher is better, but the ideal threshold depends on your use case.\" appears verbatim under \"Score-based filtering\", and the metadata table lists score as \"Filter/rank by relevance score\", supporting a threshold chosen by the application. The page assigns published_date to recency and raw_content to \"Deep analysis and regex extraction\", so no distractor is a documented relevance signal.",
+      "reviewed_at": "2026-11-14T18:13:18Z"
+    },
+    {
+      "id": "q-e4b8d1a6f293",
+      "content_sha256": "0566e3f00757215da608537203ae0f767d21c7f8605f17dd328aaddfbb129f1d",
+      "approved": true,
+      "reason": "Both excerpts are verbatim: \"Quick site structure discovery\" under \"Use Map when you need:\" (alongside \"URL collection without content extraction\") and \"Full content extraction from pages\" under \"Use Crawl when you need:\". The Crawl vs Map table reinforces Map as \"URLs only\" and \"Faster\" versus Crawl \"Slower (extracts content)\", so the Crawl distractor is excluded rather than co-defensible.",
+      "reviewed_at": "2026-11-14T18:13:18Z"
+    },
+    {
+      "id": "q-ee3b9d2a4c78",
+      "content_sha256": "7e85dcb9b77b8d56b097d5425a9e01f5914eeeea298cf6a7d99227383c689d50",
+      "approved": true,
+      "reason": "\"When `query` is provided, chunks are reranked based on relevance to the query.\" appears verbatim, and the surrounding \"When to use query\" list gives exactly this scenario: \"To extract only relevant portions of long documents\" and \"focused content instead of full page extraction\". The page attributes extract_depth to extraction comprehensiveness for complex pages and tables, not relevance, so only option b fits.",
+      "reviewed_at": "2026-11-14T18:13:18Z"
+    }
+  ]
+}

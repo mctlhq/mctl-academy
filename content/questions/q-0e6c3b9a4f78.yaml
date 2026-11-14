@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-0e6c3b9a4f78
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/rate-limit-handling
 stem: "An application is sending Search calls near its account's rate limit,
@@ -8,38 +8,40 @@ stem: "An application is sending Search calls near its account's rate limit,
   expect from Tavily's per-endpoint rate limits?"
 options:
   - id: a
-    text: "Crawl is capped by its own separate limit that does not rise with
-      the account's search limit"
+    text: "Crawl is capped by its own separate limit that does not rise with the
+      account's search limit"
     correct: true
     explanation: "Correct. Endpoints such as crawl keep their own fixed limit,
-      separate from and not scaled to the account's general search limit,
-      even once search traffic is already near that limit."
+      separate from and not scaled to the account's general search limit, even
+      once search traffic is already near that limit."
   - id: b
-    text: "Crawl shares the account's general search limit, so the elevated
-      rate carries over automatically"
+    text: "Crawl shares the account's general search limit, so the elevated rate
+      carries over automatically"
     correct: false
-    explanation: "Crawl, map and research keep their own fixed limit rather
-      than inheriting or scaling with the account's broader search limit."
+    explanation: "Crawl, map and research keep their own fixed limit rather than
+      inheriting or scaling with the account's broader search limit."
   - id: c
-    text: "Crawl calls are throttled under the flex tier capacity restriction
-      that applies during heavy load to live content fetches"
+    text: "Crawl calls are throttled under the flex tier capacity restriction that
+      applies during heavy load to live content fetches"
     correct: false
-    explanation: "Flex tier capacity governs search requests that set
-      max_age_hours during heavy load; it does not govern crawl's per-minute
-      cap."
+    explanation: "Flex tier capacity governs search requests that set max_age_hours
+      during heavy load; it does not govern crawl's per-minute cap."
   - id: d
-    text: "Crawl calls count against the separate usage-endpoint limit rather
-      than against any per-minute cap"
+    text: "Crawl calls count against the separate usage-endpoint limit rather than
+      against any per-minute cap"
     correct: false
     explanation: "The usage endpoint's rate limit governs calls to the usage
       endpoint itself, not calls to crawl."
 evidence:
   - source_id: src-tv-rate-limits
-    excerpt: "an organization with a 1,500 RPM limit can send up to 1,500
-      search requests per minute, but no more than 100 crawl requests per
-      minute"
+    excerpt: "an organization with a 1,500 RPM limit can send up to 1,500 search
+      requests per minute, but no more than 100 crawl requests per minute"
     source_sha256: e4043d7728d85cda4573aeaea864f1e03fade88fc0ba3539c0a155d3530b66ec
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T17:57:46Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T18:13:19Z
+  content_sha256: 7eb719458f5f898df07d938ee3db092a23bd94343403ea47faeed5052e10b9ec

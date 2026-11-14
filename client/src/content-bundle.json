@@ -123,6 +123,47 @@
     ]
   },
   {
+    "id": "q-0e6c3b9a4f78",
+    "course_id": "agentic-web-search",
+    "domain": "domain-4",
+    "objective": "domain-4/rate-limit-handling",
+    "stem": "An application is sending Search calls near its account's rate limit, then begins sending Crawl calls at that same request rate. What should it expect from Tavily's per-endpoint rate limits?",
+    "objectiveTitle": "Handling rate limits and HTTP 429 responses",
+    "sources": [
+      {
+        "title": "Tavily Rate Limits",
+        "url": "https://docs.tavily.com/documentation/rate-limits.md",
+        "excerpt": "an organization with a 1,500 RPM limit can send up to 1,500 search requests per minute, but no more than 100 crawl requests per minute"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Crawl is capped by its own separate limit that does not rise with the account's search limit",
+        "correct": true,
+        "explanation": "Correct. Endpoints such as crawl keep their own fixed limit, separate from and not scaled to the account's general search limit, even once search traffic is already near that limit."
+      },
+      {
+        "id": "b",
+        "text": "Crawl shares the account's general search limit, so the elevated rate carries over automatically",
+        "correct": false,
+        "explanation": "Crawl, map and research keep their own fixed limit rather than inheriting or scaling with the account's broader search limit."
+      },
+      {
+        "id": "c",
+        "text": "Crawl calls are throttled under the flex tier capacity restriction that applies during heavy load to live content fetches",
+        "correct": false,
+        "explanation": "Flex tier capacity governs search requests that set max_age_hours during heavy load; it does not govern crawl's per-minute cap."
+      },
+      {
+        "id": "d",
+        "text": "Crawl calls count against the separate usage-endpoint limit rather than against any per-minute cap",
+        "correct": false,
+        "explanation": "The usage endpoint's rate limit governs calls to the usage endpoint itself, not calls to crawl."
+      }
+    ]
+  },
+  {
     "id": "q-0f3d9a7c2b56",
     "course_id": "agentic-ai-builder",
     "domain": "domain-1",
@@ -3636,6 +3677,47 @@
     ]
   },
   {
+    "id": "q-c3f5e0b2d784",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/source-quality",
+    "stem": "An agent is filtering Tavily Search results to drop low-relevance sources before using them. Per Tavily's documentation, which response field should it filter on?",
+    "objectiveTitle": "Judging returned sources for relevance, recency and credibility",
+    "sources": [
+      {
+        "title": "Web Search Essentials",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/search-api.md",
+        "excerpt": "The `score` indicates relevance between query and content. Higher is better, but the ideal threshold depends on your use case."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`score`, discarding results whose score falls below a threshold the application chooses",
+        "correct": true,
+        "explanation": "Correct. The documentation states score indicates relevance between the query and the content, and recommends filtering or ranking results by it, with the threshold left to the use case."
+      },
+      {
+        "id": "b",
+        "text": "`published_date`, discarding results whose publish date falls outside a window the application chooses",
+        "correct": false,
+        "explanation": "published_date supports filtering by a page's publish window, which is a recency signal rather than the relevance signal this scenario calls for."
+      },
+      {
+        "id": "c",
+        "text": "`favicon`, preferring results that show a recognizable site icon",
+        "correct": false,
+        "explanation": "favicon is just the site icon URL; it carries no relevance signal."
+      },
+      {
+        "id": "d",
+        "text": "`raw_content`, preferring whichever result extracted the most page text",
+        "correct": false,
+        "explanation": "raw_content is the extracted page text; how much text a page returns is not a documented relevance measure."
+      }
+    ]
+  },
+  {
     "id": "q-c56f1a9d4e82",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -6719,6 +6801,52 @@
     ]
   },
   {
+    "id": "q-e4b8d1a6f293",
+    "course_id": "agentic-web-search",
+    "domain": "domain-1",
+    "objective": "domain-1/web-access-operations",
+    "stem": "A team wants to see every URL on a site quickly, before deciding which pages are worth a full read. Which Tavily operation fits this step, saving full content extraction for later?",
+    "objectiveTitle": "Distinguishing searching, extracting, mapping and crawling as web-access operations",
+    "sources": [
+      {
+        "title": "Website Crawling and Content Extraction",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/crawl-api.md",
+        "excerpt": "Full content extraction from pages"
+      },
+      {
+        "title": "Website Crawling and Content Extraction",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/crawl-api.md",
+        "excerpt": "Quick site structure discovery"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Map, for quick site structure discovery without extracting content",
+        "correct": true,
+        "explanation": "Correct. Crawl's best-practices guide lists quick site structure discovery and URL collection without content extraction as what Map is for, while Crawl is for full content extraction and deep analysis."
+      },
+      {
+        "id": "b",
+        "text": "Crawl, since it also discovers structure quickly before extracting content",
+        "correct": false,
+        "explanation": "Crawl is listed for full content extraction and deep content analysis, not quick structure discovery; extracting content is what makes it slower than Map."
+      },
+      {
+        "id": "c",
+        "text": "Extract, since it can list a site's URLs without reading them",
+        "correct": false,
+        "explanation": "Extract pulls content from URLs you already have; it does not discover a site's URL structure the way Map does."
+      },
+      {
+        "id": "d",
+        "text": "Search, since it returns a ranked list of site URLs first",
+        "correct": false,
+        "explanation": "Search finds and ranks sources for a query across the web; it does not map a single site's URL structure."
+      }
+    ]
+  },
+  {
     "id": "q-e6c3a9f12d84",
     "course_id": "agentic-web-search",
     "domain": "domain-1",
@@ -6971,6 +7099,47 @@
         "text": "Cost depends only on `max_results`, not on `search_depth`",
         "correct": false,
         "explanation": "The reference ties cost to `search_depth`; `max_results` controls how many results come back, not the per-request credit cost."
+      }
+    ]
+  },
+  {
+    "id": "q-ee3b9d2a4c78",
+    "course_id": "agentic-web-search",
+    "domain": "domain-2",
+    "objective": "domain-2/search-extract-pipelines",
+    "stem": "An agent wants Extract to return only the portions of a page most relevant to its question, instead of the full page. Per Tavily's Extract tutorial, what should it pass?",
+    "objectiveTitle": "Combining Search with Extract to retrieve and clean page content",
+    "sources": [
+      {
+        "title": "Clean Content Extraction",
+        "url": "https://docs.tavily.com/examples/quick-tutorials/extract-api.md",
+        "excerpt": "When `query` is provided, chunks are reranked based on relevance to the query."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`extract_depth=advanced`, since that is what filters content by relevance",
+        "correct": false,
+        "explanation": "extract_depth controls extraction thoroughness (tables, JS-rendered content), not relevance-based chunk reranking."
+      },
+      {
+        "id": "b",
+        "text": "A `query` parameter, so Extract reranks the content chunks by relevance to the question",
+        "correct": true,
+        "explanation": "Correct. The documentation states that when query is provided, chunks are reranked based on relevance to the query."
+      },
+      {
+        "id": "c",
+        "text": "`include_images=true`, since that focuses extraction on the most relevant sections",
+        "correct": false,
+        "explanation": "include_images only adds extracted image URLs to the response; it does not rerank content by relevance."
+      },
+      {
+        "id": "d",
+        "text": "`format=text`, since plain text is reranked while markdown is not",
+        "correct": false,
+        "explanation": "format only controls markdown versus plain-text output; it has no effect on relevance reranking."
       }
     ]
   },

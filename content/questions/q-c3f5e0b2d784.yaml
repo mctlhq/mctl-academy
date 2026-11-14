@@ -1,43 +1,45 @@
 schema_version: 1
 id: q-c3f5e0b2d784
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/source-quality
-stem: "An agent is filtering Tavily Search results to drop low-relevance
-  sources before using them. Per Tavily's documentation, which response field
-  should it filter on?"
+stem: "An agent is filtering Tavily Search results to drop low-relevance sources
+  before using them. Per Tavily's documentation, which response field should it
+  filter on?"
 options:
   - id: a
-    text: "`score`, discarding results whose score falls below a threshold
-      the application chooses"
+    text: "`score`, discarding results whose score falls below a threshold the
+      application chooses"
     correct: true
-    explanation: "Correct. The documentation states score indicates
-      relevance between the query and the content, and recommends filtering
-      or ranking results by it, with the threshold left to the use case."
+    explanation: "Correct. The documentation states score indicates relevance
+      between the query and the content, and recommends filtering or ranking
+      results by it, with the threshold left to the use case."
   - id: b
-    text: "`published_date`, discarding results whose publish date falls
-      outside a window the application chooses"
+    text: "`published_date`, discarding results whose publish date falls outside a
+      window the application chooses"
     correct: false
-    explanation: "published_date supports filtering by a page's publish
-      window, which is a recency signal rather than the relevance signal
-      this scenario calls for."
+    explanation: "published_date supports filtering by a page's publish window,
+      which is a recency signal rather than the relevance signal this scenario
+      calls for."
   - id: c
     text: "`favicon`, preferring results that show a recognizable site icon"
     correct: false
-    explanation: "favicon is just the site icon URL; it carries no relevance
-      signal."
+    explanation: "favicon is just the site icon URL; it carries no relevance signal."
   - id: d
-    text: "`raw_content`, preferring whichever result extracted the most
-      page text"
+    text: "`raw_content`, preferring whichever result extracted the most page text"
     correct: false
-    explanation: "raw_content is the extracted page text; how much text a
-      page returns is not a documented relevance measure."
+    explanation: "raw_content is the extracted page text; how much text a page
+      returns is not a documented relevance measure."
 evidence:
   - source_id: src-tv-tut-search
-    excerpt: "The `score` indicates relevance between query and content.
-      Higher is better, but the ideal threshold depends on your use case."
+    excerpt: "The `score` indicates relevance between query and content. Higher is
+      better, but the ideal threshold depends on your use case."
     source_sha256: f899d424be5ac83b64a300814fadeab770379555101a0336d136e39bdea14b7a
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T17:57:46Z"
 course_id: agentic-web-search
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-14T18:13:19Z
+  content_sha256: deeacffa95cdb175a03f406eb146a346fb1c460fe38901b673a1402f2f9901a8
