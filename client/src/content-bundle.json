@@ -328,47 +328,6 @@
     ]
   },
   {
-    "id": "q-1b6d9f3a8e47",
-    "course_id": "physical-ai",
-    "domain": "domain-1",
-    "objective": "domain-1/training-results",
-    "stem": "A team wants one place to compare model artifacts, training results and the hyperparameters used across several post-training runs, instead of checking separate logs and output directories. What does Managed Service for MLflow provide for this purpose?",
-    "objectiveTitle": "Reading training and validation results to pick models and policies for evaluation",
-    "sources": [
-      {
-        "title": "Managed Service for MLflow",
-        "url": "https://docs.nebius.com/mlflow/index.md",
-        "excerpt": "Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results, and tuned hyperparameters in a single interface."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "A separate dashboard for artifacts and a separate one for hyperparameters that must be cross-referenced manually",
-        "correct": false,
-        "explanation": "The documentation describes one single interface for artifacts, results and hyperparameters together, not separate dashboards that need manual cross-referencing."
-      },
-      {
-        "id": "b",
-        "text": "A single interface for accessing model artifacts, training results and tuned hyperparameters together",
-        "correct": true,
-        "explanation": "Correct. The Managed MLflow overview states it enables access to model artifacts, training results and tuned hyperparameters in a single interface, which is exactly this comparison use case."
-      },
-      {
-        "id": "c",
-        "text": "Automatic selection of the best-performing model without exposing the underlying training results",
-        "correct": false,
-        "explanation": "Managed MLflow exposes training results and metrics for the team to compare; it does not silently auto-select a best model and hide the data."
-      },
-      {
-        "id": "d",
-        "text": "Storage for hyperparameters only, with model artifacts and results tracked elsewhere",
-        "correct": false,
-        "explanation": "The documentation states all three — model artifacts, training results and hyperparameters — are accessible in the same interface, not hyperparameters alone."
-      }
-    ]
-  },
-  {
     "id": "q-1c9e4a7f3d62",
     "course_id": "agentic-web-search",
     "domain": "domain-3",
