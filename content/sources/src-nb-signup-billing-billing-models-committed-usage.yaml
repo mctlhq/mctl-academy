@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-signup-billing-billing-models-committed-usage
+url: https://docs.nebius.com/signup-billing/billing-models/committed-usage.md
+title: Commitment discounts in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:04:21Z
+sha256: 48e4556d3dd5dc3c19b7e26722cd6bbc6c47dd3c0ae0a0d50d185c7a811b1c8c
+objectives:
+  - domain-3/sa-capacity-quotas-cost
+snapshot:
+  bucket: academy-source-snapshots
+  key: 48e4556d3dd5dc3c19b7e26722cd6bbc6c47dd3c0ae0a0d50d185c7a811b1c8c
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-capacity-quotas-cost

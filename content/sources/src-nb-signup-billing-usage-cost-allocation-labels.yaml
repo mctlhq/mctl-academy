@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-signup-billing-usage-cost-allocation-labels
+url: https://docs.nebius.com/signup-billing/usage/cost-allocation-labels.md
+title: Cost allocation labels in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:04:25Z
+sha256: 7c94e556fa87b53454e521b5f0f3891bd977766a2d381173ae21304f95ff76ef
+objectives:
+  - domain-1/ie-billing-quotas
+snapshot:
+  bucket: academy-source-snapshots
+  key: 7c94e556fa87b53454e521b5f0f3891bd977766a2d381173ae21304f95ff76ef
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-billing-quotas

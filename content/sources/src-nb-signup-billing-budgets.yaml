@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-signup-billing-budgets
+url: https://docs.nebius.com/signup-billing/budgets.md
+title: Budgets in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:04:22Z
+sha256: 613fa38d227f942203b3babf11856de2f87349d257f4b98cd80065ddb3f88586
+objectives:
+  - domain-1/ie-billing-quotas
+  - domain-3/sa-finops
+snapshot:
+  bucket: academy-source-snapshots
+  key: 613fa38d227f942203b3babf11856de2f87349d257f4b98cd80065ddb3f88586
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-billing-quotas
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-finops

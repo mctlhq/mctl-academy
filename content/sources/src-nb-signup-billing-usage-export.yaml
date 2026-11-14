@@ -1,0 +1,15 @@
+schema_version: 1
+id: src-nb-signup-billing-usage-export
+url: https://docs.nebius.com/signup-billing/usage/export.md
+title: Exporting usage data as CSV in Nebius AI Cloud
+retrieved_at: 2026-11-14T10:04:26Z
+sha256: 4c9d0e7d09fd055b16b313f20c5fcec31be25c1ead69f7535e66d6c04b78e224
+objectives:
+  - domain-3/sa-finops
+snapshot:
+  bucket: academy-source-snapshots
+  key: 4c9d0e7d09fd055b16b313f20c5fcec31be25c1ead69f7535e66d6c04b78e224
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-finops
