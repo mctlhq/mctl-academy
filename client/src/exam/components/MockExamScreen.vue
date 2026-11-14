@@ -6,6 +6,7 @@
  * carries (see requirements.md's "SHALL NOT reveal" acceptance criterion).
  */
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { MButton } from "@mctlhq/ui";
 import ConfirmDialog from "../../components/ConfirmDialog.vue";
 import type { ExamSessionState } from "../session";
 import { remainingMs, unansweredCount } from "../session";
@@ -30,7 +31,26 @@ const stemRef = ref<HTMLElement | null>(null);
 function goTo(index: number, focusStem = true) {
   currentIndex.value = Math.min(Math.max(index, 0), lastIndex.value);
   emit("navigate", currentIndex.value);
+  // A picked question closes the phone navigator so the question is in view.
+  navExpanded.value = false;
   if (focusStem) void nextTick(() => stemRef.value?.focus());
+}
+
+// Up to 620px the 30-button navigator collapses into a disclosure: on a
+// phone it otherwise pushes the question below the fold. Wider screens keep
+// it open with no summary. A closed <details> hides its content whatever CSS
+// says, so the open state is driven from here, not from a media query alone.
+const NARROW_QUERY = "(max-width: 620px)";
+const narrowMedia =
+  typeof window !== "undefined" && window.matchMedia ? window.matchMedia(NARROW_QUERY) : null;
+const narrow = ref(narrowMedia?.matches ?? false);
+const navExpanded = ref(false);
+const navOpen = computed(() => !narrow.value || navExpanded.value);
+function onNarrowChange(e: MediaQueryListEvent) {
+  narrow.value = e.matches;
+}
+function onNavToggle(e: Event) {
+  if (narrow.value) navExpanded.value = (e.target as HTMLDetailsElement).open;
 }
 const now = ref(Date.now());
 const confirmingSubmit = ref(false);
@@ -40,9 +60,11 @@ onMounted(() => {
   interval = setInterval(() => {
     now.value = Date.now();
   }, 250);
+  narrowMedia?.addEventListener("change", onNarrowChange);
 });
 onUnmounted(() => {
   clearInterval(interval);
+  narrowMedia?.removeEventListener("change", onNarrowChange);
 });
 
 const remaining = computed(() => remainingMs(props.session, now.value));
@@ -90,6 +112,7 @@ function returnToFirstUnanswered() {
 
 <template>
   <section class="mock-exam" data-testid="mock-exam">
+    <h1 class="sr-only">Mock exam – question {{ currentIndex + 1 }} of {{ session.questions.length }}</h1>
     <header class="mock-exam-header">
       <span class="mock-exam-timer" data-testid="timer">
         <span class="sr-only">Time remaining: </span>{{ formatRemaining(remaining) }}
@@ -101,30 +124,37 @@ function returnToFirstUnanswered() {
     </header>
     <p class="sr-only" aria-live="polite" aria-atomic="true">{{ timeAnnouncement }}</p>
 
-    <nav class="mock-exam-nav" aria-label="Question navigator">
-      <button
-        v-for="(q, index) in session.questions"
-        :key="q.id"
-        type="button"
-        class="mock-exam-nav-item"
-        :class="{
-          answered: session.answers[q.id] !== undefined,
-          unanswered: session.answers[q.id] === undefined,
-          current: index === currentIndex,
-        }"
-        :aria-current="index === currentIndex ? 'step' : undefined"
-        :aria-label="`Question ${index + 1}${session.answers[q.id] !== undefined ? ', answered' : ', unanswered'}`"
-        @click="goTo(index)"
-      >
-        {{ index + 1 }}
-      </button>
-    </nav>
+    <details class="mock-exam-nav-panel" :open="navOpen" @toggle="onNavToggle">
+      <summary class="mock-exam-nav-summary" data-testid="mock-nav-summary">
+        Question {{ currentIndex + 1 }} of {{ session.questions.length }}
+      </summary>
+      <nav class="mock-exam-nav" aria-label="Question navigator">
+        <button
+          v-for="(q, index) in session.questions"
+          :key="q.id"
+          type="button"
+          class="mock-exam-nav-item"
+          :class="{
+            answered: session.answers[q.id] !== undefined,
+            unanswered: session.answers[q.id] === undefined,
+            current: index === currentIndex,
+          }"
+          :aria-current="index === currentIndex ? 'step' : undefined"
+          :aria-label="`Question ${index + 1}${session.answers[q.id] !== undefined ? ', answered' : ', unanswered'}`"
+          @click="goTo(index)"
+        >
+          <span v-if="session.answers[q.id] !== undefined" class="mock-exam-nav-check" aria-hidden="true"
+            >✓</span
+          >{{ index + 1 }}
+        </button>
+      </nav>
+    </details>
 
     <article class="mock-exam-question">
       <p ref="stemRef" class="mock-exam-stem" tabindex="-1">
         <RestrictedMarkdown :text="question.stem" />
       </p>
-      <fieldset>
+      <fieldset class="mock-exam-options">
         <legend class="sr-only">Options</legend>
         <label v-for="option in question.options" :key="option.id" class="mock-exam-option">
           <input
@@ -140,23 +170,22 @@ function returnToFirstUnanswered() {
     </article>
 
     <footer class="mock-exam-footer">
-      <button
-        type="button"
+      <MButton
+        variant="ghost"
         class="mock-exam-step"
         :disabled="currentIndex === 0"
         @click="goTo(currentIndex - 1)"
       >
         Previous
-      </button>
-      <button
-        type="button"
+      </MButton>
+      <MButton
         class="mock-exam-step mock-exam-next"
         :disabled="currentIndex === lastIndex"
         @click="goTo(currentIndex + 1)"
       >
         Next
-      </button>
-      <button type="button" class="mock-exam-submit" @click="goSubmit">Submit exam</button>
+      </MButton>
+      <MButton variant="ghost" class="mock-exam-submit" @click="goSubmit">Submit exam</MButton>
     </footer>
 
     <ConfirmDialog
@@ -174,9 +203,9 @@ function returnToFirstUnanswered() {
           }}
           still unanswered and will count as incorrect.
         </p>
-        <button type="button" class="mock-exam-return" @click="returnToFirstUnanswered">
+        <MButton variant="ghost" class="mock-exam-return" @click="returnToFirstUnanswered">
           Return to first unanswered
-        </button>
+        </MButton>
       </div>
     </ConfirmDialog>
   </section>
@@ -202,7 +231,7 @@ function returnToFirstUnanswered() {
   align-items: baseline;
   padding: 0.5rem 0;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: var(--text-caption-size);
 }
 
 .mock-exam-position {
@@ -219,41 +248,90 @@ function returnToFirstUnanswered() {
   font-size: 1.1rem;
 }
 
+.mock-exam-nav-panel {
+  margin: 0.75rem 0 1.25rem;
+}
+
+/* Wide screens show the navigator itself; the summary only exists for the
+   phone disclosure (<=620px, below). */
+.mock-exam-nav-summary {
+  display: none;
+}
+
 .mock-exam-nav {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   gap: 0.35rem;
-  margin: 0.75rem 0 1.25rem;
 }
 
 .mock-exam-nav-item {
+  display: inline-flex;
   min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0;
   border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-sm, 4px);
   background: var(--surface-card);
   color: var(--surface-fg);
-  font-size: 0.8rem;
-  padding: 0.35rem 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
   cursor: pointer;
 }
 
+/* No feedback is shown until submission, so "answered" is a neutral state:
+   a stronger fill and a check glyph, never the ok/correct status colour. */
 .mock-exam-nav-item.answered {
-  background: color-mix(in srgb, var(--status-ok) 12%, transparent);
-  border-color: var(--status-ok);
+  border-color: var(--surface-line-strong);
+  background: var(--surface-elevated);
 }
 
+.mock-exam-nav-check {
+  color: var(--surface-fg-muted);
+}
+
+/* The current question is marked by an accent border and weight, so it
+   cannot be mistaken for the keyboard focus ring (an outline). */
 .mock-exam-nav-item.current {
-  outline: 2px solid var(--surface-fg);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  font-weight: 700;
+}
+
+/* Reset the browser-default fieldset frame: each option carries its own
+   token border, so a second box around the group only adds noise. */
+.mock-exam-options {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
 }
 
 .mock-exam-option {
   display: flex;
   gap: 0.6rem;
   align-items: baseline;
-  padding: 0.5rem 0.25rem;
+  padding: 0.5rem 0.75rem;
   min-height: 2.75rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-md, 6px);
   overflow-wrap: break-word;
+  cursor: pointer;
+}
+
+.mock-exam-option:hover {
+  border-color: var(--surface-line-strong);
+}
+
+.mock-exam-option input {
+  accent-color: var(--accent);
+}
+
+.mock-exam-option:has(input:checked) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .mock-exam-stem {
@@ -267,27 +345,10 @@ function returnToFirstUnanswered() {
   margin-top: 1rem;
 }
 
-.mock-exam-footer button,
+.mock-exam-footer > *,
 .mock-exam-return {
   min-height: 2.75rem;
-  padding: 0 1rem;
-  border: 1px solid var(--surface-line-strong);
-  border-radius: var(--mctl-radius-md, 6px);
-  background: transparent;
-  color: var(--surface-fg);
-  font: inherit;
-  cursor: pointer;
-}
-
-.mock-exam-footer button:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.mock-exam-next {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-fg);
+  justify-content: center;
 }
 
 /* Submit is final, so it sits apart from the stepping controls and does not
@@ -310,6 +371,29 @@ function returnToFirstUnanswered() {
 }
 
 @media (max-width: 620px) {
+  /* The disclosure's summary carries the position on phones. */
+  .mock-exam-header .mock-exam-position {
+    display: none;
+  }
+
+  .mock-exam-nav-summary {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--surface-line);
+    border-radius: var(--mctl-radius-md, 6px);
+    background: var(--surface-card);
+    font-family: var(--font-mono);
+    font-size: var(--text-caption-size);
+    cursor: pointer;
+  }
+
+  .mock-exam-nav-panel[open] .mock-exam-nav {
+    margin-top: 0.5rem;
+  }
+
   .mock-exam-nav {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
@@ -320,7 +404,7 @@ function returnToFirstUnanswered() {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .mock-exam-footer button:last-child {
+  .mock-exam-footer > :last-child {
     grid-column: 1 / -1;
     margin-left: 0;
   }

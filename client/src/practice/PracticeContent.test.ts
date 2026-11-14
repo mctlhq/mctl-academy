@@ -4,6 +4,9 @@ import { nextTick } from "vue";
 import PracticeContent from "./PracticeContent.vue";
 import { resetStorage } from "../services/storage";
 import type { BundleQuestion } from "../services/contentBundle";
+import { useRouterLinkStub } from "../test-utils/routerLinkStub";
+
+useRouterLinkStub();
 
 function question(id: string, overrides: Partial<BundleQuestion> = {}): BundleQuestion {
   return {
@@ -231,6 +234,19 @@ describe("PracticeContent", () => {
     });
     expect(wrapper.find('[data-testid="practice-context"]').text()).toContain("Agent architecture");
     expect(wrapper.find("a.clear-filter").attributes("href")).toBe("/practice");
+  });
+
+  it("links the session summary's Repeat all and Mock exam in-app, without a full reload", async () => {
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
+    await optionButton(wrapper, "Option B").trigger("click");
+    await actionButton(wrapper, "Finish").trigger("click");
+    const links = wrapper.findAll(".completion-actions a");
+    expect(links.map((a) => [a.text(), a.attributes("href")])).toEqual([
+      ["Repeat all", "/practice?mode=all"],
+      ["Mock exam", "/mock"],
+    ]);
+    // Rendered through the design-system button, not a hand-rolled class.
+    expect(links.every((a) => a.classes().includes("m-button"))).toBe(true);
   });
 
   it("keeps the repeat-all mode when clearing a domain filter", () => {

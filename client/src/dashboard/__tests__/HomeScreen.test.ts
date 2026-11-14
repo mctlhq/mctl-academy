@@ -30,7 +30,6 @@ describe("HomeScreen", () => {
   it("refreshes stats when a background sync bumps syncVersion, without remounting", async () => {
     const syncVersion = ref(0);
     const wrapper = mount(HomeScreen, {
-      props: { onStartPractice: () => {}, onReviewMistakes: () => {} },
       global: { stubs: { RouterLink: RouterLinkStub }, provide: { syncVersion } },
     });
 
@@ -46,7 +45,6 @@ describe("HomeScreen", () => {
 
   function mountHome() {
     return mount(HomeScreen, {
-      props: { onStartPractice: () => {}, onReviewMistakes: () => {} },
       global: { stubs: { RouterLink: RouterLinkStub }, provide: { syncVersion: ref(0) } },
     });
   }
@@ -73,5 +71,14 @@ describe("HomeScreen", () => {
     expect(wrapper.find(".mistakes-clear").text()).toContain("No mistakes waiting for review");
     expect(wrapper.text()).not.toMatch(/Keep going/);
     expect(wrapper.find(".mistakes-callout").exists()).toBe(false);
+  });
+
+  it("navigates with links: the next-step CTA and the mistakes callout", () => {
+    recordAttempt("q-1", "domain-1", false);
+    const wrapper = mountHome();
+    const targets = wrapper.findAllComponents(RouterLinkStub).map((l) => l.props("to"));
+    expect(targets).toContain("/practice");
+    expect(targets).toContain("/mistakes");
+    expect(wrapper.find("button").exists()).toBe(false);
   });
 });

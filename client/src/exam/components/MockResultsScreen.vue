@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { MButton } from "@mctlhq/ui";
+import { RouterLink } from "vue-router";
+import { MButton, MTabs } from "@mctlhq/ui";
 import type { ExamSessionState } from "../session";
 import { scoreSession } from "../session";
 import { domainTitlesFor } from "../../services/courseCatalog";
@@ -59,11 +60,14 @@ const weakestDomain = computed(() => {
 });
 
 const filter = ref<Filter>("all");
-const filters: { id: Filter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "incorrect", label: "Incorrect" },
-  { id: "unanswered", label: "Unanswered" },
+const filters: { value: Filter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "incorrect", label: "Incorrect" },
+  { value: "unanswered", label: "Unanswered" },
 ];
+function setFilter(value: string) {
+  if (filters.some((f) => f.value === value)) filter.value = value as Filter;
+}
 const visibleRows = computed(() =>
   filter.value === "all" ? rows.value : rows.value.filter((row) => row.outcome === filter.value),
 );
@@ -94,14 +98,20 @@ const outcomeLabel: Record<Outcome, string> = {
     </ul>
 
     <div class="mock-results-actions">
-      <a v-if="counts.incorrect + counts.unanswered > 0" href="/mistakes" class="mock-results-link primary"
-        >Review mistakes</a
-      >
-      <a
-        v-if="weakestDomain"
-        :href="`/practice?domain=${encodeURIComponent(weakestDomain.id)}`"
+      <MButton
+        v-if="counts.incorrect + counts.unanswered > 0"
+        :as="RouterLink"
+        to="/mistakes"
         class="mock-results-link"
-        >Practice {{ weakestDomain.title }}</a
+        >Review mistakes</MButton
+      >
+      <MButton
+        v-if="weakestDomain"
+        :as="RouterLink"
+        :to="`/practice?domain=${encodeURIComponent(weakestDomain.id)}`"
+        variant="ghost"
+        class="mock-results-link"
+        >Practice {{ weakestDomain.title }}</MButton
       >
       <MButton type="button" variant="ghost" class="mock-restart" @click="$emit('restart')"
         >Start a new mock exam</MButton
@@ -120,53 +130,51 @@ const outcomeLabel: Record<Outcome, string> = {
 
     <section aria-labelledby="mock-results-questions-title">
       <h2 id="mock-results-questions-title">Questions</h2>
-      <div class="mock-results-filters" role="group" aria-label="Show questions">
-        <button
-          v-for="f in filters"
-          :key="f.id"
-          type="button"
-          :aria-pressed="filter === f.id"
-          :class="{ active: filter === f.id }"
-          @click="filter = f.id"
-        >
-          {{ f.label }}
-        </button>
-      </div>
-      <p v-if="visibleRows.length === 0" class="mock-results-none">No questions in this view.</p>
-      <ol class="mock-results-list">
-        <li
-          v-for="row in visibleRows"
-          :key="row.question.id"
-          class="mock-results-question"
-          :class="row.outcome"
-          :value="row.index + 1"
-        >
-          <details>
-            <summary>
-              <span class="outcome">{{ outcomeLabel[row.outcome] }}</span>
-              <span class="mock-results-stem"><RestrictedMarkdown :text="row.question.stem" /></span>
-            </summary>
-            <ul class="mock-results-options">
-              <li
-                v-for="option in row.question.options"
-                :key="option.id"
-                class="mock-results-option"
-                :class="{ correct: option.correct, selected: option.id === session.answers[row.question.id] }"
-              >
-                <p>
-                  <RestrictedMarkdown :text="option.text" />
-                  <span v-if="option.correct" class="tag">✓ Correct answer</span>
-                  <span v-if="option.id === session.answers[row.question.id]" class="tag">Your answer</span>
-                </p>
-                <p class="mock-results-explanation">
-                  <RestrictedMarkdown :text="option.explanation" />
-                </p>
-              </li>
-            </ul>
-            <p v-if="row.outcome === 'unanswered'" class="mock-results-unanswered">Not answered.</p>
-          </details>
-        </li>
-      </ol>
+      <MTabs
+        class="mock-results-filters"
+        :model-value="filter"
+        :tabs="filters"
+        @update:model-value="setFilter"
+      >
+        <p v-if="visibleRows.length === 0" class="mock-results-none">No questions in this view.</p>
+        <ol class="mock-results-list">
+          <li
+            v-for="row in visibleRows"
+            :key="row.question.id"
+            class="mock-results-question"
+            :class="row.outcome"
+            :value="row.index + 1"
+          >
+            <details>
+              <summary>
+                <span class="outcome">{{ outcomeLabel[row.outcome] }}</span>
+                <span class="mock-results-stem"><RestrictedMarkdown :text="row.question.stem" /></span>
+              </summary>
+              <ul class="mock-results-options">
+                <li
+                  v-for="option in row.question.options"
+                  :key="option.id"
+                  class="mock-results-option"
+                  :class="{
+                    correct: option.correct,
+                    selected: option.id === session.answers[row.question.id],
+                  }"
+                >
+                  <p>
+                    <RestrictedMarkdown :text="option.text" />
+                    <span v-if="option.correct" class="tag">✓ Correct answer</span>
+                    <span v-if="option.id === session.answers[row.question.id]" class="tag">Your answer</span>
+                  </p>
+                  <p class="mock-results-explanation">
+                    <RestrictedMarkdown :text="option.explanation" />
+                  </p>
+                </li>
+              </ul>
+              <p v-if="row.outcome === 'unanswered'" class="mock-results-unanswered">Not answered.</p>
+            </details>
+          </li>
+        </ol>
+      </MTabs>
     </section>
   </section>
 </template>
@@ -212,21 +220,9 @@ const outcomeLabel: Record<Outcome, string> = {
   margin-top: 1.5rem;
 }
 
-.mock-results-link {
-  display: inline-flex;
+/* Same 44px floor the restart button gets from MButton's md padding. */
+.mock-results-actions > * {
   min-height: 2.75rem;
-  align-items: center;
-  padding: 0 1rem;
-  border: 1px solid var(--surface-line-strong);
-  border-radius: var(--mctl-radius-md, 6px);
-  color: var(--surface-fg);
-  text-decoration: none;
-}
-
-.mock-results-link.primary {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-fg);
 }
 
 .mock-results-domains ul {
@@ -249,26 +245,12 @@ const outcomeLabel: Record<Outcome, string> = {
   font-family: var(--font-mono);
 }
 
-.mock-results-filters {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.mock-results-filters button {
+.mock-results-filters :deep([role="tab"]) {
   min-height: 2.75rem;
-  padding: 0 0.9rem;
-  border: 1px solid var(--surface-line);
-  border-radius: var(--mctl-radius-pill);
-  background: transparent;
-  color: var(--surface-fg-muted);
-  font: inherit;
-  cursor: pointer;
 }
 
-.mock-results-filters button.active {
-  border-color: var(--surface-fg);
-  color: var(--surface-fg);
+.mock-results-filters :deep([role="tabpanel"]) {
+  padding-top: 0.5rem;
 }
 
 .mock-results-list {
@@ -295,15 +277,15 @@ const outcomeLabel: Record<Outcome, string> = {
 
 .outcome {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
 }
 
 .correct > details > summary .outcome {
-  color: var(--status-ok);
+  color: var(--status-ok-text);
 }
 
 .incorrect > details > summary .outcome {
-  color: var(--status-bad);
+  color: var(--status-bad-text);
 }
 
 .unanswered > details > summary .outcome {
@@ -333,7 +315,7 @@ const outcomeLabel: Record<Outcome, string> = {
 .tag {
   margin-left: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--text-caption-size);
   color: var(--surface-fg-muted);
 }
 

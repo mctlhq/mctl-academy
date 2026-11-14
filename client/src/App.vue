@@ -12,6 +12,12 @@ import { setProgressOwner, setSyncEnabled, syncFromServer } from "./services/pro
 const sessionState = authClient.useSession();
 const route = useRoute();
 const focusedPractice = computed(() => route.name === "practice" || route.name === "mistakes");
+// Screens that set their own vertical rhythm get a padding modifier on <main>
+// (app.css) instead of pulling themselves into its padding with negative
+// margins.
+const mainClass = computed(() =>
+  focusedPractice.value ? "app-main--focused" : route.name === "home" ? "app-main--compact" : "",
+);
 // Every surface that restores learner-scoped state on mount. The mock exam is
 // one too: its in-progress session is keyed per owner, and rendering it as the
 // guest first would show the start screen instead of the exam being taken.
@@ -102,11 +108,11 @@ watch(
 </script>
 
 <template>
-  <div class="app-shell" :class="{ 'focused-practice': focusedPractice }">
+  <div class="app-shell">
     <SkipLink target="main-content" />
     <AppNav :user="user" :loading="authLoading" />
 
-    <main id="main-content" class="app-main" tabindex="-1">
+    <main id="main-content" class="app-main" :class="mainClass" tabindex="-1">
       <RouterView v-slot="{ Component, route: currentRoute }">
         <component
           v-if="!waitsForSession || authSettled"

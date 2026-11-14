@@ -127,7 +127,7 @@ describe("known pages", () => {
     const upcoming = { ...catalog[0], id: "upcoming", title: "Upcoming", available: false };
     const { status, html } = renderSpaPage(SOURCE_INDEX, classifySpaPath("/courses/upcoming", [upcoming]));
     assert.equal(status, 200);
-    assert.equal(title(html), "Upcoming — Coming Soon · mctl academy");
+    assert.equal(title(html), "Upcoming — Coming soon · mctl academy");
     assert.equal(canonical(html), "https://academy.mctl.ai/");
     assert.doesNotMatch(html, /application\/ld\+json/);
   });
