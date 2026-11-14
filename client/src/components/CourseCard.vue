@@ -12,6 +12,13 @@ const props = defineProps<{
 }>();
 
 const glyph = computed(() => glyphFor(props.course.id));
+// A course whose bank cannot yet fill one full mock exam is still growing:
+// say so on the card instead of letting a small count sit next to a full
+// mock timer unexplained. Derived from the catalog, so the pill disappears
+// on its own once the bank is big enough.
+const earlyAccess = computed(
+  () => props.course.available && props.course.publishedQuestionCount < props.course.mock.questionCount,
+);
 const titleId = computed(() => `course-card-${props.course.id}`);
 // Practice goes through the router's ?course= deep link, which selects the
 // course (only when it is available) and strips the parameter, so a card for
@@ -38,9 +45,12 @@ const coursePath = computed(() => `/courses/${encodeURIComponent(props.course.id
     </template>
 
     <div class="course-card-pills">
-      <MPill v-if="course.available" tone="ok" variant="outline">Available</MPill>
+      <MPill v-if="earlyAccess" tone="warn" variant="outline" title="The question bank is still growing"
+        >Early access</MPill
+      >
+      <MPill v-else-if="course.available" tone="ok" variant="outline">Available</MPill>
       <MPill v-else tone="neutral" variant="outline">Coming soon</MPill>
-      <MPill v-if="current" tone="accent">Studying now</MPill>
+      <MPill v-if="current" tone="accent">Selected</MPill>
     </div>
     <h3 :id="titleId" class="course-card-title">{{ course.title }}</h3>
     <p v-if="course.summary" class="course-card-summary">{{ course.summary }}</p>

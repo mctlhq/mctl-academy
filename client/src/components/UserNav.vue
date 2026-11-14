@@ -263,6 +263,14 @@ async function handleDeleteAccount() {
 .signin-github svg,
 .signin-google svg {
   display: inline-block;
+  flex: none;
+}
+
+/* A narrow header must not wrap "Log in" under its icon. */
+.user-nav-signin :deep(.m-button) {
+  gap: 0.45rem;
+  padding-inline: 0.85rem;
+  white-space: nowrap;
 }
 
 .signin-label-short {

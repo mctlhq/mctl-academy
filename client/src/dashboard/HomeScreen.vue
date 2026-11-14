@@ -31,6 +31,15 @@ const stats = computed(() => {
 const currentCourse = computed(() => findCourse(currentCourseId.value));
 const showContinue = computed(() => Boolean(currentCourse.value?.available) && stats.value.totalAttempted > 0);
 
+// The hero's primary action names the course it opens, so the header
+// switcher and this page never disagree about where "Practice" leads.
+const ctaCourse = computed(() =>
+  currentCourse.value?.available ? currentCourse.value : courseCatalog.find((c) => c.available),
+);
+const ctaPath = computed(() =>
+  ctaCourse.value ? `/practice?course=${encodeURIComponent(ctaCourse.value.id)}` : "/practice",
+);
+
 const availableCourses = computed(() => courseCatalog.filter((c) => c.available));
 const upcomingCourses = computed(() => courseCatalog.filter((c) => !c.available));
 const totalQuestions = computed(() =>
@@ -72,6 +81,18 @@ const steps = [
         that supports its answer. Pick a course, practice, review your mistakes, then try a timed mock exam.
       </p>
 
+      <div class="home-cta">
+        <MButton v-if="ctaCourse" :as="RouterLink" :to="ctaPath">
+          {{ showContinue ? "Continue" : "Start practicing" }}: {{ ctaCourse.title }}
+          <span aria-hidden="true">→</span>
+        </MButton>
+        <MButton as="a" href="#home-courses-title" variant="ghost">Browse all courses</MButton>
+      </div>
+      <p v-if="ctaCourse" class="home-cta-note">
+        Practice, Mock exam and Mistakes in the header use the course selected there. Pick another course below or
+        in the switcher at any time.
+      </p>
+
       <dl class="home-facts" aria-label="Academy at a glance">
         <div>
           <dt>Courses available</dt>
@@ -111,7 +132,7 @@ const steps = [
         <h2 id="home-courses-title" class="section-heading">Choose a course</h2>
         <MButton v-if="showContinue" :as="RouterLink" to="/dashboard" variant="ghost" size="sm">My progress</MButton>
       </div>
-      <CourseGrid :courses="availableCourses" :current-course-id="showContinue ? currentCourseId : null" />
+      <CourseGrid :courses="availableCourses" :current-course-id="currentCourseId" />
     </section>
 
     <section v-if="upcomingCourses.length" class="home-courses" aria-labelledby="home-upcoming-title">
@@ -167,6 +188,24 @@ const steps = [
   color: var(--surface-fg-muted);
   font-size: 1rem;
   line-height: 1.55;
+}
+
+.home-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.home-cta-note {
+  max-width: 62ch;
+  margin: 0.6rem 0 0;
+  color: var(--surface-fg-subtle);
+  font-size: var(--text-caption-size);
+}
+
+#home-courses-title {
+  scroll-margin-top: 6rem;
 }
 
 .home-facts {
