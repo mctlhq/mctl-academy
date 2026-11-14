@@ -154,7 +154,7 @@ function returnToFirstUnanswered() {
       <p ref="stemRef" class="mock-exam-stem" tabindex="-1">
         <RestrictedMarkdown :text="question.stem" />
       </p>
-      <fieldset>
+      <fieldset class="mock-exam-options">
         <legend class="sr-only">Options</legend>
         <label v-for="option in question.options" :key="option.id" class="mock-exam-option">
           <input
@@ -299,6 +299,15 @@ function returnToFirstUnanswered() {
   font-weight: 700;
 }
 
+/* Reset the browser-default fieldset frame: each option carries its own
+   token border, so a second box around the group only adds noise. */
+.mock-exam-options {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
 .mock-exam-option {
   display: flex;
   gap: 0.6rem;
@@ -306,14 +315,14 @@ function returnToFirstUnanswered() {
   padding: 0.5rem 0.75rem;
   min-height: 2.75rem;
   margin-bottom: 0.4rem;
-  border: 1px solid transparent;
+  border: 1px solid var(--surface-line);
   border-radius: var(--mctl-radius-md, 6px);
   overflow-wrap: break-word;
   cursor: pointer;
 }
 
 .mock-exam-option:hover {
-  border-color: var(--surface-line);
+  border-color: var(--surface-line-strong);
 }
 
 .mock-exam-option input {
