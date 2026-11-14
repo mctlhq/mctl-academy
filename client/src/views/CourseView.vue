@@ -307,13 +307,11 @@ onUnmounted(() => {
             </div>
           </details>
           <details class="faq-item">
-            <summary class="faq-question">
-              Are questions identical to official certification questions?
-            </summary>
+            <summary class="faq-question">Are these official exam questions?</summary>
             <div class="faq-answer">
               <p>
                 No. In accordance with clean-room guidelines and our content policy, all items are original
-                scenario problems authored from public documentation. They test the same technical objectives
+                scenario problems authored from public documentation. They test practical technical objectives
                 without reproducing proprietary exam content.
               </p>
             </div>
@@ -382,7 +380,7 @@ onUnmounted(() => {
             </div>
             <h3 class="domain-card-title">{{ domain.title }}</h3>
             <p class="domain-card-mock">
-              Exam distribution: {{ domain.mockQuestions }} questions ({{ domain.weight }}%)
+              Mock distribution: {{ domain.mockQuestions }} questions ({{ domain.weight }}%)
             </p>
 
             <div v-if="domain.objectives && domain.objectives.length > 0" class="domain-objectives">
@@ -405,8 +403,12 @@ onUnmounted(() => {
             <h3 class="guide-card-title">Track duration & mock format</h3>
             <p class="guide-card-text">
               The mock run for {{ course.title }} is configured for {{ course.mock.timeLimitMinutes }} minutes
-              with {{ course.mock.questionCount }} scenario-based questions evaluating practical architecture,
-              configuration, and troubleshooting.
+              with {{ course.mock.questionCount }} scenario-based questions.
+              {{
+                course.summary
+                  ? course.summary
+                  : "Problems assess practical technical skills and operational troubleshooting."
+              }}
             </p>
           </div>
           <div class="guide-card">
