@@ -1983,11 +1983,13 @@ jobs:
 
             Before you write _agent/CHANGES.md, preflight the items you wrote against the advisory
             checks in scripts/content-quality-report.mjs: read `itemCues`, `volatileKinds` and
-            `THRESHOLDS` there, since you cannot run it. Look for a correct option that is the
-            longest or far longer than the distractors, a distractor much shorter than the correct
-            option, always/never/only in distractors alone, a number with a unit, a version, a CLI
-            flag or a price, and a near-duplicate of an existing item. Revise a flagged item, or keep
-            it when the evidence allows no better wording. The checks are advisory: a deterministic
+            `THRESHOLDS` there, since you cannot run it. Look for a correct option far longer than
+            the distractors, a distractor much shorter than the correct option, always/never/only in
+            distractors alone, a number with a unit, a version, a CLI flag or a price, and a
+            near-duplicate of an existing item. Revise a flagged item, or keep it when the evidence
+            allows no better wording. A correct option that is merely the longest is a batch-level
+            signal, not a per-item defect: revise only when it is the longest in more items of the
+            batch than chance would give. The checks are advisory: a deterministic
             step runs the same report on your items after you finish, and nothing in it blocks the
             run. Never edit content/quality-allowlist.yaml.
 
@@ -2478,11 +2480,13 @@ jobs:
 
             Before you write _agent/CHANGES.md, preflight the items you wrote against the advisory
             checks in scripts/content-quality-report.mjs: read `itemCues`, `volatileKinds` and
-            `THRESHOLDS` there, since you cannot run it. Look for a correct option that is the
-            longest or far longer than the distractors, a distractor much shorter than the correct
-            option, always/never/only in distractors alone, a number with a unit, a version, a CLI
-            flag or a price, and a near-duplicate of an existing item. Revise a flagged item, or keep
-            it when the evidence allows no better wording. The checks are advisory: a deterministic
+            `THRESHOLDS` there, since you cannot run it. Look for a correct option far longer than
+            the distractors, a distractor much shorter than the correct option, always/never/only in
+            distractors alone, a number with a unit, a version, a CLI flag or a price, and a
+            near-duplicate of an existing item. Revise a flagged item, or keep it when the evidence
+            allows no better wording. A correct option that is merely the longest is a batch-level
+            signal, not a per-item defect: revise only when it is the longest in more items of the
+            batch than chance would give. The checks are advisory: a deterministic
             step runs the same report on your items after you finish, and nothing in it blocks the
             run. Never edit content/quality-allowlist.yaml.
 

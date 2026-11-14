@@ -4043,6 +4043,7 @@ test("the author prompt carries the editorial rubric and the reviewer prompt is 
     /never a volatile figure/,
     /"Per <doc>"/,
     /length and specificity give no cue/,
+    /merely the longest is a batch-level\s+signal, not a per-item defect/,
     /no more often than any\s+distractor, so neither always nor never/,
     /always, never and only\s+do not appear in distractors alone/,
     /preflight the items you wrote against the advisory\s+checks in scripts\/content-quality-report\.mjs/,
