@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld6125477cda
-status: review_ready
+status: retired
 domain: domain-1
 objective: domain-1/inference-basics
 stem: An engineer wants to know which optimization reduces memory fragmentation
