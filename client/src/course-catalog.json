@@ -2,6 +2,7 @@
   {
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
+    "summary": "Build agents on a hosted model platform: API access, inference and tool integration, data and post-training, and running them in production.",
     "publishedQuestionCount": 89,
     "available": true,
     "mock": {
@@ -39,6 +40,7 @@
   {
     "id": "agentic-web-search",
     "title": "Agentic Web Search",
+    "summary": "Give agents and retrieval pipelines live web data: search, extract, map and crawl, then keep that access reliable in production.",
     "publishedQuestionCount": 60,
     "available": true,
     "mock": {
@@ -76,6 +78,7 @@
   {
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
+    "summary": "Run GPU cloud infrastructure day to day: deploy environments, operate compute nodes, monitor workloads, manage access and storage, and troubleshoot.",
     "publishedQuestionCount": 40,
     "available": true,
     "mock": {
@@ -111,8 +114,47 @@
     }
   },
   {
+    "id": "ai-infrastructure-engineer",
+    "title": "AI Infrastructure Engineer",
+    "summary": "Run GPU platforms for training and inference: secure and budget them, keep training clusters and serving healthy, and automate operations for reliability.",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "Security, compliance & billing",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-2",
+          "title": "Training platform engineering",
+          "weight": 35,
+          "mockQuestions": 10
+        },
+        {
+          "id": "domain-3",
+          "title": "Inference platform engineering",
+          "weight": 20,
+          "mockQuestions": 6
+        },
+        {
+          "id": "domain-4",
+          "title": "Automation & platform reliability",
+          "weight": 25,
+          "mockQuestions": 8
+        }
+      ]
+    }
+  },
+  {
     "id": "ai-leader",
     "title": "AI Leader",
+    "summary": "A business-first view of AI: core concepts, designing AI products, steering model outputs and choosing platform capabilities.",
     "publishedQuestionCount": 38,
     "available": true,
     "mock": {
@@ -148,8 +190,47 @@
     }
   },
   {
+    "id": "ai-solutions-architect",
+    "title": "AI Solutions Architect",
+    "summary": "Design AI workloads on a GPU cloud that perform, stay resilient, keep costs in check and isolate tenants and data securely.",
+    "publishedQuestionCount": 0,
+    "available": false,
+    "mock": {
+      "questionCount": 30,
+      "timeLimitMinutes": 60,
+      "discloseBankSize": true,
+      "domains": [
+        {
+          "id": "domain-1",
+          "title": "High-performing architectures",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-2",
+          "title": "Resilient architectures",
+          "weight": 25,
+          "mockQuestions": 7
+        },
+        {
+          "id": "domain-3",
+          "title": "Efficient & cost-aware architectures",
+          "weight": 25,
+          "mockQuestions": 8
+        },
+        {
+          "id": "domain-4",
+          "title": "Secure architectures",
+          "weight": 25,
+          "mockQuestions": 7
+        }
+      ]
+    }
+  },
+  {
     "id": "physical-ai",
     "title": "Physical AI",
+    "summary": "Post-train models and robot policies, build robotics data pipelines, evaluate and deploy inference, and connect models to robot applications.",
     "publishedQuestionCount": 48,
     "available": true,
     "mock": {

@@ -14,3 +14,6 @@ status: current
 versions:
   - 8c90f50e48d2508f2da7301ed9190e0f1039c39b786aa233d75e81591ca1070b
   - 202aeea0d19b74f585f8c95feb2a2e592cfdbf1a321537663b88b21fe48f1b47
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-pipelines

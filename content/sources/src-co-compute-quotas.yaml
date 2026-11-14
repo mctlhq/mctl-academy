@@ -15,3 +15,8 @@ versions:
   - 70984369ccff0d27e5a8c6d709a4738f82eb68265eac7c06f721e6e2d1939d4e
   - 89c1003f8e3a218e76a6c7207b467f62be048b6b481ed03874e734b6b500a9b0
   - f48aaac3871e8016c228deea7561c5b5e80de333739871d31d1c57b1f0584183
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-1/ie-billing-quotas
+  - course_id: ai-solutions-architect
+    objective: domain-3/sa-capacity-quotas-cost

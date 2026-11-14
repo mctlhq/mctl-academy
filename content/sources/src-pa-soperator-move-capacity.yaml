@@ -13,3 +13,6 @@ snapshot:
 status: current
 versions:
   - f08d52420be170ceb4486e5575c23c67fa4a2554ef69a8eb74244995546c9c2b
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-slurm-admin

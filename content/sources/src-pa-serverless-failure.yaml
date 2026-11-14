@@ -13,3 +13,6 @@ status: current
 versions:
   - 4dad00e1fdadae0869840b76d6aa07f0fe9d2393cbb8a150e29b8745ccece7c4
   - 3afaeda2022207399f8ae89ce5a6d738bc2145f37c6a4d9802918b8c3cac687a
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-checkpoint-restart

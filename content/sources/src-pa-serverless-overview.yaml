@@ -13,3 +13,10 @@ snapshot:
 status: current
 versions:
   - a4523b810afd19b6d19e194bffd0b760f82452e372b628c739957cd832e689ab
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-serving-patterns
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-training-stack
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-deployment-shape

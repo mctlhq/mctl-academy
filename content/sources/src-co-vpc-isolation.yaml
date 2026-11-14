@@ -15,3 +15,10 @@ versions:
   - a39078c527bc184ebbf0dc22b7c37c33de55fd047b500697e2215ce8185bdb49
   - 85fea9a41a887ffd3b59916e63f221b2309be2e90018318960a5c61eef8261d2
   - 2c98d362c4c5961d7c755356d65f91fd0dc2d5deda18e750b63e0a3766fe7eb7
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-multicluster-networking
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-private-connectivity
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-tenant-isolation-least-privilege

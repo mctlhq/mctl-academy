@@ -26,7 +26,7 @@ Two workflows in this repository run every Monday:
    and each course's primary host), re-checks recorded sources against their
    live bytes, classifies each drifted one with `scripts/detect-docs-delta.mjs`
    against the R2 snapshot, and reports Mock shortfalls and objectives with
-   fewer than three published questions. Output: `_run/candidates.json`. The run
+   fewer than `min_per_objective` (default three) published questions. Output: `_run/candidates.json`. The run
    stops here when nothing applies, or when a replenish PR is already open.
 2. **author** — an agent (`agent:claude-author`, `claude-sonnet-5`) chooses at
    most `max_new` offered pages and their objectives; `scripts/replenish-prepare.mjs`
@@ -84,6 +84,52 @@ more question files than `max_questions`, counting files it created. The
 post-promotion guard re-checks that nothing published at the base moved, but
 carries no cap, because that set also holds the items the mechanical
 re-validation repaired before the agent ran.
+
+Scope a run with `-f course=<id>`, and narrow it with `-f
+objectives=domain-1/<id>,domain-2/<id>` (comma-separated, no spaces; requires
+`course`). `-f min_per_objective=<n>` (default 3) sets how few published
+questions make an objective a gap. The scope is mechanical, not a prompt hint:
+
+- **discover** validates every objective against the course map and fails on
+  an unknown id, on objectives given without a course, and on a held
+  objective named explicitly. Gaps are narrowed to the run's targets (and the
+  Mock shortfalls of their domains), which also narrows page ranking.
+  `_run/candidates.json` records them under `objectives`, `held` and
+  `excluded`.
+- **author** writes the run's `targets` (course id → objectives it may author
+  for) into `_run/limits.json` (`replenish-prepare.mjs limits`). The page
+  selection keeps only objectives in those targets, and the author-phase guard
+  (`guard --limits`, required there) fails the run when any question file the
+  agent created, changed or deleted carries a `course_id` or an `objective`
+  outside them. An unreadable or malformed `limits.json` is an error, never
+  "everything in scope".
+- **Drifted items of other courses.** Drift is still reported for every
+  course, but a scoped run may not rewrite a `needs_review` item of another
+  course: the guard rejects it like any other off-scope file, and the prompt
+  tells the author to leave it. Such items wait for an unscoped run, or for a
+  run scoped to their own course.
+- **Held objectives.** When `content/coverage/<course>.yaml` exists
+  (`objectives: [{ id: domain-N/<id>, status: open|held, ... }]`; any other
+  keys, such as `strength`, `sources` or a top-level `reviewed_at`, are
+  ignored), every run, scoped or not, drops its `held` objectives from the
+  targets. A missing file means no holds. A file that does not parse, names an
+  objective outside the course map, names another `course_id`, or carries any
+  other status fails the run.
+- **Drift under a held objective has no automatic repair.** A drifted
+  `needs_review` item whose objective is held cannot be rewritten by any run:
+  every run drops that objective from its targets, and the guard rejects a
+  file in it. It stays quarantined until someone acts by hand, through a PR:
+  either release the hold (set that objective's `status` to `open` in
+  `content/coverage/<course>.yaml`) so the next run can rewrite the item, or
+  retire the item.
+- **New courses need an explicit go.** An unscoped run, including the weekly
+  schedule, targets only courses that already have at least one `published`
+  question. A course with none is listed as `excluded`: it gets no gaps, the
+  selection cannot place a page on it, and the guard rejects any item for it.
+  It can be authored for only when a dispatch names it in `course`, which is
+  how a new course is bootstrapped. If a question file does not parse, or a
+  published item names no `course_id`, the published counts are unknown and
+  the run fails rather than counting zero.
 
 A run whose agent writes nothing still opens a PR when the mechanical
 re-validation repaired something: those items are real work for the reviewer,
@@ -226,6 +272,32 @@ that a citation exists in the private immutable snapshot. Never hand-write a
 source hash, reuse an ID for a different concept, or change a question's evidence
 just to satisfy a report. Human CODEOWNERS approval of the content PR remains a
 separate merge gate.
+
+## Paced captures from docs.nebius.com
+
+`docs.nebius.com` started answering 403 (a Vercel checkpoint) after about 40
+rapid requests. `capture-sources.yml` fetches its rows one after another with no
+delay, so a large manifest is captured in small batches rather than in one run.
+Rows planned by `content/coverage/*.yaml` carry a `batch:` value (`q4-01` to
+`q4-11`, at most eight rows each). Dispatch one batch, wait for it to finish,
+and leave a few minutes before the next:
+
+```bash
+gh workflow run capture-sources.yml --ref <branch> -f batch=q4-01
+gh run watch "$(gh run list --workflow capture-sources.yml --branch <branch> \
+  --limit 1 --json databaseId --jq '.[0].databaseId')"
+```
+
+`batch` and `only` combine: `-f batch=q4-03 -f only=src-a,src-b` captures only
+those ids inside that batch. A run that fails part-way names the failed ids;
+re-dispatch with `-f only=<those ids>` once the host answers again. A dry run
+(`-f dry_run=true`) also fetches every page, so it costs the same requests.
+Never dispatch with no filter on a manifest this size.
+
+A row with a `coverage:` list (course id plus objective) writes that list into
+the record, and the record's bare `objectives` are derived from it. After a
+batch lands, `existing:` can be filled in on the coverage plan; the lint already
+accepts a URL that a record or a manifest row covers.
 
 ## Revalidating quarantined items
 

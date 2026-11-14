@@ -74,6 +74,18 @@ and Leader banks are authored from. Retention terms were re-confirmed for both
 hosts at that time; the pages captured are the same public documentation already
 covered by the original 2026-08-06 review.
 
+Scope widened 2026-11-14 (no new hosts) for the AI Infrastructure Engineer and
+AI Solutions Architect course maps. On `docs.nebius.com` the scope now also
+covers Soperator (managed Slurm), Serverless AI, Applications, third-party
+integrations (Run:ai, dstack, SkyPilot, mpirun), signup and billing (budgets,
+FOCUS cost export, pricing policy), Key Management Service, SecretStash
+(`mysterybox`), Audit Logs, security and encryption, the platform overview
+(regions, data portability and deletion, support), Container Registry,
+Tunnels, data transfer, and the Terraform provider. Pricing tables stay out of
+scope: prices change without notice, so a question that depends on one would
+drift. The pages are the same public documentation already covered by the
+original 2026-08-06 retention review.
+
 ### Candidates under review
 - `docs.nvidia.com` (Cosmos, OSMO) and `docs.isaacsim.omniverse.nvidia.com` / `isaac-sim.github.io/IsaacLab` (Isaac Sim, Isaac Lab): simulation, synthetic data and robot training tooling. Currently **pending retention review**: the pages are marked "All rights reserved" rather than openly licensed, and the Isaac sites serve no `.md` twin, so a snapshot would hash navigation chrome as well as content.
 
@@ -87,6 +99,8 @@ Source priorities are scoped per course, reflecting the public exam bounds:
 | **AI CloudOps Engineer** (`ai-cloudops-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Non-cloud developer SDKs |
 | **AI Leader** (`ai-leader`) | `docs.tokenfactory.nebius.com` | `docs.nebius.com` (high-level only) | AI Cloud deployment details |
 | **Agentic Web Search** (`agentic-web-search`) | `docs.tavily.com` | `docs.tokenfactory.nebius.com` | `docs.nebius.com` infrastructure details |
+| **AI Infrastructure Engineer** (`ai-infrastructure-engineer`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Pricing tables |
+| **AI Solutions Architect** (`ai-solutions-architect`) | `docs.nebius.com` | `docs.tokenfactory.nebius.com` | Pricing tables |
 | **Physical AI** (`physical-ai`) | `docs.nebius.com` | `huggingface.co/docs/lerobot/`, `nebius/nebius-physical-ai` (pinned guides), `docs.tokenfactory.nebius.com` | Other `huggingface.co` docs; the rest of `nebius/nebius-physical-ai` |
 
 `huggingface.co/docs/lerobot/` and `nebius/nebius-physical-ai` are sources for the Physical AI course only.

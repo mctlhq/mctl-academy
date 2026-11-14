@@ -1,0 +1,18 @@
+schema_version: 1
+id: src-nb-3p-integrations-compatibility
+url: https://docs.nebius.com/3p-integrations/compatibility.md
+title: Software compatibility and supported runtimes in Nebius AI Cloud
+retrieved_at: 2026-11-14T09:28:24Z
+sha256: 186fbd90a1a1b789edaf478309ea60c942679836ee21589983a4d1c4d887c837
+objectives:
+  - domain-3/ie-serving-patterns
+  - domain-1/sa-training-stack
+snapshot:
+  bucket: academy-source-snapshots
+  key: 186fbd90a1a1b789edaf478309ea60c942679836ee21589983a4d1c4d887c837
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-serving-patterns
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-training-stack

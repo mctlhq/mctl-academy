@@ -5,7 +5,9 @@ original, and every question cites the public documentation it was written from.
 
 > **mctl Academy is not affiliated with, endorsed by, or sponsored by Nebius, or
 > by any other certification vendor.** Courses prepare for live Nebius certifications:
-> **AI Leader**, **AI CloudOps Engineer**, and **Agentic AI Builder**.
+> **AI Leader**, **AI CloudOps Engineer**, **Agentic AI Builder**, **Agentic Web
+> Search**, **Physical AI**, **AI Infrastructure Engineer**, and **AI Solutions
+> Architect**.
 > They do not reproduce, mirror, or predict those exams. See [`LEGAL.md`](LEGAL.md).
 
 ## Why this exists
@@ -23,8 +25,11 @@ Live at [academy.mctl.ai](https://academy.mctl.ai). Sign in with GitHub, then
 Practice or take a Mock exam — progress, mistakes, and per-question votes are
 saved to your account.
 
-All three courses have a published question bank: **Agentic AI Builder** (28
-items), **AI CloudOps Engineer** (40) and **AI Leader** (39). A September evidence
+Five courses have a published question bank: **Agentic AI Builder**, **AI
+CloudOps Engineer**, **AI Leader**, **Agentic Web Search** and **Physical AI**.
+**AI Infrastructure Engineer** and **AI Solutions Architect** are course maps
+only so far (domains, weights and objectives, no questions yet) and are shown
+as "Coming soon". A September evidence
 audit quarantined 52 Builder items whose excerpts did not establish their answers;
 see the [per-question audit](docs/content/builder-evidence-audit.md). Builder Practice
 remains available, but its full Mock is unavailable until the domain shortfalls

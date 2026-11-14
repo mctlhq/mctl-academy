@@ -15,3 +15,10 @@ versions:
   - c0a5525d7571cd10f4daf0e98b0e15fe9fd9799f59408c4faeebe77fa112f653
   - b29f84c8b2ba0982188ad01712ffec1e621f86071da3adb5608b22e43ea04382
   - 2a62c18fcb8a55239f08fa2cbe1caf44dc66b43cf5e5b1553bca15d692931c84
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-training-cluster-lifecycle
+  - course_id: ai-infrastructure-engineer
+    objective: domain-2/ie-gpu-fabric
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-distributed-training

@@ -1,0 +1,16 @@
+schema_version: 1
+id: src-nb-3p-integrations-skypilot-vllm-inference
+url: https://docs.nebius.com/3p-integrations/skypilot-vllm-inference.md
+title: Running vLLM inference on a Managed Service for Kubernetes cluster with
+  SkyPilot
+retrieved_at: 2026-11-14T09:28:32Z
+sha256: 3c0a8efabf9aeca0f48c7c6b2143a8b59dbc22051c436747177d870f188b9b2f
+objectives:
+  - domain-3/ie-inference-pipelines
+snapshot:
+  bucket: academy-source-snapshots
+  key: 3c0a8efabf9aeca0f48c7c6b2143a8b59dbc22051c436747177d870f188b9b2f
+status: current
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-3/ie-inference-pipelines

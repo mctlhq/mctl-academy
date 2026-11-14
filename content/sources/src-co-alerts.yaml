@@ -12,3 +12,6 @@ snapshot:
 status: current
 versions:
   - 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
+coverage:
+  - course_id: ai-infrastructure-engineer
+    objective: domain-4/ie-observability-platform

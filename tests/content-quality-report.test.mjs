@@ -449,3 +449,46 @@ test("the scenario share is labelled crude and advisory in the JSON", () => {
   assert.equal(w.level, "advisory");
   assert.match(w.message, /crude classifier, advisory/);
 });
+
+test("a record shared across courses is on-objective through its course-aware coverage", () => {
+  const course = (id, objective) => ({
+    id,
+    domains: [{ id: "domain-1", weight: 100, mock_questions: 1, objectives: [{ id: objective }] }],
+  });
+  const courses = new Map([
+    ["ops", course("ops", "node-recovery")],
+    ["infra", course("infra", "ie-long-run-reliability")],
+  ]);
+  // Shaped like src-co-k8s-health-checks: a CloudOps objective in the bare
+  // list, IE coverage added beside it.
+  const sources = new Map([
+    [
+      "src-shared",
+      {
+        objectives: ["domain-1/node-recovery"],
+        coverage: [{ course_id: "infra", objective: "domain-1/ie-long-run-reliability" }],
+      },
+    ],
+  ]);
+  const q = (id, course_id, objective) => ({
+    id,
+    status: "published",
+    course_id,
+    domain: "domain-1",
+    objective,
+    stem: `Stem ${id}`,
+    options: [
+      { text: `Right ${id}`, correct: true },
+      { text: `Wrong ${id}`, correct: false },
+    ],
+    evidence: [{ source_id: "src-shared", excerpt: `excerpt ${id}` }],
+  });
+  const questions = [
+    q("ops-1", "ops", "domain-1/node-recovery"),
+    q("ie-1", "infra", "domain-1/ie-long-run-reliability"),
+    q("ie-off", "infra", "domain-1/ie-other"),
+  ];
+  const [ops, infra] = qualityReport({ courses, sources, questions });
+  assert.deepEqual(ops.sourceObjectiveMismatches, []);
+  assert.deepEqual(infra.sourceObjectiveMismatches, ["ie-off"]);
+});

@@ -1,0 +1,16 @@
+schema_version: 1
+id: src-nb-3p-integrations-skypilot-mk8s
+url: https://docs.nebius.com/3p-integrations/skypilot-mk8s.md
+title: Managing AI workloads across Managed Service for Kubernetes clusters with
+  SkyPilot
+retrieved_at: 2026-11-14T09:28:31Z
+sha256: 2ba4c6484ceba82c05c2ef209d579272d04df322f52de970c346b85ea8855d07
+objectives:
+  - domain-1/sa-orchestration-overlays
+snapshot:
+  bucket: academy-source-snapshots
+  key: 2ba4c6484ceba82c05c2ef209d579272d04df322f52de970c346b85ea8855d07
+status: current
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-1/sa-orchestration-overlays

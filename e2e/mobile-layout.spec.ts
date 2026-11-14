@@ -144,6 +144,43 @@ test.describe("touch targets", () => {
         await assertTouchTargets(page, ".course-select");
       });
 
+      // Under 400px the brand is only its M mark (AppNav.vue), so the home
+      // link must stay a full target, keep its name, and focus like the full
+      // wordmark does; the switcher, which may truncate, carries the full
+      // course title in its title attribute and selected option.
+      if (width <= 400) {
+        test("the M mark brand stays a labelled 44px target with the full brand's focus", async ({
+          page,
+        }) => {
+          await page.goto("/");
+          const brand = page.locator(".app-brand");
+          await expect(brand).toHaveAccessibleName("mctl Academy home");
+          const box = await brand.boundingBox();
+          expect(box!.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET_PX);
+          expect(box!.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET_PX);
+
+          await brand.focus();
+          const focusRing = () =>
+            brand.evaluate((el) => {
+              const s = getComputedStyle(el);
+              return [s.outlineStyle, s.outlineWidth, s.outlineColor, s.outlineOffset].join(" ");
+            });
+          const markRing = await focusRing();
+          expect(markRing).not.toMatch(/^none/);
+          await page.setViewportSize({ width: 1024, height: 900 });
+          await brand.focus();
+          expect(await focusRing()).toBe(markRing);
+          await page.setViewportSize({ width, height: 900 });
+
+          const select = page.getByTestId("course-select");
+          const selectedTitle = await select.evaluate(
+            (el: HTMLSelectElement) => el.selectedOptions[0]?.textContent?.trim() ?? "",
+          );
+          expect(selectedTitle).not.toBe("");
+          await expect(select).toHaveAttribute("title", selectedTitle);
+        });
+      }
+
       test("Practice's context toggle and report button meet the 44px touch-target convention", async ({
         page,
       }) => {

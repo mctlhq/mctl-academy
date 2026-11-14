@@ -14,3 +14,8 @@ status: current
 versions:
   - 3f67b570fc874ae20df20d4acb5630acd825bb64929afae128d572bd4542968f
   - 5b26a27cbb0fd9679f55e0d3ae983b57c2c83df1d9bdf7d97988e370a475c6f7
+coverage:
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-identity-model
+  - course_id: ai-solutions-architect
+    objective: domain-4/sa-tenant-isolation-least-privilege

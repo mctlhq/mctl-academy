@@ -37,6 +37,12 @@
       "minLength": 10,
       "maxLength": 2000
     },
+    "summary": {
+      "description": "One vendor-neutral sentence for the course card. Unlike `description`, it reaches the client catalog, so it must not name a certification vendor (LEGAL.md); scripts/validate-content.mjs enforces that against `prepares_for` and the disclaimer.",
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 200
+    },
     "disclaimer": {
       "type": "object",
       "additionalProperties": false,
