@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.88](https://github.com/mctlhq/mctl-academy/compare/0.1.87...0.1.88) (2026-11-14)
+
+
+### Bug Fixes
+
+* **capture:** treat a redirect to a different page as a moved source ([b2e6942](https://github.com/mctlhq/mctl-academy/commit/b2e69428ef7e27c682c4595bfeb5632d3e1c9dea))
+* **capture:** treat a redirect to a different page as a moved source ([25f56f1](https://github.com/mctlhq/mctl-academy/commit/25f56f1f5481007ea2ed7a7fbdd63410d0ebbec5))
+* **content:** retire six quarantined questions whose evidence is gone ([d628380](https://github.com/mctlhq/mctl-academy/commit/d628380a6493831b0dba12866ee32dffc40eb526))
+* **content:** retire six quarantined questions whose evidence is gone ([0055e67](https://github.com/mctlhq/mctl-academy/commit/0055e67637bcd277d52f4eaa2689747681136573)), closes [#263](https://github.com/mctlhq/mctl-academy/issues/263) [#254](https://github.com/mctlhq/mctl-academy/issues/254) [#329](https://github.com/mctlhq/mctl-academy/issues/329) [#487](https://github.com/mctlhq/mctl-academy/issues/487)
+* **content:** retire six Tavily questions whose pages moved away ([1627461](https://github.com/mctlhq/mctl-academy/commit/162746166ac608db1fcc50dd7ae51ac674a69e0e))
+* **content:** retire six Tavily questions whose pages moved away ([9e22e8a](https://github.com/mctlhq/mctl-academy/commit/9e22e8a19d30cca008611b03431ccc150bc7f66f)), closes [#486](https://github.com/mctlhq/mctl-academy/issues/486) [#499](https://github.com/mctlhq/mctl-academy/issues/499)
+* **replenish:** list an untouched item once, with all its sources ([99b97c0](https://github.com/mctlhq/mctl-academy/commit/99b97c0bafd48be198186e9a4d67da3023d1ae07))
+
 ## [0.1.87](https://github.com/mctlhq/mctl-academy/compare/0.1.86...0.1.87) (2026-11-14)
 
 
