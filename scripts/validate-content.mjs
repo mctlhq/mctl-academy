@@ -103,6 +103,8 @@ function courseVendorNames(course) {
   const names = new Set(
     String(course.prepares_for ?? "")
       .split(/\s+/)
+      // "Acme®" or "Acme's" must still match a plain "Acme" in a summary.
+      .map((w) => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "").replace(/['’]s$/u, ""))
       .filter((w) => w.length > 1 && !titleWords.has(w.toLowerCase())),
   );
   const disowned = /sponsored by (.+?)\.?$/i.exec(String(course.disclaimer?.short ?? ""))?.[1];

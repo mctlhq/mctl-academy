@@ -517,3 +517,13 @@ test("rejects a course summary longer than one card sentence", () => {
   assert.equal(ok, false);
   assert.match(output, /summary/);
 });
+
+test("a vendor name in prepares_for still matches with a mark or possessive attached", () => {
+  for (const prepares_for of ["Acme® Test", "Acme's Test"]) {
+    const { ok, output } = lint({
+      courseDef: { ...COURSE_DEF, prepares_for, summary: "Practise for the Acme exam, step by step." },
+    });
+    assert.equal(ok, false, prepares_for);
+    assert.match(output, /summary names "Acme"/);
+  }
+});
