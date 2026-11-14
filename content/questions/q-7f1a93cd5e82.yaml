@@ -1,0 +1,51 @@
+schema_version: 1
+id: q-7f1a93cd5e82
+status: review_ready
+domain: domain-1
+objective: domain-1/sa-storage-architecture
+stem: "An architecture team is designing storage for a training pipeline's
+  checkpoints and model artifacts, and is deciding whether to expose an
+  existing shared filesystem through Object Storage as a filesystem bucket,
+  or create a regular Object Storage bucket for the same artifacts instead.
+  What constraint should shape this decision before either bucket is created?"
+options:
+  - id: a
+    text: "The bucket's type must be chosen at creation, since a bucket
+      cannot be changed from regular to filesystem or from filesystem to
+      regular afterward."
+    correct: true
+    explanation: "Correct. The documentation says that after you create a
+      bucket, you cannot change its type from regular to filesystem or from
+      filesystem to regular, so the choice has to match the storage needed
+      from the start."
+  - id: b
+    text: "Favor the filesystem bucket, since bucket policies grant it
+      anonymous access the same way they do for a regular bucket."
+    correct: false
+    explanation: "The documentation says bucket policies cannot be used to
+      grant anonymous access to a filesystem bucket, so this is not a
+      capability the two bucket types share."
+  - id: c
+    text: "Favor the filesystem bucket, since it supports delayed deletion
+      and bucket restoration the same way a regular bucket does."
+    correct: false
+    explanation: "The documentation lists delayed deletion and bucket
+      restoration as unsupported for filesystem buckets, so this protection
+      is not available the way it is for a regular bucket."
+  - id: d
+    text: "Favor either bucket type freely, since object integrity checksums
+      are supported identically for filesystem and regular buckets."
+    correct: false
+    explanation: "The documentation lists object integrity checksums as a
+      limitation of filesystem buckets, so the two types do not support this
+      identically."
+evidence:
+  - source_id: src-nb-object-storage-buckets-filesystem-buckets
+    source_sha256: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
+    excerpt: "After you create a bucket, you cannot change its type from
+      regular to filesystem or from filesystem to regular."
+    locator: "How to manage filesystem buckets, Limitations"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-14T16:21:32Z"
+course_id: ai-solutions-architect
