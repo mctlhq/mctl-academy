@@ -105,11 +105,23 @@ textarea {
 button:focus-visible,
 a:focus-visible,
 summary:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* Bordered form controls take the design-system focus treatment (accent
+   border plus a soft shadow) instead of an offset outline. Chrome on macOS
+   keeps :focus-visible on a <select> after a mouse pick, and an outline drawn
+   3px outside the control's own border read as a doubled orange box.
+   Checkboxes and radios have no border to recolour, so they keep the ring. */
+input:not([type="checkbox"], [type="radio"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--control-focus-shadow);
 }
 
 /* <main> receives programmatic focus after navigation (router/index.ts); it
