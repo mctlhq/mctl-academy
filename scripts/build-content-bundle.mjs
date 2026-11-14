@@ -155,7 +155,6 @@ mkdirSync(join(CATALOG_OUT, ".."), { recursive: true });
 writeFileSync(CATALOG_OUT, JSON.stringify(catalog, null, 2) + "\n");
 
 if (SITEMAP_OUT) {
-  const availableCourses = catalog.filter((c) => c.available);
   const sitemapLines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -169,11 +168,11 @@ if (SITEMAP_OUT) {
     "    <changefreq>weekly</changefreq>",
     "    <priority>0.8</priority>",
     "  </url>",
-    ...availableCourses.flatMap((c) => [
+    ...catalog.flatMap((c) => [
       "  <url>",
       `    <loc>https://academy.mctl.ai/courses/${c.id}</loc>`,
       "    <changefreq>weekly</changefreq>",
-      "    <priority>0.9</priority>",
+      `    <priority>${c.available ? "0.9" : "0.7"}</priority>`,
       "  </url>",
     ]),
     "</urlset>",

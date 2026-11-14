@@ -25,6 +25,7 @@ export default [
     ignores: [
       "**/node_modules/**",
       ".worktrees/**",
+      ".claude/**",
       "client/dist/**",
       "client/src/data/**",
       "coverage/**",

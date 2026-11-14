@@ -328,16 +328,12 @@ test("passes a course summary through to the catalog, and omits it when absent",
   assert.ok(!("summary" in catalog.find((c) => c.id === "ai-leader")));
 });
 
-test("emits sitemap.xml with available courses when ACADEMY_SITEMAP_OUT is configured", () => {
+test("emits sitemap.xml with all catalog courses when ACADEMY_SITEMAP_OUT is configured", () => {
   const { sitemap } = build({
     courses: [course(), course({ id: "ai-leader", title: "AI Leader" })],
     questions: [question("q-published0001", "published")],
     sitemap: true,
   });
   assert.match(sitemap, /<loc>https:\/\/academy\.mctl\.ai\/courses\/agentic-ai-builder<\/loc>/);
-  assert.doesNotMatch(
-    sitemap,
-    /<loc>https:\/\/academy\.mctl\.ai\/courses\/ai-leader<\/loc>/,
-    "unavailable courses must not be in sitemap",
-  );
+  assert.match(sitemap, /<loc>https:\/\/academy\.mctl\.ai\/courses\/ai-leader<\/loc>/);
 });

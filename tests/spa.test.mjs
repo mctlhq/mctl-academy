@@ -114,13 +114,13 @@ describe("known pages", () => {
     assert.deepEqual(JSON.parse(jsonLd), meta.jsonLd);
   });
 
-  test("a coming-soon course is a real page: 200, its title, site defaults otherwise", () => {
+  test("a coming-soon course is a real page: 200, its title, its own canonical and Course schema", () => {
     const upcoming = { ...catalog[0], id: "upcoming", title: "Upcoming", available: false };
     const { status, html } = renderSpaPage(SOURCE_INDEX, classifySpaPath("/courses/upcoming", [upcoming]));
     assert.equal(status, 200);
     assert.equal(title(html), "Upcoming — Coming soon · mctl academy");
-    assert.equal(canonical(html), "https://academy.mctl.ai/");
-    assert.doesNotMatch(html, /application\/ld\+json/);
+    assert.equal(canonical(html), "https://academy.mctl.ai/courses/upcoming");
+    assert.match(html, /application\/ld\+json/);
   });
 });
 

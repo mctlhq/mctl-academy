@@ -51,26 +51,116 @@ export function courseCanonicalUrl(courseId) {
 /**
  * Title, description, canonical URL and JSON-LD for one catalog course.
  *
- * A coming-soon course gets its own title and nothing else: the page keeps the
- * site defaults for every other tag, exactly as CourseView always did.
+ * Available courses carry full Quiz, FAQPage, BreadcrumbList and Course structured
+ * data with their own canonical URL and description. Coming-soon tracks carry
+ * their own canonical URL, description, and Course + BreadcrumbList structured
+ * data so search engines index the published syllabus preview.
  */
 export function courseHeadMeta(course) {
+  const canonicalUrl = courseCanonicalUrl(course.id);
+  const domainCount = course.mock?.domains?.length ?? 0;
+  const breadcrumbs = {
+    "@type": "BreadcrumbList",
+    "@id": `${canonicalUrl}#breadcrumbs`,
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${SITE_ORIGIN}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: course.title,
+        item: canonicalUrl,
+      },
+    ],
+  };
+
   if (!course.available) {
+    const description =
+      course.summary ||
+      `Free online syllabus and practice guide for ${course.title} across ${domainCount} domains.`;
     return {
       title: `${course.title} — Coming soon · ${SITE_NAME}`,
-      description: null,
-      canonicalUrl: null,
-      jsonLd: null,
+      description,
+      canonicalUrl,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Course",
+            "@id": `${canonicalUrl}#course`,
+            name: `${course.title} Practice Track`,
+            description: course.summary || `${course.title} practice track syllabus and study guide.`,
+            provider: {
+              "@type": "Organization",
+              name: "mctl Academy",
+              url: `${SITE_ORIGIN}/`,
+            },
+            isAccessibleForFree: true,
+            inLanguage: "en",
+            offers: [
+              {
+                "@type": "Offer",
+                category: "Free",
+                price: "0",
+                priceCurrency: "USD",
+              },
+            ],
+          },
+          breadcrumbs,
+        ],
+      },
     };
   }
 
   const questionCount = course.publishedQuestionCount;
-  const domainCount = course.mock.domains.length;
-  const canonicalUrl = courseCanonicalUrl(course.id);
+  const domainTitles = (course.mock?.domains ?? [])
+    .map((d) => (d && typeof d === "object" && "title" in d ? d.title : ""))
+    .filter(Boolean)
+    .join(", ");
+  const description = `Free online practice questions and syllabus for ${course.title}. ${questionCount} questions across ${domainCount} domains.`;
+
+  const faqPage = {
+    "@type": "FAQPage",
+    "@id": `${canonicalUrl}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What skills are measured in the ${course.title} track?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `This track covers ${domainCount} core domains: ${domainTitles}. ${
+            course.summary
+              ? course.summary
+              : "Review the syllabus topics above for detailed domain objectives."
+          }`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is this practice platform free to use?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. mctl Academy is completely free and accessible without a paywall. You can take untimed practice tests or full timed mock exams at zero cost.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Are these official exam questions?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No. In accordance with clean-room guidelines and our content policy, all items are original scenario problems authored from public documentation. They test practical technical objectives without reproducing proprietary exam content.",
+        },
+      },
+    ],
+  };
 
   return {
     title: `${course.title} — Practice Questions & Syllabus · ${SITE_NAME}`,
-    description: `Free online practice questions and syllabus for ${course.title}. ${questionCount} questions across ${domainCount} domains.`,
+    description,
     canonicalUrl,
     jsonLd: {
       "@context": "https://schema.org",
@@ -108,6 +198,8 @@ export function courseHeadMeta(course) {
             name: course.title,
           },
         },
+        breadcrumbs,
+        faqPage,
       ],
     },
   };
