@@ -4307,6 +4307,47 @@
     ]
   },
   {
+    "id": "q-co2331c8572e",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-1",
+    "objective": "domain-1/environment-deployment",
+    "stem": "You are creating a GPU cluster and must pick an InfiniBand fabric. Why does the choice constrain the cluster later?",
+    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
+    "sources": [
+      {
+        "title": "InfiniBand networking for Compute virtual machines with GPUs",
+        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
+        "excerpt": "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink GPUs to this cluster"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The fabric fixes how many nodes the cluster may ever contain",
+        "correct": false,
+        "explanation": "Fabric capacity is finite, but the documented consequence of the choice is which GPU platform can be added, not a fixed node count."
+      },
+      {
+        "id": "b",
+        "text": "The fabric determines which project the cluster's resources belong to",
+        "correct": false,
+        "explanation": "Project membership is an IAM concern and is unrelated to the physical fabric a cluster sits in."
+      },
+      {
+        "id": "c",
+        "text": "The fabric sets the partition key that other tenants use to reach the cluster",
+        "correct": false,
+        "explanation": "A partition key isolates a cluster rather than granting anyone access, and it is assigned per cluster."
+      },
+      {
+        "id": "d",
+        "text": "The fabric limits which GPU platform can be added to that cluster",
+        "correct": true,
+        "explanation": "Correct. Each fabric serves particular GPU platforms, so the fabric must be chosen against the GPU type you intend to run."
+      }
+    ]
+  },
+  {
     "id": "q-co24917d1a57",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-1",
@@ -5219,6 +5260,47 @@
     ]
   },
   {
+    "id": "q-co46427e70ca",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/node-monitoring",
+    "stem": "While adding a notification email to an alert, an engineer without admin rights sees a much shorter list of contacts than a colleague does. Why?",
+    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
+    "sources": [
+      {
+        "title": "How to set up alerts",
+        "url": "https://docs.nebius.com/observability/alerts.md",
+        "excerpt": "Tenant administrators can also choose from [tenant contacts](https://docs.nebius.com/overview/contacts/index.md#tenant-contacts) in the current tenant. You can only see your own personal contacts"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The list only shows emails that have never been used for notifications",
+        "correct": false,
+        "explanation": "The list is drawn from emails already used for notifications, not from unused ones."
+      },
+      {
+        "id": "b",
+        "text": "The list is limited to contacts in the same project as the alert",
+        "correct": false,
+        "explanation": "Visibility follows admin rights rather than the project the alert belongs to."
+      },
+      {
+        "id": "c",
+        "text": "Without admin rights, only their own contacts are visible",
+        "correct": true,
+        "explanation": "Correct. Admins see all tenant contacts; everyone else sees only their own."
+      },
+      {
+        "id": "d",
+        "text": "The list hides anyone already subscribed to that same alert",
+        "correct": false,
+        "explanation": "Existing subscribers are not filtered out of the list."
+      }
+    ]
+  },
+  {
     "id": "q-co47ac4ebcf8",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-3",
@@ -5342,6 +5424,47 @@
     ]
   },
   {
+    "id": "q-co502cd7b152",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/resource-quotas",
+    "stem": "A team stops several GPU VMs overnight and expects the freed quota to let them launch a new cluster. Does it?",
+    "objectiveTitle": "Quota management, capacity planning, and usage limits",
+    "sources": [
+      {
+        "title": "Quotas in Compute",
+        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
+        "excerpt": "count toward the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, stopped VMs release their quota until they are started again",
+        "correct": false,
+        "explanation": "Stopping does not release quota; the reservation persists while the VM exists."
+      },
+      {
+        "id": "b",
+        "text": "Yes, but only for GPU quotas, not for storage quotas",
+        "correct": false,
+        "explanation": "The rule does not distinguish stopped from running for either category."
+      },
+      {
+        "id": "c",
+        "text": "No, quota is only released once the region's capacity is rebalanced",
+        "correct": false,
+        "explanation": "Quota accounting is not tied to capacity rebalancing."
+      },
+      {
+        "id": "d",
+        "text": "No, a VM counts toward quota from creation to deletion regardless of power state",
+        "correct": true,
+        "explanation": "Correct. Only deleting the VM releases what it counts against."
+      }
+    ]
+  },
+  {
     "id": "q-co51437baad6",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-3",
@@ -5420,6 +5543,88 @@
         "text": "The `nvidia-fabricmanager` service failed to initialize at VM startup",
         "correct": true,
         "explanation": "Correct. A race condition or timing issue can leave that service uninitialized, which breaks CUDA initialization."
+      }
+    ]
+  },
+  {
+    "id": "q-co546c4c3ecd",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "You have confirmed a CUDA initialization failure on a GPU VM. What is the documented range of remedies?",
+    "objectiveTitle": "Diagnosing GPU workload failures and network bottlenecks",
+    "sources": [
+      {
+        "title": "CUDA initialization error on virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md",
+        "excerpt": "You can resolve this issue by restarting the NVIDIA Fabric Manager service, the GPUs on the VM, or the entire VM."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Restart the NVIDIA Fabric Manager service, the GPUs, or the entire VM",
+        "correct": true,
+        "explanation": "Correct. These are the three documented remedies, in increasing order of disruption."
+      },
+      {
+        "id": "b",
+        "text": "Recreate the VM from a different boot disk image",
+        "correct": false,
+        "explanation": "The failure is not attributed to the image, and rebuilding is not the documented fix."
+      },
+      {
+        "id": "c",
+        "text": "Detach and reattach the local SSD disks holding the workload data",
+        "correct": false,
+        "explanation": "Storage attachment is unrelated to CUDA initialization."
+      },
+      {
+        "id": "d",
+        "text": "Move the VM into a different InfiniBand fabric",
+        "correct": false,
+        "explanation": "Fabric choice concerns cluster networking and cannot be changed for an existing resource anyway."
+      }
+    ]
+  },
+  {
+    "id": "q-co55ed4440ca",
+    "course_id": "ai-cloudops-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/operational-troubleshooting",
+    "stem": "A team believes CUDA initialization failures only affect one GPU platform, and plans to migrate away from it. Is that reasoning sound?",
+    "objectiveTitle": "Diagnosing GPU workload failures and network bottlenecks",
+    "sources": [
+      {
+        "title": "CUDA initialization error on virtual machines in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/cuda-init-error.md",
+        "excerpt": "This can occur on any VM with GPUs, regardless of the specific platform, number of GPUs, or boot disk image."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, the failure is specific to eight-GPU platforms",
+        "correct": false,
+        "explanation": "The number of GPUs is explicitly not what determines exposure."
+      },
+      {
+        "id": "b",
+        "text": "No, it can occur on any VM with GPUs regardless of platform, GPU count or image",
+        "correct": true,
+        "explanation": "Correct. The failure is not tied to a platform, so migrating on that basis would not remove it."
+      },
+      {
+        "id": "c",
+        "text": "Yes, but only for VMs built from custom disk images",
+        "correct": false,
+        "explanation": "The boot disk image is explicitly not a differentiator."
+      },
+      {
+        "id": "d",
+        "text": "No, because the failure only affects VMs inside GPU clusters",
+        "correct": false,
+        "explanation": "It is not confined to clustered VMs either."
       }
     ]
   },

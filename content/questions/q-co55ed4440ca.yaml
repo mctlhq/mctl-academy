@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co55ed4440ca
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: A team believes CUDA initialization failures only affect one GPU platform,
@@ -27,13 +27,13 @@ options:
 evidence:
   - source_id: src-co-cuda-init-error
     excerpt: This can occur on any VM with GPUs, regardless of the specific
-      platform, number of GPUs or boot disk image.
-    source_sha256: 7d741ea2c8ce727ea56c6fd2013ecd7cf6e2682560ba1d902700d6eef4cdca62
+      platform, number of GPUs, or boot disk image.
+    source_sha256: 130af4b0cdd95ad68f4e041752448bd91f38142838f680fbd8045429015689ba
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:claude-author
+  at: 2026-11-14T18:47:43Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: aed6545d7d3a28bf89fe4aeddf7bfbc2f27e1ae061da1bd831603c7d6700c2e5
+  at: 2026-11-14T18:57:12Z
+  content_sha256: a17e08f9384e686821a3e1a502976fa99aad97befff0e3ff2fed6b84e500fc28

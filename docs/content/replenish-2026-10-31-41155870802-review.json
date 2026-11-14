@@ -122,13 +122,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-co2331c8572e",
-      "content_sha256": "2afbfcdcf69a9e1739e6499f88c824d266c3457f203cbad09dc327861e97bb7e",
-      "approved": true,
-      "reason": "\"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids to this cluster\" shows the fabric constrains the GPU platform, not node count or project.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-co2738f2a8fd",
       "content_sha256": "0730fe0471f06c7151637f2d435f5f8efb49b249a422cef27b77135962f0d23a",
       "approved": true,
@@ -140,20 +133,6 @@
       "content_sha256": "b4772ebfd6cc83cded9194cd71e6d0461cbce569ad77affaf09456c03f3157df",
       "approved": true,
       "reason": "\"`.spec.priority`: Priority of the rule. 1 is the highest priority, 1000 is the lowest\", and lookup runs from 1 upward, so priority 1 wins.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co546c4c3ecd",
-      "content_sha256": "21787f0cb156da590691d5997480fb055b81180793b0c2276ccc6f86e9970be8",
-      "approved": true,
-      "reason": "\"You can resolve this issue by restarting the NVIDIA Fabric Manager service, the GPUs on the VM or the entire VM\", matching the three remedies in option a.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co55ed4440ca",
-      "content_sha256": "aed6545d7d3a28bf89fe4aeddf7bfbc2f27e1ae061da1bd831603c7d6700c2e5",
-      "approved": true,
-      "reason": "\"This can occur on any VM with GPUs, regardless of the specific platform, number of GPUs or boot disk image\" refutes the platform-specific reasoning.",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -932,6 +911,30 @@
       "reason": "Production notes: \"Quality filtering: Use `score` from the response to filter low-relevance results (e.g., discard results below 0.5)\".",
       "reviewed_at": "2026-10-31T01:59:27Z",
       "superseded_at": "2026-11-14T18:13:18Z"
+    },
+    {
+      "id": "q-co2331c8572e",
+      "content_sha256": "2afbfcdcf69a9e1739e6499f88c824d266c3457f203cbad09dc327861e97bb7e",
+      "approved": true,
+      "reason": "\"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids to this cluster\" shows the fabric constrains the GPU platform, not node count or project.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T18:57:12Z"
+    },
+    {
+      "id": "q-co546c4c3ecd",
+      "content_sha256": "21787f0cb156da590691d5997480fb055b81180793b0c2276ccc6f86e9970be8",
+      "approved": true,
+      "reason": "\"You can resolve this issue by restarting the NVIDIA Fabric Manager service, the GPUs on the VM or the entire VM\", matching the three remedies in option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T18:57:12Z"
+    },
+    {
+      "id": "q-co55ed4440ca",
+      "content_sha256": "aed6545d7d3a28bf89fe4aeddf7bfbc2f27e1ae061da1bd831603c7d6700c2e5",
+      "approved": true,
+      "reason": "\"This can occur on any VM with GPUs, regardless of the specific platform, number of GPUs or boot disk image\" refutes the platform-specific reasoning.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T18:57:12Z"
     }
   ]
 }

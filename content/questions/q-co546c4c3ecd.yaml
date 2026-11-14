@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co546c4c3ecd
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/operational-troubleshooting
 stem: You have confirmed a CUDA initialization failure on a GPU VM. What is the
@@ -28,13 +28,13 @@ options:
 evidence:
   - source_id: src-co-cuda-init-error
     excerpt: You can resolve this issue by restarting the NVIDIA Fabric Manager
-      service, the GPUs on the VM or the entire VM.
-    source_sha256: 7d741ea2c8ce727ea56c6fd2013ecd7cf6e2682560ba1d902700d6eef4cdca62
+      service, the GPUs on the VM, or the entire VM.
+    source_sha256: 130af4b0cdd95ad68f4e041752448bd91f38142838f680fbd8045429015689ba
 authored:
-  by: agent:claude
-  at: 2026-08-16T19:20:00Z
+  by: agent:claude-author
+  at: 2026-11-14T18:47:43Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 21787f0cb156da590691d5997480fb055b81180793b0c2276ccc6f86e9970be8
+  at: 2026-11-14T18:57:12Z
+  content_sha256: 53c1a3e0a0ba4f8af536f46f145d2c7777203f40ce4e80da1448199a88176366
