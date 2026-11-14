@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b58e3f9a2c71
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/observability
 stem: In a Chat Completions response, what is the documented purpose of the
@@ -32,18 +32,18 @@ evidence:
   - source_id: src-recovery-chat
     excerpt: This fingerprint represents the backend configuration that the model
       runs with.
-    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
+    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
     locator: ChatCompletionChunk > system_fingerprint
   - source_id: src-recovery-chat
     excerpt: Can be used in conjunction with the `seed` request parameter to
       understand when backend changes have been made that might impact
       determinism.
-    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
+    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
     locator: ChatCompletionChunk > system_fingerprint
   - source_id: src-recovery-chat
     excerpt: A unique identifier representing your end-user, which can help us to
       monitor and detect abuse.
-    source_sha256: 08702d7169ff9c2984243ab4b00dea0f6cdf7118eb0d1a46ede2156c4917ae11
+    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
     locator: ChatCompletionRequest > user
 authored:
   by: agent:claude-author
@@ -51,5 +51,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: c4d40c4606a7af7c58036b4e4461b6c1d59ad502e5266159f2fdefacaf647eba
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 82fa678e89ff3eaf3fe6d41ab4c97746500599b33c224f4098212fe532f89bb0

@@ -2,11 +2,13 @@ schema_version: 1
 id: src-tv-hybrid-research
 url: https://docs.tavily.com/examples/agent-toolkit/hybrid-research.md
 title: "Agent Toolkit: Hybrid Research"
-retrieved_at: 2026-10-31T01:11:53Z
-sha256: cbabaf9c2a6c52d4e3ef5f6aa476114181c0e8b7258476a4fcaa10c0d722e9d5
+retrieved_at: 2026-11-14T13:03:55Z
+sha256: f862ce94968474532658a2607ad6b89f2fe36cbe90ff32f097cc6a3f96cd91c3
 objectives:
   - domain-1/blended-rag
 snapshot:
   bucket: academy-source-snapshots
-  key: cbabaf9c2a6c52d4e3ef5f6aa476114181c0e8b7258476a4fcaa10c0d722e9d5
-status: drifted
+  key: f862ce94968474532658a2607ad6b89f2fe36cbe90ff32f097cc6a3f96cd91c3
+status: current
+versions:
+  - cbabaf9c2a6c52d4e3ef5f6aa476114181c0e8b7258476a4fcaa10c0d722e9d5

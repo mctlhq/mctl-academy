@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-3c7b5f9a1e84
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/training-results
 stem: "A team reads a single `lerobot-eval` run on the LIBERO suites to pick
@@ -37,12 +37,12 @@ evidence:
   - source_id: src-pa-lerobot-libero
     excerpt: "Success rates may vary by a few percent across evaluation seeds, so we
       recommend averaging over 3 seeds."
-    source_sha256: 18e906f6eb576a3eb93d8bc905a0a80338f67f13ed2120f47b978bf0cd556c2d
+    source_sha256: c3feaa5c1ad0269a480a40f67bf33bbcff52b7dd9d14fdab89aabfddcc2914b7
 authored:
   by: agent:claude-author
   at: 2026-10-18T09:48:02Z
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-18T10:04:20Z
-  content_sha256: 0ec09c685867749b39456cd95348d7037df91fa71b117bb9ffe28028c983433e
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 050b874debae68bda5f453a382f71dbab2617d8beb9dd860a052f7adde06e6df

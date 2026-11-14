@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c8f1a5e3d964
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/observability-tracing
 stem: "By default, with no special configuration, what happens to the underlying
@@ -39,16 +39,16 @@ evidence:
   - source_id: src-pa-serverless-failure
     excerpt: "Serverless AI deletes the underlying virtual machine (VM) and boot
       disk to avoid costs."
-    source_sha256: 3d60391ecac64db39de0b79c22881f0611bc7a53ae94acc1072deca9a5ae48a1
+    source_sha256: 8ccd5e048b51da3ed31c871c81dc74e3e35c1a521f8ff847f087a56285c8bd8f
   - source_id: src-pa-serverless-failure
     excerpt: "To keep the VM alive for debugging, run the deployment with a
       \"sleep-on-fail\" wrapper."
-    source_sha256: 3d60391ecac64db39de0b79c22881f0611bc7a53ae94acc1072deca9a5ae48a1
+    source_sha256: 8ccd5e048b51da3ed31c871c81dc74e3e35c1a521f8ff847f087a56285c8bd8f
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: physical-ai
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 183b1e88cfa66e2648cdb6759a42822332bcb1effee2d126dcc8e5fb1bae90b6
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 909a1e1fd4f3fecb2307eb76794ee91319ba21634a299b870ebfe2d3f976a89e

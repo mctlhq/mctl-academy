@@ -2,17 +2,15 @@ schema_version: 1
 id: src-pa-serverless-overview
 url: https://docs.nebius.com/serverless/overview.md
 title: About Serverless AI
-retrieved_at: 2026-10-30T14:51:12Z
-sha256: 26ad526e01397e3e2e612bfd23837fde3c805bd3c1fc2b22279ef46a5c60d7ee
+retrieved_at: 2026-11-14T13:03:41Z
+sha256: b08e7ddb6f9d5aba59de97a7114e6c146f34425f641fac568447b3bf36d2328e
 objectives:
   - domain-1/gpu-orchestration
   - domain-3/inference-setup
 snapshot:
   bucket: academy-source-snapshots
-  key: 26ad526e01397e3e2e612bfd23837fde3c805bd3c1fc2b22279ef46a5c60d7ee
-status: drifted
-versions:
-  - a4523b810afd19b6d19e194bffd0b760f82452e372b628c739957cd832e689ab
+  key: b08e7ddb6f9d5aba59de97a7114e6c146f34425f641fac568447b3bf36d2328e
+status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-3/ie-serving-patterns
@@ -20,3 +18,6 @@ coverage:
     objective: domain-1/sa-training-stack
   - course_id: ai-solutions-architect
     objective: domain-1/sa-deployment-shape
+versions:
+  - a4523b810afd19b6d19e194bffd0b760f82452e372b628c739957cd832e689ab
+  - 26ad526e01397e3e2e612bfd23837fde3c805bd3c1fc2b22279ef46a5c60d7ee

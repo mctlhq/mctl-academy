@@ -3,20 +3,6 @@
   "reviewed_at": "2026-10-30T15:23:08Z",
   "questions": [
     {
-      "id": "q-0f3d9a7c2b56",
-      "content_sha256": "aa2fd40a62ad1b65fada0b78a16df29b2dc6a527a691f6988eda0ce41d2c8dc7",
-      "approved": true,
-      "reason": "The verbose query parameter schema reads \"type: boolean / default: false / title: Verbose\", so `false` is the documented default and no other option is defensible.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-2f9b53d8c164",
-      "content_sha256": "eb8c512e6a2394323f16b5468ee69d58800b0e13e856191e555d6fd128812a33",
-      "approved": true,
-      "reason": "\"SecretStash allows you to avoid hardcoding sensitive data, for example, in Terraform manifests or cloud-init scripts. As a result, you eliminate vulnerabilities and maintain compliance with security.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-4210b8e6c3a7",
       "content_sha256": "1339939fa86b4ab5271323be489785d601479ada0b6fafe97ecc6274129cc7ee",
       "approved": true,
@@ -31,38 +17,10 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-5d3b8a1f6c94",
-      "content_sha256": "cdfb1ebf3858e0d03cefb6c265a9d13d5bbf6327834bd3edac7c575f8c045db0",
-      "approved": true,
-      "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated ... for as long as the endpoint is active\" versus \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-5e8a2c91f06d",
-      "content_sha256": "a40d92b9b8a5ec64d37d78698cf64aed38024f92061ac615fc888196b88ec6b9",
-      "approved": true,
-      "reason": "RerankResult > relevance_score is \"Relevance score of the document\"; total_tokens belongs to RerankUsage and embedding/owned_by to other endpoints.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-6b9e2f4a17c3",
-      "content_sha256": "ce21005535f6b4c4bbfee226b9aa64ec54f89cce1081ae8b0df547225901a628",
-      "approved": true,
-      "reason": "All four excerpts are verbatim; \"Reranks documents based on their relevance to a query\" is the ranking step, while embeddings take \"Input text to embed\" and chat completions \"Create a model response for the given chat conversation.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-6e2f4c9a1d78",
       "content_sha256": "6e90179dd504968b4f8198e475b9396a4d7e2a4e15bd6d1cc7015fc699cc9a21",
       "approved": true,
       "reason": "\"If you share a capacity block group between a Soperator cluster and an inference node group, you can move GPU capacity between them without stopping the entire Soperator cluster\" — and the same steps apply to separate clusters, which rules out option a.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-7b2d9f4a1c63",
-      "content_sha256": "38caeb9aaa35eae8f9feb96c16d9e6a9f5d6348fd84c3ec003bd6ce79eb8fe95",
-      "approved": true,
-      "reason": "EmbeddingRequest lists \"required: - model - input\"; encoding_format defaults to float and dimensions is optional/nullable in the same schema.",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -87,31 +45,10 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-9d1f7a4c3e68",
-      "content_sha256": "4b815a3688bd6931a23dca1ceef93c22ab4c07b26ef4f5c127867f22b14880c3",
-      "approved": true,
-      "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\"; the SLA section (\"do not include a formal SLA unless covered by contract\") rules out option d.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-9d47f02ce5a1",
       "content_sha256": "ca6084350f1c7b38b4c335bdc915bd84c783df7362b0bc416e83e8ab5d8694dd",
       "approved": true,
       "reason": "\"Min replicas are guaranteed while active. If you stop the endpoint the reservation will be freed up\", alongside \"Minimum replicas are always allocated while the endpoint is active.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-a3d7f2c9e618",
-      "content_sha256": "9f7ef7bbed8101e513c5287d6f2bbf92159ade6f1bc1c97f197418fea69dbd1f",
-      "approved": true,
-      "reason": "\"User and service accounts of different regions cannot access the secret\" — stated separately from the permissions condition, so option b is wrong.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-a6f3d8c1e975",
-      "content_sha256": "1eff662e2dabfe46575415b81178485dab6a79f540622b944c2fab2bcc79a880",
-      "approved": true,
-      "reason": "\"`sentry`: Continuous recording with auto-upload (useful for large-scale evaluation)\", against base (no recording), highlight (ring buffer) and dagger (human-in-the-loop).",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -122,66 +59,10 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-a94f1d2b7c3e",
-      "content_sha256": "8548529e71d3022ca8380351a0e607293c9b3d3c467d127f2e2706bffbf48844",
-      "approved": true,
-      "reason": "EmbeddingRequest > dimensions: \"The dimensions to use for the request\" (examples 4096, 8192), while encoding_format only chooses float or base64.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-b2e6a4f9c175",
       "content_sha256": "be2aa67d523f920c9edd22d90f439aeef58037cf15460a428eaada06a81e126d",
       "approved": true,
       "reason": "\"Nebius Tunnels secures the transport between the tunnel agent and Nebius edge, but it doesn't add user authentication or authorization to your application.\" The other options name documented benefits of tunnels.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-b4de81f9a062",
-      "content_sha256": "d1647f016792def8a189c8d6dc1ac2c7e529dd41604ad69fa4cf7da185d0f744",
-      "approved": true,
-      "reason": "\"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", including \"stopped for scheduled or emergency maintenance\".",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-b58e3f9a2c71",
-      "content_sha256": "c4d40c4606a7af7c58036b4e4461b6c1d59ad502e5266159f2fdefacaf647eba",
-      "approved": true,
-      "reason": "\"This fingerprint represents the backend configuration that the model runs with. Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-c56f1a9d4e82",
-      "content_sha256": "323dbfe9d00f490fad828651646c54ec7d4828e702c275d0af8744be12c9929a",
-      "approved": true,
-      "reason": "RerankRequest lists \"required: - model - query - documents\"; user and service_tier are optional in the same schema.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-cc01a1b2c3d4",
-      "content_sha256": "cafebd466795a830b3144fa29db2c4de04bb77513efaf14ba60a6f9084f9712f",
-      "approved": true,
-      "reason": "\"Tokens will be sent as data-only server-sent events ... as they become available, with the stream terminated by a `data: [DONE]` message.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-cc02b2c3d4e5",
-      "content_sha256": "351e5ace96030a12c09f8c50374393d6c226a737cf6698edd79eb3a364413d13",
-      "approved": true,
-      "reason": "\"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\"; option d over-claims byte-identical output, so b is uniquely best.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co356433d8e1",
-      "content_sha256": "4441621fb26b58c60a71f923f295c9f09f46099f90851ba11a3294fbf3fe2c74",
-      "approved": true,
-      "reason": "\"`compute.instance-power-operator`: perform power operations on virtual machines without broader Compute permissions\"; serial-console-user covers interactive troubleshooting instead.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co36b9e8169f",
-      "content_sha256": "73d984f82e3a6bcc4202e03dc6cbb76526af2cb5c3f69107d774b5c485a3f61b",
-      "approved": true,
-      "reason": "\"`storage.uploader`: view buckets, upload objects but not list or download them\", against object-viewer (download) and object-lister (list).",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -199,31 +80,10 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-co45cdfe9d9a",
-      "content_sha256": "06bf4cb945ecf64419ff056c101538c00bda4faefb9a613bd35def1c83e26afb",
-      "approved": true,
-      "reason": "Alert conditions include \"**Duration**: Time during which the condition is met\", which is what suppresses momentary spikes; Threshold and Condition do something else.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-co46427e70ca",
       "content_sha256": "ff1b08f06c16de237c6591fe3c7eb863ca52d38ee6b7cd7a0f497d3eebb5151e",
       "approved": true,
       "reason": "\"If you have admin rights, you can see all contacts from your tenant in this list. If you don't have admin rights, you can see only your own contacts.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co47ac4ebcf8",
-      "content_sha256": "1b211166152f3b9473f080034fee5eec9cdd163131b93d10bc95666514db46ed",
-      "approved": true,
-      "reason": "\"If the condition remains in the `False` status for more than five minutes, or if the condition remains in the `Unknown` status for more than 15 minutes, the service runs an automatic recovery.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co48348207ce",
-      "content_sha256": "fdd0afeff88e565494d12d00cffa1ec676ba67a13011fdba1f02126c1aaa1395",
-      "approved": true,
-      "reason": "For a Network SSD NRD boot disk with persistent I/O errors, \"the service runs an automatic recovery: it deletes the node and then creates a new one with a different name and healthy boot disk.\"",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -234,24 +94,10 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-co51437baad6",
-      "content_sha256": "31f26b34932e83be6333c519069db5c640b6a2c3f17581f76c79e5bc56c63d2d",
-      "approved": true,
-      "reason": "\"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-co524dc191c3",
       "content_sha256": "6c81e83550f703d7e61858e0b286a760331e2e8d9a250c872e6658fe80be7c59",
       "approved": true,
       "reason": "\"Compute has different quotas for GPU and non-GPU virtual machines.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co564ab8cfb2",
-      "content_sha256": "1daccd9d39bad3b2edb2d1a2ecec9be59dcc00e46038e5c4513513d7e8b12498",
-      "approved": true,
-      "reason": "\"We strongly recommend collecting logs while the issue is still occurring, because they capture more information about the broken state than logs collected after the issue has been resolved.\"",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -290,27 +136,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-d49a1e7f3c82",
-      "content_sha256": "b05db0c5689b820aefcc127e9b8041ae8198990ee327b8c9c34cbd31f3815cec",
-      "approved": true,
-      "reason": "max_tokens: \"If omitted or set to null, defaults to 8192 tokens\"; 100 appears only as the example value.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-d4f8a2c6e193",
-      "content_sha256": "9ea9c274a2a724fe16da67162c1fec7f469db640c0e78437ce546722c89abe5a",
-      "approved": true,
-      "reason": "\"Run a task to completion: Train or fine-tune a model, preprocess data, run batch inference or evaluation → **Job**\", and the table says a Job is \"Non-interactive, terminates upon task completion or timeout.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-de04e5f6a7b8",
-      "content_sha256": "7bd8eee5ab435c015d325bf7a8efcda332174a39bc769d18d1f91570c13715c0",
-      "approved": true,
-      "reason": "\"requests that exceed your rate limit may still be processed. This occurs when the system has spare capacity available\", and such responses include `x-ratelimit-over-limit: yes`.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-de06a7b8c9d0",
       "content_sha256": "6e157d23c8f16d24bae9e3ed68c7014e73017764c58d9c173141d41560ecc27d",
       "approved": false,
@@ -322,13 +147,6 @@
       "content_sha256": "f4086ff692d119cd86f6f538f78125b396103801ac0210d4b50362bd703f4d7c",
       "approved": true,
       "reason": "Ready: \"Endpoint is fully provisioned and ready for expected traffic\"; Running and Starting are lifecycle, not readiness, statuses.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-de09d0e1f2a3",
-      "content_sha256": "3cee6648a0ca1fe749ee1f2ad9e4fcc61d5d1b7b80eddd30e4b8510a28bbe4df",
-      "approved": true,
-      "reason": "\"If you exceed the active limit you will receive **HTTP 429**.\"",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -367,13 +185,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-e2a9c7f4b816",
-      "content_sha256": "7e49e768ae1493264204758d1757bcdd289fdaa9e2a78ee06dac9d19e028d6b9",
-      "approved": true,
-      "reason": "\"By default, PEFT will target the `q_proj` and `v_proj` layers of the LM expert in SmolVLA\", with different layers requiring `--peft.target_modules`.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-el01a0b1c2d3",
       "content_sha256": "29ccb7fa1336bd47ba4283b86abeaaa8f917c527ae5efc9848780e005aa6805d",
       "approved": true,
@@ -392,13 +203,6 @@
       "content_sha256": "74057c3b7ba75ff1d88f0fc6597791a48e1b53edf737585a4896b14b160e7d55",
       "approved": true,
       "reason": "\"Lifecycle is deployment state. Readiness is traffic-serving capability\" supports option c; nothing on the page makes any distractor defensible.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-er01c3d4e5f6",
-      "content_sha256": "097ed0ead4183fdcc49b8c932b2cdca68aed135d311c3f657c4f1629fe08b1b6",
-      "approved": true,
-      "reason": "RerankResult carries \"index: Index of the document\" and \"relevance_score ... Relevance score of the document\", not vectors or generated text.",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -451,20 +255,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-ld28389db1f6",
-      "content_sha256": "ec249d86c0b9d33a6c09836b7f5bb45022c0d9931839a417ce090edd45f86e84",
-      "approved": true,
-      "reason": "\"Unless you override it via the `context_length` hyperparameter, the default context length for fine-tuning is **8192 tokens**.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-ld295930cb94",
-      "content_sha256": "fcd076fb3943114109f99e63db6e14550d84459693f2268f6e1aedeaca134ed8",
-      "approved": true,
-      "reason": "The page states it lists \"Which **context lengths** they support\" and \"Which **fine-tuning types** are available (LoRA vs full fine-tuning)\".",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-ld303f1c1fce",
       "content_sha256": "f57aab42e6b1d71cc3d991363f9ad65b3c1ec17cb81ad64933e8e3a8db50d920",
       "approved": true,
@@ -507,20 +297,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-ld537a96b931",
-      "content_sha256": "40236fa40baa5323eb992ddaba2d1b9689ced0661227f3c95586f809ae5da361",
-      "approved": true,
-      "reason": "\"When an endpoint stops, its GPU capacity is released back to the shared pool\", and on restart \"capacity is requested from the pool anew and allocated based on availability at that moment.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-ld549f772575",
-      "content_sha256": "7e02c4061539a1e07e5b0928aa08169760181301c11f662e4536e0de7a86d005",
-      "approved": true,
-      "reason": "\"During periods of high demand, or for scarce GPU types, restarting may take significantly longer than the initial deployment, and capacity may be temporarily unavailable.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-ld55363f7872",
       "content_sha256": "39c1efb6b45c1a8e1de23d02b5a338f2f098a594323adfea619a20b432cdb219",
       "approved": true,
@@ -535,27 +311,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-ob01d8e9f0a1",
-      "content_sha256": "aac32ada97676e5ca06eba5fd8eec5a163ecda8de21297598bdaa9ea8dd4b046",
-      "approved": true,
-      "reason": "\"you can track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-ob02a9b0c1d2",
-      "content_sha256": "3eac5bed83d05574a6ef1e79cf5301cee829cc5d9fca2c7c8e0135b28f65c276",
-      "approved": true,
-      "reason": "The Usage schema defines completion_tokens, prompt_tokens and total_tokens (\"prompt + completion\"); the distractors are hardware and transport metrics absent from the schema.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-pf06a4b5c6d7",
-      "content_sha256": "3a363c1c300cbbd55efe63a53c08d673db0e87ad93ec194deacbdca58cabc2db",
-      "approved": true,
-      "reason": "\"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and `context_length` is a RichModel field.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-pf07b5c6d7e8",
       "content_sha256": "3964454245f2ac3f35665a36a7e7f9bfa2c567dcc003e833e6576b96a43ec4ce",
       "approved": true,
@@ -567,41 +322,6 @@
       "content_sha256": "79aca81592fb936616e2ad041e288fecaaec7ea41bfe20c1f37b106a32230a35",
       "approved": true,
       "reason": "\"you will not be able to select them in the Playground or send API requests using their model IDs\" and \"Token Factory does not automatically reroute requests from deprecated models\"; dedicated endpoints are unaffected.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-pf11f0a1b2c3",
-      "content_sha256": "b87b22f37dd13a1063204c8b9710008c48884eb103f15a58a49a3b7cf1776143",
-      "approved": true,
-      "reason": "Temperature: \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-rl01d7e8f9a0",
-      "content_sha256": "269b5a29156ac02e08b0269ca085cb68504ccb4a85b3cdd3a010eeb7208ccb6f",
-      "approved": true,
-      "reason": "\"Every user is provided with a default rate limit cap. This limit grows automatically when you consistently operate close to your capacity and current limit.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-rl02e8f9a0b1",
-      "content_sha256": "086e40f6c16790de9c3dc0d3a40cdf148a167bbc27183f80a104d6cc22246fb9",
-      "approved": true,
-      "reason": "\"you can track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-rl03f9a0b1c2",
-      "content_sha256": "a561bbcda2da82617131c2a10a64b03eb07a8af87facecf3f43e7ef8d801ecd3",
-      "approved": true,
-      "reason": "Over-the-limit processing \"occurs when the system has spare capacity available, and your request can be handled with a lower priority without affecting other users.\"",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-rl04b6c7d8e9",
-      "content_sha256": "dd781482117f95426a8550b21cc50ad478a902234350c0ca509c92543008e1d2",
-      "approved": true,
-      "reason": "\"This limit grows automatically when you consistently operate close to your capacity and current limit\", with no support ticket involved.",
       "reviewed_at": "2026-10-30T15:23:08Z"
     }
   ],
@@ -1461,6 +1181,326 @@
       "reason": "\"Use **JSON schema instead of JSON objects** whenever you need **strict JSON structure**\", while json_object \"Forces arbitrary JSON output, the model will decide on the schema by itself.\"",
       "reviewed_at": "2026-10-30T15:23:08Z",
       "superseded_at": "2026-10-31T01:59:27Z"
+    },
+    {
+      "id": "q-0f3d9a7c2b56",
+      "content_sha256": "aa2fd40a62ad1b65fada0b78a16df29b2dc6a527a691f6988eda0ce41d2c8dc7",
+      "approved": true,
+      "reason": "The verbose query parameter schema reads \"type: boolean / default: false / title: Verbose\", so `false` is the documented default and no other option is defensible.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-2f9b53d8c164",
+      "content_sha256": "eb8c512e6a2394323f16b5468ee69d58800b0e13e856191e555d6fd128812a33",
+      "approved": true,
+      "reason": "\"SecretStash allows you to avoid hardcoding sensitive data, for example, in Terraform manifests or cloud-init scripts. As a result, you eliminate vulnerabilities and maintain compliance with security.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5d3b8a1f6c94",
+      "content_sha256": "cdfb1ebf3858e0d03cefb6c265a9d13d5bbf6327834bd3edac7c575f8c045db0",
+      "approved": true,
+      "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated ... for as long as the endpoint is active\" versus \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5e8a2c91f06d",
+      "content_sha256": "a40d92b9b8a5ec64d37d78698cf64aed38024f92061ac615fc888196b88ec6b9",
+      "approved": true,
+      "reason": "RerankResult > relevance_score is \"Relevance score of the document\"; total_tokens belongs to RerankUsage and embedding/owned_by to other endpoints.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "ce21005535f6b4c4bbfee226b9aa64ec54f89cce1081ae8b0df547225901a628",
+      "approved": true,
+      "reason": "All four excerpts are verbatim; \"Reranks documents based on their relevance to a query\" is the ranking step, while embeddings take \"Input text to embed\" and chat completions \"Create a model response for the given chat conversation.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "38caeb9aaa35eae8f9feb96c16d9e6a9f5d6348fd84c3ec003bd6ce79eb8fe95",
+      "approved": true,
+      "reason": "EmbeddingRequest lists \"required: - model - input\"; encoding_format defaults to float and dimensions is optional/nullable in the same schema.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9d1f7a4c3e68",
+      "content_sha256": "4b815a3688bd6931a23dca1ceef93c22ab4c07b26ef4f5c127867f22b14880c3",
+      "approved": true,
+      "reason": "\"Minimum replicas are reserved and non-preemptible and remain allocated to your deployment for as long as the endpoint is active\"; the SLA section (\"do not include a formal SLA unless covered by contract\") rules out option d.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a3d7f2c9e618",
+      "content_sha256": "9f7ef7bbed8101e513c5287d6f2bbf92159ade6f1bc1c97f197418fea69dbd1f",
+      "approved": true,
+      "reason": "\"User and service accounts of different regions cannot access the secret\" — stated separately from the permissions condition, so option b is wrong.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a6f3d8c1e975",
+      "content_sha256": "1eff662e2dabfe46575415b81178485dab6a79f540622b944c2fab2bcc79a880",
+      "approved": true,
+      "reason": "\"`sentry`: Continuous recording with auto-upload (useful for large-scale evaluation)\", against base (no recording), highlight (ring buffer) and dagger (human-in-the-loop).",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a94f1d2b7c3e",
+      "content_sha256": "8548529e71d3022ca8380351a0e607293c9b3d3c467d127f2e2706bffbf48844",
+      "approved": true,
+      "reason": "EmbeddingRequest > dimensions: \"The dimensions to use for the request\" (examples 4096, 8192), while encoding_format only chooses float or base64.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b4de81f9a062",
+      "content_sha256": "d1647f016792def8a189c8d6dc1ac2c7e529dd41604ad69fa4cf7da185d0f744",
+      "approved": true,
+      "reason": "\"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", including \"stopped for scheduled or emergency maintenance\".",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b58e3f9a2c71",
+      "content_sha256": "c4d40c4606a7af7c58036b4e4461b6c1d59ad502e5266159f2fdefacaf647eba",
+      "approved": true,
+      "reason": "\"This fingerprint represents the backend configuration that the model runs with. Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "323dbfe9d00f490fad828651646c54ec7d4828e702c275d0af8744be12c9929a",
+      "approved": true,
+      "reason": "RerankRequest lists \"required: - model - query - documents\"; user and service_tier are optional in the same schema.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "cafebd466795a830b3144fa29db2c4de04bb77513efaf14ba60a6f9084f9712f",
+      "approved": true,
+      "reason": "\"Tokens will be sent as data-only server-sent events ... as they become available, with the stream terminated by a `data: [DONE]` message.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "351e5ace96030a12c09f8c50374393d6c226a737cf6698edd79eb3a364413d13",
+      "approved": true,
+      "reason": "\"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\"; option d over-claims byte-identical output, so b is uniquely best.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co356433d8e1",
+      "content_sha256": "4441621fb26b58c60a71f923f295c9f09f46099f90851ba11a3294fbf3fe2c74",
+      "approved": true,
+      "reason": "\"`compute.instance-power-operator`: perform power operations on virtual machines without broader Compute permissions\"; serial-console-user covers interactive troubleshooting instead.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co36b9e8169f",
+      "content_sha256": "73d984f82e3a6bcc4202e03dc6cbb76526af2cb5c3f69107d774b5c485a3f61b",
+      "approved": true,
+      "reason": "\"`storage.uploader`: view buckets, upload objects but not list or download them\", against object-viewer (download) and object-lister (list).",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co45cdfe9d9a",
+      "content_sha256": "06bf4cb945ecf64419ff056c101538c00bda4faefb9a613bd35def1c83e26afb",
+      "approved": true,
+      "reason": "Alert conditions include \"**Duration**: Time during which the condition is met\", which is what suppresses momentary spikes; Threshold and Condition do something else.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co47ac4ebcf8",
+      "content_sha256": "1b211166152f3b9473f080034fee5eec9cdd163131b93d10bc95666514db46ed",
+      "approved": true,
+      "reason": "\"If the condition remains in the `False` status for more than five minutes, or if the condition remains in the `Unknown` status for more than 15 minutes, the service runs an automatic recovery.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co48348207ce",
+      "content_sha256": "fdd0afeff88e565494d12d00cffa1ec676ba67a13011fdba1f02126c1aaa1395",
+      "approved": true,
+      "reason": "For a Network SSD NRD boot disk with persistent I/O errors, \"the service runs an automatic recovery: it deletes the node and then creates a new one with a different name and healthy boot disk.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "31f26b34932e83be6333c519069db5c640b6a2c3f17581f76c79e5bc56c63d2d",
+      "approved": true,
+      "reason": "\"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co564ab8cfb2",
+      "content_sha256": "1daccd9d39bad3b2edb2d1a2ecec9be59dcc00e46038e5c4513513d7e8b12498",
+      "approved": true,
+      "reason": "\"We strongly recommend collecting logs while the issue is still occurring, because they capture more information about the broken state than logs collected after the issue has been resolved.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d49a1e7f3c82",
+      "content_sha256": "b05db0c5689b820aefcc127e9b8041ae8198990ee327b8c9c34cbd31f3815cec",
+      "approved": true,
+      "reason": "max_tokens: \"If omitted or set to null, defaults to 8192 tokens\"; 100 appears only as the example value.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d4f8a2c6e193",
+      "content_sha256": "9ea9c274a2a724fe16da67162c1fec7f469db640c0e78437ce546722c89abe5a",
+      "approved": true,
+      "reason": "\"Run a task to completion: Train or fine-tune a model, preprocess data, run batch inference or evaluation → **Job**\", and the table says a Job is \"Non-interactive, terminates upon task completion or timeout.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de04e5f6a7b8",
+      "content_sha256": "7bd8eee5ab435c015d325bf7a8efcda332174a39bc769d18d1f91570c13715c0",
+      "approved": true,
+      "reason": "\"requests that exceed your rate limit may still be processed. This occurs when the system has spare capacity available\", and such responses include `x-ratelimit-over-limit: yes`.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de09d0e1f2a3",
+      "content_sha256": "3cee6648a0ca1fe749ee1f2ad9e4fcc61d5d1b7b80eddd30e4b8510a28bbe4df",
+      "approved": true,
+      "reason": "\"If you exceed the active limit you will receive **HTTP 429**.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e2a9c7f4b816",
+      "content_sha256": "7e49e768ae1493264204758d1757bcdd289fdaa9e2a78ee06dac9d19e028d6b9",
+      "approved": true,
+      "reason": "\"By default, PEFT will target the `q_proj` and `v_proj` layers of the LM expert in SmolVLA\", with different layers requiring `--peft.target_modules`.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "097ed0ead4183fdcc49b8c932b2cdca68aed135d311c3f657c4f1629fe08b1b6",
+      "approved": true,
+      "reason": "RerankResult carries \"index: Index of the document\" and \"relevance_score ... Relevance score of the document\", not vectors or generated text.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld28389db1f6",
+      "content_sha256": "ec249d86c0b9d33a6c09836b7f5bb45022c0d9931839a417ce090edd45f86e84",
+      "approved": true,
+      "reason": "\"Unless you override it via the `context_length` hyperparameter, the default context length for fine-tuning is **8192 tokens**.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld295930cb94",
+      "content_sha256": "fcd076fb3943114109f99e63db6e14550d84459693f2268f6e1aedeaca134ed8",
+      "approved": true,
+      "reason": "The page states it lists \"Which **context lengths** they support\" and \"Which **fine-tuning types** are available (LoRA vs full fine-tuning)\".",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld537a96b931",
+      "content_sha256": "40236fa40baa5323eb992ddaba2d1b9689ced0661227f3c95586f809ae5da361",
+      "approved": true,
+      "reason": "\"When an endpoint stops, its GPU capacity is released back to the shared pool\", and on restart \"capacity is requested from the pool anew and allocated based on availability at that moment.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ld549f772575",
+      "content_sha256": "7e02c4061539a1e07e5b0928aa08169760181301c11f662e4536e0de7a86d005",
+      "approved": true,
+      "reason": "\"During periods of high demand, or for scarce GPU types, restarting may take significantly longer than the initial deployment, and capacity may be temporarily unavailable.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ob01d8e9f0a1",
+      "content_sha256": "aac32ada97676e5ca06eba5fd8eec5a163ecda8de21297598bdaa9ea8dd4b046",
+      "approved": true,
+      "reason": "\"you can track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "3eac5bed83d05574a6ef1e79cf5301cee829cc5d9fca2c7c8e0135b28f65c276",
+      "approved": true,
+      "reason": "The Usage schema defines completion_tokens, prompt_tokens and total_tokens (\"prompt + completion\"); the distractors are hardware and transport metrics absent from the schema.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "3a363c1c300cbbd55efe63a53c08d673db0e87ad93ec194deacbdca58cabc2db",
+      "approved": true,
+      "reason": "\"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and `context_length` is a RichModel field.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "b87b22f37dd13a1063204c8b9710008c48884eb103f15a58a49a3b7cf1776143",
+      "approved": true,
+      "reason": "Temperature: \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl01d7e8f9a0",
+      "content_sha256": "269b5a29156ac02e08b0269ca085cb68504ccb4a85b3cdd3a010eeb7208ccb6f",
+      "approved": true,
+      "reason": "\"Every user is provided with a default rate limit cap. This limit grows automatically when you consistently operate close to your capacity and current limit.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl02e8f9a0b1",
+      "content_sha256": "086e40f6c16790de9c3dc0d3a40cdf148a167bbc27183f80a104d6cc22246fb9",
+      "approved": true,
+      "reason": "\"you can track your consumption against your limits using the `x-ratelimit-remaining-requests` and `x-ratelimit-remaining-tokens` response headers.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl03f9a0b1c2",
+      "content_sha256": "a561bbcda2da82617131c2a10a64b03eb07a8af87facecf3f43e7ef8d801ecd3",
+      "approved": true,
+      "reason": "Over-the-limit processing \"occurs when the system has spare capacity available, and your request can be handled with a lower priority without affecting other users.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-rl04b6c7d8e9",
+      "content_sha256": "dd781482117f95426a8550b21cc50ad478a902234350c0ca509c92543008e1d2",
+      "approved": true,
+      "reason": "\"This limit grows automatically when you consistently operate close to your capacity and current limit\", with no support ticket involved.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
     }
   ]
 }

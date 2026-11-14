@@ -2,18 +2,19 @@ schema_version: 1
 id: src-pa-mysterybox-overview
 url: https://docs.nebius.com/mysterybox/overview.md
 title: MysteryBox overview
-retrieved_at: 2026-10-30T14:51:03Z
-sha256: 08fbcb3e297b0c0a10e128552e79ac08f84585e0934b5df57aacb84b6bfaa80b
+retrieved_at: 2026-11-14T13:03:36Z
+sha256: d88906b022b8437baf42f3c9177b75ac14a8e788500b4d6aa13651841f791f5e
 objectives:
   - domain-4/workflow-security
 snapshot:
   bucket: academy-source-snapshots
-  key: 08fbcb3e297b0c0a10e128552e79ac08f84585e0934b5df57aacb84b6bfaa80b
-status: drifted
-versions:
-  - 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31
+  key: d88906b022b8437baf42f3c9177b75ac14a8e788500b4d6aa13651841f791f5e
+status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-1/ie-encryption-secrets
   - course_id: ai-solutions-architect
     objective: domain-4/sa-secrets-audit-compliance
+versions:
+  - 7dc463261a454bcbb4b0abf6a52f436be8608122e6c02c353c93cd6b37017f31
+  - 08fbcb3e297b0c0a10e128552e79ac08f84585e0934b5df57aacb84b6bfaa80b

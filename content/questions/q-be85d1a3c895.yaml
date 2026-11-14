@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-be85d1a3c895
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/endpoint-selection
 stem: "A team needs a single finished answer with citations synthesized from
@@ -31,12 +31,12 @@ evidence:
     excerpt: "Use Search when you need raw source URLs and content to process
       yourself. Use Research when you need a finished, multi-source answer with
       citations."
-    source_sha256: 88a2893e1450d0acef3c15f3dcd36f7a0afe582ccae127a9cebe82435d677262
+    source_sha256: 35aed151e4822769229d83af2c7db4890885fe8dceaaa5bf09485b9612dc47d5
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 9a21f0261c87838daa9f1cf1a46c2b7c8869b1608c3dae36a96c70fb1c9549e2
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 074562b516c015309b1390adbe935105d2427c677c8349fe6b55e7b234b09b16

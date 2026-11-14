@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7b2d9f4a1c63
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: According to the Embeddings API reference, which fields are required in a
@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-recovery-embedding
     excerpt: "required: - model - input"
-    source_sha256: 529975e2eb326e25366243ed5592eb0f47667ebbb954f385d698b0a10f886a28
+    source_sha256: 8cbd3a624c85eba4067d7af34628986fff741d106f062138c438720c21402ff5
 authored:
   by: agent:claude-author
   at: 2026-10-08T13:55:04Z
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 38caeb9aaa35eae8f9feb96c16d9e6a9f5d6348fd84c3ec003bd6ce79eb8fe95
+  at: 2026-11-14T13:21:41Z
+  content_sha256: ec3dcd33f374f228605a467b9849124752d873949d97ef59bb874bfb4e6542ca

@@ -2,18 +2,19 @@ schema_version: 1
 id: src-ld-capacity-and-scaling
 url: https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md
 title: Capacity, availability, and service guarantees
-retrieved_at: 2026-10-30T14:50:56Z
-sha256: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
+retrieved_at: 2026-11-14T13:03:22Z
+sha256: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
 objectives:
   - domain-4/platform-capabilities
 snapshot:
   bucket: academy-source-snapshots
-  key: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
-status: drifted
-versions:
-  - bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+  key: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
+status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-3/ie-inference-slo-tuning
   - course_id: ai-solutions-architect
     objective: domain-2/sa-failure-support-model
+versions:
+  - bd5d45f48c4d29eedbd7f42ed900db6b1725b17d8a3dfbb4f2a3b3c47b506ded
+  - e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7

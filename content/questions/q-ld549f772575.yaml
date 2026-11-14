@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ld549f772575
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/platform-capabilities
 stem: A business continuity plan assumes a dedicated endpoint will return to
@@ -30,12 +30,12 @@ evidence:
   - source_id: src-ld-capacity-and-scaling
     excerpt: restarting may take significantly longer than the initial deployment,
       and capacity may be temporarily unavailable
-    source_sha256: e3af4a757d380dff02de5f53df566585c11b882db63988607f5cf6016f9979b7
+    source_sha256: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-leader
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: 7e02c4061539a1e07e5b0928aa08169760181301c11f662e4536e0de7a86d005
+  at: 2026-11-14T13:21:41Z
+  content_sha256: a2f0e396bb4d288c351e8f5034e0e69ad6cea24b90ac6ee1c18fb13698917a17

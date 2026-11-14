@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c9a3f62d18b5
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/search-parameters
 stem: "An agent sets `include_domains_mode=prefer` on a Search request but does
@@ -32,12 +32,12 @@ options:
 evidence:
   - source_id: src-tv-api-search
     excerpt: "Setting it without `include_domains` returns a 400 error."
-    source_sha256: 40d45552c8f34a788824e6ea5e785253cc4879d7070c88834115122d37bafd96
+    source_sha256: 2541b8dc55c062fdb57aacb6c0d1f5da53750234d3572c12c2b872e3547e97dd
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T08:41:51Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T08:55:13Z
-  content_sha256: 4aada4191f8e1dab620ed99f31675badcefef306964e82e5ab548b277b406f6c
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 86b52eb4f520dd93df83e13910e2ce092cac19fcdf654a448c1ca47c50d59774

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-ad74c0f2b784
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/mcp-integration
 stem: "An agent connects to Tavily through the remote MCP server in Claude Code
@@ -34,12 +34,12 @@ evidence:
   - source_id: src-tv-mcp
     excerpt: "No API key needed in the URL — authentication is handled automatically
       via OAuth."
-    source_sha256: b001ca6c15cc540e002419e0c8e4fdb15861113cd620f66ee2b6777c55b5f034
+    source_sha256: e170ba97d034954baf0a27087ea7e55d29589d653c03c0987fb0349466a78439
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T01:33:39Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: a3d5ff783044edf604d9c0ea03f1f2350a6d2df4b74ac0f01f63a5353628540b
+  at: 2026-11-14T13:21:41Z
+  content_sha256: 92c54b8fc7e714e44da4083e1ba693316a96476e1f514fdee2d26ef24e98ac0c

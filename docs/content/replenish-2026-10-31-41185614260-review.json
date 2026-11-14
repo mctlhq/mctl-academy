@@ -17,31 +17,10 @@
       "reviewed_at": "2026-10-31T08:55:12Z"
     },
     {
-      "id": "q-c6a4f1d93b72",
-      "content_sha256": "8635c18c8da01087fa9177a1a04d5602a9e2ad6be1a62718b704952df44de12b",
-      "approved": true,
-      "reason": "The Rate Limits page's Flex Tier Capacity section scopes exactly to the stem's scenario — \"On non-paying plans, search requests that set `max_age_hours` are served under a flex tier. While Tavily is under heavy load, these requests are refused with `434 Flex tier capacity exceeded`. Retry shortly, or omit `max_age_hours` to be served from cache.\" The 429/432/433 distractors are documented on the same page or reference for different conditions (rate limit exceeded, plan limit, PayGo limit).",
-      "reviewed_at": "2026-10-31T08:55:12Z"
-    },
-    {
-      "id": "q-c9a3f62d18b5",
-      "content_sha256": "4aada4191f8e1dab620ed99f31675badcefef306964e82e5ab548b277b406f6c",
-      "approved": true,
-      "reason": "The Search reference's include_domains_mode description ends \"Setting it without `include_domains` returns a 400 error.\", which answers the stem's scenario directly. Options b, c and d restate other true sentences from that same description but describe behaviour when include_domains is supplied, so none of them answers what happens when it is omitted.",
-      "reviewed_at": "2026-10-31T08:55:12Z"
-    },
-    {
       "id": "q-d2f9b4c6a187",
       "content_sha256": "047dad3646ed9171ea69cb265a54951586ee8dd488736fc738556f7ae19aaa61",
       "approved": true,
       "reason": "The Map reference describes select_paths as \"Regex patterns to select only URLs with specific path patterns (e.g., `/docs/.*`, `/api/v1.*`).\" — path selection without domain restriction, exactly the stem's requirement. The same page confines select_domains to domains/subdomains, exclude_paths to exclusion, and max_depth to distance from the base URL.",
-      "reviewed_at": "2026-10-31T08:55:12Z"
-    },
-    {
-      "id": "q-e4a7c982f1b3",
-      "content_sha256": "c96967b50ff2023d361723ba4470bdae11eb2cf16f417952e3f4770f4884c3b4",
-      "approved": true,
-      "reason": "The Search reference defines results[].score verbatim as \"The relevance score of the search result.\" The three distractors map to other documented fields on the same page (usage.credits, response_time, published_date), so exactly one option is best.",
       "reviewed_at": "2026-10-31T08:55:12Z"
     },
     {
@@ -57,6 +36,32 @@
       "approved": true,
       "reason": "The Headers & Authentication example request sends \"Authorization: Bearer tvly-YOUR_API_KEY\" verbatim, supporting option a. The page assigns X-Project-ID to project attribution and X-Session-Id/X-Human-Id to session and end-user identification, none of which carries the key.",
       "reviewed_at": "2026-10-31T08:55:12Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-c6a4f1d93b72",
+      "content_sha256": "8635c18c8da01087fa9177a1a04d5602a9e2ad6be1a62718b704952df44de12b",
+      "approved": true,
+      "reason": "The Rate Limits page's Flex Tier Capacity section scopes exactly to the stem's scenario — \"On non-paying plans, search requests that set `max_age_hours` are served under a flex tier. While Tavily is under heavy load, these requests are refused with `434 Flex tier capacity exceeded`. Retry shortly, or omit `max_age_hours` to be served from cache.\" The 429/432/433 distractors are documented on the same page or reference for different conditions (rate limit exceeded, plan limit, PayGo limit).",
+      "reviewed_at": "2026-10-31T08:55:12Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c9a3f62d18b5",
+      "content_sha256": "4aada4191f8e1dab620ed99f31675badcefef306964e82e5ab548b277b406f6c",
+      "approved": true,
+      "reason": "The Search reference's include_domains_mode description ends \"Setting it without `include_domains` returns a 400 error.\", which answers the stem's scenario directly. Options b, c and d restate other true sentences from that same description but describe behaviour when include_domains is supplied, so none of them answers what happens when it is omitted.",
+      "reviewed_at": "2026-10-31T08:55:12Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e4a7c982f1b3",
+      "content_sha256": "c96967b50ff2023d361723ba4470bdae11eb2cf16f417952e3f4770f4884c3b4",
+      "approved": true,
+      "reason": "The Search reference defines results[].score verbatim as \"The relevance score of the search result.\" The three distractors map to other documented fields on the same page (usage.credits, response_time, published_date), so exactly one option is best.",
+      "reviewed_at": "2026-10-31T08:55:12Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
     }
   ]
 }

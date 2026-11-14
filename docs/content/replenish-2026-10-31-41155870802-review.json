@@ -66,34 +66,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-82e5d1c4930b",
-      "content_sha256": "411d98547c608d81b666bc64b00bad5b0fcb3fb6c47784241754c0d5eafd9162",
-      "approved": true,
-      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\"; the other options name unrelated Nebius services.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-8f1a3d6e9c52",
-      "content_sha256": "dbfb872dda2df129eefcc76e174c9ad0fc2b930fb5108652fe209efbd6c4d846",
-      "approved": true,
-      "reason": "\"This bucket is not deleted automatically after you delete the cluster. You are still charged for the bucket until you delete it\" supports option d and rules out the free read-only distractor.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-9c4e7b2a5f16",
-      "content_sha256": "aba953bed5c2046092cb8f7b4f0419e264c6a6c2a1e5fb2782bc3a7e6cb01473",
-      "approved": true,
-      "reason": "The quickstart prerequisites require a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", so only the admin option is correct.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-a1f3c8d92b56",
-      "content_sha256": "c3de04fd7bfb521bc5389a55e399dfa1e2836c83bbdbe3d91a0fba709c770933",
-      "approved": true,
-      "reason": "\"Tavily is the web layer for AI agents: real-time search, page extraction, site crawling and mapping, and cited research, returned as clean, LLM-ready content\" is restated only by option a; keyless access, session headers and the docs MCP server are other features of the same page.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-a3d0c6f8b340",
       "content_sha256": "a80482610e94f1a7e46ff074276840a4263d89848ef1dbb94be1d2bec7549ab7",
       "approved": true,
@@ -115,27 +87,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-ad74c0f2b784",
-      "content_sha256": "a3d5ff783044edf604d9c0ea03f1f2350a6d2df4b74ac0f01f63a5353628540b",
-      "approved": true,
-      "reason": "For the same `claude mcp add tavily` command the guide says \"No API key needed in the URL — authentication is handled automatically via OAuth\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-b291d47ea6c3",
-      "content_sha256": "cbfb0c2aa09eccbb71e9015fe3a7ef348a519ac4b57e9b38bc5bc19be4fc5b0e",
-      "approved": true,
-      "reason": "\"Download LoRA adapter weights of the fine-tuning job. They are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket\" supports only option a.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-b2e4d9a1c673",
-      "content_sha256": "f3b74f31bc0644384901f0820d4e1948eef883fcc9e28fac5e9d89f548918591",
-      "approved": true,
-      "reason": "The quickstart's Crawl card reads \"Read many pages across a site\", while the other three one-liners on the same page belong to Search, Extract and Map.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-b4e1d7a9c451",
       "content_sha256": "651f21cf33a3895561620775fe4a0d7dca84c5074d3af2687799eef6598cdc6e",
       "approved": true,
@@ -150,31 +101,10 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-b829d5a7c239",
-      "content_sha256": "d7d6c69603a9bc77c245bf413b442f62d9d34080d3f75b6ed374e44dbf445628",
-      "approved": true,
-      "reason": "The Search response schema describes raw_content as \"The cleaned and parsed HTML content of the search result. Only if `include_raw_content` is true\"; favicon has its own include_favicon flag.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-b85c1e49730d",
-      "content_sha256": "406d3243a2e6b755cb1b18e322bf07a82485c228e149be8ad5ac4515b6ce0dd1",
-      "approved": true,
-      "reason": "\"If a job, endpoint or Devlab created from a custom image fails, gets canceled or returns an error, Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\" — deletion, not stop-and-retain or keep-running.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-bc01b0c1d2e3",
       "content_sha256": "35ff8e3e22e231e77c2a5e4deb99338e8e99d4bb8d66943d3a397c345747e178",
       "approved": true,
       "reason": "The comparison table row \"| Pricing | Per GPU/hour, billed with per-minute granularity | Per token |\" matches option b exactly.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-be85d1a3c895",
-      "content_sha256": "9a21f0261c87838daa9f1cf1a46c2b7c8869b1608c3dae36a96c70fb1c9549e2",
-      "approved": true,
-      "reason": "\"Use Search when you need raw source URLs and content to process yourself. Use Research when you need a finished, multi-source answer with citations\" makes Research the single best fit.",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -192,20 +122,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-c8f1a5e3d964",
-      "content_sha256": "183b1e88cfa66e2648cdb6759a42822332bcb1effee2d126dcc8e5fb1bae90b6",
-      "approved": true,
-      "reason": "Both halves are verbatim on the page: \"Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\" and \"To keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-c930e6b8d340",
-      "content_sha256": "8623b1829ceb6fe284209eef9a7f7991665f649f4936c38a1d0eea26264983db",
-      "approved": true,
-      "reason": "The Extract reference states \"Successful URLs appear in results; per-URL failures appear in failed_results. Check both arrays even when the response is HTTP 200\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-c9e5a2f8d164",
       "content_sha256": "18dcc3399b4f0731b9974dc1166fb57fd4eb628d1a8e55e6725a185d7858d6c1",
       "approved": true,
@@ -213,52 +129,10 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-cf96e2b4d906",
-      "content_sha256": "1e808b4e218f996f022c431c704c4af81a3dd3268ca2bc9436c1f187e9488d39",
-      "approved": true,
-      "reason": "Operational checklist: \"Tag each result `ok` / `error` and retry only the failed ones with backoff, so a single error never sinks the whole batch\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co219916c0e5",
-      "content_sha256": "8871220a51cf83659bb8345783f1b202ce9defbf4066a8b072e120658c1e4259",
-      "approved": true,
-      "reason": "\"Each GPU cluster is assigned a unique P-Key ... nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\" supports the partition-key answer.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co220dde0756",
-      "content_sha256": "ae6715cee2b6c6bd36f627b31714d4f7b8f5ad5c5cb6db94b24147a5cb1dd433",
-      "approved": true,
-      "reason": "GPUDirect RDMA \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\", which is option c and excludes the host-memory bounce.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-co2331c8572e",
       "content_sha256": "2afbfcdcf69a9e1739e6499f88c824d266c3457f203cbad09dc327861e97bb7e",
       "approved": true,
       "reason": "\"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink with Intel Sapphire Rapids to this cluster\" shows the fabric constrains the GPU platform, not node count or project.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co24917d1a57",
-      "content_sha256": "c77e195803b5bf1be9ea1cff728da2eda824e64bf713c0fbcb9aedb14cf035c7",
-      "approved": true,
-      "reason": "\"Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co253cd43986",
-      "content_sha256": "3edcfdc4ef571cf598b39457daf6e189478d2e169690f10958194398279d3085",
-      "approved": true,
-      "reason": "Warning: \"You cannot move a resource to another network or subnet after creation\", so recreation is the only route.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co26744a9769",
-      "content_sha256": "fc05d5373c4683a9e28be12d2983fd9cc3b15a2f265aa60c7079ca1372683102",
-      "approved": true,
-      "reason": "\"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources ... create separate networks for them\" matches option c; option d violates the same-region requirement.",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -276,104 +150,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-co29b9f076dc",
-      "content_sha256": "fa5b94b550522f49731dab02278d2dedc66780da500b1efd2a07e921276367c2",
-      "approved": true,
-      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co3086b69871",
-      "content_sha256": "7fd4b223348ef1bd5e0f793acc1b6aafed5fb357e96985535751e915e7199812",
-      "approved": true,
-      "reason": "\"One shared filesystem can be attached to multiple VMs at once\", while a network SSD disk \"can only be added to one running VM at a time\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co3128de5d55",
-      "content_sha256": "922ee9fa55a77675b35a7adf3e3274ee1727b0d3dc32ad14be7d530a535d8411",
-      "approved": true,
-      "reason": "\"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB\" explains the rejection of 100 GiB.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co32676fb56d",
-      "content_sha256": "1f5522c684ece0faa7a0126f80e68a9bd44e69169fc173d257f2f58759c4e2b8",
-      "approved": true,
-      "reason": "\"All VMs that the filesystem is attached to must belong to the same project. Sharing a filesystem across projects is not supported, even if the projects are in the same region\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co33486f6ab7",
-      "content_sha256": "00586e2070c31f6dd4f91df1a6c9f67c9d9a90acf6e83cb46e65c0e5eb1f7a68",
-      "approved": true,
-      "reason": "\"Being on the tenant user list does not grant access to resources. Each account should be assigned to a group that specifies the level of access\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co3467c7f2ed",
-      "content_sha256": "0d8aebcdf013a73b06e4404f2faab8eabf7056db6b84d9990a50315b8c58f8ef",
-      "approved": true,
-      "reason": "\"A service account belongs to the project where it was created, but its access to resources is defined by the groups that it's added to ... can be granted access to any resource in the tenant regardless of the project\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co37d7aa468e",
-      "content_sha256": "18413c424f5e8a3b2382ac26f0c4029e0d1346618a235d3d698c2c7e1408a5e3",
-      "approved": true,
-      "reason": "\"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co38a7131e83",
-      "content_sha256": "0ad8b6e16b250f22f7654baeaeb68be31ae0e6832265541e96cf5a0b3e93d5ed",
-      "approved": true,
-      "reason": "The IAM overview states plainly \"You cannot delete a tenant\", so emptying it or removing accounts does not help.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co3981dd0ddc",
-      "content_sha256": "b0bad6de6f02f4e86d337c9e26bf420bc04d6722cbddd41b83bf393d8e42c20f",
-      "approved": true,
-      "reason": "\"You can only create a project via the Nebius AI Cloud CLI in public regions. If you try to create a project in a private region, you receive an error\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co40c9898d9e",
-      "content_sha256": "3fb2da77b8e00181d4d135d7fc046490d9ebbecbd40bb8ab8649a624b64bb2d9",
-      "approved": true,
-      "reason": "\"you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates\", plus the warning that a federation needs at least one valid certificate, supports replacing it in place.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co41d66f720d",
-      "content_sha256": "5e66fc77618de5002c8c128e52f85e93be320567163e11b1a1d19e0f17fcdbf6",
-      "approved": true,
-      "reason": "Every prerequisite tab on the federations page requires a group \"that has the `admin` role within your tenant or project\", which `editor` does not confer.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co427b99b29e",
-      "content_sha256": "487336f8f5d64f718fa3cb51b5a11dd3999a4f74002a6ac7ca43cbbaa703a667",
-      "approved": true,
-      "reason": "\"Make sure that you have access to your IdP admin portal and can get the SAML application metadata (login URL, identifier, certificate) required to create a federation\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co49d3cee498",
-      "content_sha256": "9269fc1a1f29f447cb3309e012ef7f8cafea4d5c5ab280bc45c09a79adb950d9",
-      "approved": true,
-      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-co5387b84806",
-      "content_sha256": "c333de0618d536fdbf046e4b51173cd92aa82f36a4946c38a7e2c2cf6d7921d7",
-      "approved": true,
-      "reason": "The possible-cause section says the `nvidia-fabricmanager` service \"does not initialize on VM startup because of a race condition or other timing issues\"; the quoted error itself states the driver is present, ruling out the missing-driver option.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-co546c4c3ecd",
       "content_sha256": "21787f0cb156da590691d5997480fb055b81180793b0c2276ccc6f86e9970be8",
       "approved": true,
@@ -388,24 +164,10 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-cs02a5b6c7d8",
-      "content_sha256": "39c246451ff7e1888aa8560b29427df6214ddb554b17bfcf4ebc7a9187a24165",
-      "approved": true,
-      "reason": "\"Set minimum and maximum replicas to automatically scale capacity with traffic\" plus \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely\" together support only option a.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-d0a7f3c5e017",
       "content_sha256": "8f8240f786715545ea85af8ac140697c9f6e176bb3958d8edae67e4bdb09673f",
       "approved": true,
       "reason": "Authentication section: \"All Tavily endpoints are authenticated using API keys\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-d4a6f1c3e895",
-      "content_sha256": "6a95fc7ff888a2e78d39a5b9858aaf019baff68d31a89b5cfc9606dd3a260b88",
-      "approved": true,
-      "reason": "\"Lead with Search when sources are unknown; move to the others once you have URLs or a site to work through\", and the table calls Search \"the default start\".",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -416,24 +178,10 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-de01a1b2c3d4",
-      "content_sha256": "93632211c9ebcad71020498e1ffceb320ae1f4b6354982d71418fb52b311960b",
-      "approved": true,
-      "reason": "Table row \"| Capacity | Capacity reserved for your organization | Shared multi-tenant capacity |\", and the capacity page's \"it is not a long-term reservation\" rules out the permanent-reservation option.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-de02b2c3d4e5",
       "content_sha256": "a6f7eed202440e439eb916166e4aacbee2816ebf83d460ae22f1a664b830db00",
       "approved": true,
       "reason": "\"| routing_key | The model identifier you pass to inference calls. Returned when you create an endpoint. |\" versus \"| endpoint_id | Identifier used for update/delete operations. |\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-de03c5d6e7f8",
-      "content_sha256": "70fbfcffccdcd8eefb5445e6a1ed90cedccf9a9b19b79ae68d844419fb44b573",
-      "approved": true,
-      "reason": "\"| Custom weights support | Supported for eligible models | Base models only |\" supports option b; the SLA and pricing distractors are contradicted by the capacity and pricing rows.",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -479,13 +227,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-e9a2c651f03d",
-      "content_sha256": "cbf5cfc9337789bf0fdf40a723ed6a1b93d88ef29f1a15f763d4327b536e50fa",
-      "approved": true,
-      "reason": "\"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\".",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-eb52a8d0f562",
       "content_sha256": "0d90a47e883b416e95fa924b490550290d0ef05446c813a55aa2cb8efb28f5d6",
       "approved": true,
@@ -507,24 +248,10 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-f2c9b5e7a239",
-      "content_sha256": "9a0ff78ae251e207611d37989b44498992b40a39c348b603e38c67c54003e314",
-      "approved": true,
-      "reason": "\"If the response includes `Retry-After`, wait the indicated number of seconds before retrying\" — the 60 in the sample response is illustrative, so option c is the only fit.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-f4a8e1c6d935",
       "content_sha256": "38099f9723e03fc2ccf8dcc0de973bc55e23e57f980e5a140afc57ca0cc3e9b4",
       "approved": true,
       "reason": "\"A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal.\"",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-f607b3e5a017",
-      "content_sha256": "317fb2f80f9b87edde05742c46dcc11b7ae7eb477e89f2c12d58c49f20ec9515",
-      "approved": true,
-      "reason": "\"`advanced` searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency. Reach for it when coverage matters most: niche topics ...\"",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -890,6 +617,320 @@
       "approved": true,
       "reason": "\"Use JSON schema instead of JSON objects whenever you need strict JSON structure\", since json_object \"forces arbitrary JSON output, the model will decide on the schema by itself\".",
       "reviewed_at": "2026-10-31T01:59:27Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "411d98547c608d81b666bc64b00bad5b0fcb3fb6c47784241754c0d5eafd9162",
+      "approved": true,
+      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\"; the other options name unrelated Nebius services.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-8f1a3d6e9c52",
+      "content_sha256": "dbfb872dda2df129eefcc76e174c9ad0fc2b930fb5108652fe209efbd6c4d846",
+      "approved": true,
+      "reason": "\"This bucket is not deleted automatically after you delete the cluster. You are still charged for the bucket until you delete it\" supports option d and rules out the free read-only distractor.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-9c4e7b2a5f16",
+      "content_sha256": "aba953bed5c2046092cb8f7b4f0419e264c6a6c2a1e5fb2782bc3a7e6cb01473",
+      "approved": true,
+      "reason": "The quickstart prerequisites require a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", so only the admin option is correct.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-a1f3c8d92b56",
+      "content_sha256": "c3de04fd7bfb521bc5389a55e399dfa1e2836c83bbdbe3d91a0fba709c770933",
+      "approved": true,
+      "reason": "\"Tavily is the web layer for AI agents: real-time search, page extraction, site crawling and mapping, and cited research, returned as clean, LLM-ready content\" is restated only by option a; keyless access, session headers and the docs MCP server are other features of the same page.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-ad74c0f2b784",
+      "content_sha256": "a3d5ff783044edf604d9c0ea03f1f2350a6d2df4b74ac0f01f63a5353628540b",
+      "approved": true,
+      "reason": "For the same `claude mcp add tavily` command the guide says \"No API key needed in the URL — authentication is handled automatically via OAuth\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "cbfb0c2aa09eccbb71e9015fe3a7ef348a519ac4b57e9b38bc5bc19be4fc5b0e",
+      "approved": true,
+      "reason": "\"Download LoRA adapter weights of the fine-tuning job. They are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket\" supports only option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b2e4d9a1c673",
+      "content_sha256": "f3b74f31bc0644384901f0820d4e1948eef883fcc9e28fac5e9d89f548918591",
+      "approved": true,
+      "reason": "The quickstart's Crawl card reads \"Read many pages across a site\", while the other three one-liners on the same page belong to Search, Extract and Map.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b829d5a7c239",
+      "content_sha256": "d7d6c69603a9bc77c245bf413b442f62d9d34080d3f75b6ed374e44dbf445628",
+      "approved": true,
+      "reason": "The Search response schema describes raw_content as \"The cleaned and parsed HTML content of the search result. Only if `include_raw_content` is true\"; favicon has its own include_favicon flag.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-b85c1e49730d",
+      "content_sha256": "406d3243a2e6b755cb1b18e322bf07a82485c228e149be8ad5ac4515b6ce0dd1",
+      "approved": true,
+      "reason": "\"If a job, endpoint or Devlab created from a custom image fails, gets canceled or returns an error, Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\" — deletion, not stop-and-retain or keep-running.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-be85d1a3c895",
+      "content_sha256": "9a21f0261c87838daa9f1cf1a46c2b7c8869b1608c3dae36a96c70fb1c9549e2",
+      "approved": true,
+      "reason": "\"Use Search when you need raw source URLs and content to process yourself. Use Research when you need a finished, multi-source answer with citations\" makes Research the single best fit.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c8f1a5e3d964",
+      "content_sha256": "183b1e88cfa66e2648cdb6759a42822332bcb1effee2d126dcc8e5fb1bae90b6",
+      "approved": true,
+      "reason": "Both halves are verbatim on the page: \"Serverless AI deletes the underlying virtual machine (VM) and boot disk to avoid costs\" and \"To keep the VM alive for debugging, run the deployment with a \"sleep-on-fail\" wrapper\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-c930e6b8d340",
+      "content_sha256": "8623b1829ceb6fe284209eef9a7f7991665f649f4936c38a1d0eea26264983db",
+      "approved": true,
+      "reason": "The Extract reference states \"Successful URLs appear in results; per-URL failures appear in failed_results. Check both arrays even when the response is HTTP 200\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cf96e2b4d906",
+      "content_sha256": "1e808b4e218f996f022c431c704c4af81a3dd3268ca2bc9436c1f187e9488d39",
+      "approved": true,
+      "reason": "Operational checklist: \"Tag each result `ok` / `error` and retry only the failed ones with backoff, so a single error never sinks the whole batch\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "8871220a51cf83659bb8345783f1b202ce9defbf4066a8b072e120658c1e4259",
+      "approved": true,
+      "reason": "\"Each GPU cluster is assigned a unique P-Key ... nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\" supports the partition-key answer.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "ae6715cee2b6c6bd36f627b31714d4f7b8f5ad5c5cb6db94b24147a5cb1dd433",
+      "approved": true,
+      "reason": "GPUDirect RDMA \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\", which is option c and excludes the host-memory bounce.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co24917d1a57",
+      "content_sha256": "c77e195803b5bf1be9ea1cff728da2eda824e64bf713c0fbcb9aedb14cf035c7",
+      "approved": true,
+      "reason": "\"Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "3edcfdc4ef571cf598b39457daf6e189478d2e169690f10958194398279d3085",
+      "approved": true,
+      "reason": "Warning: \"You cannot move a resource to another network or subnet after creation\", so recreation is the only route.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "fc05d5373c4683a9e28be12d2983fd9cc3b15a2f265aa60c7079ca1372683102",
+      "approved": true,
+      "reason": "\"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources ... create separate networks for them\" matches option c; option d violates the same-region requirement.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co29b9f076dc",
+      "content_sha256": "fa5b94b550522f49731dab02278d2dedc66780da500b1efd2a07e921276367c2",
+      "approved": true,
+      "reason": "\"Local SSD disks are ephemeral, meaning temporary: their data is erased when the VM is stopped or deleted\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3086b69871",
+      "content_sha256": "7fd4b223348ef1bd5e0f793acc1b6aafed5fb357e96985535751e915e7199812",
+      "approved": true,
+      "reason": "\"One shared filesystem can be attached to multiple VMs at once\", while a network SSD disk \"can only be added to one running VM at a time\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3128de5d55",
+      "content_sha256": "922ee9fa55a77675b35a7adf3e3274ee1727b0d3dc32ad14be7d530a535d8411",
+      "approved": true,
+      "reason": "\"The size of each namespace is 93 GiB, so the disk size must be a multiple of 93 GiB\" explains the rejection of 100 GiB.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co32676fb56d",
+      "content_sha256": "1f5522c684ece0faa7a0126f80e68a9bd44e69169fc173d257f2f58759c4e2b8",
+      "approved": true,
+      "reason": "\"All VMs that the filesystem is attached to must belong to the same project. Sharing a filesystem across projects is not supported, even if the projects are in the same region\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co33486f6ab7",
+      "content_sha256": "00586e2070c31f6dd4f91df1a6c9f67c9d9a90acf6e83cb46e65c0e5eb1f7a68",
+      "approved": true,
+      "reason": "\"Being on the tenant user list does not grant access to resources. Each account should be assigned to a group that specifies the level of access\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3467c7f2ed",
+      "content_sha256": "0d8aebcdf013a73b06e4404f2faab8eabf7056db6b84d9990a50315b8c58f8ef",
+      "approved": true,
+      "reason": "\"A service account belongs to the project where it was created, but its access to resources is defined by the groups that it's added to ... can be granted access to any resource in the tenant regardless of the project\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co37d7aa468e",
+      "content_sha256": "18413c424f5e8a3b2382ac26f0c4029e0d1346618a235d3d698c2c7e1408a5e3",
+      "approved": true,
+      "reason": "\"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co38a7131e83",
+      "content_sha256": "0ad8b6e16b250f22f7654baeaeb68be31ae0e6832265541e96cf5a0b3e93d5ed",
+      "approved": true,
+      "reason": "The IAM overview states plainly \"You cannot delete a tenant\", so emptying it or removing accounts does not help.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co3981dd0ddc",
+      "content_sha256": "b0bad6de6f02f4e86d337c9e26bf420bc04d6722cbddd41b83bf393d8e42c20f",
+      "approved": true,
+      "reason": "\"You can only create a project via the Nebius AI Cloud CLI in public regions. If you try to create a project in a private region, you receive an error\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co40c9898d9e",
+      "content_sha256": "3fb2da77b8e00181d4d135d7fc046490d9ebbecbd40bb8ab8649a624b64bb2d9",
+      "approved": true,
+      "reason": "\"you can create, activate, deactivate and delete federations, change their settings, and upload or delete attached certificates\", plus the warning that a federation needs at least one valid certificate, supports replacing it in place.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co41d66f720d",
+      "content_sha256": "5e66fc77618de5002c8c128e52f85e93be320567163e11b1a1d19e0f17fcdbf6",
+      "approved": true,
+      "reason": "Every prerequisite tab on the federations page requires a group \"that has the `admin` role within your tenant or project\", which `editor` does not confer.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co427b99b29e",
+      "content_sha256": "487336f8f5d64f718fa3cb51b5a11dd3999a4f74002a6ac7ca43cbbaa703a667",
+      "approved": true,
+      "reason": "\"Make sure that you have access to your IdP admin portal and can get the SAML application metadata (login URL, identifier, certificate) required to create a federation\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "9269fc1a1f29f447cb3309e012ef7f8cafea4d5c5ab280bc45c09a79adb950d9",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-co5387b84806",
+      "content_sha256": "c333de0618d536fdbf046e4b51173cd92aa82f36a4946c38a7e2c2cf6d7921d7",
+      "approved": true,
+      "reason": "The possible-cause section says the `nvidia-fabricmanager` service \"does not initialize on VM startup because of a race condition or other timing issues\"; the quoted error itself states the driver is present, ruling out the missing-driver option.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-cs02a5b6c7d8",
+      "content_sha256": "39c246451ff7e1888aa8560b29427df6214ddb554b17bfcf4ebc7a9187a24165",
+      "approved": true,
+      "reason": "\"Set minimum and maximum replicas to automatically scale capacity with traffic\" plus \"Scaling above minimum replicas depends on available burst capacity and is not guaranteed indefinitely\" together support only option a.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d4a6f1c3e895",
+      "content_sha256": "6a95fc7ff888a2e78d39a5b9858aaf019baff68d31a89b5cfc9606dd3a260b88",
+      "approved": true,
+      "reason": "\"Lead with Search when sources are unknown; move to the others once you have URLs or a site to work through\", and the table calls Search \"the default start\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de01a1b2c3d4",
+      "content_sha256": "93632211c9ebcad71020498e1ffceb320ae1f4b6354982d71418fb52b311960b",
+      "approved": true,
+      "reason": "Table row \"| Capacity | Capacity reserved for your organization | Shared multi-tenant capacity |\", and the capacity page's \"it is not a long-term reservation\" rules out the permanent-reservation option.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-de03c5d6e7f8",
+      "content_sha256": "70fbfcffccdcd8eefb5445e6a1ed90cedccf9a9b19b79ae68d844419fb44b573",
+      "approved": true,
+      "reason": "\"| Custom weights support | Supported for eligible models | Base models only |\" supports option b; the SLA and pricing distractors are contradicted by the capacity and pricing rows.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "cbf5cfc9337789bf0fdf40a723ed6a1b93d88ef29f1a15f763d4327b536e50fa",
+      "approved": true,
+      "reason": "\"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-f2c9b5e7a239",
+      "content_sha256": "9a0ff78ae251e207611d37989b44498992b40a39c348b603e38c67c54003e314",
+      "approved": true,
+      "reason": "\"If the response includes `Retry-After`, wait the indicated number of seconds before retrying\" — the 60 in the sample response is illustrative, so option c is the only fit.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-f607b3e5a017",
+      "content_sha256": "317fb2f80f9b87edde05742c46dcc11b7ae7eb477e89f2c12d58c49f20ec9515",
+      "approved": true,
+      "reason": "\"`advanced` searches more broadly and reaches more sources per query, delivering the highest relevance at higher latency. Reach for it when coverage matters most: niche topics ...\"",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
     }
   ]
 }

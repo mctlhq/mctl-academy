@@ -3,24 +3,10 @@
   "reviewed_at": "2026-10-31T09:13:49Z",
   "questions": [
     {
-      "id": "q-1c9e4a7f3d62",
-      "content_sha256": "9a93f1e97ae556d838ef69fc485bef8febfe183b96029aa9550dc0f3345fd566",
-      "approved": true,
-      "reason": "The captured Rate Limits page states verbatim: \"Error messages can vary by the limit reached; use the HTTP status and header for retry handling rather than matching the message text.\" That establishes option b, and the page's own 429 example carrying `Retry-After: 60` plus the note that keyless access \"uses a different error format and separate limits\" rule out c and d.",
-      "reviewed_at": "2026-10-31T09:13:49Z"
-    },
-    {
       "id": "q-2e8c5a1f7d94",
       "content_sha256": "6d95e950b459570a3556f32878f02666fd14673e87d054e414e8cba6fa2a439f",
       "approved": true,
       "reason": "Under \"Rotating your API keys\" the page says \"As a general security best practice, we recommend rotating your API keys periodically (e.g., every 90 days)\", which supports the 90-day answer; the leak-response steps are a separate section, so the leak-only and rotate-once options are unsupported.",
-      "reviewed_at": "2026-10-31T09:13:49Z"
-    },
-    {
-      "id": "q-5f2a8c3e1d97",
-      "content_sha256": "081e5267da5cc457fdb49f1126db632c45eeec36ff2d86c2dad96aea3eee2fca",
-      "approved": true,
-      "reason": "The capability table reads \"**Map** | You need a site's structure before crawling it.\", exactly the stem's need; the Search, Crawl and Research rows in the same table cover different criteria (unknown sources, reading many pages, cited synthesis), so only Map fits.",
       "reviewed_at": "2026-10-31T09:13:49Z"
     },
     {
@@ -45,18 +31,37 @@
       "reviewed_at": "2026-10-31T09:13:49Z"
     },
     {
-      "id": "q-d84f2a7c91e6",
-      "content_sha256": "c2b05cdcb5ead1345cc0e3a29a57177b04a9babf0289e3308e2c22a1bd601313",
-      "approved": true,
-      "reason": "The Extract reference's 400 response reads \"Bad Request. More than 20 URLs, an empty URL list, or no URLs passing validation are rejected. When all URLs fail validation, detail.failed_results describes the individual failures.\", and the allInvalidUrls example shows per-URL entries inside detail, which refutes the generic-error, one-at-a-time and results-array options.",
-      "reviewed_at": "2026-10-31T09:13:49Z"
-    },
-    {
       "id": "q-e3c8b1f49a52",
       "content_sha256": "9be21bd5fbce3c70ec76fe720109e82faea51ec5c699c390462eb75686ad54df",
       "approved": true,
       "reason": "The Crawl reference defines select_paths as \"Regex patterns to select only URLs with specific path patterns (e.g., `/docs/.*`, `/api/v1.*`)\" and exclude_paths as \"Regex patterns to exclude URLs with specific path patterns (e.g., `/private/.*`, `/admin/.*`)\"; select_domains/exclude_domains match \"domains or subdomains\", max_depth bounds distance from the base URL, allow_external covers external-domain links and limit caps total links, so none of those scope a path.",
       "reviewed_at": "2026-10-31T09:13:49Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-1c9e4a7f3d62",
+      "content_sha256": "9a93f1e97ae556d838ef69fc485bef8febfe183b96029aa9550dc0f3345fd566",
+      "approved": true,
+      "reason": "The captured Rate Limits page states verbatim: \"Error messages can vary by the limit reached; use the HTTP status and header for retry handling rather than matching the message text.\" That establishes option b, and the page's own 429 example carrying `Retry-After: 60` plus the note that keyless access \"uses a different error format and separate limits\" rule out c and d.",
+      "reviewed_at": "2026-10-31T09:13:49Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-5f2a8c3e1d97",
+      "content_sha256": "081e5267da5cc457fdb49f1126db632c45eeec36ff2d86c2dad96aea3eee2fca",
+      "approved": true,
+      "reason": "The capability table reads \"**Map** | You need a site's structure before crawling it.\", exactly the stem's need; the Search, Crawl and Research rows in the same table cover different criteria (unknown sources, reading many pages, cited synthesis), so only Map fits.",
+      "reviewed_at": "2026-10-31T09:13:49Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
+    },
+    {
+      "id": "q-d84f2a7c91e6",
+      "content_sha256": "c2b05cdcb5ead1345cc0e3a29a57177b04a9babf0289e3308e2c22a1bd601313",
+      "approved": true,
+      "reason": "The Extract reference's 400 response reads \"Bad Request. More than 20 URLs, an empty URL list, or no URLs passing validation are rejected. When all URLs fail validation, detail.failed_results describes the individual failures.\", and the allInvalidUrls example shows per-URL entries inside detail, which refutes the generic-error, one-at-a-time and results-array options.",
+      "reviewed_at": "2026-10-31T09:13:49Z",
+      "superseded_at": "2026-11-14T13:21:41Z"
     }
   ]
 }

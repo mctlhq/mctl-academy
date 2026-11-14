@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9b3d71ae4c08
-status: needs_review
+status: published
 domain: domain-1
 objective: domain-1/source-quality
 stem: "An agent wants Tavily Search to prioritize trusted sources such as
@@ -35,12 +35,12 @@ evidence:
     excerpt: "`include_domains_mode: \"prefer\"` is useful when you want to
       prioritize trusted sources without risking empty results if none of them
       cover the query."
-    source_sha256: e68ed528e037a62638367faebd53116f287b63fb87b7a0c98635a5e0bb282a6d
+    source_sha256: f899d424be5ac83b64a300814fadeab770379555101a0336d136e39bdea14b7a
 authored:
   by: "agent:claude-author"
   at: "2026-10-31T09:24:19Z"
 course_id: agentic-web-search
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T09:35:45Z
-  content_sha256: d7cf4fb6f98ca988b7e5bfb77c871c0abea74fcca8d6c14c113f6d7d0777cd8e
+  at: 2026-11-14T13:21:41Z
+  content_sha256: cb03b5a15cab0f5ec6f66f3bd534563b9946fd9afa97959d831e912cc4bbd295
