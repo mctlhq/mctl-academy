@@ -8,6 +8,7 @@ import {
   parseLlmsIndex,
   newPages,
   gapsFrom,
+  scopeGaps,
   rankPages,
   discover,
   fetchText,
@@ -604,5 +605,96 @@ test("fetchText refuses a redirect out of the allowlisted path prefix", async ()
     assert.equal(await fetchText(from), "body");
   } finally {
     globalThis.fetch = real;
+  }
+});
+
+test("scopeGaps keeps the target objectives and their domains' Mock shortfalls, and nothing else", () => {
+  const gaps = [
+    { kind: "objective", course: "c", objective: "domain-1/quotas", published: 0 },
+    { kind: "objective", course: "c", objective: "domain-1/inference-basics", published: 0 },
+    { kind: "objective", course: "c", objective: "domain-2/other", published: 0 },
+    { kind: "mock-shortfall", course: "c", domain: "domain-1", published: 0 },
+    { kind: "mock-shortfall", course: "c", domain: "domain-2", published: 0 },
+  ];
+  assert.equal(scopeGaps(gaps, null), gaps);
+  assert.deepEqual(
+    scopeGaps(gaps, { objectives: ["domain-1/quotas"] }).map((g) => g.objective ?? g.domain),
+    ["domain-1/quotas", "domain-1"],
+  );
+});
+
+const scopedDiscover = (dir, extra) =>
+  discover({
+    contentDir: dir,
+    maxNew: 5,
+    minPerObjective: 3,
+    today: "2026-10-08",
+    fetch: fakeFetch(OLD),
+    store: fakeStore,
+    warn: () => {},
+    indices: ["https://docs.tokenfactory.nebius.com/llms.txt"],
+    course: "agentic-ai-builder",
+    ...extra,
+  });
+
+test("discover: --objective narrows gaps to the target set and records it", async () => {
+  const dir = fixture();
+  try {
+    const whole = await scopedDiscover(dir, {});
+    const objectiveGaps = (r) => r.result.gaps.filter((g) => g.kind === "objective").map((g) => g.objective);
+    assert.deepEqual(objectiveGaps(whole).sort(), ["domain-1/inference-basics", "domain-1/quotas"]);
+    assert.deepEqual(whole.result.objectives, ["domain-1/inference-basics", "domain-1/quotas"]);
+
+    const narrow = await scopedDiscover(dir, { objectives: ["domain-1/quotas"] });
+    assert.deepEqual(objectiveGaps(narrow), ["domain-1/quotas"]);
+    assert.deepEqual(narrow.result.objectives, ["domain-1/quotas"]);
+    assert.match(narrow.result.summary, /Target objectives \(1\): domain-1\/quotas/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: unknown objectives, or objectives without a course, fail instead of reporting nothing", async () => {
+  const dir = fixture();
+  try {
+    await assert.rejects(scopedDiscover(dir, { objectives: ["domain-1/nope"] }), /not objectives of/);
+    await assert.rejects(
+      scopedDiscover(dir, { course: null, objectives: ["domain-1/quotas"] }),
+      /objectives need a course/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("discover: a course run drops held objectives from its gaps; an unscoped run ignores holds", async () => {
+  const dir = fixture();
+  mkdirSync(join(dir, "coverage"));
+  writeFileSync(
+    join(dir, "coverage", "agentic-ai-builder.yaml"),
+    yaml({
+      objectives: [
+        { id: "domain-1/quotas", status: "open" },
+        { id: "domain-1/inference-basics", status: "held" },
+      ],
+    }),
+  );
+  try {
+    const scoped = await scopedDiscover(dir, {});
+    assert.deepEqual(
+      scoped.result.gaps.filter((g) => g.kind === "objective").map((g) => g.objective),
+      ["domain-1/quotas"],
+    );
+    assert.deepEqual(scoped.result.held, ["domain-1/inference-basics"]);
+    assert.match(scoped.result.summary, /Held, not authored: domain-1\/inference-basics/);
+
+    const unscoped = await scopedDiscover(dir, { course: null });
+    assert.ok(unscoped.result.gaps.some((g) => g.objective === "domain-1/inference-basics"));
+    assert.equal(unscoped.result.objectives, null);
+
+    writeFileSync(join(dir, "coverage", "agentic-ai-builder.yaml"), "objectives: [unclosed");
+    await assert.rejects(scopedDiscover(dir, {}), /coverage\/agentic-ai-builder\.yaml: unreadable/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });

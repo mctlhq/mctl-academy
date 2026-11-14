@@ -26,7 +26,7 @@ Two workflows in this repository run every Monday:
    and each course's primary host), re-checks recorded sources against their
    live bytes, classifies each drifted one with `scripts/detect-docs-delta.mjs`
    against the R2 snapshot, and reports Mock shortfalls and objectives with
-   fewer than three published questions. Output: `_run/candidates.json`. The run
+   fewer than `min_per_objective` (default three) published questions. Output: `_run/candidates.json`. The run
    stops here when nothing applies, or when a replenish PR is already open.
 2. **author** — an agent (`agent:claude-author`, `claude-sonnet-5`) chooses at
    most `max_new` offered pages and their objectives; `scripts/replenish-prepare.mjs`
@@ -84,6 +84,33 @@ more question files than `max_questions`, counting files it created. The
 post-promotion guard re-checks that nothing published at the base moved, but
 carries no cap, because that set also holds the items the mechanical
 re-validation repaired before the agent ran.
+
+Scope a run with `-f course=<id>`, and narrow it with `-f
+objectives=domain-1/<id>,domain-2/<id>` (comma-separated, no spaces; requires
+`course`). `-f min_per_objective=<n>` (default 3) sets how few published
+questions make an objective a gap. The scope is mechanical, not a prompt hint:
+
+- **discover** validates every objective against the course map and fails on
+  an unknown id, on objectives given without a course, and on a held
+  objective named explicitly. Gaps are narrowed to the target objectives (and
+  the Mock shortfalls of their domains), which also narrows page ranking.
+  `_run/candidates.json` records the target set under `objectives`.
+- **author** writes the course and target set into `_run/limits.json`
+  (`replenish-prepare.mjs limits`). The page selection keeps only objectives in
+  that set, and the author-phase guard (`guard --limits`, required there)
+  fails the run when any question file the agent created, changed or deleted
+  carries another `course_id` or an `objective` outside the set — drifted
+  items of other courses included. An unreadable or malformed `limits.json` is
+  an error, never "unscoped".
+- **Held objectives.** When `content/coverage/<course>.yaml` exists
+  (`objectives: [{ id: domain-N/<id>, status: open|held, ... }]`), a course
+  run drops its `held` objectives from the target set automatically, so a
+  course-only run never authors for them. A missing file means no holds; a
+  file that does not parse, names an objective outside the course map, or
+  carries any other status fails the run.
+
+Unscoped runs (the weekly schedule) read no coverage file and behave as
+before; `limits.json` then carries `"course": null`.
 
 A run whose agent writes nothing still opens a PR when the mechanical
 re-validation repaired something: those items are real work for the reviewer,

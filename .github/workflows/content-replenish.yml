@@ -80,6 +80,14 @@ on:
         description: "Scope the run to one course id (e.g. ai-cloudops-engineer); empty = all courses"
         type: string
         default: ""
+      objectives:
+        description: "Narrow a course run to these objectives, comma-separated domain-N/<id>; needs course; empty = every open objective"
+        type: string
+        default: ""
+      min_per_objective:
+        description: "An objective with fewer published questions than this is a gap"
+        type: string
+        default: "3"
       provider:
         description: "Which models write and review this run"
         type: choice
@@ -187,14 +195,24 @@ jobs:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           COURSE: ${{ inputs.course }}
+          OBJECTIVES: ${{ inputs.objectives }}
+          MIN_PER_OBJECTIVE: ${{ inputs.min_per_objective || '3' }}
         run: |
           set -euo pipefail
           case "$MAX_NEW" in *[!0-9]*|"") echo "::error::max_new must be an integer"; exit 1;; esac
+          case "$MIN_PER_OBJECTIVE" in *[!0-9]*|"") echo "::error::min_per_objective must be an integer"; exit 1;; esac
           case "$COURSE" in *[!a-z0-9-]*) echo "::error::course must be a course id (lowercase letters, digits, dashes)"; exit 1;; esac
+          case "$OBJECTIVES" in *[!a-z0-9/,-]*) echo "::error::objectives must be comma-separated domain-N/<id> ids, no spaces"; exit 1;; esac
+          if [ -n "$OBJECTIVES" ] && [ -z "$COURSE" ]; then echo "::error::objectives need a course"; exit 1; fi
           mkdir -p _run _agent
+          # Each id is checked against the course map, and held objectives in
+          # content/coverage/<course>.yaml are dropped, inside discover-docs:
+          # an unknown id fails here, before anything is captured or authored.
           course_args=()
           if [ -n "$COURSE" ]; then course_args=(--course "$COURSE"); fi
-          node scripts/discover-docs.mjs --out _run/candidates.json --max-new "$MAX_NEW" --check-live --update-state "${course_args[@]}"
+          if [ -n "$OBJECTIVES" ]; then course_args+=(--objective "$OBJECTIVES"); fi
+          node scripts/discover-docs.mjs --out _run/candidates.json --max-new "$MAX_NEW" --check-live --update-state \
+            --min-per-objective "$MIN_PER_OBJECTIVE" "${course_args[@]}"
           empty=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("_run/candidates.json","utf8")).empty)')
           echo "empty=$empty" >> "$GITHUB_OUTPUT"
           {
@@ -300,6 +318,8 @@ jobs:
           # means the current directory, and Actions offers no way to unset a
           # variable the agent may have set.
           LD_LIBRARY_PATH: /nonexistent
+          COURSE: ${{ inputs.course }}
+          OBJECTIVES: ${{ inputs.objectives }}
         run: |
           set -euo pipefail
           git config user.name "$BOT_NAME"
@@ -314,9 +334,11 @@ jobs:
           # the author agent has no clock, and asking it to invent the time of
           # day put a coin flip on the fatal path -- a guess later than this
           # 06:30 UTC run is a future authored.at, which the lint refuses.
+          # The run's course and target objectives travel the same way, and
+          # the manifest and the author-phase guard enforce them from there.
           mkdir -p _run _agent
-          printf '{ "max_new": %s, "max_questions": %s, "now": "%s" }\n' \
-            "$MAX_NEW" "$MAX_QUESTIONS" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _run/limits.json
+          node scripts/replenish-prepare.mjs limits --max-new "$MAX_NEW" --max-questions "$MAX_QUESTIONS" \
+            --now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --course "$COURSE" --objectives "$OBJECTIVES" --out _run/limits.json
           cp _run/from-discover/_run/candidates.json _run/candidates.json
           node scripts/content-quality-report.mjs --json > _run/report-before.json
           echo "new_pages=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("_run/candidates.json","utf8")).newPages.length)')" >> "$GITHUB_OUTPUT"
@@ -1593,7 +1615,7 @@ jobs:
             # this workflow's first supervised run.
             cp _agent/select.json _run/select-agent.json
             node scripts/replenish-prepare.mjs manifest --select _agent/select.json --candidates _run/candidates.json \
-              --out _run/selected.json --dropped _run/dropped.json >> _run/capture.tsv
+              --limits _run/limits.json --out _run/selected.json --dropped _run/dropped.json >> _run/capture.tsv
           else
             echo "[]" > _run/selected.json
             echo "[]" > _run/dropped.json
@@ -1949,6 +1971,10 @@ jobs:
             If the concept is gone or changed, leave the file untouched. Never change a file whose
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
+
+            When _run/limits.json names a `course`, every file you add or change must carry that
+            `course_id` and an `objective` from its `objectives` list; leave any other file, a
+            drifted one included, untouched. A deterministic gate rejects the run otherwise.
 
             Any file you add or change is yours: set `authored: { by: "${{ env.AUTHOR_ID }}" }`
             on it, whatever id it carried before. That includes a `draft` or `review_ready`
@@ -2412,6 +2438,10 @@ jobs:
             If the concept is gone or changed, leave the file untouched. Never change a file whose
             status is `published` or `retired`, and never edit content/sources/, content/courses/
             or content/capture-manifest.yaml.
+
+            When _run/limits.json names a `course`, every file you add or change must carry that
+            `course_id` and an `objective` from its `objectives` list; leave any other file, a
+            drifted one included, untouched. A deterministic gate rejects the run otherwise.
 
             Any file you add or change is yours: set `authored: { by: "${{ env.AUTHOR_ID }}" }`
             on it, whatever id it carried before. That includes a `draft` or `review_ready`
@@ -2951,7 +2981,7 @@ jobs:
           node scripts/replenish-prepare.mjs boundary --base "${{ steps.base.outputs.sha }}"
           # Untracked files count: the cap is measured on new files as well as
           # edits, against the pre-agent commit, not against main.
-          node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now --author "$AUTHOR_ID"
+          node scripts/replenish-prepare.mjs guard --base "${{ steps.base.outputs.sha }}" --max "$MAX_QUESTIONS" --forbid-published-now --author "$AUTHOR_ID" --limits _run/limits.json
           # One excerpt that is not verbatim in its snapshot used to discard the
           # whole batch: runs 41154427966 and 41182515452 (2026-10-31) each lost
           # 19 good items to one bad citation. A NEW item whose own citation

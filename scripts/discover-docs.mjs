@@ -26,6 +26,11 @@
  * repair drift read the full list, and scoping it would commit out-of-scope
  * demotions while skipping their repair. The watermark is still written from
  * every new page, so scoping never loses a first-seen date.
+ *
+ * --objective (repeatable, or a comma list; needs --course) narrows the gaps
+ * further to those objectives, and with them the ranking of new pages. A
+ * course scope also drops the objectives content/coverage/<course>.yaml holds
+ * (see resolveScope); an unscoped run reads no coverage file at all.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -33,8 +38,8 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import {
   isAllowedSourceUrl,
-  courseObjectives,
   loadCourses,
+  resolveScope,
   loadSources,
   loadYamlDir,
 } from "./lib/content-model.mjs";
@@ -187,6 +192,21 @@ export function rankPages(pages, gaps) {
   );
 }
 
+/**
+ * The gaps a scoped run may act on: objective gaps inside the target set, and
+ * Mock shortfalls of the domains that hold one of its objectives. A null scope
+ * keeps everything.
+ *
+ * @param {object[]} gaps
+ * @param {{ objectives: string[] } | null} scope
+ */
+export function scopeGaps(gaps, scope) {
+  if (!scope) return gaps;
+  const objectives = new Set(scope.objectives);
+  const domains = new Set(scope.objectives.map((o) => o.split("/")[0]));
+  return gaps.filter((g) => (g.kind === "objective" ? objectives.has(g.objective) : domains.has(g.domain)));
+}
+
 export function gapsFrom(report, minPerObjective) {
   const gaps = [];
   for (const course of report) {
@@ -224,6 +244,8 @@ export function gapsFrom(report, minPerObjective) {
  * @param {boolean} [deps.checkLive]
  * @param {number} [deps.minPerObjective]
  * @param {string | null} [deps.course] scope the report to one course id
+ * @param {string | string[] | null} [deps.objectives] narrow it to these
+ *   `domain-N/<id>` objectives of that course
  * @param {string} [deps.today]
  * @param {(url: string) => Promise<string>} [deps.fetch]
  * @param {{ get(key: string): Promise<string | null> } | null} [deps.store]
@@ -237,6 +259,7 @@ export async function discover({
   checkLive = false,
   minPerObjective = 3,
   course = null,
+  objectives = null,
   today = new Date().toISOString().slice(0, 10),
   fetch = fetchText,
   store = storeFromEnv(),
@@ -244,9 +267,11 @@ export async function discover({
   warn = (msg) => console.warn(`::warning::${msg}`),
 } = {}) {
   const courses = loadCourses(contentDir);
-  // An unknown course throws (courseObjectives): "nothing to do for a course
-  // that does not exist" must not read as a quiet week.
-  if (course) courseObjectives(courses, course);
+  // An unknown course or objective, objectives without a course, or a
+  // malformed coverage file throws (resolveScope): "nothing to do for a course
+  // that does not exist" must not read as a quiet week, and a hold that
+  // cannot be read must not read as "no holds".
+  const scope = resolveScope({ contentDir, course, objectives, courses });
   const state = loadDiscoveryState(stateFile);
   const known = knownUrls(contentDir);
   const pages = [];
@@ -332,7 +357,10 @@ export async function discover({
     sources: loadSources(contentDir),
     questions: loadYamlDir(contentDir, "questions").map((e) => e.data),
   });
-  const gaps = gapsFrom(course ? report.filter((c) => c.course === course) : report, minPerObjective);
+  const gaps = scopeGaps(
+    gapsFrom(course ? report.filter((c) => c.course === course) : report, minPerObjective),
+    scope,
+  );
 
   // Pages carry no course of their own; the course's primary host is the
   // proxy. `fresh` stays whole for the watermark below.
@@ -344,6 +372,10 @@ export async function discover({
   const result = {
     generated_at: new Date().toISOString(),
     course,
+    // The target set the run authors against; null when unscoped. The author
+    // job carries it on in _run/limits.json, from the same course map.
+    objectives: scope?.objectives ?? null,
+    held: scope?.held ?? [],
     empty:
       selectedNew.length === 0 &&
       drifted.length === 0 &&
@@ -382,6 +414,8 @@ export async function discover({
 
 export function summarize({
   course = null,
+  objectives = null,
+  held = [],
   newPages,
   newPagesTotal,
   drifted,
@@ -395,6 +429,11 @@ export function summarize({
       `Scoped to course ${course}: its gaps and pages on its primary host only; drift is reported whole.`,
       "",
     );
+  if (course && objectives) {
+    lines.push(`Target objectives (${objectives.length}): ${objectives.join(", ")}`);
+    if (held.length) lines.push(`Held, not authored: ${held.join(", ")}`);
+    lines.push("");
+  }
   if (indexErrors.length) {
     lines.push(`## Index errors (${indexErrors.length}) — the new-page count below is incomplete`);
     for (const e of indexErrors) lines.push(`- ${e.index}: ${e.message}`);
@@ -436,6 +475,7 @@ function parseArgs(argv) {
     updateState: false,
     minPerObjective: 3,
     course: null,
+    objectives: [],
   };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
@@ -447,6 +487,7 @@ function parseArgs(argv) {
     else if (a === "--max-new") opts.maxNew = Number(value());
     else if (a === "--min-per-objective") opts.minPerObjective = Number(value());
     else if (a === "--course") opts.course = value();
+    else if (a === "--objective") opts.objectives.push(...value().split(","));
     else if (a === "--check-live") opts.checkLive = true;
     else if (a === "--update-state") opts.updateState = true;
     else throw new Error(`unknown argument ${a}`);

@@ -222,6 +222,104 @@ export function courseObjectives(courses, courseId) {
   return set;
 }
 
+/** A `domain-N/<objective>` id as the course maps and question files spell it. */
+export const OBJECTIVE_ID = /^domain-[1-9][0-9]*\/[a-z0-9][a-z0-9-]{1,62}$/;
+
+/**
+ * A comma-separated list (a workflow input) or an array, as distinct trimmed
+ * entries. Empty entries are dropped, so "" and [] both mean "none given".
+ *
+ * @param {string | string[] | null | undefined} value
+ * @returns {string[]}
+ */
+export function splitObjectives(value) {
+  const list = Array.isArray(value) ? value : String(value ?? "").split(",");
+  return [...new Set(list.map((s) => String(s).trim()).filter(Boolean))];
+}
+
+/**
+ * Objectives of one course held back from authoring, read from
+ * content/coverage/<course>.yaml (`objectives: [{ id, status: open|held }]`).
+ *
+ * The file is optional: its absence is the one documented "no holds". A file
+ * that is present but cannot be read, or whose entries do not name an
+ * objective of this course with a known status, throws -- a hold that cannot
+ * be read must not quietly turn into "author everything".
+ *
+ * @param {string} contentDir
+ * @param {string} courseId
+ * @param {Set<string>} known  the course's `domain-N/<id>` objectives
+ * @returns {Set<string>}
+ */
+export function coverageHolds(contentDir, courseId, known) {
+  const file = join(contentDir, "coverage", `${courseId}.yaml`);
+  const label = `content/coverage/${courseId}.yaml`;
+  if (!existsSync(file)) return new Set();
+  let doc;
+  try {
+    doc = parseYaml(readFileSync(file, "utf8"));
+  } catch (e) {
+    throw new Error(`${label}: unreadable: ${e.message}`);
+  }
+  if (!doc || typeof doc !== "object" || !Array.isArray(doc.objectives)) {
+    throw new Error(`${label}: expected a mapping with an objectives list`);
+  }
+  const held = new Set();
+  for (const [i, entry] of doc.objectives.entries()) {
+    const id = entry?.id;
+    if (typeof id !== "string" || !OBJECTIVE_ID.test(id)) {
+      throw new Error(`${label}: objectives[${i}] has no domain-N/<id> id`);
+    }
+    if (!known.has(id)) throw new Error(`${label}: ${id} is not an objective of ${courseId}`);
+    if (entry.status === "held") held.add(id);
+    else if (entry.status !== "open") {
+      throw new Error(`${label}: ${id} has status ${JSON.stringify(entry.status)}, expected open or held`);
+    }
+  }
+  return held;
+}
+
+/**
+ * The objective scope of a replenish run.
+ *
+ * Unscoped (no course): null, and the run behaves as it always has. A course
+ * alone scopes to every open objective of that course; a course plus
+ * objectives scopes to exactly those. Objectives without a course, an unknown
+ * course or objective, an explicitly requested held objective, or a course
+ * whose objectives are all held each throw: every one of them would otherwise
+ * become a run that authors something other than what was asked.
+ *
+ * @param {object} args
+ * @param {string} args.contentDir
+ * @param {string | null} [args.course]
+ * @param {string | string[] | null} [args.objectives]
+ * @param {Map<string, object>} [args.courses]
+ * @returns {{ course: string, objectives: string[], held: string[] } | null}
+ */
+export function resolveScope({ contentDir, course = null, objectives = null, courses = null }) {
+  const wanted = splitObjectives(objectives);
+  if (!course) {
+    if (wanted.length) throw new Error("objectives need a course: give the course they belong to");
+    return null;
+  }
+  const known = courseObjectives(courses ?? loadCourses(contentDir), course);
+  const held = coverageHolds(contentDir, course, known);
+  let target;
+  if (wanted.length) {
+    const unknown = wanted.filter((o) => !OBJECTIVE_ID.test(o) || !known.has(o));
+    if (unknown.length) throw new Error(`not objectives of ${course}: ${unknown.join(", ")}`);
+    const asked = wanted.filter((o) => held.has(o));
+    if (asked.length) {
+      throw new Error(`held in content/coverage/${course}.yaml, not authorable: ${asked.join(", ")}`);
+    }
+    target = wanted;
+  } else {
+    target = [...known].filter((o) => !held.has(o));
+    if (!target.length) throw new Error(`every objective of ${course} is held; nothing to author`);
+  }
+  return { course, objectives: target.sort(), held: [...held].sort() };
+}
+
 /** Sources keyed by id, for evidence resolution. */
 export function loadSources(contentDir, onError = null) {
   const sources = new Map();

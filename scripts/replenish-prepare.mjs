@@ -8,10 +8,17 @@
  * read-mostly.
  *
  * Subcommands:
+ *   limits --max-new <n> --max-questions <n> --now <iso> [--course <id>]
+ *          [--objectives <domain-N/id,...>] --out limits.json
+ *       Write the run's caps and objective scope (see resolveScope) for the
+ *       agents to read and the gates below to enforce. An unknown course or
+ *       objective, or objectives without a course, fails here.
  *   manifest --select select.json --candidates candidates.json --out selected.json
+ *            [--limits limits.json]
  *       Validate the author's page selection against the discovery report and
- *       the course maps; write the valid rows (nothing is appended yet) and
- *       print one tab-separated capture line per row.
+ *       the course maps -- the run's target objectives when --limits is given;
+ *       write the valid rows (nothing is appended yet) and print one
+ *       tab-separated capture line per row.
  *   manifest-commit --selected selected.json --captured <id,id,...>
  *       Append to content/capture-manifest.yaml only the rows whose capture
  *       succeeded, so a failed capture never leaves an orphan row that would
@@ -23,13 +30,15 @@
  *   revalidation-ids --sources <id,id,...>
  *       Print the needs_review question ids citing any of those sources,
  *       except those a reviewer already rejected unchanged.
- *   guard --base <git ref> [--max <n>] [--forbid-published-now]
+ *   guard --base <git ref> [--max <n>] [--forbid-published-now --author <id> --limits limits.json]
  *       Fail when more than <n> question files changed against the base
  *       (untracked files included; --max omitted disables the cap) or when
  *       any file that was `published` or
  *       `retired` at the base changed at all. With --forbid-published-now
  *       (the author phase) also fail when a changed file is published or
- *       retired NOW: the agent never publishes anything itself.
+ *       retired NOW: the agent never publishes anything itself. With --limits
+ *       (required on the author phase) a scoped run also fails on any changed
+ *       file outside its course or target objectives.
  *   boundary --base <git ref>
  *       Fail when anything outside content/questions was changed OR created
  *       since the base. The author agent may touch nothing else; this runs
@@ -64,6 +73,7 @@ import {
   loadCourses,
   loadSources,
   loadYamlDir,
+  resolveScope,
 } from "./lib/content-model.mjs";
 import { questionFingerprint } from "./lib/question-review.mjs";
 import { storeFromEnv } from "./lib/snapshot-store.mjs";
@@ -86,6 +96,116 @@ export function knownObjectives(contentDir = CONTENT, courseId = null) {
     for (const d of course.domains ?? []) for (const o of d.objectives ?? []) set.add(`${d.id}/${o.id}`);
   }
   return set;
+}
+
+/**
+ * The run's objective scope as _run/limits.json carries it, re-resolved
+ * against the course maps and coverage holds in the tree being checked.
+ *
+ * The file is not optional here: whoever passes it is asking for the scope to
+ * be enforced, so an unreadable or malformed file throws instead of reading as
+ * "unscoped". `course: null` (with no objectives) is the explicit unscoped
+ * value and returns null. _run/ is covered by the snapshot taken before each
+ * agent and verified after it, so the file the gates read is the one the
+ * workflow wrote.
+ *
+ * @param {object} args
+ * @param {string} args.limitsFile
+ * @param {string} [args.contentDir]
+ * @returns {{ course: string, objectives: string[], held: string[] } | null}
+ */
+export function readRunScope({ limitsFile, contentDir = CONTENT }) {
+  let limits;
+  try {
+    limits = JSON.parse(readFileSync(limitsFile, "utf8"));
+  } catch (e) {
+    throw new Error(`${limitsFile}: unreadable, so the run's scope is unknown: ${e.message}`);
+  }
+  if (!limits || typeof limits !== "object" || Array.isArray(limits) || !("course" in limits)) {
+    throw new Error(`${limitsFile}: no "course" key, so the run's scope is unknown`);
+  }
+  const { course, objectives } = limits;
+  if (course === null) {
+    if (objectives !== null && objectives !== undefined) {
+      throw new Error(`${limitsFile}: objectives without a course`);
+    }
+    return null;
+  }
+  if (typeof course !== "string" || !course) throw new Error(`${limitsFile}: course is not a course id`);
+  if (
+    !Array.isArray(objectives) ||
+    !objectives.length ||
+    !objectives.every((o) => typeof o === "string" && OBJECTIVE.test(o))
+  ) {
+    throw new Error(`${limitsFile}: a scoped run needs a non-empty list of domain-N/<id> objectives`);
+  }
+  return resolveScope({ contentDir, course, objectives });
+}
+
+/**
+ * Changed question files that fall outside a scoped run: a different
+ * `course_id`, or an `objective` outside the target set. A file the change
+ * deleted is judged by what it was at the base, so a scoped run cannot clear
+ * another course's work either. A file that cannot be read is reported: its
+ * course is unknown, and unknown is not "in scope".
+ *
+ * `published`/`retired` at the base and non-.yaml paths are skipped here
+ * because guardChanges already refuses them.
+ *
+ * @param {object} args
+ * @param {string[]} args.changed
+ * @param {{ course: string, objectives: string[] }} args.scope
+ * @param {(file: string) => {absent: true} | {error: string} | {data: any}} args.readNow
+ * @param {(file: string) => any} args.readAtBase  parsed data, or null when absent
+ * @param {(file: string) => string | null} [args.statusAtBase]
+ */
+export function scopeProblems({ changed, scope, readNow, readAtBase, statusAtBase = null }) {
+  const objectives = new Set(scope.objectives);
+  const problems = [];
+  const outside = (file, data, verb) => {
+    if (data?.course_id !== scope.course) {
+      problems.push(
+        `${file} ${verb} course ${JSON.stringify(data?.course_id ?? null)}, but this run is scoped to ${scope.course}`,
+      );
+    } else if (!objectives.has(data?.objective)) {
+      problems.push(
+        `${file} ${verb} objective ${JSON.stringify(data?.objective ?? null)}, outside this run's target objectives`,
+      );
+    }
+  };
+  for (const file of changed) {
+    if (!file.endsWith(".yaml")) continue;
+    if (statusAtBase && ["published", "retired"].includes(statusAtBase(file))) continue;
+    const now = readNow(file);
+    if ("absent" in now) {
+      const was = readAtBase(file);
+      if (was) outside(file, was, "was deleted from");
+      continue;
+    }
+    if ("error" in now) {
+      problems.push(`${file} cannot be checked against this run's scope: ${now.error}`);
+      continue;
+    }
+    outside(file, now.data, "is in");
+  }
+  return problems;
+}
+
+/** A question file as it is on disk, for scopeProblems. */
+export function questionOnDisk({ file, cwd = process.cwd() }) {
+  const abs = join(cwd, file);
+  if (!existsSync(abs)) return { absent: true };
+  try {
+    return { data: parseYaml(readFileSync(abs, "utf8")) };
+  } catch (e) {
+    return { error: `not parseable YAML: ${String(e?.message ?? e).split("\n")[0]}` };
+  }
+}
+
+/** A question file as it was at the base, or null when it was not there. */
+export function questionAtRef({ base, file, cwd = process.cwd() }) {
+  if (!existsAtRef({ base, file, cwd })) return null;
+  return parseYaml(git(["show", `${base}:${file}`], cwd));
 }
 
 /**
@@ -703,19 +823,59 @@ async function main(argv) {
     const existingIds = new Set(loadSources(CONTENT).keys());
     const manifestFile = join(CONTENT, "capture-manifest.yaml");
     for (const row of parseYaml(readFileSync(manifestFile, "utf8"))?.sources ?? []) existingIds.add(row.id);
-    const { rows, dropped } = validateSelection({
-      select,
-      candidates,
-      // A run scoped to one course (candidates.course) places pages only on
-      // that course's objectives.
-      objectives: knownObjectives(CONTENT, candidates.course ?? null),
-      existingIds,
-    });
+    // A run scoped to one course places pages only on that course's
+    // objectives, and with --limits only on the run's target objectives. The
+    // two files come from different jobs; a disagreement on the course is an
+    // error, never a choice between them.
+    const limitsFile = opt(args, "limits");
+    let objectives;
+    if (limitsFile) {
+      const scope = readRunScope({ limitsFile });
+      if ((scope?.course ?? null) !== (candidates.course ?? null)) {
+        throw new Error(
+          `limits.json is scoped to ${scope?.course ?? "no course"} but the discovery report to ${candidates.course ?? "no course"}`,
+        );
+      }
+      objectives = scope ? new Set(scope.objectives) : knownObjectives(CONTENT, null);
+    } else {
+      objectives = knownObjectives(CONTENT, candidates.course ?? null);
+    }
+    const { rows, dropped } = validateSelection({ select, candidates, objectives, existingIds });
     for (const d of dropped)
       console.error(`::warning::dropped selection ${JSON.stringify(d.row)}: ${d.why.join("; ")}`);
     writeFileSync(out, JSON.stringify(rows, null, 2));
     writeFileSync(opt(args, "dropped") ?? "dropped.json", JSON.stringify(dropped, null, 2));
     for (const r of rows) console.log(captureLine(r));
+    return;
+  }
+  if (cmd === "limits") {
+    const int = (name) => {
+      const v = opt(args, name);
+      if (!/^[0-9]+$/.test(v ?? "")) throw new Error(`--${name} must be a non-negative integer`);
+      return Number(v);
+    };
+    const now = opt(args, "now");
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(now ?? ""))
+      throw new Error("--now must be ISO 8601 UTC");
+    const scope = resolveScope({
+      contentDir: CONTENT,
+      course: opt(args, "course") || null,
+      objectives: opt(args, "objectives") ?? null,
+    });
+    const limits = {
+      max_new: int("max-new"),
+      max_questions: int("max-questions"),
+      now,
+      course: scope?.course ?? null,
+      objectives: scope?.objectives ?? null,
+      held: scope?.held ?? [],
+    };
+    writeFileSync(opt(args, "out") ?? "limits.json", JSON.stringify(limits, null, 2) + "\n");
+    console.log(
+      scope
+        ? `scoped to ${scope.course}: ${scope.objectives.length} target objective(s), ${scope.held.length} held`
+        : "unscoped",
+    );
     return;
   }
   if (cmd === "manifest-commit") {
@@ -793,6 +953,27 @@ async function main(argv) {
     if (authorPhase && !expected) {
       console.error("::error::guard --author <id> is required on the author phase");
       process.exit(1);
+    }
+    // The same reasoning for the scope: a scoped run whose gate quietly lost
+    // --limits would check nothing, so the author phase must name the file.
+    const limitsFile = opt(args, "limits");
+    if (authorPhase && !limitsFile) {
+      console.error("::error::guard --limits <file> is required on the author phase");
+      process.exit(1);
+    }
+    if (limitsFile) {
+      const scope = readRunScope({ limitsFile });
+      if (scope) {
+        problems.push(
+          ...scopeProblems({
+            changed,
+            scope,
+            readNow: (file) => questionOnDisk({ file }),
+            readAtBase: (file) => questionAtRef({ base, file }),
+            statusAtBase: (file) => statusAtRef({ base, file }),
+          }),
+        );
+      }
     }
     if (expected) {
       problems.push(

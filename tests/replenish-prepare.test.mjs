@@ -33,7 +33,10 @@ import {
   knownObjectives,
   unverifiedNewItems,
   existsAtRef,
+  readRunScope,
+  scopeProblems,
 } from "../scripts/replenish-prepare.mjs";
+import { resolveScope } from "../scripts/lib/content-model.mjs";
 import {
   mergeVersions,
   buildSourceRecord,
@@ -2849,8 +2852,8 @@ test("the author agent is handed the time instead of guessing it", () => {
   // flip on the fatal path: a guessed time later than this 06:30 UTC run is a
   // future authored.at, which the lint refuses, failing the whole run.
   const start = workflow.jobs.author.steps.find((s) => s.name === "Start the replenish branch").run;
-  assert.match(start, /"now": "%s"/);
-  assert.match(start, /date -u \+%Y-%m-%dT%H:%M:%SZ/);
+  assert.match(start, /replenish-prepare\.mjs limits /);
+  assert.match(start, /--now "\$\(date -u \+%Y-%m-%dT%H:%M:%SZ\)"/);
   const author = workflow.jobs.author.steps.find(
     (s) => s.name === "Author agent writes review_ready questions",
   );
@@ -3268,5 +3271,408 @@ test("existsAtRef tells a file created since the base from one that was there", 
     );
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Objective targeting (Q3): a scoped run is enforced mechanically, not only by
+// the prompt. Fixture: course-a with domain-1/{alpha,beta} and domain-2/gamma,
+// course-b with domain-1/delta.
+
+function scopeContent(coverage = null) {
+  const dir = mkdtempSync(join(tmpdir(), "academy-scope-"));
+  mkdirSync(join(dir, "courses"));
+  const course = (id, domains) =>
+    yaml({
+      schema_version: 1,
+      id,
+      title: id,
+      mock: { question_count: 1, time_limit_minutes: 10 },
+      domains: domains.map(([did, objectives]) => ({
+        id: did,
+        title: did,
+        weight: Math.floor(100 / domains.length),
+        mock_questions: 1,
+        objectives: objectives.map((o) => ({ id: o, title: o })),
+      })),
+    });
+  writeFileSync(
+    join(dir, "courses", "course-a.yaml"),
+    course("course-a", [
+      ["domain-1", ["alpha", "beta"]],
+      ["domain-2", ["gamma"]],
+    ]),
+  );
+  writeFileSync(join(dir, "courses", "course-b.yaml"), course("course-b", [["domain-1", ["delta"]]]));
+  if (coverage !== null) {
+    mkdirSync(join(dir, "coverage"));
+    writeFileSync(
+      join(dir, "coverage", "course-a.yaml"),
+      typeof coverage === "string" ? coverage : yaml(coverage),
+    );
+  }
+  return dir;
+}
+
+test("resolveScope: unscoped is null, a course alone is every objective, explicit ids are exactly those", () => {
+  const dir = scopeContent();
+  try {
+    assert.equal(resolveScope({ contentDir: dir }), null);
+    assert.equal(resolveScope({ contentDir: dir, course: "", objectives: "" }), null);
+    assert.deepEqual(resolveScope({ contentDir: dir, course: "course-a" }), {
+      course: "course-a",
+      objectives: ["domain-1/alpha", "domain-1/beta", "domain-2/gamma"],
+      held: [],
+    });
+    assert.deepEqual(
+      resolveScope({ contentDir: dir, course: "course-a", objectives: " domain-2/gamma,domain-1/alpha," })
+        .objectives,
+      ["domain-1/alpha", "domain-2/gamma"],
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("resolveScope fails closed on objectives without a course and on ids outside the course map", () => {
+  const dir = scopeContent();
+  try {
+    assert.throws(
+      () => resolveScope({ contentDir: dir, objectives: "domain-1/alpha" }),
+      /objectives need a course/,
+    );
+    // delta is a real objective, of the other course.
+    assert.throws(
+      () =>
+        resolveScope({ contentDir: dir, course: "course-a", objectives: "domain-1/alpha,domain-1/delta" }),
+      /not objectives of course-a: domain-1\/delta/,
+    );
+    assert.throws(
+      () => resolveScope({ contentDir: dir, course: "course-a", objectives: "alpha" }),
+      /not objectives of course-a: alpha/,
+    );
+    assert.throws(() => resolveScope({ contentDir: dir, course: "nope" }), /unknown course "nope"/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("resolveScope drops held objectives and refuses to author one by name", () => {
+  const dir = scopeContent({
+    objectives: [
+      { id: "domain-1/alpha", status: "open", strength: "strong" },
+      { id: "domain-1/beta", status: "held", strength: "missing" },
+    ],
+  });
+  try {
+    assert.deepEqual(resolveScope({ contentDir: dir, course: "course-a" }), {
+      course: "course-a",
+      objectives: ["domain-1/alpha", "domain-2/gamma"],
+      held: ["domain-1/beta"],
+    });
+    assert.throws(
+      () => resolveScope({ contentDir: dir, course: "course-a", objectives: "domain-1/beta" }),
+      /held in content\/coverage\/course-a\.yaml, not authorable: domain-1\/beta/,
+    );
+    // The other course has no coverage file: no holds, no error.
+    assert.deepEqual(resolveScope({ contentDir: dir, course: "course-b" }).held, []);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("resolveScope refuses a course whose every objective is held", () => {
+  const dir = scopeContent({
+    objectives: ["domain-1/alpha", "domain-1/beta", "domain-2/gamma"].map((id) => ({ id, status: "held" })),
+  });
+  try {
+    assert.throws(() => resolveScope({ contentDir: dir, course: "course-a" }), /every objective .* is held/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("a present but malformed coverage file is an error, never 'no holds'", () => {
+  const cases = [
+    ["objectives: [unclosed", /unreadable/],
+    [{ objectives: "domain-1/beta" }, /expected a mapping with an objectives list/],
+    [{ objectives: [{ status: "held" }] }, /objectives\[0\] has no domain-N\/<id> id/],
+    [{ objectives: [{ id: "domain-1/delta", status: "held" }] }, /not an objective of course-a/],
+    [{ objectives: [{ id: "domain-1/beta", status: "paused" }] }, /expected open or held/],
+    [{ objectives: [{ id: "domain-1/beta" }] }, /expected open or held/],
+  ];
+  for (const [coverage, why] of cases) {
+    const dir = scopeContent(coverage);
+    try {
+      assert.throws(() => resolveScope({ contentDir: dir, course: "course-a" }), why);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+});
+
+const scopedQ = (course_id, objective) => ({ id: "q-x", course_id, objective, status: "review_ready" });
+
+test("scopeProblems rejects files of another course or outside the target objectives", () => {
+  const scope = { course: "course-a", objectives: ["domain-1/alpha"] };
+  const files = {
+    "content/questions/q-in.yaml": { data: scopedQ("course-a", "domain-1/alpha") },
+    "content/questions/q-course.yaml": { data: scopedQ("course-b", "domain-1/alpha") },
+    "content/questions/q-obj.yaml": { data: scopedQ("course-a", "domain-1/beta") },
+    "content/questions/q-bare.yaml": { data: { id: "q-bare" } },
+    "content/questions/q-bad.yaml": { error: "not parseable YAML: boom" },
+    "content/questions/q-gone.yaml": { absent: true },
+    "content/questions/q-gone-in.yaml": { absent: true },
+    "content/questions/q-new-gone.yaml": { absent: true },
+    "content/questions/q-pub.yaml": { data: scopedQ("course-b", "domain-1/delta") },
+  };
+  const atBase = {
+    "content/questions/q-gone.yaml": scopedQ("course-b", "domain-1/delta"),
+    "content/questions/q-gone-in.yaml": scopedQ("course-a", "domain-1/alpha"),
+  };
+  const problems = scopeProblems({
+    changed: Object.keys(files),
+    scope,
+    readNow: (f) => files[f],
+    readAtBase: (f) => atBase[f] ?? null,
+    statusAtBase: (f) => (f.endsWith("q-pub.yaml") ? "published" : null),
+  });
+  assert.deepEqual(problems, [
+    'content/questions/q-course.yaml is in course "course-b", but this run is scoped to course-a',
+    'content/questions/q-obj.yaml is in objective "domain-1/beta", outside this run\'s target objectives',
+    "content/questions/q-bare.yaml is in course null, but this run is scoped to course-a",
+    "content/questions/q-bad.yaml cannot be checked against this run's scope: not parseable YAML: boom",
+    'content/questions/q-gone.yaml was deleted from course "course-b", but this run is scoped to course-a',
+  ]);
+});
+
+test("readRunScope fails closed on an unreadable or malformed limits file", () => {
+  const dir = scopeContent();
+  const file = join(dir, "limits.json");
+  const write = (v) => writeFileSync(file, typeof v === "string" ? v : JSON.stringify(v));
+  const base = { max_new: 1, max_questions: 1, now: "2026-11-14T00:00:00Z" };
+  try {
+    assert.throws(
+      () => readRunScope({ limitsFile: join(dir, "missing.json"), contentDir: dir }),
+      /unreadable/,
+    );
+    write("{ not json");
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /unreadable/);
+    // The pre-Q3 shape carries no course key: the scope is unknown, not absent.
+    write(base);
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /no "course" key/);
+    write([]);
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /no "course" key/);
+    write({ ...base, course: "course-a", objectives: [] });
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /non-empty list/);
+    write({ ...base, course: "course-a" });
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /non-empty list/);
+    write({ ...base, course: 7, objectives: ["domain-1/alpha"] });
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /not a course id/);
+    write({ ...base, course: null, objectives: ["domain-1/alpha"] });
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /objectives without a course/);
+    // Re-resolved against the map: an id that is not the course's fails too.
+    write({ ...base, course: "course-a", objectives: ["domain-1/delta"] });
+    assert.throws(() => readRunScope({ limitsFile: file, contentDir: dir }), /not objectives of course-a/);
+
+    write({ ...base, course: null, objectives: null });
+    assert.equal(readRunScope({ limitsFile: file, contentDir: dir }), null);
+    write({ ...base, course: "course-a", objectives: ["domain-1/alpha"] });
+    assert.deepEqual(readRunScope({ limitsFile: file, contentDir: dir }).objectives, ["domain-1/alpha"]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+/** A git repo whose content/ holds the scope fixture, and a CLI runner over it. */
+function scopedRepo(coverage = null) {
+  const { dir, run: git } = gitRepo();
+  const content = scopeContent(coverage);
+  execFileSync("cp", ["-R", `${content}/.`, join(dir, "content")]);
+  rmSync(content, { recursive: true, force: true });
+  git(["add", "-A"]);
+  git(["commit", "-q", "-m", "base"]);
+  const base = git(["rev-parse", "HEAD"]).trim();
+  const script = fileURLToPath(new URL("../scripts/replenish-prepare.mjs", import.meta.url));
+  const cli = (args) =>
+    spawnSync(process.execPath, [script, ...args], {
+      cwd: dir,
+      encoding: "utf8",
+      env: { ...process.env, ACADEMY_CONTENT_DIR: join(dir, "content") },
+    });
+  const limits = (...extra) =>
+    cli([
+      "limits",
+      "--max-new",
+      "1",
+      "--max-questions",
+      "5",
+      "--now",
+      "2026-11-14T00:00:00Z",
+      ...extra,
+      "--out",
+      join(dir, "_run-limits.json"),
+    ]);
+  const author = (id, course_id, objective) =>
+    writeFileSync(
+      join(dir, "content", "questions", `${id}.yaml`),
+      yaml({ ...q(id, "review_ready", "src-a"), course_id, objective, authored: { by: "agent:t" } }),
+    );
+  const guard = (...extra) =>
+    cli(["guard", "--base", base, "--max", "5", "--forbid-published-now", "--author", "agent:t", ...extra]);
+  return { dir, git, base, cli, limits, author, guard, limitsFile: join(dir, "_run-limits.json") };
+}
+
+test("the author-phase guard rejects an off-course and an off-objective file in a scoped run", () => {
+  const r = scopedRepo();
+  try {
+    assert.equal(r.limits("--course", "course-a", "--objectives", "domain-1/alpha").status, 0);
+    r.author("q-in0000000001", "course-a", "domain-1/alpha");
+    assert.equal(r.guard("--limits", r.limitsFile).status, 0, "an in-scope file passes");
+
+    r.author("q-off000000001", "course-b", "domain-1/delta");
+    r.author("q-off000000002", "course-a", "domain-1/beta");
+    const res = r.guard("--limits", r.limitsFile);
+    assert.equal(res.status, 1);
+    assert.match(
+      res.stderr,
+      /q-off000000001\.yaml is in course "course-b", but this run is scoped to course-a/,
+    );
+    assert.match(res.stderr, /q-off000000002\.yaml is in objective "domain-1\/beta", outside/);
+    assert.doesNotMatch(res.stderr, /q-in0000000001/);
+  } finally {
+    rmSync(r.dir, { recursive: true, force: true });
+  }
+});
+
+test("an unscoped run's guard is unchanged: any course and objective pass", () => {
+  const r = scopedRepo();
+  try {
+    assert.equal(r.limits("--course", "", "--objectives", "").status, 0);
+    assert.equal(JSON.parse(readFileSync(r.limitsFile, "utf8")).course, null);
+    r.author("q-off000000001", "course-b", "domain-1/delta");
+    r.author("q-off000000002", "course-a", "domain-1/beta");
+    const res = r.guard("--limits", r.limitsFile);
+    assert.equal(res.status, 0, res.stderr);
+  } finally {
+    rmSync(r.dir, { recursive: true, force: true });
+  }
+});
+
+test("a scoped guard fails closed: no --limits, or a malformed one, is an error", () => {
+  const r = scopedRepo();
+  try {
+    r.author("q-in0000000001", "course-a", "domain-1/alpha");
+    const missing = r.guard();
+    assert.equal(missing.status, 1);
+    assert.match(missing.stderr, /--limits <file> is required on the author phase/);
+    writeFileSync(r.limitsFile, "{ truncated");
+    const bad = r.guard("--limits", r.limitsFile);
+    assert.equal(bad.status, 1);
+    assert.match(bad.stderr, /unreadable, so the run's scope is unknown/);
+    // The post-promotion guard names no author and no scope, and still runs.
+    assert.equal(r.cli(["guard", "--base", r.base]).status, 0);
+  } finally {
+    rmSync(r.dir, { recursive: true, force: true });
+  }
+});
+
+test("a course-only run excludes held objectives, and the guard enforces the hold", () => {
+  const r = scopedRepo({ objectives: [{ id: "domain-1/beta", status: "held" }] });
+  try {
+    assert.equal(r.limits("--course", "course-a").status, 0);
+    const limits = JSON.parse(readFileSync(r.limitsFile, "utf8"));
+    assert.deepEqual(limits.objectives, ["domain-1/alpha", "domain-2/gamma"]);
+    assert.deepEqual(limits.held, ["domain-1/beta"]);
+    r.author("q-held00000001", "course-a", "domain-1/beta");
+    const res = r.guard("--limits", r.limitsFile);
+    assert.equal(res.status, 1);
+    assert.match(res.stderr, /q-held00000001\.yaml is in objective "domain-1\/beta", outside/);
+    // Naming the held objective outright is refused before anything runs.
+    const named = r.limits("--course", "course-a", "--objectives", "domain-1/beta");
+    assert.equal(named.status, 1);
+    assert.match(named.stderr, /not authorable: domain-1\/beta/);
+  } finally {
+    rmSync(r.dir, { recursive: true, force: true });
+  }
+});
+
+test("the page selection places pages only on the run's target objectives", () => {
+  const r = scopedRepo();
+  try {
+    writeFileSync(join(r.dir, "content", "capture-manifest.yaml"), "sources: []\n");
+    assert.equal(r.limits("--course", "course-a", "--objectives", "domain-1/alpha").status, 0);
+    const candidates = { ...CANDIDATES, course: "course-a" };
+    const select = [
+      { id: "src-embed", url: CANDIDATES.newPages[0].url, objectives: ["domain-1/alpha", "domain-1/beta"] },
+      { id: "src-rerank", url: CANDIDATES.newPages[1].url, objectives: ["domain-2/gamma"] },
+    ];
+    writeFileSync(join(r.dir, "select.json"), JSON.stringify(select));
+    writeFileSync(join(r.dir, "candidates.json"), JSON.stringify(candidates));
+    const args = ["manifest", "--select", "select.json", "--candidates", "candidates.json"];
+    const res = r.cli([
+      ...args,
+      "--limits",
+      r.limitsFile,
+      "--out",
+      "selected.json",
+      "--dropped",
+      "dropped.json",
+    ]);
+    assert.equal(res.status, 0, res.stderr);
+    const rows = JSON.parse(readFileSync(join(r.dir, "selected.json"), "utf8"));
+    assert.deepEqual(
+      rows.map((row) => [row.id, row.objectives]),
+      [["src-embed", ["domain-1/alpha"]]],
+    );
+    const dropped = JSON.parse(readFileSync(join(r.dir, "dropped.json"), "utf8"));
+    assert.deepEqual(
+      dropped.map((d) => d.row.id),
+      ["src-rerank"],
+    );
+
+    // Discovery and limits must agree on the course.
+    writeFileSync(join(r.dir, "candidates.json"), JSON.stringify({ ...CANDIDATES, course: "course-b" }));
+    const mismatch = r.cli([...args, "--limits", r.limitsFile, "--out", "selected.json"]);
+    assert.equal(mismatch.status, 1);
+    assert.match(mismatch.stderr, /limits\.json is scoped to course-a but the discovery report to course-b/);
+  } finally {
+    rmSync(r.dir, { recursive: true, force: true });
+  }
+});
+
+test("the workflow carries the objective scope from dispatch to every gate", () => {
+  const workflow = parseYaml(
+    readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8"),
+  );
+  const inputs = workflow.on.workflow_dispatch.inputs;
+  assert.equal(inputs.objectives.type, "string");
+  assert.equal(inputs.min_per_objective.default, "3");
+
+  const discoverStep = workflow.jobs.discover.steps.find((s) => s.id === "discover");
+  assert.equal(discoverStep.env.OBJECTIVES, "${{ inputs.objectives }}");
+  assert.match(discoverStep.run, /--objective "\$OBJECTIVES"/);
+  assert.match(discoverStep.run, /--min-per-objective "\$MIN_PER_OBJECTIVE"/);
+  assert.match(discoverStep.run, /objectives need a course/);
+
+  const steps = workflow.jobs.author.steps;
+  const start = steps.find((s) => s.name === "Start the replenish branch");
+  assert.equal(start.env.COURSE, "${{ inputs.course }}");
+  assert.equal(start.env.OBJECTIVES, "${{ inputs.objectives }}");
+  assert.match(start.run, /--course "\$COURSE" --objectives "\$OBJECTIVES" --out _run\/limits\.json/);
+
+  const manifest = steps.map((s) => s.run ?? "").find((r) => r.includes("replenish-prepare.mjs manifest "));
+  assert.match(manifest, /--limits _run\/limits\.json/);
+
+  const gates = steps.find((s) => s.name === "Deterministic gates on the authored content");
+  const guard = gates.run.split("\n").find((l) => l.includes("replenish-prepare.mjs guard"));
+  assert.match(guard, /--limits _run\/limits\.json/);
+
+  const authorAgents = steps.filter(
+    (s) => s.uses?.startsWith("anthropics/claude-code-action@") && s.id?.startsWith("author-agent"),
+  );
+  assert.equal(authorAgents.length, 2, "the author agent and its retry");
+  for (const step of authorAgents) {
+    assert.match(step.with.prompt, /When _run\/limits\.json names a `course`/);
   }
 });
