@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { MSelect } from "@mctlhq/ui";
 import { calculateStudyStreak, getMistakeQuestionIds, progressVersion } from "../services/progressStore";
 import { useCourseStore } from "../services/courseStore";
 import { questionIdsForCourse } from "../services/contentBundle";
@@ -24,14 +25,27 @@ const { courses, currentCourseId, setCourse, canSelect } = useCourseStore();
 // every learning page's own context line carry the full name.
 const currentCourse = computed(() => findCourse(currentCourseId.value));
 
-async function onCourseChange(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  if (!target?.value) return;
-  const next = target.value;
+// MSelect options: unavailable courses stay listed but disabled, so the
+// roadmap is visible without ever being selectable.
+const courseOptions = computed(() =>
+  courses.map((c) => ({
+    value: c.id,
+    label: c.available ? c.title : `${c.title} — Coming soon`,
+    disabled: !c.available,
+  })),
+);
+
+const courseContext = ref<HTMLElement | null>(null);
+
+async function onCourseChange(next: string) {
+  if (!next) return;
   const revert = () => {
     // Put the control back where it was (unavailable course, or a
-    // navigation that did not happen).
-    target.value = currentCourseId.value ?? "";
+    // navigation that did not happen). MSelect is controlled by
+    // currentCourseId, which did not change, so nothing re-renders it: the
+    // native control still shows the refused pick until it is reset here.
+    const control = courseContext.value?.querySelector("select");
+    if (control) control.value = currentCourseId.value ?? "";
   };
   // On a course page the page *is* the course, so picking another one has to
   // move to that course's page: changing only the stored selection left the
@@ -135,20 +149,21 @@ const links = [
           >&nbsp;academy</span
         ></RouterLink
       >
-      <div class="mctl-site-header__context app-nav-context">
+      <div
+        ref="courseContext"
+        class="mctl-site-header__context mctl-site-header__context--select app-nav-context"
+      >
         <label class="sr-only" for="course-select">Course</label>
-        <select
+        <MSelect
           id="course-select"
+          size="sm"
           class="course-select"
           data-testid="course-select"
           :title="currentCourse?.title"
-          :value="currentCourseId ?? ''"
-          @change="onCourseChange"
-        >
-          <option v-for="c in courses" :key="c.id" :value="c.id" :disabled="!c.available">
-            {{ c.available ? c.title : `${c.title} — Coming soon` }}
-          </option>
-        </select>
+          :options="courseOptions"
+          :model-value="currentCourseId ?? ''"
+          @update:model-value="onCourseChange"
+        />
       </div>
       <nav id="site-nav" class="mctl-site-nav" aria-label="Main">
         <RouterLink
@@ -214,48 +229,11 @@ const links = [
   font-weight: 400;
 }
 
+/* The switcher is MSelect size="sm" in site.css's --select context (0.21.0),
+   which supplies the header type, chevron and focus state; only the width
+   cap is ours. */
 .course-select {
-  min-width: 0;
   max-width: 14rem;
-  height: 2rem;
-  padding: 0 1.75rem 0 0.6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border: 1px solid var(--control-border);
-  border-radius: var(--mctl-radius-md);
-  /* Interim local styling until the switcher moves to MSelect: no native
-     chrome (it ignores the header theme on macOS), a CSS chevron drawn with
-     two gradients so it follows the theme colour without an SVG asset. */
-  appearance: none;
-  background-color: var(--control-bg);
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--surface-fg-muted) 50%),
-    linear-gradient(135deg, var(--surface-fg-muted) 50%, transparent 50%);
-  background-position:
-    calc(100% - 0.95rem) 50%,
-    calc(100% - 0.65rem) 50%;
-  background-size: 0.3rem 0.3rem;
-  background-repeat: no-repeat;
-  color: var(--surface-fg);
-  font: inherit;
-  /* Same size as the nav tabs and the site.css context slot it sits in. */
-  font-size: var(--site-nav-size);
-  line-height: 1;
-  cursor: pointer;
-}
-
-.course-select:hover {
-  border-color: var(--surface-line-strong);
-}
-
-/* A border-plus-shadow focus state, not an offset outline: Chrome keeps
-   :focus-visible on a <select> after a mouse pick, and the outline drew a
-   second accent box around the control's own border. */
-.course-select:focus-visible {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: var(--control-focus-shadow);
 }
 
 .mistake-badge-empty {
@@ -309,7 +287,6 @@ const links = [
 /* 44px touch targets through tablet width. */
 @media (max-width: 980px) {
   .theme-toggle,
-  .course-select,
   .mctl-site-burger,
   .app-nav-link,
   .user-nav-signed-in :deep(summary),
@@ -317,6 +294,11 @@ const links = [
   .user-nav-signin :deep(.signin-zitadel) {
     min-width: 2.75rem;
     min-height: 2.75rem;
+  }
+
+  /* The control, not MSelect's wrapper: outranks the sm height (0,3,0). */
+  .app-nav-context .course-select :deep(.m-select__control) {
+    height: 2.75rem;
   }
 }
 
@@ -348,17 +330,6 @@ const links = [
     padding: 0;
   }
 
-  /* site.css clips the context slot (overflow: hidden) once the burger shows;
-     the select truncates its own text, so let the slot overflow and keep the
-     focus shadow visible. Chained to outrank site.css's :has() selector. */
-  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
-    overflow: visible;
-  }
-
-  .course-select {
-    max-width: 100%;
-  }
-
   .user-nav-signin :deep(.signin-zitadel .signin-label-short) {
     display: inline-block;
     max-width: 6rem;
@@ -379,13 +350,23 @@ const links = [
     padding-inline: 0 4px;
   }
 
+  /* site.css caps the context at 40vw once the burger shows, which left
+     "AI Clo…" at 375px. Here the course takes whatever the brand and the
+     actions leave, and never less than a readable width. Chained to outrank
+     site.css's :has() selector. */
+  .app-nav.mctl-site-header .mctl-site-header__context.app-nav-context {
+    flex: 1 1 auto;
+    min-width: 7.5rem;
+    max-width: none;
+  }
+
   .course-select {
     flex: 1 1 auto;
-    min-width: 5.5rem;
-    padding-inline: 0.4rem 1.5rem;
-    background-position:
-      calc(100% - 0.8rem) 50%,
-      calc(100% - 0.5rem) 50%;
+    max-width: none;
+  }
+
+  .app-nav-context .course-select :deep(.m-select__control) {
+    padding-inline: 0.5rem 1.5rem;
   }
 
   .mctl-site-header__actions {

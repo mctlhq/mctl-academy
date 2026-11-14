@@ -197,6 +197,30 @@ describe("AppNav component", () => {
       expect(useCourseStore().currentCourseId.value).toBe(secondCourse.id);
     });
 
+    test("is MSelect size=sm in the site header's select context, unavailable courses disabled", async () => {
+      const { wrapper } = await mountAt("/practice");
+      const context = wrapper.get(".mctl-site-header__context");
+      expect(context.classes()).toContain("mctl-site-header__context--select");
+      expect(context.find(".m-select.m-select--sm").exists()).toBe(true);
+      const select = context.get("select");
+      expect(select.attributes("data-testid")).toBe("course-select");
+      expect(select.attributes("id")).toBe("course-select");
+      expect((select.element as HTMLSelectElement).value).toBe(firstCourse.id);
+      const disabled = select.findAll("option").map((o) => (o.element as HTMLOptionElement).disabled);
+      expect(disabled).toEqual(courseCatalog.map((c) => !c.available));
+    });
+
+    test("on a course page, a navigation that does not happen puts the control back", async () => {
+      const { router, wrapper } = await mountAt(`/courses/${firstCourse.id}`);
+      router.beforeEach((to) => to.path !== `/courses/${secondCourse.id}`);
+      const select = wrapper.get('[data-testid="course-select"]');
+      await select.setValue(secondCourse.id);
+      await flushPromises();
+      expect(router.currentRoute.value.path).toBe(`/courses/${firstCourse.id}`);
+      expect(useCourseStore().currentCourseId.value).toBe(firstCourse.id);
+      expect((select.element as HTMLSelectElement).value).toBe(firstCourse.id);
+    });
+
     test("with the app's keyed view, the switch never flips back to the old course", async () => {
       // App.vue keys the routed view on fullPath + selected course. Selecting
       // before navigating remounts the still-current /courses/X page, which
