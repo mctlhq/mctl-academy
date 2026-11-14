@@ -3,6 +3,7 @@ import { mount } from "@vue/test-utils";
 import { nextTick, reactive } from "vue";
 import CourseView from "../CourseView.vue";
 import * as courseCatalogModule from "../../services/courseCatalog";
+import { courseHeadMeta } from "../../seo/courseMeta.mjs";
 
 const mockSetCourse = vi.fn().mockReturnValue(true);
 // Reactive so a test can change the route param under a mounted view, the way
@@ -49,6 +50,8 @@ describe("CourseView", () => {
       <meta property="og:description" content="Original OG Description" />
       <meta property="og:url" content="https://academy.mctl.ai/" />
       <link rel="canonical" href="https://academy.mctl.ai/" />
+      <meta name="twitter:title" content="Original Twitter Title" />
+      <meta name="twitter:description" content="Original Twitter Description" />
     `;
     document.title = "Original Title";
   });
@@ -143,6 +146,41 @@ describe("CourseView", () => {
     );
     expect(document.querySelector('meta[property="og:title"]')?.getAttribute("content")).toBe(
       "Original OG Title",
+    );
+    expect(document.getElementById("schema-course-jsonld")).toBeNull();
+  });
+
+  it("writes the same strings the server renders, twitter tags included", () => {
+    mountCourseView();
+    const meta = courseHeadMeta(courseCatalogModule.findCourse("agentic-ai-builder")!);
+    expect(document.title).toBe(meta.title);
+    expect(document.querySelector('meta[name="twitter:title"]')?.getAttribute("content")).toBe(meta.title);
+    expect(document.querySelector('meta[name="twitter:description"]')?.getAttribute("content")).toBe(
+      meta.description,
+    );
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
+      "https://academy.mctl.ai/courses/agentic-ai-builder",
+    );
+    expect(JSON.parse(document.getElementById("schema-course-jsonld")?.textContent || "{}")).toEqual(
+      meta.jsonLd,
+    );
+  });
+
+  it("restores the server's data-default values, not the server-rendered course values", () => {
+    // A direct load of /courses/<id>: server/spa.mjs already wrote the course
+    // values and kept the site defaults in data-default.
+    document.head.innerHTML = `
+      <meta data-default="Site Description" name="description" content="Course Description" />
+      <link data-default="https://academy.mctl.ai/" rel="canonical" href="https://academy.mctl.ai/courses/agentic-ai-builder" />
+      <script type="application/ld+json" id="schema-course-jsonld">{}</script>
+    `;
+    const wrapper = mountCourseView();
+    wrapper.unmount();
+    expect(document.querySelector('meta[name="description"]')?.getAttribute("content")).toBe(
+      "Site Description",
+    );
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
+      "https://academy.mctl.ai/",
     );
     expect(document.getElementById("schema-course-jsonld")).toBeNull();
   });

@@ -32,6 +32,11 @@ COPY server ./server
 COPY content ./content
 COPY migrations ./migrations
 COPY --from=builder /app/client/dist ./client/dist
+# server/spa.mjs renders course pages with the client's own head-tag builder
+# and route list, and checks course ids against the generated catalog. The
+# server refuses to boot without them, so they ship next to client/dist.
+COPY --from=builder /app/client/src/seo ./client/src/seo
+COPY --from=builder /app/client/src/course-catalog.json ./client/src/course-catalog.json
 
 EXPOSE 8080
 

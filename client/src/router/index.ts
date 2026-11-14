@@ -8,8 +8,9 @@ import CourseView from "../views/CourseView.vue";
 import AdminStatsView from "../views/AdminStatsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import { useCourseStore } from "../services/courseStore";
+import { pageTitle } from "../seo/courseMeta.mjs";
 
-const SITE_NAME = "mctl academy";
+export { pageTitle };
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -74,10 +75,6 @@ export function scrollPosition(
  */
 export function shouldFocusMain(to: Location, from: Location): boolean {
   return from.matched.length > 0 && to.path !== from.path;
-}
-
-export function pageTitle(title: unknown): string {
-  return typeof title === "string" && title ? `${title} · ${SITE_NAME}` : SITE_NAME;
 }
 
 router.afterEach((to, from) => {
