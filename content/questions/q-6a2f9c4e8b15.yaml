@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6a2f9c4e8b15
-status: needs_review
+status: retired
 domain: domain-4
 objective: domain-4/edge-cloud-placement
 stem: "In LeRobot's asynchronous inference design, the `RobotClient` streams
