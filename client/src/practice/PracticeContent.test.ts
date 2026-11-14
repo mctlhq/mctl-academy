@@ -54,6 +54,31 @@ describe("PracticeContent", () => {
     expect(wrapper.text()).toContain("Why A is wrong, in detail.");
   });
 
+  it("marks the correct option after a wrong answer, without opening its explanation", async () => {
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
+    expect(wrapper.find('[data-testid="correct-answer-tag"]').exists()).toBe(false);
+
+    await optionButton(wrapper, "Option A").trigger("click");
+
+    const marked = wrapper.findAll(".options li.correct-answer");
+    expect(marked).toHaveLength(1);
+    expect(marked[0].text()).toContain("Option B");
+    expect(marked[0].find('[data-testid="correct-answer-tag"]').text()).toMatch(/^Correct answer/);
+    expect(wrapper.text()).not.toContain("Why B is right, in detail.");
+
+    // Opening it swaps the marker for the revealed verdict and explanation.
+    await optionButton(wrapper, "Option B").trigger("click");
+    expect(wrapper.find(".options li.correct-answer").exists()).toBe(false);
+    expect(wrapper.find('[data-testid="correct-answer-tag"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain("Why B is right, in detail.");
+  });
+
+  it("does not mark a correct answer when the first answer was right", async () => {
+    const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
+    await optionButton(wrapper, "Option B").trigger("click");
+    expect(wrapper.find(".options li.correct-answer").exists()).toBe(false);
+  });
+
   it("does not reveal anything before any option is selected", () => {
     const wrapper = mount(PracticeContent, { props: { bundle: [question("q-1")] } });
     expect(wrapper.text()).not.toContain("Why A is wrong, in detail.");
@@ -153,7 +178,10 @@ describe("PracticeContent", () => {
     expect(liveRegion.text()).toBe("");
 
     await optionButton(wrapper, "Option A").trigger("click");
-    expect(liveRegion.text()).toBe("Incorrect");
+    // Options may be shuffled: the announced number is the one shown on the
+    // correct option's key.
+    const correctKey = optionButton(wrapper, "Option B").get(".option-key").text();
+    expect(liveRegion.text()).toBe(`Incorrect. The correct answer is option ${correctKey}.`);
 
     await optionButton(wrapper, "Option B").trigger("click");
     expect(liveRegion.text()).toBe("Correct");

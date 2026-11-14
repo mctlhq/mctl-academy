@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { RouterLink } from "vue-router";
 import { MButton, MCard, MPill } from "@mctlhq/ui";
 import type { CourseInfo } from "../services/courseCatalog";
+import { isEarlyAccess } from "../services/earlyAccess";
 import { glyphFor } from "./courseGlyphs";
 
 const props = defineProps<{
@@ -14,11 +15,8 @@ const props = defineProps<{
 const glyph = computed(() => glyphFor(props.course.id));
 // A course whose bank cannot yet fill one full mock exam is still growing:
 // say so on the card instead of letting a small count sit next to a full
-// mock timer unexplained. Derived from the catalog, so the pill disappears
-// on its own once the bank is big enough.
-const earlyAccess = computed(
-  () => props.course.available && props.course.publishedQuestionCount < props.course.mock.questionCount,
-);
+// mock timer unexplained (isEarlyAccess, shared with the course page).
+const earlyAccess = computed(() => isEarlyAccess(props.course));
 const titleId = computed(() => `course-card-${props.course.id}`);
 // Practice goes through the router's ?course= deep link, which selects the
 // course (only when it is available) and strips the parameter, so a card for

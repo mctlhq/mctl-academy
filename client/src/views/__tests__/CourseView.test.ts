@@ -100,6 +100,51 @@ describe("CourseView", () => {
     expect(wrapper.find(".course-cta-row button").exists()).toBe(false);
   });
 
+  describe("a bank that cannot fill one mock yet", () => {
+    // The real course, with a mock one question bigger than its bank and a
+    // second domain quota no pool can meet: both the early-access threshold
+    // and the per-domain mock check fail, as on a growing course.
+    const early = () => {
+      const real = courseCatalogModule.findCourse("agentic-ai-builder")!;
+      const [d1, d2] = real.mock.domains;
+      return {
+        ...real,
+        mock: {
+          ...real.mock,
+          questionCount: real.publishedQuestionCount + 1,
+          domains: [
+            { ...d1, mockQuestions: 1 },
+            { ...d2, mockQuestions: real.publishedQuestionCount + 1 },
+          ],
+        },
+      };
+    };
+
+    it("shows the Early access pill and drops the completeness claim", () => {
+      vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue(early());
+      const wrapper = mountCourseView();
+      expect(wrapper.find('[data-testid="course-early-access"]').text()).toBe("Early access");
+      const subtitle = wrapper.get('[data-testid="course-subtitle"]').text();
+      expect(subtitle).toMatch(/Early access/);
+      expect(subtitle).not.toMatch(/complete/i);
+    });
+
+    it("offers no mock CTA it cannot start, and says why", () => {
+      vi.spyOn(courseCatalogModule, "findCourse").mockReturnValue(early());
+      const wrapper = mountCourseView();
+      const ctas = wrapper.findAll(".course-cta-row a");
+      expect(ctas.map((a) => a.attributes("href"))).toEqual(["/practice"]);
+      expect(wrapper.get('[data-testid="course-mock-unavailable"]').text()).toMatch(/timed mock opens once/i);
+    });
+  });
+
+  it("a full bank gets no Early access pill and keeps the mock CTA", () => {
+    const wrapper = mountCourseView();
+    expect(wrapper.find('[data-testid="course-early-access"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="course-mock-unavailable"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="course-subtitle"]').text()).not.toMatch(/complete coverage/i);
+  });
+
   it("links each domain card to a filtered Practice", () => {
     const wrapper = mountCourseView();
     const domainLink = wrapper.find("a.domain-btn-link");

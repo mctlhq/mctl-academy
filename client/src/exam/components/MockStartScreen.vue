@@ -6,7 +6,7 @@ import type { ExamDataSource } from "../dataSource";
 import type { MockConfig, Question } from "../types";
 import { selectMockQuestions, type SelectMockResult } from "../selectMockQuestions";
 
-const props = defineProps<{ dataSource: ExamDataSource }>();
+const props = defineProps<{ dataSource: ExamDataSource; courseTitle?: string }>();
 const emit = defineEmits<{
   start: [questions: Question[], timeLimitMinutes: number];
 }>();
@@ -60,6 +60,7 @@ function handleStart() {
   </section>
 
   <section v-else class="mock-start" data-testid="mock-start">
+    <p v-if="courseTitle" class="mock-course" data-testid="mock-course">{{ courseTitle }}</p>
     <h1>Mock exam</h1>
     <p class="mock-start-lede">
       A timed run with this course's question mix. No feedback is shown until you submit or time runs out.
@@ -148,6 +149,13 @@ function handleStart() {
 .mock-start {
   width: min(100%, 40rem);
   margin: 0 auto;
+}
+
+.mock-course {
+  margin: 0 0 0.25rem;
+  color: var(--surface-fg);
+  font-size: var(--text-caption-size);
+  font-weight: 600;
 }
 
 .mock-start h1 {

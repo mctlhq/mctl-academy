@@ -4,8 +4,10 @@ import { RouterLink, useRoute } from "vue-router";
 import { MButton, MPill } from "@mctlhq/ui";
 import CourseGrid from "../components/CourseGrid.vue";
 import { courseCatalog, findCourse, type CourseInfo } from "../services/courseCatalog";
+import { isEarlyAccess } from "../services/earlyAccess";
 import { useCourseStore } from "../services/courseStore";
 import { questionsForCourse } from "../services/contentBundle";
+import { selectMockQuestions } from "../exam/selectMockQuestions";
 import {
   COURSE_HEAD_TAGS,
   COURSE_JSONLD_ID,
@@ -22,6 +24,15 @@ const courseId = computed(() => String(route.params.courseId ?? ""));
 const course = computed<CourseInfo | undefined>(() => findCourse(courseId.value));
 const questions = computed(() => (course.value ? questionsForCourse(course.value.id) : []));
 const totalQuestions = computed(() => questions.value.length);
+// Same threshold as the course card on Home: a bank that cannot fill one mock
+// is early access, and the page must not read as a finished course.
+const earlyAccess = computed(() => (course.value ? isEarlyAccess(course.value) : false));
+// The mock only starts when every domain can supply its quota
+// (selectMockQuestions, the same check the Mock start screen runs), so the
+// CTA is offered only when pressing it actually starts a mock.
+const mockReady = computed(() =>
+  course.value ? selectMockQuestions(questions.value, course.value.mock, () => 0).ok : false,
+);
 const mockPaceMinutes = computed(() =>
   course.value && course.value.mock.questionCount > 0
     ? Math.max(1, Math.round(course.value.mock.timeLimitMinutes / course.value.mock.questionCount))
@@ -145,11 +156,22 @@ onUnmounted(() => {
     <header class="course-hero">
       <div class="course-badge-row">
         <MPill tone="accent">Practice track</MPill>
+        <MPill
+          v-if="earlyAccess"
+          tone="warn"
+          variant="outline"
+          title="The question bank is still growing"
+          data-testid="course-early-access"
+          >Early access</MPill
+        >
       </div>
       <h1 class="course-title">{{ course.title }}</h1>
-      <p class="course-subtitle">
-        Practice questions and domain syllabus for {{ course.title }}. Complete coverage with verified
-        citations.
+      <p v-if="earlyAccess" class="course-subtitle" data-testid="course-subtitle">
+        Practice questions and domain syllabus for {{ course.title }}. Early access: {{ totalQuestions }}
+        reviewed questions so far, each with a verified citation. The bank grows as new questions pass review.
+      </p>
+      <p v-else class="course-subtitle" data-testid="course-subtitle">
+        Practice questions and domain syllabus for {{ course.title }}, each question with a verified citation.
       </p>
 
       <div class="course-stats-bar" role="group" aria-label="Course statistics">
@@ -169,12 +191,18 @@ onUnmounted(() => {
 
       <div class="course-cta-row">
         <MButton :as="RouterLink" to="/practice">
-          Start practice ({{ totalQuestions }} questions) <span aria-hidden="true">→</span>
+          <span class="cta-label"
+            >Start practice ({{ totalQuestions }} questions)&nbsp;<span aria-hidden="true">→</span></span
+          >
         </MButton>
-        <MButton :as="RouterLink" to="/mock" variant="ghost">
-          Timed mock run ({{ course.mock.questionCount }} questions)
+        <MButton v-if="mockReady" :as="RouterLink" to="/mock" variant="ghost">
+          <span class="cta-label">Timed mock run ({{ course.mock.questionCount }} questions)</span>
         </MButton>
       </div>
+      <p v-if="!mockReady" class="course-mock-note" data-testid="course-mock-unavailable">
+        The timed mock opens once every domain has enough reviewed questions to fill all
+        {{ course.mock.questionCount }}&nbsp;of its questions. Practice is open now.
+      </p>
     </header>
 
     <div class="course-content">
@@ -204,7 +232,7 @@ onUnmounted(() => {
                 class="domain-btn-link"
                 :aria-label="`Practice ${domain.title}`"
               >
-                Practice this domain <span aria-hidden="true">→</span>
+                Practice this domain&nbsp;<span aria-hidden="true">→</span>
               </RouterLink>
             </div>
           </div>
@@ -481,6 +509,9 @@ onUnmounted(() => {
 }
 
 .course-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
@@ -530,6 +561,19 @@ onUnmounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+/* One inline run of text (arrow included), balanced across lines, so a
+   wrapping monospace label does not leave a lone word or the arrow behind. */
+.cta-label {
+  text-wrap: balance;
+}
+
+.course-mock-note {
+  max-width: 62ch;
+  margin: 0.75rem 0 0;
+  color: var(--surface-fg-muted);
+  font-size: var(--text-caption-size);
 }
 
 .course-domains {

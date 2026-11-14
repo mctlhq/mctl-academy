@@ -9,7 +9,9 @@ import { RouterLink } from "vue-router";
     <h1>This page does not exist</h1>
     <p class="not-found-lede">The link may be outdated or mistyped. Your progress is not affected.</p>
     <div class="not-found-actions">
-      <MButton :as="RouterLink" to="/practice">Continue practice <span aria-hidden="true">→</span></MButton>
+      <MButton :as="RouterLink" to="/practice"
+        >Continue practice&nbsp;<span aria-hidden="true">→</span></MButton
+      >
       <MButton :as="RouterLink" to="/" variant="ghost">Go to home</MButton>
     </div>
   </section>

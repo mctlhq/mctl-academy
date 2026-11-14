@@ -144,12 +144,12 @@ test.describe("touch targets", () => {
         await assertTouchTargets(page, ".course-select");
       });
 
-      // Under 400px the brand is only its M mark (AppNav.vue), so the home
-      // link must stay a full target, keep its name, and focus like the full
-      // wordmark does; the switcher, which may truncate, carries the full
-      // course title in its title attribute and selected option.
+      // Under 400px the brand drops its "academy" suffix (AppNav.vue), so the
+      // home link must stay a full target, keep its name, and focus like the
+      // full wordmark does; the switcher carries the full course title in its
+      // title attribute and selected option.
       if (width <= 400) {
-        test("the M mark brand stays a labelled 44px target with the full brand's focus", async ({
+        test("the compact brand stays a labelled 44px target with the full brand's focus", async ({
           page,
         }) => {
           await page.goto("/");

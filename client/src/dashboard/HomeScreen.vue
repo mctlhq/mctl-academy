@@ -86,8 +86,12 @@ const steps = [
 
       <div class="home-cta">
         <MButton v-if="ctaCourse" :as="RouterLink" :to="ctaPath">
-          {{ showContinue ? "Continue" : "Start practicing" }}: {{ ctaCourse.title }}
-          <span aria-hidden="true">→</span>
+          <span class="cta-label"
+            >{{ showContinue ? "Continue" : "Start practicing" }}: {{ ctaCourse.title }}&nbsp;<span
+              aria-hidden="true"
+              >→</span
+            ></span
+          >
         </MButton>
         <MButton as="a" href="#home-courses-title" variant="ghost">Browse all courses</MButton>
       </div>
@@ -128,7 +132,7 @@ const steps = [
         {{ stats.totalCorrect }} of {{ stats.totalBankQuestions }} solved · {{ stats.totalMistakes }} to
         review
       </span>
-      <strong>Continue <span aria-hidden="true">→</span></strong>
+      <strong>Continue&nbsp;<span aria-hidden="true">→</span></strong>
     </RouterLink>
 
     <section class="home-courses" aria-labelledby="home-courses-title">
@@ -201,6 +205,13 @@ const steps = [
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
+}
+
+/* One inline run of text with the arrow, balanced across lines: as separate
+   flex items the arrow sat alone at the far edge of a wrapped monospace
+   label. */
+.cta-label {
+  text-wrap: balance;
 }
 
 .home-cta-note {

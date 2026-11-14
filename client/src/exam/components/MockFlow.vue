@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import type { ExamDataSource } from "../dataSource";
 import type { Question } from "../types";
 import type { ExamSessionState } from "../session";
@@ -10,6 +10,7 @@ import { recordAttempt } from "../../services/progressStore";
 import MockStartScreen from "./MockStartScreen.vue";
 import MockExamScreen from "./MockExamScreen.vue";
 import MockResultsScreen from "./MockResultsScreen.vue";
+import { findCourse } from "../../services/courseCatalog";
 
 const props = defineProps<{ dataSource: ExamDataSource; courseId: string }>();
 
@@ -17,6 +18,10 @@ const props = defineProps<{ dataSource: ExamDataSource; courseId: string }>();
 // view on the course id, so switching course mounts a fresh flow that reads
 // and writes only its own course's stored session.
 const session = ref<ExamSessionState | null>(loadSession(props.courseId));
+// Named on the start and exam screens: the header switcher may truncate it on
+// a phone, and a timed run should never leave the learner unsure which
+// course it is drawn from.
+const courseTitle = computed(() => findCourse(props.courseId)?.title ?? "");
 
 async function scrollToTop() {
   await nextTick();
@@ -72,12 +77,18 @@ function handleStartOver() {
 </script>
 
 <template>
-  <MockStartScreen v-if="!session" :data-source="dataSource" @start="handleStart" />
+  <MockStartScreen
+    v-if="!session"
+    :data-source="dataSource"
+    :course-title="courseTitle"
+    @start="handleStart"
+  />
 
   <MockExamScreen
     v-else-if="session.status === 'in_progress'"
     :session="session"
     :initial-index="session.currentIndex ?? 0"
+    :course-title="courseTitle"
     @answer="handleAnswer"
     @navigate="handleNavigate"
     @submit="handleSubmit"
