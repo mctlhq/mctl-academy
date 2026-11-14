@@ -3878,3 +3878,47 @@ test("the workflow carries the objective scope from dispatch to every gate", () 
     assert.match(step.with.prompt, /a key of `targets` in\s+_run\/limits\.json/);
   }
 });
+
+test("a staged rename cannot carry an off-scope file past the scoped guard", () => {
+  const r = scopedRepo();
+  try {
+    // An off-scope item that is not published at the base, so the guard judges
+    // it. A rename pairs its old path with the new one, and `git diff` would
+    // then list only the new, in-scope path.
+    writeFileSync(
+      join(r.dir, "content", "questions", "q-old000000001.yaml"),
+      yaml({
+        ...q("q-old000000001", "needs_review", "src-a"),
+        course_id: "course-b",
+        objective: "domain-1/delta",
+      }),
+    );
+    r.git(["add", "-A"]);
+    r.git(["commit", "-q", "-m", "off-scope item"]);
+    const base = r.git(["rev-parse", "HEAD"]).trim();
+    assert.equal(r.limits("--course", "course-a", "--objectives", "domain-1/alpha").status, 0);
+
+    r.git(["mv", "content/questions/q-old000000001.yaml", "content/questions/q-new000000001.yaml"]);
+    r.author("q-new000000001", "course-a", "domain-1/alpha");
+    r.git(["add", "-A"]);
+    const renames = r.git(["diff", "--name-status", "-M", base, "--", "content/questions"]);
+    assert.match(renames, /^R\d+\t/m, "the fixture must be a rename git pairs");
+
+    const res = r.cli([
+      "guard",
+      "--base",
+      base,
+      "--max",
+      "5",
+      "--forbid-published-now",
+      "--author",
+      "agent:t",
+      "--limits",
+      r.limitsFile,
+    ]);
+    assert.equal(res.status, 1, res.stderr);
+    assert.match(res.stderr, /q-old000000001\.yaml.*course "course-b"/);
+  } finally {
+    rmSync(r.dir, { recursive: true, force: true });
+  }
+});

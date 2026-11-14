@@ -115,6 +115,13 @@ questions make an objective a gap. The scope is mechanical, not a prompt hint:
   targets. A missing file means no holds. A file that does not parse, names an
   objective outside the course map, names another `course_id`, or carries any
   other status fails the run.
+- **Drift under a held objective has no automatic repair.** A drifted
+  `needs_review` item whose objective is held cannot be rewritten by any run:
+  every run drops that objective from its targets, and the guard rejects a
+  file in it. It stays quarantined until someone acts by hand, through a PR:
+  either release the hold (set that objective's `status` to `open` in
+  `content/coverage/<course>.yaml`) so the next run can rewrite the item, or
+  retire the item.
 - **New courses need an explicit go.** An unscoped run, including the weekly
   schedule, targets only courses that already have at least one `published`
   question. A course with none is listed as `excluded`: it gets no gaps, the

@@ -451,7 +451,10 @@ const gitPaths = (args, cwd) => {
  * guardChanges refuses it for not being a .yaml file.
  */
 export function changedQuestionFiles({ base, cwd = process.cwd() }) {
-  const tracked = gitPaths(["diff", "--name-only", base, "--", "content/questions"], cwd);
+  // --no-renames: a rename pairs the two paths and --name-only then prints
+  // only the new one, so the old path -- possibly off-scope or published at
+  // the base -- would never be judged. Each side must be listed on its own.
+  const tracked = gitPaths(["diff", "--no-renames", "--name-only", base, "--", "content/questions"], cwd);
   const untracked = gitPaths(["ls-files", "--others", "--", "content/questions"], cwd);
   return [...new Set([...tracked, ...untracked])].sort();
 }
@@ -504,7 +507,9 @@ export function boundaryProblems({ base, cwd = process.cwd(), strict = false, al
     ...allow.map((p) => `:(exclude)${p}`),
   ];
   const problems = [];
-  for (const f of gitPaths(["diff", "--name-only", base, ...spec], cwd)) {
+  // --no-renames for the same reason as changedQuestionFiles: a file moved
+  // into an exempt area would otherwise be listed only by its exempt new path.
+  for (const f of gitPaths(["diff", "--no-renames", "--name-only", base, ...spec], cwd)) {
     problems.push(`${f} was changed outside ${area}`);
   }
   for (const f of gitPaths(["ls-files", "--others", ...spec], cwd)) {
