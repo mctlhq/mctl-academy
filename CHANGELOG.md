@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.84](https://github.com/mctlhq/mctl-academy/compare/0.1.83...0.1.84) (2026-11-14)
+
+
+### Bug Fixes
+
+* **replenish:** re-present items pinned to an old source version ([78ded6c](https://github.com/mctlhq/mctl-academy/commit/78ded6c9ced7aedd6123fdb0774a7317c4b34485))
+* **replenish:** re-present items pinned to an old source version ([55c72b9](https://github.com/mctlhq/mctl-academy/commit/55c72b9000ee69791b195e83a623f0e1e05a8307))
+
 ## [0.1.83](https://github.com/mctlhq/mctl-academy/compare/0.1.82...0.1.83) (2026-11-14)
 
 
