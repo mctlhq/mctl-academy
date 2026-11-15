@@ -237,7 +237,7 @@ comparison behind the choice -- billed $37.63 on Token Factory, 2026-09-12:
 The author alone is 78% of it, and five sixths of the author's bill is INPUT.
 That is the absence of prompt caching, not the price of the model: Claude Code
 re-sends a system prompt describing 255 tools on every turn, and `AUTHOR_TURNS`
-is 160 on this path. Cost therefore scales with the turn budget rather than with
+is 240 on this path (160 until run 43657502999 ran out of turns at 10 questions). Cost therefore scales with the turn budget rather than with
 the questions produced -- five questions cost roughly thirty dollars, where the
 reviewer judged fifty items for six.
 

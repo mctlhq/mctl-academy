@@ -219,6 +219,8 @@ function keyOverlap(a, b) {
   return a.filter((t) => right.has(t)).length / Math.max(a.length, b.length);
 }
 
+export const CROSS_COURSE_ANGLE = "Cross-course angle:";
+
 const pairKey = (a, b) => [a, b].sort().join("\u0000");
 
 /**
@@ -253,7 +255,12 @@ export function nearDuplicates(corpus, { focus = null, allowlist = new Map() } =
         keyTerms: [keyTerms[i], keyTerms[j]],
       };
       const reason = allowlist.get(pairKey(a.id, b.id));
-      if (reason) pair.allowlisted = reason;
+      // A "Cross-course angle:" entry excuses the same fact taught once per
+      // course; it never excuses a pair inside one course, which stays a
+      // warning even though it is listed.
+      if (reason && !(reason.startsWith(CROSS_COURSE_ANGLE) && pair.relation !== "cross-course")) {
+        pair.allowlisted = reason;
+      }
       pairs.push(pair);
     }
   }

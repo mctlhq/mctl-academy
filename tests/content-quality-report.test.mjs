@@ -363,6 +363,17 @@ test("allowlist marks an intentional contrast pair, keeps it visible and stops i
   assert.ok(unlisted.warnings.some((w) => w.check === "near-duplicate"));
 });
 
+test("a cross-course-angle allowlist entry excuses a pair across courses but never one inside a course", () => {
+  const reason =
+    "Cross-course angle: chosen before creation in one course, recovered afterwards in the other.";
+  const allowlist = parseAllowlist({ pairs: [{ pair: ["q-dup-a", "q-dup-b"], reason }] });
+  const across = nearDuplicates([dupA(), dupB("c2"), ...filler()], { allowlist });
+  assert.equal(across[0].allowlisted, reason);
+  const inside = nearDuplicates([dupA(), dupB("c1"), ...filler()], { allowlist });
+  assert.equal(inside.length, 1);
+  assert.equal(inside[0].allowlisted, undefined, "a same-course pair must stay a warning");
+});
+
 test("a malformed allowlist throws instead of reading as empty; a missing file is empty", () => {
   assert.throws(() => parseAllowlist({ pairs: [{ pair: ["q-a"], reason: "x" }] }), /two distinct/);
   assert.throws(() => parseAllowlist({ pairs: [{ pair: ["q-a", "q-a"], reason: "x" }] }), /two distinct/);
