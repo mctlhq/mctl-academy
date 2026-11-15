@@ -1,19 +1,19 @@
 schema_version: 1
 id: q-7f2d4a91c6b8
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/ie-compliance-residency
-stem: "An organization with no existing deployments anywhere in Nebius AI Cloud's
-  `eu-north2` region wants to provision new GPU training capacity there to keep
-  data in Iceland. What governs whether they can do this?"
+stem: "An organization with no existing deployments anywhere in Nebius AI
+  Cloud's `eu-north2` region wants to provision new GPU training capacity there
+  to keep data in Iceland. What governs whether they can do this?"
 options:
   - id: a
-    text: "`eu-north2` is a private region, available only to users who already
-      have deployments there, so an organization without existing deployments
-      there cannot provision new capacity in it"
+    text: "`eu-north2` is a private region, available only to users who already have
+      deployments there, so an organization without existing deployments there
+      cannot provision new capacity in it"
     correct: true
-    explanation: "Correct. The guide states that the eu-north2 region is private
-      and available only to users who already have deployments there, so a new
+    explanation: "Correct. The guide states that the eu-north2 region is private and
+      available only to users who already have deployments there, so a new
       organization cannot start using it for a new project."
   - id: b
     text: "`eu-north2` is one of Nebius AI Cloud's public regions, so any
@@ -26,30 +26,34 @@ options:
       missing service to eu-north2, the way a region missing a specific service
       can be requested"
     correct: false
-    explanation: "That support-ticket path is for a service that is missing from
-      an otherwise-available region; it does not change who may use a private
+    explanation: "That support-ticket path is for a service that is missing from an
+      otherwise-available region; it does not change who may use a private
       region like eu-north2 in the first place."
   - id: d
     text: "Because Nebius AI Cloud provides a project per region at sign-up, the
       organization already has a usable project in eu-north2 and can deploy
       there"
     correct: false
-    explanation: "A project per region is provided for the regions available to
-      the organization; it does not override eu-north2's restriction to users
-      who already have deployments there."
+    explanation: "A project per region is provided for the regions available to the
+      organization; it does not override eu-north2's restriction to users who
+      already have deployments there."
 evidence:
   - source_id: src-nb-overview-regions
     source_sha256: cc489d8742447e6eb0c03982d879388b3629eedb2366a45114312f54b48903e4
-    excerpt: "The `eu-north2` region is available only to the users who already
-      have deployments there."
+    excerpt: "The `eu-north2` region is available only to the users who already have
+      deployments there."
     locator: "Private regions"
   - source_id: src-nb-overview-regions
     source_sha256: cc489d8742447e6eb0c03982d879388b3629eedb2366a45114312f54b48903e4
-    excerpt: "If a service is not available in the required region, you can
-      [contact technical support](https://console.nebius.com/support/create-ticket)
-      and send a request to add the service"
+    excerpt: "If a service is not available in the required region, you can [contact
+      technical support](https://console.nebius.com/support/create-ticket) and
+      send a request to add the service"
     locator: "Availability of services per region, note"
 authored:
   by: "agent:claude-author"
   at: "2026-11-15T00:39:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T00:59:50Z
+  content_sha256: c85d3c274a0e5ea6df686f6299570c28630063bdc660fbba03806635279c751a

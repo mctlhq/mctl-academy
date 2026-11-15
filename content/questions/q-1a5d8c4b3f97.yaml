@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1a5d8c4b3f97
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/ie-long-run-reliability
 stem: "A platform team running a multi-day training job on a Soperator cluster
@@ -14,33 +14,32 @@ options:
       Compute lets owners postpone a VM's maintenance date through a support
       request"
     correct: true
-    explanation: "Correct. The guide says that if you need to keep your VMs
-      running, you can contact the support team to request rescheduling the
-      maintenance."
+    explanation: "Correct. The guide says that if you need to keep your VMs running,
+      you can contact the support team to request rescheduling the maintenance."
   - id: b
     text: "Ignore the maintenance notice and keep the Soperator cluster's VMs
       running past the due date, since Compute's maintenance process excludes
       Soperator cluster nodes"
     correct: false
-    explanation: "The guide states that Compute performs maintenance for all
-      virtual machines, including nodes of Soperator clusters, so this notice
-      does apply to them."
+    explanation: "The guide states that Compute performs maintenance for all virtual
+      machines, including nodes of Soperator clusters, so this notice does apply
+      to them."
   - id: c
-    text: "Request one reschedule of the maintenance that postpones it
-      indefinitely, since Compute lets owners push back a VM's maintenance
-      date for as long as a workload needs"
+    text: "Request one reschedule of the maintenance that postpones it indefinitely,
+      since Compute lets owners push back a VM's maintenance date for as long as
+      a workload needs"
     correct: false
     explanation: "The guide caps a reschedule request at up to two times, each
       postponing the date by up to seven days, so a single request cannot
       postpone maintenance indefinitely."
   - id: d
-    text: "Wait for Compute to automatically stop the VMs on the due date, since
-      an automatic stop performs the maintenance without affecting the
-      workload's stability"
+    text: "Wait for Compute to automatically stop the VMs on the due date, since an
+      automatic stop performs the maintenance without affecting the workload's
+      stability"
     correct: false
-    explanation: "The guide warns that delayed maintenance performed by an
-      automatic stop may cause VM instability, the opposite of an outcome with
-      no effect on stability."
+    explanation: "The guide warns that delayed maintenance performed by an automatic
+      stop may cause VM instability, the opposite of an outcome with no effect
+      on stability."
 evidence:
   - source_id: src-nb-compute-virtual-machines-maintenance
     source_sha256: f3a6e95365c5bb063ba3177091f06565157b8ea69eb162f4ef790d39dfc72de6
@@ -53,8 +52,8 @@ evidence:
     excerpt: "The Compute service performs maintenance for all virtual machines,
       including nodes of [Managed Service for
       Kubernetes®](https://docs.nebius.com/kubernetes/index.md) clusters and
-      [Soperator](https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md)
-      clusters."
+      [Soperator](https://docs.nebius.com/slurm-soperator/overview/why-slurm-so\
+      perator.md) clusters."
     locator: "Maintenance of Compute virtual machines"
   - source_id: src-nb-compute-virtual-machines-maintenance
     source_sha256: f3a6e95365c5bb063ba3177091f06565157b8ea69eb162f4ef790d39dfc72de6
@@ -62,10 +61,14 @@ evidence:
     locator: "Maintenance of Compute virtual machines, warning"
   - source_id: src-nb-compute-virtual-machines-maintenance
     source_sha256: f3a6e95365c5bb063ba3177091f06565157b8ea69eb162f4ef790d39dfc72de6
-    excerpt: "You can request to reschedule it up to two times, and you can
-      postpone the maintenance by up to seven days each time."
+    excerpt: "You can request to reschedule it up to two times, and you can postpone
+      the maintenance by up to seven days each time."
     locator: "Maintenance of Compute virtual machines"
 authored:
   by: "agent:claude-author"
   at: "2026-11-15T00:39:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T00:59:50Z
+  content_sha256: 668c6e95dad7ea34b17469209fc7849f863ff1afd20cfba942cf3c06644f6d9b

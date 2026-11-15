@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9e3c5a187db2
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-storage-tiers
 stem: "A platform team created a regular Object Storage bucket for a training
@@ -29,24 +29,28 @@ options:
       settings, since filesystem buckets are still in preview and preview
       settings can be toggled on any existing bucket"
     correct: false
-    explanation: "Preview status describes the filesystem bucket feature's
-      maturity; the guide ties attaching a filesystem to creating a filesystem
-      bucket, not to a setting toggled on an existing regular bucket."
+    explanation: "Preview status describes the filesystem bucket feature's maturity;
+      the guide ties attaching a filesystem to creating a filesystem bucket, not
+      to a setting toggled on an existing regular bucket."
   - id: d
     text: "Attach the shared filesystem to the existing bucket from the shared
       filesystem's Attached buckets tab, since that tab links a filesystem to
       any existing bucket, filesystem or regular"
     correct: false
-    explanation: "The Attached buckets tab shows filesystem buckets already
-      created for that filesystem; it is not a way to attach a filesystem to a
-      bucket that was created as a regular bucket."
+    explanation: "The Attached buckets tab shows filesystem buckets already created
+      for that filesystem; it is not a way to attach a filesystem to a bucket
+      that was created as a regular bucket."
 evidence:
   - source_id: src-nb-object-storage-buckets-filesystem-buckets
     source_sha256: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
-    excerpt: "After you create a bucket, you cannot change its type from regular
-      to filesystem or from filesystem to regular."
+    excerpt: "After you create a bucket, you cannot change its type from regular to
+      filesystem or from filesystem to regular."
     locator: "Limitations, bucket management"
 authored:
   by: "agent:claude-author"
   at: "2026-11-15T00:39:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T00:59:50Z
+  content_sha256: a44508c7d0115f75ef3f86567758feb85f3f3292169127794d7c1c5a8f09b86a
