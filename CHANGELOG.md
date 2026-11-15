@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.93](https://github.com/mctlhq/mctl-academy/compare/0.1.92...0.1.93) (2026-11-15)
+
+
+### Features
+
+* **quality:** allow cross-course angle pairs in the allowlist ([5bd393e](https://github.com/mctlhq/mctl-academy/commit/5bd393e56f285f5fd3a35bca68929dbd80300239))
+
+
+### Bug Fixes
+
+* **ci:** read quoted or commented bun pins in the action check ([31db26f](https://github.com/mctlhq/mctl-academy/commit/31db26f2d610222d6ddc75584b710f477bbcfbca))
+* **replenish:** bun pin check, author turn budget, cross-course pairs ([ae9b8f3](https://github.com/mctlhq/mctl-academy/commit/ae9b8f3919c099a6e74ad83bdc9da100e67ada25))
+* **replenish:** pin setup-bun to the bun claude-code-action installs ([c103ad8](https://github.com/mctlhq/mctl-academy/commit/c103ad8896df51c8a7d7e1b68c2ec275c50a3aaa))
+* **replenish:** pin setup-bun to the bun claude-code-action installs ([ae2a11a](https://github.com/mctlhq/mctl-academy/commit/ae2a11a5ea285d226c8d7014d3b139a81f8b595c))
+* **replenish:** raise AUTHOR_TURNS to 240, default batch to 10 ([bf70b29](https://github.com/mctlhq/mctl-academy/commit/bf70b29386c5dc114275619ca153ed696ed5f1d0))
+
+
+### Content
+
+* **replenish:** author 3 question file(s) from 3 captured source(s) ([f5fe8ca](https://github.com/mctlhq/mctl-academy/commit/f5fe8cacbf29080bdd07096096fdace3ba7a0e19))
+* **replenish:** author 5 question file(s) from 10 captured source(s) ([4add1cc](https://github.com/mctlhq/mctl-academy/commit/4add1cce4072ae980b9b5651f8235e5620ec22cd))
+* **replenish:** promote 3 reviewed question(s) ([629a427](https://github.com/mctlhq/mctl-academy/commit/629a42769d4cd6118fe1e93945a89b16f327bb75))
+* **replenish:** promote 5 reviewed question(s) ([cf8bc2a](https://github.com/mctlhq/mctl-academy/commit/cf8bc2afdb553bbd7d902e785d19109d25788c24))
+
 ## [0.1.92](https://github.com/mctlhq/mctl-academy/compare/0.1.91...0.1.92) (2026-11-14)
 
 
