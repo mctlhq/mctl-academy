@@ -1,0 +1,52 @@
+schema_version: 1
+id: q-9e3c5a187db2
+status: review_ready
+domain: domain-2
+objective: domain-2/ie-storage-tiers
+stem: "A platform team created a regular Object Storage bucket for a training
+  dataset, and later wants that same bucket to also serve as the S3-compatible
+  interface for a shared filesystem used by training VMs. What must they do,
+  given the bucket already exists as a regular bucket?"
+options:
+  - id: a
+    text: "Create a new filesystem bucket attached to the shared filesystem and
+      migrate the dataset into it, since an existing bucket's type cannot be
+      changed from regular to filesystem"
+    correct: true
+    explanation: "Correct. The guide states that after you create a bucket, you
+      cannot change its type from regular to filesystem or back, so a new
+      filesystem bucket is required."
+  - id: b
+    text: "Run a bucket update operation that points the existing bucket at the
+      shared filesystem, since Object Storage's bucket update operation can
+      change an existing bucket's type"
+    correct: false
+    explanation: "The guide's update operation changes a filesystem bucket's
+      ownership, permission and logging settings; it is not a way to turn a
+      regular bucket into a filesystem bucket."
+  - id: c
+    text: "Enable the filesystem interface from the existing bucket's advanced
+      settings, since filesystem buckets are still in preview and preview
+      settings can be toggled on any existing bucket"
+    correct: false
+    explanation: "Preview status describes the filesystem bucket feature's
+      maturity; the guide ties attaching a filesystem to creating a filesystem
+      bucket, not to a setting toggled on an existing regular bucket."
+  - id: d
+    text: "Attach the shared filesystem to the existing bucket from the shared
+      filesystem's Attached buckets tab, since that tab links a filesystem to
+      any existing bucket, filesystem or regular"
+    correct: false
+    explanation: "The Attached buckets tab shows filesystem buckets already
+      created for that filesystem; it is not a way to attach a filesystem to a
+      bucket that was created as a regular bucket."
+evidence:
+  - source_id: src-nb-object-storage-buckets-filesystem-buckets
+    source_sha256: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
+    excerpt: "After you create a bucket, you cannot change its type from regular
+      to filesystem or from filesystem to regular."
+    locator: "Limitations, bucket management"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T00:39:50Z"
+course_id: ai-infrastructure-engineer

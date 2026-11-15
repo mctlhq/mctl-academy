@@ -1,0 +1,61 @@
+schema_version: 1
+id: q-c62e9f3a518d
+status: review_ready
+domain: domain-4
+objective: domain-4/ie-cross-cloud-data
+stem: "A platform team sets up a Nebius AI Cloud data transfer to move a dataset
+  in from an external S3-compatible store, and that external provider enforces
+  its own request-rate limit on incoming traffic. What should the team
+  configure on the transfer to stay under the source provider's limit?"
+options:
+  - id: a
+    text: "Lower the transfer's request rate limit to the source provider's
+      enforced rate, since request rate and bandwidth limits are configurable
+      when a transfer is created or modified"
+    correct: true
+    explanation: "Correct. The guide lists a source provider's rate or
+      bandwidth restriction as exactly the case these configurable limits are
+      useful for."
+  - id: b
+    text: "No request rate limit on the transfer, since leaving the limit unset
+      removes any cap on how many requests the transfer sends"
+    correct: false
+    explanation: "The guide states that if the limits are left unset or set to
+      zero, the default values apply instead of removing the cap."
+  - id: c
+    text: "The transfer's bandwidth limit instead, since bandwidth and request
+      rate share one configurable limit on a data transfer"
+    correct: false
+    explanation: "The guide describes request rate and bandwidth as two
+      separate limits on a transfer, each set independently, not one shared
+      value."
+  - id: d
+    text: "The transfer's request rate limit set as high as it will go, since a
+      data transfer's request rate and bandwidth limits can both be made
+      unlimited for a demanding source that needs maximum throughput"
+    correct: false
+    explanation: "The guide states that the request rate and bandwidth cannot
+      be unlimited, though you can set high values for them."
+evidence:
+  - source_id: src-nb-object-storage-transfer-limits
+    source_sha256: 6ea403b3da9384c5e41dec957e9a641b931fb5fd62ad3a1d3df78ef0d14658dd
+    excerpt: "Your source provider imposes rate or bandwidth restrictions."
+    locator: "Data transfer limits on request rate and bandwidth"
+  - source_id: src-nb-object-storage-transfer-limits
+    source_sha256: 6ea403b3da9384c5e41dec957e9a641b931fb5fd62ad3a1d3df78ef0d14658dd
+    excerpt: "Every data transfer has limits for request rate and bandwidth."
+    locator: "Data transfer limits on request rate and bandwidth"
+  - source_id: src-nb-object-storage-transfer-limits
+    source_sha256: 6ea403b3da9384c5e41dec957e9a641b931fb5fd62ad3a1d3df78ef0d14658dd
+    excerpt: "If you don't set the limits or set them to zero, the default
+      values apply"
+    locator: "Data transfer limits on request rate and bandwidth"
+  - source_id: src-nb-object-storage-transfer-limits
+    source_sha256: 6ea403b3da9384c5e41dec957e9a641b931fb5fd62ad3a1d3df78ef0d14658dd
+    excerpt: "The request rate and bandwidth cannot be unlimited, but you can
+      set high values for them"
+    locator: "Data transfer limits on request rate and bandwidth"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T00:39:50Z"
+course_id: ai-infrastructure-engineer
