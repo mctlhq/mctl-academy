@@ -1500,6 +1500,52 @@
     ]
   },
   {
+    "id": "q-4c9a7e2f8b61",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-2",
+    "objective": "domain-2/sa-migration-handover",
+    "stem": "A solutions architect is migrating a team's existing VM image, built outside Nebius AI Cloud, onto the platform so the workload can keep running unmodified. What should the migration plan do to bring the image onto Compute?",
+    "objectiveTitle": "Migrating workloads in and handing the platform over to its operators",
+    "sources": [
+      {
+        "title": "Importing your own image into Compute",
+        "url": "https://docs.nebius.com/compute/storage/import-image.md",
+        "excerpt": "To make an import, upload an image file to a bucket in Object Storage and create an image in Compute."
+      },
+      {
+        "title": "Importing your own image into Compute",
+        "url": "https://docs.nebius.com/compute/storage/import-image.md",
+        "excerpt": "The bucket, image and VM should be in the same region."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Build a new boot disk image with the Nebius Packer plug-in, since Packer provisions a temporary VM from a base image and then creates a new boot disk image.",
+        "correct": false,
+        "explanation": "Packer builds a new image by provisioning on top of an existing Nebius base image, so it does not bring the team's own external image file onto the platform unmodified."
+      },
+      {
+        "id": "b",
+        "text": "Copy the VM image into a Container Registry registry and reference it from a new VM, since Container Registry copies images between registries.",
+        "correct": false,
+        "explanation": "Container Registry copies container images between registries; the documentation describes importing a Compute VM boot image through Object Storage and Compute instead."
+      },
+      {
+        "id": "c",
+        "text": "Upload the image file to an Object Storage bucket in the same region and create a Compute image from the uploaded object.",
+        "correct": true,
+        "explanation": "Correct. The documentation describes importing an image by uploading the image file to a bucket in Object Storage, in the same region as the resulting image and VM, and creating a Compute image from that upload."
+      },
+      {
+        "id": "d",
+        "text": "Create a VM from a standard platform image, connect to it and reinstall the required software, then save a custom boot disk image from that VM's disk.",
+        "correct": false,
+        "explanation": "This rebuilds the environment from a standard platform image rather than bringing in the team's existing image file, so the original workload's image is not what the plan preserves."
+      }
+    ]
+  },
+  {
     "id": "q-4f8a2c6e9d31",
     "course_id": "physical-ai",
     "domain": "domain-4",
@@ -2887,6 +2933,47 @@
     ]
   },
   {
+    "id": "q-8f3c1a9e6d52",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-1",
+    "objective": "domain-1/sa-orchestration-overlays",
+    "stem": "A platform team wants researchers to develop, train and deploy AI models through one lightweight orchestration tool, and would rather not stand up and operate a full Slurm or Kubernetes cluster themselves. Which approach fits this constraint?",
+    "objectiveTitle": "Layering schedulers and ML frameworks on top of compute",
+    "sources": [
+      {
+        "title": "Installation of dstack for AI workload orchestration",
+        "url": "https://docs.nebius.com/3p-integrations/dstack.md",
+        "excerpt": "This is an open-source container orchestrator for AI workload management. It is a streamlined alternative to [Slurm](https://slurm.schedmd.com/documentation.html) and [Kubernetes](https://kubernetes.io/docs/home/), and designed especially for AI."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy Managed Soperator and submit jobs through Slurm, since Soperator clusters scale automatically to the current workload and reduce costs when idle.",
+        "correct": false,
+        "explanation": "Soperator is an open-source Kubernetes operator that runs Slurm nodes as Kubernetes Pods, so adopting it still means building and operating a Slurm-on-Kubernetes cluster rather than avoiding one."
+      },
+      {
+        "id": "b",
+        "text": "Install dstack's server and connect it to Nebius AI Cloud with a service account, since dstack is a streamlined, AI-focused alternative to Slurm and Kubernetes.",
+        "correct": true,
+        "explanation": "Correct. dstack is an open-source container orchestrator for AI workload management that the documentation describes as a streamlined alternative to Slurm and Kubernetes, so a team can develop, train and deploy models without operating either."
+      },
+      {
+        "id": "c",
+        "text": "Create a Managed Kubernetes cluster and install Run:ai on it, since Run:ai dynamically allocates GPU resources and prevents idle GPUs across workloads.",
+        "correct": false,
+        "explanation": "Run:ai is configured to run on a Managed Kubernetes cluster that the team provisions and operates first, so this path still requires standing up a full Kubernetes cluster."
+      },
+      {
+        "id": "d",
+        "text": "Create a Managed Kubernetes cluster and connect a Managed SkyPilot server to it, since SkyPilot picks the best cluster for each job across one or more clusters.",
+        "correct": false,
+        "explanation": "Managed SkyPilot's placement logic runs workloads across one or more Managed Kubernetes clusters, so using it still requires the team to operate Kubernetes infrastructure."
+      }
+    ]
+  },
+  {
     "id": "q-97c4f1a3e8b5",
     "course_id": "ai-infrastructure-engineer",
     "domain": "domain-1",
@@ -4117,6 +4204,52 @@
         "text": "It reports the cumulative prompt and completion token counts",
         "correct": false,
         "explanation": "That is the documented purpose of the `usage` object, not `system_fingerprint`."
+      }
+    ]
+  },
+  {
+    "id": "q-b6e1f9a3c758",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-3",
+    "objective": "domain-3/sa-right-sizing",
+    "stem": "A solutions architect is designing a GPU node group in Managed Kubernetes for a training workload whose demand varies through the week, and wants the node count to track both unmet Pod demand and idle spend rather than stay fixed. What should the node group design use?",
+    "objectiveTitle": "Right-sizing resources using both cost and performance signals",
+    "sources": [
+      {
+        "title": "Autoscaling in Managed Service for Kubernetes",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/autoscaling.md",
+        "excerpt": "If there are unschedulable Pods in the cluster due to resource constraints, the cluster autoscaler adds new nodes to accommodate these Pods."
+      },
+      {
+        "title": "Autoscaling in Managed Service for Kubernetes",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/autoscaling.md",
+        "excerpt": "If nodes in the cluster are underutilized, the cluster autoscaler removes these nodes in order to optimize resource usage and reduce costs."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Autoscaling with a minimum and maximum node count, since the cluster autoscaler adds nodes when Pods are unschedulable and removes underutilized nodes to reduce costs.",
+        "correct": true,
+        "explanation": "Correct. The documentation says the cluster autoscaler adds new nodes when Pods are unschedulable due to resource constraints, and removes underutilized nodes to optimize resource usage and reduce costs."
+      },
+      {
+        "id": "b",
+        "text": "A capacity reservation sized to the group's peak historical demand, since a reservation keeps a guaranteed number of GPUs available for the workload during demand spikes.",
+        "correct": false,
+        "explanation": "A reservation guarantees GPU availability during spikes, but it does not remove nodes or lower spend when the workload is idle, so it tracks only the demand signal, not the cost signal."
+      },
+      {
+        "id": "c",
+        "text": "Preemptible VMs for every node in the group, since preemptible pricing follows the current spot price and lowers the cost of running GPU nodes.",
+        "correct": false,
+        "explanation": "Preemptible pricing lowers the cost of a node, but it does not add or remove nodes based on Pod scheduling, so it does not track unmet demand the way the cluster autoscaler does."
+      },
+      {
+        "id": "d",
+        "text": "A fixed node count sized to the group's peak expected demand, since a fixed count keeps enough nodes running for Pods to schedule immediately at any time.",
+        "correct": false,
+        "explanation": "A fixed count sized to peak demand keeps the same nodes running, and billed, even when demand drops, so it does not track the cost signal the cluster autoscaler responds to."
       }
     ]
   },

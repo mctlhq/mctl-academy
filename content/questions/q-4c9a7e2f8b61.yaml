@@ -1,30 +1,49 @@
 schema_version: 1
 id: q-4c9a7e2f8b61
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/sa-migration-handover
-stem: "A solutions architect is migrating a team's existing VM image, built outside Nebius AI Cloud, onto the platform so the workload can keep running unmodified. What should the migration plan do to bring the image onto Compute?"
+stem: "A solutions architect is migrating a team's existing VM image, built
+  outside Nebius AI Cloud, onto the platform so the workload can keep running
+  unmodified. What should the migration plan do to bring the image onto
+  Compute?"
 options:
   - id: a
-    text: "Build a new boot disk image with the Nebius Packer plug-in, since Packer provisions a temporary VM from a base image and then creates a new boot disk image."
+    text: "Build a new boot disk image with the Nebius Packer plug-in, since Packer
+      provisions a temporary VM from a base image and then creates a new boot
+      disk image."
     correct: false
-    explanation: "Packer builds a new image by provisioning on top of an existing Nebius base image, so it does not bring the team's own external image file onto the platform unmodified."
+    explanation: "Packer builds a new image by provisioning on top of an existing
+      Nebius base image, so it does not bring the team's own external image file
+      onto the platform unmodified."
   - id: b
-    text: "Copy the VM image into a Container Registry registry and reference it from a new VM, since Container Registry copies images between registries."
+    text: "Copy the VM image into a Container Registry registry and reference it
+      from a new VM, since Container Registry copies images between registries."
     correct: false
-    explanation: "Container Registry copies container images between registries; the documentation describes importing a Compute VM boot image through Object Storage and Compute instead."
+    explanation: "Container Registry copies container images between registries; the
+      documentation describes importing a Compute VM boot image through Object
+      Storage and Compute instead."
   - id: c
-    text: "Upload the image file to an Object Storage bucket in the same region and create a Compute image from the uploaded object."
+    text: "Upload the image file to an Object Storage bucket in the same region and
+      create a Compute image from the uploaded object."
     correct: true
-    explanation: "Correct. The documentation describes importing an image by uploading the image file to a bucket in Object Storage, in the same region as the resulting image and VM, and creating a Compute image from that upload."
+    explanation: "Correct. The documentation describes importing an image by
+      uploading the image file to a bucket in Object Storage, in the same region
+      as the resulting image and VM, and creating a Compute image from that
+      upload."
   - id: d
-    text: "Create a VM from a standard platform image, connect to it and reinstall the required software, then save a custom boot disk image from that VM's disk."
+    text: "Create a VM from a standard platform image, connect to it and reinstall
+      the required software, then save a custom boot disk image from that VM's
+      disk."
     correct: false
-    explanation: "This rebuilds the environment from a standard platform image rather than bringing in the team's existing image file, so the original workload's image is not what the plan preserves."
+    explanation: "This rebuilds the environment from a standard platform image
+      rather than bringing in the team's existing image file, so the original
+      workload's image is not what the plan preserves."
 evidence:
   - source_id: src-nb-compute-storage-import-image
     source_sha256: 5aade2111a5e6adc58a796d8ea8fa0cc8dd7474fcc82349895c3066bf6fa1c68
-    excerpt: "To make an import, upload an image file to a bucket in Object Storage and create an image in Compute."
+    excerpt: "To make an import, upload an image file to a bucket in Object Storage
+      and create an image in Compute."
     locator: "Importing your own image into Compute"
   - source_id: src-nb-compute-storage-import-image
     source_sha256: 5aade2111a5e6adc58a796d8ea8fa0cc8dd7474fcc82349895c3066bf6fa1c68
@@ -34,3 +53,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:45:49Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:57:57Z
+  content_sha256: e05c12501c5e34a99bf59fb6d8a106a05c21d376a2be463e367a7907a2fb8bed

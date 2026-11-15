@@ -1,32 +1,60 @@
 schema_version: 1
 id: q-8f3c1a9e6d52
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/sa-orchestration-overlays
-stem: "A platform team wants researchers to develop, train and deploy AI models through one lightweight orchestration tool, and would rather not stand up and operate a full Slurm or Kubernetes cluster themselves. Which approach fits this constraint?"
+stem: "A platform team wants researchers to develop, train and deploy AI models
+  through one lightweight orchestration tool, and would rather not stand up and
+  operate a full Slurm or Kubernetes cluster themselves. Which approach fits
+  this constraint?"
 options:
   - id: a
-    text: "Deploy Managed Soperator and submit jobs through Slurm, since Soperator clusters scale automatically to the current workload and reduce costs when idle."
+    text: "Deploy Managed Soperator and submit jobs through Slurm, since Soperator
+      clusters scale automatically to the current workload and reduce costs when
+      idle."
     correct: false
-    explanation: "Soperator is an open-source Kubernetes operator that runs Slurm nodes as Kubernetes Pods, so adopting it still means building and operating a Slurm-on-Kubernetes cluster rather than avoiding one."
+    explanation: "Soperator is an open-source Kubernetes operator that runs Slurm
+      nodes as Kubernetes Pods, so adopting it still means building and
+      operating a Slurm-on-Kubernetes cluster rather than avoiding one."
   - id: b
-    text: "Install dstack's server and connect it to Nebius AI Cloud with a service account, since dstack is a streamlined, AI-focused alternative to Slurm and Kubernetes."
+    text: "Install dstack's server and connect it to Nebius AI Cloud with a service
+      account, since dstack is a streamlined, AI-focused alternative to Slurm
+      and Kubernetes."
     correct: true
-    explanation: "Correct. dstack is an open-source container orchestrator for AI workload management that the documentation describes as a streamlined alternative to Slurm and Kubernetes, so a team can develop, train and deploy models without operating either."
+    explanation: "Correct. dstack is an open-source container orchestrator for AI
+      workload management that the documentation describes as a streamlined
+      alternative to Slurm and Kubernetes, so a team can develop, train and
+      deploy models without operating either."
   - id: c
-    text: "Create a Managed Kubernetes cluster and install Run:ai on it, since Run:ai dynamically allocates GPU resources and prevents idle GPUs across workloads."
+    text: "Create a Managed Kubernetes cluster and install Run:ai on it, since
+      Run:ai dynamically allocates GPU resources and prevents idle GPUs across
+      workloads."
     correct: false
-    explanation: "Run:ai is configured to run on a Managed Kubernetes cluster that the team provisions and operates first, so this path still requires standing up a full Kubernetes cluster."
+    explanation: "Run:ai is configured to run on a Managed Kubernetes cluster that
+      the team provisions and operates first, so this path still requires
+      standing up a full Kubernetes cluster."
   - id: d
-    text: "Create a Managed Kubernetes cluster and connect a Managed SkyPilot server to it, since SkyPilot picks the best cluster for each job across one or more clusters."
+    text: "Create a Managed Kubernetes cluster and connect a Managed SkyPilot server
+      to it, since SkyPilot picks the best cluster for each job across one or
+      more clusters."
     correct: false
-    explanation: "Managed SkyPilot's placement logic runs workloads across one or more Managed Kubernetes clusters, so using it still requires the team to operate Kubernetes infrastructure."
+    explanation: "Managed SkyPilot's placement logic runs workloads across one or
+      more Managed Kubernetes clusters, so using it still requires the team to
+      operate Kubernetes infrastructure."
 evidence:
   - source_id: src-nb-3p-integrations-dstack
     source_sha256: 8d4aa9d6a735403b929069ad4f1f42e4d03e4a5930cd8f8971a38795e9ccb6c0
-    excerpt: "This is an open-source container orchestrator for AI workload management. It is a streamlined alternative to [Slurm](https://slurm.schedmd.com/documentation.html) and [Kubernetes](https://kubernetes.io/docs/home/), and designed especially for AI."
+    excerpt: "This is an open-source container orchestrator for AI workload
+      management. It is a streamlined alternative to
+      [Slurm](https://slurm.schedmd.com/documentation.html) and
+      [Kubernetes](https://kubernetes.io/docs/home/), and designed especially
+      for AI."
     locator: "Installation of dstack for AI workload orchestration"
 authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:45:49Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:57:57Z
+  content_sha256: df42901f920daa7218f301c1da2bfe736bec3d3e068dfa789824d4527ce8322c

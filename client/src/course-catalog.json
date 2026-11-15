@@ -589,7 +589,7 @@
     "id": "ai-solutions-architect",
     "title": "AI Solutions Architect",
     "summary": "Design AI workloads on a GPU cloud that perform, stay resilient, keep costs in check and isolate tenants and data securely.",
-    "publishedQuestionCount": 19,
+    "publishedQuestionCount": 22,
     "available": true,
     "mock": {
       "questionCount": 30,
