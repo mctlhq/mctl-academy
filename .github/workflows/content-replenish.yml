@@ -71,7 +71,7 @@ on:
       max_questions:
         description: "Question files the author may add or change"
         type: string
-        default: "20"
+        default: "10"
       force:
         description: "Run even when a replenish PR is already open"
         type: boolean
@@ -104,7 +104,7 @@ concurrency:
 
 env:
   MAX_NEW: ${{ inputs.max_new || '3' }}
-  MAX_QUESTIONS: ${{ inputs.max_questions || '20' }}
+  MAX_QUESTIONS: ${{ inputs.max_questions || '10' }}
   # `nebius` serves both agents from Nebius Token Factory through the local
   # relay below, on an independent quota. The identifiers move with the models:
   # a receipt that says agent:claude-reviewer when DeepSeek did the judging
@@ -130,8 +130,16 @@ env:
   # line is not retried on the second token: the check after each agent
   # fails the job naming the variable to raise, because a retry would ask
   # the same question under the same ceiling.
+  # Since the editorial rubric (#513) the author also runs the candidate
+  # quality report on its own items, which costs about 15 turns per question
+  # on top of ~10 fixed: 77 turns for 5 questions (run 43659232543), 67 for 3
+  # (run 43661362973), and over 170 for 10 (run 43657502999, failed against
+  # 160). 240 fits the default batch of 10 with headroom and, at that run's
+  # pace, about 27 minutes -- inside the author job's 45-minute limit. That
+  # limit is also why the default max_questions is 10, not 20: twenty would
+  # need ~310 turns and more time than the job has.
   SELECTOR_TURNS: "60"
-  AUTHOR_TURNS: "160"
+  AUTHOR_TURNS: "240"
   REVIEWER_TURNS: "400"
   BOT_NAME: mctl-agents[bot]
   BOT_EMAIL: mctl-agents[bot]@users.noreply.github.com

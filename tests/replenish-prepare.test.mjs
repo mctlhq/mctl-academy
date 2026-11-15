@@ -3212,7 +3212,9 @@ test("the selector, author and reviewer turn budgets are the same on every provi
   // branch was never pushed. The ceiling is a failure line, not a truncation.
   // Sonnet's selector used exactly its old 25-turn ceiling in run 37783427034.
   assert.equal(String(workflow.env.SELECTOR_TURNS), "60");
-  assert.equal(String(workflow.env.AUTHOR_TURNS), "160");
+  // Run 43657502999: with the self-check of the editorial rubric the author
+  // needed over 170 turns for 10 questions and failed against 160.
+  assert.equal(String(workflow.env.AUTHOR_TURNS), "240");
   // Run 37783427034: the Opus reviewer needed 104 turns for the same batch and
   // failed the same way against its 60-turn ceiling. Run 40329844597: it
   // needed 279 turns for 71 items against a 120-turn ceiling.
