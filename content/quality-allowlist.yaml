@@ -3,9 +3,17 @@
 # "allowlisted" with its reason, but is not counted as a warning. List a pair
 # only after reading both items: the two must test different facts that a
 # learner could confuse, not the same fact twice.
+#
+# One exception, cross-course only: the same documented fact may appear once
+# per course when each course tests it at its own angle (an architect choosing
+# before creation, an engineer recovering afterwards). Same fact at the same
+# angle is still a duplicate. Such pairs say "Cross-course angle:" in their
+# reason, and both items must belong to different courses.
 schema_version: 1
 pairs:
   - pair: [q-9a3f6c1e8b45, q-e1b8a4d6f128]
     reason: "Contrast: key.search_usage (Search-only credits) versus key.usage (total credits) for the same API key."
   - pair: [q-cs01d4e5f6a7, q-de08c9d0e1f2]
     reason: "Contrast: the Partially ready readiness status versus Ready for a dedicated endpoint."
+  - pair: [q-7f1a93cd5e82, q-9e3c5a187db2]
+    reason: "Cross-course angle: a bucket's type is fixed at creation. Solutions Architect chooses the type before creating it; Infrastructure Engineer recovers when a regular bucket already exists (new filesystem bucket plus migration)."
