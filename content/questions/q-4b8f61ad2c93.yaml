@@ -1,0 +1,59 @@
+schema_version: 1
+id: q-4b8f61ad2c93
+status: published
+domain: domain-2
+objective: domain-2/ie-distributed-parallelism
+stem: "A platform team runs a distributed training job on a Managed Service for
+  Kubernetes GPU cluster with topology-aware scheduling enabled through Kueue.
+  They want Kueue to leave the job pending rather than split its Pods across
+  topology domains when the preferred domain lacks capacity. Which topology
+  constraint achieves this?"
+options:
+  - id: a
+    text: "A required topology constraint at the desired domain, so Kueue admits the
+      job only once enough resources are free within that same domain"
+    correct: true
+    explanation: "Correct. The guide states that a required topology constraint
+      makes Kueue admit the workload only if enough resources are available
+      within the same topology domain, leaving it pending otherwise."
+  - id: b
+    text: "A preferred topology constraint at the desired domain, so Kueue is
+      guaranteed to schedule every Pod within that same domain"
+    correct: false
+    explanation: "The guide describes the preferred constraint as letting Kueue
+      place Pods across multiple topology domains when one domain isn't enough,
+      which is the splitting this team wants to avoid."
+  - id: c
+    text: "No topology constraint at all, since Kueue automatically keeps a job's
+      Pods together on nodes that share topology labels once topology-aware
+      scheduling is enabled"
+    correct: false
+    explanation: "The guide ties Kueue's required-within-one-domain behavior to a
+      podset topology annotation on the job; enabling topology-aware scheduling
+      alone only exposes the labels schedulers can use."
+  - id: d
+    text: "A lower replica count for the job, since reducing parallelism is how a
+      workload satisfies a topology constraint"
+    correct: false
+    explanation: "The guide lists reducing parallelism as a troubleshooting step for
+      a job Kueue won't admit; it changes how many Pods must fit, not which
+      topology constraint the job requests."
+evidence:
+  - source_id: src-nb-kubernetes-gpu-topology-aware-scheduling
+    source_sha256: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
+    excerpt: "Kueue admits the workload only if enough resources are available
+      within the same topology domain. Otherwise, the workload remains pending"
+    locator: "Schedule workloads with TAS using Kueue, table"
+  - source_id: src-nb-kubernetes-gpu-topology-aware-scheduling
+    source_sha256: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
+    excerpt: "Kueue tries to schedule Pods within the same topology domain. If this
+      is not possible, Kueue can place Pods across multiple topology domains."
+    locator: "Schedule workloads with TAS using Kueue, table"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T00:39:50Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T00:59:50Z
+  content_sha256: ec1174631fd69a8694f92f3bb5d35936b06877a4e28c9bd541552f0d5cf9173a

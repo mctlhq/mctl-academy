@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-nb-compute-storage-automatic-updates
+url: https://docs.nebius.com/compute/storage/automatic-updates.md
+title: How to enable automatic security updates
+retrieved_at: 2026-11-15T00:41:55Z
+sha256: 6ea328b5f44f69fe27177cd43f17c14156045495f855ce9f795201c4eced46ac
+objectives:
+  - domain-4/ie-long-run-reliability
+  - domain-2/ie-training-images
+snapshot:
+  bucket: academy-source-snapshots
+  key: 6ea328b5f44f69fe27177cd43f17c14156045495f855ce9f795201c4eced46ac
+status: current
