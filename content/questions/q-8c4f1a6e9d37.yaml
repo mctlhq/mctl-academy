@@ -1,41 +1,41 @@
 schema_version: 1
 id: q-8c4f1a6e9d37
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
-stem: "A platform team is rolling out a newer GPU platform for a Managed
-  Service for Kubernetes training workload. They create a new node group with
-  the new platform, then cordon and drain the nodes in the old node group.
-  What happens to the Pods that were running on the old node group?"
+stem: "A platform team is rolling out a newer GPU platform for a Managed Service
+  for Kubernetes training workload. They create a new node group with the new
+  platform, then cordon and drain the nodes in the old node group. What happens
+  to the Pods that were running on the old node group?"
 options:
   - id: a
-    text: "Kubernetes automatically moves the evicted Pods to suitable nodes,
-      which is how the workload moves to the new node group"
+    text: "Kubernetes automatically moves the evicted Pods to suitable nodes, which
+      is how the workload moves to the new node group"
     correct: true
-    explanation: "Correct. The guide states that the workload is moved
-      automatically after you evict it from the existing node group, and that
-      Kubernetes automatically moves evicted Pods to suitable nodes."
+    explanation: "Correct. The guide states that the workload is moved automatically
+      after you evict it from the existing node group, and that Kubernetes
+      automatically moves evicted Pods to suitable nodes."
   - id: b
-    text: "The evicted Pods stay unscheduled until the team manually
-      reschedules each one onto a node in the new node group"
+    text: "The evicted Pods stay unscheduled until the team manually reschedules
+      each one onto a node in the new node group"
     correct: false
-    explanation: "The guide describes the move as automatic once nodes are
-      drained; manually rescheduling each evicted Pod is not a step the
-      procedure calls for."
+    explanation: "The guide describes the move as automatic once nodes are drained;
+      manually rescheduling each evicted Pod is not a step the procedure calls
+      for."
   - id: c
-    text: "The evicted Pods are moved after the team deletes the old node
-      group, rather than right after the drain"
+    text: "The evicted Pods are moved after the team deletes the old node group,
+      rather than right after the drain"
     correct: false
-    explanation: "The guide moves Pods automatically right after the drain
-      step; deleting the old node group is a separate, later step in the
-      procedure, not a precondition for the move."
+    explanation: "The guide moves Pods automatically right after the drain step;
+      deleting the old node group is a separate, later step in the procedure,
+      not a precondition for the move."
   - id: d
-    text: "The evicted Pods restart on the same old nodes once draining
-      finishes, since draining does not remove running Pods permanently"
+    text: "The evicted Pods restart on the same old nodes once draining finishes,
+      since draining does not remove running Pods permanently"
     correct: false
-    explanation: "Draining evicts Pods from the old nodes rather than letting
-      them restart there; the guide describes those evicted Pods moving to
-      suitable nodes elsewhere, not restarting in place."
+    explanation: "Draining evicts Pods from the old nodes rather than letting them
+      restart there; the guide describes those evicted Pods moving to suitable
+      nodes elsewhere, not restarting in place."
 evidence:
   - source_id: src-nb-kubernetes-node-groups-moving-workload
     source_sha256: 21aba18772b922b75abca8a24d00712ce766f4f0084d8e565fb083f32cb9d47f
@@ -44,10 +44,13 @@ evidence:
     locator: "Moving workload from the existing node group"
   - source_id: src-nb-kubernetes-node-groups-moving-workload
     source_sha256: 21aba18772b922b75abca8a24d00712ce766f4f0084d8e565fb083f32cb9d47f
-    excerpt: "Kubernetes will automatically move evicted Pods to suitable
-      nodes."
+    excerpt: "Kubernetes will automatically move evicted Pods to suitable nodes."
     locator: "Moving workload from the existing node group"
 authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:14:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:36:46Z
+  content_sha256: cc957e16a9217710f3de594d982d48066d6806bfa6d59f5ebd3a26290afa1e95

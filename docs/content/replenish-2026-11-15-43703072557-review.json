@@ -1,0 +1,76 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-15T10:36:46Z",
+  "questions": [
+    {
+      "id": "q-1b6f4a9c8e53",
+      "content_sha256": "ebafebefbab4375c95f9a2c0bd22451a1c4c7852b78a7bef4daa8c10c5c19343",
+      "approved": true,
+      "reason": "The captured page states under \"Compatibility with VM types\" that \"All platforms with GPUs also support [preemptible VMs]\", which establishes option a; the remaining options invent restrictions (newer platforms reserved for regular VMs, GPU cluster/InfiniBand prerequisite, separate project) that the page contradicts or never mentions.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-2c8e4f9a6b53",
+      "content_sha256": "7023e7d952478e27c49168e0e87e9fd7bd3cc98a89a586bc06cd3ef2f9277199",
+      "approved": true,
+      "reason": "\"If the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke the VM at any time. The endpoint stops with the `Preempted` code, but you can start it again after that\" supports option a, while \"The VM type doesn't affect how long capacity for an endpoint is being provisioned\" and \"VMs without GPUs only support the regular type\" rule out options b and c.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-3a9e7c2f5b84",
+      "content_sha256": "9fac473177c342a644259227fb5465d5fe11c8fdcf3e771ddedac1fae34fc838",
+      "approved": true,
+      "reason": "The tip reads \"If you have a GPU node group with autoscaling, add a CPU node group with at least two nodes (or with autoscaling) to the cluster. In this case, when there are no tasks to perform, CoreDNS and Cilium networking add-ons can run on CPU nodes, so that the GPU node group can scale down and reduce your costs\", which is option a verbatim in substance; the other options keep the add-ons on GPU nodes and have no basis on the page.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-4b9f2e6a8c17",
+      "content_sha256": "5f8dfe6ce5552ceb2c5c00e881bdfbf934af90ccd16323b8e2cde234075804f9",
+      "approved": true,
+      "reason": "The overview states of Run:ai that \"It dynamically allocates GPU resources, prevents idle GPUs and enables GPU sharing across multiple workloads and users, so that all resources are utilized\", which is exactly the capability the stem asks for; the page installs the Kubeflow Training Operator and MPI Operator as components of the Run:ai setup, not as idle-GPU management layers, and does not attribute this to SkyPilot.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-5e2a9c7f4b16",
+      "content_sha256": "a9dde6982f1099c4384481ef3d12c962a92ba7112773f18e966a7520f66b172d",
+      "approved": true,
+      "reason": "The section \"Presets compatible with GPU clusters\" lists the eligible platform/preset pairs and closes with \"Other presets and platforms are not compatible with GPU clusters\", establishing option a; the page's preset table also shows names differ across platforms (for example `8gpu-192vcpu-2768gb` for B300 vs `8gpu-128vcpu-1600gb` for H200), and it requires a boot disk image compatible with the platform, so b and c fail.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-6f1a8c4e9b32",
+      "content_sha256": "d26daf1f1f4e1bf6b0af7f5983b69fbddcd1de91c2041d9a7e25c4753b983973",
+      "approved": true,
+      "reason": "Two tips are decisive: \"More replicas help concurrency, but they do not fix poor per-request latency caused by insufficient GPU resources\" and \"If performance is insufficient, first scale GPU type or GPUs per replica before aggressively increasing replicas\". The GPU-type table assigns \"Low latency requirements\" and \"Heavy concurrent traffic\" to higher-end, not mid-range, GPUs, so option c is not defensible.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-7a3e9f2c6b85",
+      "content_sha256": "fdb85b85d5bc48d3b4e9f30033056e45de20bcb02520826de0fc11b5235c781f",
+      "approved": true,
+      "reason": "A warning on the page states \"You cannot change the VM platform and preset or the GPU cluster of an existing node group. Create a new node group instead\", which supports option a and excludes the partial-change and workaround options; the restriction covers platform and preset together.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-7e4a9c3f1d86",
+      "content_sha256": "678af72631c2044b6246b399bef00cb9f49dc930938383525942df47ad8a2e2f",
+      "approved": true,
+      "reason": "The \"Costs\" section states \"Nebius AI Cloud only charges you for running Managed Kubernetes nodes\" and \"Managed Service for SkyPilot is free of charge\", which establishes option a; billing is tied to running nodes, not to a SkyPilot API fee, environment count, or active request time.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-8c4f1a6e9d37",
+      "content_sha256": "cc957e16a9217710f3de594d982d48066d6806bfa6d59f5ebd3a26290afa1e95",
+      "approved": true,
+      "reason": "The page opens with \"The workload is moved automatically after you evict it from the existing node group\" and, at the drain step, \"Kubernetes will automatically move evicted Pods to suitable nodes\"; deleting the old node group is the following step, not a precondition, so only option a fits.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    },
+    {
+      "id": "q-9d3b5e7a2f64",
+      "content_sha256": "1f0919abde6025d9c615a22450b2fbe1a0f290772f87d8fe4893e8709f8ee837",
+      "approved": true,
+      "reason": "The \"SLA\" section states \"Self-service dedicated endpoints do not include a formal SLA unless covered by contract\", which is option a; the page frames minimum replicas as a capacity allocation while the endpoint is active and ties no SLA to pricing type or autoscaling, so b, c and d are not defensible.",
+      "reviewed_at": "2026-11-15T10:36:46Z"
+    }
+  ]
+}

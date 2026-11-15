@@ -1,42 +1,41 @@
 schema_version: 1
 id: q-1b6f4a9c8e53
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team is moving a cost-sensitive batch inference workload from
   an older GPU platform to a newer GPU platform and wants to keep using
-  preemptible VMs to control spend. What should they expect about preemptible
-  VM support on the new platform?"
+  preemptible VMs to control spend. What should they expect about preemptible VM
+  support on the new platform?"
 options:
   - id: a
-    text: "The new platform still supports preemptible VMs, since all
-      platforms with GPUs also support preemptible VMs"
+    text: "The new platform still supports preemptible VMs, since all platforms with
+      GPUs also support preemptible VMs"
     correct: true
     explanation: "Correct. The guide states that all platforms with GPUs also
-      support preemptible VMs, so moving to a newer GPU platform does not
-      drop that support."
+      support preemptible VMs, so moving to a newer GPU platform does not drop
+      that support."
   - id: b
-    text: "The new platform drops preemptible VM support, since newer GPU
-      platforms are reserved exclusively for regular, non-preemptible VMs"
+    text: "The new platform drops preemptible VM support, since newer GPU platforms
+      are reserved exclusively for regular, non-preemptible VMs"
     correct: false
-    explanation: "The guide ties preemptible VM support to any platform with
-      GPUs, newer platforms included; it does not reserve newer platforms for
-      regular VMs alone."
+    explanation: "The guide ties preemptible VM support to any platform with GPUs,
+      newer platforms included; it does not reserve newer platforms for regular
+      VMs alone."
   - id: c
-    text: "The new platform supports preemptible VMs when the workload also
-      uses a GPU cluster with InfiniBand interconnect, and not otherwise"
+    text: "The new platform supports preemptible VMs when the workload also uses a
+      GPU cluster with InfiniBand interconnect, and not otherwise"
     correct: false
-    explanation: "GPU cluster membership and InfiniBand interconnect are
-      unrelated to preemptible VM eligibility; the guide ties preemptible
-      support to having GPUs, not to GPU cluster membership."
+    explanation: "GPU cluster membership and InfiniBand interconnect are unrelated
+      to preemptible VM eligibility; the guide ties preemptible support to
+      having GPUs, not to GPU cluster membership."
   - id: d
-    text: "The new platform requires a separate preemptible-dedicated project,
-      since preemptible and regular VMs cannot coexist on the same GPU
-      platform"
+    text: "The new platform requires a separate preemptible-dedicated project, since
+      preemptible and regular VMs cannot coexist on the same GPU platform"
     correct: false
-    explanation: "The guide does not describe preemptible and regular VMs as
-      needing separate projects; both VM types are available on the same
-      GPU-equipped platform."
+    explanation: "The guide does not describe preemptible and regular VMs as needing
+      separate projects; both VM types are available on the same GPU-equipped
+      platform."
 evidence:
   - source_id: src-nb-compute-virtual-machines-types
     source_sha256: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
@@ -47,3 +46,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:14:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:36:46Z
+  content_sha256: ebafebefbab4375c95f9a2c0bd22451a1c4c7852b78a7bef4daa8c10c5c19343

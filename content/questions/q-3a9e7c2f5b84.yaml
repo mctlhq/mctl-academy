@@ -1,52 +1,48 @@
 schema_version: 1
 id: q-3a9e7c2f5b84
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/ie-inference-slo-tuning
 stem: "An inference platform team runs GPU-backed workloads on an autoscaling
   Managed Service for Kubernetes node group and wants it to scale down to zero
-  nodes whenever there is no traffic, to meet a cost target. They notice the
-  GPU node group never reaches zero nodes. What should they add to the cluster
-  to meet this target?"
+  nodes whenever there is no traffic, to meet a cost target. They notice the GPU
+  node group never reaches zero nodes. What should they add to the cluster to
+  meet this target?"
 options:
   - id: a
-    text: "A CPU node group with at least two nodes or with autoscaling
-      enabled, so that cluster networking add-ons can run there instead of on
-      the GPU nodes"
+    text: "A CPU node group with at least two nodes or with autoscaling enabled, so
+      that cluster networking add-ons can run there instead of on the GPU nodes"
     correct: true
-    explanation: "Correct. The autoscaling guide recommends adding a CPU node
-      group with at least two nodes (or with autoscaling) so that cluster
-      networking add-ons can run on CPU nodes, letting the GPU node group
-      scale down and reduce costs."
+    explanation: "Correct. The autoscaling guide recommends adding a CPU node group
+      with at least two nodes (or with autoscaling) so that cluster networking
+      add-ons can run on CPU nodes, letting the GPU node group scale down and
+      reduce costs."
   - id: b
-    text: "A second GPU node group running the same platform and preset, so
-      idle networking add-on Pods can be spread across more GPU nodes
-      instead"
+    text: "A second GPU node group running the same platform and preset, so idle
+      networking add-on Pods can be spread across more GPU nodes instead"
     correct: false
-    explanation: "Adding a second GPU node group keeps the networking add-ons
-      on GPU-backed nodes; the guide's fix is to move those add-ons to CPU
-      nodes instead, not to add more GPU capacity."
+    explanation: "Adding a second GPU node group keeps the networking add-ons on
+      GPU-backed nodes; the guide's fix is to move those add-ons to CPU nodes
+      instead, not to add more GPU capacity."
   - id: c
-    text: "A larger preset on the existing GPU node group, so each node has
-      enough spare capacity to host the networking add-ons without blocking
-      scale-down"
+    text: "A larger preset on the existing GPU node group, so each node has enough
+      spare capacity to host the networking add-ons without blocking scale-down"
     correct: false
-    explanation: "A larger preset keeps the networking add-on Pods on the GPU
-      node group itself; the guide's fix is to give those Pods a CPU node
-      group to run on instead."
+    explanation: "A larger preset keeps the networking add-on Pods on the GPU node
+      group itself; the guide's fix is to give those Pods a CPU node group to
+      run on instead."
   - id: d
-    text: "A dedicated GPU cluster with InfiniBand interconnect attached to the
-      node group, so networking add-on traffic moves off the regular network
-      path"
+    text: "A dedicated GPU cluster with InfiniBand interconnect attached to the node
+      group, so networking add-on traffic moves off the regular network path"
     correct: false
-    explanation: "A GPU cluster with InfiniBand interconnect addresses
-      high-speed communication between training workers; it does not move
-      cluster networking add-ons off the GPU node group."
+    explanation: "A GPU cluster with InfiniBand interconnect addresses high-speed
+      communication between training workers; it does not move cluster
+      networking add-ons off the GPU node group."
 evidence:
   - source_id: src-nb-kubernetes-node-groups-autoscaling
     source_sha256: fa910c31f478cf9c6bd517c4ce9fedb978109f904cb012ef1fba806ad4fbd52e
-    excerpt: "add a CPU node group with at least two nodes (or with
-      autoscaling) to the cluster."
+    excerpt: "add a CPU node group with at least two nodes (or with autoscaling) to
+      the cluster."
     locator: "Autoscaling in Managed Service for Kubernetes, tip"
   - source_id: src-nb-kubernetes-node-groups-autoscaling
     source_sha256: fa910c31f478cf9c6bd517c4ce9fedb978109f904cb012ef1fba806ad4fbd52e
@@ -56,3 +52,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:14:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:36:46Z
+  content_sha256: 9fac473177c342a644259227fb5465d5fe11c8fdcf3e771ddedac1fae34fc838

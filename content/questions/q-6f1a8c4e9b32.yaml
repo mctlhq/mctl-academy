@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6f1a8c4e9b32
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/ie-inference-slo-tuning
 stem: "A dedicated endpoint running one GPU per replica is showing per-request
@@ -8,45 +8,42 @@ stem: "A dedicated endpoint running one GPU per replica is showing per-request
   replicas to fix it. What should they do instead first?"
 options:
   - id: a
-    text: "Scale the GPU type or the number of GPUs per replica before
-      increasing the replica count, since more replicas do not fix latency
-      caused by insufficient GPU resources"
+    text: "Scale the GPU type or the number of GPUs per replica before increasing
+      the replica count, since more replicas do not fix latency caused by
+      insufficient GPU resources"
     correct: true
-    explanation: "Correct. The best-practices guide warns that more replicas
-      help concurrency but do not fix poor per-request latency caused by
-      insufficient GPU resources, and recommends scaling GPU type or GPU
-      count per replica first."
+    explanation: "Correct. The best-practices guide warns that more replicas help
+      concurrency but do not fix poor per-request latency caused by insufficient
+      GPU resources, and recommends scaling GPU type or GPU count per replica
+      first."
   - id: b
     text: "Lower the minimum replicas count, since a smaller guaranteed baseline
       capacity frees up GPU resources that reduce per-request latency on the
       endpoint's remaining replicas"
     correct: false
     explanation: "Lowering the minimum replicas count changes the guaranteed
-      baseline capacity, not the per-request performance of a single replica;
-      it does not address insufficient GPU resources behind a latency
-      problem."
+      baseline capacity, not the per-request performance of a single replica; it
+      does not address insufficient GPU resources behind a latency problem."
   - id: c
-    text: "Switch the deployment to a mid-range GPU type, since mid-range GPUs
-      are the ones built for low per-request latency under heavy concurrent
-      traffic"
+    text: "Switch the deployment to a mid-range GPU type, since mid-range GPUs are
+      the ones built for low per-request latency under heavy concurrent traffic"
     correct: false
-    explanation: "The guide associates higher-end GPUs, not mid-range ones,
-      with low latency requirements and heavy concurrent traffic; mid-range
-      GPUs are positioned for cost-sensitive, moderate-traffic deployments
-      instead."
+    explanation: "The guide associates higher-end GPUs, not mid-range ones, with low
+      latency requirements and heavy concurrent traffic; mid-range GPUs are
+      positioned for cost-sensitive, moderate-traffic deployments instead."
   - id: d
-    text: "Raise the maximum replicas count, since a higher scaling ceiling is
-      what resolves per-request latency that a single, underpowered replica
-      cannot meet on its own"
+    text: "Raise the maximum replicas count, since a higher scaling ceiling is what
+      resolves per-request latency that a single, underpowered replica cannot
+      meet on its own"
     correct: false
-    explanation: "Raising the maximum replicas count changes how far
-      autoscaling can expand under burst traffic; it does not fix the
-      per-request latency of an individual, underpowered replica."
+    explanation: "Raising the maximum replicas count changes how far autoscaling can
+      expand under burst traffic; it does not fix the per-request latency of an
+      individual, underpowered replica."
 evidence:
   - source_id: src-recovery-best-practice
     source_sha256: 2e9a2bf413a5c325ab70bbe949526496ea636781237e7ae42fb6c50fc8b610e0
-    excerpt: "More replicas help concurrency, but they do not fix poor
-      per-request latency caused by insufficient GPU resources."
+    excerpt: "More replicas help concurrency, but they do not fix poor per-request
+      latency caused by insufficient GPU resources."
     locator: "Choosing performance setup, GPUs per replica"
   - source_id: src-recovery-best-practice
     source_sha256: 2e9a2bf413a5c325ab70bbe949526496ea636781237e7ae42fb6c50fc8b610e0
@@ -57,3 +54,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:14:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:36:46Z
+  content_sha256: d26daf1f1f4e1bf6b0af7f5983b69fbddcd1de91c2041d9a7e25c4753b983973
