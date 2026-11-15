@@ -1,0 +1,56 @@
+schema_version: 1
+id: q-5e2a9c7f4b16
+status: published
+domain: domain-4
+objective: domain-4/ie-gpu-rollouts
+stem: "A platform team runs a multi-node training workload in a GPU cluster on
+  an older GPU platform and is planning to move it to a newer GPU platform while
+  keeping the workload in a GPU cluster. When choosing the preset for the new
+  platform's VMs, what must they confirm?"
+options:
+  - id: a
+    text: "That the chosen preset is one of the ones compatible with GPU clusters
+      for that platform, since other presets are not compatible with GPU
+      clusters"
+    correct: true
+    explanation: "Correct. The guide states that if you are adding a VM to a GPU
+      cluster, you select from the platforms and presets compatible with GPU
+      clusters, and that other presets and platforms are not compatible with GPU
+      clusters."
+  - id: b
+    text: "That the chosen preset matches the exact preset name used on the old
+      platform's GPU cluster configuration, since preset names carry over
+      unchanged across every GPU platform"
+    correct: false
+    explanation: "Preset names describe the resources of a specific platform, such
+      as its GPU count; the guide does not describe preset names as shared or
+      interchangeable across different GPU platforms."
+  - id: c
+    text: "That the VMs are created without a boot disk image, since GPU cluster VMs
+      install their GPU drivers through the GPU cluster instead of the boot
+      disk"
+    correct: false
+    explanation: "GPU cluster VMs still need a boot disk image compatible with the
+      platform; the guide ties GPU driver installation to the boot disk image,
+      not to GPU cluster membership."
+  - id: d
+    text: "That the new platform's region also hosts the team's existing non-GPU
+      node groups, since a GPU cluster must share a region with every other node
+      group in the project"
+    correct: false
+    explanation: "The guide does not tie a GPU cluster's region to where a project's
+      other, unrelated node groups are hosted; it requires VMs in the same GPU
+      cluster to share a project, not a region with everything else."
+evidence:
+  - source_id: src-nb-compute-virtual-machines-types
+    source_sha256: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
+    excerpt: "Other presets and platforms are not compatible with GPU clusters."
+    locator: "Presets compatible with GPU clusters"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T10:14:50Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:36:46Z
+  content_sha256: a9dde6982f1099c4384481ef3d12c962a92ba7112773f18e966a7520f66b172d

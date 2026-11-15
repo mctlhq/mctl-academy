@@ -384,6 +384,47 @@
     ]
   },
   {
+    "id": "q-1b6f4a9c8e53",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/ie-gpu-rollouts",
+    "stem": "A platform team is moving a cost-sensitive batch inference workload from an older GPU platform to a newer GPU platform and wants to keep using preemptible VMs to control spend. What should they expect about preemptible VM support on the new platform?",
+    "objectiveTitle": "Planning a move to a newer GPU platform without breaking workloads",
+    "sources": [
+      {
+        "title": "Types of virtual machines and GPUs in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/types.md",
+        "excerpt": "All platforms with GPUs also support [preemptible VMs](https://docs.nebius.com/compute/virtual-machines/preemptible.md)."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "The new platform still supports preemptible VMs, since all platforms with GPUs also support preemptible VMs",
+        "correct": true,
+        "explanation": "Correct. The guide states that all platforms with GPUs also support preemptible VMs, so moving to a newer GPU platform does not drop that support."
+      },
+      {
+        "id": "b",
+        "text": "The new platform drops preemptible VM support, since newer GPU platforms are reserved exclusively for regular, non-preemptible VMs",
+        "correct": false,
+        "explanation": "The guide ties preemptible VM support to any platform with GPUs, newer platforms included; it does not reserve newer platforms for regular VMs alone."
+      },
+      {
+        "id": "c",
+        "text": "The new platform supports preemptible VMs when the workload also uses a GPU cluster with InfiniBand interconnect, and not otherwise",
+        "correct": false,
+        "explanation": "GPU cluster membership and InfiniBand interconnect are unrelated to preemptible VM eligibility; the guide ties preemptible support to having GPUs, not to GPU cluster membership."
+      },
+      {
+        "id": "d",
+        "text": "The new platform requires a separate preemptible-dedicated project, since preemptible and regular VMs cannot coexist on the same GPU platform",
+        "correct": false,
+        "explanation": "The guide does not describe preemptible and regular VMs as needing separate projects; both VM types are available on the same GPU-equipped platform."
+      }
+    ]
+  },
+  {
     "id": "q-1c9e4a7f3d62",
     "course_id": "agentic-web-search",
     "domain": "domain-3",
@@ -635,6 +676,52 @@
     ]
   },
   {
+    "id": "q-2c8e4f9a6b53",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-inference-pipelines",
+    "stem": "A team wants to cut costs for a Serverless AI endpoint serving a lower-priority inference pipeline by running its underlying VM as preemptible. What should they accept about that choice?",
+    "objectiveTitle": "Inference pipelines and integrating external orchestration tools",
+    "sources": [
+      {
+        "title": "Managing endpoints in Serverless AI",
+        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
+        "excerpt": "If the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke the VM at any time."
+      },
+      {
+        "title": "Managing endpoints in Serverless AI",
+        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
+        "excerpt": "The VM type doesn't affect how long capacity for an endpoint is being provisioned."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Nebius AI Cloud can revoke the underlying VM at any time, stopping the endpoint until it is started again",
+        "correct": true,
+        "explanation": "Correct. The documentation states that if the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke the VM at any time, and the endpoint stops as a result."
+      },
+      {
+        "id": "b",
+        "text": "Choosing the preemptible VM type provisions capacity for the endpoint faster than a regular VM, cutting its startup time",
+        "correct": false,
+        "explanation": "The documentation states that the VM type does not affect how long capacity for an endpoint takes to be provisioned, so preemptible does not provision faster."
+      },
+      {
+        "id": "c",
+        "text": "A GPU-backed inference endpoint cannot use the preemptible VM type, since that VM type is reserved for workloads without GPUs",
+        "correct": false,
+        "explanation": "This reverses the documented constraint: VMs without GPUs support only the regular type, while GPU-backed VMs are the ones that can use the preemptible type."
+      },
+      {
+        "id": "d",
+        "text": "The endpoint automatically switches back to a regular VM once traffic volume justifies the extra cost",
+        "correct": false,
+        "explanation": "The documentation does not describe an automatic switch between VM types based on traffic; the VM type is a setting the team chooses, not one the platform changes for them."
+      }
+    ]
+  },
+  {
     "id": "q-2d8f6a19c5e3",
     "course_id": "agentic-web-search",
     "domain": "domain-1",
@@ -795,6 +882,52 @@
         "text": "Because a secret's primary version updates automatically whenever the application runs",
         "correct": false,
         "explanation": "The primary version only changes when explicitly set to a different version; it does not update automatically on application use."
+      }
+    ]
+  },
+  {
+    "id": "q-3a9e7c2f5b84",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-inference-slo-tuning",
+    "stem": "An inference platform team runs GPU-backed workloads on an autoscaling Managed Service for Kubernetes node group and wants it to scale down to zero nodes whenever there is no traffic, to meet a cost target. They notice the GPU node group never reaches zero nodes. What should they add to the cluster to meet this target?",
+    "objectiveTitle": "Tuning latency, throughput and scaling to meet serving targets",
+    "sources": [
+      {
+        "title": "Autoscaling in Managed Service for Kubernetes",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/autoscaling.md",
+        "excerpt": "add a CPU node group with at least two nodes (or with autoscaling) to the cluster."
+      },
+      {
+        "title": "Autoscaling in Managed Service for Kubernetes",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/autoscaling.md",
+        "excerpt": "so that the GPU node group can scale down and reduce your costs."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A CPU node group with at least two nodes or with autoscaling enabled, so that cluster networking add-ons can run there instead of on the GPU nodes",
+        "correct": true,
+        "explanation": "Correct. The autoscaling guide recommends adding a CPU node group with at least two nodes (or with autoscaling) so that cluster networking add-ons can run on CPU nodes, letting the GPU node group scale down and reduce costs."
+      },
+      {
+        "id": "b",
+        "text": "A second GPU node group running the same platform and preset, so idle networking add-on Pods can be spread across more GPU nodes instead",
+        "correct": false,
+        "explanation": "Adding a second GPU node group keeps the networking add-ons on GPU-backed nodes; the guide's fix is to move those add-ons to CPU nodes instead, not to add more GPU capacity."
+      },
+      {
+        "id": "c",
+        "text": "A larger preset on the existing GPU node group, so each node has enough spare capacity to host the networking add-ons without blocking scale-down",
+        "correct": false,
+        "explanation": "A larger preset keeps the networking add-on Pods on the GPU node group itself; the guide's fix is to give those Pods a CPU node group to run on instead."
+      },
+      {
+        "id": "d",
+        "text": "A dedicated GPU cluster with InfiniBand interconnect attached to the node group, so networking add-on traffic moves off the regular network path",
+        "correct": false,
+        "explanation": "A GPU cluster with InfiniBand interconnect addresses high-speed communication between training workers; it does not move cluster networking add-ons off the GPU node group."
       }
     ]
   },
@@ -1285,6 +1418,47 @@
     ]
   },
   {
+    "id": "q-4b9f2e6a8c17",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-inference-pipelines",
+    "stem": "A platform team runs several inference workloads from different users on one Managed Service for Kubernetes cluster and wants a management layer that actively prevents GPUs from sitting idle between those workloads. Which integration addresses this directly?",
+    "objectiveTitle": "Inference pipelines and integrating external orchestration tools",
+    "sources": [
+      {
+        "title": "Configuring a Managed Service for Kubernetes cluster to work in Run:ai",
+        "url": "https://docs.nebius.com/3p-integrations/run-ai.md",
+        "excerpt": "It dynamically allocates GPU resources, prevents idle GPUs and enables GPU sharing across multiple workloads and users, so that all resources are utilized."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Run:ai, since it dynamically allocates GPU resources, prevents idle GPUs and enables GPU sharing across multiple workloads and users",
+        "correct": true,
+        "explanation": "Correct. The guide describes Run:ai as dynamically allocating GPU resources, preventing idle GPUs and enabling GPU sharing across multiple workloads and users."
+      },
+      {
+        "id": "b",
+        "text": "Managed Service for SkyPilot, since it schedules inference tasks across clusters by specifying the container image, GPU requirements and commands in a configuration file",
+        "correct": false,
+        "explanation": "SkyPilot focuses on launching and scheduling a task from a configuration file; sharing idle GPU capacity across workloads and users is the capability the guide attributes to Run:ai."
+      },
+      {
+        "id": "c",
+        "text": "The Kubeflow Training Operator, since installing it lets several training jobs share the same GPU node group without contention",
+        "correct": false,
+        "explanation": "The Kubeflow Training Operator manages training job types on Kubernetes; the guide installs it alongside Run:ai, not as a GPU-sharing layer on its own."
+      },
+      {
+        "id": "d",
+        "text": "The MPI Operator, since it coordinates GPU allocation across workloads so that no GPU remains idle between jobs",
+        "correct": false,
+        "explanation": "The MPI Operator runs MPI-based distributed jobs; the guide installs it as a dependency for Run:ai, not as the component that prevents idle GPUs."
+      }
+    ]
+  },
+  {
     "id": "q-4c8e2b6f1a93",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -1588,6 +1762,47 @@
         "text": "Replica counts are fixed at deployment time and cannot change without recreating the endpoint",
         "correct": false,
         "explanation": "The documentation describes scaling between minimum and maximum replicas as normal operation, not something that requires recreating the endpoint."
+      }
+    ]
+  },
+  {
+    "id": "q-5e2a9c7f4b16",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/ie-gpu-rollouts",
+    "stem": "A platform team runs a multi-node training workload in a GPU cluster on an older GPU platform and is planning to move it to a newer GPU platform while keeping the workload in a GPU cluster. When choosing the preset for the new platform's VMs, what must they confirm?",
+    "objectiveTitle": "Planning a move to a newer GPU platform without breaking workloads",
+    "sources": [
+      {
+        "title": "Types of virtual machines and GPUs in Nebius AI Cloud",
+        "url": "https://docs.nebius.com/compute/virtual-machines/types.md",
+        "excerpt": "Other presets and platforms are not compatible with GPU clusters."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "That the chosen preset is one of the ones compatible with GPU clusters for that platform, since other presets are not compatible with GPU clusters",
+        "correct": true,
+        "explanation": "Correct. The guide states that if you are adding a VM to a GPU cluster, you select from the platforms and presets compatible with GPU clusters, and that other presets and platforms are not compatible with GPU clusters."
+      },
+      {
+        "id": "b",
+        "text": "That the chosen preset matches the exact preset name used on the old platform's GPU cluster configuration, since preset names carry over unchanged across every GPU platform",
+        "correct": false,
+        "explanation": "Preset names describe the resources of a specific platform, such as its GPU count; the guide does not describe preset names as shared or interchangeable across different GPU platforms."
+      },
+      {
+        "id": "c",
+        "text": "That the VMs are created without a boot disk image, since GPU cluster VMs install their GPU drivers through the GPU cluster instead of the boot disk",
+        "correct": false,
+        "explanation": "GPU cluster VMs still need a boot disk image compatible with the platform; the guide ties GPU driver installation to the boot disk image, not to GPU cluster membership."
+      },
+      {
+        "id": "d",
+        "text": "That the new platform's region also hosts the team's existing non-GPU node groups, since a GPU cluster must share a region with every other node group in the project",
+        "correct": false,
+        "explanation": "The guide does not tie a GPU cluster's region to where a project's other, unrelated node groups are hosted; it requires VMs in the same GPU cluster to share a project, not a region with everything else."
       }
     ]
   },
@@ -1940,6 +2155,52 @@
     ]
   },
   {
+    "id": "q-6f1a8c4e9b32",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-inference-slo-tuning",
+    "stem": "A dedicated endpoint running one GPU per replica is showing per-request latency above the team's target, and they are considering just adding more replicas to fix it. What should they do instead first?",
+    "objectiveTitle": "Tuning latency, throughput and scaling to meet serving targets",
+    "sources": [
+      {
+        "title": "Best Practices",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md",
+        "excerpt": "More replicas help concurrency, but they do not fix poor per-request latency caused by insufficient GPU resources."
+      },
+      {
+        "title": "Best Practices",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/best-practice.md",
+        "excerpt": "If performance is insufficient, first scale GPU type or GPUs per replica before aggressively increasing replicas."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Scale the GPU type or the number of GPUs per replica before increasing the replica count, since more replicas do not fix latency caused by insufficient GPU resources",
+        "correct": true,
+        "explanation": "Correct. The best-practices guide warns that more replicas help concurrency but do not fix poor per-request latency caused by insufficient GPU resources, and recommends scaling GPU type or GPU count per replica first."
+      },
+      {
+        "id": "b",
+        "text": "Lower the minimum replicas count, since a smaller guaranteed baseline capacity frees up GPU resources that reduce per-request latency on the endpoint's remaining replicas",
+        "correct": false,
+        "explanation": "Lowering the minimum replicas count changes the guaranteed baseline capacity, not the per-request performance of a single replica; it does not address insufficient GPU resources behind a latency problem."
+      },
+      {
+        "id": "c",
+        "text": "Switch the deployment to a mid-range GPU type, since mid-range GPUs are the ones built for low per-request latency under heavy concurrent traffic",
+        "correct": false,
+        "explanation": "The guide associates higher-end GPUs, not mid-range ones, with low latency requirements and heavy concurrent traffic; mid-range GPUs are positioned for cost-sensitive, moderate-traffic deployments instead."
+      },
+      {
+        "id": "d",
+        "text": "Raise the maximum replicas count, since a higher scaling ceiling is what resolves per-request latency that a single, underpowered replica cannot meet on its own",
+        "correct": false,
+        "explanation": "Raising the maximum replicas count changes how far autoscaling can expand under burst traffic; it does not fix the per-request latency of an individual, underpowered replica."
+      }
+    ]
+  },
+  {
     "id": "q-71e4b9c2a5f3",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -1982,6 +2243,47 @@
         "text": "`GET /v1/fine_tuning/jobs/<job_ID>/events`",
         "correct": false,
         "explanation": "That endpoint lists a fine-tuning job's lifecycle events; it has nothing to do with file contents."
+      }
+    ]
+  },
+  {
+    "id": "q-7a3e9f2c6b85",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-2",
+    "objective": "domain-2/ie-training-cluster-lifecycle",
+    "stem": "A platform team wants to upgrade an existing Managed Service for Kubernetes GPU node group to a different VM platform and preset by editing that node group's configuration in place. What should they expect?",
+    "objectiveTitle": "Creating, scaling and retiring GPU clusters for training",
+    "sources": [
+      {
+        "title": "Working with GPUs in the Managed Service for Kubernetes",
+        "url": "https://docs.nebius.com/kubernetes/gpu/set-up.md",
+        "excerpt": "You cannot change the VM platform and preset or the GPU cluster of an existing node group. Create a new node group instead."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "They cannot change the VM platform and preset of an existing node group; they must create a new node group instead",
+        "correct": true,
+        "explanation": "Correct. The guide states plainly that you cannot change the VM platform and preset or the GPU cluster of an existing node group, and that you should create a new node group instead."
+      },
+      {
+        "id": "b",
+        "text": "The change applies immediately to the node group's existing nodes without recreating any of them, the same way a scaling change does",
+        "correct": false,
+        "explanation": "Scaling a node group up or down does not recreate nodes, but that applies to changing the node count, not to changing the node group's VM platform and preset, which the guide says cannot be changed at all."
+      },
+      {
+        "id": "c",
+        "text": "The change is accepted, but just after the team first removes the GPU drivers preset from the node group's template",
+        "correct": false,
+        "explanation": "Removing the GPU drivers preset first is not a documented way to unlock a platform or preset change; the guide states that platform and preset cannot be changed on an existing node group regardless."
+      },
+      {
+        "id": "d",
+        "text": "The change is accepted for the node group's preset, but the VM platform field remains locked to its original value permanently",
+        "correct": false,
+        "explanation": "The guide ties the restriction to both the platform and the preset together, not to the preset alone remaining changeable while the platform stays fixed."
       }
     ]
   },
@@ -2105,6 +2407,52 @@
         "text": "Use soft resets instead of hard resets, since soft resets are faster for comparison runs",
         "correct": false,
         "explanation": "The documentation says to use hard resets when reproducing benchmark results, because soft resets are not bit-identical to hard resets."
+      }
+    ]
+  },
+  {
+    "id": "q-7e4a9c3f1d86",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-inference-pipelines",
+    "stem": "A platform team wants to orchestrate a vLLM inference server on a Managed Service for Kubernetes cluster by using Managed Service for SkyPilot, and needs to know what Nebius AI Cloud bills for in this setup. What should they expect?",
+    "objectiveTitle": "Inference pipelines and integrating external orchestration tools",
+    "sources": [
+      {
+        "title": "Running vLLM inference on a Managed Service for Kubernetes cluster with SkyPilot",
+        "url": "https://docs.nebius.com/3p-integrations/skypilot-vllm-inference.md",
+        "excerpt": "Nebius AI Cloud only charges you for running Managed Kubernetes nodes."
+      },
+      {
+        "title": "Running vLLM inference on a Managed Service for Kubernetes cluster with SkyPilot",
+        "url": "https://docs.nebius.com/3p-integrations/skypilot-vllm-inference.md",
+        "excerpt": "Managed Service for SkyPilot is free of charge."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Charges only for the Managed Kubernetes nodes that run the vLLM workload, since Managed Service for SkyPilot itself is free of charge",
+        "correct": true,
+        "explanation": "Correct. The tutorial states that Nebius AI Cloud only charges for running Managed Kubernetes nodes, and that Managed Service for SkyPilot is free of charge."
+      },
+      {
+        "id": "b",
+        "text": "Charges for both the Managed Kubernetes nodes and a separate fee for the Managed SkyPilot server's API endpoint",
+        "correct": false,
+        "explanation": "The tutorial describes Managed Service for SkyPilot as free of charge; there is no separate fee for its API endpoint."
+      },
+      {
+        "id": "c",
+        "text": "Charges based on the number of SkyPilot environments launched, regardless of which cluster runs them",
+        "correct": false,
+        "explanation": "Billing is tied to the Managed Kubernetes nodes running the workload, not to the count of SkyPilot environments launched."
+      },
+      {
+        "id": "d",
+        "text": "Charges only while the vLLM server is actively answering chat requests, with no charge for idle GPU time on the node",
+        "correct": false,
+        "explanation": "Managed Kubernetes node charges apply to the running nodes themselves, not only to the time the vLLM server is actively serving requests."
       }
     ]
   },
@@ -2361,6 +2709,52 @@
         "text": "Create the VM in a subnet configured to disable public addressing, then rely on the default egress gateway for the VM's outbound internet traffic.",
         "correct": false,
         "explanation": "Incorrect. Disabling public addressing blocks inbound traffic from the internet entirely, which stops the partner from reaching the service rather than giving them a way in."
+      }
+    ]
+  },
+  {
+    "id": "q-8c4f1a6e9d37",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-4",
+    "objective": "domain-4/ie-gpu-rollouts",
+    "stem": "A platform team is rolling out a newer GPU platform for a Managed Service for Kubernetes training workload. They create a new node group with the new platform, then cordon and drain the nodes in the old node group. What happens to the Pods that were running on the old node group?",
+    "objectiveTitle": "Planning a move to a newer GPU platform without breaking workloads",
+    "sources": [
+      {
+        "title": "Moving workload from the existing node group",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/moving-workload.md",
+        "excerpt": "The workload is moved automatically after you evict it from the existing node group."
+      },
+      {
+        "title": "Moving workload from the existing node group",
+        "url": "https://docs.nebius.com/kubernetes/node-groups/moving-workload.md",
+        "excerpt": "Kubernetes will automatically move evicted Pods to suitable nodes."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Kubernetes automatically moves the evicted Pods to suitable nodes, which is how the workload moves to the new node group",
+        "correct": true,
+        "explanation": "Correct. The guide states that the workload is moved automatically after you evict it from the existing node group, and that Kubernetes automatically moves evicted Pods to suitable nodes."
+      },
+      {
+        "id": "b",
+        "text": "The evicted Pods stay unscheduled until the team manually reschedules each one onto a node in the new node group",
+        "correct": false,
+        "explanation": "The guide describes the move as automatic once nodes are drained; manually rescheduling each evicted Pod is not a step the procedure calls for."
+      },
+      {
+        "id": "c",
+        "text": "The evicted Pods are moved after the team deletes the old node group, rather than right after the drain",
+        "correct": false,
+        "explanation": "The guide moves Pods automatically right after the drain step; deleting the old node group is a separate, later step in the procedure, not a precondition for the move."
+      },
+      {
+        "id": "d",
+        "text": "The evicted Pods restart on the same old nodes once draining finishes, since draining does not remove running Pods permanently",
+        "correct": false,
+        "explanation": "Draining evicts Pods from the old nodes rather than letting them restart there; the guide describes those evicted Pods moving to suitable nodes elsewhere, not restarting in place."
       }
     ]
   },
@@ -2786,6 +3180,47 @@
         "text": "It becomes a private draft that only becomes visible once the push succeeds",
         "correct": false,
         "explanation": "The repo's visibility is governed by the `--policy.private` setting, not by whether the push succeeded; a failed run's repo is documented as being left on the Hub as-is."
+      }
+    ]
+  },
+  {
+    "id": "q-9d3b5e7a2f64",
+    "course_id": "ai-infrastructure-engineer",
+    "domain": "domain-3",
+    "objective": "domain-3/ie-inference-slo-tuning",
+    "stem": "A platform team is defining an internal SLO for a self-service Token Factory dedicated endpoint and wants to assume that the endpoint's uptime is backed by a formal guarantee from Nebius. What should they confirm before writing that assumption into the SLO?",
+    "objectiveTitle": "Tuning latency, throughput and scaling to meet serving targets",
+    "sources": [
+      {
+        "title": "Capacity, availability, and service guarantees",
+        "url": "https://docs.tokenfactory.nebius.com/ai-models-inference/dedicated-endpoints/capacity-and-scaling.md",
+        "excerpt": "Self-service dedicated endpoints do not include a formal SLA unless covered by contract."
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Whether the endpoint is covered by a contract, since self-service dedicated endpoints do not include a formal SLA otherwise",
+        "correct": true,
+        "explanation": "Correct. The capacity guide states that self-service dedicated endpoints do not include a formal SLA unless covered by contract."
+      },
+      {
+        "id": "b",
+        "text": "Whether the minimum replicas count is set high enough, since minimum replicas by themselves constitute a formal uptime SLA for the endpoint",
+        "correct": false,
+        "explanation": "Minimum replicas describe a reserved capacity allocation while the endpoint runs; the guide ties a formal SLA to being covered by a contract, not to the replica count."
+      },
+      {
+        "id": "c",
+        "text": "Whether the underlying VM uses on-demand pricing rather than a preemptible VM, since on-demand pricing alone carries a formal uptime SLA",
+        "correct": false,
+        "explanation": "On-demand pricing describes how the underlying VM is billed; the guide ties a formal SLA to a contract, not to the VM's pricing type."
+      },
+      {
+        "id": "d",
+        "text": "Whether autoscaling is enabled between the minimum and maximum replica counts, since autoscaling between them is what forms the endpoint's uptime guarantee",
+        "correct": false,
+        "explanation": "Autoscaling between minimum and maximum replicas is a capacity-scaling behavior; the guide ties a formal SLA to a contract, not to whether autoscaling is enabled."
       }
     ]
   },

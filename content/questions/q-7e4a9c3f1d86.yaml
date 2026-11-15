@@ -1,0 +1,53 @@
+schema_version: 1
+id: q-7e4a9c3f1d86
+status: published
+domain: domain-3
+objective: domain-3/ie-inference-pipelines
+stem: "A platform team wants to orchestrate a vLLM inference server on a Managed
+  Service for Kubernetes cluster by using Managed Service for SkyPilot, and
+  needs to know what Nebius AI Cloud bills for in this setup. What should they
+  expect?"
+options:
+  - id: a
+    text: "Charges only for the Managed Kubernetes nodes that run the vLLM workload,
+      since Managed Service for SkyPilot itself is free of charge"
+    correct: true
+    explanation: "Correct. The tutorial states that Nebius AI Cloud only charges for
+      running Managed Kubernetes nodes, and that Managed Service for SkyPilot is
+      free of charge."
+  - id: b
+    text: "Charges for both the Managed Kubernetes nodes and a separate fee for the
+      Managed SkyPilot server's API endpoint"
+    correct: false
+    explanation: "The tutorial describes Managed Service for SkyPilot as free of
+      charge; there is no separate fee for its API endpoint."
+  - id: c
+    text: "Charges based on the number of SkyPilot environments launched, regardless
+      of which cluster runs them"
+    correct: false
+    explanation: "Billing is tied to the Managed Kubernetes nodes running the
+      workload, not to the count of SkyPilot environments launched."
+  - id: d
+    text: "Charges only while the vLLM server is actively answering chat requests,
+      with no charge for idle GPU time on the node"
+    correct: false
+    explanation: "Managed Kubernetes node charges apply to the running nodes
+      themselves, not only to the time the vLLM server is actively serving
+      requests."
+evidence:
+  - source_id: src-nb-3p-integrations-skypilot-vllm-inference
+    source_sha256: 3c0a8efabf9aeca0f48c7c6b2143a8b59dbc22051c436747177d870f188b9b2f
+    excerpt: "Nebius AI Cloud only charges you for running Managed Kubernetes nodes."
+    locator: "Costs"
+  - source_id: src-nb-3p-integrations-skypilot-vllm-inference
+    source_sha256: 3c0a8efabf9aeca0f48c7c6b2143a8b59dbc22051c436747177d870f188b9b2f
+    excerpt: "Managed Service for SkyPilot is free of charge."
+    locator: "Costs"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T10:14:50Z"
+course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T10:36:46Z
+  content_sha256: 678af72631c2044b6246b399bef00cb9f49dc930938383525942df47ad8a2e2f
