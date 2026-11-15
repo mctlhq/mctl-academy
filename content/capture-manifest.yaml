@@ -1451,3 +1451,15 @@ sources:
     title: Exporting data from Compute disks and shared filesystems
     objectives:
       - domain-1/ie-compliance-residency
+  - id: src-nb-audit-logs-index
+    url: https://docs.nebius.com/audit-logs/index.md
+    title: Audit Logs
+    objectives:
+      - domain-4/sa-data-lifecycle-investigation
+      - domain-4/sa-secrets-audit-compliance
+  - id: src-nb-audit-logs-services
+    url: https://docs.nebius.com/audit-logs/services.md
+    title: Nebius AI Cloud services supported by Audit Logs
+    objectives:
+      - domain-4/sa-data-lifecycle-investigation
+      - domain-4/sa-secrets-audit-compliance
