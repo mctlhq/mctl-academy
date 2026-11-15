@@ -51,6 +51,15 @@ jobs:
       - name: Exact @mctlhq pins
         run: bun run check:pins
 
+      # content-replenish.yml pins setup-bun to the bun that claude-code-action
+      # installs inside each agent step; a mismatch changes ~/.bun/bin/bun
+      # mid-step and fails the trusted-file guard. Reads the action's own
+      # action.yml at the pinned SHA (network), so a Dependabot SHA bump that
+      # leaves the pin comment stale fails here rather than in the next
+      # replenish run (#434 -> run 43656589672).
+      - name: Agent action bun pin
+        run: bun run check:action-bun
+
   content:
     name: Content lint and tests
     runs-on: ubuntu-latest
