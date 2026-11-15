@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-b6e1f9a3c758
+status: review_ready
+domain: domain-3
+objective: domain-3/sa-right-sizing
+stem: "A solutions architect is designing a GPU node group in Managed Kubernetes for a training workload whose demand varies through the week, and wants the node count to track both unmet Pod demand and idle spend rather than stay fixed. What should the node group design use?"
+options:
+  - id: a
+    text: "Autoscaling with a minimum and maximum node count, since the cluster autoscaler adds nodes when Pods are unschedulable and removes underutilized nodes to reduce costs."
+    correct: true
+    explanation: "Correct. The documentation says the cluster autoscaler adds new nodes when Pods are unschedulable due to resource constraints, and removes underutilized nodes to optimize resource usage and reduce costs."
+  - id: b
+    text: "A capacity reservation sized to the group's peak historical demand, since a reservation keeps a guaranteed number of GPUs available for the workload during demand spikes."
+    correct: false
+    explanation: "A reservation guarantees GPU availability during spikes, but it does not remove nodes or lower spend when the workload is idle, so it tracks only the demand signal, not the cost signal."
+  - id: c
+    text: "Preemptible VMs for every node in the group, since preemptible pricing follows the current spot price and lowers the cost of running GPU nodes."
+    correct: false
+    explanation: "Preemptible pricing lowers the cost of a node, but it does not add or remove nodes based on Pod scheduling, so it does not track unmet demand the way the cluster autoscaler does."
+  - id: d
+    text: "A fixed node count sized to the group's peak expected demand, since a fixed count keeps enough nodes running for Pods to schedule immediately at any time."
+    correct: false
+    explanation: "A fixed count sized to peak demand keeps the same nodes running, and billed, even when demand drops, so it does not track the cost signal the cluster autoscaler responds to."
+evidence:
+  - source_id: src-nb-kubernetes-node-groups-autoscaling
+    source_sha256: fa910c31f478cf9c6bd517c4ce9fedb978109f904cb012ef1fba806ad4fbd52e
+    excerpt: "If there are unschedulable Pods in the cluster due to resource constraints, the cluster autoscaler adds new nodes to accommodate these Pods."
+    locator: "Autoscaling in Managed Service for Kubernetes"
+  - source_id: src-nb-kubernetes-node-groups-autoscaling
+    source_sha256: fa910c31f478cf9c6bd517c4ce9fedb978109f904cb012ef1fba806ad4fbd52e
+    excerpt: "If nodes in the cluster are underutilized, the cluster autoscaler removes these nodes in order to optimize resource usage and reduce costs."
+    locator: "Autoscaling in Managed Service for Kubernetes"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T10:45:49Z"
+course_id: ai-solutions-architect
