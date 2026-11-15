@@ -14,8 +14,10 @@ jobs:
     name: Lint and format
     runs-on: ubuntu-latest
     # Its own job rather than steps inside another: these checks need no
-    # database, no secrets and no network, so they start and fail fast, and
-    # a lint failure never obscures whether the tests themselves passed.
+    # database and no secrets, so they start and fail fast, and a lint
+    # failure never obscures whether the tests themselves passed. One step,
+    # "Agent action bun pin", reads raw.githubusercontent.com; an outage there
+    # fails this job rather than passing it unchecked.
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 

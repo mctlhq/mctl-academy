@@ -31,7 +31,9 @@ const SHA = /^[0-9a-f]{40}$/;
  * @param {string} text
  */
 export function workflowPins(text) {
-  const bun = [...text.matchAll(/^\s*bun-version:\s*(\S+)\s*$/gm)].map((m) => m[1]);
+  // Same parse as embeddedBunVersion: quotes and a trailing comment are not
+  // part of the version, and a commented pin must not drop out of the list.
+  const bun = [...text.matchAll(/^\s*bun-version:\s*["']?([^"'\s#]+)/gm)].map((m) => m[1]);
   const shas = [
     ...new Set([...text.matchAll(/uses:\s*anthropics\/claude-code-action@(\S+)/g)].map((m) => m[1])),
   ];

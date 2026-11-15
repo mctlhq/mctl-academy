@@ -73,6 +73,14 @@ test("fails when the workflow has no pins, disagreeing pins or a non-SHA ref", a
   assert.ok((await check(workflow("1.4.4", ["v1"]), yml)).some((p) => /not a full commit SHA/.test(p)));
 });
 
+test("a quoted or commented workflow pin is still read, so it cannot escape the checks", async () => {
+  const yml = async () => actionYml("1.4.4");
+  const commented = workflow("1.4.4", [SHA_A]) + "          bun-version: 1.3.14 # older step\n";
+  assert.ok((await check(commented, yml)).some((p) => /disagree/.test(p)));
+  const quoted = workflow('"1.4.4"', [SHA_A]);
+  assert.deepEqual(await check(quoted, yml), []);
+});
+
 test("the real workflow pins one bun version and full action SHAs", () => {
   const text = readFileSync(new URL("../.github/workflows/content-replenish.yml", import.meta.url), "utf8");
   const { bun, shas } = workflowPins(text);
