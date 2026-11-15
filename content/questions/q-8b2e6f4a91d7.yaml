@@ -1,0 +1,36 @@
+schema_version: 1
+id: q-8b2e6f4a91d7
+status: review_ready
+domain: domain-4
+objective: domain-4/sa-private-connectivity
+stem: "A small team needs an external partner to reach an HTTP service running on a VM in a private Nebius AI Cloud subnet, but platform policy forbids giving that VM a public IP address or opening any inbound firewall port. Which approach lets the partner reach the service?"
+options:
+  - id: a
+    text: "Run a tunnel agent beside the service so it opens an outbound connection to a Nebius edge, which then forwards the partner's requests back to it."
+    correct: true
+    explanation: "Correct. Nebius Tunnels lets the agent open an outbound connection to a regional Nebius edge, and the edge then forwards requests back through that existing connection, so the VM never has to accept inbound traffic from the internet."
+  - id: b
+    text: "Allocate a public IP address to the VM and add an inbound security group rule that allows traffic from the partner's address range."
+    correct: false
+    explanation: "Incorrect. This VPC security-group approach is a real way to expose a service, but it requires exactly the public IP address and inbound rule that platform policy forbids here."
+  - id: c
+    text: "Deploy a Nebius VPN Gateway to build site-to-site IPsec connectivity between the partner's network and the VM's private subnet."
+    correct: false
+    explanation: "Incorrect. Nebius VPN Gateway is built for site-to-site connectivity with another cloud provider's network or an on-premises data center, not for letting a single outside partner reach one internal service."
+  - id: d
+    text: "Create the VM in a subnet configured to disable public addressing, then rely on the default egress gateway for the VM's outbound internet traffic."
+    correct: false
+    explanation: "Incorrect. Disabling public addressing blocks inbound traffic from the internet entirely, which stops the partner from reaching the service rather than giving them a way in."
+evidence:
+  - source_id: src-pa-tunnels-overview
+    source_sha256: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
+    excerpt: "The agent opens an outbound TLS connection to a regional Nebius edge endpoint."
+    locator: "About Nebius Tunnels, How tunnels work"
+  - source_id: src-pa-tunnels-overview
+    source_sha256: 540a78c2ed73e9770b4449d15fa477f3dc30f146819b09b159331255e82b82a5
+    excerpt: "the edge forwards the request back through the existing agent connection"
+    locator: "About Nebius Tunnels, How tunnels work"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T01:06:11Z"
+course_id: ai-solutions-architect
