@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-nb-audit-logs-index
+url: https://docs.nebius.com/audit-logs/index.md
+title: Audit Logs
+retrieved_at: 2026-11-15T10:46:57Z
+sha256: 5f1ba85769059edb6ecf33a09adf4023ae25fce1554896bbf97e1e141c991bb9
+objectives:
+  - domain-4/sa-data-lifecycle-investigation
+  - domain-4/sa-secrets-audit-compliance
+snapshot:
+  bucket: academy-source-snapshots
+  key: 5f1ba85769059edb6ecf33a09adf4023ae25fce1554896bbf97e1e141c991bb9
+status: current

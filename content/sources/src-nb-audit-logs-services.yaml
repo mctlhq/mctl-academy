@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-nb-audit-logs-services
+url: https://docs.nebius.com/audit-logs/services.md
+title: Nebius AI Cloud services supported by Audit Logs
+retrieved_at: 2026-11-15T10:46:58Z
+sha256: e6dfe2469ff0584cf73edb3e129870ab05d7117f7e096cb73cac81b5085ac4a8
+objectives:
+  - domain-4/sa-data-lifecycle-investigation
+  - domain-4/sa-secrets-audit-compliance
+snapshot:
+  bucket: academy-source-snapshots
+  key: e6dfe2469ff0584cf73edb3e129870ab05d7117f7e096cb73cac81b5085ac4a8
+status: current

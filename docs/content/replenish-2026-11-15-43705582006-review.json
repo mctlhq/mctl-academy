@@ -1,0 +1,27 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-15T10:57:57Z",
+  "questions": [
+    {
+      "id": "q-4c9a7e2f8b61",
+      "content_sha256": "e05c12501c5e34a99bf59fb6d8a106a05c21d376a2be463e367a7907a2fb8bed",
+      "approved": true,
+      "reason": "The captured page states verbatim \"To make an import, upload an image file to a bucket in Object Storage and create an image in Compute.\" and \"The bucket, image and VM should be in the same region.\", which is exactly what option c says; the Packer, Container Registry and rebuild-from-platform-image options all fail to bring the team's existing image file onto Compute, so only one option is best.",
+      "reviewed_at": "2026-11-15T10:57:57Z"
+    },
+    {
+      "id": "q-8f3c1a9e6d52",
+      "content_sha256": "df42901f920daa7218f301c1da2bfe736bec3d3e068dfa789824d4527ce8322c",
+      "approved": true,
+      "reason": "The excerpt is verbatim on the page, which calls dstack \"an open-source container orchestrator for AI workload management\" and \"a streamlined alternative to Slurm and Kubernetes\", and the Steps section covers installing the server and connecting it with a service account; the Soperator, Run:ai and SkyPilot options each presuppose operating a Slurm or Kubernetes cluster, which the stem rules out.",
+      "reviewed_at": "2026-11-15T10:57:57Z"
+    },
+    {
+      "id": "q-b6e1f9a3c758",
+      "content_sha256": "b338cbe86a988524c06686560ae6f7f30efe1406a5b60f6d3ef6c75a815b142a",
+      "approved": true,
+      "reason": "Both excerpts appear verbatim as the autoscaler's stated principles (\"the cluster autoscaler adds new nodes to accommodate these Pods\" and \"removes these nodes in order to optimize resource usage and reduce costs\"), and the page documents setting min/max node count; reservations, preemptible VMs and a fixed peak-sized count each respond to at most one of the two signals in the stem, so option a is uniquely best.",
+      "reviewed_at": "2026-11-15T10:57:57Z"
+    }
+  ]
+}

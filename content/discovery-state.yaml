@@ -23,8 +23,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/resources/pricing.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/audit-logs/resources/quotas-limits.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/services.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/cli/compute-vm.md
@@ -60,10 +58,6 @@ seen:
   - url: https://docs.nebius.com/compute/quickstart.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/resources/pricing.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/detach-volume.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/export.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/image-recommendations.md
     first_seen: 2026-09-13
