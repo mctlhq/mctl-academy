@@ -1436,3 +1436,18 @@ sources:
     title: Viewing events in Audit Logs
     objectives:
       - domain-4/sa-data-lifecycle-investigation
+  - id: src-nb-audit-logs-quotas-limits
+    url: https://docs.nebius.com/audit-logs/resources/quotas-limits.md
+    title: Quotas in Audit Logs
+    objectives:
+      - domain-1/ie-compliance-residency
+  - id: src-nb-compute-storage-detach-volume
+    url: https://docs.nebius.com/compute/storage/detach-volume.md
+    title: How to detach additional volumes from virtual machines
+    objectives:
+      - domain-2/ie-storage-tiers
+  - id: src-nb-compute-storage-export
+    url: https://docs.nebius.com/compute/storage/export.md
+    title: Exporting data from Compute disks and shared filesystems
+    objectives:
+      - domain-1/ie-compliance-residency

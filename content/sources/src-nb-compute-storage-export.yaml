@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-nb-compute-storage-export
+url: https://docs.nebius.com/compute/storage/export.md
+title: Exporting data from Compute disks and shared filesystems
+retrieved_at: 2026-11-15T10:17:01Z
+sha256: abf8edeb2c8d6358311c34a2502dff6bfbc86c48885f11ac360080cc5b89ffda
+objectives:
+  - domain-1/ie-compliance-residency
+snapshot:
+  bucket: academy-source-snapshots
+  key: abf8edeb2c8d6358311c34a2502dff6bfbc86c48885f11ac360080cc5b89ffda
+status: current

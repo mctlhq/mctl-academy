@@ -19,12 +19,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/applications/kubernetes/nvidia-blueprint-virtual-screening/licenses.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/audit-logs/events/filter.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/audit-logs/events/reference.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/audit-logs/events/view.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/audit-logs/resources/pricing.md

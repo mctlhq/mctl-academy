@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-nb-audit-logs-quotas-limits
+url: https://docs.nebius.com/audit-logs/resources/quotas-limits.md
+title: Quotas in Audit Logs
+retrieved_at: 2026-11-15T10:16:59Z
+sha256: a56296a27d1de18b467c33bc69973af6a3501dc6b3a4c0c375df0b4cc99006f8
+objectives:
+  - domain-1/ie-compliance-residency
+snapshot:
+  bucket: academy-source-snapshots
+  key: a56296a27d1de18b467c33bc69973af6a3501dc6b3a4c0c375df0b4cc99006f8
+status: current
