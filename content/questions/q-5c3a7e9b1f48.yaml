@@ -1,0 +1,68 @@
+schema_version: 1
+id: q-5c3a7e9b1f48
+status: published
+domain: domain-3
+objective: domain-3/sa-reuse-automation
+stem: "A platform team wants several engineers and an automation pipeline to run
+  the same Terraform configuration against Nebius AI Cloud infrastructure
+  without one run overwriting another's changes. How should the architect
+  configure where Terraform keeps that infrastructure state?"
+options:
+  - id: a
+    text: "Configure Terraform's backend to store the .tfstate file in an Object
+      Storage bucket with locking enabled, so every apply updates the same
+      shared state safely."
+    correct: true
+    explanation: "Correct. Storing the .tfstate file in an Object Storage bucket
+      with state locking enabled lets several users or automation systems access
+      and update the same infrastructure state safely, since the lock prevents
+      conflicting changes."
+  - id: b
+    text: "Keep the .tfstate file under version control in the same Git repository
+      as the .tf configuration files, relying on commit history to track state
+      changes."
+    correct: false
+    explanation: "Incorrect. The .tf configuration files belong under version
+      control, but the .tfstate file is kept separately in S3-compatible
+      storage; tracking state through git commits does not give several users or
+      automation systems the same shared, lockable state."
+  - id: c
+    text: "Store the .tfstate file in an Object Storage bucket with versioning
+      enabled, and skip locking because multiple object versions already prevent
+      conflicting writes."
+    correct: false
+    explanation: "Incorrect. Enabling bucket versioning is a separate,
+      cost-affecting choice; the state file still needs the lock to prevent
+      conflicting changes, and multiple object versions do not substitute for
+      that lock."
+  - id: d
+    text: "Have each engineer keep a local .tfstate file on their own machine and
+      manually reconcile differences before each apply."
+    correct: false
+    explanation: "Incorrect. A local .tfstate file per machine is exactly the
+      unsynchronized setup a shared, lockable bucket backend replaces, and
+      manual reconciliation is the conflicting-change problem the lock is meant
+      to prevent."
+evidence:
+  - source_id: src-nb-object-storage-store-terraform-state
+    source_sha256: 4cfa015debc984e89b24bdd96a083ceab3341766b12d643a8deced2ca35eae9f
+    excerpt: "store the `.tf` files under version control (for example, in a Git
+      repository) and to store the `.tfstate` files in S3-compatible storage"
+    locator: "How to store a Terraform state in an Object Storage bucket"
+  - source_id: src-nb-object-storage-store-terraform-state
+    source_sha256: 4cfa015debc984e89b24bdd96a083ceab3341766b12d643a8deced2ca35eae9f
+    excerpt: "several users or automation systems can access and update the same
+      infrastructure state safely"
+    locator: "How to store a Terraform state in an Object Storage bucket"
+  - source_id: src-nb-object-storage-store-terraform-state
+    source_sha256: 4cfa015debc984e89b24bdd96a083ceab3341766b12d643a8deced2ca35eae9f
+    excerpt: "Lock the state from concurrent modifications"
+    locator: "How to store the Terraform state file, example backend configuration"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T01:06:11Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T01:17:30Z
+  content_sha256: 0dc14755dbc28529a8ddae1d444a42e3d231e57b177ac565e1df809a489b027d

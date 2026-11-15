@@ -1,0 +1,64 @@
+schema_version: 1
+id: q-3f7a5c9e14d2
+status: published
+domain: domain-1
+objective: domain-1/sa-training-stack
+stem: "A team currently submits distributed training jobs with sbatch to an
+  on-premises Slurm cluster and wants to move the workload to Nebius AI Cloud
+  while adding Kubernetes-style autoscaling and self-healing, without rewriting
+  those job scripts. Which deployment should the architect recommend?"
+options:
+  - id: a
+    text: "Deploy a Soperator cluster, a Kubernetes operator that runs Slurm nodes
+      as Pods so sbatch scripts keep working while Kubernetes handles scaling
+      and recovery."
+    correct: true
+    explanation: "Correct. A Soperator cluster runs Slurm nodes as Kubernetes Pods
+      and lets you run jobs with sbatch the same way as an on-premises Slurm
+      installation, while the underlying Kubernetes layer scales the cluster
+      automatically and restores its configuration when it drifts."
+  - id: b
+    text: "Replace the sbatch workflow with dstack, a container orchestrator built
+      as a streamlined alternative to Slurm and Kubernetes for AI workloads."
+    correct: false
+    explanation: "Incorrect. dstack is a separate orchestrator rather than an
+      extension of Slurm, so adopting it means converting the sbatch job scripts
+      into dstack tasks instead of keeping them as they are."
+  - id: c
+    text: "Deploy Run:ai on a Managed Kubernetes cluster to dynamically allocate and
+      share GPU resources across the team's training jobs."
+    correct: false
+    explanation: "Incorrect. Run:ai manages GPU scheduling on a Managed Kubernetes
+      cluster, but adopting it means submitting jobs through the Run:ai platform
+      rather than continuing to submit them with sbatch."
+  - id: d
+    text: "Install the Kubeflow Training Operator and MPI Operator on a Managed
+      Kubernetes cluster to run the training jobs as native Kubernetes custom
+      resources."
+    correct: false
+    explanation: "Incorrect. These operators run distributed training as PyTorchJob
+      or MPIJob custom resources on Kubernetes, which still requires rewriting
+      the sbatch scripts into Kubernetes resource definitions."
+evidence:
+  - source_id: src-nb-slurm-soperator-overview-why-slurm-soperator
+    source_sha256: c9687298d79767543789a677a40e31eb0684ca9395d665c24b863715e6334180
+    excerpt: "a Soperator cluster scales automatically to your current workload"
+    locator: "Combining Slurm and Kubernetes by using Soperator, Easy scaling"
+  - source_id: src-nb-slurm-soperator-overview-why-slurm-soperator
+    source_sha256: c9687298d79767543789a677a40e31eb0684ca9395d665c24b863715e6334180
+    excerpt: "The underlying Kubernetes cluster already has self-healing
+      capabilities, such as automatic Pod restart."
+    locator: "Combining Slurm and Kubernetes by using Soperator, High availability"
+  - source_id: src-nb-slurm-soperator-overview-why-slurm-soperator
+    source_sha256: c9687298d79767543789a677a40e31eb0684ca9395d665c24b863715e6334180
+    excerpt: "you can run jobs with `sbatch` without any need to run each job in a
+      container"
+    locator: "Combining Slurm and Kubernetes by using Soperator, Unified storage"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T01:06:11Z"
+course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-15T01:17:30Z
+  content_sha256: e0d58bd327061d456435b9cdd62824ee756d4628878380a6dc226aa32638d4d3

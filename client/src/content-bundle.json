@@ -968,6 +968,57 @@
     ]
   },
   {
+    "id": "q-3f7a5c9e14d2",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-1",
+    "objective": "domain-1/sa-training-stack",
+    "stem": "A team currently submits distributed training jobs with sbatch to an on-premises Slurm cluster and wants to move the workload to Nebius AI Cloud while adding Kubernetes-style autoscaling and self-healing, without rewriting those job scripts. Which deployment should the architect recommend?",
+    "objectiveTitle": "The supporting stack and user environment for a training platform",
+    "sources": [
+      {
+        "title": "Combining Slurm and Kubernetes by using Soperator",
+        "url": "https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md",
+        "excerpt": "a Soperator cluster scales automatically to your current workload"
+      },
+      {
+        "title": "Combining Slurm and Kubernetes by using Soperator",
+        "url": "https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md",
+        "excerpt": "The underlying Kubernetes cluster already has self-healing capabilities, such as automatic Pod restart."
+      },
+      {
+        "title": "Combining Slurm and Kubernetes by using Soperator",
+        "url": "https://docs.nebius.com/slurm-soperator/overview/why-slurm-soperator.md",
+        "excerpt": "you can run jobs with `sbatch` without any need to run each job in a container"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy a Soperator cluster, a Kubernetes operator that runs Slurm nodes as Pods so sbatch scripts keep working while Kubernetes handles scaling and recovery.",
+        "correct": true,
+        "explanation": "Correct. A Soperator cluster runs Slurm nodes as Kubernetes Pods and lets you run jobs with sbatch the same way as an on-premises Slurm installation, while the underlying Kubernetes layer scales the cluster automatically and restores its configuration when it drifts."
+      },
+      {
+        "id": "b",
+        "text": "Replace the sbatch workflow with dstack, a container orchestrator built as a streamlined alternative to Slurm and Kubernetes for AI workloads.",
+        "correct": false,
+        "explanation": "Incorrect. dstack is a separate orchestrator rather than an extension of Slurm, so adopting it means converting the sbatch job scripts into dstack tasks instead of keeping them as they are."
+      },
+      {
+        "id": "c",
+        "text": "Deploy Run:ai on a Managed Kubernetes cluster to dynamically allocate and share GPU resources across the team's training jobs.",
+        "correct": false,
+        "explanation": "Incorrect. Run:ai manages GPU scheduling on a Managed Kubernetes cluster, but adopting it means submitting jobs through the Run:ai platform rather than continuing to submit them with sbatch."
+      },
+      {
+        "id": "d",
+        "text": "Install the Kubeflow Training Operator and MPI Operator on a Managed Kubernetes cluster to run the training jobs as native Kubernetes custom resources.",
+        "correct": false,
+        "explanation": "Incorrect. These operators run distributed training as PyTorchJob or MPIJob custom resources on Kubernetes, which still requires rewriting the sbatch scripts into Kubernetes resource definitions."
+      }
+    ]
+  },
+  {
     "id": "q-3f7e821d6b04",
     "course_id": "agentic-ai-builder",
     "domain": "domain-3",
@@ -1399,6 +1450,57 @@
         "text": "The derived dataset's output prefix must be identical to the source dataset's prefix",
         "correct": false,
         "explanation": "The export requires a new, empty output prefix distinct from the source; the original dataset is never rewritten in place."
+      }
+    ]
+  },
+  {
+    "id": "q-5c3a7e9b1f48",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-3",
+    "objective": "domain-3/sa-reuse-automation",
+    "stem": "A platform team wants several engineers and an automation pipeline to run the same Terraform configuration against Nebius AI Cloud infrastructure without one run overwriting another's changes. How should the architect configure where Terraform keeps that infrastructure state?",
+    "objectiveTitle": "Cutting operational toil with infrastructure as code and reusable building blocks",
+    "sources": [
+      {
+        "title": "How to store a Terraform state in an Object Storage bucket",
+        "url": "https://docs.nebius.com/object-storage/store-terraform-state.md",
+        "excerpt": "store the `.tf` files under version control (for example, in a Git repository) and to store the `.tfstate` files in S3-compatible storage"
+      },
+      {
+        "title": "How to store a Terraform state in an Object Storage bucket",
+        "url": "https://docs.nebius.com/object-storage/store-terraform-state.md",
+        "excerpt": "several users or automation systems can access and update the same infrastructure state safely"
+      },
+      {
+        "title": "How to store a Terraform state in an Object Storage bucket",
+        "url": "https://docs.nebius.com/object-storage/store-terraform-state.md",
+        "excerpt": "Lock the state from concurrent modifications"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Configure Terraform's backend to store the .tfstate file in an Object Storage bucket with locking enabled, so every apply updates the same shared state safely.",
+        "correct": true,
+        "explanation": "Correct. Storing the .tfstate file in an Object Storage bucket with state locking enabled lets several users or automation systems access and update the same infrastructure state safely, since the lock prevents conflicting changes."
+      },
+      {
+        "id": "b",
+        "text": "Keep the .tfstate file under version control in the same Git repository as the .tf configuration files, relying on commit history to track state changes.",
+        "correct": false,
+        "explanation": "Incorrect. The .tf configuration files belong under version control, but the .tfstate file is kept separately in S3-compatible storage; tracking state through git commits does not give several users or automation systems the same shared, lockable state."
+      },
+      {
+        "id": "c",
+        "text": "Store the .tfstate file in an Object Storage bucket with versioning enabled, and skip locking because multiple object versions already prevent conflicting writes.",
+        "correct": false,
+        "explanation": "Incorrect. Enabling bucket versioning is a separate, cost-affecting choice; the state file still needs the lock to prevent conflicting changes, and multiple object versions do not substitute for that lock."
+      },
+      {
+        "id": "d",
+        "text": "Have each engineer keep a local .tfstate file on their own machine and manually reconcile differences before each apply.",
+        "correct": false,
+        "explanation": "Incorrect. A local .tfstate file per machine is exactly the unsynchronized setup a shared, lockable bucket backend replaces, and manual reconciliation is the conflicting-change problem the lock is meant to prevent."
       }
     ]
   },
@@ -2213,6 +2315,52 @@
         "text": "The price per output token, in USD per million tokens",
         "correct": false,
         "explanation": "That is the separate \"Output tokens\" price metric on the model card, not Quality."
+      }
+    ]
+  },
+  {
+    "id": "q-8b2e6f4a91d7",
+    "course_id": "ai-solutions-architect",
+    "domain": "domain-4",
+    "objective": "domain-4/sa-private-connectivity",
+    "stem": "A small team needs an external partner to reach an HTTP service running on a VM in a private Nebius AI Cloud subnet, but platform policy forbids giving that VM a public IP address or opening any inbound firewall port. Which approach lets the partner reach the service?",
+    "objectiveTitle": "Private network paths for operators and management access",
+    "sources": [
+      {
+        "title": "About Nebius Tunnels",
+        "url": "https://docs.nebius.com/tunnels/overview.md",
+        "excerpt": "The agent opens an outbound TLS connection to a regional Nebius edge endpoint."
+      },
+      {
+        "title": "About Nebius Tunnels",
+        "url": "https://docs.nebius.com/tunnels/overview.md",
+        "excerpt": "the edge forwards the request back through the existing agent connection"
+      }
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Run a tunnel agent beside the service so it opens an outbound connection to a Nebius edge, which then forwards the partner's requests back to it.",
+        "correct": true,
+        "explanation": "Correct. Nebius Tunnels lets the agent open an outbound connection to a regional Nebius edge, and the edge then forwards requests back through that existing connection, so the VM never has to accept inbound traffic from the internet."
+      },
+      {
+        "id": "b",
+        "text": "Allocate a public IP address to the VM and add an inbound security group rule that allows traffic from the partner's address range.",
+        "correct": false,
+        "explanation": "Incorrect. This VPC security-group approach is a real way to expose a service, but it requires exactly the public IP address and inbound rule that platform policy forbids here."
+      },
+      {
+        "id": "c",
+        "text": "Deploy a Nebius VPN Gateway to build site-to-site IPsec connectivity between the partner's network and the VM's private subnet.",
+        "correct": false,
+        "explanation": "Incorrect. Nebius VPN Gateway is built for site-to-site connectivity with another cloud provider's network or an on-premises data center, not for letting a single outside partner reach one internal service."
+      },
+      {
+        "id": "d",
+        "text": "Create the VM in a subnet configured to disable public addressing, then rely on the default egress gateway for the VM's outbound internet traffic.",
+        "correct": false,
+        "explanation": "Incorrect. Disabling public addressing blocks inbound traffic from the internet entirely, which stops the partner from reaching the service rather than giving them a way in."
       }
     ]
   },
