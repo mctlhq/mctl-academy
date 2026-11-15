@@ -55,8 +55,6 @@ seen:
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/cli/release-notes.md
     first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/clusters/ai-workloads.md
-    first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/index.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/monitoring/serial-logs.md
@@ -68,8 +66,6 @@ seen:
   - url: https://docs.nebius.com/compute/quickstart.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/resources/pricing.md
-    first_seen: 2026-09-13
-  - url: https://docs.nebius.com/compute/storage/automatic-updates.md
     first_seen: 2026-09-13
   - url: https://docs.nebius.com/compute/storage/detach-volume.md
     first_seen: 2026-09-13

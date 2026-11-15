@@ -1,0 +1,12 @@
+schema_version: 1
+id: src-nb-audit-logs-events-view
+url: https://docs.nebius.com/audit-logs/events/view.md
+title: Viewing events in Audit Logs
+retrieved_at: 2026-11-15T01:07:28Z
+sha256: a6ea73203427939049cffccb6ab90306278d24cd0ff1ca19fae155d09786d687
+objectives:
+  - domain-4/sa-data-lifecycle-investigation
+snapshot:
+  bucket: academy-source-snapshots
+  key: a6ea73203427939049cffccb6ab90306278d24cd0ff1ca19fae155d09786d687
+status: current
