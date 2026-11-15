@@ -1,0 +1,48 @@
+schema_version: 1
+id: q-7a3e9f2c6b85
+status: review_ready
+domain: domain-2
+objective: domain-2/ie-training-cluster-lifecycle
+stem: "A platform team wants to upgrade an existing Managed Service for
+  Kubernetes GPU node group to a different VM platform and preset by editing
+  that node group's configuration in place. What should they expect?"
+options:
+  - id: a
+    text: "They cannot change the VM platform and preset of an existing node
+      group; they must create a new node group instead"
+    correct: true
+    explanation: "Correct. The guide states plainly that you cannot change the
+      VM platform and preset or the GPU cluster of an existing node group,
+      and that you should create a new node group instead."
+  - id: b
+    text: "The change applies immediately to the node group's existing nodes
+      without recreating any of them, the same way a scaling change does"
+    correct: false
+    explanation: "Scaling a node group up or down does not recreate nodes, but
+      that applies to changing the node count, not to changing the node
+      group's VM platform and preset, which the guide says cannot be changed
+      at all."
+  - id: c
+    text: "The change is accepted, but just after the team first removes the
+      GPU drivers preset from the node group's template"
+    correct: false
+    explanation: "Removing the GPU drivers preset first is not a documented way
+      to unlock a platform or preset change; the guide states that platform
+      and preset cannot be changed on an existing node group regardless."
+  - id: d
+    text: "The change is accepted for the node group's preset, but the VM
+      platform field remains locked to its original value permanently"
+    correct: false
+    explanation: "The guide ties the restriction to both the platform and the
+      preset together, not to the preset alone remaining changeable while the
+      platform stays fixed."
+evidence:
+  - source_id: src-nb-kubernetes-gpu-set-up
+    source_sha256: 5464967909b88baeaf904ec4736e93c8bf2328cddc62f2a7aaf7833e99966f45
+    excerpt: "You cannot change the VM platform and preset or the GPU cluster
+      of an existing node group. Create a new node group instead."
+    locator: "How to add nodes with GPUs to a cluster, warning"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T10:14:50Z"
+course_id: ai-infrastructure-engineer

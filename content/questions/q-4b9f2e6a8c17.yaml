@@ -1,0 +1,50 @@
+schema_version: 1
+id: q-4b9f2e6a8c17
+status: review_ready
+domain: domain-3
+objective: domain-3/ie-inference-pipelines
+stem: "A platform team runs several inference workloads from different users on
+  one Managed Service for Kubernetes cluster and wants a management layer that
+  actively prevents GPUs from sitting idle between those workloads. Which
+  integration addresses this directly?"
+options:
+  - id: a
+    text: "Run:ai, since it dynamically allocates GPU resources, prevents idle
+      GPUs and enables GPU sharing across multiple workloads and users"
+    correct: true
+    explanation: "Correct. The guide describes Run:ai as dynamically allocating
+      GPU resources, preventing idle GPUs and enabling GPU sharing across
+      multiple workloads and users."
+  - id: b
+    text: "Managed Service for SkyPilot, since it schedules inference tasks
+      across clusters by specifying the container image, GPU requirements and
+      commands in a configuration file"
+    correct: false
+    explanation: "SkyPilot focuses on launching and scheduling a task from a
+      configuration file; sharing idle GPU capacity across workloads and users
+      is the capability the guide attributes to Run:ai."
+  - id: c
+    text: "The Kubeflow Training Operator, since installing it lets several
+      training jobs share the same GPU node group without contention"
+    correct: false
+    explanation: "The Kubeflow Training Operator manages training job types on
+      Kubernetes; the guide installs it alongside Run:ai, not as a GPU-sharing
+      layer on its own."
+  - id: d
+    text: "The MPI Operator, since it coordinates GPU allocation across
+      workloads so that no GPU remains idle between jobs"
+    correct: false
+    explanation: "The MPI Operator runs MPI-based distributed jobs; the guide
+      installs it as a dependency for Run:ai, not as the component that
+      prevents idle GPUs."
+evidence:
+  - source_id: src-nb-3p-integrations-run-ai
+    source_sha256: 95f8ea4f180c6a49f2c11354ab32205b0f67a1a9b112bbb8e36a36aeccc49937
+    excerpt: "It dynamically allocates GPU resources, prevents idle GPUs and
+      enables GPU sharing across multiple workloads and users, so that all
+      resources are utilized."
+    locator: "Overview"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T10:14:50Z"
+course_id: ai-infrastructure-engineer

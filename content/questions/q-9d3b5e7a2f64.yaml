@@ -1,0 +1,49 @@
+schema_version: 1
+id: q-9d3b5e7a2f64
+status: review_ready
+domain: domain-3
+objective: domain-3/ie-inference-slo-tuning
+stem: "A platform team is defining an internal SLO for a self-service Token
+  Factory dedicated endpoint and wants to assume that the endpoint's uptime is
+  backed by a formal guarantee from Nebius. What should they confirm before
+  writing that assumption into the SLO?"
+options:
+  - id: a
+    text: "Whether the endpoint is covered by a contract, since self-service
+      dedicated endpoints do not include a formal SLA otherwise"
+    correct: true
+    explanation: "Correct. The capacity guide states that self-service dedicated
+      endpoints do not include a formal SLA unless covered by contract."
+  - id: b
+    text: "Whether the minimum replicas count is set high enough, since minimum
+      replicas by themselves constitute a formal uptime SLA for the endpoint"
+    correct: false
+    explanation: "Minimum replicas describe a reserved capacity allocation while
+      the endpoint runs; the guide ties a formal SLA to being covered by a
+      contract, not to the replica count."
+  - id: c
+    text: "Whether the underlying VM uses on-demand pricing rather than a
+      preemptible VM, since on-demand pricing alone carries a formal uptime
+      SLA"
+    correct: false
+    explanation: "On-demand pricing describes how the underlying VM is billed;
+      the guide ties a formal SLA to a contract, not to the VM's pricing
+      type."
+  - id: d
+    text: "Whether autoscaling is enabled between the minimum and maximum
+      replica counts, since autoscaling between them is what forms the
+      endpoint's uptime guarantee"
+    correct: false
+    explanation: "Autoscaling between minimum and maximum replicas is a
+      capacity-scaling behavior; the guide ties a formal SLA to a contract,
+      not to whether autoscaling is enabled."
+evidence:
+  - source_id: src-ld-capacity-and-scaling
+    source_sha256: 88bd78aaaaf46ec6207dabcb9ff119cf134db172b2cd654f91f1206f17992f03
+    excerpt: "Self-service dedicated endpoints do not include a formal SLA
+      unless covered by contract."
+    locator: "SLA"
+authored:
+  by: "agent:claude-author"
+  at: "2026-11-15T10:14:50Z"
+course_id: ai-infrastructure-engineer
