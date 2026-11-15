@@ -808,14 +808,16 @@ sources:
         objective: domain-1/sa-orchestration-overlays
   - id: src-nb-3p-integrations-skypilot-mk8s
     url: https://docs.nebius.com/3p-integrations/skypilot-mk8s.md
-    title: "Managing AI workloads across Managed Service for Kubernetes clusters with SkyPilot"
+    title: "Managing AI workloads across Managed Service for Kubernetes clusters
+      with SkyPilot"
     batch: q4-01
     coverage:
       - course_id: ai-solutions-architect
         objective: domain-1/sa-orchestration-overlays
   - id: src-nb-3p-integrations-skypilot-vllm-inference
     url: https://docs.nebius.com/3p-integrations/skypilot-vllm-inference.md
-    title: "Running vLLM inference on a Managed Service for Kubernetes cluster with SkyPilot"
+    title: "Running vLLM inference on a Managed Service for Kubernetes cluster with
+      SkyPilot"
     batch: q4-01
     coverage:
       - course_id: ai-infrastructure-engineer
@@ -1040,14 +1042,16 @@ sources:
         objective: domain-1/ie-encryption-secrets
   - id: src-nb-kubernetes-gpu-clusters
     url: https://docs.nebius.com/kubernetes/gpu/clusters.md
-    title: "Interconnecting GPUs in Managed Service for Kubernetes clusters using InfiniBand"
+    title: "Interconnecting GPUs in Managed Service for Kubernetes clusters using
+      InfiniBand"
     batch: q4-05
     coverage:
       - course_id: ai-solutions-architect
         objective: domain-1/sa-distributed-training
   - id: src-nb-kubernetes-gpu-nccl-test
     url: https://docs.nebius.com/kubernetes/gpu/nccl-test.md
-    title: "Running NCCL tests in a Managed Service for Kubernetes cluster with InfiniBand-connected GPUs"
+    title: "Running NCCL tests in a Managed Service for Kubernetes cluster with
+      InfiniBand-connected GPUs"
     batch: q4-05
     coverage:
       - course_id: ai-infrastructure-engineer
@@ -1065,7 +1069,8 @@ sources:
         objective: domain-2/ie-training-cluster-lifecycle
   - id: src-nb-kubernetes-gpu-topology-aware-scheduling
     url: https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md
-    title: "Topology-aware scheduling for GPU workloads in Managed Service for Kubernetes"
+    title: "Topology-aware scheduling for GPU workloads in Managed Service for
+      Kubernetes"
     batch: q4-05
     coverage:
       - course_id: ai-infrastructure-engineer
@@ -1088,7 +1093,8 @@ sources:
         objective: domain-3/ie-marketplace-apps
   - id: src-nb-kubernetes-networking-limit-access-to-public-endpoint
     url: https://docs.nebius.com/kubernetes/networking/limit-access-to-public-endpoint.md
-    title: "Access restriction for a public endpoint of a Managed Service for Kubernetes cluster"
+    title: "Access restriction for a public endpoint of a Managed Service for
+      Kubernetes cluster"
     batch: q4-06
     coverage:
       - course_id: ai-solutions-architect
@@ -1113,14 +1119,16 @@ sources:
         objective: domain-2/sa-migration-handover
   - id: src-nb-kubernetes-storage-filesystem-over-csi
     url: https://docs.nebius.com/kubernetes/storage/filesystem-over-csi.md
-    title: "Mounting shared filesystems to Pods in a Managed Service for Kubernetes cluster"
+    title: "Mounting shared filesystems to Pods in a Managed Service for Kubernetes
+      cluster"
     batch: q4-06
     coverage:
       - course_id: ai-infrastructure-engineer
         objective: domain-2/ie-storage-tiers
   - id: src-nb-mysterybox-kubernetes
     url: https://docs.nebius.com/mysterybox/kubernetes.md
-    title: "Syncing SecretStash secrets with Managed Service for Kubernetes clusters by using External Secrets Operator"
+    title: "Syncing SecretStash secrets with Managed Service for Kubernetes clusters
+      by using External Secrets Operator"
     batch: q4-06
     coverage:
       - course_id: ai-infrastructure-engineer
@@ -1399,3 +1407,15 @@ sources:
     coverage:
       - course_id: ai-infrastructure-engineer
         objective: domain-4/ie-multicluster-networking
+  - id: src-nb-compute-clusters-ai-workloads
+    url: https://docs.nebius.com/compute/clusters/ai-workloads.md
+    title: Running AI workloads on VMs
+    objectives:
+      - domain-2/ie-distributed-parallelism
+      - domain-2/ie-training-cluster-lifecycle
+  - id: src-nb-compute-storage-automatic-updates
+    url: https://docs.nebius.com/compute/storage/automatic-updates.md
+    title: How to enable automatic security updates
+    objectives:
+      - domain-4/ie-long-run-reliability
+      - domain-2/ie-training-images

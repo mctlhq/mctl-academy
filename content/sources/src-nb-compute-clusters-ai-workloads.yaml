@@ -1,0 +1,13 @@
+schema_version: 1
+id: src-nb-compute-clusters-ai-workloads
+url: https://docs.nebius.com/compute/clusters/ai-workloads.md
+title: Running AI workloads on VMs
+retrieved_at: 2026-11-15T00:41:54Z
+sha256: ed67a108582dc064e41d48a70fc5450da17bca79a9fdbfed34d84288b6744c61
+objectives:
+  - domain-2/ie-distributed-parallelism
+  - domain-2/ie-training-cluster-lifecycle
+snapshot:
+  bucket: academy-source-snapshots
+  key: ed67a108582dc064e41d48a70fc5450da17bca79a9fdbfed34d84288b6744c61
+status: current
