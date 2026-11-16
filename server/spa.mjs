@@ -7,6 +7,7 @@ import {
   COURSE_JSONLD_ID,
   COURSE_NOT_FOUND_TITLE,
   PAGE_NOT_FOUND_TITLE,
+  SITE_ORIGIN,
   courseHeadMeta,
 } from "../client/src/seo/courseMeta.mjs";
 import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS } from "../client/src/seo/spaRoutes.mjs";
@@ -56,7 +57,7 @@ export function loadCourseCatalog(path = DEFAULT_CATALOG_PATH) {
 export function classifySpaPath(rawPath, catalog) {
   const path = rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath;
   const lower = path.toLowerCase();
-  if (STATIC_SPA_PATHS.includes(lower)) return { kind: "page" };
+  if (STATIC_SPA_PATHS.includes(lower)) return { kind: "page", path: lower };
   if (lower.startsWith(COURSE_PATH_PREFIX)) {
     const id = path.slice(COURSE_PATH_PREFIX.length);
     if (id && !id.includes("/")) {
@@ -146,11 +147,21 @@ function notFound(html, title) {
   return { status: 404, html: setTagAttr(setTitle(html, title), ROBOTS_TAG, "noindex") };
 }
 
+const CANONICAL_TAG = { tag: "link", match: ["rel", "canonical"], attr: "href" };
+const OG_URL_TAG = { tag: "meta", match: ["property", "og:url"], attr: "content" };
+
 /** index.html as it should be served for one classified path. */
 export function renderSpaPage(template, page) {
   switch (page.kind) {
-    case "page":
+    case "page": {
+      if (page.path === "/practice") {
+        const canonicalUrl = `${SITE_ORIGIN}/practice`;
+        let html = setTagAttr(template, CANONICAL_TAG, canonicalUrl);
+        html = setTagAttr(html, OG_URL_TAG, canonicalUrl);
+        return { status: 200, html };
+      }
       return { status: 200, html: template };
+    }
     case "course": {
       const meta = courseHeadMeta(page.course);
       let html = setTitle(template, meta.title);

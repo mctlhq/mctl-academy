@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, type Ref } from "vue";
+import { computed, inject, onMounted, onUnmounted, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import { practiceStorageKey } from "../practice/usePracticeSession";
 import type { UserProfile } from "../types/user";
@@ -7,6 +7,33 @@ import PracticeContent from "../practice/PracticeContent.vue";
 import { useCourseStore } from "../services/courseStore";
 import { domainTitlesFor } from "../services/courseCatalog";
 import { questionsForCourse } from "../services/contentBundle";
+import { SITE_ORIGIN } from "../seo/courseMeta.mjs";
+
+function updatePracticeMeta() {
+  if (typeof document === "undefined") return;
+  const canonicalUrl = `${SITE_ORIGIN}/practice`;
+  const canonicalEl = document.querySelector('link[rel="canonical"]');
+  if (canonicalEl) canonicalEl.setAttribute("href", canonicalUrl);
+  const ogUrlEl = document.querySelector('meta[property="og:url"]');
+  if (ogUrlEl) ogUrlEl.setAttribute("content", canonicalUrl);
+}
+
+function restorePracticeMeta() {
+  if (typeof document === "undefined") return;
+  const defaultUrl = `${SITE_ORIGIN}/`;
+  const canonicalEl = document.querySelector('link[rel="canonical"]');
+  if (canonicalEl) canonicalEl.setAttribute("href", defaultUrl);
+  const ogUrlEl = document.querySelector('meta[property="og:url"]');
+  if (ogUrlEl) ogUrlEl.setAttribute("content", defaultUrl);
+}
+
+onMounted(() => {
+  updatePracticeMeta();
+});
+
+onUnmounted(() => {
+  restorePracticeMeta();
+});
 
 // Course scoping happens here, before a session exists: PracticeContent (and
 // the session engine underneath it) only ever sees one course's questions.
