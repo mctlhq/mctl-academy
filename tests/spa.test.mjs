@@ -37,6 +37,7 @@ function attr(html, re) {
 const robots = (html) => attr(html, /<meta\s+name="robots"\s+content="([^"]*)"/);
 const title = (html) => attr(html, /<title>([^<]*)<\/title>/);
 const canonical = (html) => attr(html, /<link[^>]*rel="canonical"[^>]*href="([^"]*)"/);
+const ogUrl = (html) => attr(html, /<meta[^>]*property="og:url"[^>]*content="([^"]*)"/);
 
 describe("unknown paths are real 404s", () => {
   test("an unmatched /api path is a JSON 404, for any method", async () => {
@@ -79,6 +80,7 @@ describe("known pages", () => {
       const html = await res.text();
       assert.equal(robots(html), "index, follow", path);
       assert.equal(canonical(html), "https://academy.mctl.ai/", path);
+      assert.equal(ogUrl(html), "https://academy.mctl.ai/", path);
     }
     for (const path of ["/practice", "/practice/", "/Practice"]) {
       const res = await app.request(path);
@@ -86,6 +88,8 @@ describe("known pages", () => {
       const html = await res.text();
       assert.equal(robots(html), "index, follow", path);
       assert.equal(canonical(html), "https://academy.mctl.ai/practice", path);
+      assert.equal(ogUrl(html), "https://academy.mctl.ai/practice", path);
+      assert.ok(!html.includes("data-default"), `${path} must not set data-default`);
     }
   });
 

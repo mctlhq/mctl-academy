@@ -8,7 +8,7 @@ import CourseView from "../views/CourseView.vue";
 import AdminStatsView from "../views/AdminStatsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import { useCourseStore } from "../services/courseStore";
-import { pageTitle, SITE_ORIGIN } from "../seo/courseMeta.mjs";
+import { pageTitle } from "../seo/courseMeta.mjs";
 
 export { pageTitle };
 
@@ -81,15 +81,6 @@ router.afterEach((to, from) => {
   if (typeof document === "undefined") return;
   if (to.name !== "course") {
     document.title = pageTitle(to.meta.title);
-    const canonicalUrl = to.path === "/practice" ? `${SITE_ORIGIN}/practice` : `${SITE_ORIGIN}/`;
-    const canonicalEl = document.querySelector('link[rel="canonical"]');
-    if (canonicalEl) {
-      canonicalEl.setAttribute("href", canonicalUrl);
-    }
-    const ogUrlEl = document.querySelector('meta[property="og:url"]');
-    if (ogUrlEl) {
-      ogUrlEl.setAttribute("content", canonicalUrl);
-    }
   }
   if (shouldFocusMain(to, from)) {
     requestAnimationFrame(() => document.getElementById("main-content")?.focus({ preventScroll: true }));

@@ -156,7 +156,7 @@ export function renderSpaPage(template, page) {
     case "page": {
       if (page.path === "/practice") {
         const canonicalUrl = `${SITE_ORIGIN}/practice`;
-        let html = setTagAttr(template, CANONICAL_TAG, canonicalUrl, { keepDefault: true });
+        let html = setTagAttr(template, CANONICAL_TAG, canonicalUrl);
         html = setTagAttr(html, OG_URL_TAG, canonicalUrl);
         return { status: 200, html };
       }
