@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.95](https://github.com/mctlhq/mctl-academy/compare/0.1.94...0.1.95) (2026-11-16)
+
+
+### Bug Fixes
+
+* **seo:** address review on practice canonical lifecycle ([e47c121](https://github.com/mctlhq/mctl-academy/commit/e47c1219d43848b27f1ce64eeb1c318104d4f8f4))
+* **seo:** set self-referencing canonical on /practice ([9bb4bd9](https://github.com/mctlhq/mctl-academy/commit/9bb4bd93d618a619948d3287b8a683ee6b4ceb16))
+* **seo:** set self-referencing canonical on /practice ([7b791fd](https://github.com/mctlhq/mctl-academy/commit/7b791fdd880c2a33f735a7cda5d5a038ac9f34b1))
+
 ## [0.1.94](https://github.com/mctlhq/mctl-academy/compare/0.1.93...0.1.94) (2026-11-15)
 
 
