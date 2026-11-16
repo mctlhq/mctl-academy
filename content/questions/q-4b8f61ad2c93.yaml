@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4b8f61ad2c93
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/ie-distributed-parallelism
 stem: "A platform team runs a distributed training job on a Managed Service for

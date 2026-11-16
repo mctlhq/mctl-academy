@@ -3,7 +3,7 @@
     "id": "agentic-ai-builder",
     "title": "Agentic AI Builder",
     "summary": "Build agents on a hosted model platform: API access, inference and tool integration, data and post-training, and running them in production.",
-    "publishedQuestionCount": 91,
+    "publishedQuestionCount": 88,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -279,7 +279,7 @@
     "id": "ai-cloudops-engineer",
     "title": "AI CloudOps Engineer",
     "summary": "Run GPU cloud infrastructure day to day: deploy environments, operate compute nodes, monitor workloads, manage access and storage, and troubleshoot.",
-    "publishedQuestionCount": 38,
+    "publishedQuestionCount": 30,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -369,7 +369,7 @@
     "id": "ai-infrastructure-engineer",
     "title": "AI Infrastructure Engineer",
     "summary": "Run GPU platforms for training and inference: secure and budget them, keep training clusters and serving healthy, and automate operations for reliability.",
-    "publishedQuestionCount": 29,
+    "publishedQuestionCount": 24,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -589,7 +589,7 @@
     "id": "ai-solutions-architect",
     "title": "AI Solutions Architect",
     "summary": "Design AI workloads on a GPU cloud that perform, stay resilient, keep costs in check and isolate tenants and data securely.",
-    "publishedQuestionCount": 22,
+    "publishedQuestionCount": 19,
     "available": true,
     "mock": {
       "questionCount": 30,
@@ -723,7 +723,7 @@
     "id": "physical-ai",
     "title": "Physical AI",
     "summary": "Post-train models and robot policies, build robotics data pipelines, evaluate and deploy inference, and connect models to robot applications.",
-    "publishedQuestionCount": 45,
+    "publishedQuestionCount": 44,
     "available": true,
     "mock": {
       "questionCount": 30,

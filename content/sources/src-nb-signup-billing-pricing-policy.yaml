@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 0c6f69d0c17406a4c3bf25476162581f85fe5fb59f0618b8341f48c674c2f107
-status: current
+status: drifted
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-3/sa-cost-tradeoffs

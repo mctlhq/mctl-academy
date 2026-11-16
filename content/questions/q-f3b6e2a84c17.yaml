@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f3b6e2a84c17
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/ie-training-cluster-lifecycle
 stem: "A platform team increases a GPU node group's target node count to add
