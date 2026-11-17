@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.97](https://github.com/mctlhq/mctl-academy/compare/0.1.96...0.1.97) (2026-11-17)
+
+
+### Bug Fixes
+
+* **seo:** never serve index.html raw under a second URL ([5766b43](https://github.com/mctlhq/mctl-academy/commit/5766b430e98a36937ede83a3c6bc67d10417db3e))
+* **seo:** no raw index.html, restore head tags after /practice ([a92ba04](https://github.com/mctlhq/mctl-academy/commit/a92ba04330f7a8c6ef382cb829af9e3299b4f793))
+* **seo:** restore the home head tags after leaving /practice ([ecca637](https://github.com/mctlhq/mctl-academy/commit/ecca63725843c216ee7957e0debcc432b4c37c88))
+
 ## [0.1.96](https://github.com/mctlhq/mctl-academy/compare/0.1.95...0.1.96) (2026-11-17)
 
 
