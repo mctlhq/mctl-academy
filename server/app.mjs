@@ -300,8 +300,15 @@ const CLIENT_DIST = process.env.ACADEMY_CLIENT_DIST || "./client/dist";
 const { serveStatic } =
   typeof Bun !== "undefined" ? await import("hono/bun") : await import("@hono/node-server/serve-static");
 const staticFiles = serveStatic({ root: CLIENT_DIST });
-// "/" must reach the SPA handler: serveStatic would answer it with dist/index.html
-// (the directory index) as-is, skipping the per-route head and <noscript> content.
-// index.html is only ever served through createSpaHandler.
-app.use("/*", (c, next) => (c.req.path === "/" ? next() : staticFiles(c, next)));
+// index.html is the SPA handler's template, never a file to serve as is.
+// serveStatic answers a directory path ("/", or any path ending in "/") with
+// its index.html, and "/index.html" names the file directly; either way the
+// template would go out raw, without the per-route head and <noscript>
+// content. Both runtimes' serveStatic append index.html to a directory (Bun's
+// has no option to turn that off), so the guard sits here, in front of
+// either. "/index.html" then gets the SPA handler's 404 + noindex.
+export function servesSpaTemplate(path) {
+  return path.endsWith("/") || path.toLowerCase().endsWith("/index.html");
+}
+app.use("/*", (c, next) => (servesSpaTemplate(c.req.path) ? next() : staticFiles(c, next)));
 app.get("/*", createSpaHandler({ indexPath: `${CLIENT_DIST}/index.html`, catalog: courseCatalog }));

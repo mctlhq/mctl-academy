@@ -302,6 +302,16 @@ describe("initial HTML carries content without JavaScript", () => {
     assert.equal((await app.request("/sitemap.xml")).status, 200);
   });
 
+  test("index.html is never served raw under a second URL", async () => {
+    for (const path of ["/index.html", "/INDEX.HTML", "/Index.html"]) {
+      const res = await app.request(path);
+      assert.equal(res.status, 404, path);
+      const html = await res.text();
+      assert.equal(robots(html), "noindex", path);
+      assert.equal(res.headers.get("x-robots-tag"), "noindex", path);
+    }
+  });
+
   test("a course page's heading is its own title, escaped", () => {
     const evil = { ...catalog[0], id: "evil", title: "<b>x</b>" };
     const { html } = renderSpaPage(SOURCE_INDEX, { kind: "course", course: evil }, [evil]);
