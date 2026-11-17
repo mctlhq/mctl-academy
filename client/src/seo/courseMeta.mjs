@@ -44,6 +44,24 @@ export function headTagSelector(spec) {
   return `${spec.tag}[${spec.match[0]}="${spec.match[1]}"]`;
 }
 
+/** The practice page's own description, also its no-JavaScript lead text. */
+export const PRACTICE_DESCRIPTION =
+  "Untimed, scenario-based practice questions for each course. Every question cites the documentation page that supports its answer.";
+
+/**
+ * Head metadata for /practice, in the shape courseHeadMeta() returns minus
+ * JSON-LD, so the server and PracticeView.vue fill COURSE_HEAD_TAGS from it
+ * exactly as they do for a course. Without it /practice carried the home
+ * page's description and social text.
+ */
+export function practiceHeadMeta() {
+  return {
+    title: pageTitle("Practice"),
+    description: PRACTICE_DESCRIPTION,
+    canonicalUrl: `${SITE_ORIGIN}/practice`,
+  };
+}
+
 export function courseCanonicalUrl(courseId) {
   return `${SITE_ORIGIN}/courses/${courseId}`;
 }

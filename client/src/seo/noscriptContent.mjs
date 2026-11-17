@@ -13,6 +13,8 @@
  * HTML-escaped here.
  */
 
+import { PRACTICE_DESCRIPTION } from "./courseMeta.mjs";
+
 const HTML_ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value) => String(value).replace(/[&<>"']/g, (ch) => HTML_ESCAPES[ch]);
 
@@ -21,8 +23,7 @@ export const HOME_HEADING =
 export const HOME_LEAD =
   "Every question is written from public product documentation, reviewed independently, and cites the page that supports its answer. Pick a course, practice, review your mistakes, then try a timed mock exam.";
 export const PRACTICE_HEADING = "Practice questions";
-export const PRACTICE_LEAD =
-  "Untimed, scenario-based practice questions for each course. Every question cites the documentation page that supports its answer.";
+export const PRACTICE_LEAD = PRACTICE_DESCRIPTION;
 export const NOSCRIPT_NOTICE =
   "This site's practice sessions need JavaScript. The course overview on this page is plain HTML.";
 

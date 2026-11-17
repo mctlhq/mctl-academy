@@ -7,32 +7,21 @@ import PracticeContent from "../practice/PracticeContent.vue";
 import { useCourseStore } from "../services/courseStore";
 import { domainTitlesFor } from "../services/courseCatalog";
 import { questionsForCourse } from "../services/contentBundle";
-import { SITE_ORIGIN } from "../seo/courseMeta.mjs";
+import { practiceHeadMeta } from "../seo/courseMeta.mjs";
+import { applyHeadMeta, restoreHeadMeta, type SavedHeadDefaults } from "../seo/headTags";
 
-function updatePracticeMeta() {
-  if (typeof document === "undefined") return;
-  const canonicalUrl = `${SITE_ORIGIN}/practice`;
-  const canonicalEl = document.querySelector('link[rel="canonical"]');
-  if (canonicalEl) canonicalEl.setAttribute("href", canonicalUrl);
-  const ogUrlEl = document.querySelector('meta[property="og:url"]');
-  if (ogUrlEl) ogUrlEl.setAttribute("content", canonicalUrl);
-}
-
-function restorePracticeMeta() {
-  if (typeof document === "undefined") return;
-  const defaultUrl = `${SITE_ORIGIN}/`;
-  const canonicalEl = document.querySelector('link[rel="canonical"]');
-  if (canonicalEl) canonicalEl.setAttribute("href", defaultUrl);
-  const ogUrlEl = document.querySelector('meta[property="og:url"]');
-  if (ogUrlEl) ogUrlEl.setAttribute("content", defaultUrl);
-}
+// The same strings server/spa.mjs renders for /practice: canonical, og:url,
+// description and the social title/description, restored on leaving.
+const savedHeadDefaults: SavedHeadDefaults = new Map();
 
 onMounted(() => {
-  updatePracticeMeta();
+  if (typeof document === "undefined") return;
+  applyHeadMeta(practiceHeadMeta(), savedHeadDefaults);
 });
 
 onUnmounted(() => {
-  restorePracticeMeta();
+  if (typeof document === "undefined") return;
+  restoreHeadMeta(savedHeadDefaults);
 });
 
 // Course scoping happens here, before a session exists: PracticeContent (and

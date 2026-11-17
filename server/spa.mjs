@@ -9,9 +9,9 @@ import {
   PAGE_NOT_FOUND_TITLE,
   SITE_ORIGIN,
   courseHeadMeta,
-  pageTitle,
+  practiceHeadMeta,
 } from "../client/src/seo/courseMeta.mjs";
-import { PRACTICE_LEAD, noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
+import { noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
 import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS, isNoindexRoute } from "../client/src/seo/spaRoutes.mjs";
 
 /**
@@ -170,13 +170,15 @@ function renderHead(template, page) {
   switch (page.kind) {
     case "page": {
       if (page.path === "/practice") {
-        const meta = {
-          title: pageTitle("Practice"),
-          description: PRACTICE_LEAD,
-          canonicalUrl: `${SITE_ORIGIN}/practice`,
-        };
+        // keepDefault: the home page's values survive in data-default, which
+        // is what PracticeView and CourseView restore on leaving. Without it a
+        // server-rendered /practice would hand its own description and social
+        // tags to every page navigated to in-app afterwards.
+        const meta = practiceHeadMeta();
         let html = setTitle(template, meta.title);
-        for (const spec of COURSE_HEAD_TAGS) html = setTagAttr(html, spec, meta[spec.field]);
+        for (const spec of COURSE_HEAD_TAGS) {
+          html = setTagAttr(html, spec, meta[spec.field], { keepDefault: true });
+        }
         return { status: 200, html };
       }
       if (isNoindexRoute(page.path)) {
