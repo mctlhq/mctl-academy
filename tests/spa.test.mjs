@@ -74,13 +74,34 @@ describe("unknown paths are real 404s", () => {
 
 describe("known pages", () => {
   test("/ and every router page answer 200 with the right canonical", async () => {
-    for (const path of ["/", "/mistakes", "/mock", "/dashboard"]) {
+    {
+      const res = await app.request("/");
+      assert.equal(res.status, 200);
+      const html = await res.text();
+      assert.equal(robots(html), "index, follow");
+      assert.equal(canonical(html), "https://academy.mctl.ai/");
+      assert.equal(ogUrl(html), "https://academy.mctl.ai/");
+    }
+    // The user-specific pages are noindex in the header; the page must say
+    // the same, and must not name the home page as its canonical (noindex
+    // plus a canonical to another URL is a contradictory pair).
+    const noindexPages = {
+      "/mistakes": "/mistakes",
+      "/mock": "/mock",
+      "/dashboard": "/dashboard",
+      "/admin/stats": "/admin/stats",
+      "/Mock": "/mock",
+      "/dashboard/": "/dashboard",
+    };
+    for (const [path, own] of Object.entries(noindexPages)) {
       const res = await app.request(path);
       assert.equal(res.status, 200, path);
       const html = await res.text();
-      assert.equal(robots(html), "index, follow", path);
-      assert.equal(canonical(html), "https://academy.mctl.ai/", path);
-      assert.equal(ogUrl(html), "https://academy.mctl.ai/", path);
+      assert.equal(res.headers.get("x-robots-tag"), "noindex, follow", path);
+      assert.equal(robots(html), "noindex, follow", path);
+      assert.equal(canonical(html), `https://academy.mctl.ai${own}`, path);
+      assert.equal(ogUrl(html), `https://academy.mctl.ai${own}`, path);
+      assert.match(html, /<link data-default="https:\/\/academy\.mctl\.ai\/" rel="canonical"/, path);
     }
     for (const path of ["/practice", "/practice/", "/Practice"]) {
       const res = await app.request(path);

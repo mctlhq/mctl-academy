@@ -16,6 +16,8 @@
  * single documented exception for self-hosted cookieless analytics at
  * stats.mctl.ai. connect-src similarly permits beacon events to stats.mctl.ai.
  */
+
+import { isNoindexRoute } from "../../client/src/seo/spaRoutes.mjs";
 const CSP = [
   "default-src 'self'",
   "script-src 'self' https://stats.mctl.ai",
@@ -52,17 +54,9 @@ function securityHeaderEntries() {
   return entries;
 }
 
-const NOINDEX_PREFIXES = ["/mock", "/dashboard", "/mistakes", "/admin"];
-
-/**
- * Returns true if the requested route should be de-indexed from search engines
- * to prevent brand cannibalization of the apex mctl domain.
- */
-export function isNoindexRoute(path = "") {
-  return NOINDEX_PREFIXES.some(
-    (prefix) => path === prefix || path.startsWith(prefix + "/") || path.startsWith(prefix + "?"),
-  );
-}
+// Which routes are noindex is shared with server/spa.mjs, which must render
+// the same decision into the page's robots meta and canonical.
+export { isNoindexRoute };
 
 /**
  * Applies the baseline headers to whatever response `c` currently holds.
