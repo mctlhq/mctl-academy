@@ -12,7 +12,7 @@ import {
   pageTitle,
 } from "../client/src/seo/courseMeta.mjs";
 import { PRACTICE_LEAD, noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
-import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS } from "../client/src/seo/spaRoutes.mjs";
+import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS, isNoindexRoute } from "../client/src/seo/spaRoutes.mjs";
 
 /**
  * The SPA document: index.html with the right HTTP status and head tags.
@@ -147,6 +147,9 @@ function setTitle(html, title) {
   return html.replace(TITLE_RE, () => `<title>${escapeHtml(title)}</title>`);
 }
 
+const CANONICAL_TAG = { tag: "link", match: ["rel", "canonical"], attr: "href" };
+const OG_URL_TAG = { tag: "meta", match: ["property", "og:url"], attr: "content" };
+
 function notFound(html, title) {
   return { status: 404, html: setTagAttr(setTitle(html, title), ROBOTS_TAG, "noindex") };
 }
@@ -174,6 +177,16 @@ function renderHead(template, page) {
         };
         let html = setTitle(template, meta.title);
         for (const spec of COURSE_HEAD_TAGS) html = setTagAttr(html, spec, meta[spec.field]);
+        return { status: 200, html };
+      }
+      if (isNoindexRoute(page.path)) {
+        // The header already says noindex (security-headers.mjs); the page
+        // says the same and names itself, not the home page, as canonical.
+        // data-default keeps the site values for the client to restore.
+        const ownUrl = `${SITE_ORIGIN}${page.path}`;
+        let html = setTagAttr(template, ROBOTS_TAG, "noindex, follow");
+        html = setTagAttr(html, CANONICAL_TAG, ownUrl, { keepDefault: true });
+        html = setTagAttr(html, OG_URL_TAG, ownUrl, { keepDefault: true });
         return { status: 200, html };
       }
       return { status: 200, html: template };
