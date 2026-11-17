@@ -11,7 +11,7 @@ import {
   courseHeadMeta,
   pageTitle,
 } from "../client/src/seo/courseMeta.mjs";
-import { noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
+import { PRACTICE_LEAD, noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
 import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS } from "../client/src/seo/spaRoutes.mjs";
 
 /**
@@ -151,9 +151,6 @@ function notFound(html, title) {
   return { status: 404, html: setTagAttr(setTitle(html, title), ROBOTS_TAG, "noindex") };
 }
 
-const CANONICAL_TAG = { tag: "link", match: ["rel", "canonical"], attr: "href" };
-const OG_URL_TAG = { tag: "meta", match: ["property", "og:url"], attr: "content" };
-
 /**
  * index.html as it should be served for one classified path: head tags per
  * route (renderHead) plus, for public pages, a static <noscript> content
@@ -170,10 +167,13 @@ function renderHead(template, page) {
   switch (page.kind) {
     case "page": {
       if (page.path === "/practice") {
-        const canonicalUrl = `${SITE_ORIGIN}/practice`;
-        let html = setTitle(template, pageTitle("Practice"));
-        html = setTagAttr(html, CANONICAL_TAG, canonicalUrl);
-        html = setTagAttr(html, OG_URL_TAG, canonicalUrl);
+        const meta = {
+          title: pageTitle("Practice"),
+          description: PRACTICE_LEAD,
+          canonicalUrl: `${SITE_ORIGIN}/practice`,
+        };
+        let html = setTitle(template, meta.title);
+        for (const spec of COURSE_HEAD_TAGS) html = setTagAttr(html, spec, meta[spec.field]);
         return { status: 200, html };
       }
       return { status: 200, html: template };

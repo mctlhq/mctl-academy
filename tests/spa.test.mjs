@@ -90,6 +90,16 @@ describe("known pages", () => {
       assert.equal(canonical(html), "https://academy.mctl.ai/practice", path);
       assert.equal(ogUrl(html), "https://academy.mctl.ai/practice", path);
       assert.ok(!html.includes("data-default"), `${path} must not set data-default`);
+      const meta = (re) => attr(html, re);
+      assert.equal(title(html), "Practice · mctl academy", path);
+      assert.equal(
+        meta(/<meta[^>]*property="og:title"[^>]*content="([^"]*)"/),
+        "Practice · mctl academy",
+        path,
+      );
+      const desc = meta(/<meta\s+name="description"\s+content="([^"]*)"/);
+      assert.ok(desc && !desc.includes("Free Agentic AI Certification"), `${path} has its own description`);
+      assert.equal(meta(/<meta[^>]*property="og:description"[^>]*content="([^"]*)"/), desc, path);
     }
   });
 
@@ -255,6 +265,20 @@ describe("initial HTML carries content without JavaScript", () => {
       assert.equal(res.status, 200, loc);
       assert.match(noscript(await res.text()) ?? "", /<h1>[^<]+<\/h1>/, loc);
     }
+  });
+
+  test("GET / is rendered by the SPA handler, not served as the static directory index", async () => {
+    const res = await app.request("/");
+    assert.equal(res.status, 200);
+    const html = await res.text();
+    assert.match(noscript(html) ?? "", /<h1>[^<]+<\/h1>/, "root carries the content block");
+    assert.equal(canonical(html), "https://academy.mctl.ai/");
+    // Static serving is untouched: assets and files still come straight from dist.
+    const asset = await app.request(FIXTURE_ASSET);
+    assert.equal(asset.status, 200);
+    assert.match(await asset.text(), /console\.log/);
+    assert.equal((await app.request("/robots.txt")).status, 200);
+    assert.equal((await app.request("/sitemap.xml")).status, 200);
   });
 
   test("a course page's heading is its own title, escaped", () => {
