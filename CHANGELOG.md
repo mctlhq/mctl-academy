@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.96](https://github.com/mctlhq/mctl-academy/compare/0.1.95...0.1.96) (2026-11-17)
+
+
+### Features
+
+* **seo:** serve real page content in the initial HTML ([e60cb99](https://github.com/mctlhq/mctl-academy/commit/e60cb99fc00f8bb8481c8b7db651c16f3811ea39))
+* **seo:** serve real page content in the initial HTML ([d12b58f](https://github.com/mctlhq/mctl-academy/commit/d12b58f4edc92c86f51a5c56ac26679964948885))
+
+
+### Bug Fixes
+
+* **seo:** one noindex rule for the header and the page ([51d986a](https://github.com/mctlhq/mctl-academy/commit/51d986a205225ece204bedf13ca2c0e7ac72d238))
+* **seo:** one noindex rule for the header and the page ([73b330b](https://github.com/mctlhq/mctl-academy/commit/73b330b441f9f59362170b3ad70e0d632f35a4ca))
+* **seo:** route / through the SPA handler so it gets the noscript content ([fa282ad](https://github.com/mctlhq/mctl-academy/commit/fa282ad60baa9f38ba3519f017964bd9ebd9699f))
+
 ## [0.1.95](https://github.com/mctlhq/mctl-academy/compare/0.1.94...0.1.95) (2026-11-16)
 
 
