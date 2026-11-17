@@ -110,7 +110,10 @@ describe("known pages", () => {
       assert.equal(robots(html), "index, follow", path);
       assert.equal(canonical(html), "https://academy.mctl.ai/practice", path);
       assert.equal(ogUrl(html), "https://academy.mctl.ai/practice", path);
-      assert.ok(!html.includes("data-default"), `${path} must not set data-default`);
+      // The rewritten tags keep the home page's values in data-default, so
+      // the client restores those (not the practice values) on leaving.
+      assert.match(html, /<link data-default="https:\/\/academy\.mctl\.ai\/" rel="canonical"/, path);
+      assert.match(html, /<meta data-default="Free, open-source practice[^"]*"\s+name="description"/, path);
       const meta = (re) => attr(html, re);
       assert.equal(title(html), "Practice · mctl academy", path);
       assert.equal(
@@ -118,7 +121,7 @@ describe("known pages", () => {
         "Practice · mctl academy",
         path,
       );
-      const desc = meta(/<meta\s+name="description"\s+content="([^"]*)"/);
+      const desc = meta(/<meta[^>]*\sname="description"[^>]*\scontent="([^"]*)"/);
       assert.ok(desc && !desc.includes("Free Agentic AI Certification"), `${path} has its own description`);
       assert.equal(meta(/<meta[^>]*property="og:description"[^>]*content="([^"]*)"/), desc, path);
     }
@@ -300,6 +303,16 @@ describe("initial HTML carries content without JavaScript", () => {
     assert.match(await asset.text(), /console\.log/);
     assert.equal((await app.request("/robots.txt")).status, 200);
     assert.equal((await app.request("/sitemap.xml")).status, 200);
+  });
+
+  test("index.html is never served raw under a second URL", async () => {
+    for (const path of ["/index.html", "/INDEX.HTML", "/Index.html"]) {
+      const res = await app.request(path);
+      assert.equal(res.status, 404, path);
+      const html = await res.text();
+      assert.equal(robots(html), "noindex", path);
+      assert.equal(res.headers.get("x-robots-tag"), "noindex", path);
+    }
   });
 
   test("a course page's heading is its own title, escaped", () => {

@@ -34,3 +34,5 @@ export function pageTitle(title: unknown): string;
 export function headTagSelector(spec: CourseHeadTagSpec): string;
 export function courseCanonicalUrl(courseId: string): string;
 export function courseHeadMeta(course: CourseMetaInput): CourseHeadMeta;
+export const PRACTICE_DESCRIPTION: string;
+export function practiceHeadMeta(): Omit<CourseHeadMeta, "jsonLd">;

@@ -8,14 +8,8 @@ import { isEarlyAccess } from "../services/earlyAccess";
 import { useCourseStore } from "../services/courseStore";
 import { questionsForCourse } from "../services/contentBundle";
 import { selectMockQuestions } from "../exam/selectMockQuestions";
-import {
-  COURSE_HEAD_TAGS,
-  COURSE_JSONLD_ID,
-  COURSE_NOT_FOUND_TITLE,
-  courseHeadMeta,
-  headTagSelector,
-  type CourseHeadTagSpec,
-} from "../seo/courseMeta.mjs";
+import { COURSE_JSONLD_ID, COURSE_NOT_FOUND_TITLE, courseHeadMeta } from "../seo/courseMeta.mjs";
+import { applyHeadMeta, restoreHeadMeta, type SavedHeadDefaults } from "../seo/headTags";
 
 const route = useRoute();
 const { setCourse } = useCourseStore();
@@ -57,32 +51,14 @@ function domainPracticePath(domainId: string): string {
 /**
  * Head tags are built by the module the server also renders course pages
  * with (server/spa.mjs), so a crawler without JavaScript and this view after
- * an in-app navigation produce identical strings.
- *
- * Restoring: a tag the server rewrote carries the site default in
- * `data-default`; otherwise the value found before this view's first write is
- * the default. Reading the live value alone would "restore" a server-rendered
- * course page's own canonical onto whatever page comes next.
+ * an in-app navigation produce identical strings. seo/headTags.ts explains
+ * how the defaults are kept and restored.
  */
-const savedDefaults = new Map<Element, string | null>();
-
-function headTag(spec: CourseHeadTagSpec): Element | null {
-  return typeof document === "undefined" ? null : document.querySelector(headTagSelector(spec));
-}
-
-function defaultFor(el: Element): string | null {
-  return el.getAttribute("data-default") ?? savedDefaults.get(el) ?? null;
-}
+const savedDefaults: SavedHeadDefaults = new Map();
 
 function restoreOriginalMeta() {
   if (typeof document === "undefined") return;
-  for (const spec of COURSE_HEAD_TAGS) {
-    const el = headTag(spec);
-    if (!el || (!el.hasAttribute("data-default") && !savedDefaults.has(el))) continue;
-    const original = defaultFor(el);
-    if (original !== null) el.setAttribute(spec.attr, original);
-    else el.removeAttribute(spec.attr);
-  }
+  restoreHeadMeta(savedDefaults);
   document.getElementById(COURSE_JSONLD_ID)?.remove();
 }
 
@@ -102,14 +78,7 @@ function updateMeta() {
     return;
   }
 
-  for (const spec of COURSE_HEAD_TAGS) {
-    const el = headTag(spec);
-    if (!el) continue;
-    if (!el.hasAttribute("data-default") && !savedDefaults.has(el)) {
-      savedDefaults.set(el, el.getAttribute(spec.attr));
-    }
-    el.setAttribute(spec.attr, meta[spec.field] ?? "");
-  }
+  applyHeadMeta(meta, savedDefaults);
 
   let scriptEl = document.getElementById(COURSE_JSONLD_ID);
   if (!scriptEl) {
