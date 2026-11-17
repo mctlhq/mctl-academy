@@ -9,7 +9,9 @@ import {
   PAGE_NOT_FOUND_TITLE,
   SITE_ORIGIN,
   courseHeadMeta,
+  pageTitle,
 } from "../client/src/seo/courseMeta.mjs";
+import { noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
 import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS } from "../client/src/seo/spaRoutes.mjs";
 
 /**
@@ -90,6 +92,7 @@ function escapeRegex(value) {
 const ROBOTS_TAG = { tag: "meta", match: ["name", "robots"], attr: "content" };
 const TITLE_RE = /<title>[\s\S]*?<\/title>/g;
 const HEAD_CLOSE_RE = /<\/head>/g;
+const ROOT_RE = /<div id="root"><\/div>/g;
 
 function tagRegex(spec) {
   const [name, value] = spec.match;
@@ -112,6 +115,7 @@ export function assertSpaTemplate(html) {
     if (n !== 1) problems.push(`<${spec.tag} ${spec.match[0]}="${spec.match[1]}"> found ${n} times`);
   }
   if (countMatches(html, TITLE_RE) !== 1) problems.push("<title> must appear exactly once");
+  if (countMatches(html, ROOT_RE) !== 1) problems.push('<div id="root"></div> must appear exactly once');
   if (countMatches(html, HEAD_CLOSE_RE) !== 1) problems.push("</head> must appear exactly once");
   if (problems.length > 0) {
     throw new Error(`index.html cannot be rendered per route: ${problems.join("; ")}`);
@@ -150,13 +154,25 @@ function notFound(html, title) {
 const CANONICAL_TAG = { tag: "link", match: ["rel", "canonical"], attr: "href" };
 const OG_URL_TAG = { tag: "meta", match: ["property", "og:url"], attr: "content" };
 
-/** index.html as it should be served for one classified path. */
-export function renderSpaPage(template, page) {
+/**
+ * index.html as it should be served for one classified path: head tags per
+ * route (renderHead) plus, for public pages, a static <noscript> content
+ * block after the mount point so the initial HTML is not empty.
+ */
+export function renderSpaPage(template, page, catalog = []) {
+  const out = renderHead(template, page);
+  const block = noscriptBlock(page, catalog);
+  if (!block) return out;
+  return { ...out, html: out.html.replace(ROOT_RE, (root) => `${root}\n    ${block}`) };
+}
+
+function renderHead(template, page) {
   switch (page.kind) {
     case "page": {
       if (page.path === "/practice") {
         const canonicalUrl = `${SITE_ORIGIN}/practice`;
-        let html = setTagAttr(template, CANONICAL_TAG, canonicalUrl);
+        let html = setTitle(template, pageTitle("Practice"));
+        html = setTagAttr(html, CANONICAL_TAG, canonicalUrl);
         html = setTagAttr(html, OG_URL_TAG, canonicalUrl);
         return { status: 200, html };
       }
@@ -212,7 +228,7 @@ export function createSpaHandler({ indexPath, catalog, log = console }) {
       }
       template = assertSpaTemplate(raw);
     }
-    const { status, html } = renderSpaPage(template, classifySpaPath(c.req.path, catalog));
+    const { status, html } = renderSpaPage(template, classifySpaPath(c.req.path, catalog), catalog);
     if (status === 404) c.header("X-Robots-Tag", "noindex");
     return c.html(html, status);
   };
