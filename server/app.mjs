@@ -299,5 +299,9 @@ app.all("/api/*", (c) => c.json({ error: "not_found" }, 404));
 const CLIENT_DIST = process.env.ACADEMY_CLIENT_DIST || "./client/dist";
 const { serveStatic } =
   typeof Bun !== "undefined" ? await import("hono/bun") : await import("@hono/node-server/serve-static");
-app.use("/*", serveStatic({ root: CLIENT_DIST }));
+const staticFiles = serveStatic({ root: CLIENT_DIST });
+// "/" must reach the SPA handler: serveStatic would answer it with dist/index.html
+// (the directory index) as-is, skipping the per-route head and <noscript> content.
+// index.html is only ever served through createSpaHandler.
+app.use("/*", (c, next) => (c.req.path === "/" ? next() : staticFiles(c, next)));
 app.get("/*", createSpaHandler({ indexPath: `${CLIENT_DIST}/index.html`, catalog: courseCatalog }));

@@ -90,6 +90,16 @@ describe("known pages", () => {
       assert.equal(canonical(html), "https://academy.mctl.ai/practice", path);
       assert.equal(ogUrl(html), "https://academy.mctl.ai/practice", path);
       assert.ok(!html.includes("data-default"), `${path} must not set data-default`);
+      const meta = (re) => attr(html, re);
+      assert.equal(title(html), "Practice · mctl academy", path);
+      assert.equal(
+        meta(/<meta[^>]*property="og:title"[^>]*content="([^"]*)"/),
+        "Practice · mctl academy",
+        path,
+      );
+      const desc = meta(/<meta\s+name="description"\s+content="([^"]*)"/);
+      assert.ok(desc && !desc.includes("Free Agentic AI Certification"), `${path} has its own description`);
+      assert.equal(meta(/<meta[^>]*property="og:description"[^>]*content="([^"]*)"/), desc, path);
     }
   });
 
@@ -212,5 +222,79 @@ describe("no client build", () => {
     probe.onError((_err, c) => c.text("error", 500));
     const res = await probe.request("/");
     assert.equal(res.status, 500);
+  });
+});
+
+describe("initial HTML carries content without JavaScript", () => {
+  const SITEMAP = readFileSync(new URL("../client/public/sitemap.xml", import.meta.url), "utf8");
+  const locs = [...SITEMAP.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  const noscript = (html) => html.match(/<noscript><main>([\s\S]*?)<\/main><\/noscript>/)?.[1];
+
+  test("the sitemap lists routes", () => {
+    assert.ok(locs.length >= 9, `found ${locs.length} sitemap routes`);
+  });
+
+  test("every sitemap route has a heading, links, canonical and og:url in the HTML", () => {
+    const titles = new Set();
+    for (const loc of locs) {
+      const path = new URL(loc).pathname;
+      const { status, html } = renderSpaPage(SOURCE_INDEX, classifySpaPath(path, catalog), catalog);
+      assert.equal(status, 200, loc);
+      const body = noscript(html);
+      assert.ok(body, `${loc} has a noscript content block`);
+      assert.match(body, /<h1>[^<]+<\/h1>/, loc);
+      assert.match(body, /<a href="\/[^"]*">/, `${loc} links`);
+      assert.ok(
+        body
+          .replace(/<[^>]+>/g, " ")
+          .split(/\s+/)
+          .filter(Boolean).length > 40,
+        `${loc} has real text`,
+      );
+      assert.equal(canonical(html), loc);
+      assert.equal(ogUrl(html), loc);
+      assert.ok(!titles.has(title(html)), `${loc} title is unique`);
+      titles.add(title(html));
+      assert.match(html, /<div id="root"><\/div>/, "mount point untouched");
+    }
+  });
+
+  test("the live handler serves the content block for every sitemap route", async () => {
+    for (const loc of locs) {
+      const res = await app.request(new URL(loc).pathname);
+      assert.equal(res.status, 200, loc);
+      assert.match(noscript(await res.text()) ?? "", /<h1>[^<]+<\/h1>/, loc);
+    }
+  });
+
+  test("GET / is rendered by the SPA handler, not served as the static directory index", async () => {
+    const res = await app.request("/");
+    assert.equal(res.status, 200);
+    const html = await res.text();
+    assert.match(noscript(html) ?? "", /<h1>[^<]+<\/h1>/, "root carries the content block");
+    assert.equal(canonical(html), "https://academy.mctl.ai/");
+    // Static serving is untouched: assets and files still come straight from dist.
+    const asset = await app.request(FIXTURE_ASSET);
+    assert.equal(asset.status, 200);
+    assert.match(await asset.text(), /console\.log/);
+    assert.equal((await app.request("/robots.txt")).status, 200);
+    assert.equal((await app.request("/sitemap.xml")).status, 200);
+  });
+
+  test("a course page's heading is its own title, escaped", () => {
+    const evil = { ...catalog[0], id: "evil", title: "<b>x</b>" };
+    const { html } = renderSpaPage(SOURCE_INDEX, { kind: "course", course: evil }, [evil]);
+    assert.match(noscript(html), /<h1>&lt;b&gt;x&lt;\/b&gt;<\/h1>/);
+  });
+
+  test("404s and user-specific pages get no content block", () => {
+    for (const path of ["/nope", "/courses/bogus", "/dashboard", "/mock", "/mistakes"]) {
+      const { html } = renderSpaPage(SOURCE_INDEX, classifySpaPath(path, catalog), catalog);
+      assert.doesNotMatch(html, /<noscript><main>/, path);
+    }
+  });
+
+  test("a template without the mount point fails loudly", () => {
+    assert.throws(() => assertSpaTemplate(SOURCE_INDEX.replace('<div id="root"></div>', "")), /id="root"/);
   });
 });
