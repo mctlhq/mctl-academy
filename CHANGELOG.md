@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.99](https://github.com/mctlhq/mctl-academy/compare/0.1.98...0.1.99) (2026-11-18)
+
+
+### Features
+
+* **seo:** server-render a home page summary for non-JS fetchers ([bb6b3bf](https://github.com/mctlhq/mctl-academy/commit/bb6b3bf1b58c03456d46e251be9e348ed86dd040))
+* **seo:** server-render a home page summary for non-JS fetchers ([6f99f59](https://github.com/mctlhq/mctl-academy/commit/6f99f59d4fc44d6fc705362415488af0e4356436))
+
 ## [0.1.98](https://github.com/mctlhq/mctl-academy/compare/0.1.97...0.1.98) (2026-11-18)
 
 
