@@ -8,7 +8,7 @@ import CourseView from "../views/CourseView.vue";
 import AdminStatsView from "../views/AdminStatsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import { useCourseStore } from "../services/courseStore";
-import { pageTitle } from "../seo/courseMeta.mjs";
+import { HOME_TITLE, pageTitle } from "../seo/courseMeta.mjs";
 
 export { pageTitle };
 
@@ -79,7 +79,9 @@ export function shouldFocusMain(to: Location, from: Location): boolean {
 
 router.afterEach((to, from) => {
   if (typeof document === "undefined") return;
-  if (to.name !== "course") {
+  if (to.name === "home") {
+    document.title = HOME_TITLE;
+  } else if (to.name !== "course") {
     document.title = pageTitle(to.meta.title);
   }
   if (shouldFocusMain(to, from)) {

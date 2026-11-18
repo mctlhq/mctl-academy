@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { pageTitle, router, scrollPosition, shouldFocusMain } from "./index";
+import { HOME_TITLE } from "../seo/courseMeta.mjs";
 import { resetCourseStore, useCourseStore } from "../services/courseStore";
 import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS } from "../seo/spaRoutes.mjs";
 
@@ -68,6 +72,19 @@ describe("router", () => {
     // Navigating away updates document.title via router.afterEach
     await router.push("/practice");
     expect(document.title).toBe("Practice · mctl academy");
+  });
+
+  it("keeps the home page title the server rendered instead of 'Home · mctl academy'", async () => {
+    document.title = "";
+    await router.push("/practice");
+    await router.push("/");
+    expect(document.title).toBe(HOME_TITLE);
+  });
+
+  it("HOME_TITLE is the <title> of index.html, so the server and client cannot drift", () => {
+    const html = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../../index.html"), "utf-8");
+    const match = html.match(/<title>([\s\S]*?)<\/title>/);
+    expect(match?.[1]).toBe(HOME_TITLE);
   });
 
   it("scrolls a new page to the top but keeps position for query-only changes and back/forward", () => {
