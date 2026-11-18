@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.98](https://github.com/mctlhq/mctl-academy/compare/0.1.97...0.1.98) (2026-11-18)
+
+
+### Bug Fixes
+
+* **seo:** shorten home meta description to 113 characters ([8bd6d94](https://github.com/mctlhq/mctl-academy/commit/8bd6d94f415ce86485f4b75974781ad3e7dfeaf0))
+* **seo:** shorten home meta description to 113 characters ([85ab899](https://github.com/mctlhq/mctl-academy/commit/85ab8995a928caef87d479df623c52dab1445063))
+
 ## [0.1.97](https://github.com/mctlhq/mctl-academy/compare/0.1.96...0.1.97) (2026-11-17)
 
 
