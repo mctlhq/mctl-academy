@@ -11,7 +11,7 @@ import {
   courseHeadMeta,
   practiceHeadMeta,
 } from "../client/src/seo/courseMeta.mjs";
-import { noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
+import { homeRootSummary, noscriptBlock } from "../client/src/seo/noscriptContent.mjs";
 import { COURSE_PATH_PREFIX, STATIC_SPA_PATHS, isNoindexRoute } from "../client/src/seo/spaRoutes.mjs";
 
 /**
@@ -163,7 +163,14 @@ export function renderSpaPage(template, page, catalog = []) {
   const out = renderHead(template, page);
   const block = noscriptBlock(page, catalog);
   if (!block) return out;
-  return { ...out, html: out.html.replace(ROOT_RE, (root) => `${root}\n    ${block}`) };
+  // Home only: a hidden plain-text summary inside the mount point, for
+  // fetchers that drop <noscript> when counting content. Vue empties #root on
+  // mount, so it never reaches a user running JavaScript.
+  const inner = page.kind === "page" && page.path === "/" ? homeRootSummary(catalog) : "";
+  return {
+    ...out,
+    html: out.html.replace(ROOT_RE, () => `<div id="root">${inner}</div>\n    ${block}`),
+  };
 }
 
 function renderHead(template, page) {
