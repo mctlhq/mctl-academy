@@ -332,3 +332,17 @@ describe("initial HTML carries content without JavaScript", () => {
     assert.throws(() => assertSpaTemplate(SOURCE_INDEX.replace('<div id="root"></div>', "")), /id="root"/);
   });
 });
+
+describe("home page description", () => {
+  test("one string of at most 160 characters in description, og and twitter tags", () => {
+    const re =
+      /<meta\s+(?:name|property)="(description|og:description|twitter:description)"\s+content="([^"]*)"/g;
+    const found = [...SOURCE_INDEX.matchAll(re)];
+    assert.equal(found.length, 3, "description, og:description and twitter:description");
+    const values = new Set(found.map((m) => m[2]));
+    assert.equal(values.size, 1, "the three tags must carry the same string");
+    const [text] = values;
+    assert.ok(text.length <= 160, `description is ${text.length} characters`);
+    assert.match(text, /^Free, open-source practice for AI certifications/);
+  });
+});
