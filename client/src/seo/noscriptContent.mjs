@@ -83,3 +83,33 @@ export function noscriptBlock(page, catalog) {
   const body = noscriptBody(page, catalog);
   return body ? `<noscript><main>${body}<p>${esc(NOSCRIPT_NOTICE)}</p></main></noscript>` : "";
 }
+
+/**
+ * Server-rendered summary placed INSIDE the mount point for the home page.
+ *
+ * The `<noscript>` block above is invisible to fetchers that strip noscript
+ * when they judge whether a page has content (agent and AI crawlers fetching
+ * raw HTML). This block is plain text in the document body. It is `hidden`, so
+ * it never paints, and Vue's `app.mount("#root")` empties the container
+ * before rendering, so it is discarded on mount: no duplicate content, no
+ * hydration (the client does not hydrate), no flash, no inline style or script
+ * (CSP unchanged). A browser with JavaScript off shows the `<noscript>` block
+ * instead. Course titles, summaries and counts come from the course catalog.
+ */
+export function homeRootSummary(catalog) {
+  const items = catalog
+    .map((c) => {
+      const count =
+        c.available && Number.isFinite(c.publishedQuestionCount)
+          ? ` ${esc(c.publishedQuestionCount)} practice questions.`
+          : " Coming soon.";
+      const summary = c.summary ? ` ${esc(c.summary)}` : "";
+      return `<li><a href="/courses/${esc(c.id)}">${esc(c.title)}</a>.${summary}${count}</li>`;
+    })
+    .join("");
+  return (
+    `<div hidden data-static-summary><h1>${esc(HOME_HEADING)}</h1><p>${esc(HOME_LEAD)}</p>` +
+    `<h2>Courses</h2><ul>${items}</ul>` +
+    '<p><a href="/practice">Practice</a> across every course, free and with no sign-up needed to start.</p></div>'
+  );
+}

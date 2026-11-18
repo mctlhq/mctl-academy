@@ -279,8 +279,51 @@ describe("initial HTML carries content without JavaScript", () => {
       assert.equal(ogUrl(html), loc);
       assert.ok(!titles.has(title(html)), `${loc} title is unique`);
       titles.add(title(html));
-      assert.match(html, /<div id="root"><\/div>/, "mount point untouched");
+      if (path !== "/") assert.match(html, /<div id="root"><\/div>/, "mount point untouched");
     }
+  });
+
+  describe("home page: server-rendered summary inside the mount point", () => {
+    const rootInner = (html) => html.match(/<div id="root">([\s\S]*?)<\/div>\s*<noscript>/)?.[1] ?? "";
+    // What a non-JS fetcher counts: noscript, script and style are dropped.
+    const fetcherWords = (html) =>
+      html
+        .replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/g, " ")
+        .replace(/<head>[\s\S]*?<\/head>/, " ")
+        .replace(/<[^>]+>/g, " ")
+        .split(/\s+/)
+        .filter(Boolean).length;
+
+    test("raw HTML outside noscript has the h1, every course link and 100+ words", async () => {
+      const html = await (await app.request("/")).text();
+      const inner = rootInner(html);
+      assert.match(inner, /<h1>[^<]+<\/h1>/);
+      for (const c of catalog) assert.ok(inner.includes(`<a href="/courses/${c.id}">`), c.id);
+      assert.ok(inner.includes('<a href="/practice">'));
+      assert.ok(fetcherWords(html) >= 100, `only ${fetcherWords(html)} words`);
+    });
+
+    test("the summary is hidden, inline-style free, and inside the mount point only", async () => {
+      const html = await (await app.request("/")).text();
+      assert.match(rootInner(html), /^<div hidden data-static-summary>/);
+      assert.doesNotMatch(rootInner(html), /style=|<script/);
+      assert.equal((html.match(/data-static-summary/g) ?? []).length, 1);
+    });
+
+    test("other routes keep an empty mount point and no summary", () => {
+      for (const path of [
+        "/practice",
+        "/mock",
+        "/dashboard",
+        "/mistakes",
+        "/nope",
+        `/courses/${COURSE_ID}`,
+      ]) {
+        const { html } = renderSpaPage(SOURCE_INDEX, classifySpaPath(path, catalog), catalog);
+        assert.match(html, /<div id="root"><\/div>/, path);
+        assert.doesNotMatch(html, /data-static-summary/, path);
+      }
+    });
   });
 
   test("the live handler serves the content block for every sitemap route", async () => {
