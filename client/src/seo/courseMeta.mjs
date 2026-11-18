@@ -14,6 +14,14 @@
 export const SITE_ORIGIN = "https://academy.mctl.ai";
 export const SITE_NAME = "mctl academy";
 
+/**
+ * The home page's `<title>`, the one client/index.html carries and the server
+ * sends. The router restores exactly this on "/" rather than building
+ * "Home · mctl academy", so what crawlers read before JavaScript runs is what
+ * stays after it. router.test.ts checks it against index.html.
+ */
+export const HOME_TITLE = "MCTL Academy — Free Agentic AI Certification Practice";
+
 /** The `<title>` the router gives a page: "Practice · mctl academy". */
 export function pageTitle(title) {
   return typeof title === "string" && title ? `${title} · ${SITE_NAME}` : SITE_NAME;

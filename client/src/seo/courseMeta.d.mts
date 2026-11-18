@@ -1,6 +1,8 @@
 // Types for courseMeta.mjs. The implementation stays plain JavaScript because
 // server/spa.mjs imports it directly at runtime, with no build step.
 
+export declare const HOME_TITLE: string;
+
 export interface CourseMetaInput {
   id: string;
   title: string;
