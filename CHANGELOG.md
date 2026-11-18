@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.100](https://github.com/mctlhq/mctl-academy/compare/0.1.99...0.1.100) (2026-11-18)
+
+
+### Bug Fixes
+
+* **seo:** keep the server-rendered home title after hydration ([f9dcfb0](https://github.com/mctlhq/mctl-academy/commit/f9dcfb0586dc137de385203d722e354e6545167d))
+* **seo:** keep the server-rendered home title after hydration ([9a09654](https://github.com/mctlhq/mctl-academy/commit/9a096548e8387cace36d74ad34da578e935f8398))
+
 ## [0.1.99](https://github.com/mctlhq/mctl-academy/compare/0.1.98...0.1.99) (2026-11-18)
 
 
