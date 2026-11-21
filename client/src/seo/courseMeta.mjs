@@ -20,7 +20,7 @@ export const SITE_NAME = "mctl academy";
  * "Home · mctl academy", so what crawlers read before JavaScript runs is what
  * stays after it. router.test.ts checks it against index.html.
  */
-export const HOME_TITLE = "MCTL Academy — Free Agentic AI Certification Practice";
+export const HOME_TITLE = "MCTL Academy — Free AI Certification Practice & Mock Exams";
 
 /** The `<title>` the router gives a page: "Practice · mctl academy". */
 export function pageTitle(title) {
