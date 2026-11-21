@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.101](https://github.com/mctlhq/mctl-academy/compare/0.1.100...0.1.101) (2026-11-21)
+
+
+### Bug Fixes
+
+* **seo:** keep canonical description prefix ([68e1f46](https://github.com/mctlhq/mctl-academy/commit/68e1f46863a07788ec0e234674cc2e5dc6f466e1))
+* **seo:** update home page title and description for search CTR ([bd83bfc](https://github.com/mctlhq/mctl-academy/commit/bd83bfcff14a824cb8f98596c2206fdffa82b8b8))
+* **seo:** update home page title and description for search CTR ([7436cba](https://github.com/mctlhq/mctl-academy/commit/7436cbabecd94b090c4ee674e48140e49bee677e))
+
 ## [0.1.100](https://github.com/mctlhq/mctl-academy/compare/0.1.99...0.1.100) (2026-11-18)
 
 
