@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 436dd662a0ed5d99a922d2c2344e5e2c182ad8f3a5791350d29ef7178a53a3ad
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-training-cluster-lifecycle

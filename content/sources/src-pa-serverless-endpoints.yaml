@@ -10,7 +10,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 45af7fa0626487136bd2d5a37e25cde916cd7ad8dd8bd9f34a4d7a265a1ba80d
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-3/ie-inference-pipelines

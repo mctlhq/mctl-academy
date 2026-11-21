@@ -548,47 +548,6 @@
     ]
   },
   {
-    "id": "q-1f84b3e9c572",
-    "course_id": "ai-solutions-architect",
-    "domain": "domain-4",
-    "objective": "domain-4/sa-secrets-audit-compliance",
-    "stem": "A compliance team is designing the workflow that exports audit events to Object Storage for long-term retention, and is choosing the destination bucket for a given region's events. What constraint does the design need to satisfy?",
-    "objectiveTitle": "Secrets handling, audit trails and the resulting compliance posture",
-    "sources": [
-      {
-        "title": "How to export audit events to Object Storage",
-        "url": "https://docs.nebius.com/audit-logs/events/export.md",
-        "excerpt": "the destination bucket must be in the same region as the events"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The destination bucket must be in the same region as the events being exported.",
-        "correct": true,
-        "explanation": "Correct. The documentation says the destination bucket must be in the same region as the events, and repeats this requirement for the bucket ID parameter in each interface."
-      },
-      {
-        "id": "b",
-        "text": "The destination bucket can be in any region, since audit event export is documented as copying events across regions automatically.",
-        "correct": false,
-        "explanation": "The documentation requires the destination bucket to be in the same region as the exported events; it does not describe cross-region copying as part of the export."
-      },
-      {
-        "id": "c",
-        "text": "The exporting identity needs the admin or auditlogs.audit-event-exporter role on the destination bucket, while the storage.uploader role applies to the tenant instead.",
-        "correct": false,
-        "explanation": "The documentation assigns the admin or auditlogs.audit-event-exporter role to the tenant and the storage.uploader role to the destination bucket, the reverse of what this option describes."
-      },
-      {
-        "id": "d",
-        "text": "The export writes events under a custom object prefix, since the documentation requires a prefix to be specified for every export.",
-        "correct": false,
-        "explanation": "The documentation says the object prefix is optional and the auditlogs prefix is used by default when omitted, not required on every export."
-      }
-    ]
-  },
-  {
     "id": "q-2a8c4e6f91b7",
     "course_id": "physical-ai",
     "domain": "domain-3",
@@ -672,52 +631,6 @@
         "text": "A Serverless AI endpoint's container exiting with an error, since restart policies recover endpoint containers the same way they recover job containers.",
         "correct": false,
         "explanation": "The documentation says automatic restarts aren't available for Serverless AI endpoints at all, so this scenario isn't a restart-policy case to begin with."
-      }
-    ]
-  },
-  {
-    "id": "q-2c8e4f9a6b53",
-    "course_id": "ai-infrastructure-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/ie-inference-pipelines",
-    "stem": "A team wants to cut costs for a Serverless AI endpoint serving a lower-priority inference pipeline by running its underlying VM as preemptible. What should they accept about that choice?",
-    "objectiveTitle": "Inference pipelines and integrating external orchestration tools",
-    "sources": [
-      {
-        "title": "Managing endpoints in Serverless AI",
-        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
-        "excerpt": "If the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke the VM at any time."
-      },
-      {
-        "title": "Managing endpoints in Serverless AI",
-        "url": "https://docs.nebius.com/serverless/endpoints/manage.md",
-        "excerpt": "The VM type doesn't affect how long capacity for an endpoint is being provisioned."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Nebius AI Cloud can revoke the underlying VM at any time, stopping the endpoint until it is started again",
-        "correct": true,
-        "explanation": "Correct. The documentation states that if the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke the VM at any time, and the endpoint stops as a result."
-      },
-      {
-        "id": "b",
-        "text": "Choosing the preemptible VM type provisions capacity for the endpoint faster than a regular VM, cutting its startup time",
-        "correct": false,
-        "explanation": "The documentation states that the VM type does not affect how long capacity for an endpoint takes to be provisioned, so preemptible does not provision faster."
-      },
-      {
-        "id": "c",
-        "text": "A GPU-backed inference endpoint cannot use the preemptible VM type, since that VM type is reserved for workloads without GPUs",
-        "correct": false,
-        "explanation": "This reverses the documented constraint: VMs without GPUs support only the regular type, while GPU-backed VMs are the ones that can use the preemptible type."
-      },
-      {
-        "id": "d",
-        "text": "The endpoint automatically switches back to a regular VM once traffic volume justifies the extra cost",
-        "correct": false,
-        "explanation": "The documentation does not describe an automatic switch between VM types based on traffic; the VM type is a setting the team chooses, not one the platform changes for them."
       }
     ]
   },
@@ -1368,52 +1281,6 @@
         "text": "Public serverless endpoints, since custom fine-tuned weights are supported there for eligible models while dedicated endpoints are restricted to base models.",
         "correct": false,
         "explanation": "The documentation reverses this: custom weights support is listed for dedicated endpoints on eligible models, while public serverless endpoints are described as base models only."
-      }
-    ]
-  },
-  {
-    "id": "q-4b8f61ad2c93",
-    "course_id": "ai-infrastructure-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/ie-distributed-parallelism",
-    "stem": "A platform team runs a distributed training job on a Managed Service for Kubernetes GPU cluster with topology-aware scheduling enabled through Kueue. They want Kueue to leave the job pending rather than split its Pods across topology domains when the preferred domain lacks capacity. Which topology constraint achieves this?",
-    "objectiveTitle": "Running distributed-training frameworks and launchers on the platform",
-    "sources": [
-      {
-        "title": "Topology-aware scheduling for GPU workloads in Managed Service for Kubernetes",
-        "url": "https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md",
-        "excerpt": "Kueue admits the workload only if enough resources are available within the same topology domain. Otherwise, the workload remains pending"
-      },
-      {
-        "title": "Topology-aware scheduling for GPU workloads in Managed Service for Kubernetes",
-        "url": "https://docs.nebius.com/kubernetes/gpu/topology-aware-scheduling.md",
-        "excerpt": "Kueue tries to schedule Pods within the same topology domain. If this is not possible, Kueue can place Pods across multiple topology domains."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "A required topology constraint at the desired domain, so Kueue admits the job only once enough resources are free within that same domain",
-        "correct": true,
-        "explanation": "Correct. The guide states that a required topology constraint makes Kueue admit the workload only if enough resources are available within the same topology domain, leaving it pending otherwise."
-      },
-      {
-        "id": "b",
-        "text": "A preferred topology constraint at the desired domain, so Kueue is guaranteed to schedule every Pod within that same domain",
-        "correct": false,
-        "explanation": "The guide describes the preferred constraint as letting Kueue place Pods across multiple topology domains when one domain isn't enough, which is the splitting this team wants to avoid."
-      },
-      {
-        "id": "c",
-        "text": "No topology constraint at all, since Kueue automatically keeps a job's Pods together on nodes that share topology labels once topology-aware scheduling is enabled",
-        "correct": false,
-        "explanation": "The guide ties Kueue's required-within-one-domain behavior to a podset topology annotation on the job; enabling topology-aware scheduling alone only exposes the labels schedulers can use."
-      },
-      {
-        "id": "d",
-        "text": "A lower replica count for the job, since reducing parallelism is how a workload satisfies a topology constraint",
-        "correct": false,
-        "explanation": "The guide lists reducing parallelism as a troubleshooting step for a job Kueue won't admit; it changes how many Pods must fit, not which topology constraint the job requests."
       }
     ]
   },
@@ -2503,47 +2370,6 @@
     ]
   },
   {
-    "id": "q-7f1a93cd5e82",
-    "course_id": "ai-solutions-architect",
-    "domain": "domain-1",
-    "objective": "domain-1/sa-storage-architecture",
-    "stem": "An architecture team is designing storage for a training pipeline's checkpoints and model artifacts, and is deciding whether to expose an existing shared filesystem through Object Storage as a filesystem bucket, or create a regular Object Storage bucket for the same artifacts instead. What constraint should shape this decision before either bucket is created?",
-    "objectiveTitle": "Storage design for training data, checkpoints and model artifacts",
-    "sources": [
-      {
-        "title": "How to manage filesystem buckets",
-        "url": "https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md",
-        "excerpt": "After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The bucket's type must be chosen at creation, since a bucket cannot be changed from regular to filesystem or from filesystem to regular afterward.",
-        "correct": true,
-        "explanation": "Correct. The documentation says that after you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular, so the choice has to match the storage needed from the start."
-      },
-      {
-        "id": "b",
-        "text": "Favor the filesystem bucket, since bucket policies grant it anonymous access the same way they do for a regular bucket.",
-        "correct": false,
-        "explanation": "The documentation says bucket policies cannot be used to grant anonymous access to a filesystem bucket, so this is not a capability the two bucket types share."
-      },
-      {
-        "id": "c",
-        "text": "Favor the filesystem bucket, since it supports delayed deletion and bucket restoration the same way a regular bucket does.",
-        "correct": false,
-        "explanation": "The documentation lists delayed deletion and bucket restoration as unsupported for filesystem buckets, so this protection is not available the way it is for a regular bucket."
-      },
-      {
-        "id": "d",
-        "text": "Favor either bucket type freely, since object integrity checksums are supported identically for filesystem and regular buckets.",
-        "correct": false,
-        "explanation": "The documentation lists object integrity checksums as a limitation of filesystem buckets, so the two types do not support this identically."
-      }
-    ]
-  },
-  {
     "id": "q-7f2d4a91c6b8",
     "course_id": "ai-infrastructure-engineer",
     "domain": "domain-1",
@@ -2627,47 +2453,6 @@
         "text": "`--peft.target_modules`",
         "correct": false,
         "explanation": "This specifies which layers a chosen PEFT method targets; it does not select the method itself."
-      }
-    ]
-  },
-  {
-    "id": "q-82e5d1c4930b",
-    "course_id": "physical-ai",
-    "domain": "domain-3",
-    "objective": "domain-3/inference-setup",
-    "stem": "You deploy an open-source LLM through a Nebius Serverless AI endpoint using the `vllm/vllm-openai` image. What API does the resulting container expose?",
-    "objectiveTitle": "Setting up managed model inference in the cloud",
-    "sources": [
-      {
-        "title": "Deploying a large language model and chatting with it by using Serverless AI endpoints",
-        "url": "https://docs.nebius.com/serverless/tutorials/deploy-model.md",
-        "excerpt": "The container exposes an OpenAI-compatible `/v1/chat/completions` API."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "An OpenAI-compatible `/v1/chat/completions` API",
-        "correct": true,
-        "explanation": "Correct. The tutorial states the container exposes an OpenAI-compatible /v1/chat/completions API."
-      },
-      {
-        "id": "b",
-        "text": "Managed MLflow's experiment tracking API",
-        "correct": false,
-        "explanation": "That is a separate Nebius service, Managed Service for MLflow, used for logging experiments, not for serving model inference."
-      },
-      {
-        "id": "c",
-        "text": "The Container Registry's Docker Registry API for pushing and pulling images",
-        "correct": false,
-        "explanation": "That API belongs to Container Registry, used to manage Docker images, not to serving chat completions from a deployed model."
-      },
-      {
-        "id": "d",
-        "text": "A Slurm `srun`/`sbatch` job submission interface",
-        "correct": false,
-        "explanation": "That interface belongs to Soperator Slurm clusters for batch job scheduling, not to a Serverless AI endpoint."
       }
     ]
   },
@@ -3436,47 +3221,6 @@
         "text": "Gaps between intervals are allowed as long as the gap is shorter than one second",
         "correct": false,
         "explanation": "The guide requires complete coverage of every frame with no gaps; there is no documented gap-duration allowance."
-      }
-    ]
-  },
-  {
-    "id": "q-9e3c5a187db2",
-    "course_id": "ai-infrastructure-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/ie-storage-tiers",
-    "stem": "A platform team created a regular Object Storage bucket for a training dataset, and later wants that same bucket to also serve as the S3-compatible interface for a shared filesystem used by training VMs. What must they do, given the bucket already exists as a regular bucket?",
-    "objectiveTitle": "Picking storage tiers for datasets, checkpoints and scratch data",
-    "sources": [
-      {
-        "title": "How to manage filesystem buckets",
-        "url": "https://docs.nebius.com/object-storage/buckets/filesystem-buckets.md",
-        "excerpt": "After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Create a new filesystem bucket attached to the shared filesystem and migrate the dataset into it, since an existing bucket's type cannot be changed from regular to filesystem",
-        "correct": true,
-        "explanation": "Correct. The guide states that after you create a bucket, you cannot change its type from regular to filesystem or back, so a new filesystem bucket is required."
-      },
-      {
-        "id": "b",
-        "text": "Run a bucket update operation that points the existing bucket at the shared filesystem, since Object Storage's bucket update operation can change an existing bucket's type",
-        "correct": false,
-        "explanation": "The guide's update operation changes a filesystem bucket's ownership, permission and logging settings; it is not a way to turn a regular bucket into a filesystem bucket."
-      },
-      {
-        "id": "c",
-        "text": "Enable the filesystem interface from the existing bucket's advanced settings, since filesystem buckets are still in preview and preview settings can be toggled on any existing bucket",
-        "correct": false,
-        "explanation": "Preview status describes the filesystem bucket feature's maturity; the guide ties attaching a filesystem to creating a filesystem bucket, not to a setting toggled on an existing regular bucket."
-      },
-      {
-        "id": "d",
-        "text": "Attach the shared filesystem to the existing bucket from the shared filesystem's Attached buckets tab, since that tab links a filesystem to any existing bucket, filesystem or regular",
-        "correct": false,
-        "explanation": "The Attached buckets tab shows filesystem buckets already created for that filesystem; it is not a way to attach a filesystem to a bucket that was created as a regular bucket."
       }
     ]
   },
@@ -4254,47 +3998,6 @@
     ]
   },
   {
-    "id": "q-b7d2a9f3e861",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "Sandboxes lets you choose to save or discard filesystem changes before an operation runs. What does the documentation say about compute startup regardless of that choice?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Choose whether to save filesystem changes before submitting an operation. Every operation starts fresh compute, regardless of that choice."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Every operation starts fresh compute from the selected image, no matter whether the result will be saved or discarded.",
-        "correct": true,
-        "explanation": "Correct. The documentation states that every operation starts fresh compute, regardless of the save-or-discard choice."
-      },
-      {
-        "id": "b",
-        "text": "Only discarded operations start fresh compute; a saved operation resumes the previous run's live process.",
-        "correct": false,
-        "explanation": "Wrong. The documentation says every operation starts fresh compute regardless of the choice; a saved image carries filesystem state forward, not a resumed process."
-      },
-      {
-        "id": "c",
-        "text": "Fresh compute is started only for the first operation in a session; later operations reuse the same running environment.",
-        "correct": false,
-        "explanation": "Wrong. Each operation independently starts fresh compute; the documentation does not describe environment reuse across operations."
-      },
-      {
-        "id": "d",
-        "text": "The choice to save or discard can be made after reviewing the operation's output.",
-        "correct": false,
-        "explanation": "Wrong. The documentation states the persistence choice must be made before the operation is submitted, not after reviewing its output."
-      }
-    ]
-  },
-  {
     "id": "q-b829d5a7c239",
     "course_id": "agentic-web-search",
     "domain": "domain-2",
@@ -5058,47 +4761,6 @@
     ]
   },
   {
-    "id": "q-c9e5a2f8d164",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "The Sandboxes documentation lists several identifiers in its 'Core identifiers' table. Which one is described as 'a mutable name that points to an image'?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "Tag | A mutable name that points to an image."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Image UUID",
-        "correct": false,
-        "explanation": "Wrong. The documentation describes an Image UUID as identifying an immutable stored filesystem state, not a mutable name."
-      },
-      {
-        "id": "b",
-        "text": "Tag",
-        "correct": true,
-        "explanation": "Correct. The documentation's identifiers table defines a tag as a mutable name that points to an image."
-      },
-      {
-        "id": "c",
-        "text": "Operation ID",
-        "correct": false,
-        "explanation": "Wrong. The documentation describes an Operation ID as identifying one asynchronous service operation, not a name that points to an image."
-      },
-      {
-        "id": "d",
-        "text": "Client session name",
-        "correct": false,
-        "explanation": "Wrong. The documentation describes a client session name as client-side workflow state, such as the CLI's selected image and history, not a mutable pointer to an image."
-      }
-    ]
-  },
-  {
     "id": "q-cc01a1b2c3d4",
     "course_id": "agentic-ai-builder",
     "domain": "domain-2",
@@ -5223,129 +4885,6 @@
         "text": "Switch every call in the batch to `search_depth=ultra-fast` to avoid timeouts",
         "correct": false,
         "explanation": "Changing search_depth trades relevance for speed; it is not the documented pattern for handling per-query failures in a batch."
-      }
-    ]
-  },
-  {
-    "id": "q-co219916c0e5",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/environment-deployment",
-    "stem": "Two teams run separate GPU clusters that were placed in the same InfiniBand fabric. A security review asks whether one cluster's nodes could reach the other's over InfiniBand. What is the answer?",
-    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
-    "sources": [
-      {
-        "title": "InfiniBand networking for Compute virtual machines with GPUs",
-        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
-        "excerpt": "nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Yes, because sharing a fabric means sharing one InfiniBand address space",
-        "correct": false,
-        "explanation": "Sharing a fabric is exactly the case the partition key mechanism exists to handle, so a shared fabric does not imply reachability."
-      },
-      {
-        "id": "b",
-        "text": "No, because each cluster gets a unique partition key that isolates its traffic",
-        "correct": true,
-        "explanation": "Correct. Per-cluster P-Keys isolate traffic inside a shared physical fabric, so this isolation holds without giving each cluster its own hardware."
-      },
-      {
-        "id": "c",
-        "text": "Yes, unless a security group is attached to each node's network interface",
-        "correct": false,
-        "explanation": "Security groups filter VPC traffic on network interfaces; the InfiniBand fabric is a separate network whose isolation is not configured that way."
-      },
-      {
-        "id": "d",
-        "text": "No, because two clusters can never be created in the same fabric",
-        "correct": false,
-        "explanation": "Multiple clusters do share a fabric — that is the normal arrangement, and why an isolation mechanism is needed at all."
-      }
-    ]
-  },
-  {
-    "id": "q-co220dde0756",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/environment-deployment",
-    "stem": "A training job on a GPU cluster is bottlenecked moving tensors between GPUs on different nodes. Which property of the cluster's networking is intended to address this?",
-    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
-    "sources": [
-      {
-        "title": "InfiniBand networking for Compute virtual machines with GPUs",
-        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
-        "excerpt": "allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Each node's traffic is serialized through a single shared host NIC",
-        "correct": false,
-        "explanation": "Serializing through one shared NIC would create a bottleneck rather than relieve one; each GPU has its own NIC."
-      },
-      {
-        "id": "b",
-        "text": "Transfers are staged through object storage to decouple the endpoints",
-        "correct": false,
-        "explanation": "Staging through object storage adds a slower hop; it is not the mechanism that accelerates GPU-to-GPU exchange."
-      },
-      {
-        "id": "c",
-        "text": "Data moves directly between each GPU and its NIC without passing through the CPU",
-        "correct": true,
-        "explanation": "Correct. GPUDirect RDMA takes the CPU out of the transfer path, which is what raises data exchange speed for this pattern."
-      },
-      {
-        "id": "d",
-        "text": "The CPU copies each buffer into host memory before the NIC transmits it",
-        "correct": false,
-        "explanation": "That host-memory bounce is precisely the step the technology removes."
-      }
-    ]
-  },
-  {
-    "id": "q-co2331c8572e",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/environment-deployment",
-    "stem": "You are creating a GPU cluster and must pick an InfiniBand fabric. Why does the choice constrain the cluster later?",
-    "objectiveTitle": "Deploying standard GPU environments and managed cluster infrastructure",
-    "sources": [
-      {
-        "title": "InfiniBand networking for Compute virtual machines with GPUs",
-        "url": "https://docs.nebius.com/compute/clusters/gpu/index.md",
-        "excerpt": "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink GPUs to this cluster"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The fabric fixes how many nodes the cluster may ever contain",
-        "correct": false,
-        "explanation": "Fabric capacity is finite, but the documented consequence of the choice is which GPU platform can be added, not a fixed node count."
-      },
-      {
-        "id": "b",
-        "text": "The fabric determines which project the cluster's resources belong to",
-        "correct": false,
-        "explanation": "Project membership is an IAM concern and is unrelated to the physical fabric a cluster sits in."
-      },
-      {
-        "id": "c",
-        "text": "The fabric sets the partition key that other tenants use to reach the cluster",
-        "correct": false,
-        "explanation": "A partition key isolates a cluster rather than granting anyone access, and it is assigned per cluster."
-      },
-      {
-        "id": "d",
-        "text": "The fabric limits which GPU platform can be added to that cluster",
-        "correct": true,
-        "explanation": "Correct. Each fabric serves particular GPU platforms, so the fabric must be chosen against the GPU type you intend to run."
       }
     ]
   },
@@ -6139,170 +5678,6 @@
     ]
   },
   {
-    "id": "q-co43c175d040",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-monitoring",
-    "stem": "A VM was created two minutes ago and its Metrics tab is empty. What is the appropriate response?",
-    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
-    "sources": [
-      {
-        "title": "Monitoring virtual machines in Nebius AI Cloud",
-        "url": "https://docs.nebius.com/compute/monitoring/virtual-machines.md",
-        "excerpt": "The VM usage data becomes available 5–10 minutes after the VM is created."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Reinstall the monitoring agent, since an empty tab means collection failed",
-        "correct": false,
-        "explanation": "Data is collected automatically; an empty tab this soon after creation is expected rather than a failure."
-      },
-      {
-        "id": "b",
-        "text": "Raise a support case, because usage data should appear immediately",
-        "correct": false,
-        "explanation": "Immediate appearance is not what the platform promises, so there is nothing yet to escalate."
-      },
-      {
-        "id": "c",
-        "text": "Widen the time filter, because the data is there but outside the window",
-        "correct": false,
-        "explanation": "Adjusting filters cannot surface data for a period in which none has been collected yet."
-      },
-      {
-        "id": "d",
-        "text": "Wait, because usage data becomes available 5-10 minutes after the VM is created",
-        "correct": true,
-        "explanation": "Correct. There is a documented delay before a new VM's usage data appears."
-      }
-    ]
-  },
-  {
-    "id": "q-co449f443013",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-monitoring",
-    "stem": "An engineer watching a VM dashboard during an incident asks how current the numbers are. What is true by default?",
-    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
-    "sources": [
-      {
-        "title": "Monitoring virtual machines in Nebius AI Cloud",
-        "url": "https://docs.nebius.com/compute/monitoring/virtual-machines.md",
-        "excerpt": "By default, the data is refreshed every 15 seconds. You can configure this interval next to the time filters."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The data refreshes every 15 seconds, and the interval can be changed",
-        "correct": true,
-        "explanation": "Correct. Fifteen seconds is the default refresh, and the interval can be configured next to the time filters."
-      },
-      {
-        "id": "b",
-        "text": "The data refreshes only when the page is reloaded manually",
-        "correct": false,
-        "explanation": "The dashboard refreshes on its own; a manual reload is not required."
-      },
-      {
-        "id": "c",
-        "text": "The data refreshes every five minutes and the interval is fixed",
-        "correct": false,
-        "explanation": "Neither the interval nor its immutability matches the dashboard's behaviour."
-      },
-      {
-        "id": "d",
-        "text": "The data refreshes once per hour, matching the metrics retention window",
-        "correct": false,
-        "explanation": "An hourly cadence would be useless during an incident and is not what is configured."
-      }
-    ]
-  },
-  {
-    "id": "q-co45cdfe9d9a",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-monitoring",
-    "stem": "A brief utilization spike keeps paging the team. Which alert setting is intended to stop momentary spikes from firing?",
-    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
-    "sources": [
-      {
-        "title": "How to set up alerts",
-        "url": "https://docs.nebius.com/observability/alerts.md",
-        "excerpt": "**Duration**: Time during which the condition is met."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Threshold, by raising the value the metric must reach",
-        "correct": false,
-        "explanation": "Raising the threshold changes what counts as a spike, but a brief excursion above the new value would still fire."
-      },
-      {
-        "id": "b",
-        "text": "Duration, the time during which the condition must be met",
-        "correct": true,
-        "explanation": "Correct. Requiring the condition to hold for a period is what filters out momentary spikes."
-      },
-      {
-        "id": "c",
-        "text": "Condition, by switching from exceeds to drops below",
-        "correct": false,
-        "explanation": "That inverts which direction triggers the alert rather than requiring persistence."
-      },
-      {
-        "id": "d",
-        "text": "Metric, by selecting a different series to watch",
-        "correct": false,
-        "explanation": "Changing the series avoids this particular signal instead of handling its brevity."
-      }
-    ]
-  },
-  {
-    "id": "q-co46427e70ca",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-monitoring",
-    "stem": "While adding a notification email to an alert, an engineer without admin rights sees a much shorter list of contacts than a colleague does. Why?",
-    "objectiveTitle": "GPU cluster monitoring, metrics collection, and alerting",
-    "sources": [
-      {
-        "title": "How to set up alerts",
-        "url": "https://docs.nebius.com/observability/alerts.md",
-        "excerpt": "Tenant administrators can also choose from [tenant contacts](https://docs.nebius.com/overview/contacts/index.md#tenant-contacts) in the current tenant. You can only see your own personal contacts"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "The list only shows emails that have never been used for notifications",
-        "correct": false,
-        "explanation": "The list is drawn from emails already used for notifications, not from unused ones."
-      },
-      {
-        "id": "b",
-        "text": "The list is limited to contacts in the same project as the alert",
-        "correct": false,
-        "explanation": "Visibility follows admin rights rather than the project the alert belongs to."
-      },
-      {
-        "id": "c",
-        "text": "Without admin rights, only their own contacts are visible",
-        "correct": true,
-        "explanation": "Correct. Admins see all tenant contacts; everyone else sees only their own."
-      },
-      {
-        "id": "d",
-        "text": "The list hides anyone already subscribed to that same alert",
-        "correct": false,
-        "explanation": "Existing subscribers are not filtered out of the list."
-      }
-    ]
-  },
-  {
     "id": "q-co47ac4ebcf8",
     "course_id": "ai-cloudops-engineer",
     "domain": "domain-3",
@@ -6381,47 +5756,6 @@
         "text": "An operator must have drained and deleted it manually",
         "correct": false,
         "explanation": "No manual action is needed; the service performs this recovery itself."
-      }
-    ]
-  },
-  {
-    "id": "q-co49d3cee498",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/node-recovery",
-    "stem": "A team plans to scale a node group from six nodes to ten and worries the running workloads will be disrupted by node replacement. What should you tell them?",
-    "objectiveTitle": "Handling failed GPU nodes, node restarts, and health checks",
-    "sources": [
-      {
-        "title": "Creating and modifying Managed Service for Kubernetes node groups",
-        "url": "https://docs.nebius.com/kubernetes/node-groups/manage.md",
-        "excerpt": "scales a node group up or down, Managed Kubernetes does not recreate any nodes"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Scaling does not recreate nodes, so existing nodes are left in place",
-        "correct": true,
-        "explanation": "Correct. Scaling a node group up or down does not recreate any nodes; replacement comes from template changes instead."
-      },
-      {
-        "id": "b",
-        "text": "Every node is replaced on any change to the node group's size",
-        "correct": false,
-        "explanation": "Replacement is triggered by modifying the node group template, not by changing its size."
-      },
-      {
-        "id": "c",
-        "text": "Scaling always drains and recreates one node at a time",
-        "correct": false,
-        "explanation": "That describes the rolling update that follows a template change."
-      },
-      {
-        "id": "d",
-        "text": "Scaling is only safe when the group is first cordoned entirely",
-        "correct": false,
-        "explanation": "No such precaution is required for scaling."
       }
     ]
   },
@@ -8602,47 +7936,6 @@
     ]
   },
   {
-    "id": "q-f1a9c3e76b24",
-    "course_id": "ai-infrastructure-engineer",
-    "domain": "domain-1",
-    "objective": "domain-1/ie-identity-federation",
-    "stem": "A workload running on a Nebius AI Cloud virtual machine needs to authenticate to an external platform that supports OIDC Discovery, without storing a long-lived credential for that platform. Which mechanism should it use?",
-    "objectiveTitle": "Users, service accounts and federated sign-in for platform access",
-    "sources": [
-      {
-        "title": "Accessing external resources from Nebius AI Cloud workloads",
-        "url": "https://docs.nebius.com/iam/wif/index.md",
-        "excerpt": "The workload exchanges its Nebius access token for a signed ID token through Nebius Security Token Service (STS)"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Exchange the workload's Nebius IAM access token for a signed ID token through Nebius STS, then send that token to the external platform",
-        "correct": true,
-        "explanation": "Correct. The guide describes exactly this exchange: a Nebius access token is traded for a signed ID token via Nebius STS, which the workload then presents to the external system."
-      },
-      {
-        "id": "b",
-        "text": "Generate an authorized key for the workload's Nebius service account, then send that key to the external platform",
-        "correct": false,
-        "explanation": "An authorized key authenticates the workload to Nebius AI Cloud itself; sending it to an external platform would create the long-lived credential this scenario is trying to avoid."
-      },
-      {
-        "id": "c",
-        "text": "Set up a VPN gateway between Nebius AI Cloud and the external platform's network",
-        "correct": false,
-        "explanation": "A VPN gateway provides network connectivity between environments; it does not establish an identity trust relationship with an external platform."
-      },
-      {
-        "id": "d",
-        "text": "Configure a SAML federation on the external platform to manage the workload's human user credentials",
-        "correct": false,
-        "explanation": "SAML federation lets an external identity provider sign users into Nebius AI Cloud -- the opposite direction from a Nebius workload authenticating to an external platform."
-      }
-    ]
-  },
-  {
     "id": "q-f1c3a9d62b84",
     "course_id": "agentic-web-search",
     "domain": "domain-1",
@@ -8899,47 +8192,6 @@
     ]
   },
   {
-    "id": "q-f3b6e2a84c17",
-    "course_id": "ai-infrastructure-engineer",
-    "domain": "domain-2",
-    "objective": "domain-2/ie-training-cluster-lifecycle",
-    "stem": "A platform team increases a GPU node group's target node count to add training capacity, without changing the node group's template. Does Managed Kubernetes replace any of the group's existing nodes as part of this change?",
-    "objectiveTitle": "Creating, scaling and retiring GPU clusters for training",
-    "sources": [
-      {
-        "title": "Creating and modifying Managed Service for Kubernetes node groups",
-        "url": "https://docs.nebius.com/kubernetes/node-groups/manage.md",
-        "excerpt": "scales a node group up or down, Managed Kubernetes does not recreate any nodes."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "No -- scaling a node group up or down, whether done manually or by the autoscaler, does not recreate any existing nodes",
-        "correct": true,
-        "explanation": "Correct. The documentation states that scaling a node group up or down, whether you or the autoscaler does it, does not recreate any nodes."
-      },
-      {
-        "id": "b",
-        "text": "Yes -- scaling up or down triggers the same cordon, drain, delete and recreate sequence used when the node template changes",
-        "correct": false,
-        "explanation": "That cordon-drain-delete-create sequence is the deployment strategy used when the node group's template changes, not when it is only scaled."
-      },
-      {
-        "id": "c",
-        "text": "Yes, if the node group additionally has a GPU cluster attached for high-speed InfiniBand interconnect",
-        "correct": false,
-        "explanation": "Whether the group uses a GPU cluster is unrelated to whether scaling recreates nodes; the behavior described is the same either way."
-      },
-      {
-        "id": "d",
-        "text": "No, but just when the autoscaler performs the scaling rather than a manual request",
-        "correct": false,
-        "explanation": "The documentation treats manual and autoscaler-driven scaling the same way: neither recreates existing nodes."
-      }
-    ]
-  },
-  {
     "id": "q-f3b8d6a92c41",
     "course_id": "agentic-web-search",
     "domain": "domain-4",
@@ -8977,47 +8229,6 @@
         "text": "`X-Human-Id`, formatted as `Bearer tvly-YOUR_API_KEY`",
         "correct": false,
         "explanation": "X-Human-Id identifies the end user behind a request; it does not carry the API key."
-      }
-    ]
-  },
-  {
-    "id": "q-f4a8e1c6d935",
-    "course_id": "agentic-ai-builder",
-    "domain": "domain-2",
-    "objective": "domain-2/agent-sandboxes",
-    "stem": "According to the Sandboxes documentation's state model, what does a saved image contain, and what does it not retain from the operation that produced it?",
-    "objectiveTitle": "Sandboxes, MCP, and SDK-driven agent execution",
-    "sources": [
-      {
-        "title": "Sandboxes",
-        "url": "https://docs.tokenfactory.nebius.com/sandboxes/overview.md",
-        "excerpt": "A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Filesystem state only; it does not retain a running process, process memory, open file handles, network connections, or a live terminal.",
-        "correct": true,
-        "explanation": "Correct. The documentation states a saved image contains filesystem state and does not retain a running process, process memory, open file handles, network connections, or a live terminal."
-      },
-      {
-        "id": "b",
-        "text": "The complete process state, including open network connections and a live terminal, so the image can resume an interactive session.",
-        "correct": false,
-        "explanation": "Wrong. The documentation lists network connections and a live terminal among what a saved image does not retain."
-      },
-      {
-        "id": "c",
-        "text": "Environment values, which persist automatically into every later operation once an image is saved.",
-        "correct": false,
-        "explanation": "Wrong. The documentation's survival table says environment values persist only when the interface explicitly saves both the image and supported environment metadata, not automatically."
-      },
-      {
-        "id": "d",
-        "text": "Only the stdout and stderr produced during the run, without any filesystem changes.",
-        "correct": false,
-        "explanation": "Wrong. The documentation describes a saved image as containing filesystem state; stdout and stderr are available through the operation result, a separate item in the survival table."
       }
     ]
   },
@@ -12963,52 +12174,6 @@
         "text": "Preemptible VMs with a high maximum spot price, since that keeps the same GPUs allocated to the workload between stops.",
         "correct": false,
         "explanation": "Preemptible VMs preserve data on attached volumes when stopped, but they do not reserve GPU capacity; a reservation, not a pricing setting, is what keeps GPUs allocated."
-      }
-    ]
-  },
-  {
-    "id": "q-sa3costtr4j8",
-    "course_id": "ai-solutions-architect",
-    "domain": "domain-3",
-    "objective": "domain-3/sa-cost-tradeoffs",
-    "stem": "A batch-inference workload checkpoints its progress to persistent network storage and resumes automatically after an interruption. The team wants the lowest-cost VM option that still fits this pattern. What should the architect recommend, and what does the design still need to account for?",
-    "objectiveTitle": "When a cheaper option beats the fastest one, and how to argue it",
-    "sources": [
-      {
-        "title": "Preemptible virtual machines",
-        "url": "https://docs.nebius.com/compute/virtual-machines/preemptible.md",
-        "excerpt": "Preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, but they don't provide guaranteed availability."
-      },
-      {
-        "title": "Preemptible virtual machines",
-        "url": "https://docs.nebius.com/compute/virtual-machines/preemptible.md",
-        "excerpt": "Local SSD disks are ephemeral, meaning any data stored on them will be lost when the preemptible VM stops."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Preemptible VMs, which reduce computing costs for interruption-tolerant workloads but don't persist local SSD data when stopped.",
-        "correct": true,
-        "explanation": "Correct. The documentation says preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, and separately warns that local SSD disks are ephemeral and lose their data when a preemptible VM stops."
-      },
-      {
-        "id": "b",
-        "text": "Preemptible VMs, which guarantee availability for interruption-tolerant workloads and are billed at a fixed discounted rate regardless of demand.",
-        "correct": false,
-        "explanation": "The documentation says preemptible VMs don't provide guaranteed availability and are charged at the current spot price, not a fixed discounted rate."
-      },
-      {
-        "id": "c",
-        "text": "Reserved VMs, since the documentation ties checkpoint-and-resume support specifically to reservations rather than to preemptible pricing.",
-        "correct": false,
-        "explanation": "Reservations guarantee GPU availability, but the documentation ties preemptible VMs, not reservations, to reduced cost for interruption-tolerant workloads like this one."
-      },
-      {
-        "id": "d",
-        "text": "Regular on-demand VMs, since the documentation allows converting an existing VM between preemptible and regular whenever the spot price changes.",
-        "correct": false,
-        "explanation": "The documentation says you can't convert an existing VM from regular to preemptible or the other way around; a new VM is required either way."
       }
     ]
   },

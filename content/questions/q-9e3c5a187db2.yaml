@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9e3c5a187db2
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/ie-storage-tiers
 stem: "A platform team created a regular Object Storage bucket for a training
