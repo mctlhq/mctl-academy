@@ -4,8 +4,8 @@ name: Source drift
 # upstream document changes, mark the source as `drifted` (fail-closed
 # quarantine), move its published dependents to `needs_review`, rebuild the
 # client content bundle, push all of that to the `chore/quarantine-drift`
-# branch as one pull request, and open or update a `drift: <id>` issue per
-# source.
+# branch as one pull request, and open or update ONE umbrella issue per run
+# (`drift: sources changed <ISO week>`) listing every drifted source.
 #
 # Why a PR and not a push to main: main requires an approving review, so the
 # three direct-push attempts this job used to make never once succeeded (runs
@@ -109,7 +109,7 @@ jobs:
         if: steps.check.outputs.drifted == 'true'
         run: node scripts/build-content-bundle.mjs
 
-      # Before the PR and the issues that reference them: a label that does
+      # Before the PR and the issue that reference them: a label that does
       # not exist yet is silently skipped by the tolerant `--add-label` calls
       # below, and the labels are how the quarantine PR is found (#198).
       - name: Ensure the workflow's labels exist
@@ -177,12 +177,13 @@ jobs:
               || echo "::warning::could not add label '$label' to $pr_url"
           done
 
-      # Runs even when the push step failed: the issues are the signal a human
+      # Runs even when the push step failed: the issue is the signal a human
       # acts on, and losing them because a push raced is the wrong trade.
-      - name: Open or update intake issues
+      - name: Open or update the umbrella intake issue
         if: ${{ !cancelled() && steps.check.outputs.drifted == 'true' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: node scripts/drift-intake.mjs --report drift.txt --repo "${{ github.repository }}" --label content:drift
 
       # Last, so the quarantine above is never skipped because of it: a source
