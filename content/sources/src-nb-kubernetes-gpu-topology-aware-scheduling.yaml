@@ -10,7 +10,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-distributed-parallelism

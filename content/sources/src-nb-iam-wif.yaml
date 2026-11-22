@@ -10,7 +10,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 00c1d762c8752f89d44d7b58ca2b799048db5265d59b647f1336162903919d91
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-1/ie-identity-federation

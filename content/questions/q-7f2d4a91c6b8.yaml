@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7f2d4a91c6b8
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/ie-compliance-residency
 stem: "An organization with no existing deployments anywhere in Nebius AI

@@ -11,7 +11,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-4/ie-gpu-rollouts

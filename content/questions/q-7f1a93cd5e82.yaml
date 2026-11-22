@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7f1a93cd5e82
-status: published
+status: needs_review
 domain: domain-1
 objective: domain-1/sa-storage-architecture
 stem: "An architecture team is designing storage for a training pipeline's

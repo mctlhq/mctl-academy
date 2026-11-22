@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1f84b3e9c572
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/sa-secrets-audit-compliance
 stem: "A compliance team is designing the workflow that exports audit events to

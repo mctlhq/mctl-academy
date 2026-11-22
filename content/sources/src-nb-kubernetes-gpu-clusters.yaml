@@ -10,7 +10,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 6587e17e97865fd26ea2478f4fef4d150fcdb4548848e6cb188ff1aebaf6eefb
-status: current
+status: drifted
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-1/sa-distributed-training

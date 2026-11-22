@@ -10,7 +10,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-checkpoint-restart

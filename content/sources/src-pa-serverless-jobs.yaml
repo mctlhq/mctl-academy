@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: af992d1280b339ed4a78a7e7bbeca60a0963bea237c4ca13469423faca0e7517
-status: current
+status: drifted
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-2/sa-checkpoint-strategy

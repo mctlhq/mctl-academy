@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1b6f4a9c8e53
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team is moving a cost-sensitive batch inference workload from

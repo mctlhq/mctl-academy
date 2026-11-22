@@ -10,7 +10,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: cc489d8742447e6eb0c03982d879388b3629eedb2366a45114312f54b48903e4
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-1/ie-compliance-residency

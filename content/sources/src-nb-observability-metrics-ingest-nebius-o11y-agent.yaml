@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 989e5d4dacf82037da9f63b1cc01a00ed148191f9deb50bc0eaf9d78ab2e5289
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-4/ie-observability-platform

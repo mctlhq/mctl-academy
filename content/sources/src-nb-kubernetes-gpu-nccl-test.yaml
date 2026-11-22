@@ -12,7 +12,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 6f966f011dc3b92c9ffac689e019956abb0fbf8baa427b010dc1fc9054c28bf3
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-gpu-fabric

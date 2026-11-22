@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 3602fae1e33d7f70603be043493b5f1042c3273c06214fd78717b6c88c5718b5
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-4/ie-multicluster-networking
