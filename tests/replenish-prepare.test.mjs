@@ -2087,12 +2087,18 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
   // already present before the agent ran proves only that the workspace has
   // been on PATH throughout. So it must fail even though `before` put it there.
   assert.equal(
-    fixture(() => {}, (_dir, _home, env) => ({ PATH: `:${env.PATH}` })),
+    fixture(
+      () => {},
+      (_dir, _home, env) => ({ PATH: `:${env.PATH}` }),
+    ),
     1,
     "a leading empty entry present before the agent ran is still the current directory",
   );
   assert.equal(
-    fixture(() => {}, (_dir, _home, env) => ({ PATH: `${env.PATH}::/usr/bin` })),
+    fixture(
+      () => {},
+      (_dir, _home, env) => ({ PATH: `${env.PATH}::/usr/bin` }),
+    ),
     1,
     "an interior empty entry present before the agent ran is still the current directory",
   );
