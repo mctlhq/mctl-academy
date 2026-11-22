@@ -2,12 +2,14 @@ schema_version: 1
 id: src-nb-audit-logs-events-filter
 url: https://docs.nebius.com/audit-logs/events/filter.md
 title: How to filter audit events
-retrieved_at: 2026-11-15T01:07:27Z
-sha256: 645f71c0c14f5018ff52efe57f4024f976b6de33fcba741d804d3a62c67a406d
+retrieved_at: 2026-11-22T15:57:59Z
+sha256: 670a688601d94919b0905c08dc2cae3c771bffbf9c9420b0ce4bc8b3bbf414f8
 objectives:
   - domain-4/sa-data-lifecycle-investigation
   - domain-4/sa-secrets-audit-compliance
 snapshot:
   bucket: academy-source-snapshots
-  key: 645f71c0c14f5018ff52efe57f4024f976b6de33fcba741d804d3a62c67a406d
+  key: 670a688601d94919b0905c08dc2cae3c771bffbf9c9420b0ce4bc8b3bbf414f8
 status: current
+versions:
+  - 645f71c0c14f5018ff52efe57f4024f976b6de33fcba741d804d3a62c67a406d

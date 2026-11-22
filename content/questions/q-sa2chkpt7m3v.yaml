@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sa2chkpt7m3v
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/sa-checkpoint-strategy
 stem: "A training team takes disk snapshots of their checkpoint volumes in

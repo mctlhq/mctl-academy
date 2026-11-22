@@ -2,14 +2,16 @@ schema_version: 1
 id: src-nb-slurm-soperator-jobs-examples-nccl-all-reduce
 url: https://docs.nebius.com/slurm-soperator/jobs/examples/nccl-all-reduce.md
 title: Running the all-reduce NCCL performance test in Soperator clusters
-retrieved_at: 2026-11-14T10:06:58Z
-sha256: 9856a5d2703047d97a4328b433b260a971f47a03e30e24d3360723468db6423a
+retrieved_at: 2026-11-22T15:57:57Z
+sha256: 7aa5d2c62c05053aee29ce72eee997ab4256928531202e66cc355fc6364f402e
 objectives:
   - domain-2/ie-distributed-parallelism
 snapshot:
   bucket: academy-source-snapshots
-  key: 9856a5d2703047d97a4328b433b260a971f47a03e30e24d3360723468db6423a
+  key: 7aa5d2c62c05053aee29ce72eee997ab4256928531202e66cc355fc6364f402e
 status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-distributed-parallelism
+versions:
+  - 9856a5d2703047d97a4328b433b260a971f47a03e30e24d3360723468db6423a

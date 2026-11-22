@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5e2a9c7f4b16
-status: published
+status: needs_review
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team runs a multi-node training workload in a GPU cluster on

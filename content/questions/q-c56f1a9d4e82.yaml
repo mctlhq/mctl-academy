@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c56f1a9d4e82
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/embeddings-and-rerank
 stem: According to the Reranking API reference, which fields are required in a

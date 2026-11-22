@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-2c8e4f9a6b53
-status: published
+status: needs_review
 domain: domain-3
 objective: domain-3/ie-inference-pipelines
 stem: "A team wants to cut costs for a Serverless AI endpoint serving a

@@ -2,11 +2,13 @@ schema_version: 1
 id: src-nb-compute-storage-detach-volume
 url: https://docs.nebius.com/compute/storage/detach-volume.md
 title: How to detach additional volumes from virtual machines
-retrieved_at: 2026-11-15T10:17:00Z
-sha256: c61b807b83437bb5bf99a703ff614a4c86345555feb88776de7d10c4497738a2
+retrieved_at: 2026-11-22T15:58:02Z
+sha256: bbab87fc942683a61126b039ff7e50718adb7a8166358150ce018f1fbdc69858
 objectives:
   - domain-2/ie-storage-tiers
 snapshot:
   bucket: academy-source-snapshots
-  key: c61b807b83437bb5bf99a703ff614a4c86345555feb88776de7d10c4497738a2
+  key: bbab87fc942683a61126b039ff7e50718adb7a8166358150ce018f1fbdc69858
 status: current
+versions:
+  - c61b807b83437bb5bf99a703ff614a4c86345555feb88776de7d10c4497738a2

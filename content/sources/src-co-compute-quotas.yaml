@@ -2,13 +2,13 @@ schema_version: 1
 id: src-co-compute-quotas
 url: https://docs.nebius.com/compute/resources/quotas-limits.md
 title: Quotas in Compute
-retrieved_at: 2026-11-14T13:03:08Z
-sha256: faee81f227b2c4d9e97b955dc26dae7e6c0f66d58c10268239a53626df3a67e7
+retrieved_at: 2026-11-22T15:57:25Z
+sha256: db317be68ca0ac8f0ef8060c097098935ddf239434c2ec880e41761447f5bfbf
 objectives:
   - domain-3/resource-quotas
 snapshot:
   bucket: academy-source-snapshots
-  key: faee81f227b2c4d9e97b955dc26dae7e6c0f66d58c10268239a53626df3a67e7
+  key: db317be68ca0ac8f0ef8060c097098935ddf239434c2ec880e41761447f5bfbf
 status: current
 coverage:
   - course_id: ai-infrastructure-engineer
@@ -21,3 +21,4 @@ versions:
   - 89c1003f8e3a218e76a6c7207b467f62be048b6b481ed03874e734b6b500a9b0
   - f48aaac3871e8016c228deea7561c5b5e80de333739871d31d1c57b1f0584183
   - ec01f18c5011655dc58b53d5de29e2a27ee983b21daa69a3ee06902dc8060edc
+  - faee81f227b2c4d9e97b955dc26dae7e6c0f66d58c10268239a53626df3a67e7
