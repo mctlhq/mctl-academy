@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.102](https://github.com/mctlhq/mctl-academy/compare/0.1.101...0.1.102) (2026-11-22)
+
+
+### Bug Fixes
+
+* **content-replenish:** guard top-level question paths and empty PATH entries ([f032b05](https://github.com/mctlhq/mctl-academy/commit/f032b05e6b9d44022c860d9b9065f7e4b8cfe935))
+* **drift:** satisfy typecheck and CodeQL in the umbrella intake ([29ff62b](https://github.com/mctlhq/mctl-academy/commit/29ff62be759736e667f3380290f7f06c020129d6))
+* **replenish:** top-level-only question paths and empty PATH entry guard ([c3bcb9d](https://github.com/mctlhq/mctl-academy/commit/c3bcb9d12cf106fdd13602fdcd1e0a90f6bffcbc))
+
+
+### Content
+
+* **quarantine:** auto-quarantine drifted sources and rebuild bundle ([c8cb095](https://github.com/mctlhq/mctl-academy/commit/c8cb095c0934bdaab3d2faa7c5f2b7ace35e51c9))
+* **replenish:** author 1 question file(s) from 0 captured source(s) ([255e8d1](https://github.com/mctlhq/mctl-academy/commit/255e8d1e78515b748197662369f65abe5e2e6c56))
+* **replenish:** promote 50 reviewed question(s) ([c6726c9](https://github.com/mctlhq/mctl-academy/commit/c6726c9b7cf2cc2e22ffee040db0a8a11797af6f))
+
 ## [0.1.101](https://github.com/mctlhq/mctl-academy/compare/0.1.100...0.1.101) (2026-11-21)
 
 
