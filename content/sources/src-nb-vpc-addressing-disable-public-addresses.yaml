@@ -2,14 +2,16 @@ schema_version: 1
 id: src-nb-vpc-addressing-disable-public-addresses
 url: https://docs.nebius.com/vpc/addressing/disable-public-addresses.md
 title: Disabling public addresses for a subnet
-retrieved_at: 2026-11-14T10:07:06Z
-sha256: d531cde1807954510c67c9d0b66102d742a8d10b96f49f3ee53742428de99c15
+retrieved_at: 2026-11-22T15:57:58Z
+sha256: 6e27732203029d62f78521d3b07628f3a8717b7110926c1aee01fc203410f33d
 objectives:
   - domain-4/sa-private-connectivity
 snapshot:
   bucket: academy-source-snapshots
-  key: d531cde1807954510c67c9d0b66102d742a8d10b96f49f3ee53742428de99c15
-status: drifted
+  key: 6e27732203029d62f78521d3b07628f3a8717b7110926c1aee01fc203410f33d
+status: current
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-4/sa-private-connectivity
+versions:
+  - d531cde1807954510c67c9d0b66102d742a8d10b96f49f3ee53742428de99c15

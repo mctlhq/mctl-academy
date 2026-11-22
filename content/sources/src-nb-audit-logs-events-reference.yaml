@@ -2,12 +2,14 @@ schema_version: 1
 id: src-nb-audit-logs-events-reference
 url: https://docs.nebius.com/audit-logs/events/reference.md
 title: Structure and fields of events in Audit Logs
-retrieved_at: 2026-11-15T01:07:27Z
-sha256: e7d812f06f938f2a09a413c01072fc90002d060c956a8cb27c91f8a226a3b3fc
+retrieved_at: 2026-11-22T15:58:00Z
+sha256: d1d770aa7d4ebc111e29c2c665de2440eb242d148e5eef09ec55670e931cd201
 objectives:
   - domain-4/sa-secrets-audit-compliance
   - domain-4/sa-data-lifecycle-investigation
 snapshot:
   bucket: academy-source-snapshots
-  key: e7d812f06f938f2a09a413c01072fc90002d060c956a8cb27c91f8a226a3b3fc
-status: drifted
+  key: d1d770aa7d4ebc111e29c2c665de2440eb242d148e5eef09ec55670e931cd201
+status: current
+versions:
+  - e7d812f06f938f2a09a413c01072fc90002d060c956a8cb27c91f8a226a3b3fc

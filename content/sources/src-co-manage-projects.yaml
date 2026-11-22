@@ -2,16 +2,17 @@ schema_version: 1
 id: src-co-manage-projects
 url: https://docs.nebius.com/iam/manage-projects.md
 title: Managing projects in Nebius AI Cloud
-retrieved_at: 2026-11-14T13:03:17Z
-sha256: 7ddc315b13ff6feb58f5439c312a0b1e0f259ad3ab255e073d7ebc6a32d68a98
+retrieved_at: 2026-11-22T15:57:21Z
+sha256: 8c7886a7b585456dcfbc60857a33b27a0869d239415ceeebc62ecff48928a1cf
 objectives:
   - domain-2/organization-hierarchy
 snapshot:
   bucket: academy-source-snapshots
-  key: 7ddc315b13ff6feb58f5439c312a0b1e0f259ad3ab255e073d7ebc6a32d68a98
-status: drifted
+  key: 8c7886a7b585456dcfbc60857a33b27a0869d239415ceeebc62ecff48928a1cf
+status: current
 versions:
   - 13279ab9827971fd76d921ad32f657caccef4f47379291b005bdd6d394aaece6
   - 8164ebc1567338a0e5e3fcf322266253b34002dd58d9570fe2c9b7aa11115108
   - 8c7ca6398842fe640af364022464165e75d658a8477fb1c9664497922ca1af40
   - d84ded73bb20d4a3ebb1b276795916ff85f6b7d43f328cc52fbf85765bd0d567
+  - 7ddc315b13ff6feb58f5439c312a0b1e0f259ad3ab255e073d7ebc6a32d68a98

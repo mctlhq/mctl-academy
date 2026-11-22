@@ -3,14 +3,16 @@ id: src-nb-kubernetes-gpu-clusters
 url: https://docs.nebius.com/kubernetes/gpu/clusters.md
 title: Interconnecting GPUs in Managed Service for Kubernetes clusters using
   InfiniBand
-retrieved_at: 2026-11-14T09:52:23Z
-sha256: 6587e17e97865fd26ea2478f4fef4d150fcdb4548848e6cb188ff1aebaf6eefb
+retrieved_at: 2026-11-22T15:57:45Z
+sha256: e0fba1c7bb9bdfb45ee32110e4969bcbadc7115b1bfaf5b028680d531dc7f04e
 objectives:
   - domain-1/sa-distributed-training
 snapshot:
   bucket: academy-source-snapshots
-  key: 6587e17e97865fd26ea2478f4fef4d150fcdb4548848e6cb188ff1aebaf6eefb
-status: drifted
+  key: e0fba1c7bb9bdfb45ee32110e4969bcbadc7115b1bfaf5b028680d531dc7f04e
+status: current
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-1/sa-distributed-training
+versions:
+  - 6587e17e97865fd26ea2478f4fef4d150fcdb4548848e6cb188ff1aebaf6eefb

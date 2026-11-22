@@ -2,14 +2,14 @@ schema_version: 1
 id: src-co-vpc-isolation
 url: https://docs.nebius.com/vpc/networking/isolation.md
 title: Isolating Nebius AI Cloud resources in separate networks
-retrieved_at: 2026-11-14T13:03:21Z
-sha256: 3602fae1e33d7f70603be043493b5f1042c3273c06214fd78717b6c88c5718b5
+retrieved_at: 2026-11-22T15:57:18Z
+sha256: 1ce58b8684afac2dc5c9e2898ccd23000604d7c4fb899d883c6c4dcaf5ee1f3d
 objectives:
   - domain-1/network-vpc
 snapshot:
   bucket: academy-source-snapshots
-  key: 3602fae1e33d7f70603be043493b5f1042c3273c06214fd78717b6c88c5718b5
-status: drifted
+  key: 1ce58b8684afac2dc5c9e2898ccd23000604d7c4fb899d883c6c4dcaf5ee1f3d
+status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-4/ie-multicluster-networking
@@ -23,3 +23,4 @@ versions:
   - 85fea9a41a887ffd3b59916e63f221b2309be2e90018318960a5c61eef8261d2
   - 2c98d362c4c5961d7c755356d65f91fd0dc2d5deda18e750b63e0a3766fe7eb7
   - 0ae4f7368b6c5a1f1a853bdb4d5949d43aa52a11d1cbdf31fd27eb87e59d9ff5
+  - 3602fae1e33d7f70603be043493b5f1042c3273c06214fd78717b6c88c5718b5

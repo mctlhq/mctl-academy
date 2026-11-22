@@ -2,17 +2,18 @@ schema_version: 1
 id: src-co-alerts
 url: https://docs.nebius.com/observability/alerts.md
 title: How to set up alerts
-retrieved_at: 2026-11-14T13:03:07Z
-sha256: 63568e043ae8ff4f4f63c772c9380fd504093a7803869e00b53112aa1dd07a4b
+retrieved_at: 2026-11-22T15:57:23Z
+sha256: c495112ef82976a3d50c4389c603933bcd0e040e688b1ba6e7e48aad330270fb
 objectives:
   - domain-3/node-monitoring
 snapshot:
   bucket: academy-source-snapshots
-  key: 63568e043ae8ff4f4f63c772c9380fd504093a7803869e00b53112aa1dd07a4b
-status: drifted
+  key: c495112ef82976a3d50c4389c603933bcd0e040e688b1ba6e7e48aad330270fb
+status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-4/ie-observability-platform
 versions:
   - 9f0cfbb15f2176864b25d08e096e832451ee7a40b89d14134b115c7e8fb90598
   - cbb836187203fd8a9a98eced0d27af2314b25afa7150daf07c30421608dfcb37
+  - 63568e043ae8ff4f4f63c772c9380fd504093a7803869e00b53112aa1dd07a4b

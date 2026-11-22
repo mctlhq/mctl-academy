@@ -2,14 +2,16 @@ schema_version: 1
 id: src-nb-3p-integrations-mpirun
 url: https://docs.nebius.com/3p-integrations/mpirun.md
 title: Running parallel jobs with MPIrun
-retrieved_at: 2026-11-14T09:28:27Z
-sha256: 0992799bc3fcec484415073e2e39dd840bee6466cf0af96836db742db5e8f6a0
+retrieved_at: 2026-11-22T15:57:33Z
+sha256: 54ac54757c904accdc63a6fb9e67ef8a827d0d084a061c9abeae83fa2f2e0604
 objectives:
   - domain-2/ie-distributed-parallelism
 snapshot:
   bucket: academy-source-snapshots
-  key: 0992799bc3fcec484415073e2e39dd840bee6466cf0af96836db742db5e8f6a0
-status: drifted
+  key: 54ac54757c904accdc63a6fb9e67ef8a827d0d084a061c9abeae83fa2f2e0604
+status: current
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-distributed-parallelism
+versions:
+  - 0992799bc3fcec484415073e2e39dd840bee6466cf0af96836db742db5e8f6a0
