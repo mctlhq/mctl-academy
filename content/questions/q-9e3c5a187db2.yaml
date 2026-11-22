@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9e3c5a187db2
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-storage-tiers
 stem: "A platform team created a regular Object Storage bucket for a training
@@ -50,3 +50,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T00:39:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: d4512e679995547aa5910134d267eb90e118d5f8b62926491679e81dd3cb892e

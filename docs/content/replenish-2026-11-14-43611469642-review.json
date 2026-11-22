@@ -3,13 +3,6 @@
   "reviewed_at": "2026-11-14T16:01:31Z",
   "questions": [
     {
-      "id": "q-8d2f6b9a4e17",
-      "content_sha256": "d4de57ff0277f3e367844581eed747fc54148b3b7bb6dbac7ecf090ee6c981a3",
-      "approved": true,
-      "reason": "The captured tip is verbatim and decisive: \"For resilience against preemption or lost capacity, design your workload to be resumable, for example, write and resume from checkpoints, and resubmit the job rather than relying on automatic restarts.\" The page also falsifies each distractor, since the restart policy \"responds only to the container's own exit code\" and \"Automatic restarts aren't available for Serverless AI endpoints.\"",
-      "reviewed_at": "2026-11-14T16:01:31Z"
-    },
-    {
       "id": "q-97c4f1a3e8b5",
       "content_sha256": "5f25dd4ab328c2e2855dc6ffc522b836ac563c1681e1b352aa59f0c8b00367f7",
       "approved": true,
@@ -50,6 +43,16 @@
       "approved": true,
       "reason": "The default routing rule is verbatim: \"Traffic from one resource in a network to another is always routed within that network, ignoring routes from default and custom routing tables,\" followed by \"You cannot modify this behavior, bypass it by using custom routes or disable it\" — which is exactly the durability the stem asks for. The empty-table distractor is contradicted by the page, where such resources \"can only communicate with other resources within their network.\"",
       "reviewed_at": "2026-11-14T16:01:31Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-8d2f6b9a4e17",
+      "content_sha256": "d4de57ff0277f3e367844581eed747fc54148b3b7bb6dbac7ecf090ee6c981a3",
+      "approved": true,
+      "reason": "The captured tip is verbatim and decisive: \"For resilience against preemption or lost capacity, design your workload to be resumable, for example, write and resume from checkpoints, and resubmit the job rather than relying on automatic restarts.\" The page also falsifies each distractor, since the restart policy \"responds only to the container's own exit code\" and \"Automatic restarts aren't available for Serverless AI endpoints.\"",
+      "reviewed_at": "2026-11-14T16:01:31Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

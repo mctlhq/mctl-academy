@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7f1a93cd5e82
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/sa-storage-architecture
 stem: "An architecture team is designing storage for a training pipeline's
@@ -47,3 +47,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-14T16:21:32Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 67d38de55098dcf72d948edde6a06aa3ad04c0ddd1885175f1857cc09d38e820

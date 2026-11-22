@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5e2a9c7f4b16
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team runs a multi-node training workload in a GPU cluster on
@@ -50,3 +50,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:14:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: fcce0a50ced1ada196b27622bab52ac80f51e4ccd22774326b7f38320b31012a

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co502cd7b152
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/resource-quotas
 stem: A team stops several GPU VMs overnight and expects the freed quota to let
@@ -33,3 +33,7 @@ authored:
   by: agent:claude-author
   at: 2026-11-14T18:47:43Z
 course_id: ai-cloudops-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: bce80d90e5e4fd139b3b80de83455a5fbaf51cb804f836ebf03c40b14645c645

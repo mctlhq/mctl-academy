@@ -10,24 +10,10 @@
       "reviewed_at": "2026-11-15T00:59:50Z"
     },
     {
-      "id": "q-4b8f61ad2c93",
-      "content_sha256": "ec1174631fd69a8694f92f3bb5d35936b06877a4e28c9bd541552f0d5cf9173a",
-      "approved": true,
-      "reason": "The TAS annotation table says a required constraint means \"Kueue admits the workload only if enough resources are available within the same topology domain. Otherwise, the workload remains pending\", exactly the behavior asked for, while the preferred constraint explicitly allows Kueue to \"place Pods across multiple topology domains\"; the page also requires an explicit annotation (\"To request TAS, add a topology annotation\"), so no option other than a is defensible.",
-      "reviewed_at": "2026-11-15T00:59:50Z"
-    },
-    {
       "id": "q-7f2d4a91c6b8",
       "content_sha256": "c85d3c274a0e5ea6df686f6299570c28630063bdc660fbba03806635279c751a",
       "approved": true,
       "reason": "Under the \"Private regions\" heading the page states \"The `eu-north2` region is available only to the users who already have deployments there\", which directly supports option a and contradicts options b and d; the support-ticket note is scoped to \"If a service is not available in the required region\", so it does not cover access to a private region.",
-      "reviewed_at": "2026-11-15T00:59:50Z"
-    },
-    {
-      "id": "q-9e3c5a187db2",
-      "content_sha256": "a44508c7d0115f75ef3f86567758feb85f3f3292169127794d7c1c5a8f09b86a",
-      "approved": true,
-      "reason": "The Limitations section states \"After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular\", which establishes option a; the documented update operation changes only audit logging, UID/GID and permissions, and the Attached buckets tab is described as a place to find a filesystem bucket after creation, not a way to attach a filesystem to an existing regular bucket.",
       "reviewed_at": "2026-11-15T00:59:50Z"
     },
     {
@@ -36,6 +22,24 @@
       "approved": true,
       "reason": "The page says the limits \"are useful in the following cases: Your source provider imposes rate or bandwidth restrictions\" and that \"You can set them when you create or modify a data transfer\", supporting option a; it also rules out the distractors with \"If you don't set the limits or set them to zero, the default values apply\", two named limits (requests_per_second and bandwidth_bytes_per_second), and \"The request rate and bandwidth cannot be unlimited\".",
       "reviewed_at": "2026-11-15T00:59:50Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-4b8f61ad2c93",
+      "content_sha256": "ec1174631fd69a8694f92f3bb5d35936b06877a4e28c9bd541552f0d5cf9173a",
+      "approved": true,
+      "reason": "The TAS annotation table says a required constraint means \"Kueue admits the workload only if enough resources are available within the same topology domain. Otherwise, the workload remains pending\", exactly the behavior asked for, while the preferred constraint explicitly allows Kueue to \"place Pods across multiple topology domains\"; the page also requires an explicit annotation (\"To request TAS, add a topology annotation\"), so no option other than a is defensible.",
+      "reviewed_at": "2026-11-15T00:59:50Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-9e3c5a187db2",
+      "content_sha256": "a44508c7d0115f75ef3f86567758feb85f3f3292169127794d7c1c5a8f09b86a",
+      "approved": true,
+      "reason": "The Limitations section states \"After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular\", which establishes option a; the documented update operation changes only audit logging, UID/GID and permissions, and the Attached buckets tab is described as a place to find a filesystem bucket after creation, not a way to attach a filesystem to an existing regular bucket.",
+      "reviewed_at": "2026-11-15T00:59:50Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

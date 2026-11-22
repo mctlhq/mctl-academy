@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4b8f61ad2c93
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/ie-distributed-parallelism
 stem: "A platform team runs a distributed training job on a Managed Service for
@@ -53,3 +53,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T00:39:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 7ab0dd9339446735a502079db2054d87d742fcaae7bb5849554aebab18892243

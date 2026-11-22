@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1b6f4a9c8e53
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team is moving a cost-sensitive batch inference workload from
@@ -46,3 +46,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T10:14:50Z"
 course_id: ai-infrastructure-engineer
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: b660afd0b2fe186480c69d0be44bc25f64c6398964d42d05e129f307f38dc5e9

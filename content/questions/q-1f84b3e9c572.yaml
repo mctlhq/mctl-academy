@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1f84b3e9c572
-status: review_ready
+status: published
 domain: domain-4
 objective: domain-4/sa-secrets-audit-compliance
 stem: "A compliance team is designing the workflow that exports audit events to
@@ -46,3 +46,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-14T16:21:32Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: ff8abdd3771e65f5b15140cdfcadb053eb8e1aec3f101568837e32001dcbb870

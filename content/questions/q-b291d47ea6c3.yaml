@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b291d47ea6c3
-status: review_ready
+status: published
 domain: domain-1
 objective: domain-1/supervised-fine-tuning
 stem: "After an Axolotl LoRA fine-tuning job on Nebius Serverless AI completes,
@@ -38,3 +38,7 @@ authored:
   by: agent:claude-author
   at: 2026-10-18T08:30:25Z
 course_id: physical-ai
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 8f6246f4d0e18508fea22047093eb20b6d643aa9d544b5ad34ea5c062700e288

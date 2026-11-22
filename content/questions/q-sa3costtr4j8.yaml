@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sa3costtr4j8
-status: review_ready
+status: published
 domain: domain-3
 objective: domain-3/sa-cost-tradeoffs
 stem: "A batch-inference workload checkpoints its progress to persistent network
@@ -54,3 +54,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:47:26Z"
 course_id: ai-solutions-architect
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 91f9ad8651d36ad02cadcbcb3a82f3b6358631416b817b3945207e2cd7a4720f

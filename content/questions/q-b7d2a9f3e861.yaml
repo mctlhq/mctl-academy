@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-b7d2a9f3e861
-status: review_ready
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: "A sandbox operation can either save its filesystem changes as a new image
@@ -10,23 +10,23 @@ options:
   - id: a
     text: "Every new operation starts fresh compute from its input image."
     correct: true
-    explanation: "Correct. The documentation states that every new operation
-      starts fresh compute from its input image, independent of the
-      save-or-discard choice."
+    explanation: "Correct. The documentation states that every new operation starts
+      fresh compute from its input image, independent of the save-or-discard
+      choice."
   - id: b
-    text: "A saved operation resumes the live process from the run that produced
-      the image."
+    text: "A saved operation resumes the live process from the run that produced the
+      image."
     correct: false
-    explanation: "Wrong. The documentation's survival table says running
-      processes and services end with the operation; a saved image carries
-      filesystem state forward, not a resumed process."
+    explanation: "Wrong. The documentation's survival table says running processes
+      and services end with the operation; a saved image carries filesystem
+      state forward, not a resumed process."
   - id: c
-    text: "Discarding the changes skips allocating new compute and reuses the
-      prior operation's VM."
+    text: "Discarding the changes skips allocating new compute and reuses the prior
+      operation's VM."
     correct: false
-    explanation: "Wrong. The documentation describes every new operation as
-      starting fresh compute from its input image, with no exception for the
-      discard case."
+    explanation: "Wrong. The documentation describes every new operation as starting
+      fresh compute from its input image, with no exception for the discard
+      case."
   - id: d
     text: "The save-or-discard choice can be deferred until after the operation's
       compute has already started."
@@ -41,3 +41,7 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-22T17:27:09Z"
 course_id: agentic-ai-builder
+reviewed:
+  by: agent:claude-reviewer
+  at: 2026-11-22T17:45:14Z
+  content_sha256: df6ee4b4c663746cb752ac1f0487623b87f8a91c3f47e488eda3e22cae109bf6
