@@ -39,7 +39,7 @@ export function isoWeek(date = new Date()) {
   const day = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - day); // Thursday of this week decides the year
   const year = d.getUTCFullYear();
-  const week = Math.ceil(((d - Date.UTC(year, 0, 1)) / 86400000 + 1) / 7);
+  const week = Math.ceil(((d.getTime() - Date.UTC(year, 0, 1)) / 86400000 + 1) / 7);
   return `${year}-W${String(week).padStart(2, "0")}`;
 }
 

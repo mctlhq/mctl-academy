@@ -87,7 +87,7 @@ test("umbrellaBody lists every source with its url, the marker and the PR link",
   for (let i = 0; i < 3; i += 1) {
     assert.match(body, new RegExp(`\\\`src-${i}\\\` - https://docs\\.example/page-${i}\\.md`));
   }
-  assert.ok(body.includes(PR));
+  assert.match(body, new RegExp(PR.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.doesNotMatch(body, /and \d+ more/);
 });
 
@@ -154,7 +154,7 @@ test("syncUmbrellaIssue creates one issue for all rows, then labels it", () => {
   const body = creates[0][creates[0].indexOf("--body") + 1];
   assert.match(body, /src-co-compute-quotas/);
   assert.match(body, /src-inference-overview/);
-  assert.ok(body.includes(PR));
+  assert.match(body, new RegExp(PR.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.ok(!creates[0].includes("--label"));
   assert.ok(calls.some((c) => c[0] === "issue" && c[1] === "edit" && c.includes("content:drift")));
 });
