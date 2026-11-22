@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co43c175d040
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: A VM was created two minutes ago and its Metrics tab is empty. What is the
@@ -29,12 +29,12 @@ options:
 evidence:
   - source_id: src-co-vm-monitoring
     excerpt: The VM usage data becomes available 5–10 minutes after the VM is created.
-    source_sha256: b809c8cf8544df2a2c8a2297375fe0c7b6730829352693961736ba577a2ec319
+    source_sha256: 92ba5975d585821b463e0e89b23e605beff6bcd358088e7b4c284fd8460b8721
 authored:
   by: agent:claude
   at: 2026-08-16T19:20:00Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: e1c9f6fed4b3874cba0450cf1e570f0ef708d482721c7d510f896ca262633e6a
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 7610869e56604dd160fbed7f23a55e3cda6666dcad0764cc9aa0b125a8d40ecf

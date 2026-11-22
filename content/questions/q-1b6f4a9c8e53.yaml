@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1b6f4a9c8e53
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team is moving a cost-sensitive batch inference workload from
@@ -38,7 +38,7 @@ options:
       platform."
 evidence:
   - source_id: src-nb-compute-virtual-machines-types
-    source_sha256: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
+    source_sha256: ee9f5fc89451b2ad9019580776c18ecec737423af24c884984bebe11fdb36564
     excerpt: "All platforms with GPUs also support [preemptible
       VMs](https://docs.nebius.com/compute/virtual-machines/preemptible.md)."
     locator: "Compatibility with VM types"
@@ -48,5 +48,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-15T10:36:46Z
-  content_sha256: ebafebefbab4375c95f9a2c0bd22451a1c4c7852b78a7bef4daa8c10c5c19343
+  at: 2026-11-22T17:45:14Z
+  content_sha256: b660afd0b2fe186480c69d0be44bc25f64c6398964d42d05e129f307f38dc5e9

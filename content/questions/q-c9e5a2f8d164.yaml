@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-c9e5a2f8d164
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
 stem: "The Sandboxes documentation lists several identifiers in its 'Core
@@ -31,12 +31,12 @@ options:
 evidence:
   - source_id: src-recovery-sandbox
     excerpt: "Tag | A mutable name that points to an image."
-    source_sha256: a36a9f7b537bc69420647ae4a9bcb66a2fcc06f00dba100cc9d444de2d8460eb
+    source_sha256: 20f2a84d9f257cf382d055883dc9d5e39aff531edcc9c0e4f6c6730fbce33f8b
 authored:
   by: "agent:claude-author"
   at: "2026-10-30T14:48:37Z"
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: 18dcc3399b4f0731b9974dc1166fb57fd4eb628d1a8e55e6725a185d7858d6c1
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 4ee24267ac2f5ce2201ad3d2ce75c2636aa45cd3a131cb8611a26cf8a8e9abf8

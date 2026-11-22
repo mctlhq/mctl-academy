@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5e2a9c7f4b16
-status: needs_review
+status: published
 domain: domain-4
 objective: domain-4/ie-gpu-rollouts
 stem: "A platform team runs a multi-node training workload in a GPU cluster on
@@ -43,7 +43,7 @@ options:
       cluster to share a project, not a region with everything else."
 evidence:
   - source_id: src-nb-compute-virtual-machines-types
-    source_sha256: 7e763554c3002ec93646c4e9dcb70e41496061a5ce959ce3ff2506d1336aef93
+    source_sha256: ee9f5fc89451b2ad9019580776c18ecec737423af24c884984bebe11fdb36564
     excerpt: "Other presets and platforms are not compatible with GPU clusters."
     locator: "Presets compatible with GPU clusters"
 authored:
@@ -52,5 +52,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-15T10:36:46Z
-  content_sha256: a9dde6982f1099c4384481ef3d12c962a92ba7112773f18e966a7520f66b172d
+  at: 2026-11-22T17:45:14Z
+  content_sha256: fcce0a50ced1ada196b27622bab52ac80f51e4ccd22774326b7f38320b31012a

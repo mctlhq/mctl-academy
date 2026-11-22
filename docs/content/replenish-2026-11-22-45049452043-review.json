@@ -1,0 +1,356 @@
+{
+  "reviewer": "agent:claude-reviewer",
+  "reviewed_at": "2026-11-22T17:45:14Z",
+  "questions": [
+    {
+      "id": "q-0f3d9a7c2b56",
+      "content_sha256": "5199e3ca169f18dbdfe091edc5197695a3936421caa7c2586cd162cd674cb770",
+      "approved": true,
+      "reason": "The captured models reference shows the verbose query parameter schema as \"type: boolean / default: false / title: Verbose\", establishing false as the default; the other values (1 for n, auto for service_tier) belong to different parameters, so only one option fits.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-1b6f4a9c8e53",
+      "content_sha256": "b660afd0b2fe186480c69d0be44bc25f64c6398964d42d05e129f307f38dc5e9",
+      "approved": true,
+      "reason": "\"All platforms with GPUs also support [preemptible VMs]\" appears verbatim under \"Compatibility with VM types\" and directly answers the move to a newer GPU platform; no distractor condition (InfiniBand cluster membership, separate project, newer-platform exclusion) appears anywhere on the page.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-1f84b3e9c572",
+      "content_sha256": "ff8abdd3771e65f5b15140cdfcadb053eb8e1aec3f101568837e32001dcbb870",
+      "approved": true,
+      "reason": "The export page states \"the destination bucket must be in the same region as the events\"; the role distractor is the documented assignment reversed (admin/auditlogs.audit-event-exporter on the tenant, storage.uploader on the bucket) and the prefix is documented as optional with an auditlogs default.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-2a8f4c91e637",
+      "content_sha256": "21f66fad9da8af573670b24604b23b800faf9dcf4c623cfd083a8202668c24d8",
+      "approved": true,
+      "reason": "\"When jobs aren't restarted\" lists \"Preemption: if you run on preemptible compute and Nebius AI Cloud reclaims (preempts) the underlying virtual machine (VM)\", while the on-failure row says a non-zero exit code is restarted automatically, so only the preemption option still needs checkpoint-and-resubmit.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-2c8e4f9a6b53",
+      "content_sha256": "1b09c6538cab3b9db44bf08ccc8f76a523d87f26185541dc946f8a152b0bdbbf",
+      "approved": true,
+      "reason": "The endpoints page states \"If the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke the VM at any time. The endpoint stops with the Preempted code, but you can start it again\"; it also says \"The VM type doesn't affect how long capacity for an endpoint is being provisioned\", ruling out the faster-provisioning distractor.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-4b8f61ad2c93",
+      "content_sha256": "7ab0dd9339446735a502079db2054d87d742fcaae7bb5849554aebab18892243",
+      "approved": true,
+      "reason": "The TAS table says a required topology constraint means \"Kueue admits the workload only if enough resources are available within the same topology domain. Otherwise, the workload remains pending\", whereas the preferred constraint explicitly allows Kueue to \"place Pods across multiple topology domains\" - the splitting to be avoided.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-5e2a9c7f4b16",
+      "content_sha256": "fcce0a50ced1ada196b27622bab52ac80f51e4ccd22774326b7f38320b31012a",
+      "approved": true,
+      "reason": "\"Presets compatible with GPU clusters\" lists the allowed platform/preset pairs and closes with \"Other presets and platforms are not compatible with GPU clusters\"; the preset table also refutes the claim that preset names carry over unchanged across every GPU platform.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-5e8a2c91f06d",
+      "content_sha256": "5b335a0438109ee5ac883398f33ef295ee326db5722966ef9704ba442802634c",
+      "approved": true,
+      "reason": "RerankResult documents relevance_score with description \"Relevance score of the document\"; total_tokens belongs to RerankUsage and embedding/owned_by belong to other endpoints' schemas, so exactly one option answers the stem.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "f929d0a3f86eae1d8659bf96144945b9ab0d5ebe70bde7b1a6cb07960251e2f6",
+      "approved": true,
+      "reason": "Rerank is documented as \"Reranks documents based on their relevance to a query\", while the embeddings endpoint only takes \"Input text to embed\", chat completions \"Creates a model response\", and List models \"Lists the currently available models\" - none of which orders supplied candidates.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-6e2f4c9a1d78",
+      "content_sha256": "c92c17b16f5b874188a92aad8060baa87fb003965ba8c9d596e0ab041cdc2010",
+      "approved": true,
+      "reason": "The page's opening sentence is \"If you share a capacity block group between a Soperator cluster and an inference node group, you can move GPU capacity between them without stopping the entire Soperator cluster\", and it adds that the steps are the same for separate clusters or node groups in one cluster, refuting the same-cluster distractor.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "d895e5e29a377953473a49df1aff23c46cb98040a85a46419be97764c75d8afa",
+      "approved": true,
+      "reason": "The EmbeddingRequest schema ends with \"required: - model - input\"; encoding_format has \"default: float\", dimensions is integer-or-null, and user is an optional end-user identifier, so none of the other combinations is required.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-7e4a9c3f1d86",
+      "content_sha256": "ff686e696eb22be8288a536053faf6b74bc7e354e5c320903820523b1b2bc883",
+      "approved": true,
+      "reason": "The tutorial's Costs section reads \"Nebius AI Cloud only charges you for running Managed Kubernetes nodes... Managed Service for SkyPilot is free of charge\", which supports only the first option.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-7f1a93cd5e82",
+      "content_sha256": "67d38de55098dcf72d948edde6a06aa3ad04c0ddd1885175f1857cc09d38e820",
+      "approved": true,
+      "reason": "The Limitations section states \"After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular\", and the same list refutes each distractor (no anonymous access via bucket policies, no delayed deletion or restoration, no object integrity checksums).",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "265cb68ac9518bc00746e9da684eecc774f943e5729afcf0fb17a58cd26a5b53",
+      "approved": true,
+      "reason": "The deployment tutorial states \"The container exposes an OpenAI-compatible /v1/chat/completions API\" for the vllm/vllm-openai image; the other APIs named belong to different services entirely.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-8d2f6b9a4e17",
+      "content_sha256": "e8df7463dd25fa23c6eed1a29575d2ebdcc2ad672906e0c76bb0f317dcd7c44d",
+      "approved": true,
+      "reason": "The tip reads \"For resilience against preemption or lost capacity, design your workload to be resumable, for example, write and resume from checkpoints, and resubmit the job rather than relying on automatic restarts\", and \"The restart policy responds only to the container's own exit code\" rules out the restart-attempts distractor.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-8f1a3d6e9c52",
+      "content_sha256": "e4a1ab9cc4e1b7b6bf55229ebd181481879f15ac12bb193b78337402c84ee6f3",
+      "approved": true,
+      "reason": "The quickstart says \"This bucket is not deleted automatically after you delete the cluster. You are still charged for the bucket until you delete it\", which both supports the keyed option and refutes the free, read-only distractor.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-9c4e7b2a5f16",
+      "content_sha256": "39dc257a42b33bcf0be5494fa301e475a76cd691f5d40abef524c6ad6e35da67",
+      "approved": true,
+      "reason": "Every prerequisite tab requires being \"in a group that has the admin role within your tenant or project; for example, the default admins group\", so editor, viewer and no-role options are all excluded.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-9e3c5a187db2",
+      "content_sha256": "d4512e679995547aa5910134d267eb90e118d5f8b62926491679e81dd3cb892e",
+      "approved": true,
+      "reason": "\"After you create a bucket, you cannot change its type from regular to filesystem or from filesystem to regular\" means an existing regular bucket cannot be converted, so a new filesystem bucket is required; the Attached buckets tab only lists filesystem buckets already created for a shared filesystem.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-a94f1d2b7c3e",
+      "content_sha256": "f269f15b9e46ec5a5a6fb6f34d153dbf36230df217ce87fc8fdd389675bc5218",
+      "approved": true,
+      "reason": "The EmbeddingRequest schema documents dimensions as \"The dimensions to use for the request\" with examples 4096 and 8192, i.e. the returned vector size; encoding_format is documented as float-or-base64 and service_tier as request priority, so neither affects vector size.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "8f6246f4d0e18508fea22047093eb20b6d643aa9d544b5ad34ea5c062700e288",
+      "approved": true,
+      "reason": "The tutorial's download step states the LoRA adapter weights \"are stored as files in the output directory, in the fine-tuning-axolotl bucket\", which the bucket is mounted to the job as /workspace/data.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-b58e3f9a2c71",
+      "content_sha256": "a51c14fa57f3d6269acd9aef4b88551b3edb4377081afa1165862a8e1bafee00",
+      "approved": true,
+      "reason": "The schema describes system_fingerprint as \"This fingerprint represents the backend configuration that the model runs with... Can be used in conjunction with the seed request parameter to understand when backend changes have been made that might impact determinism\"; the end-user identifier is the separate user parameter and token counts are the usage object.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-b7d2a9f3e861",
+      "content_sha256": "df6ee4b4c663746cb752ac1f0487623b87f8a91c3f47e488eda3e22cae109bf6",
+      "approved": true,
+      "reason": "\"Every new operation starts fresh compute from its input image\" appears verbatim in \"How execution works\" and is stated without exception for the discard case; the survival table (\"Running processes and services | End with the operation\") rules out the resumed-process option.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "b54b6f3a931c35a0e577dbc8b4101fdee1904bc24b540ff94f60d949473b0e04",
+      "approved": true,
+      "reason": "The RerankRequest schema ends with \"required: - model - query - documents\"; user is an optional end-user identifier and service_tier is optional with \"default: auto\", so no other combination matches.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-c9e5a2f8d164",
+      "content_sha256": "4ee24267ac2f5ce2201ad3d2ce75c2636aa45cd3a131cb8611a26cf8a8e9abf8",
+      "approved": true,
+      "reason": "The \"Core identifiers\" table reads \"Tag | A mutable name that points to an image\", while Image UUID identifies \"An immutable stored filesystem state\" and Operation ID \"One asynchronous service operation\".",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "6f1d66f1b1efe8bf702a10acdc30a0ed946a9531f6977fb9094cd28abed048a6",
+      "approved": true,
+      "reason": "The stream parameter is documented as \"Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a `data: [DONE]` message\", and the text/event-stream example shows exactly that; no WebSocket or multipart transport appears.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "cdff637c246f6965bf9fecb6ddd334a05526a0393dcf36f5172da728b2fedc7a",
+      "approved": true,
+      "reason": "The temperature description says \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\"; the page only recommends altering temperature or top_p but not both, and never promises identical output.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "1a720d9fe1e57c3ea6835625f624fe3c85c29bdd868a4885bc8dcb6495a52d0a",
+      "approved": true,
+      "reason": "The isolation section states \"Each GPU cluster is assigned a unique P-Key... This way, nodes in different GPU clusters cannot communicate over InfiniBand even if they use the same fabric infrastructure\", which also refutes the claim that two clusters cannot share a fabric.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "dcd96f060a1f187912fa97392c1fa9593cd41748ee54592137e505cac7e846d3",
+      "approved": true,
+      "reason": "GPUDirect RDMA \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\"; the page also says each GPU has its own 400 Gbps NIC, excluding the shared-NIC and host-memory-bounce options.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co2331c8572e",
+      "content_sha256": "5c4bbc7629cd71175da2a7ad743981b0740c4252bf2e5622e1521d9c1197c8b5",
+      "approved": true,
+      "reason": "\"When creating a GPU cluster, select an InfiniBand fabric for it. Take into account the type of GPUs... if you select fabric-7, you can only add NVIDIA H200 NVLink GPUs to this cluster\" makes the GPU-platform constraint the documented consequence; the page assigns P-Keys per cluster for isolation, not for access.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "3942b885849deedf0fbc0824db3c096559fca1d4a1c1df499947f7d414ce1aee",
+      "approved": true,
+      "reason": "The warning reads \"Set the required network or subnet when you create Nebius AI Cloud resources. You cannot move a resource to another network or subnet after creation\", with no exception for stopping the VM or adding an interface.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "8225c2f63c309bd4eb9afbe1ee3cdc2282c594eb5a897ac0c25c8e917f62df4d",
+      "approved": true,
+      "reason": "\"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources, for example, for testing purposes, create separate networks for them\" covers both stated requirements; resources in one network \"can connect directly to each other by using their private IP addresses\".",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co37d7aa468e",
+      "content_sha256": "2a6b8fd7e50dbe9cb9312953bc7e727719f40d4b53911bfc1fa2a16b1a2e4d1e",
+      "approved": true,
+      "reason": "\"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\" supports the name-only option and excludes the region, tenant and empty-project variants.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co43c175d040",
+      "content_sha256": "7610869e56604dd160fbed7f23a55e3cda6666dcad0764cc9aa0b125a8d40ecf",
+      "approved": true,
+      "reason": "\"The VM usage data becomes available 5-10 minutes after the VM is created\" makes waiting correct at two minutes, and \"Data for the dashboard is collected automatically\" rules out reinstalling an agent; widening a filter cannot surface uncollected data.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co449f443013",
+      "content_sha256": "04d4b42515d5524164934e1a089902ee5ff690d21bc38e0574d8d39ae1be2d77",
+      "approved": true,
+      "reason": "\"By default, the data is refreshed every 15 seconds. You can configure this interval next to the time filters\" supports both halves of the keyed option and contradicts the manual-reload, five-minute and hourly options.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co45cdfe9d9a",
+      "content_sha256": "2e1a6b0067112b7714769b2de8617e6c0821aa53242ddd2adf78d9f3342cd194",
+      "approved": true,
+      "reason": "The alert rules list \"Duration: Time during which the condition is met\", and the status list confirms a Pending alert \"must last for the Duration time before the alert becomes Firing\" - which is what suppresses momentary spikes; Threshold only changes the trigger value.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co46427e70ca",
+      "content_sha256": "890257983fecbd3c255c35e4e903cc5d78f9b65fd180dbaf08abe90d75a9dcfc",
+      "approved": true,
+      "reason": "\"Tenant administrators can also choose from tenant contacts in the current tenant. You can only see your own personal contacts, even when other users are subscribed to the same alert\" ties visibility to admin rights and explicitly refutes the subscriber-hiding distractor.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "c436ce27f94036b5f073fcb409d2d7042be0e6a18164de351d6dffb63a28c5fa",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\"; the cordon-drain-recreate sequence on the same page is the deployment strategy for template changes, not scaling.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co502cd7b152",
+      "content_sha256": "bce80d90e5e4fd139b3b80de83455a5fbaf51cb804f836ebf03c40b14645c645",
+      "approved": true,
+      "reason": "\"A VM and its resources count toward the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped\" settles the question for both GPU and other resource quotas.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "b32be3246c27d528f1df61b721aef0eb24e201d1b56c133e67830eecb6866757",
+      "approved": true,
+      "reason": "\"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes nodes, which are based on Compute VMs\" supports the shared-quota option; no mirrored Kubernetes quota or control-plane accounting is documented.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-d49a1e7f3c82",
+      "content_sha256": "0b91c9194b01b722007d9198a154797e990caada639140bbfeb0e65e95081605",
+      "approved": true,
+      "reason": "The max_tokens description ends \"If omitted or set to null, defaults to 8192 tokens\", so the default is numeric rather than unlimited; 100 appears only in the parameter's examples and 1 is the default for n.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "bc9b29cef180907f6a24e987551359525e03a63587d4e9c5177b6b4eeca197d8",
+      "approved": true,
+      "reason": "The quickstart says \"You can access the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\", scoping private reachability to the network rather than the internet or the project.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "693de5affb7a4911ed85f5403b2bb9172f7b38ffdbaa828c3c2f467c7acb5df2",
+      "approved": true,
+      "reason": "Rerank \"Reranks documents based on their relevance to a query\" and each RerankResult requires index, document and \"relevance_score... Relevance score of the document\"; no vector, rewrite or completion is returned.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-f1a9c3e76b24",
+      "content_sha256": "11fd084e1d070279692ed797c2b3b2370cc162c9c399cfa0550a817af301cb29",
+      "approved": true,
+      "reason": "\"How it works\" step 3 reads \"The workload exchanges its Nebius access token for a signed ID token through Nebius Security Token Service (STS)... and sends the token to the target system\", and the page scopes this to platforms supporting OIDC Discovery; SAML federation signs external users into Nebius, the opposite direction.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-f3b6e2a84c17",
+      "content_sha256": "5fe3daf1e2387337b387209db77ac306ea85133a03d7be0234f83b606f1a2b16",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\" covers manual and autoscaler scaling alike, so the no-recreation option is the only one consistent with the text.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-f4a8e1c6d935",
+      "content_sha256": "66e90ca70e8e4080c3c171c4f1893c97f96b5cfc38dc16a11ecd645c2a8b6980",
+      "approved": true,
+      "reason": "\"A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal\" appears verbatim; the survival table adds that environment values persist only when the interface explicitly saves image plus environment metadata.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "5394d4afe9f34d3e8be110a064a8471b39707b93e333e36873fdea4ae8a216e6",
+      "approved": true,
+      "reason": "The Usage schema requires completion_tokens, prompt_tokens and total_tokens, the last described as \"Total number of tokens used in the request (prompt + completion)\"; no hardware, transport or database counters appear in the response.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "69933927bebe7a0b0df3ec22659d694eabced8787cb136b2edef37dd51ab920d",
+      "approved": true,
+      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the List models endpoint with the query parameter verbose=true\", and the models reference lists \"context_length: type: integer\" in the rich model object.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "f76ddf2f17cc3945c8b9e9b338a5ce60e775e256c2732da987f68a19cf97d659",
+      "approved": true,
+      "reason": "\"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\" identifies temperature; the remaining options are transport, scheduling and display settings.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-sa2chkpt7m3v",
+      "content_sha256": "f37fe57f5b6a39f48ac856887d4bd78425ca9214f35d96e50f4cecd6cab40e19",
+      "approved": true,
+      "reason": "\"Every snapshot is only available in the project where it was created. Therefore, you can only work with snapshots and disks within the project\" rules out the cross-project plan, and the page lists SSD Non-replicated merely as a supported disk type, not as portable.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-sa3costtr4j8",
+      "content_sha256": "91f9ad8651d36ad02cadcbcb3a82f3b6358631416b817b3945207e2cd7a4720f",
+      "approved": true,
+      "reason": "\"Preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, but they don't provide guaranteed availability\" plus \"Local SSD disks are ephemeral, meaning any data stored on them will be lost when the preemptible VM stops\" support the keyed option; the page also says you can't convert an existing VM between types and that charging follows the current spot price.",
+      "reviewed_at": "2026-11-22T17:45:14Z"
+    }
+  ]
+}

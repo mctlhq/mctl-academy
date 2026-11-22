@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-5e8a2c91f06d
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: In a `/v1/rerank` response, which field tells a retrieval pipeline how
@@ -30,7 +30,7 @@ options:
 evidence:
   - source_id: src-recovery-rerank
     excerpt: Relevance score of the document
-    source_sha256: fa1765a8f584d350dd4d8f191bf2393e1b8a9d1cbdb7fac5ed1c141e9c1965b1
+    source_sha256: ea8d9eeb4a6602447af66a072e5418b44b57705d95a612033df9d0a8c1ba18fc
     locator: RerankResult > relevance_score
 authored:
   by: agent:claude-author
@@ -38,5 +38,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: 46631a6c30b03e08914ccdccaa35480b2368014fbeea914333ee3f686561a684
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 5b335a0438109ee5ac883398f33ef295ee326db5722966ef9704ba442802634c

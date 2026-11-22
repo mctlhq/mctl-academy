@@ -17,13 +17,6 @@
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
-      "id": "q-6e2f4c9a1d78",
-      "content_sha256": "6e90179dd504968b4f8198e475b9396a4d7e2a4e15bd6d1cc7015fc699cc9a21",
-      "approved": true,
-      "reason": "\"If you share a capacity block group between a Soperator cluster and an inference node group, you can move GPU capacity between them without stopping the entire Soperator cluster\" — and the same steps apply to separate clusters, which rules out option a.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
       "id": "q-8b2e5f1a9c34",
       "content_sha256": "e60a97e80585c19d842555cc17c0803920f0c659fece94eb85a641a81c98494e",
       "approved": true,
@@ -56,20 +49,6 @@
       "content_sha256": "be2aa67d523f920c9edd22d90f439aeef58037cf15460a428eaada06a81e126d",
       "approved": true,
       "reason": "\"Nebius Tunnels secures the transport between the tunnel agent and Nebius edge, but it doesn't add user authentication or authorization to your application.\" The other options name documented benefits of tunnels.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co43c175d040",
-      "content_sha256": "e1c9f6fed4b3874cba0450cf1e570f0ef708d482721c7d510f896ca262633e6a",
-      "approved": true,
-      "reason": "\"The VM usage data becomes available 5–10 minutes after the VM is created\", so an empty Metrics tab after two minutes is expected.",
-      "reviewed_at": "2026-10-30T15:23:08Z"
-    },
-    {
-      "id": "q-co449f443013",
-      "content_sha256": "d84e6154e681239cdc501b2045e59693b71def1c9713d004bee7e99536953fe1",
-      "approved": true,
-      "reason": "\"By default, the data is refreshed every 15 seconds. You can configure this interval next to the time filters.\"",
       "reviewed_at": "2026-10-30T15:23:08Z"
     },
     {
@@ -1507,6 +1486,30 @@
       "reason": "The supported model types list Vision with `modality=image2text` alongside Text-to-text and Embedding, so image input answering needs the Vision type.",
       "reviewed_at": "2026-10-30T15:23:08Z",
       "superseded_at": "2026-11-14T21:21:19Z"
+    },
+    {
+      "id": "q-6e2f4c9a1d78",
+      "content_sha256": "6e90179dd504968b4f8198e475b9396a4d7e2a4e15bd6d1cc7015fc699cc9a21",
+      "approved": true,
+      "reason": "\"If you share a capacity block group between a Soperator cluster and an inference node group, you can move GPU capacity between them without stopping the entire Soperator cluster\" — and the same steps apply to separate clusters, which rules out option a.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co43c175d040",
+      "content_sha256": "e1c9f6fed4b3874cba0450cf1e570f0ef708d482721c7d510f896ca262633e6a",
+      "approved": true,
+      "reason": "\"The VM usage data becomes available 5–10 minutes after the VM is created\", so an empty Metrics tab after two minutes is expected.",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co449f443013",
+      "content_sha256": "d84e6154e681239cdc501b2045e59693b71def1c9713d004bee7e99536953fe1",
+      "approved": true,
+      "reason": "\"By default, the data is refreshed every 15 seconds. You can configure this interval next to the time filters.\"",
+      "reviewed_at": "2026-10-30T15:23:08Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

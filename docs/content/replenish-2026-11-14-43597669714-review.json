@@ -10,13 +10,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-0f3d9a7c2b56",
-      "content_sha256": "5483021d3211fa272dd01a24e76e68bbc2748323cd2e784d6684a546228e0822",
-      "approved": true,
-      "reason": "The GET /v1/models verbose parameter schema reads \"type: boolean / default: false / title: Verbose\", establishing `false` as the default. The other values are defaults of unrelated parameters (`n`, `service_tier`).",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-184fb9e73ac2",
       "content_sha256": "abd51f88dc6b5574c8ee8380f99bce316dbe6b6a855824e9610345a2ac2a64d6",
       "approved": true,
@@ -87,13 +80,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-5e8a2c91f06d",
-      "content_sha256": "46631a6c30b03e08914ccdccaa35480b2368014fbeea914333ee3f686561a684",
-      "approved": true,
-      "reason": "RerankResult documents `relevance_score` with \"Relevance score of the document\". `total_tokens` belongs to RerankUsage, and `embedding`/`owned_by` belong to other endpoints' schemas.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-5f2a8c3e1d97",
       "content_sha256": "25dd06cf1defecd378f89123fc23ce60683788f2e96f135c095145e41f9da442",
       "approved": true,
@@ -105,20 +91,6 @@
       "content_sha256": "cbedd6b4ab015d68e2884c8f30bff661757456dec98c4591dd800ef7c78c4db2",
       "approved": true,
       "reason": "The dataset v3.0 page states \"Without calling `finalize()`, your parquet files will be incomplete and the dataset won't load properly\", and instructs callers to call it before `push_to_hub()`, excluding option c.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-6b9e2f4a17c3",
-      "content_sha256": "4c9f3af69d47baa57f50ebfaf9b4a35cf9ae10e46dceea0fc2fae63b156dbc24",
-      "approved": true,
-      "reason": "All four cited descriptions are verbatim, and only rerank \"Reranks documents based on their relevance to a query\"; embeddings takes \"Input text to embed\", chat \"Creates a model response for the given chat conversation\", and models \"Lists the currently available models\".",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-7b2d9f4a1c63",
-      "content_sha256": "ec3dcd33f374f228605a467b9849124752d873949d97ef59bb874bfb4e6542ca",
-      "approved": true,
-      "reason": "EmbeddingRequest lists \"required: - model - input\". `encoding_format` (default float) and `dimensions` are optional in the same schema, and option d omits the required `model`.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -136,31 +108,10 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-82e5d1c4930b",
-      "content_sha256": "11f176d6fb7edfb4a10019706e377bb1d7e85819e2b9c97a294435bc24839c22",
-      "approved": true,
-      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\" for the vllm/vllm-openai image; the other options name unrelated Nebius services.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-8f1a3d6e9c52",
-      "content_sha256": "f5c47bf48aba4062cb32a0be46d1df1556068925acacae00164f637f3a588cc8",
-      "approved": true,
-      "reason": "The quickstart states \"This bucket is not deleted automatically after you delete the cluster\" and adds that charges continue until it is deleted, which also rules out the free read-only state in option b.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-9b3d71ae4c08",
       "content_sha256": "cb03b5a15cab0f5ec6f66f3bd534563b9946fd9afa97959d831e912cc4bbd295",
       "approved": true,
       "reason": "The best-practices note states \"`include_domains_mode: \"prefer\"` is useful when you want to prioritize trusted sources without risking empty results if none of them cover the query\", and the page's example sets both include_domains and the prefer mode; the default mode is a hard filter, excluding option c.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-9c4e7b2a5f16",
-      "content_sha256": "9a45977b28fbedf6e9c68342e766e3a97762b87ce584d1623026f6c729618bf5",
-      "approved": true,
-      "reason": "The MLflow quickstart prerequisite requires being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", so editor/viewer/no-role options fail.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -199,24 +150,10 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-a94f1d2b7c3e",
-      "content_sha256": "9f27cda7d4dea49a7af86486d9b421fe32d0a593d0b57b4db70b9e33327a65ef",
-      "approved": true,
-      "reason": "EmbeddingRequest documents `dimensions` as \"The dimensions to use for the request\"; `encoding_format` controls float vs base64 and `service_tier` the priority tier, neither of which changes vector size.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-ad74c0f2b784",
       "content_sha256": "92c54b8fc7e714e44da4083e1ba693316a96476e1f514fdee2d26ef24e98ac0c",
       "approved": true,
       "reason": "The MCP guide's Claude Code section states \"No API key needed in the URL — authentication is handled automatically via OAuth\"; the TAVILY_API_KEY variable appears only in the local Claude Desktop config.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-b291d47ea6c3",
-      "content_sha256": "08ae0cc4b8dd695f08d79bacd0e26e6ffbec549f253141a5562aa4e7d9432bf2",
-      "approved": true,
-      "reason": "The tutorial states the LoRA adapter weights \"are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket\", and notes Serverless AI deletes the job after completion, excluding option b.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -231,13 +168,6 @@
       "content_sha256": "ca0a961020214e57ed31ff9df8a2f4611cfdf4913f8ecea5b76f6ed0fa1a47bf",
       "approved": true,
       "reason": "The capacity page states \"When an endpoint stops, its GPU capacity is released back to the shared pool. This applies regardless of why the endpoint stopped\", and lists \"stopped for scheduled or emergency maintenance\" among those reasons.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-b58e3f9a2c71",
-      "content_sha256": "82fa678e89ff3eaf3fe6d41ab4c97746500599b33c224f4098212fe532f89bb0",
-      "approved": true,
-      "reason": "The schema says \"This fingerprint represents the backend configuration that the model runs with\" and \"Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism\"; the end-user identifier is the separate `user` field.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -269,13 +199,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-c56f1a9d4e82",
-      "content_sha256": "c791414e0fa31fc3fae2b06e67662b18472e0a3d1afc950b7c56eb37ed551077",
-      "approved": true,
-      "reason": "RerankRequest lists \"required: - model - query - documents\"; `user` and `service_tier` (default auto) are optional in the same schema, and option d omits `model`.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-c6a4f1d93b72",
       "content_sha256": "87ac867a7fda67447a90a7c2c4d46c67d78d90659b54c3b2b1d5ab2bdc791be6",
       "approved": true,
@@ -304,20 +227,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-cc01a1b2c3d4",
-      "content_sha256": "ab8abee804e24c070cd29f86512007a84f6f13f9281bac8956f14742c20e377f",
-      "approved": true,
-      "reason": "The `stream` parameter says \"Tokens will be sent as data-only [server-sent events] as they become available, with the stream terminated by a `data: [DONE]` message\", excluding WebSocket, multipart, and batched-array transports.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-cc02b2c3d4e5",
-      "content_sha256": "91a7842a29c21809e1d940c6f3e288877162df6d2c758160ced71336b929a498",
-      "approved": true,
-      "reason": "The temperature description states \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\" The page only recommends altering temperature or top_p, not that one disables the other.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-cf96e2b4d906",
       "content_sha256": "e9ca677d693ec3df122d09dfac4366f852192f1b6a104ddd7c31431e64ab63c6",
       "approved": true,
@@ -325,38 +234,10 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-co219916c0e5",
-      "content_sha256": "4c405e087c359c3b181a3363a3674a61b0f3316f36807c3dc32b4a367985184b",
-      "approved": true,
-      "reason": "The isolation section states each cluster \"is assigned a unique P-Key\" so that \"nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\", and the page confirms clusters do share fabrics, excluding option d.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-co220dde0756",
-      "content_sha256": "bd5b2e84c09e4b4f3cf14422c677207f2d38e0654bc8648e45a3a20023cff776",
-      "approved": true,
-      "reason": "The page attributes the speed-up to GPUDirect RDMA, which \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\"; options a and d describe the bottlenecks it removes.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-co24917d1a57",
       "content_sha256": "604b72462d06a0f79e53f70e901a2616ed03599eaff2ab748d70b49330271567",
       "approved": true,
       "reason": "The quickstart says \"Keep the public endpoint enabled. As a result, the cluster is available from the internet, and you can connect to it from any machine\"; the endpoint concerns control-plane reachability, not node addressing or workload exposure.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-co253cd43986",
-      "content_sha256": "931d09c13dfef2bf1ff68e6aa618caa79db6f62d4d09f4d1e0fd02b13601b7d2",
-      "approved": true,
-      "reason": "The warning states \"You cannot move a resource to another network or subnet after creation\", with no exception for stopping the VM or adding an interface, so recreation is the only route.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-co26744a9769",
-      "content_sha256": "f59bcd43c76a6c69486f036c01ea637299f773b66f1392b853cc7351a813bd5d",
-      "approved": true,
-      "reason": "The page states \"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources... create separate networks for them\", which covers both requirements; option d breaks the same-region constraint.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -416,13 +297,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-co37d7aa468e",
-      "content_sha256": "a9830876a3bba93bab41a4a3b6b258ab88c23d37268384214e7f35252dbff22c",
-      "approved": true,
-      "reason": "The page states \"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\", which supports option d and refutes a-c.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-co38a7131e83",
       "content_sha256": "ac15d8006b312e626b07abdef661c3f8d9ddde420445dad79d6526bcd9a1d2b2",
       "approved": true,
@@ -458,13 +332,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-co45cdfe9d9a",
-      "content_sha256": "9840196afb8d5149cec2066e72e9b62ebbd460b4cd7da578253d2fcca978d664",
-      "approved": true,
-      "reason": "The alerts page defines \"**Duration**: Time during which the condition is met\" and states a `Pending` alert \"must last for the **Duration** time before the alert becomes `Firing`\", which is precisely what filters momentary spikes.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-co47ac4ebcf8",
       "content_sha256": "0175a537a424cd897d7e3343aefd6435bf164d8c64f3f5c99998a56558ea761c",
       "approved": true,
@@ -476,20 +343,6 @@
       "content_sha256": "ea51aa7f9d685ee712e6220e7088cd4cda9baf6d29da2ef496fba8ae3b11236f",
       "approved": true,
       "reason": "For persistent boot-disk I/O errors the page states \"the service runs an automatic recovery: it deletes the node and then creates a new one with a different name and healthy boot disk\", which is option b.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-co49d3cee498",
-      "content_sha256": "03395d538c4fb9dc19bf79eb80840c6aa9e3436d43455b432ca1c70195bb02c3",
-      "approved": true,
-      "reason": "The node-groups page states \"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\"; recreation follows template changes, which is the rolling update described separately.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-co51437baad6",
-      "content_sha256": "01e6352f22fdf0b6a4f98002a574460dc20b6cb20de34784f6866bbd22d4c17a",
-      "approved": true,
-      "reason": "The quotas page states \"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs\", with no mirrored Kubernetes quota and no GPU-cluster condition.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -518,13 +371,6 @@
       "content_sha256": "22971acece224605f926484c8492002b65b1e366ceff50b91091b1c6f6f125a1",
       "approved": true,
       "reason": "The dataset tools guide states merge means \"The datasets must have identical features, and episodes are concatenated in the order specified in `repo_ids`\"; video encoding and splitting are separate operations.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-d49a1e7f3c82",
-      "content_sha256": "8adde6cdcb329f0c06ad1d5165d07ee074074533ec6938095ff4f0cabb17651c",
-      "approved": true,
-      "reason": "The max_tokens description ends \"If omitted or set to null, defaults to 8192 tokens\"; 100 appears only as an example value and 1 is the default for `n`.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -605,24 +451,10 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-e9a2c651f03d",
-      "content_sha256": "674ca690fa3a1c6434c81613ba787a98801958c8b109aac1820a56d8a0b3faf0",
-      "approved": true,
-      "reason": "The quickstart states you can access \"the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\", which is option a.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-ec2a8f4b916d",
       "content_sha256": "6134d94e16a685b6654fc453575a0bd20af4405b0aa88b6fb6d800f58afbb606",
       "approved": true,
       "reason": "The search_depth cost note reads \"`basic`, `fast`, `ultra-fast`: 1 API Credit\" and \"`advanced`: 2 API Credits\", which is option b.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-er01c3d4e5f6",
-      "content_sha256": "5cb6119c5333eb78258e9efee77e927afd7ece3cd510a066451b36bd815b256f",
-      "approved": true,
-      "reason": "The endpoint \"Reranks documents based on their relevance to a query\" and RerankResult carries index, document, and \"relevance_score... Relevance score of the document\" — no vectors, rewrites, or generated answers.",
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
@@ -696,27 +528,6 @@
       "reviewed_at": "2026-11-14T13:21:41Z"
     },
     {
-      "id": "q-ob02a9b0c1d2",
-      "content_sha256": "09b010c09ebe65538059657839f83cbc9c8835a89c6b8f9ca1b6cfabb0aa2282",
-      "approved": true,
-      "reason": "The Usage schema defines completion_tokens, prompt_tokens, and \"total_tokens... Total number of tokens used in the request (prompt + completion)\"; the other options are hardware, transport, or database metrics.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-pf06a4b5c6d7",
-      "content_sha256": "64bc9788fefef8ae7bdb5b9155e6512accb64d0fe24e9d437f8353ed048dfcdf",
-      "approved": true,
-      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and the models schema includes \"context_length: type: integer\".",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
-      "id": "q-pf11f0a1b2c3",
-      "content_sha256": "ec90771aad53441e960788bf8ed345eab4757b7dcb6f5d99c64004b1f0ba7f2f",
-      "approved": true,
-      "reason": "The temperature parameter is documented as \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\"; the other options are not model parameters at all.",
-      "reviewed_at": "2026-11-14T13:21:41Z"
-    },
-    {
       "id": "q-rl01d7e8f9a0",
       "content_sha256": "46c0abf6dcee87632b4a3a92c5c49cd59592c2ff35a83e85ad0a9ae08857b5c5",
       "approved": true,
@@ -743,6 +554,224 @@
       "approved": true,
       "reason": "The page states the default cap \"grows automatically when you consistently operate close to your capacity and current limit\", so sustained high usage raises the cap rather than suspending or throttling the account.",
       "reviewed_at": "2026-11-14T13:21:41Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-0f3d9a7c2b56",
+      "content_sha256": "5483021d3211fa272dd01a24e76e68bbc2748323cd2e784d6684a546228e0822",
+      "approved": true,
+      "reason": "The GET /v1/models verbose parameter schema reads \"type: boolean / default: false / title: Verbose\", establishing `false` as the default. The other values are defaults of unrelated parameters (`n`, `service_tier`).",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-5e8a2c91f06d",
+      "content_sha256": "46631a6c30b03e08914ccdccaa35480b2368014fbeea914333ee3f686561a684",
+      "approved": true,
+      "reason": "RerankResult documents `relevance_score` with \"Relevance score of the document\". `total_tokens` belongs to RerankUsage, and `embedding`/`owned_by` belong to other endpoints' schemas.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-6b9e2f4a17c3",
+      "content_sha256": "4c9f3af69d47baa57f50ebfaf9b4a35cf9ae10e46dceea0fc2fae63b156dbc24",
+      "approved": true,
+      "reason": "All four cited descriptions are verbatim, and only rerank \"Reranks documents based on their relevance to a query\"; embeddings takes \"Input text to embed\", chat \"Creates a model response for the given chat conversation\", and models \"Lists the currently available models\".",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-7b2d9f4a1c63",
+      "content_sha256": "ec3dcd33f374f228605a467b9849124752d873949d97ef59bb874bfb4e6542ca",
+      "approved": true,
+      "reason": "EmbeddingRequest lists \"required: - model - input\". `encoding_format` (default float) and `dimensions` are optional in the same schema, and option d omits the required `model`.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-82e5d1c4930b",
+      "content_sha256": "11f176d6fb7edfb4a10019706e377bb1d7e85819e2b9c97a294435bc24839c22",
+      "approved": true,
+      "reason": "The tutorial states \"The container exposes an OpenAI-compatible `/v1/chat/completions` API\" for the vllm/vllm-openai image; the other options name unrelated Nebius services.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-8f1a3d6e9c52",
+      "content_sha256": "f5c47bf48aba4062cb32a0be46d1df1556068925acacae00164f637f3a588cc8",
+      "approved": true,
+      "reason": "The quickstart states \"This bucket is not deleted automatically after you delete the cluster\" and adds that charges continue until it is deleted, which also rules out the free read-only state in option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-9c4e7b2a5f16",
+      "content_sha256": "9a45977b28fbedf6e9c68342e766e3a97762b87ce584d1623026f6c729618bf5",
+      "approved": true,
+      "reason": "The MLflow quickstart prerequisite requires being in a group \"that has the `admin` role within your tenant or project; for example, the default `admins` group\", so editor/viewer/no-role options fail.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-a94f1d2b7c3e",
+      "content_sha256": "9f27cda7d4dea49a7af86486d9b421fe32d0a593d0b57b4db70b9e33327a65ef",
+      "approved": true,
+      "reason": "EmbeddingRequest documents `dimensions` as \"The dimensions to use for the request\"; `encoding_format` controls float vs base64 and `service_tier` the priority tier, neither of which changes vector size.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-b291d47ea6c3",
+      "content_sha256": "08ae0cc4b8dd695f08d79bacd0e26e6ffbec549f253141a5562aa4e7d9432bf2",
+      "approved": true,
+      "reason": "The tutorial states the LoRA adapter weights \"are stored as files in the `output` directory, in the `fine-tuning-axolotl` bucket\", and notes Serverless AI deletes the job after completion, excluding option b.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-b58e3f9a2c71",
+      "content_sha256": "82fa678e89ff3eaf3fe6d41ab4c97746500599b33c224f4098212fe532f89bb0",
+      "approved": true,
+      "reason": "The schema says \"This fingerprint represents the backend configuration that the model runs with\" and \"Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism\"; the end-user identifier is the separate `user` field.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-c56f1a9d4e82",
+      "content_sha256": "c791414e0fa31fc3fae2b06e67662b18472e0a3d1afc950b7c56eb37ed551077",
+      "approved": true,
+      "reason": "RerankRequest lists \"required: - model - query - documents\"; `user` and `service_tier` (default auto) are optional in the same schema, and option d omits `model`.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-cc01a1b2c3d4",
+      "content_sha256": "ab8abee804e24c070cd29f86512007a84f6f13f9281bac8956f14742c20e377f",
+      "approved": true,
+      "reason": "The `stream` parameter says \"Tokens will be sent as data-only [server-sent events] as they become available, with the stream terminated by a `data: [DONE]` message\", excluding WebSocket, multipart, and batched-array transports.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-cc02b2c3d4e5",
+      "content_sha256": "91a7842a29c21809e1d940c6f3e288877162df6d2c758160ced71336b929a498",
+      "approved": true,
+      "reason": "The temperature description states \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\" The page only recommends altering temperature or top_p, not that one disables the other.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co219916c0e5",
+      "content_sha256": "4c405e087c359c3b181a3363a3674a61b0f3316f36807c3dc32b4a367985184b",
+      "approved": true,
+      "reason": "The isolation section states each cluster \"is assigned a unique P-Key\" so that \"nodes in different GPU clusters cannot communicate over InfiniBand™ even if they use the same fabric infrastructure\", and the page confirms clusters do share fabrics, excluding option d.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co220dde0756",
+      "content_sha256": "bd5b2e84c09e4b4f3cf14422c677207f2d38e0654bc8648e45a3a20023cff776",
+      "approved": true,
+      "reason": "The page attributes the speed-up to GPUDirect RDMA, which \"allows data to flow directly between each GPU and its NIC, avoiding CPU, thus boosting the data exchange speed\"; options a and d describe the bottlenecks it removes.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co253cd43986",
+      "content_sha256": "931d09c13dfef2bf1ff68e6aa618caa79db6f62d4d09f4d1e0fd02b13601b7d2",
+      "approved": true,
+      "reason": "The warning states \"You cannot move a resource to another network or subnet after creation\", with no exception for stopping the VM or adding an interface, so recreation is the only route.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co26744a9769",
+      "content_sha256": "f59bcd43c76a6c69486f036c01ea637299f773b66f1392b853cc7351a813bd5d",
+      "approved": true,
+      "reason": "The page states \"If you want to disable connectivity between resources or allocate the same private IP address to multiple different resources... create separate networks for them\", which covers both requirements; option d breaks the same-region constraint.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co37d7aa468e",
+      "content_sha256": "a9830876a3bba93bab41a4a3b6b258ab88c23d37268384214e7f35252dbff22c",
+      "approved": true,
+      "reason": "The page states \"For an existing project, you can only edit the name. You cannot move a project to another region or tenant\", which supports option d and refutes a-c.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co45cdfe9d9a",
+      "content_sha256": "9840196afb8d5149cec2066e72e9b62ebbd460b4cd7da578253d2fcca978d664",
+      "approved": true,
+      "reason": "The alerts page defines \"**Duration**: Time during which the condition is met\" and states a `Pending` alert \"must last for the **Duration** time before the alert becomes `Firing`\", which is precisely what filters momentary spikes.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co49d3cee498",
+      "content_sha256": "03395d538c4fb9dc19bf79eb80840c6aa9e3436d43455b432ca1c70195bb02c3",
+      "approved": true,
+      "reason": "The node-groups page states \"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\"; recreation follows template changes, which is the rolling update described separately.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co51437baad6",
+      "content_sha256": "01e6352f22fdf0b6a4f98002a574460dc20b6cb20de34784f6866bbd22d4c17a",
+      "approved": true,
+      "reason": "The quotas page states \"These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes, which are based on Compute VMs\", with no mirrored Kubernetes quota and no GPU-cluster condition.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-d49a1e7f3c82",
+      "content_sha256": "8adde6cdcb329f0c06ad1d5165d07ee074074533ec6938095ff4f0cabb17651c",
+      "approved": true,
+      "reason": "The max_tokens description ends \"If omitted or set to null, defaults to 8192 tokens\"; 100 appears only as an example value and 1 is the default for `n`.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-e9a2c651f03d",
+      "content_sha256": "674ca690fa3a1c6434c81613ba787a98801958c8b109aac1820a56d8a0b3faf0",
+      "approved": true,
+      "reason": "The quickstart states you can access \"the public endpoint from the internet and the private endpoint from the network where the cluster is located (for example, via a virtual machine in this network)\", which is option a.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-er01c3d4e5f6",
+      "content_sha256": "5cb6119c5333eb78258e9efee77e927afd7ece3cd510a066451b36bd815b256f",
+      "approved": true,
+      "reason": "The endpoint \"Reranks documents based on their relevance to a query\" and RerankResult carries index, document, and \"relevance_score... Relevance score of the document\" — no vectors, rewrites, or generated answers.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-ob02a9b0c1d2",
+      "content_sha256": "09b010c09ebe65538059657839f83cbc9c8835a89c6b8f9ca1b6cfabb0aa2282",
+      "approved": true,
+      "reason": "The Usage schema defines completion_tokens, prompt_tokens, and \"total_tokens... Total number of tokens used in the request (prompt + completion)\"; the other options are hardware, transport, or database metrics.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-pf06a4b5c6d7",
+      "content_sha256": "64bc9788fefef8ae7bdb5b9155e6512accb64d0fe24e9d437f8353ed048dfcdf",
+      "approved": true,
+      "reason": "The UI page says \"To view an extended list of model parameters via the API, send a request to the **List models** endpoint with the query parameter `verbose=true`\", and the models schema includes \"context_length: type: integer\".",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-pf11f0a1b2c3",
+      "content_sha256": "ec90771aad53441e960788bf8ed345eab4757b7dcb6f5d99c64004b1f0ba7f2f",
+      "approved": true,
+      "reason": "The temperature parameter is documented as \"Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic\"; the other options are not model parameters at all.",
+      "reviewed_at": "2026-11-14T13:21:41Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

@@ -3,20 +3,6 @@
   "reviewed_at": "2026-11-14T14:32:11Z",
   "questions": [
     {
-      "id": "q-f1a9c3e76b24",
-      "content_sha256": "34f0116b59494db96a58740f42a115c2862b5e442ee9e02713fbdba38acc6987",
-      "approved": true,
-      "reason": "The captured page states under \"How it works\" that \"The workload exchanges its Nebius access token for a signed ID token through Nebius Security Token Service (STS) ... and sends the token to the target system\", which is exactly option a; the page's limitations and SAML/VPN absence leave no other option defensible.",
-      "reviewed_at": "2026-11-14T14:32:11Z"
-    },
-    {
-      "id": "q-f3b6e2a84c17",
-      "content_sha256": "99cf005947a5b79b6043b9803bc841004384ae4ba99f15bffe98bc891ce8cdd7",
-      "approved": true,
-      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\" is found verbatim and covers both manual and autoscaler scaling, while the cordon/drain/delete/create sequence is documented only for template changes (\"performs a rolling update to each node in the group when you modify the node group template\").",
-      "reviewed_at": "2026-11-14T14:32:11Z"
-    },
-    {
       "id": "q-f4c71d9a3b58",
       "content_sha256": "51ce8b612126cc7a23fac579b136351d4e200973d0d9190610c1ff71e2396388",
       "approved": true,
@@ -50,6 +36,24 @@
       "approved": true,
       "reason": "The warning on step 2 \"Restart the GPUs on the VM\" says that if the VM is a Managed Kubernetes \"node (that is, its name starts with mk8snodegroup), skip this step and proceed to the next step\", and the next ordered step is \"Restart the VM\"; support is documented only after a VM restart also fails.",
       "reviewed_at": "2026-11-14T14:32:11Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-f1a9c3e76b24",
+      "content_sha256": "34f0116b59494db96a58740f42a115c2862b5e442ee9e02713fbdba38acc6987",
+      "approved": true,
+      "reason": "The captured page states under \"How it works\" that \"The workload exchanges its Nebius access token for a signed ID token through Nebius Security Token Service (STS) ... and sends the token to the target system\", which is exactly option a; the page's limitations and SAML/VPN absence leave no other option defensible.",
+      "reviewed_at": "2026-11-14T14:32:11Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-f3b6e2a84c17",
+      "content_sha256": "99cf005947a5b79b6043b9803bc841004384ae4ba99f15bffe98bc891ce8cdd7",
+      "approved": true,
+      "reason": "\"When you or the autoscaler scales a node group up or down, Managed Kubernetes does not recreate any nodes\" is found verbatim and covers both manual and autoscaler scaling, while the cordon/drain/delete/create sequence is documented only for template changes (\"performs a rolling update to each node in the group when you modify the node group template\").",
+      "reviewed_at": "2026-11-14T14:32:11Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

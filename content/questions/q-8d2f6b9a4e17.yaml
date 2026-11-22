@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-8d2f6b9a4e17
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/ie-checkpoint-restart
 stem: "A training workload runs as a Serverless AI job with the restart policy
@@ -40,13 +40,13 @@ options:
       endpoint would remove the restart capability jobs already have."
 evidence:
   - source_id: src-nb-serverless-jobs-auto-restarts
-    source_sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
+    source_sha256: ffb7c42ca63f0c9f0519614e338f282b4504df842b0f7f73dbcbf5c7be4f48a4
     excerpt: "design your workload to be resumable, for example, write and resume
       from checkpoints, and resubmit the job rather than relying on automatic
       restarts"
     locator: "When jobs aren't restarted, tip"
   - source_id: src-nb-serverless-jobs-auto-restarts
-    source_sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
+    source_sha256: ffb7c42ca63f0c9f0519614e338f282b4504df842b0f7f73dbcbf5c7be4f48a4
     excerpt: "The restart policy responds only to the container's own exit code. It
       doesn't recover from:"
     locator: "When jobs aren't restarted"
@@ -56,5 +56,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T16:01:31Z
-  content_sha256: d4de57ff0277f3e367844581eed747fc54148b3b7bb6dbac7ecf090ee6c981a3
+  at: 2026-11-22T17:45:14Z
+  content_sha256: e8df7463dd25fa23c6eed1a29575d2ebdcc2ad672906e0c76bb0f317dcd7c44d

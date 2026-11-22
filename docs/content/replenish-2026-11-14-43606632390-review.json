@@ -17,13 +17,6 @@
       "reviewed_at": "2026-11-14T15:04:04Z"
     },
     {
-      "id": "q-sa2chkpt7m3v",
-      "content_sha256": "ef57e6d48b56f78075fc04d17fead1353a98b54e001b11d686972b5d8f0a389c",
-      "approved": true,
-      "reason": "The captured text states verbatim \"Every snapshot is only available in the project where it was created. Therefore, you can only work with snapshots and disks within the project\", which settles the cross-project question for option a; the page ties no disk type or shared filesystem to cross-project use, so no distractor is defensible.",
-      "reviewed_at": "2026-11-14T15:04:04Z"
-    },
-    {
       "id": "q-sa2obscope5r",
       "content_sha256": "24f8d29e1f6d5e83eb4517d8e2cf7c093f2719a1e964a211f023280527a30a9d",
       "approved": true,
@@ -35,13 +28,6 @@
       "content_sha256": "86c9bc7f70279cd69d2fe2139d5f6ff5c02be0f52c5a7f416134f17b8f379596",
       "approved": true,
       "reason": "Both excerpts appear verbatim in the first paragraph: \"GPUs from a reservation remain available, even if a VM is stopped. Without reservations, GPU capacity is taken from a shared pool and returned when a VM is stopped\", supporting option a and falsifying b; option c is excluded by the note \"GPUs allocated from reservations do not count towards quotas on the number of GPUs\", and option d by \"Preemptible VMs and VMs without GPUs do not support them.\"",
-      "reviewed_at": "2026-11-14T15:04:04Z"
-    },
-    {
-      "id": "q-sa3costtr4j8",
-      "content_sha256": "c011f34176fd29f274d167a0756caa1d950be1292099780765548aaae6f967a0",
-      "approved": true,
-      "reason": "Both excerpts are verbatim: \"Preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, but they don't provide guaranteed availability\" and \"Local SSD disks are ephemeral, meaning any data stored on them will be lost when the preemptible VM stops\", which together give option a without over-claiming; the page's \"charged at the current spot price\" and \"You can't convert an existing VM from regular to preemptible or the other way around\" exclude b and d.",
       "reviewed_at": "2026-11-14T15:04:04Z"
     },
     {
@@ -57,6 +43,24 @@
       "approved": true,
       "reason": "The excerpt is verbatim: \"Each security group is associated with a [network](...) and can only apply to VMs in this network\", with the network ID in .spec.network_id, which establishes option a; option c is specifically excluded by \"The security group specified in a security rule and the security group that contains the security rule must be associated with the same network\", and stateful/stateless concerns only connection tracking.",
       "reviewed_at": "2026-11-14T15:04:04Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-sa2chkpt7m3v",
+      "content_sha256": "ef57e6d48b56f78075fc04d17fead1353a98b54e001b11d686972b5d8f0a389c",
+      "approved": true,
+      "reason": "The captured text states verbatim \"Every snapshot is only available in the project where it was created. Therefore, you can only work with snapshots and disks within the project\", which settles the cross-project question for option a; the page ties no disk type or shared filesystem to cross-project use, so no distractor is defensible.",
+      "reviewed_at": "2026-11-14T15:04:04Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-sa3costtr4j8",
+      "content_sha256": "c011f34176fd29f274d167a0756caa1d950be1292099780765548aaae6f967a0",
+      "approved": true,
+      "reason": "Both excerpts are verbatim: \"Preemptible VMs can help reduce computing costs for workloads that tolerate interruptions, but they don't provide guaranteed availability\" and \"Local SSD disks are ephemeral, meaning any data stored on them will be lost when the preemptible VM stops\", which together give option a without over-claiming; the page's \"charged at the current spot price\" and \"You can't convert an existing VM from regular to preemptible or the other way around\" exclude b and d.",
+      "reviewed_at": "2026-11-14T15:04:04Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-2a8f4c91e637
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/sa-failure-support-model
 stem: "An architect is deciding whether a Serverless AI job's built-in
@@ -42,11 +42,11 @@ options:
       case to begin with."
 evidence:
   - source_id: src-nb-serverless-jobs-auto-restarts
-    source_sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
+    source_sha256: ffb7c42ca63f0c9f0519614e338f282b4504df842b0f7f73dbcbf5c7be4f48a4
     excerpt: "Nebius AI Cloud reclaims (preempts) the underlying virtual machine (VM)."
     locator: "Automatic job restarts, When jobs aren't restarted"
   - source_id: src-nb-serverless-jobs-auto-restarts
-    source_sha256: c14ae6de9284946c6a5bf26edb1885d191089234ea818eb12827ebd8f023e315
+    source_sha256: ffb7c42ca63f0c9f0519614e338f282b4504df842b0f7f73dbcbf5c7be4f48a4
     excerpt: "If the container exits with a non-zero exit code, Serverless AI
       automatically restarts it."
     locator: "Automatic job restarts, Configuring automatic restarts"
@@ -56,5 +56,5 @@ authored:
 course_id: ai-solutions-architect
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T16:38:21Z
-  content_sha256: 2f5344309118da9b4bb90bc96a17a06213d5059c4a295e94f76457c1cbb91284
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 21f66fad9da8af573670b24604b23b800faf9dcf4c623cfd083a8202668c24d8

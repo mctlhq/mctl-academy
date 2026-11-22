@@ -87,13 +87,6 @@
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
-      "id": "q-b7d2a9f3e861",
-      "content_sha256": "e731cb5491f7e829c3ee378af3db8449cfddef734557e27c55fa0b0d21c64328",
-      "approved": true,
-      "reason": "\"Choose whether to save filesystem changes before submitting an operation. Every operation starts fresh compute, regardless of that choice\" supports option a and contradicts the reuse/resume distractors.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
       "id": "q-bc01b0c1d2e3",
       "content_sha256": "35ff8e3e22e231e77c2a5e4deb99338e8e99d4bb8d66943d3a397c345747e178",
       "approved": true,
@@ -105,13 +98,6 @@
       "content_sha256": "c70d0bd2f2ce9d7ffea8b66e6e512fb4f9c3c591f4a20d2edd0dda663ed13efa",
       "approved": true,
       "reason": "The Third-party integrations card reads \"Build inference into applications that are based on supported third-party integrations\"; the other options quote the Inference, API and Fine-tuning cards.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-c9e5a2f8d164",
-      "content_sha256": "18dcc3399b4f0731b9974dc1166fb57fd4eb628d1a8e55e6725a185d7858d6c1",
-      "approved": true,
-      "reason": "The Core identifiers table row \"| Tag | A mutable name that points to an image. |\" names Tag, while Image UUID is \"An immutable stored filesystem state\".",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -210,13 +196,6 @@
       "content_sha256": "ec696e130a7451f29b6b015e1661853409917364422a07e906218fa013fa1b08",
       "approved": true,
       "reason": "The setup steps read \"For authentication, [get an API key]\", while the Cookbook, playground and integrations are separate cards on the same page.",
-      "reviewed_at": "2026-10-31T01:59:27Z"
-    },
-    {
-      "id": "q-f4a8e1c6d935",
-      "content_sha256": "38099f9723e03fc2ccf8dcc0de973bc55e23e57f980e5a140afc57ca0cc3e9b4",
-      "approved": true,
-      "reason": "\"A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal.\"",
       "reviewed_at": "2026-10-31T01:59:27Z"
     },
     {
@@ -936,6 +915,30 @@
       "reason": "The page states \"Managed MLflow in Nebius AI Cloud enables you to access model artifacts, training results and tuned hyperparameters in a single interface\", which is exactly option b; no other option is defensible from that sentence.",
       "reviewed_at": "2026-10-31T01:59:27Z",
       "superseded_at": "2026-11-14T20:33:13Z"
+    },
+    {
+      "id": "q-b7d2a9f3e861",
+      "content_sha256": "e731cb5491f7e829c3ee378af3db8449cfddef734557e27c55fa0b0d21c64328",
+      "approved": true,
+      "reason": "\"Choose whether to save filesystem changes before submitting an operation. Every operation starts fresh compute, regardless of that choice\" supports option a and contradicts the reuse/resume distractors.",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-c9e5a2f8d164",
+      "content_sha256": "18dcc3399b4f0731b9974dc1166fb57fd4eb628d1a8e55e6725a185d7858d6c1",
+      "approved": true,
+      "reason": "The Core identifiers table row \"| Tag | A mutable name that points to an image. |\" names Tag, while Image UUID is \"An immutable stored filesystem state\".",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-f4a8e1c6d935",
+      "content_sha256": "38099f9723e03fc2ccf8dcc0de973bc55e23e57f980e5a140afc57ca0cc3e9b4",
+      "approved": true,
+      "reason": "\"A saved image contains filesystem state. It does not retain a running process, process memory, open file handles, network connections, or a live terminal.\"",
+      "reviewed_at": "2026-10-31T01:59:27Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

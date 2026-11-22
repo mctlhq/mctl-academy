@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-2c8e4f9a6b53
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/ie-inference-pipelines
 stem: "A team wants to cut costs for a Serverless AI endpoint serving a
@@ -37,12 +37,12 @@ options:
       the platform changes for them."
 evidence:
   - source_id: src-pa-serverless-endpoints
-    source_sha256: 45af7fa0626487136bd2d5a37e25cde916cd7ad8dd8bd9f34a4d7a265a1ba80d
+    source_sha256: 931d99859da9f253a691c29f2ec24fb665eaf3a54d50642ede95ac97ae2d0f62
     excerpt: "If the endpoint runs on a preemptible VM, Nebius AI Cloud can revoke
       the VM at any time."
     locator: "How to create an endpoint, Computing resources"
   - source_id: src-pa-serverless-endpoints
-    source_sha256: 45af7fa0626487136bd2d5a37e25cde916cd7ad8dd8bd9f34a4d7a265a1ba80d
+    source_sha256: 931d99859da9f253a691c29f2ec24fb665eaf3a54d50642ede95ac97ae2d0f62
     excerpt: "The VM type doesn't affect how long capacity for an endpoint is being
       provisioned."
     locator: "How to create an endpoint, Computing resources"
@@ -52,5 +52,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-15T10:36:46Z
-  content_sha256: 7023e7d952478e27c49168e0e87e9fd7bd3cc98a89a586bc06cd3ef2f9277199
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 1b09c6538cab3b9db44bf08ccc8f76a523d87f26185541dc946f8a152b0bdbbf

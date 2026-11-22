@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-d49a1e7f3c82
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/chat-completions
 stem: If a Chat Completions request omits the `max_tokens` parameter, what does
@@ -30,7 +30,7 @@ options:
 evidence:
   - source_id: src-recovery-chat
     excerpt: If omitted or set to null, defaults to 8192 tokens.
-    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
+    source_sha256: ef09fb001986173bb3db7e44c157d61cbf5b3c14b3f7e0788ca35e6447a29460
     locator: ChatCompletionRequest > max_tokens
 authored:
   by: agent:claude-author
@@ -38,5 +38,5 @@ authored:
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: 8adde6cdcb329f0c06ad1d5165d07ee074074533ec6938095ff4f0cabb17651c
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 0b91c9194b01b722007d9198a154797e990caada639140bbfeb0e65e95081605

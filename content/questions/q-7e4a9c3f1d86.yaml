@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7e4a9c3f1d86
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/ie-inference-pipelines
 stem: "A platform team wants to orchestrate a vLLM inference server on a Managed
@@ -36,11 +36,11 @@ options:
       requests."
 evidence:
   - source_id: src-nb-3p-integrations-skypilot-vllm-inference
-    source_sha256: 3c0a8efabf9aeca0f48c7c6b2143a8b59dbc22051c436747177d870f188b9b2f
+    source_sha256: 8700abd3b0eac4854c24613de4dad2b3094c01e963e5330fb7108f64bdd3eb1b
     excerpt: "Nebius AI Cloud only charges you for running Managed Kubernetes nodes."
     locator: "Costs"
   - source_id: src-nb-3p-integrations-skypilot-vllm-inference
-    source_sha256: 3c0a8efabf9aeca0f48c7c6b2143a8b59dbc22051c436747177d870f188b9b2f
+    source_sha256: 8700abd3b0eac4854c24613de4dad2b3094c01e963e5330fb7108f64bdd3eb1b
     excerpt: "Managed Service for SkyPilot is free of charge."
     locator: "Costs"
 authored:
@@ -49,5 +49,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-15T10:36:46Z
-  content_sha256: 678af72631c2044b6246b399bef00cb9f49dc930938383525942df47ad8a2e2f
+  at: 2026-11-22T17:45:14Z
+  content_sha256: ff686e696eb22be8288a536053faf6b74bc7e354e5c320903820523b1b2bc883

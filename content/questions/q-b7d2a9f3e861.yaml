@@ -1,48 +1,47 @@
 schema_version: 1
 id: q-b7d2a9f3e861
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/agent-sandboxes
-stem: "Sandboxes lets you choose to save or discard filesystem changes before an
-  operation runs. What does the documentation say about compute startup
-  regardless of that choice?"
+stem: "A sandbox operation can either save its filesystem changes as a new image
+  or discard them. According to the Sandboxes overview, what happens to the
+  compute each new operation runs on, regardless of that choice?"
 options:
   - id: a
-    text: "Every operation starts fresh compute from the selected image, no matter
-      whether the result will be saved or discarded."
+    text: "Every new operation starts fresh compute from its input image."
     correct: true
-    explanation: "Correct. The documentation states that every operation starts
-      fresh compute, regardless of the save-or-discard choice."
+    explanation: "Correct. The documentation states that every new operation starts
+      fresh compute from its input image, independent of the save-or-discard
+      choice."
   - id: b
-    text: "Only discarded operations start fresh compute; a saved operation resumes
-      the previous run's live process."
+    text: "A saved operation resumes the live process from the run that produced the
+      image."
     correct: false
-    explanation: "Wrong. The documentation says every operation starts fresh compute
-      regardless of the choice; a saved image carries filesystem state forward,
-      not a resumed process."
+    explanation: "Wrong. The documentation's survival table says running processes
+      and services end with the operation; a saved image carries filesystem
+      state forward, not a resumed process."
   - id: c
-    text: "Fresh compute is started only for the first operation in a session; later
-      operations reuse the same running environment."
+    text: "Discarding the changes skips allocating new compute and reuses the prior
+      operation's VM."
     correct: false
-    explanation: "Wrong. Each operation independently starts fresh compute; the
-      documentation does not describe environment reuse across operations."
+    explanation: "Wrong. The documentation describes every new operation as starting
+      fresh compute from its input image, with no exception for the discard
+      case."
   - id: d
-    text: "The choice to save or discard can be made after reviewing the operation's
-      output."
+    text: "The save-or-discard choice can be deferred until after the operation's
+      compute has already started."
     correct: false
-    explanation: "Wrong. The documentation states the persistence choice must be
-      made before the operation is submitted, not after reviewing its output."
+    explanation: "Wrong. The documented workflow places choosing save or discard
+      before the fresh operation runs the command, not after compute starts."
 evidence:
   - source_id: src-recovery-sandbox
-    excerpt: "Choose whether to save filesystem changes before submitting an
-      operation. Every operation starts fresh compute, regardless of that
-      choice."
-    source_sha256: a36a9f7b537bc69420647ae4a9bcb66a2fcc06f00dba100cc9d444de2d8460eb
+    excerpt: "Every new operation starts fresh compute from its input image."
+    source_sha256: 20f2a84d9f257cf382d055883dc9d5e39aff531edcc9c0e4f6c6730fbce33f8b
 authored:
   by: "agent:claude-author"
-  at: "2026-10-30T14:48:37Z"
+  at: "2026-11-22T17:27:09Z"
 course_id: agentic-ai-builder
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-31T01:59:27Z
-  content_sha256: e731cb5491f7e829c3ee378af3db8449cfddef734557e27c55fa0b0d21c64328
+  at: 2026-11-22T17:45:14Z
+  content_sha256: df6ee4b4c663746cb752ac1f0487623b87f8a91c3f47e488eda3e22cae109bf6

@@ -3,27 +3,6 @@
   "reviewed_at": "2026-11-14T18:57:11Z",
   "questions": [
     {
-      "id": "q-co2331c8572e",
-      "content_sha256": "ddb4023b1ef48ba9be7ce7c4ffb1a0dbf0daf1cfd7ba7c70da3ea91c274e92f1",
-      "approved": true,
-      "reason": "The captured page states verbatim: \"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink GPUs to this cluster\", which directly supports option d; the fabric/platform table reinforces it, and no distractor is defensible (the page ties P-Keys to isolation rather than access, and limited fabric capacity is not a fixed node count).",
-      "reviewed_at": "2026-11-14T18:57:11Z"
-    },
-    {
-      "id": "q-co46427e70ca",
-      "content_sha256": "9e523442dc789f5f899f3fdb6f732d0420c6fa5877e5ff1d414794ea74458af4",
-      "approved": true,
-      "reason": "The excerpt appears verbatim in the Notifications step: \"Tenant administrators can also choose from [tenant contacts](...) in the current tenant. You can only see your own personal contacts\" - admin rights, not project membership, explain the longer list, and the same sentence continues \"even when other users are subscribed to the same alert\", ruling out option d.",
-      "reviewed_at": "2026-11-14T18:57:11Z"
-    },
-    {
-      "id": "q-co502cd7b152",
-      "content_sha256": "4b923d28e74f5d84b0a6803840215d96c22b75130d87275cdf9c894eb8da866e",
-      "approved": true,
-      "reason": "The page states a VM and its resources \"count toward the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped\" (found verbatim), and the recommendations add \"delete VMs instead of just stopping them\"; option d is the only answer consistent with that, with no storage/GPU distinction or capacity-rebalancing rule on the page.",
-      "reviewed_at": "2026-11-14T18:57:11Z"
-    },
-    {
       "id": "q-co546c4c3ecd",
       "content_sha256": "53c1a3e0a0ba4f8af536f46f145d2c7777203f40ce4e80da1448199a88176366",
       "approved": true,
@@ -36,6 +15,32 @@
       "approved": true,
       "reason": "The Issue section says verbatim \"This can occur on any VM with GPUs, regardless of the specific platform, number of GPUs, or boot disk image.\", which establishes option b and explicitly excludes the platform, GPU-count, image and cluster-scoped distractors.",
       "reviewed_at": "2026-11-14T18:57:11Z"
+    }
+  ],
+  "superseded": [
+    {
+      "id": "q-co2331c8572e",
+      "content_sha256": "ddb4023b1ef48ba9be7ce7c4ffb1a0dbf0daf1cfd7ba7c70da3ea91c274e92f1",
+      "approved": true,
+      "reason": "The captured page states verbatim: \"if you select `fabric-7`, you can only add NVIDIA® H200 NVLink GPUs to this cluster\", which directly supports option d; the fabric/platform table reinforces it, and no distractor is defensible (the page ties P-Keys to isolation rather than access, and limited fabric capacity is not a fixed node count).",
+      "reviewed_at": "2026-11-14T18:57:11Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co46427e70ca",
+      "content_sha256": "9e523442dc789f5f899f3fdb6f732d0420c6fa5877e5ff1d414794ea74458af4",
+      "approved": true,
+      "reason": "The excerpt appears verbatim in the Notifications step: \"Tenant administrators can also choose from [tenant contacts](...) in the current tenant. You can only see your own personal contacts\" - admin rights, not project membership, explain the longer list, and the same sentence continues \"even when other users are subscribed to the same alert\", ruling out option d.",
+      "reviewed_at": "2026-11-14T18:57:11Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
+    },
+    {
+      "id": "q-co502cd7b152",
+      "content_sha256": "4b923d28e74f5d84b0a6803840215d96c22b75130d87275cdf9c894eb8da866e",
+      "approved": true,
+      "reason": "The page states a VM and its resources \"count toward the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped\" (found verbatim), and the recommendations add \"delete VMs instead of just stopping them\"; option d is the only answer consistent with that, with no storage/GPU distinction or capacity-rebalancing rule on the page.",
+      "reviewed_at": "2026-11-14T18:57:11Z",
+      "superseded_at": "2026-11-22T17:45:14Z"
     }
   ]
 }

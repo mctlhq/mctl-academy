@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f3b6e2a84c17
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/ie-training-cluster-lifecycle
 stem: "A platform team increases a GPU node group's target node count to add
@@ -34,7 +34,7 @@ options:
       same way: neither recreates existing nodes."
 evidence:
   - source_id: src-co-k8s-node-groups
-    source_sha256: 12d86a1eeeb4a084acc7f8203ec6a9874b0ab0d2cd19320b67b1fe3ec99867cb
+    source_sha256: 4746022d6f30f8c78afd5741e173c0f1239ece442bf264884780220b6483bff4
     excerpt: "scales a node group up or down, Managed Kubernetes does not recreate
       any nodes."
     locator: "Deployment strategy and quotas"
@@ -44,5 +44,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T14:32:11Z
-  content_sha256: 99cf005947a5b79b6043b9803bc841004384ae4ba99f15bffe98bc891ce8cdd7
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 5fe3daf1e2387337b387209db77ac306ea85133a03d7be0234f83b606f1a2b16

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-9e3c5a187db2
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/ie-storage-tiers
 stem: "A platform team created a regular Object Storage bucket for a training
@@ -42,7 +42,7 @@ options:
       that was created as a regular bucket."
 evidence:
   - source_id: src-nb-object-storage-buckets-filesystem-buckets
-    source_sha256: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
+    source_sha256: c95edaeeea1868ff7b44448fe878e94ca28e369fc4f9e89d7070b5515c4c5fe6
     excerpt: "After you create a bucket, you cannot change its type from regular to
       filesystem or from filesystem to regular."
     locator: "Limitations, bucket management"
@@ -52,5 +52,5 @@ authored:
 course_id: ai-infrastructure-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-15T00:59:50Z
-  content_sha256: a44508c7d0115f75ef3f86567758feb85f3f3292169127794d7c1c5a8f09b86a
+  at: 2026-11-22T17:45:14Z
+  content_sha256: d4512e679995547aa5910134d267eb90e118d5f8b62926491679e81dd3cb892e

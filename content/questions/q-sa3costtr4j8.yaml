@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sa3costtr4j8
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/sa-cost-tradeoffs
 stem: "A batch-inference workload checkpoints its progress to persistent network
@@ -40,12 +40,12 @@ options:
       either way."
 evidence:
   - source_id: src-nb-compute-virtual-machines-preemptible
-    source_sha256: 6ef3b262673af7071bc7cb1c5e21b5e69d57a7801d5fd0d6f639460a7fc958b5
+    source_sha256: 89daef719153b779321e48191a9a2ab452b2536ab517baa782db1d5be60e14f8
     excerpt: "Preemptible VMs can help reduce computing costs for workloads that
       tolerate interruptions, but they don't provide guaranteed availability."
     locator: "Preemptible virtual machines"
   - source_id: src-nb-compute-virtual-machines-preemptible
-    source_sha256: 6ef3b262673af7071bc7cb1c5e21b5e69d57a7801d5fd0d6f639460a7fc958b5
+    source_sha256: 89daef719153b779321e48191a9a2ab452b2536ab517baa782db1d5be60e14f8
     excerpt: "Local SSD disks are ephemeral, meaning any data stored on them will be
       lost when the preemptible VM stops."
     locator: "Preemptible virtual machines, How to continue working with a stopped
@@ -56,5 +56,5 @@ authored:
 course_id: ai-solutions-architect
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T15:04:04Z
-  content_sha256: c011f34176fd29f274d167a0756caa1d950be1292099780765548aaae6f967a0
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 91f9ad8651d36ad02cadcbcb3a82f3b6358631416b817b3945207e2cd7a4720f

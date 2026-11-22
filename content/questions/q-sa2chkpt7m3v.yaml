@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-sa2chkpt7m3v
-status: needs_review
+status: published
 domain: domain-2
 objective: domain-2/sa-checkpoint-strategy
 stem: "A training team takes disk snapshots of their checkpoint volumes in
@@ -37,7 +37,7 @@ options:
       portability."
 evidence:
   - source_id: src-nb-compute-storage-disk-snapshots
-    source_sha256: 4f44f897e3e34b470076c94623b05d917d75d0a771474b93949b8973f4429a05
+    source_sha256: 68c6f84244d8f237b614e3bb13239509381bff3131a48f09ab241cd3773e2896
     excerpt: "Every snapshot is only available in the project where it was created.
       Therefore, you can only work with snapshots and disks within the project."
     locator: "Managing disk snapshots in Compute"
@@ -47,5 +47,5 @@ authored:
 course_id: ai-solutions-architect
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-11-14T15:04:04Z
-  content_sha256: ef57e6d48b56f78075fc04d17fead1353a98b54e001b11d686972b5d8f0a389c
+  at: 2026-11-22T17:45:14Z
+  content_sha256: f37fe57f5b6a39f48ac856887d4bd78425ca9214f35d96e50f4cecd6cab40e19

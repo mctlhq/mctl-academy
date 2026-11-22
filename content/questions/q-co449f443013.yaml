@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co449f443013
-status: needs_review
+status: published
 domain: domain-3
 objective: domain-3/node-monitoring
 stem: An engineer watching a VM dashboard during an incident asks how current
@@ -29,12 +29,12 @@ evidence:
   - source_id: src-co-vm-monitoring
     excerpt: By default, the data is refreshed every 15 seconds. You can configure
       this interval next to the time filters.
-    source_sha256: b809c8cf8544df2a2c8a2297375fe0c7b6730829352693961736ba577a2ec319
+    source_sha256: 92ba5975d585821b463e0e89b23e605beff6bcd358088e7b4c284fd8460b8721
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: ai-cloudops-engineer
 reviewed:
   by: agent:claude-reviewer
-  at: 2026-10-30T15:23:08Z
-  content_sha256: d84e6154e681239cdc501b2045e59693b71def1c9713d004bee7e99536953fe1
+  at: 2026-11-22T17:45:14Z
+  content_sha256: 04d4b42515d5524164934e1a089902ee5ff690d21bc38e0574d8d39ae1be2d77
