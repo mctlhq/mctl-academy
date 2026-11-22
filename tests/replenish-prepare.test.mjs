@@ -2083,18 +2083,31 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
     1,
     "an empty PATH element is the current directory and survives word splitting",
   );
-  // Both remaining cases are about the SHAPE of PATH, so neither may depend on
-  // the shape the runner happens to hand the job: an ambient empty field makes
-  // another one legitimate -- correctly, it was there before the agent -- and
-  // the case would then prove nothing. `pinned` removes empty fields before
-  // the snapshot, so the planted one is the only one.
-  const pinned = (_dir, _home, env) => ({ PATH: env.PATH.split(":").filter(Boolean).join(":") });
+  // An empty entry is judged by shape, not by membership in the snapshot: one
+  // already present before the agent ran proves only that the workspace has
+  // been on PATH throughout. So it must fail even though `before` put it there.
+  assert.equal(
+    fixture(
+      () => {},
+      (_dir, _home, env) => ({ PATH: `:${env.PATH}` }),
+    ),
+    1,
+    "a leading empty entry present before the agent ran is still the current directory",
+  );
+  assert.equal(
+    fixture(
+      () => {},
+      (_dir, _home, env) => ({ PATH: `${env.PATH}::/usr/bin` }),
+    ),
+    1,
+    "an interior empty entry present before the agent ran is still the current directory",
+  );
   // The leading case above survives word splitting on its own; the trailing one
   // does not -- bash drops a trailing empty field even when IFS is a
   // non-whitespace character -- so it is the cheaper half of the same trick and
   // needs the sentinel to be seen at all.
   assert.equal(
-    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.PATH}:` }), pinned),
+    fixture((_dir, _home, env) => ({ ...env, PATH: `${env.PATH}:` })),
     1,
     "a trailing colon adds the current directory to PATH and must not be dropped",
   );
@@ -2103,7 +2116,7 @@ test("the snapshot-and-verify pair, run as bash, catches what it claims to", () 
   // public workflow file -- would be the one entry this allowlist waves
   // through.
   assert.equal(
-    fixture((_dir, _home, env) => ({ ...env, PATH: `__pathguard__:${env.PATH}` }), pinned),
+    fixture((_dir, _home, env) => ({ ...env, PATH: `__pathguard__:${env.PATH}` })),
     1,
     "the sentinel's name is not a way onto PATH",
   );
@@ -2676,6 +2689,17 @@ test("prBody shows the advisory quality diagnostics before and after, and near-d
     after: [{ course: "c1", published: 3, domains: [] }],
   });
   assert.ok(!/Quality diagnostics/.test(old));
+});
+
+test("guardChanges refuses a question file nested below content/questions", () => {
+  const nested = "content/questions/sub/q-aaaaaaaaaaaa.yaml";
+  const problems = guardChanges({
+    changed: ["content/questions/q-bbbbbbbbbbbb.yaml", nested],
+    statusAtBase: () => null,
+    max: null,
+  });
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /q-aaaaaaaaaaaa\.yaml is nested below content\/questions/);
 });
 
 test("guardChanges rejects a non-integer cap instead of silently passing", () => {

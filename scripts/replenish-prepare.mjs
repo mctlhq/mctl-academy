@@ -662,6 +662,13 @@ export function guardChanges({ changed, statusAtBase, max, statusNow = null, pro
       problems.push(`${file} is not a .yaml file and has no business in content/questions`);
       continue;
     }
+    // Every consumer (lint:content, verify-evidence, the bundle builder) reads
+    // one directory level with a single readdirSync, so a nested .yaml would be
+    // committed by `git add content/questions/` yet never linted or bundled.
+    if (file.slice("content/questions/".length).includes("/")) {
+      problems.push(`${file} is nested below content/questions; only top-level question files are read`);
+      continue;
+    }
     const status = statusAtBase(file);
     if (status === "published") problems.push(`${file} was published at the base and must not change here`);
     if (status === "retired") problems.push(`${file} is retired and must not change here`);
