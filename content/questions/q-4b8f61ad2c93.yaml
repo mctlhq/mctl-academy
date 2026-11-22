@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4b8f61ad2c93
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/ie-distributed-parallelism
 stem: "A platform team runs a distributed training job on a Managed Service for
@@ -40,12 +40,12 @@ options:
       topology constraint the job requests."
 evidence:
   - source_id: src-nb-kubernetes-gpu-topology-aware-scheduling
-    source_sha256: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
+    source_sha256: 217bb1ac63505d4a4dcb4d6b5e35092d427e036f82a3c551668745560f2e7f50
     excerpt: "Kueue admits the workload only if enough resources are available
       within the same topology domain. Otherwise, the workload remains pending"
     locator: "Schedule workloads with TAS using Kueue, table"
   - source_id: src-nb-kubernetes-gpu-topology-aware-scheduling
-    source_sha256: a7d7d7c8830dc824a181c0aef6bf5cc486e5b65205f729c8551ccbc77ba7c588
+    source_sha256: 217bb1ac63505d4a4dcb4d6b5e35092d427e036f82a3c551668745560f2e7f50
     excerpt: "Kueue tries to schedule Pods within the same topology domain. If this
       is not possible, Kueue can place Pods across multiple topology domains."
     locator: "Schedule workloads with TAS using Kueue, table"
@@ -53,7 +53,3 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-15T00:39:50Z"
 course_id: ai-infrastructure-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-15T00:59:50Z
-  content_sha256: ec1174631fd69a8694f92f3bb5d35936b06877a4e28c9bd541552f0d5cf9173a

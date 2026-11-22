@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-f1a9c3e76b24
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/ie-identity-federation
 stem: "A workload running on a Nebius AI Cloud virtual machine needs to
@@ -38,7 +38,7 @@ options:
       authenticating to an external platform."
 evidence:
   - source_id: src-nb-iam-wif
-    source_sha256: 00c1d762c8752f89d44d7b58ca2b799048db5265d59b647f1336162903919d91
+    source_sha256: e01e8ab9955dc5b23e45ba97a9e65bee2b74ba4a9181c6a7a07b97d6a6a95de4
     excerpt: "The workload exchanges its Nebius access token for a signed ID token
       through Nebius Security Token Service (STS)"
     locator: "How it works"
@@ -46,7 +46,3 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-14T14:14:34Z"
 course_id: ai-infrastructure-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T14:32:11Z
-  content_sha256: 34f0116b59494db96a58740f42a115c2862b5e442ee9e02713fbdba38acc6987

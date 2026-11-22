@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co26744a9769
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/network-vpc
 stem: A team wants two test environments in the same region that use identical
@@ -32,15 +32,11 @@ evidence:
   - source_id: src-co-vpc-isolation
     excerpt: If you want to disable connectivity between resources or allocate the
       same private IP address to multiple different resources
-    source_sha256: 3602fae1e33d7f70603be043493b5f1042c3273c06214fd78717b6c88c5718b5
+    source_sha256: 1ce58b8684afac2dc5c9e2898ccd23000604d7c4fb899d883c6c4dcaf5ee1f3d
   - source_id: src-co-vpc-isolation
     excerpt: create separate networks for them.
-    source_sha256: 3602fae1e33d7f70603be043493b5f1042c3273c06214fd78717b6c88c5718b5
+    source_sha256: 1ce58b8684afac2dc5c9e2898ccd23000604d7c4fb899d883c6c4dcaf5ee1f3d
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: f59bcd43c76a6c69486f036c01ea637299f773b66f1392b853cc7351a813bd5d

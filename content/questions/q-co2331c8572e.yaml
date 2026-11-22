@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co2331c8572e
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/environment-deployment
 stem: You are creating a GPU cluster and must pick an InfiniBand fabric. Why
@@ -31,12 +31,8 @@ evidence:
   - source_id: src-co-gpu-clusters
     excerpt: "if you select `fabric-7`, you can only add NVIDIA® H200 NVLink GPUs to
       this cluster"
-    source_sha256: 436dd662a0ed5d99a922d2c2344e5e2c182ad8f3a5791350d29ef7178a53a3ad
+    source_sha256: b394bfd0d0220e3fa4f79e2e08ae6519496b4ef1be09d1254631a37d7b752f7b
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T18:47:43Z"
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T18:57:12Z
-  content_sha256: ddb4023b1ef48ba9be7ce7c4ffb1a0dbf0daf1cfd7ba7c70da3ea91c274e92f1

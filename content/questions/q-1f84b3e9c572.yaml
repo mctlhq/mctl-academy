@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-1f84b3e9c572
-status: needs_review
+status: review_ready
 domain: domain-4
 objective: domain-4/sa-secrets-audit-compliance
 stem: "A compliance team is designing the workflow that exports audit events to
@@ -39,14 +39,10 @@ options:
       export."
 evidence:
   - source_id: src-nb-audit-logs-events-export
-    source_sha256: bcbcc32bfee6cd990b269f009589c8d7b0a3436627667c59012b807f449a7048
+    source_sha256: 101cc301f4211a84adb578a339bfe6c866cfbd3e4c65d538cabf8e60d119c143
     excerpt: "the destination bucket must be in the same region as the events"
     locator: "How to export audit events to Object Storage, How to export events"
 authored:
   by: "agent:claude-author"
   at: "2026-11-14T16:21:32Z"
 course_id: ai-solutions-architect
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T16:38:21Z
-  content_sha256: 90df8fc1ce8ce7ea37e0862ae3ed105313d40471dc84e3fcd1f22898b645fd41

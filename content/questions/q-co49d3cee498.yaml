@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-co49d3cee498
-status: needs_review
+status: review_ready
 domain: domain-3
 objective: domain-3/node-recovery
 stem: A team plans to scale a node group from six nodes to ten and worries the
@@ -29,12 +29,8 @@ evidence:
   - source_id: src-co-k8s-node-groups
     excerpt: scales a node group up or down, Managed Kubernetes does not recreate
       any nodes
-    source_sha256: 12d86a1eeeb4a084acc7f8203ec6a9874b0ab0d2cd19320b67b1fe3ec99867cb
+    source_sha256: 4746022d6f30f8c78afd5741e173c0f1239ece442bf264884780220b6483bff4
 authored:
   by: agent:codex-drift-author
   at: 2026-09-06T11:00:00Z
 course_id: ai-cloudops-engineer
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: 03395d538c4fb9dc19bf79eb80840c6aa9e3436d43455b432ca1c70195bb02c3

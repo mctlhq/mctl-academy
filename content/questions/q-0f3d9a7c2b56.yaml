@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-0f3d9a7c2b56
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/model-catalog
 stem: On `GET /v1/models`, what is the documented default value of the `verbose`
@@ -29,13 +29,9 @@ options:
 evidence:
   - source_id: src-recovery-models
     excerpt: "type: boolean default: false title: Verbose"
-    source_sha256: 6c4ea439fb9a7b7ec77841237a192be1d41d6ac7962a96177a1ecb9dd6aa2862
+    source_sha256: db88401f35bd89796196099ecee30cbc1ba7b699cddd53870ebef5441e2e9430
     locator: GET /v1/models > verbose parameter
 authored:
   by: agent:claude-author
   at: 2026-10-08T17:23:06Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: 5483021d3211fa272dd01a24e76e68bbc2748323cd2e784d6684a546228e0822

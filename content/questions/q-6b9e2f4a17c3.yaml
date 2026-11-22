@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-6b9e2f4a17c3
-status: needs_review
+status: review_ready
 domain: domain-2
 objective: domain-2/retrieval-pipelines
 stem: You are composing a retrieval pipeline. Candidate passages have already
@@ -35,22 +35,18 @@ options:
 evidence:
   - source_id: src-recovery-rerank
     excerpt: Reranks documents based on their relevance to a query.
-    source_sha256: fa1765a8f584d350dd4d8f191bf2393e1b8a9d1cbdb7fac5ed1c141e9c1965b1
+    source_sha256: ea8d9eeb4a6602447af66a072e5418b44b57705d95a612033df9d0a8c1ba18fc
   - source_id: src-recovery-embedding
     excerpt: Input text to embed, encoded as a string or array of tokens.
-    source_sha256: 8cbd3a624c85eba4067d7af34628986fff741d106f062138c438720c21402ff5
+    source_sha256: a209040097c625912d55dc1bb98b02ac23092596d1aa0a37bbb7d74a57a1463a
   - source_id: src-recovery-chat
     excerpt: Creates a model response for the given chat conversation.
-    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
+    source_sha256: ef09fb001986173bb3db7e44c157d61cbf5b3c14b3f7e0788ca35e6447a29460
   - source_id: src-recovery-models
     excerpt: Lists the currently available models, and provides basic information
       about each one such as the owner and availability.
-    source_sha256: 6c4ea439fb9a7b7ec77841237a192be1d41d6ac7962a96177a1ecb9dd6aa2862
+    source_sha256: db88401f35bd89796196099ecee30cbc1ba7b699cddd53870ebef5441e2e9430
 authored:
   by: agent:glm-author
   at: 2026-09-13T05:17:47Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: 4c9f3af69d47baa57f50ebfaf9b4a35cf9ae10e46dceea0fc2fae63b156dbc24

@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-pf11f0a1b2c3
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/playground
 stem: Which model parameter makes generated output more random at higher values
@@ -28,12 +28,8 @@ evidence:
   - source_id: src-recovery-chat
     excerpt: Higher values like 0.8 will make the output more random, while lower
       values like 0.2 will make it more focused and deterministic.
-    source_sha256: 2e49e5c072d7120a7dc7008b500b71f90c607f5103d127ea6c827c5ab6165478
+    source_sha256: ef09fb001986173bb3db7e44c157d61cbf5b3c14b3f7e0788ca35e6447a29460
 authored:
   by: agent:claude-fable-5-1
   at: 2026-09-06T06:52:37Z
 course_id: agentic-ai-builder
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T13:21:41Z
-  content_sha256: ec90771aad53441e960788bf8ed345eab4757b7dcb6f5d99c64004b1f0ba7f2f

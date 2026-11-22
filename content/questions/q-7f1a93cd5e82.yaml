@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-7f1a93cd5e82
-status: needs_review
+status: review_ready
 domain: domain-1
 objective: domain-1/sa-storage-architecture
 stem: "An architecture team is designing storage for a training pipeline's
@@ -39,7 +39,7 @@ options:
       of filesystem buckets, so the two types do not support this identically."
 evidence:
   - source_id: src-nb-object-storage-buckets-filesystem-buckets
-    source_sha256: e4d6fae45ad03da471b93f9b6722d2088b08e4b20666567bf621ac89ed3b78be
+    source_sha256: c95edaeeea1868ff7b44448fe878e94ca28e369fc4f9e89d7070b5515c4c5fe6
     excerpt: "After you create a bucket, you cannot change its type from regular to
       filesystem or from filesystem to regular."
     locator: "How to manage filesystem buckets, Limitations"
@@ -47,7 +47,3 @@ authored:
   by: "agent:claude-author"
   at: "2026-11-14T16:21:32Z"
 course_id: ai-solutions-architect
-reviewed:
-  by: agent:claude-reviewer
-  at: 2026-11-14T16:38:21Z
-  content_sha256: 5122badc5255aa12f7f1e7dc3935aba3532d7c4544eac75b97e9c1ccabdaf360
