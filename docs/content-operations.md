@@ -16,7 +16,7 @@ Two workflows in this repository run every Monday:
 
 | Time (UTC) | Workflow | What it does | What it produces |
 |---|---|---|---|
-| 06:00 | `Source drift` | Re-hashes every recorded source; marks `drifted`, moves dependents to `needs_review`, rebuilds the bundle | One PR on `chore/quarantine-drift` (rebuilt each run) and one `drift: <id>` issue per source, label `content:drift` |
+| 06:00 | `Source drift` | Re-hashes every recorded source; marks `drifted`, moves dependents to `needs_review`, rebuilds the bundle | One PR on `chore/quarantine-drift` (rebuilt each run) and one umbrella issue `drift: sources changed <ISO week>` listing every drifted source (updated in place on a same-week re-run), label `content:drift` |
 | 06:30 | `Content replenish` | Discovery, capture, authoring, independent review, promotion | One content PR, label `agents:replenish`, for a human to merge |
 
 `Content replenish` (`.github/workflows/content-replenish.yml`) has three jobs:

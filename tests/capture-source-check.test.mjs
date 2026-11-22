@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { checkSources, fetchSource, GONE_STATUSES } from "../scripts/capture-source.mjs";
 import { movedTo } from "../scripts/lib/content-model.mjs";
 import { sha256 } from "../scripts/lib/snapshot-store.mjs";
-import { parseDriftReport, issueBody } from "../scripts/drift-intake.mjs";
+import { parseDriftReport, umbrellaBody } from "../scripts/drift-intake.mjs";
 
 const SAME = "same bytes";
 const httpError = (status) => Object.assign(new Error(`fetch: HTTP ${status}`), { httpStatus: status });
@@ -79,10 +79,9 @@ test("a page redirected to a different one is deprecated like a gone page, with 
     rows.map((r) => [r.id, r.newHash, r.url, r.movedTo]),
     [["b", "gone", "https://docs.example/b.md", "https://docs.example/hub.md"]],
   );
-  const body = issueBody(rows[0]);
-  assert.match(body, /now redirects to a different page/);
-  assert.match(body, /now redirects to: https:\/\/docs\.example\/hub\.md/);
-  assert.doesNotMatch(body, /HTTP 404 or 410/);
+  const body = umbrellaBody({ week: "2026-W48", rows });
+  assert.match(body, /moved to https:\/\/docs\.example\/hub\.md/);
+  assert.doesNotMatch(body, /gone \(404\/410/);
 });
 
 test("any other failed read still fails the run: could not observe is not absent", async () => {
@@ -110,9 +109,10 @@ test("a clean check exits 0", async () => {
   assert.equal((await run({ a: SAME })).code, 0);
 });
 
-test("the issue for a gone page says deprecated and does not offer a recapture of the dead URL", () => {
-  const body = issueBody({ id: "b", url: "https://docs.example/b.md", oldHash: "abc", newHash: "gone" });
-  assert.match(body, /status: deprecated/);
+test("the umbrella issue marks a gone page deprecated and does not offer a recapture of the dead URL", () => {
+  const rows = [{ id: "b", url: "https://docs.example/b.md", oldHash: "abc", newHash: "gone" }];
+  const body = umbrellaBody({ week: "2026-W48", rows });
+  assert.match(body, /marked deprecated/);
   assert.doesNotMatch(body, /snapshot:capture/);
 });
 
@@ -194,8 +194,9 @@ test("a deprecated source is skipped: neither gone nor changed bytes is a new fi
   assert.equal(again.writes.size, 0);
 });
 
-test("the issue for a gone page says the status is restored by hand", () => {
-  const body = issueBody({ id: "b", url: "https://docs.example/b.md", oldHash: "abc", newHash: "gone" });
+test("the umbrella issue says a deprecated status is restored by hand", () => {
+  const rows = [{ id: "b", url: "https://docs.example/b.md", oldHash: "abc", newHash: "gone" }];
+  const body = umbrellaBody({ week: "2026-W48", rows });
   assert.match(body, /by hand/);
 });
 

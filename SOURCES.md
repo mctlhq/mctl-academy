@@ -188,6 +188,8 @@ When the weekly **Source drift** workflow detects a hash mismatch for an approve
 3. Quarantined questions are excluded from new Practice and Mock selection once the
    quarantine PR (`chore/quarantine-drift`) is merged and deployed.
 4. Existing completed attempts remain untouched.
+   One umbrella issue per run (`drift: sources changed <ISO week>`) lists every drifted
+   source with its URL and links the quarantine PR; a re-run in the same week updates it.
 5. The next **Content replenish** run re-captures the page, re-validates the items the
    new text still supports, and hands the rest to the authoring agent.
 

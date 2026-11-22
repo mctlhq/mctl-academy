@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 /**
- * Opens or updates the `drift: <source-id>` intake issues after a drift run.
+ * Opens or updates ONE umbrella intake issue per drift run (per ISO week).
  *
- * This used to be an inline bash loop in source-drift.yml. It never worked:
- * the dedup lookup was written as `gh issue list --jq --arg title ...`, and
- * `gh --jq` takes exactly one expression, so every scheduled run since the
- * first one died with `unknown arguments ["title" ...]` before a single issue
- * existed. Moving the logic here makes the parsing and the dedup decision
- * testable with a stubbed `gh`, which the shell version could not be.
+ * Until 2026-11-22 this opened one `drift: <source-id>` issue per drifted
+ * source: 26 open issues one week, 46 the next, for what is a single weekly
+ * event with a single quarantine PR. The per-source path is deleted, not
+ * left dormant; old per-source issues are closed by hand.
  *
  * Input is the report `snapshot:capture -- --check --mark-drifted` prints:
  *
  *   ok       src-example
  *   DRIFTED  src-example  <old12> -> <new12>  https://docs.example/page.md
  *
- * Dedup key is the exact issue title. A source that stays drifted for a month
- * gets one issue with a comment per run, never four identical issues.
+ * Dedup key is the exact title `drift: sources changed <YYYY-Www>`, and the
+ * body carries a hidden marker comment. A re-run in the same week finds that
+ * issue and REPLACES its body (never appends), so the issue always reflects
+ * the latest run. Listing existing issues or the quarantine PR is a read that
+ * must succeed: a failed or malformed read throws, because "could not list"
+ * must never be treated as "no issue exists" (that would open a duplicate).
  *
  * Usage:
  *   node scripts/drift-intake.mjs --report drift.txt --repo owner/repo [--label name ...]
@@ -26,8 +28,27 @@ import { fileURLToPath } from "node:url";
 
 export const DEFAULT_LABELS = ["content:drift"];
 
-export function issueTitle(id) {
-  return `drift: ${id}`;
+export const QUARANTINE_BRANCH = "chore/quarantine-drift";
+
+/** GitHub rejects issue bodies over 65536 characters; stay well under it. */
+export const MAX_BODY_CHARS = 60000;
+
+/** ISO 8601 week label, e.g. `2026-W48`, computed in UTC. */
+export function isoWeek(date = new Date()) {
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day); // Thursday of this week decides the year
+  const year = d.getUTCFullYear();
+  const week = Math.ceil(((d.getTime() - Date.UTC(year, 0, 1)) / 86400000 + 1) / 7);
+  return `${year}-W${String(week).padStart(2, "0")}`;
+}
+
+export function umbrellaTitle(week) {
+  return `drift: sources changed ${week}`;
+}
+
+export function umbrellaMarker(week) {
+  return `<!-- source-drift-umbrella:${week} -->`;
 }
 
 /**
@@ -58,44 +79,53 @@ export function parseDriftReport(text) {
   return { rows, errors };
 }
 
-export function issueBody({ id, url, oldHash, newHash, movedTo = null }) {
-  if (newHash === "gone") {
-    return [
-      movedTo
-        ? "Upstream page moved: the URL now redirects to a different page. Automatically marked `status: deprecated` (fail-closed quarantine)."
-        : "Upstream page is gone (HTTP 404 or 410). Automatically marked `status: deprecated` (fail-closed quarantine).",
-      "",
-      `- source: \`${id}\``,
-      `- url: ${url}`,
-      ...(movedTo ? [`- now redirects to: ${movedTo}`] : []),
-      `- recorded hash: \`${oldHash}\``,
-      "",
-      "Questions citing this source are excluded from learner selection.",
-      "The quarantine itself lands through the `chore/quarantine-drift` pull request.",
-      "If the page moved, capture its new URL as a new source and re-cite; otherwise retire the dependents.",
-      "The drift check skips deprecated sources, so nothing restores this one automatically: if the URL resolves again (a transient 404), set `status: current` back by hand after re-checking its hash.",
-      "",
-      "See SOURCES.md and CONTENT-POLICY.md.",
-    ].join("\n");
+function rowLine(row) {
+  if (row.newHash === "gone") {
+    const state = row.movedTo ? `moved to ${row.movedTo}` : "gone (404/410), marked deprecated";
+    return `- \`${row.id}\` - ${row.url} - ${state}`;
   }
-  return [
-    "Upstream source changed. Automatically marked `status: drifted` (fail-closed quarantine).",
+  return `- \`${row.id}\` - ${row.url} (\`${row.oldHash}\` -> \`${row.newHash}\`)`;
+}
+
+/**
+ * Body of the umbrella issue. Lists every drifted source until the size
+ * budget is reached, then states how many were left out; never truncates
+ * silently.
+ *
+ * @param {{ week: string, rows: object[], prUrl?: string | null, runUrl?: string | null, maxChars?: number }} args
+ */
+export function umbrellaBody({ week, rows, prUrl = null, runUrl = null, maxChars = MAX_BODY_CHARS }) {
+  const head = [
+    umbrellaMarker(week),
+    `Upstream sources changed in ${week}: ${rows.length} source${rows.length === 1 ? "" : "s"} marked \`drifted\` or \`deprecated\` (fail-closed quarantine).`,
     "",
-    `- source: \`${id}\``,
-    `- url: ${url}`,
-    `- recorded hash: \`${oldHash}\``,
-    `- current hash: \`${newHash}\``,
+    prUrl
+      ? `Quarantine pull request: ${prUrl}`
+      : `Quarantine pull request: none open on \`${QUARANTINE_BRANCH}\` (see the workflow run).`,
+    ...(runUrl ? [`Workflow run: ${runUrl}`] : []),
     "",
-    "Questions citing this source are excluded from learner selection until re-verified.",
-    "The quarantine itself lands through the `chore/quarantine-drift` pull request.",
-    "Re-capture with:",
+    "Questions citing these sources are excluded from learner selection once the quarantine PR is merged. The next Content replenish run re-captures the pages. The drift check skips deprecated sources, so a deprecated one is restored by hand (`status: current`) after re-checking its hash if the URL resolves again. See SOURCES.md and CONTENT-POLICY.md.",
     "",
-    "```",
-    `npm run snapshot:capture -- ${url} --id ${id} --objective <objective>`,
-    "```",
+    "Drifted sources:",
     "",
-    "See SOURCES.md and CONTENT-POLICY.md.",
   ].join("\n");
+  const lines = rows.map(rowLine);
+  // Reserve room for the "and N more" line so it always fits.
+  const reserve = 80;
+  let used = head.length + reserve;
+  let shown = 0;
+  for (const line of lines) {
+    if (used + line.length + 1 > maxChars) break;
+    used += line.length + 1;
+    shown += 1;
+  }
+  const out = [head + lines.slice(0, shown).join("\n")];
+  if (shown < lines.length) {
+    out.push(
+      `\n\n...and ${lines.length - shown} more (list truncated at the issue size limit; see drift.txt in the workflow run).`,
+    );
+  }
+  return out.join("");
 }
 
 /** Default runner: `gh` with the given argv, returning stdout as text. */
@@ -103,6 +133,12 @@ export function runGh(args) {
   return execFileSync("gh", args, { encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] });
 }
 
+/**
+ * Number of the issue whose title is exactly `title` (open or closed, so a
+ * same-week re-run after a manual close updates it instead of duplicating),
+ * or null when the listing succeeded and there is none. A gh failure, a
+ * malformed body, or a full page (the match could be past it) throws.
+ */
 export function findExistingIssue({ repo, title, gh = runGh }) {
   const out = gh([
     "issue",
@@ -110,20 +146,55 @@ export function findExistingIssue({ repo, title, gh = runGh }) {
     "--repo",
     repo,
     "--state",
-    "open",
+    "all",
     "--search",
     `"${title}" in:title`,
     "--json",
     "number,title",
-    // Dedup is the whole point: never let the exact match fall off the
-    // default 30-item page.
     "--limit",
-    "100",
+    String(LIST_LIMIT),
   ]);
-  const issues = out.trim() ? JSON.parse(out) : [];
+  let issues;
+  try {
+    issues = JSON.parse(out);
+  } catch (err) {
+    throw new Error(`could not parse issue listing: ${err.message}`);
+  }
+  if (!Array.isArray(issues)) throw new Error("issue listing is not an array");
+  if (issues.length >= LIST_LIMIT) {
+    throw new Error(`issue listing hit the ${LIST_LIMIT} limit; cannot prove no umbrella issue exists`);
+  }
   // The search is a substring match; the decision is an exact one.
   const hit = issues.find((issue) => issue.title === title);
   return hit ? hit.number : null;
+}
+
+const LIST_LIMIT = 100;
+
+/** URL of the open quarantine PR, or null when the listing succeeded and there is none. */
+export function findQuarantinePr({ repo, gh = runGh }) {
+  const out = gh([
+    "pr",
+    "list",
+    "--repo",
+    repo,
+    "--state",
+    "open",
+    "--head",
+    QUARANTINE_BRANCH,
+    "--json",
+    "url",
+    "--limit",
+    "10",
+  ]);
+  let prs;
+  try {
+    prs = JSON.parse(out);
+  } catch (err) {
+    throw new Error(`could not parse PR listing: ${err.message}`);
+  }
+  if (!Array.isArray(prs)) throw new Error("PR listing is not an array");
+  return prs.length ? prs[0].url : null;
 }
 
 export const LABEL_DEFINITIONS = {
@@ -174,38 +245,35 @@ function addLabels({ repo, issue, labels, gh }) {
 }
 
 /**
- * One row's failure never costs another row its issue: the issues are the
- * signal a human acts on, and the first dispatch opens several in a burst,
- * which is exactly where a secondary rate limit bites. Failed rows are
- * reported in the result and the CLI exits non-zero only after every row
- * has had its turn.
+ * Opens or updates the week's umbrella issue. Throws when any read fails, so
+ * the workflow step goes red instead of opening a second issue.
  *
- * @returns {{ id: string, action: "commented" | "created" | "failed", issue: number | string }[]}
+ * @returns {{ action: "created" | "updated" | "none", issue: number | string, title: string }}
  */
-export function syncDriftIssues({ rows, repo, labels = DEFAULT_LABELS, gh = runGh }) {
-  /** @type {{ id: string, action: "commented" | "created" | "failed", issue: number | string }[]} */
-  const actions = [];
-  for (const row of rows) {
-    const title = issueTitle(row.id);
-    const body = issueBody(row);
-    try {
-      const existing = findExistingIssue({ repo, title, gh });
-      if (existing !== null) {
-        gh(["issue", "comment", String(existing), "--repo", repo, "--body", body]);
-        actions.push({ id: row.id, action: "commented", issue: existing });
-        continue;
-      }
-      // Create first, label after: `gh issue create --label` fails outright
-      // on a label that does not exist, and the issue matters more than it.
-      const url = gh(["issue", "create", "--repo", repo, "--title", title, "--body", body]).trim();
-      addLabels({ repo, issue: url, labels, gh });
-      actions.push({ id: row.id, action: "created", issue: url });
-    } catch (err) {
-      console.error(`::error::${row.id}: ${err.message}`);
-      actions.push({ id: row.id, action: "failed", issue: "" });
-    }
+export function syncUmbrellaIssue({
+  rows,
+  repo,
+  labels = DEFAULT_LABELS,
+  gh = runGh,
+  now = new Date(),
+  runUrl = null,
+}) {
+  if (!rows.length) return { action: "none", issue: "", title: "" };
+  const week = isoWeek(now);
+  const title = umbrellaTitle(week);
+  const existing = findExistingIssue({ repo, title, gh });
+  const prUrl = findQuarantinePr({ repo, gh });
+  const body = umbrellaBody({ week, rows, prUrl, runUrl });
+  if (existing !== null) {
+    gh(["issue", "edit", String(existing), "--repo", repo, "--body", body]);
+    addLabels({ repo, issue: existing, labels, gh });
+    return { action: "updated", issue: existing, title };
   }
-  return actions;
+  // Create first, label after: `gh issue create --label` fails outright on a
+  // label that does not exist, and the issue matters more than it.
+  const url = gh(["issue", "create", "--repo", repo, "--title", title, "--body", body]).trim();
+  addLabels({ repo, issue: url, labels, gh });
+  return { action: "created", issue: url, title };
 }
 
 function parseArgs(argv) {
@@ -241,9 +309,14 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       console.log("no DRIFTED rows in the report; nothing to open");
       process.exit(errors.length ? 1 : 0);
     }
-    const actions = syncDriftIssues({ rows, repo: opts.repo, labels: opts.labels });
-    for (const a of actions) console.log(`${a.action}\t${a.id}\t${a.issue}`);
-    if (errors.length || actions.some((a) => a.action === "failed")) process.exit(1);
+    const result = syncUmbrellaIssue({
+      rows,
+      repo: opts.repo,
+      labels: opts.labels,
+      runUrl: process.env.RUN_URL || null,
+    });
+    console.log(`${result.action}\t${result.title}\t${result.issue}`);
+    if (errors.length) process.exit(1);
   } catch (err) {
     console.error(`drift-intake: ${err.message}`);
     process.exit(1);
