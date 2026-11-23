@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 0dfc1e6112366af292e971b74e68a6bf8172046610b4f4bb6a26fc88b146a556
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-2/ie-storage-tiers
