@@ -1,6 +1,6 @@
 schema_version: 1
 id: q-4c9a7e2f8b61
-status: published
+status: needs_review
 domain: domain-2
 objective: domain-2/sa-migration-handover
 stem: "A solutions architect is migrating a team's existing VM image, built

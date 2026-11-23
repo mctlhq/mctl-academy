@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: 5aade2111a5e6adc58a796d8ea8fa0cc8dd7474fcc82349895c3066bf6fa1c68
-status: current
+status: drifted
 coverage:
   - course_id: ai-solutions-architect
     objective: domain-2/sa-migration-handover

@@ -1418,47 +1418,6 @@
     ]
   },
   {
-    "id": "q-4b9f2e6a8c17",
-    "course_id": "ai-infrastructure-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/ie-inference-pipelines",
-    "stem": "A platform team runs several inference workloads from different users on one Managed Service for Kubernetes cluster and wants a management layer that actively prevents GPUs from sitting idle between those workloads. Which integration addresses this directly?",
-    "objectiveTitle": "Inference pipelines and integrating external orchestration tools",
-    "sources": [
-      {
-        "title": "Configuring a Managed Service for Kubernetes cluster to work in Run:ai",
-        "url": "https://docs.nebius.com/3p-integrations/run-ai.md",
-        "excerpt": "It dynamically allocates GPU resources, prevents idle GPUs and enables GPU sharing across multiple workloads and users, so that all resources are utilized."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Run:ai, since it dynamically allocates GPU resources, prevents idle GPUs and enables GPU sharing across multiple workloads and users",
-        "correct": true,
-        "explanation": "Correct. The guide describes Run:ai as dynamically allocating GPU resources, preventing idle GPUs and enabling GPU sharing across multiple workloads and users."
-      },
-      {
-        "id": "b",
-        "text": "Managed Service for SkyPilot, since it schedules inference tasks across clusters by specifying the container image, GPU requirements and commands in a configuration file",
-        "correct": false,
-        "explanation": "SkyPilot focuses on launching and scheduling a task from a configuration file; sharing idle GPU capacity across workloads and users is the capability the guide attributes to Run:ai."
-      },
-      {
-        "id": "c",
-        "text": "The Kubeflow Training Operator, since installing it lets several training jobs share the same GPU node group without contention",
-        "correct": false,
-        "explanation": "The Kubeflow Training Operator manages training job types on Kubernetes; the guide installs it alongside Run:ai, not as a GPU-sharing layer on its own."
-      },
-      {
-        "id": "d",
-        "text": "The MPI Operator, since it coordinates GPU allocation across workloads so that no GPU remains idle between jobs",
-        "correct": false,
-        "explanation": "The MPI Operator runs MPI-based distributed jobs; the guide installs it as a dependency for Run:ai, not as the component that prevents idle GPUs."
-      }
-    ]
-  },
-  {
     "id": "q-4c8e2b6f1a93",
     "course_id": "physical-ai",
     "domain": "domain-2",
@@ -1496,52 +1455,6 @@
         "text": "Yes, but only if the session also has X11 forwarding enabled",
         "correct": false,
         "explanation": "The documented behavior covers X11, Wayland, and headless/SSH sessions without requiring X11 forwarding specifically."
-      }
-    ]
-  },
-  {
-    "id": "q-4c9a7e2f8b61",
-    "course_id": "ai-solutions-architect",
-    "domain": "domain-2",
-    "objective": "domain-2/sa-migration-handover",
-    "stem": "A solutions architect is migrating a team's existing VM image, built outside Nebius AI Cloud, onto the platform so the workload can keep running unmodified. What should the migration plan do to bring the image onto Compute?",
-    "objectiveTitle": "Migrating workloads in and handing the platform over to its operators",
-    "sources": [
-      {
-        "title": "Importing your own image into Compute",
-        "url": "https://docs.nebius.com/compute/storage/import-image.md",
-        "excerpt": "To make an import, upload an image file to a bucket in Object Storage and create an image in Compute."
-      },
-      {
-        "title": "Importing your own image into Compute",
-        "url": "https://docs.nebius.com/compute/storage/import-image.md",
-        "excerpt": "The bucket, image and VM should be in the same region."
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Build a new boot disk image with the Nebius Packer plug-in, since Packer provisions a temporary VM from a base image and then creates a new boot disk image.",
-        "correct": false,
-        "explanation": "Packer builds a new image by provisioning on top of an existing Nebius base image, so it does not bring the team's own external image file onto the platform unmodified."
-      },
-      {
-        "id": "b",
-        "text": "Copy the VM image into a Container Registry registry and reference it from a new VM, since Container Registry copies images between registries.",
-        "correct": false,
-        "explanation": "Container Registry copies container images between registries; the documentation describes importing a Compute VM boot image through Object Storage and Compute instead."
-      },
-      {
-        "id": "c",
-        "text": "Upload the image file to an Object Storage bucket in the same region and create a Compute image from the uploaded object.",
-        "correct": true,
-        "explanation": "Correct. The documentation describes importing an image by uploading the image file to a bucket in Object Storage, in the same region as the resulting image and VM, and creating a Compute image from that upload."
-      },
-      {
-        "id": "d",
-        "text": "Create a VM from a standard platform image, connect to it and reinstall the required software, then save a custom boot disk image from that VM's disk.",
-        "correct": false,
-        "explanation": "This rebuilds the environment from a standard platform image rather than bringing in the team's existing image file, so the original workload's image is not what the plan preserves."
       }
     ]
   },
@@ -6335,88 +6248,6 @@
         "text": "Scaling is only safe when the group is first cordoned entirely",
         "correct": false,
         "explanation": "No such precaution is required for scaling."
-      }
-    ]
-  },
-  {
-    "id": "q-co502cd7b152",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/resource-quotas",
-    "stem": "A team stops several GPU VMs overnight and expects the freed quota to let them launch a new cluster. Does it?",
-    "objectiveTitle": "Quota management, capacity planning, and usage limits",
-    "sources": [
-      {
-        "title": "Quotas in Compute",
-        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
-        "excerpt": "count toward the quotas throughout the VM's lifecycle, from its creation to deletion, regardless of whether it is running or stopped"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Yes, stopped VMs release their quota until they are started again",
-        "correct": false,
-        "explanation": "Stopping does not release quota; the reservation persists while the VM exists."
-      },
-      {
-        "id": "b",
-        "text": "Yes, but only for GPU quotas, not for storage quotas",
-        "correct": false,
-        "explanation": "The rule does not distinguish stopped from running for either category."
-      },
-      {
-        "id": "c",
-        "text": "No, quota is only released once the region's capacity is rebalanced",
-        "correct": false,
-        "explanation": "Quota accounting is not tied to capacity rebalancing."
-      },
-      {
-        "id": "d",
-        "text": "No, a VM counts toward quota from creation to deletion regardless of power state",
-        "correct": true,
-        "explanation": "Correct. Only deleting the VM releases what it counts against."
-      }
-    ]
-  },
-  {
-    "id": "q-co51437baad6",
-    "course_id": "ai-cloudops-engineer",
-    "domain": "domain-3",
-    "objective": "domain-3/resource-quotas",
-    "stem": "A Managed Kubernetes node group fails to grow because of a quota limit, though no standalone VMs were created. Why is a Compute quota involved?",
-    "objectiveTitle": "Quota management, capacity planning, and usage limits",
-    "sources": [
-      {
-        "title": "Quotas in Compute",
-        "url": "https://docs.nebius.com/compute/resources/quotas-limits.md",
-        "excerpt": "These quotas apply to Compute VMs and also to Managed Service for Soperator and Managed Service for Kubernetes® nodes"
-      }
-    ],
-    "options": [
-      {
-        "id": "a",
-        "text": "Node groups consume a separate Kubernetes quota that mirrors Compute limits",
-        "correct": false,
-        "explanation": "There is no mirrored quota; the nodes count against the Compute quotas themselves."
-      },
-      {
-        "id": "b",
-        "text": "Managed Kubernetes nodes are based on Compute VMs and count against the same quotas",
-        "correct": true,
-        "explanation": "Correct. The quotas cover Compute VMs and equally the Kubernetes and Soperator nodes built on them."
-      },
-      {
-        "id": "c",
-        "text": "The cluster's control plane counts as a virtual machine in the quota",
-        "correct": false,
-        "explanation": "The nodes are what consume the quota here, not the managed control plane."
-      },
-      {
-        "id": "d",
-        "text": "Compute quota is only consulted when a node group uses a GPU cluster",
-        "correct": false,
-        "explanation": "The accounting does not depend on whether the node group is attached to a GPU cluster."
       }
     ]
   },

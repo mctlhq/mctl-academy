@@ -9,7 +9,7 @@ objectives:
 snapshot:
   bucket: academy-source-snapshots
   key: db317be68ca0ac8f0ef8060c097098935ddf239434c2ec880e41761447f5bfbf
-status: current
+status: drifted
 coverage:
   - course_id: ai-infrastructure-engineer
     objective: domain-1/ie-billing-quotas
